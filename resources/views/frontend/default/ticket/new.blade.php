@@ -1,0 +1,83 @@
+@extends('frontend::layouts.user')
+@section('title')
+    {{ __('Add New Support Ticket') }}
+@endsection
+@section('content')
+    <div class="mb-5">
+        <ul class="m-0 p-0 list-none">
+            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+                <a href="{{route('user.dashboard')}}">
+                    <iconify-icon icon="heroicons-outline:home"></iconify-icon>
+                    <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
+                </a>
+            </li>
+            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+                {{ __('Support Tickets') }}
+                <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
+            </li>
+            <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
+                {{ __('New Ticket') }}
+            </li>
+        </ul>
+    </div>
+    <div class="grid grid-cols-12 gap-5">
+        <div class="col-span-12">
+            <div class="card">
+                <div class="card-header noborder">
+                    <h4 class="card-title">{{ __('Add Ticket') }}</h4>
+                    <div>
+                        <a href="{{ route('user.ticket.index') }}" class="btn btn-dark">
+                            {{ __('All Tickets') }}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-6 pb-6">
+                    <div class="progress-steps-form">
+                        <form action="{{ route('user.ticket.new-store') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="grid grid-cols-1 gap-5">
+                                <div class="col-xl-12 col-input-area relative">
+                                    <label for="exampleFormControlInput1" class="form-label">
+                                        {{ __('Ticket Title') }}
+                                    </label>
+                                    <input type="text" class="form-control" name="title">
+                                </div>
+                                <div class="col-xl-12 col-input-area relative">
+                                    <label for="exampleFormControlInput1" class="form-label">
+                                        {{ __('Ticket Descriptions') }}
+                                    </label>
+                                    <textarea class="form-control textarea" rows="5" name="message"></textarea>
+                                </div>
+                                <div class="input-area relative">
+                                    <div class="wrap-custom-file">
+                                        <input
+                                            type="file"
+                                            name="attach"
+                                            id="ticket-attach"
+                                            accept=".gif, .jpg, .png"
+                                        />
+                                        <label for="ticket-attach">
+                                            <img
+                                                class="upload-icon"
+                                                src="{{ asset('global/materials/upload.svg') }}"
+                                                alt=""
+                                            />
+                                            <span>{{ __('Attach Image') }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="buttons mt-5">
+                                <button type="submit" class="btn btn-dark">
+                                    {{ __('Add New Ticket') }}<i class="anticon anticon-double-right"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection

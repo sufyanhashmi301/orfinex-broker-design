@@ -1,0 +1,159 @@
+
+<div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
+<div class="logo-segment">
+    <a href="{{route('home')}}" class="flex items-center">
+        <img src="{{ asset(setting('site_logo','global')) }}" class="h-10" alt="Logo"/>
+    </a>
+    <!-- Sidebar Type Button -->
+    <div id="sidebar_type" class="cursor-pointer text-slate-900 dark:text-white text-lg">
+        <span class="sidebarDotIcon extend-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
+            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150 ring-2 ring-inset ring-offset-4 ring-black-900 dark:ring-slate-400 bg-slate-900 dark:bg-slate-400 dark:ring-offset-slate-700"></div>
+        </span>
+        <span class="sidebarDotIcon collapsed-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
+            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150"></div>
+        </span>
+    </div>
+    <button class="sidebarCloseIcon text-2xl">
+      <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
+    </button>
+</div>
+<div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
+<div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+    <ul class="sidebar-menu">
+        <li class="sidebar-menu-title">MENU</li>
+        <li>
+            <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:home"></iconify-icon>
+                    <span>{{ __('Dashboard') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
+                    <span>{{ __('New Account') }}</span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('user.forex-account-logs') }}" class="navItem {{ isActive('user.forex*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
+                    <span>{{ __('My Accounts') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.deposit.amount') }}" class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
+                    <span>{{ __('Deposit') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.wallet-exchange') }}" class="navItem {{ isActive('user.wallet-exchange') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
+                    <span>{{ __('Transfer') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.send-money.view') }}" class="navItem @if( Route::currentRouteName() != 'user.send-money.log') {{ isActive('user.send-money*') }} @endif">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:receipt-refund"></iconify-icon>
+                    <span>{{ __('Send Money') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.withdraw.view') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
+                    <span>{{ __('Withdraw') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li class="">
+            <a href="javascript:void(0);" class="navItem">
+              <span class="flex items-center">
+                <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
+                <span>{{ __('History') }}</span>
+              </span>
+              <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('user.transactions') }}" class="{{ isActive('user.transactions') }}">
+                        {{ __('All History') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.deposit.log') }}" class="{{ isActive('user.deposit.log') }}">
+                        {{ __('Deposits') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.withdraw.log') }}" class="{{ isActive('user.withdraw.log') }}">
+                        {{ __('Withdrawals') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">
+                        {{ __('Send Money Log') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        @if(setting('sign_up_referral','permission'))
+            <li>
+                <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                        <span>{{ __('Partnership') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endif
+
+        <li>
+            <a href="{{ route('user.setting.show') }}" class="navItem {{ isActive('user.setting*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
+                    <span>{{ __('Settings') }}</span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('user.ticket.index') }}" class="navItem {{ isActive('user.ticket*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:support"></iconify-icon>
+                    <span>{{ __('Support Tickets') }}</span>
+                </span>
+            </a>
+        </li>
+
+        {{-- <li class="">
+            <!-- Authentication -->
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn btn-danger block-btn">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ep:switch-button"></iconify-icon>
+                        <span>{{ __('Logout') }}</span>
+                    </span>
+                </button>
+            </form>
+        </li> --}}
+    </ul>
+</div>

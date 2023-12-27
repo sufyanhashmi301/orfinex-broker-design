@@ -38,18 +38,14 @@
                                         {{$account->equity}} $
                                     </td>
                                     <td class="table-td">
-                                        <a href="{{ route('user.kyc') }}" class="btn inline-flex justify-center btn-outline-dark btn-sm">
-                                            <span class="flex items-center">
-                                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>
-                                                <span>{{ __('Deposit') }}</span>
-                                            </span>
-                                        </a>
-                                        <a href="javascript:;" class="btn inline-flex justify-center btn-dark btn-sm">
-                                            <span class="flex items-center">
-                                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="tabler:chart-candle"></iconify-icon>
-                                                <span>{{ __('Trade') }}</span>
-                                            </span>
-                                        </a>
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            <a href="{{ route('user.kyc') }}" class="toolTip onTop action-btn" data-tippy-content="Deposit" data-tippy-theme="dark">
+                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                            </a>
+                                            <a href="javascript:;" class="toolTip onTop action-btn" data-tippy-content="Trade" data-tippy-theme="dark">
+                                                <iconify-icon icon="tabler:chart-candle"></iconify-icon>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

@@ -1,7 +1,6 @@
 <button type="button" class="item notification-dot lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer
 rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-toggle="dropdown" aria-expanded="false">
-    <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" @class([
-    'bell-ringng' => $totalUnread > 0]) icon="heroicons-outline:bell" icon-name="bell-ring"></iconify-icon>
+    <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" @class(['bell-ringng' => $totalUnread > 0]) icon="heroicons-outline:bell" icon-name="bell-ring"></iconify-icon>
     <div class="number absolute -right-1 lg:top-0 -top-[6px] h-4 w-4 bg-red-500 text-[8px] font-semibold flex flex-col items-center
     justify-center rounded-full text-white z-[99]">{{ $totalUnread }}</div>
 </button>

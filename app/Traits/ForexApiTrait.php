@@ -15,15 +15,16 @@ trait ForexApiTrait
 
     public function getUserApi($login)
     {
-        $getUserUrl = config('forextrading.getUserUrl');
-        $auth = config('forextrading.auth');
+//        $getUserUrl = config('forextrading.getUserUrl');
+        $getUserUrl = 'http://8.208.79.163:6653/api/user/list';
+//        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => (int)$login,
-            'auth' => (int)$auth,
+//            'auth' => (int)$auth,
         );
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-//            dd($response->object(),$response->status());
+            dd($response->object(),$response->status());
         if (isset($response)){
 //            dd('s');
             if ($response->status() == 200) {

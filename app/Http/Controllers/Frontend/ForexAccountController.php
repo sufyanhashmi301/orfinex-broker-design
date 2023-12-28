@@ -93,24 +93,24 @@ class ForexAccountController extends GatewayController
             $resData = $response->object();
 //            dd($response,$response->data[0]->Login);
             if ($resData->Login) {
-                $data = $request->all();
+                $accountData = $request->all();
 
-                $data['forex_schema_id'] = $schema->id;
-                $data['login'] = $resData->Login;
-                $data['account_name'] = $request->account_name;
-                $data['account_type'] = implode('_', array_slice(explode('_', $request->group), 0, 1));
-                $data['user_id'] = auth()->user()->id;
-                $data['currency'] = setting('site_currency', 'global');
-//                $data['invest_password'] = $investPassword;
-//                $data['phone_password'] = $resData->PhonePassword;
-                $data['group'] = $data['Group'];
-                $data['leverage'] = $data['Leverage'];
-                $data['status'] = ForexAccountStatus::Ongoing;
-                $data['server'] = $server;
-                $data['created_by'] = auth()->user()->id;
-                $data['first_min_deposit_paid'] = 0;
-                $data['trading_platform'] = config('forextrading.tradingPlatform');
-                $forexTrading = ForexAccount::create($data);
+                $accountData['forex_schema_id'] = $schema->id;
+                $accountData['login'] = $resData->Login;
+                $accountData['account_name'] = $request->account_name;
+                $accountData['account_type'] = implode('_', array_slice(explode('_', $request->group), 0, 1));
+                $accountData['user_id'] = auth()->user()->id;
+                $accountData['currency'] = setting('site_currency', 'global');
+//                $accountData['invest_password'] = $investPassword;
+//                $accountData['phone_password'] = $resData->PhonePassword;
+                $accountData['group'] = $data['Group'];
+                $accountData['leverage'] = $data['Leverage'];
+                $accountData['status'] = ForexAccountStatus::Ongoing;
+                $accountData['server'] = $server;
+                $accountData['created_by'] = auth()->user()->id;
+                $accountData['first_min_deposit_paid'] = 0;
+                $accountData['trading_platform'] = config('forextrading.tradingPlatform');
+                $forexTrading = ForexAccount::create($accountData);
 
 //                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
 //                    event(new NewForexAccountEvent($forexTrading));

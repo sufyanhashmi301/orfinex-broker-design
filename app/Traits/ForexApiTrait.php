@@ -62,28 +62,6 @@ trait ForexApiTrait
     }
     public function sendApiPostRequest($URL, $dataArray)
     {
-//        $clientIp = request()->ip();
-////        dd($clientIp);
-//        if(in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $dataArray['URL'] = $URL;
-//            $localURL = 'https://my.orfinex.com/api/forex';
-////        $localURL = env('EXT_FOREX_URL');
-////            dd($dataArray,$localURL);
-//            $resp = Http::retry(3, 100)->get($localURL, $dataArray);
-//            dd($resp->object());
-////            $data = $request->except(['URL']);
-////            $response = Http::retry(3, 100)->get($request->get('URL'), $data);
-////            dd($response);
-//        }
-//        dd('ss');
-        $URL = config('forextrading.depositUrl');
-
-        $dataArray = array(
-            'Login' => 9996785,
-            'Amount' => 20,
-            'Comment' => 'Testing',
-
-        );
         try {
             return Http::retry(3, 100)->post($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
@@ -165,9 +143,9 @@ trait ForexApiTrait
             'Comment' => $comment,
 
         ];
-        $response = $this->sendApiRequest($url, $dataArray);
+        $response = $this->sendApiPostRequest($url, $dataArray);
 //        dd($userAccount,$response);
-        if ($response->status() == 200 && $response->object() == 0) {
+        if ($response->status() == 200 && $response->object()->ResponseCode == 10009) {
             return true;
         } else {
             $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);

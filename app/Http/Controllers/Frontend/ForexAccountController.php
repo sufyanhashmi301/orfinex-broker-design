@@ -62,31 +62,33 @@ class ForexAccountController extends GatewayController
 
         $group = $schema[$request->group];
 
-        $auth = config('forextrading.auth');
-        $server = config('forextrading.server');
+
+//        $server = config('forextrading.server');
         $password = $request->main_password;
 
 //        $dataArray = array(
-        $data['Name'] = auth()->user()->first_name.' '.auth()->user()->last_name;
+
+        $data['Name'] = auth()->user()->full_name;
         $data['Leverage'] = $request->leverage;
         $data['Group'] = $group;
         $data['MainPassword'] = $password;
         $data['InvestPassword'] = $password;
         $data['PhonePassword'] = $password;
-        $data['auth'] = $auth;
         $data['Email'] = auth()->user()->email;
         $data['Phone'] = auth()->user()->phone;
         $data['Country'] = auth()->user()->country;
-
+        $data['Login'] = 0;
+        $data['Language'] = 0;
+        $data['Rights'] = 'USER_RIGHT_ALL';
 
         $URL = config('forextrading.createUserUrl');
 //        dd($data);
-        $response = $this->sendApiRequest($URL, $data);
-//        dd($response->object());
-        if ($response->serverError() || $response->failed()) {
-            notify()->error('Some error occurred! please try again', 'Error');
-            return redirect()->route('user.schema.preview', $schema->id);
-        }
+        $response = $this->sendApiPostRequest($URL, $data);
+        dd($response->object());
+//        if ($response->serverError() || $response->failed()) {
+//            notify()->error('Some error occurred! please try again', 'Error');
+//            return redirect()->route('user.schema.preview', $schema->id);
+//        }
         if ($response->status() == 200 && $response->successful() && $response->object()->data[1]->error == 0) {
             $resData = $response->object()->data[0];
 //            dd($response,$response->data[0]->Login);

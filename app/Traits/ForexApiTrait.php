@@ -279,9 +279,9 @@ trait ForexApiTrait
             $forexTrading->leverage = $resData->Leverage;
 //      $forexTrading->email = $resData->Email;
             $forexTrading->balance = $resData->Balance;
-            $forexTrading->equity = $resData->Equity;
+            $forexTrading->equity = $resData->Balance;
             $forexTrading->agent = $resData->Agent;
-            $forexTrading->free_margin = $resData->MarginFree;
+//            $forexTrading->free_margin = $resData->MarginFree;
 //            $forexTrading->margin = $resData->Margin;
             $forexTrading->group = $resData->Group;
 

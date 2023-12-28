@@ -53,7 +53,6 @@ class ReferralController extends Controller
     {
 
         $user = auth()->user();
-
         if (setting('site_referral', 'global') == 'level') {
             $referrals = Transaction::where('user_id', $user->id)->where('target_type', '!=', null)->where('is_level', '=', 1)->get()->groupBy('level');
         } else {
@@ -65,10 +64,12 @@ class ReferralController extends Controller
         $getReferral = $user->getReferrals()->first();
         $totalReferralProfit = $user->totalReferralProfit();
 
+
         return view('frontend::referral.index', compact('referrals', 'getReferral', 'totalReferralProfit', 'generalReferrals'));
     }
 
     public function network() {
+        $level = LevelReferral::max('the_order');
         return view('frontend::referral.index', compact( 'level'));
     }
 

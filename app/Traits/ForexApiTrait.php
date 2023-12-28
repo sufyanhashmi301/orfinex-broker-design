@@ -145,7 +145,7 @@ trait ForexApiTrait
         ];
         $response = $this->sendApiPostRequest($url, $dataArray);
         dd($response->object());
-        if ($response->status() == 200 && $response->object()->ResponseCode == 10009) {
+        if ($response->status() == 200 && $response->object() == 10009) {
             return true;
         } else {
             $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);

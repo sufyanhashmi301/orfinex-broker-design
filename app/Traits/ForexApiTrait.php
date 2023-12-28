@@ -46,8 +46,11 @@ trait ForexApiTrait
             $dataArray['URL'] = $URL;
             $localURL = 'https://my.orfinex.com/api/forex';
 //        $localURL = env('EXT_FOREX_URL');
-//            dd($dataArray);
-            return Http::retry(3, 100)->get($localURL, $dataArray);
+//            dd($dataArray,$localURL);
+            $resp = Http::retry(3, 100)->get($localURL, $dataArray);
+            dd($resp);
+//            $data = $request->except(['URL']);
+//            $response = Http::retry(3, 100)->get($request->get('URL'), $data);
 //            dd($response);
         }
         try {

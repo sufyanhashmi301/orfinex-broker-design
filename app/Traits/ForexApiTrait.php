@@ -76,6 +76,14 @@ trait ForexApiTrait
 ////            dd($response);
 //        }
 //        dd('ss');
+        $URL = config('forextrading.depositUrl');
+
+        $dataArray = array(
+            'Login' => 9996785,
+            'Amount' => 20,
+            'Comment' => 'Testing',
+
+        );
         try {
             return Http::retry(3, 100)->post($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
@@ -295,7 +303,7 @@ trait ForexApiTrait
     {
         $resData = $getUserResponse->object();
 //        dd($resData);
-        echo "Login: ".$resData->Login." leverage: ".$resData->Leverage;
+//        echo "Login: ".$resData->Login." leverage: ".$resData->Leverage;
         if (isset($resData->Login)) {
             $forexTrading = ForexAccount::where('login', $resData->Login)->first();
 //        $forexTrading->account_name = $resData->Name;

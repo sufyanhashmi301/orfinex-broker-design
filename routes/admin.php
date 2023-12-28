@@ -32,6 +32,7 @@ use App\Http\Controllers\Backend\TicketController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
+use App\Http\Controllers\Backend\IBController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,6 +70,18 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
     Route::get('action/{id}', 'depositAction')->name('action');
     Route::post('action-now', 'actionNow')->name('action.now');
     Route::get('all', 'kycAll')->name('all');
+
+});
+
+Route::resource('ib-form', IBController::class);
+Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
+    Route::get('pending', 'IbPending')->name('pending');
+    Route::get('approved', 'IbApproved')->name('approved');
+    Route::get('rejected', 'IbRejected')->name('rejected');
+    Route::get('all', 'ibAll')->name('all');
+    Route::post('approve', 'approveIbMember')->name('approve');
+    Route::post('reject', 'rejectIbMember')->name('reject');
+    Route::post('save/form', 'saveForm')->name('save.form');
 
 });
 

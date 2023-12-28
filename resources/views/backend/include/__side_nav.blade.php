@@ -261,6 +261,54 @@
                     </li>
                 @endcanany
 
+                @canany(['ib-list','ib-action','ib-form-manage'])
+                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.ib*']) }}">
+                        <a href="javascript:void(0);" class="dropdown-link">
+                            <i icon-name="users"></i>
+                            <span>{{ __('Manage IB') }}</span>
+                            <span class="right-arrow">
+                                <i icon-name="chevron-down"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-items">
+                            @canany(['ib-list','ib-action'])
+                                <li class="{{ isActive('admin.ib.pending') }}">
+                                    <a href="{{ route('admin.ib.pending') }}">
+                                        <i icon-name="airplay"></i>
+                                        {{ __('Pending IB') }}
+                                    </a>
+                                </li>
+                                <li class="{{ isActive('admin.ib.approved') }}">
+                                    <a href="{{ route('admin.ib.approved') }}">
+                                        <i icon-name="airplay"></i>
+                                        {{ __('Approved IB') }}
+                                    </a>
+                                </li>
+                                <li class="{{ isActive('admin.ib.rejected') }}">
+                                    <a href="{{ route('admin.ib.rejected') }}">
+                                        <i icon-name="file-warning"></i>
+                                        {{ __('Rejected IB') }}
+                                    </a>
+                                </li>
+                                <li class="{{ isActive('admin.ib.all') }}">
+                                    <a href="{{ route('admin.ib.all') }}">
+                                        <i icon-name="contact"></i>
+                                        {{ __('All IB Logs') }}
+                                    </a>
+                                </li>
+                            @endcanany
+                            @can('ib-form-manage')
+                                <li class="{{ isActive('admin.ib-form*') }}">
+                                    <a href="{{ route('admin.ib-form.index') }}">
+                                        <i icon-name="check-square"></i>
+                                        {{ __('IB Form') }}
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcanany
+
                 @canany(['ranking-list','ranking-create','ranking-edit'])
                     <li class="side-nav-item {{ isActive('admin.ranking*') }}">
                         <a href="{{ route('admin.ranking.index') }}"><i

@@ -23,8 +23,6 @@
         </div>
     </div>
 
-
-
     @if($depth && $level > $depth && $levelUser->referrals->count() > 0)
 
         <div class="hv-item-children">

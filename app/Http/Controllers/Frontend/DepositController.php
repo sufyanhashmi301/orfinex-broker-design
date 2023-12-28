@@ -91,7 +91,7 @@ class DepositController extends GatewayController
                 return redirect()->back();
             }
         }
-        dd('ss');
+//        dd('ss');
 
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;

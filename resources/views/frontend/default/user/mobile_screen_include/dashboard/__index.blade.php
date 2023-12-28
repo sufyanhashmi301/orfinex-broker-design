@@ -87,7 +87,7 @@
                     <span id="copy" class="px-2 dark:text-white">{{ __('Copy') }}</span>
                 </button>
             </div>
-            <p class="referral-joined dark:text-white">
+            <p class="referral-joined text-sm dark:text-white">
                 {{ $referral->relationships()->count() }} {{ __('peoples are joined by using this URL') }}
             </p>
         </div>

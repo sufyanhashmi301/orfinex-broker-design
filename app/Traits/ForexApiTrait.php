@@ -273,19 +273,22 @@ trait ForexApiTrait
     {
         $resData = $getUserResponse->object();
 //        dd($resData);
+        echo "Login: ".$resData->Login." leverage: ".$resData->Leverage;
         if (isset($resData->Login)) {
             $forexTrading = ForexAccount::where('login', $resData->Login)->first();
 //        $forexTrading->account_name = $resData->Name;
-            $forexTrading->leverage = $resData->Leverage;
+            if($forexTrading) {
+                $forexTrading->leverage = $resData->Leverage;
 //      $forexTrading->email = $resData->Email;
-            $forexTrading->balance = $resData->Balance;
-            $forexTrading->equity = $resData->Balance;
-            $forexTrading->agent = $resData->Agent;
+                $forexTrading->balance = $resData->Balance;
+                $forexTrading->equity = $resData->Balance;
+                $forexTrading->agent = $resData->Agent;
 //            $forexTrading->free_margin = $resData->MarginFree;
 //            $forexTrading->margin = $resData->Margin;
-            $forexTrading->group = $resData->Group;
+                $forexTrading->group = $resData->Group;
 
-            $forexTrading->save();
+                $forexTrading->save();
+            }
         }
     }
 

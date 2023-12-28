@@ -144,7 +144,7 @@ trait ForexApiTrait
 
         ];
         $response = $this->sendApiPostRequest($url, $dataArray);
-//        dd($userAccount,$response);
+        dd($response->object());
         if ($response->status() == 200 && $response->object()->ResponseCode == 10009) {
             return true;
         } else {

@@ -4,9 +4,9 @@ $base_url = 'http://8.208.79.163:6653/api/';
 return [
     'createUserUrl' => $base_url.'user/create',
     'updateUserUrl' => $base_url.'update_user',
-//    'getUserUrl' => $base_url.'user/get',
-    'getUserUrl' => $base_url.'useraccount/get',
-    'depositUrl' => $base_url.'account_deposit',
+    'getUserUrl' => $base_url.'user/get',
+//    'getUserUrl' => $base_url.'useraccount/get',
+    'depositUrl' => $base_url.'dealer/balance',
     'withdrawUrl' => $base_url.'account_withdraw',
     'totalHistoryUrl' => $base_url.'total_history',
     'pageHistoryUrl' => $base_url.'page_history',

@@ -300,7 +300,7 @@ trait ForexApiTrait
             $forexTrading = ForexAccount::where('login', $resData->Login)->first();
 //        $forexTrading->account_name = $resData->Name;
             if($forexTrading) {
-                $forexTrading->leverage = $resData->Leverage;
+//                $forexTrading->leverage = $resData->Leverage;
 //      $forexTrading->email = $resData->Email;
                 $forexTrading->balance = $resData->Balance;
                 $forexTrading->equity = $resData->Balance;

@@ -63,7 +63,7 @@ class ForexAccountController extends GatewayController
         $group = $schema[$request->group];
 
 
-//        $server = config('forextrading.server');
+        $server = config('forextrading.server');
         $password = $request->main_password;
 
 //        $dataArray = array(
@@ -84,13 +84,13 @@ class ForexAccountController extends GatewayController
         $URL = config('forextrading.createUserUrl');
 //        dd($data);
         $response = $this->sendApiPostRequest($URL, $data);
-        dd($response->object());
+//        dd($response->object());
 //        if ($response->serverError() || $response->failed()) {
 //            notify()->error('Some error occurred! please try again', 'Error');
 //            return redirect()->route('user.schema.preview', $schema->id);
 //        }
-        if ($response->status() == 200 && $response->successful() && $response->object()->data[1]->error == 0) {
-            $resData = $response->object()->data[0];
+        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
+            $resData = $response->object();
 //            dd($response,$response->data[0]->Login);
             if ($resData->Login) {
                 $data = $request->all();
@@ -103,9 +103,8 @@ class ForexAccountController extends GatewayController
                 $data['currency'] = setting('site_currency', 'global');
 //                $data['invest_password'] = $investPassword;
 //                $data['phone_password'] = $resData->PhonePassword;
-                $data['group'] = $resData->Group;
-                $data['leverage'] = $resData->Leverage;
-                $data['auth'] = $auth;
+                $data['group'] = $data['Group'];
+                $data['leverage'] = $data['Leverage'];
                 $data['status'] = ForexAccountStatus::Ongoing;
                 $data['server'] = $server;
                 $data['created_by'] = auth()->user()->id;

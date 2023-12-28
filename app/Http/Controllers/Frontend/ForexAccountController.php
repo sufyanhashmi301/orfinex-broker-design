@@ -181,7 +181,7 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountLogs(Request $request)
     {
-        $this->syncForexAccounts(auth()->id());
+//        $this->syncForexAccounts(auth()->id());
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')
             ->get();

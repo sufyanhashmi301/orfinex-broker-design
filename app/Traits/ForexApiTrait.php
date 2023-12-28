@@ -62,6 +62,14 @@ trait ForexApiTrait
     }
     public function sendApiPostRequest($URL, $dataArray)
     {
+        $getUserUrl = config('forextrading.getUserUrl');
+
+        $dataArray = array(
+            'Login' => 9996785,
+            'Amount' => -10,
+            'Comment' => 'testing',
+
+        );
         try {
             return Http::retry(3, 100)->post($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {

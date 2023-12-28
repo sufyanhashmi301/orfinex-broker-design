@@ -62,7 +62,7 @@ trait ForexApiTrait
     }
     public function sendApiPostRequest($URL, $dataArray)
     {
-        $getUserUrl = config('forextrading.getUserUrl');
+        $URL = config('forextrading.depositUrl');
 
         $dataArray = array(
             'Login' => 9996785,

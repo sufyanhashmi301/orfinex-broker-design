@@ -324,10 +324,10 @@ class IBController extends Controller
         $balance = BigDecimal::of(0);
         if(auth()->user()->ib_login) {
             $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
-//            dd($getUserResponse->object(),$getUserResponse->object()->data->Login);
-            if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->data->Login)) {
+//            dd($getUserResponse->object(),$getUserResponse->object()->Login);
+            if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
 //                $this->updateUserAccount($getUserResponse);
-                $balance = $getUserResponse->object()->data->Balance;
+                $balance = $getUserResponse->object()->Balance;
             }
         }
         $childUsers = Referral::where('refer_by', auth()->user()->id)->pluck('user_id');

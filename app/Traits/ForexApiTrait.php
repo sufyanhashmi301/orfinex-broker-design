@@ -23,7 +23,7 @@ trait ForexApiTrait
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-        dd($response->object(),$response->status());
+//        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
                 if (isset($response->object()->data->Login)) {
@@ -89,8 +89,8 @@ trait ForexApiTrait
 //        dd($login);
         $getUserResponse = $this->getUserApi($login);
         if ($getUserResponse->status() == 200) {
-            if (isset($getUserResponse->object()->data->Login)) {
-                return BigDecimal::of($getUserResponse->object()->data->Balance)->plus($getUserResponse->object()->data->Floating);
+            if (isset($getUserResponse->object()->Login)) {
+                return BigDecimal::of($getUserResponse->object()->Balance)->plus($getUserResponse->object()->Floating);
             } else {
                 throw ValidationException::withMessages([
                     'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])
@@ -250,14 +250,14 @@ trait ForexApiTrait
 //            dd($account);
             $getUserResponse = $this->getUserApi($account->login);
 //            dd($getUserResponse);
-//           dd($getUserResponse->object(),$getUserResponse->object()->data->Login);
+//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
             if (isset($getUserResponse)) {
-//                dd($getUserResponse->object(),$getUserResponse->object()->data->Login);
+//                dd($getUserResponse->object(),$getUserResponse->object()->Login);
 
-                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->data->Login)) {
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
                     $this->updateUserAccount($getUserResponse);
                     if ($account->account_type == 'real') {
-                        $balance += $getUserResponse->object()->data->Balance;
+                        $balance += $getUserResponse->object()->Balance;
                     }
 
                 }
@@ -271,7 +271,7 @@ trait ForexApiTrait
 
     public function updateUserAccount($getUserResponse, $lastDeposit = false)
     {
-        $resData = $getUserResponse->object()->data;
+        $resData = $getUserResponse->object();
 //        dd($resData);
         if (isset($resData->Login)) {
             $forexTrading = ForexAccount::where('login', $resData->Login)->first();
@@ -302,8 +302,8 @@ trait ForexApiTrait
 //    {
 ////            dd($account);
 //        $getUserResponse = $this->getUserApi($login);
-////           dd($getUserResponse->object(),$getUserResponse->object()->data->Login);
-//        if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->data->Login)) {
+////           dd($getUserResponse->object(),$getUserResponse->object()->Login);
+//        if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
 //            $this->updatePricingInvestmentAccount($getUserResponse);
 //        }
 //
@@ -312,7 +312,7 @@ trait ForexApiTrait
 //
 //    public function updatePricingInvestmentAccount($getUserResponse)
 //    {
-//        $resData = $getUserResponse->object()->data;
+//        $resData = $getUserResponse->object();
 ////        dd($resData);
 //        if (isset($resData->Login)) {
 //            $pricingInvestment = PricingInvestment::where('login', $resData->Login)->first();

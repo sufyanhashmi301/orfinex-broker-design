@@ -59,13 +59,11 @@ class KycController extends Controller
             'status' => 'required',
             'fields' => 'required',
         ]);
-
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
 
             return redirect()->back();
         }
-
         $data = [
             'name' => $input['name'],
             'status' => $input['status'],

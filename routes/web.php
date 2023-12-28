@@ -20,6 +20,7 @@ use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WithdrawController;
+use App\Http\Controllers\Frontend\IBController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -128,7 +129,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     });
 
     Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+    Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
+    Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
+    Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
     Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
+
+//    Route::get('referral/advertisement-material', function () {
+//        return view('frontend::referral.index');
+//    })->name('referral.advertisement-material');
 
     //settings
     Route::group(['prefix' => 'settings', 'as' => 'setting.', 'controller' => SettingController::class], function () {
@@ -154,6 +162,7 @@ Route::get('gateway-list', [GatewayController::class, 'gatewayList'])->name('gat
 Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as' => 'status.'], function () {
     Route::match(['get', 'post'], '/success', 'success')->name('success');
     Route::match(['get', 'post'], '/cancel', 'cancel')->name('cancel');
+    Route::match(['get', 'post'], '/pending', 'pending')->name('pending');
     Route::match(['get', 'post'], '/pending', 'pending')->name('pending');
 });
 
@@ -192,3 +201,17 @@ Route::get('cron-job/investment', [CronJobController::class, 'investmentCronJob'
 Route::get('cron-job/profit/clear', [CronJobController::class, 'profitClearCronJob'])->name('cron-job.profit.clear');
 Route::get('cron-job/referral', [CronJobController::class, 'referralCronJob'])->name('cron-job.referral');
 Route::get('cron-job/user-ranking', [CronJobController::class, 'userRanking'])->name('cron-job.user-ranking');
+
+
+Route::get('user/ib-program', [IBController::class, 'index'])->name('user.ib-program');
+Route::post('/ib/transfer/balance', [IBController::class, 'ibTransferBalance'])->name('ib.transfer.balance');
+Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-program.store');
+
+
+// Route::post('/ib/transfer/balance', 'IBController@ibTransferBalance')->name('user.ib.transfer.balance');
+
+//Route::group(['middleware' => ['IB']], function() {
+//    Route::get('user/ib-program/create', [IBController::class, 'create'])->name('user.ib-program.create');
+//    Route::post('user/ib-program/store', [IBController::class, 'store'])->name('user.ib-program.store');
+//
+//});

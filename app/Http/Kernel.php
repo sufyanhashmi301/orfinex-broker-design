@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\IBMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -76,6 +77,7 @@ class Kernel extends HttpKernel
         'isActive' => \App\Http\Middleware\CheckDeactivate::class,
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,
+        'IB' => IBMiddleware::class,
 
     ];
 }

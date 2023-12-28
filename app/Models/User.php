@@ -42,6 +42,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'balance',
         'profit_balance',
         'status',
+        'ib_login',
+        'ib_status',
         'kyc',
         'kyc_credential',
         'google2fa_secret',
@@ -112,6 +114,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function getTotalInvestAttribute(): string
     {
         return $this->totalInvestment();
+    }
+    public function user_metas()
+    {
+        return $this->hasMany(UserMeta::class);
     }
 
     public function totalProfit($days = null)

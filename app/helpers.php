@@ -365,3 +365,26 @@ if (! function_exists('generateDummyPassword')) {
     }
 }
 
+if (!function_exists('user_meta')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function user_meta($metaKey, $default = null, $user = null)
+    {
+        $user = (blank($user)) ? auth()->user() : $user;
+//dd($user);
+        if (!blank($user)) {
+            $userMetas = $user->user_metas->pluck('meta_value', 'meta_key');
+            if (!blank($userMetas)) {
+                return data_get($userMetas, $metaKey, $default);
+            }
+        }
+        return ($default) ? $default : false;
+    }
+}
+

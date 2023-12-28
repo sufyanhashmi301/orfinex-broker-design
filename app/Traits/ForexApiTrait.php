@@ -26,7 +26,7 @@ trait ForexApiTrait
 //        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
-                if (isset($response->object()->data->Login)) {
+                if (isset($response->object()->Login)) {
                     return $response;
                 }
             }
@@ -72,7 +72,7 @@ trait ForexApiTrait
 
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
         if ($response->status() == 200) {
-            if (isset($response->object()->data->Login)) {
+            if (isset($response->object()->Login)) {
                 return true;
             } else {
                 $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
@@ -137,7 +137,7 @@ trait ForexApiTrait
         ];
         $response = $this->sendApiRequest($url, $dataArray);
 //        dd($userAccount,$response);
-        if ($response->status() == 200 && $response->object()->data == 0) {
+        if ($response->status() == 200 && $response->object() == 0) {
             return true;
         } else {
             $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);

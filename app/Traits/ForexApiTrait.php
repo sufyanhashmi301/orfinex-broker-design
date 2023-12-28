@@ -16,14 +16,14 @@ trait ForexApiTrait
     public function getUserApi($login)
     {
         $getUserUrl = config('forextrading.getUserUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => (int)$login,
-            'auth' => (int)$auth,
+
         );
+//        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-//            dd($response->object(),$response->status());
+            dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
                 if (isset($response->object()->data->Login)) {
@@ -37,24 +37,33 @@ trait ForexApiTrait
             ]);
         }
     }
-    
+
     public function sendApiRequest($URL, $dataArray)
     {
-        try {
-            return Http::retry(3, 100)->get($URL, $dataArray);
-        } catch (\GuzzleHttp\Exception\RequestException $exception) {
-            return $exception;
+        $clientIp = request()->ip();
+//        dd($clientIp);
+        if(in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $dataArray['URL'] = $URL;
+            $localURL = 'https://my.orfinex.com/api/forex';
+//        $localURL = env('EXT_FOREX_URL');
+//        dd($dataArray);
+            $response = Http::retry(3, 100)->get($localURL, $dataArray);
+            dd($response);
         }
+//        try {
+//            return Http::retry(3, 100)->get($URL, $dataArray);
+//        } catch (\GuzzleHttp\Exception\RequestException $exception) {
+//            return $exception;
+//        }
     }
 
     public function isValidForexAccount($login)
     {
         $getUserUrl = config('forextrading.getUserUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
         );
 
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
@@ -94,13 +103,12 @@ trait ForexApiTrait
 
 //        $userAccount = ForexTrading::find($transaction->account_from);
         $withdrawUrl = config('forextrading.withdrawUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = [
             'Login' => $login,
             'Withdraw' => $amount,
             'Comment' => $comment,
-            'auth' => $auth,
+
         ];
 //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
@@ -116,13 +124,12 @@ trait ForexApiTrait
     public function forexDeposit($login, $amount, $comment)
     {
         $url = config('forextrading.depositUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = [
             'Login' => $login,
             'Deposit' => $amount,
             'Comment' => $comment,
-            'auth' => $auth,
+
         ];
         $response = $this->sendApiRequest($url, $dataArray);
 //        dd($userAccount,$response);
@@ -137,11 +144,10 @@ trait ForexApiTrait
 //    public function getTotalHistory($login, $from, $to)
 //    {
 //        $url = config('forextrading.totalHistoryUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //        );
@@ -153,11 +159,10 @@ trait ForexApiTrait
 //    public function getPageHistory($login, $from, $to)
 //    {
 //        $url = config('forextrading.pageHistoryUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //            'Offset' => 0,
@@ -171,11 +176,10 @@ trait ForexApiTrait
     public function updateMainPassword($login, $password)
     {
         $url = config('forextrading.mainPasswordChangeUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
             'MainPassword' => $password,
         );
 //        dd($dataArray);
@@ -186,11 +190,10 @@ trait ForexApiTrait
     public function disableAccount($login)
     {
         $url = config('forextrading.disableAccountUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
         );
 //        dd($dataArray);
         return $this->sendApiRequest($url, $dataArray);
@@ -200,11 +203,10 @@ trait ForexApiTrait
     public function enableAccount($login)
     {
         $url = config('forextrading.enableAccountUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
         );
 //        dd($dataArray);
         return $this->sendApiRequest($url, $dataArray);
@@ -214,11 +216,10 @@ trait ForexApiTrait
 //    public function getPageDeal($login, $from, $to)
 //    {
 //        $url = config('forextrading.pageDealUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //            'Offset' => 0,
@@ -336,11 +337,10 @@ trait ForexApiTrait
 //    public function getPageDealForIBProfits($login, $from, $to,$start,$end)
 //    {
 //        $url = config('forextrading.pageDealUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //            'Offset' => $start        ,

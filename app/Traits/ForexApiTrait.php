@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Enums\ForexAccountStatus;
 use App\Models\ForexAccount;
+use App\Models\User;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -12,53 +13,57 @@ use Illuminate\Validation\ValidationException;
 
 trait ForexApiTrait
 {
-
     public function getUserApi($login)
     {
-//        $getUserUrl = config('forextrading.getUserUrl');
-        $getUserUrl = 'http://8.208.79.163:6653/api/user/list';
-//        $auth = config('forextrading.auth');
+        $getUserUrl = config('forextrading.getUserUrl');
 
         $dataArray = array(
             'Login' => (int)$login,
-//            'auth' => (int)$auth,
+
         );
+//        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-            dd($response->object(),$response->status());
-        if (isset($response)){
-//            dd('s');
+        dd($response->object(),$response->status());
+        if (isset($response)) {
             if ($response->status() == 200) {
-//                dd('s');
                 if (isset($response->object()->data->Login)) {
                     return $response;
                 }
             }
+        }
+        else {
+            throw ValidationException::withMessages([
+                'invalid' => __('Some thing wrong! Please reload the page and try again!')
+            ]);
+        }
     }
-//        else {
-//            echo "connection error"."\n";
-//            throw ValidationException::withMessages([
-//                'invalid' => __('Some thing wrong! Please reload the page and try again!')
-//            ]);
-//        }
-    }
+
     public function sendApiRequest($URL, $dataArray)
     {
+        $clientIp = request()->ip();
+//        dd($clientIp);
+        if(in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $dataArray['URL'] = $URL;
+            $localURL = 'https://my.orfinex.com/api/forex';
+//        $localURL = env('EXT_FOREX_URL');
+//            dd($dataArray);
+            return Http::retry(3, 100)->get($localURL, $dataArray);
+//            dd($response);
+        }
         try {
             return Http::retry(3, 100)->get($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
             return $exception;
-            // Handle request exceptions
         }
     }
 
     public function isValidForexAccount($login)
     {
         $getUserUrl = config('forextrading.getUserUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
         );
 
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
@@ -81,7 +86,7 @@ trait ForexApiTrait
         $getUserResponse = $this->getUserApi($login);
         if ($getUserResponse->status() == 200) {
             if (isset($getUserResponse->object()->data->Login)) {
-                return  BigDecimal::of($getUserResponse->object()->data->Balance)->plus($getUserResponse->object()->data->Floating);
+                return BigDecimal::of($getUserResponse->object()->data->Balance)->plus($getUserResponse->object()->data->Floating);
             } else {
                 throw ValidationException::withMessages([
                     'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])
@@ -98,40 +103,34 @@ trait ForexApiTrait
 
 //        $userAccount = ForexTrading::find($transaction->account_from);
         $withdrawUrl = config('forextrading.withdrawUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = [
             'Login' => $login,
             'Withdraw' => $amount,
             'Comment' => $comment,
-            'auth' => $auth,
+
         ];
 //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
 //        dd($withdrawResponse->object());
         if ($withdrawResponse->status() == 200 && $withdrawResponse->object()->data == 0) {
             return true;
-        }
-        else{
-            $message = __('You do not have enough money! Kindly select valid amount', ['login'=>$login]);
+        } else {
+            $message = __('You do not have enough money! Kindly select valid amount', ['login' => $login]);
             notify()->error($message, 'Error');
         }
     }
 
     public function forexDeposit($login, $amount, $comment)
     {
-
-//        $userAccount = ForexTrading::find($transaction->account_from);
         $url = config('forextrading.depositUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = [
             'Login' => $login,
             'Deposit' => $amount,
             'Comment' => $comment,
-            'auth' => $auth,
+
         ];
-//        dd($url,$dataArray);
         $response = $this->sendApiRequest($url, $dataArray);
 //        dd($userAccount,$response);
         if ($response->status() == 200 && $response->object()->data == 0) {
@@ -145,11 +144,10 @@ trait ForexApiTrait
 //    public function getTotalHistory($login, $from, $to)
 //    {
 //        $url = config('forextrading.totalHistoryUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //        );
@@ -161,11 +159,10 @@ trait ForexApiTrait
 //    public function getPageHistory($login, $from, $to)
 //    {
 //        $url = config('forextrading.pageHistoryUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //            'Offset' => 0,
@@ -179,11 +176,10 @@ trait ForexApiTrait
     public function updateMainPassword($login, $password)
     {
         $url = config('forextrading.mainPasswordChangeUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
             'MainPassword' => $password,
         );
 //        dd($dataArray);
@@ -194,11 +190,10 @@ trait ForexApiTrait
     public function disableAccount($login)
     {
         $url = config('forextrading.disableAccountUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
         );
 //        dd($dataArray);
         return $this->sendApiRequest($url, $dataArray);
@@ -208,11 +203,10 @@ trait ForexApiTrait
     public function enableAccount($login)
     {
         $url = config('forextrading.enableAccountUrl');
-        $auth = config('forextrading.auth');
 
         $dataArray = array(
             'Login' => $login,
-            'auth' => $auth,
+
         );
 //        dd($dataArray);
         return $this->sendApiRequest($url, $dataArray);
@@ -222,11 +216,10 @@ trait ForexApiTrait
 //    public function getPageDeal($login, $from, $to)
 //    {
 //        $url = config('forextrading.pageDealUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //            'Offset' => 0,
@@ -239,28 +232,36 @@ trait ForexApiTrait
 //    }
 //
 //
-    public function syncForexAccounts($userID=null)
+    public function syncForexAccounts($userID = null)
     {
-        if(!isset($userID))
+        if (!isset($userID))
             $userID = auth()->user()->id;
 
-        $realAccounts = ForexAccount::where('user_id',$userID)
+        $realAccounts = ForexAccount::where('user_id', $userID)
             ->where('status', ForexAccountStatus::Ongoing)
             ->get();
 
+        $balance = 0;
         foreach ($realAccounts as $account) {
 //            dd($account);
             $getUserResponse = $this->getUserApi($account->login);
 //            dd($getUserResponse);
 //           dd($getUserResponse->object(),$getUserResponse->object()->data->Login);
-            if(isset($getUserResponse)) {
+            if (isset($getUserResponse)) {
 //                dd($getUserResponse->object(),$getUserResponse->object()->data->Login);
 
                 if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->data->Login)) {
                     $this->updateUserAccount($getUserResponse);
+                    if ($account->account_type == 'real') {
+                        $balance += $getUserResponse->object()->data->Balance;
+                    }
+
                 }
+
             }
         }
+//        dd($balance);
+        $this->updateTotalBalance($userID, $balance);
 
     }
 
@@ -282,6 +283,15 @@ trait ForexApiTrait
 
             $forexTrading->save();
         }
+    }
+
+    public function updateTotalBalance($userID, $balance)
+    {
+        $user = User::where('id', $userID)->first();
+//        $forexTrading->account_name = $resData->Name;
+        $user->balance = $balance;
+        $user->save();
+
     }
 
 //    public function syncPricingAccount($login)
@@ -327,11 +337,10 @@ trait ForexApiTrait
 //    public function getPageDealForIBProfits($login, $from, $to,$start,$end)
 //    {
 //        $url = config('forextrading.pageDealUrl');
-//        $auth = config('forextrading.auth');
-//
+////
 //        $dataArray = array(
 //            'Login' => $login,
-//            'auth' => $auth,
+//
 //            'From' => $from,
 //            'To' => $to,
 //            'Offset' => $start        ,

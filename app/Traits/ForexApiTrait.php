@@ -62,13 +62,13 @@ trait ForexApiTrait
     }
     public function sendApiPostRequest($URL, $dataArray)
     {
-        $URL = config('forextrading.depositUrl');
-
-        $dataArray = array(
-            'Login' => 9996864,
-            'Amount' => 10,
-            'Comment' => 'testing',
-        );
+//        $URL = config('forextrading.depositUrl');
+//
+//        $dataArray = array(
+//            'Login' => 9996864,
+//            'Amount' => 10,
+//            'Comment' => 'testing',
+//        );
         try {
             return Http::retry(3, 100)->post($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {

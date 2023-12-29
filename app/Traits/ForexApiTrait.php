@@ -125,14 +125,14 @@ trait ForexApiTrait
 
         $dataArray = [
             'Login' => $login,
-            'Withdraw' => $amount,
+            'Amount' => -$amount,
             'Comment' => $comment,
 
         ];
 //        dd($userAccount,$dataArray);
-        $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
+        $withdrawResponse = $this->sendApiPostRequest($withdrawUrl, $dataArray);
 //        dd($withdrawResponse->object());
-        if ($withdrawResponse->status() == 200 && $withdrawResponse->object()->data == 0) {
+        if ($withdrawResponse->status() == 200 && $withdrawResponse->object() == 10009) {
             return true;
         } else {
             $message = __('You do not have enough money! Kindly select valid amount', ['login' => $login]);

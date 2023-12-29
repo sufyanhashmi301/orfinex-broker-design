@@ -7,7 +7,7 @@ return [
     'getUserUrl' => $base_url.'user/get',
 //    'getUserUrl' => $base_url.'useraccount/get',
     'depositUrl' => $base_url.'dealer/balance',
-    'withdrawUrl' => $base_url.'account_withdraw',
+    'withdrawUrl' => $base_url.'dealer/balance',
     'totalHistoryUrl' => $base_url.'total_history',
     'pageHistoryUrl' => $base_url.'page_history',
     'pageDealUrl' => $base_url.'page_deal',

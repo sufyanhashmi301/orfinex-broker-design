@@ -65,10 +65,9 @@ trait ForexApiTrait
         $URL = config('forextrading.depositUrl');
 
         $dataArray = array(
-            'Login' => 9996785,
-            'Amount' => -10,
+            'Login' => 9996864,
+            'Amount' => 10,
             'Comment' => 'testing',
-
         );
         try {
             return Http::retry(3, 100)->post($URL, $dataArray);
@@ -147,7 +146,7 @@ trait ForexApiTrait
 
         $dataArray = [
             'Login' => $login,
-            'Deposit' => $amount,
+            'Amount' => $amount,
             'Comment' => $comment,
 
         ];

@@ -7,15 +7,15 @@
     <script src="{{ asset('global/js/pusher.min.js') }}"></script>
     @include('global.__notification_script',['for'=>'user','userId' => auth()->user()->id])
 @endif
-@if(setting('site_animation','permission'))
-    <script>
-        (function ($) {
-            'use strict';
-            // AOS initialization
-            AOS.init();
-        })(jQuery);
-    </script>
-@endif
+{{--@if(setting('site_animation','permission'))--}}
+{{--    <script>--}}
+{{--        (function ($) {--}}
+{{--            'use strict';--}}
+{{--            // AOS initialization--}}
+{{--            AOS.init();--}}
+{{--        })(jQuery);--}}
+{{--    </script>--}}
+{{--@endif--}}
 @if(setting('back_to_top','permission'))
     <script>
         (function ($) {

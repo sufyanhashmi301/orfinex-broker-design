@@ -11,6 +11,7 @@ return [
     'totalHistoryUrl' => $base_url.'total_history',
     'pageHistoryUrl' => $base_url.'page_history',
     'pageDealUrl' => $base_url.'page_deal',
+    'updateLeverageUrl' => $base_url.'user/updateleverage',
     'mainPasswordChangeUrl' => $base_url.'main_password_change',
     'disableAccountUrl' => $base_url.'disable_account',
     'enableAccountUrl' => $base_url.'enable_account',

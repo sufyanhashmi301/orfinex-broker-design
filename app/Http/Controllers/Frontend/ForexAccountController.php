@@ -232,7 +232,12 @@ class ForexAccountController extends GatewayController
         $dataArray['Login'] = $request->login;
         $dataArray['auth'] = $auth;
         if ($request->leverage) {
-            $dataArray['Leverage'] = $request->leverage;
+            $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
+            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object()->data == 0) {
+                return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
+            } else {
+                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
+            }
         }
         if ($request->name) {
             ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);

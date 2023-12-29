@@ -192,6 +192,18 @@ trait ForexApiTrait
 //
 //    }
 //
+    public function updateLeverage($login, $leverage)
+    {
+        $url = config('forextrading.updateLeverageUrl');
+
+        $dataArray = array(
+            'Login' => $login,
+            'LeverageAmount' => $leverage,
+        );
+//        dd($dataArray);
+        return $this->sendApiPostRequest($url, $dataArray);
+
+    }
     public function updateMainPassword($login, $password)
     {
         $url = config('forextrading.mainPasswordChangeUrl');

@@ -112,7 +112,6 @@ class SendMoneyController extends Controller
             return redirect()->back();
         }
 
-
         //withdraw balance
         $targetType = 'forex_withdraw';
         $comment = 'transfer/to/'.$receiverAccount;

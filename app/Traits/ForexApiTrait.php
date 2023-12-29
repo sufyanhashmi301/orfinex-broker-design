@@ -23,7 +23,7 @@ trait ForexApiTrait
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-        dd($response->object(),$response->status());
+//        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
                 if (isset($response->object()->Login)) {
@@ -105,7 +105,7 @@ trait ForexApiTrait
         $getUserResponse = $this->getUserApi($login);
         if ($getUserResponse->status() == 200) {
             if (isset($getUserResponse->object()->Login)) {
-                return BigDecimal::of($getUserResponse->object()->Balance)->plus($getUserResponse->object()->Floating);
+                return BigDecimal::of($getUserResponse->object()->Balance);
             } else {
                 throw ValidationException::withMessages([
                     'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])

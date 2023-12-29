@@ -233,7 +233,7 @@ class ForexAccountController extends GatewayController
         $dataArray['auth'] = $auth;
         if ($request->leverage) {
             $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
-            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object()->data == 0) {
+            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object()->ResponseCode  == 0) {
                 return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
             } else {
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');

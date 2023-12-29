@@ -249,15 +249,20 @@ class ForexAccountController extends GatewayController
             $dataArray['MainPassword'] = $request->main_password;
             $updateUserApiResponse = $this->updateMainPassword($request->login, $request->main_password);
 //        dd($updateUserApiResponse->object());
-            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object()->data == 0) {
+            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
                 return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
             } else {
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
             }
         }
         if ($request->invest_password) {
-//            $dataArray['PhonePassword'] = $request->password;
-            $dataArray['InvestPassword'] = $request->invest_password;
+            $updateUserApiResponse = $this->updateInvestorPassword($request->login, $request->invest_password);
+//        dd($updateUserApiResponse->object());
+            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
+                return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
+            } else {
+                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
+            }
 //            $dataArray['InvestPassword'] = $request->password;
         }
         if ($request->archive) {

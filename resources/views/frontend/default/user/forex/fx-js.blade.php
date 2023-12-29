@@ -363,7 +363,7 @@
             update_user_info(formData, btn);
         }
     });
-  
+
     function update_user_info(formData, btn) {
         $.ajaxSetup({
             headers: {

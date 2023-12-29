@@ -206,15 +206,26 @@ trait ForexApiTrait
     }
     public function updateMainPassword($login, $password)
     {
-        $url = config('forextrading.mainPasswordChangeUrl');
+        $url = config('forextrading.resetMasterPasswordUrl');
 
         $dataArray = array(
             'Login' => $login,
-
-            'MainPassword' => $password,
+            'Password' => $password,
         );
 //        dd($dataArray);
-        return $this->sendApiRequest($url, $dataArray);
+        return $this->sendApiPostRequest($url, $dataArray);
+
+    }
+    public function updateInvestorPassword($login, $password)
+    {
+        $url = config('forextrading.resetInvestorPasswordUrl');
+
+        $dataArray = array(
+            'Login' => $login,
+            'Password' => $password,
+        );
+//        dd($dataArray);
+        return $this->sendApiPostRequest($url, $dataArray);
 
     }
 

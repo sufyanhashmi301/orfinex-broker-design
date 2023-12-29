@@ -287,7 +287,7 @@ class ForexAccountController extends GatewayController
             }
         }
         $dataArray['Email'] = 'sufyan@gmail.com';
-        $dataArray['status'] = 'active user';
+        $dataArray['status'] = 'RE';
         $updateUserApiResponse = $this->sendApiPostRequest($updateUserUrl, $dataArray);
 //        dd($updateUserApiResponse->object()->data);
         if (($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0)) {

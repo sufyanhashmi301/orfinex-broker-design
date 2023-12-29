@@ -127,6 +127,7 @@
     $('body').on('click', '.dropdown-update-leverage', function () {
         var btn = $(this);
         btn.prop('disabled', true);
+        $('#update-leverage-modal-login').text($(this).data('login'));
         $('#changeLeverage').modal('toggle');
         // let form = document.querySelector('#sent-form');
         let formData = new FormData();
@@ -290,11 +291,11 @@
     });
 
     //update user leverage
-    $('body').on('click', '.dropdown-update-leverage', function () {
-        $('#update-leverage-modal-login').text($(this).data('login'));
-        $('#update-leverage-modal-login-id').val($(this).data('login'));
-        var leverages = $(this).data('leverage');
-    });
+    // $('body').on('click', '.dropdown-update-leverage', function () {
+    //     $('#update-leverage-modal-login').text($(this).data('login'));
+    //     $('#update-leverage-modal-login-id').val($(this).data('login'));
+    //     var leverages = $(this).data('leverage');
+    // });
 
     $('body').on('click', '#submit-leverage', function () {
         var leverage = $('#update-leverage-modal-leverage').val();

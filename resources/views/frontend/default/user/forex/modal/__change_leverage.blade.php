@@ -9,7 +9,7 @@
                         </h3>
                         <p class="dark:text-white">
                             {{ __('Account:') }}
-                            <span class="fw-bold">1063794</span>
+                            <span class="fw-bold" id="update-leverage-modal-login"></span>
                         </p>
                     </div>
                     <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">

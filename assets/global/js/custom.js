@@ -61,8 +61,6 @@ function imagePreviewAdd(title) {
 }
 
 
-
-
 function tNotify(type, message) {
     new Notify({
         status: type,

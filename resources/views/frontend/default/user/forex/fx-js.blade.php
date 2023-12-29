@@ -363,7 +363,27 @@
             update_user_info(formData, btn);
         }
     });
+    function tNotify(type, message) {
+        new Notify({
+            status: type,
+            title: type,
+            text: message,
+            effect: 'slide',
+            speed: 300,
+            customClass: '',
+            customIcon: getIcon(type),
+            showIcon: true,
+            showCloseButton: true,
+            autoclose: true,
+            autotimeout: 9000,
+            gap: 20,
+            distance: 20,
+            type: 1,
+            position: 'right top',
+            customWrapper: '',
+        })
 
+    }
     function update_user_info(formData, btn) {
         $.ajaxSetup({
             headers: {

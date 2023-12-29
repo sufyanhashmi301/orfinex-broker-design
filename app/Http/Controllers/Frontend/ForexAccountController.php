@@ -227,10 +227,10 @@ class ForexAccountController extends GatewayController
         ]);
 //        dd('s');
         $updateUserUrl = config('forextrading.updateUserUrl');
-        $auth = config('forextrading.auth');
+
         $dataArray = [];
         $dataArray['Login'] = $request->login;
-        $dataArray['auth'] = $auth;
+
         if ($request->leverage) {
             $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
 //            dd($updateUserApiResponse->object(),$request->login, $request->leverage);
@@ -240,11 +240,11 @@ class ForexAccountController extends GatewayController
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
             }
         }
-        if ($request->name) {
-            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
-            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
-
-        }
+//        if ($request->name) {
+//            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
+//            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
+//
+//        }
         if ($request->main_password) {
             $dataArray['MainPassword'] = $request->main_password;
             $updateUserApiResponse = $this->updateMainPassword($request->login, $request->main_password);
@@ -286,10 +286,11 @@ class ForexAccountController extends GatewayController
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again'), 'reload' => false]);
             }
         }
-//        dd('s');
-        $updateUserApiResponse = $this->sendApiRequest($updateUserUrl, $dataArray);
+        $dataArray['Email'] = 'sufyan@gmail.com';
+        $dataArray['status'] = 'active user';
+        $updateUserApiResponse = $this->sendApiPostRequest($updateUserUrl, $dataArray);
 //        dd($updateUserApiResponse->object()->data);
-        if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
+        if (($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0)) {
 //            $getUserResponse = $this->getUserApi($request->login);
 //            if ($getUserResponse->status() == 200) {
 //                $this->updateUserAccount($getUserResponse);

@@ -13,7 +13,7 @@ class ForexSchemaController extends Controller
     public function index()
     {
 //        $this->sendApiPostRequest('url','data');
-        $this->getUserApi(9996792);
+//        $this->getUserApi(9996792);
         $schemas = ForexSchema::where('status', true)->get();
 
         return view('frontend::forex_schema.index', compact('schemas'));

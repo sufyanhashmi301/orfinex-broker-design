@@ -32,10 +32,10 @@
                             </div>
                         </div>
                         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                            <a href="{{route('user.deposit.amount')}}" class="btn btn-outline-dark mr-2">
+                            <a href="{{route('user.deposit.amount')}}" class="btn btn-outline-dark btn-sm">
                                 Go to Finance
                             </a>
-                            <a href="{{route('user.withdraw.view')}}" class="btn btn-dark mt-0">
+                            <a href="{{route('user.withdraw.view')}}" class="btn btn-dark btn-sm mt-0">
                                 Withdraw
                             </a>
                         </div>

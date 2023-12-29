@@ -16,7 +16,7 @@
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
             <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
-                {{ __('Send Money') }}
+                {{ __('External Transfer') }}
             </li>
         </ul>
     </div>
@@ -24,10 +24,10 @@
         <div class="col-span-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">{{ __('Send Money') }}</h4>
+                    <h4 class="card-title">{{ __('External Transfer') }}</h4>
                     <div>
                         <a href="{{ route('user.send-money.log') }}" class="btn btn-dark">
-                            {{ __('Send Money Log') }}
+                            {{ __('History') }}
                         </a>
                     </div>
                 </div>

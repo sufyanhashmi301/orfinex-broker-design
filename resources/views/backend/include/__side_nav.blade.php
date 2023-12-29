@@ -309,6 +309,34 @@
                     </li>
                 @endcanany
 
+                @canany(['ib-source','ib-source-action'])
+                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.ib-source*']) }}">
+                        <a href="javascript:void(0);" class="dropdown-link">
+                            <i icon-name="layers"></i>
+                            <span>{{ __('IB Resources') }}</span>
+                            <span class="right-arrow">
+                                <i icon-name="chevron-down"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-items">
+                            @canany(['ib-source','ib-source-action'])
+                                <li class="">
+                                    <a href="">
+                                        <i icon-name="list"></i>
+                                        {{ __('All Resources') }}
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="">
+                                        <i icon-name="list-plus"></i>
+                                        {{ __('New Resource') }}
+                                    </a>
+                                </li>
+                            @endcanany
+                        </ul>
+                    </li>
+                @endcanany
+
                 @canany(['ranking-list','ranking-create','ranking-edit'])
                     <li class="side-nav-item {{ isActive('admin.ranking*') }}">
                         <a href="{{ route('admin.ranking.index') }}"><i

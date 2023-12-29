@@ -16,7 +16,7 @@
             <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
         </li>
         <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
-            {{ __('Wallet Exchange') }}
+            {{ __('Internal Transfer') }}
         </li>
     </ul>
 </div>
@@ -25,7 +25,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    {{ __('Wallet Exchange') }}
+                    {{ __('Internal Transfer') }}
                 </h4>
             </div>
             <div class="card-body p-6">

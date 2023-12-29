@@ -20,7 +20,7 @@
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
 <div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
-        <li class="sidebar-menu-title">MENU</li>
+        <li class="sidebar-menu-title">HOME</li>
         <li>
             <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
                 <span class="flex items-center">
@@ -29,20 +29,22 @@
                 </span>
             </a>
         </li>
-
-        <li>
-            <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
-                    <span>{{ __('New Account') }}</span>
-                </span>
-            </a>
-        </li>
+        
         <li>
             <a href="{{ route('user.forex-account-logs') }}" class="navItem {{ isActive('user.forex*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
                     <span>{{ __('My Accounts') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li class="sidebar-menu-title">MENU</li>
+        <li>
+            <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
+                    <span>{{ __('New Account') }}</span>
                 </span>
             </a>
         </li>
@@ -57,19 +59,10 @@
         </li>
 
         <li>
-            <a href="{{ route('user.wallet-exchange') }}" class="navItem {{ isActive('user.wallet-exchange') }}">
+            <a href="{{ route('user.transfer') }}" class="navItem {{ isActive('user.transfer') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
                     <span>{{ __('Transfer') }}</span>
-                </span>
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('user.send-money.view') }}" class="navItem @if( Route::currentRouteName() != 'user.send-money.log') {{ isActive('user.send-money*') }} @endif">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:receipt-refund"></iconify-icon>
-                    <span>{{ __('Send Money') }}</span>
                 </span>
             </a>
         </li>

@@ -20,80 +20,69 @@
         </li>
     </ul>
 </div>
-<div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-    @foreach($schemas as $schema)
-    <div class="card">
-        @if($schema->badge)
-            <div class="flex justify-end p-3">
-                <p class="badge bg-primary-500 text-white capitalize">
-                    {{$schema->badge}}
-                </p>
-            </div>
-        @endif
-        <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6 pt-0">
-            <h4 class="text-center mb-2">{{$schema->title}}</h4>
-            <p class="text-slate-900 dark:text-white text-sm text-center my-3">{{$schema->desc }}</p>
-            <ul class="divide-y divide-slate-100 dark:divide-slate-700 h-full">
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('First Min Deposit') }}
-                    </span>
-                    <span class="flex-1 text-right">
-                        <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
-                            {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit  : $currencySymbol . 0 }}
-                        </span>
-                    </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('Withdraw') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->is_withdraw ? 'Anytime' : 'No' }}
-                    </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('IB Partner') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->is_ib_partner ? 'Yes' : 'No' }}
-                    </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('Internal Transfer') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->is_internal_transfer ? 'Anytime' : 'No' }}
-                    </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('External Transfer') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->is_external_transfer ? 'Anytime' : 'No' }}
-                    </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('Bonus') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->is_bonus ? 'Yes' : 'No' }}
-                    </span>
-                </li>
-            </ul>
-            <p class="text-slate-900 dark:text-white text-xs text-center">
-                <span class="star">*</span>
-                {{ __('Available in countries:  ') }}  {{implode(', ', json_decode($schema->country,true)) }}
-            </p>
-            <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-3">
-                {{ __('Create Account') }}
-            </a>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title mb-4 sm:mb-0">
+            {{ __('Open New Account') }}
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a href="{{ route('user.forex-account-logs') }}" class="btn btn-outline-dark">My Accounts</a>
+            <a href="" class="btn btn-dark">Get Bonus</a>
         </div>
     </div>
-    @endforeach
+    <div class="card-body p-6">
+        <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+            @foreach($schemas as $schema)
+            <div class="card border bg-white dark:bg-slate-800 hover:bg-slate-100">
+                @if($schema->badge)
+                    <div class="flex justify-end p-3">
+                        <p class="badge bg-primary-500 text-white capitalize">
+                            {{$schema->badge}}
+                        </p>
+                    </div>
+                @endif
+                <div class="card-body p-6 pt-0">
+                    <h4 class="text-center mb-2">{{$schema->title}}</h4>
+                    <p class="text-slate-900 dark:text-white text-sm text-center my-3 min-h-[3.75rem]">{{$schema->desc }}</p>
+                    <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+                        <li class="flex items-center py-3">
+                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+                                {{ __('Initial Deposit') }}
+                            </span>
+                            <span class="flex-1 text-right">
+                                <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
+                                    {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit  : $currencySymbol . 0 }}
+                                </span>
+                            </span>
+                        </li>
+                        <li class="flex items-center py-3">
+                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+                                {{ __('Spread') }}
+                            </span>
+                            <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
+                                {{ $schema->is_internal_transfer ? 'Anytime' : 'No' }}
+                            </span>
+                        </li>
+                        <li class="flex items-center py-3">
+                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+                                {{ __('Commission') }}
+                            </span>
+                            <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
+                                {{ $schema->is_external_transfer ? 'Anytime' : 'No' }}
+                            </span>
+                        </li>
+                    </ul>
+                    <p class="text-slate-900 dark:text-white text-xs text-center">
+                        <span class="star">*</span>
+                        {{ __('Available in countries:  ') }}  {{implode(', ', json_decode($schema->country,true)) }}
+                    </p>
+                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-3">
+                        {{ __('Create Account') }}
+                    </a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
 </div>
 @endsection

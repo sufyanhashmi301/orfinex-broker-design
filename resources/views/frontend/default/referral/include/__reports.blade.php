@@ -1,47 +1,26 @@
 <div class="card">
-    <div class="card-header">
-        <h3 class="card-title">{{ __('All Referral Logs') }}</h3>
-        <div class="card-header-links">
-            <span class="card-header-link rounded-pill"> 
-                {{ __('Referral Profit:').' '. $totalReferralProfit .' '.$currency }}
-            </span>
-        </div>
-    </div>
-    <div class="card-body p-6 table-responsive">
-        <div class="site-tab-bars">
-            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+    <div class="card-header flex-wrap">
+        <h3 class="card-title mb-4 sm:mb-0">{{ __('All Referral Logs') }}</h3>
+        <div class="sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="tabs-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a
-                        href=""
-                        class="nav-link active"
-                        id="generalTarget-tab"
-                        data-bs-toggle="pill"
-                        data-bs-target="#generalTarget"
-                        type="button"
-                        role="tab"
-                        aria-controls="generalTarget"
-                        aria-selected="true"
-                    ><i icon-name="network"></i>{{ __('General') }}</a>
+                    <a href="#tabs-" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-300"
+                    id="tabs-generalTarget-tab" data-bs-toggle="pill" data-bs-target="#tabs-generalTarget" role="tab"
+                    aria-controls="tabs-generalTarget" aria-selected="true">
+                        <i icon-name="network"></i>
+                        {{ __('General') }}
+                    </a>
                 </li>
 
                 @foreach($referrals->keys() as $raw)
-
                     @php
                         $target = json_decode($raw,true);
                     @endphp
-
                     <li class="nav-item" role="presentation">
-                        <a
-                            href=""
-                            class="nav-link"
-                            id="t{{ $target['id'] }}-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#t{{ $target['id'] }}"
-                            type="button"
-                            role="tab"
-                            aria-controls="t{{ $target['id'] }}"
-                            aria-selected="true"
-                        ><i icon-name="boxes"></i>
+                        <a href="#tabs-t{{ $target['id'] }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                        id="tabs-t{{ $target['id'] }}-tab" data-bs-toggle="pill" data-bs-target="#tabs-t{{ $target['id'] }}" role="tab"
+                        aria-controls="tabs-t{{ $target['id'] }}" aria-selected="false">
+                            <i icon-name="boxes"></i>
                             @if(setting('site_referral','global') == 'level')
                                 Level {{ $target['the_order'] }}
                             @else
@@ -52,115 +31,108 @@
                 @endforeach
             </ul>
         </div>
-
-
+    </div>
+    <div class="card-body p-6 table-responsive">
         <div class="tab-content" id="pills-tabContent">
-
-            <div
-                class="tab-pane fade show active"
-                id="generalTarget"
-                role="tabpanel"
-                aria-labelledby="generalTarget-tab"
-            >
-
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 desktop-screen-show">
-                        <div class="site-datatable">
-                            <div class="row table-responsive">
-                                <div class="col-xl-12">
-                                    <table class="display data-table">
-                                        <thead>
+            <div class="tab-pane fade show active" id="tabs-generalTarget" role="tabpanel" aria-labelledby="tabs-generalTarget-tab">
+                <div class="desktop-screen-show hidden md:block">
+                    <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                        <span class=" col-span-8  hidden"></span>
+                        <span class="  col-span-4 hidden"></span>
+                        <div class="inline-block min-w-full align-middle">
+                            <div class="overflow-hidden ">
+                                <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
+                                    <thead class=" bg-slate-200 dark:bg-slate-700">
                                         <tr>
-                                            <th>{{ __('Description') }}</th>
-                                            <th>{{ __('Transactions ID') }}</th>
-                                            <th>{{ __('Amount') }}</th>
-                                            <th>{{ __('Status') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Description') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         </tr>
-                                        </thead>
-                                        <tbody>
-
-
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                         @foreach($generalReferrals as $raw)
-                                            <tr>
-                                                <td>
-                                                    <div class="table-description">
-                                                        <div class="icon">
-                                                            <i icon-name="arrow-down-left"></i>
-                                                        </div>
-                                                        <div class="description">
-                                                            <strong>{{ $raw->description }}</strong>
-                                                            <div
-                                                                class="date">{{ $raw->created_at }}</div>
+                                        <tr>
+                                            <td class="table-td">
+                                                <div class="flex items-center">
+                                                    <div class="flex-none">
+                                                        <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
+                                                            <iconify-icon icon="heroicons:arrow-down-left"></iconify-icon>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td><strong>{{$raw->tnx}}</strong></td>
-                                                <td><strong
-                                                        class="green-color">+{{ $raw->amount.' '. $currency }} </strong>
-                                                </td>
-                                                <td>
-                                                    <div
-                                                        class="site-badge success">{{ $raw->status }}</div>
-                                                </td>
-                                            </tr>
+                                                    <div class="flex-1 text-start">
+                                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                            {{ $raw->description }}
+                                                        </h4>
+                                                        <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                            {{ $raw->created_at }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="table-td">
+                                                <strong>{{$raw->tnx}}</strong>
+                                            </td>
+                                            <td class="table-td">
+                                                <strong class="green-color">+{{ $raw->amount.' '. $currency }} </strong>
+                                            </td>
+                                            <td class="table-td">
+                                                <span class="block text-left">
+                                                    <span class="inline-block text-center mx-auto py-1">
+                                                        <span class="flex items-center space-x-3 rtl:space-x-reverse">
+                                                            <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                            <span>{{ $raw->status }}</span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </td>
+                                        </tr>
                                         @endforeach
-
-
-                                        </tbody>
-                                    </table>
-
-                                    @if($generalReferrals->isEmpty())
-                                        <p class="centered">{{ __('No Data Found') }}</p>
-                                    @endif
-
-                                    {{ $generalReferrals->links() }}
-                                </div>
+                                    </tbody>
+                                </table>
+                                {{ $generalReferrals->links() }}
                             </div>
                         </div>
-
                     </div>
-                    <div class="col-12 mobile-screen-show">
-                        <!-- Transactions -->
-                        <div class="all-feature-mobile mobile-transactions mb-3">
-                            <div class="contents">
-                                @foreach($generalReferrals as $raw )
-                                    <div class="single-transaction">
-                                        <div class="transaction-left">
-                                            <div class="transaction-des">
-                                                <div
-                                                    class="transaction-title">{{ $raw->description }}</div>
-                                                <div class="transaction-id">{{ $raw->tnx }}</div>
-                                                <div
-                                                    class="transaction-date">{{ $raw->created_at }}</div>
-                                            </div>
-                                        </div>
-                                        <div class="transaction-right">
-                                            <div
-                                                class="transaction-amount add">
-                                                + {{$raw->amount .' '.$currency}}</div>
-                                            <div class="transaction-gateway">{{ $raw->method }}</div>
 
-                                            @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
-                                                <div
-                                                    class="transaction-status pending">{{ __('Pending') }}</div>
-                                            @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
-                                                <div
-                                                    class="transaction-status success">{{ __('Success') }}</div>
-                                            @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                                <div
-                                                    class="transaction-status canceled">{{ __('canceled') }}</div>
-                                            @endif
+                </div>
+                <div class="mobile-screen-show md:hidden">
+                    <!-- Transactions -->
+                    <div class="all-feature-mobile mobile-transactions mb-3">
+                        <div class="contents space-y-3">
+                            @foreach($generalReferrals as $raw )
+                                <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
+                                    <div class="transaction-left w-3/4">
+                                        <div class="transaction-des">
+                                            <div class="transaction-title mb-1 dark:text-white">{{ $raw->description }}</div>
+                                            <div class="transaction-id mb-1 dark:text-white">{{ $raw->tnx }}</div>
+                                            <div class="transaction-date mb-1 dark:text-white">{{ $raw->created_at }}</div>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-                            {{  $generalReferrals->onEachSide(1)->links() }}
+                                    <div class="transaction-right">
+                                        <div class="transaction-amount add mb-1 dark:text-white">
+                                            + {{$raw->amount .' '.$currency}}
+                                        </div>
+                                        <div class="transaction-gateway mb-1 dark:text-white">{{ $raw->method }}</div>
+
+                                        @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
+                                            <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                        @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
+                                            <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                        @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
+                                            <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                            @if($generalReferrals->isEmpty())
+                                <p class="text-center dark:text-white">{{ __('No Data Found') }}</p>
+                            @endif
                         </div>
-
+                        {{  $generalReferrals->onEachSide(1)->links() }}
                     </div>
+
                 </div>
-
-
             </div>
 
             @foreach($referrals as $target => $referral)
@@ -169,107 +141,103 @@
                     $target = json_decode($target,true);
                 @endphp
 
-                <div
-                    class="tab-pane fade"
-                    id="t{{ $target['id'] }}"
-                    role="tabpanel"
-                    aria-labelledby="t{{ $target['id'] }}-tab"
-                >
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 desktop-screen-show">
-                            <div class="site-datatable">
-                                <div class="row table-responsive">
-                                    <div class="col-xl-12">
-                                        <table class="display data-table">
-                                            <thead>
+                <div class="tab-pane fade" id="tabs-t{{ $target['id'] }}" role="tabpanel" aria-labelledby="tabs-t{{ $target['id'] }}-tab">
+                    <div class="desktop-screen-show hidden md:block">
+                        <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                            <span class=" col-span-8  hidden"></span>
+                            <span class="  col-span-4 hidden"></span>
+                            <div class="inline-block min-w-full align-middle">
+                                <div class="overflow-hidden ">
+                                    <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
+                                        <thead class=" bg-slate-200 dark:bg-slate-700">
                                             <tr>
-                                                <th>{{ __('Description') }}</th>
-                                                <th>{{ __('Transactions ID') }}</th>
-                                                <th>{{ __('Type') }}</th>
-                                                <th>{{ __('Amount') }}</th>
-                                                <th>{{ __('Status') }}</th>
+                                                <th scope="col" class="table-th">{{ __('Description') }}</th>
+                                                <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                                <th scope="col" class="table-th">{{ __('Type') }}</th>
+                                                <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                                <th scope="col" class="table-th">{{ __('Status') }}</th>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            @foreach($referral->sortDesc() as $raw )
-                                                <tr>
-                                                    <td>
-                                                        <div class="table-description">
-                                                            <div class="icon">
-                                                                <i icon-name="arrow-down-left"></i>
-                                                            </div>
-                                                            <div class="description">
-                                                                <strong>{{ $raw->description }}</strong>
-                                                                <div
-                                                                    class="date">{{ $raw->created_at }}</div>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                        @foreach($referral->sortDesc() as $raw )
+                                            <tr>
+                                                <td class="table-td">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none">
+                                                            <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
+                                                                <iconify-icon icon="heroicons:arrow-down-left"></iconify-icon>
                                                             </div>
                                                         </div>
-                                                    </td>
-                                                    <td><strong>{{$raw->tnx}}</strong></td>
-                                                    <td>
-                                                        <div
-                                                            class="site-badge primary-bg">{{ $raw->target_type }}</div>
-                                                    </td>
-                                                    <td><strong
-                                                            class="green-color">+{{ $raw->amount.' '. $currency }} </strong>
-                                                    </td>
-                                                    <td>
-                                                        <div
-                                                            class="site-badge success">{{ $raw->status }}</div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 mobile-screen-show">
-                            <!-- Transactions -->
-                            <div class="all-feature-mobile mobile-transactions mb-3">
-                                <div class="contents">
-                                    @foreach($referral->sortDesc() as $raw )
-                                        <div class="single-transaction">
-                                            <div class="transaction-left">
-                                                <div class="transaction-des">
-                                                    <div
-                                                        class="transaction-title">{{ $raw->description }}
+                                                        <div class="flex-1 text-start">
+                                                            <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                                {{ $raw->description }}
+                                                            </h4>
+                                                            <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                                {{ $raw->created_at }}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="transaction-id">{{ $raw->tnx }}</div>
-                                                    <div
-                                                        class="transaction-date">{{ $raw->created_at }}</div>
-                                                </div>
-                                            </div>
-                                            <div class="transaction-right">
-                                                <div
-                                                    class="transaction-amount add">
-                                                    +{{$raw->amount .' '.$currency}}</div>
-                                                <div
-                                                    class="transaction-gateway"> {{  $raw->target_type }}</div>
-
-                                                @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
-                                                    <div
-                                                        class="transaction-status pending">{{ __('Pending') }}</div>
-                                                @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
-                                                    <div
-                                                        class="transaction-status success">{{ __('Success') }}</div>
-                                                @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                                    <div
-                                                        class="transaction-status canceled">{{ __('canceled') }}</div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endforeach
+                                                </td>
+                                                <td class="table-td">
+                                                    <strong>{{$raw->tnx}}</strong>
+                                                </td>
+                                                <td class="table-td">
+                                                    <div class="site-badge primary-bg">{{ $raw->target_type }}</div>
+                                                </td>
+                                                <td class="table-td">
+                                                    <strong class="green-color">+{{ $raw->amount.' '. $currency }} </strong>
+                                                </td>
+                                                <td class="table-td">
+                                                    <span class="block text-left">
+                                                        <span class="inline-block text-center mx-auto py-1">
+                                                            <span class="flex items-center space-x-3 rtl:space-x-reverse">
+                                                                <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                <span>{{ $raw->status }}</span>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
+                    <div class="mobile-screen-show md:hidden">
+                        <!-- Transactions -->
+                        <div class="all-feature-mobile mobile-transactions mb-3">
+                            <div class="contents">
+                                @foreach($referral->sortDesc() as $raw )
+                                    <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
+                                        <div class="transaction-left w-3/4">
+                                            <div class="transaction-des">
+                                                <div class="transaction-title mb-1 dark:text-white">{{ $raw->description }}</div>
+                                                <div class="transaction-id mb-1 dark:text-white">{{ $raw->tnx }}</div>
+                                                <div class="transaction-date mb-1 dark:text-white">{{ $raw->created_at }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="transaction-right">
+                                            <div class="transaction-amount add mb-1 dark:text-white">
+                                                +{{$raw->amount .' '.$currency}}
+                                            </div>
+                                            <div class="transaction-gateway mb-1 dark:text-white"> {{  $raw->target_type }}</div>
 
+                                            @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
+                                                <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                            @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
+                                                <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                            @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
+                                                <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
 
+                    </div>
                 </div>
             @endforeach
 

@@ -5,18 +5,77 @@
 @section('content')
 
         <div class="md:block hidden desktop-screen-show">
-            {{--Referral and Ranking --}}
-            @include('frontend::user.include.__referral_ranking')
 
             {{-- User Card--}}
             @include('frontend::user.include.__user_card')
 
             <div class="grid grid-cols-12 gap-5">
-                {{--Live Accounts--}}
-                @include('frontend::user.include.__live_accounts')
+                <div class="col-span-12 lg:col-span-8">
+                    <div class="space-y-5">
+                        <div class="bg-no-repeat h-[140px] bg-cover bg-center px-10 rounded-[6px] relative flex items-center" style="background-image: url(https://cloud.orfinex.com/crm/no-account.png)">
+                            <div class="flex-1">
+                                <p class="font-normal text-white text-lg mb-1">You don't have an Active Account yet.</p>
+                                <h4 class="font-bold text-white">
+                                    Unlock Exclusive Bonus to <br>Kickstart Your Success.
+                                </h4>
+                            </div>
+                            <div class="flex-none">
+                                <a href="{{route('user.schema')}}" class="btn btn-light btn-white">Open new account</a>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header flex-wrap noborder">
+                                <div class="mb-4 sm:mb-0">
+                                    <ul class="nav nav-tabs flex flex-row flex-wrap list-none border-b-0 pl-0" id="tabs-tab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#tabs-realAccounts"
+                                                class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 my-2 hover:border-transparent focus:border-transparent active dark:text-slate-300"
+                                                id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"
+                                                aria-controls="tabs-realAccounts" aria-selected="true">Live Accounts</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a href="#tabs-demoAccounts"
+                                                class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300"
+                                                id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"
+                                                aria-controls="tabs-demoAccounts" aria-selected="false">Demo Accounts</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sm:space-x-4 space-x-2 rtl:space-x-reverse">
+                                    <a href="{{route('user.schema')}}" class="btn btn-dark">Open New Account</a>
+                                </div>
+                            </div>
+                            <div class="card-body px-6 pb-6">
+                                <div class="tab-content" id="trading-accounts">
+                                    <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
+                                        {{--Live Accounts--}}
+                                        @include('frontend::user.include.__live_accounts')
+                                    </div>
+                                    <div class="tab-pane fade" id="tabs-demoAccounts" role="tabpanel" aria-labelledby="tabs-demoAccounts-tab">
+                                        {{--Demo Accounts--}}
+                                        @include('frontend::user.include.__demo_accounts')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                {{--Demo Accounts--}}
-                @include('frontend::user.include.__demo_accounts')
+                <div class="col-span-12 lg:col-span-4">
+                    <div class="space-y-5">
+                        <div class="bg-no-repeat h-[140px] bg-cover bg-center px-6 py-4 rounded-[6px] relative flex items-center" style="background-image: url(https://cloud.orfinex.com/crm/no-partner.png)">
+                            <div class="flex-1 text-center">
+                                <h6 class="font-bold text-white mb-5">
+                                    Enjoy Exclusive Benefits & Boost Your Earnings!
+                                </h6>
+                                <a href="{{ route('user.referral') }}" class="btn btn-light btn-white">Become IB Partner</a>
+                            </div>
+                        </div>
+                        {{--Referral and Ranking --}}
+                        @include('frontend::user.include.__referral_ranking')
+                
+                    </div>
+                </div>
                 
                 {{--Recent Transactions--}}
                 @include('frontend::user.include.__recent_transaction')

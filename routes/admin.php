@@ -294,3 +294,11 @@ Route::get('application-info', [AppController::class, 'applicationInfo'])->name(
 Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+Route::get('/ib-resources', function () {
+    return view('backend.ib.resources.index');
+});
+
+Route::get('ib-resources/new', function () {
+    return view('backend.ib.resources.create');
+});

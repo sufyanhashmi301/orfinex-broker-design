@@ -38,7 +38,7 @@
 
             <div class="transaction-list mt-5">
                 <div class="user-panel-title">
-                    <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">{{ __('Review Details:') }}</h3>
+                    <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">{{ __('Transfer Details:') }}</h3>
                 </div>
                 <div class="max-w-[1005px] mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
                     <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
@@ -67,7 +67,7 @@
             </div>
             <div class="buttons text-right mt-4">
                 <button type="submit" class="btn inline-flex justify-center btn-dark">
-                    {{ __('Proceed to Exchange') }}<i class="anticon anticon-double-right"></i>
+                    {{ __('Transfer Now') }}<i class="anticon anticon-double-right"></i>
                 </button>
             </div>
         </form>

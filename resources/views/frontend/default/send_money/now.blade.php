@@ -44,14 +44,14 @@
             <div class="grid mt-5">
                 <div class="input-area relative col-span-12">
                     <label for="exampleFormControlInput1"
-                           class="form-label">{{ __('Send Money Note (Optional)') }}</label>
-                    <textarea class="form-control !text-lg" rows="5" placeholder="Send Money Note" name="note"></textarea>
+                           class="form-label">{{ __('Transfer Note (Optional)') }}</label>
+                    <textarea class="form-control !text-lg" rows="5" placeholder="Transfer Note" name="note"></textarea>
                 </div>
             </div>
             <div class="transaction-list mt-5">
                 <div class="user-panel-title">
                     <h3 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-                        {{ __('Send Money Details') }}
+                        {{ __('Transfer Details') }}
                     </h3>
                 </div>
                 <div class="max-w-[1005px] mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
@@ -80,9 +80,9 @@
                 </div>
             </div>
 
-            <div class="buttons mt-5">
+            <div class="buttons text-right mt-5">
                 <button type="submit" class="btn btn-dark">
-                    {{ __('Send Money') }}
+                    {{ __('Transfer Now') }}
                     <i class="anticon anticon-double-right"></i>
                 </button>
             </div>

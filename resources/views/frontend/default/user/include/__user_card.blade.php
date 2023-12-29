@@ -1,17 +1,19 @@
 <div class="grid grid-cols-12 gap-5 mb-5">
     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-        <div class="bg-no-repeat bg-cover bg-center px-5 py-8 rounded-[6px] relative flex items-center"
-            style="background-image: url({{ asset('frontend/images/all-img/widget-bg-6.png') }})">
+        <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative flex items-center"
+            style="background-image: url({{ asset('frontend/images/all-img/widget-bg-3.png') }})">
             <div class="flex-1">
-                <div class="max-w-[180px]">
-                    <h4 class="text-2xl font-medium text-white mb-1">
-                        <span class="block text-sm">Current balance,</span>
-                        <span class="block">$34,564</span>
-                    </h4>
+                <h4 class="text-xl font-medium text-white mb-1">
+                    <span class="block font-normal">Hello!</span>
+                    <span class="block">Sufyan Hashmi</span>
+                </h4>
+                <div class="flex items-center text-sm text-white text-opacity-80">
+                    <iconify-icon class="text-xl mr-1" icon="heroicons:check-badge-16-solid"></iconify-icon>
+                    <span>Your Rank: {{ $user->rank->ranking }}</span>
                 </div>
             </div>
             <div class="flex-none">
-                <button class="btn-light bg-white btn-sm btn">View details</button>
+                <a href="{{ route('user.ranking-badge') }}" class="btn-light bg-white btn-sm btn">Details</a>
             </div>
         </div>
     </div>
@@ -26,7 +28,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Totel revenue
+                                Balance
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium">
                                 3,564
@@ -42,7 +44,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Products sold
+                                Equity
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium">
                                 564
@@ -58,7 +60,7 @@
                         </div>
                         <div class="flex-1">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Growth
+                                Partner
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium">
                                 +5.0%

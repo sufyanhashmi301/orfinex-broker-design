@@ -112,25 +112,37 @@ class MigrateOldData extends Command
         $forexAccounts = DB::connection('old_connection')
             ->table('forex_tradings')
             ->where('user_id', $oldUser->id)
+            ->where('status', 'active')
             ->get();
 
         foreach ($forexAccounts as $oldForexAccount) {
-            $accountData['forex_schema_id'] = 1;
-            $accountData['login'] = $oldForexAccount->Login;
-            $accountData['account_name'] = $oldForexAccount->account_name;
-            $accountData['account_type'] = implode('_', array_slice(explode('_', $oldForexAccount->group), 0, 1));
-            $accountData['user_id'] = $user->id;
-            $accountData['currency'] = setting('site_currency', 'global');
-//                $accountData['invest_password'] = $investPassword;
-//                $accountData['phone_password'] = $oldForexAccount->PhonePassword;
-            $accountData['group'] = $oldForexAccount->group;
-            $accountData['leverage'] = $data['Leverage'];
-            $accountData['status'] = ForexAccountStatus::Ongoing;
-            $accountData['server'] = $server;
-            $accountData['created_by'] = auth()->user()->id;
-            $accountData['first_min_deposit_paid'] = 0;
-            $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-            $forexTrading = ForexAccount::create($accountData);
+            $getUserResponse = $this->getUserApi($oldForexAccount->Login);
+
+            if ($getUserResponse->status() == 200) {
+                if (isset($getUserResponse->object()->Login)) {
+                    $data = $getUserResponse->object();
+                    $accountData['user_id'] = $user->id;
+                    $accountData['forex_schema_id'] = 1;
+                    $accountData['login'] = $oldForexAccount->Login;
+                    $accountData['account_name'] = $oldForexAccount->account_name;
+                    $accountData['account_type'] = $oldForexAccount->account_type;
+                    $accountData['user_id'] = $user->id;
+                    $accountData['currency'] = setting('site_currency', 'global');
+    //                $accountData['invest_password'] = $investPassword;
+    //                $accountData['phone_password'] = $oldForexAccount->PhonePassword;
+                    $accountData['group'] = $data['Group'];
+                    $accountData['leverage'] = $data['Leverage'];
+                    $accountData['status'] = ForexAccountStatus::Ongoing;
+                    $accountData['server'] = 'MT5';
+                    $accountData['created_by'] = $user->id;
+                    $accountData['first_min_deposit_paid'] = 0;
+                    $accountData['trading_platform'] = config('forextrading.tradingPlatform');
+                     ForexAccount::create($accountData);
+                } else {
+                    return 0;
+                }
+            }
+
         }
     }
 }

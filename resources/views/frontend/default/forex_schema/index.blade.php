@@ -21,13 +21,13 @@
     </ul>
 </div>
 <div class="card">
-    <div class="card-header">
+    <div class="card-header flex-wrap">
         <h4 class="card-title mb-4 sm:mb-0">
             {{ __('Open New Account') }}
         </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        <div class="space-x-2 rtl:space-x-reverse">
             <a href="{{ route('user.forex-account-logs') }}" class="btn btn-outline-dark">My Accounts</a>
-            <a href="" class="btn btn-dark">Get Bonus</a>
+            <a href="{{ route('user.offers') }}" class="btn btn-dark">Get Bonus</a>
         </div>
     </div>
     <div class="card-body p-6">

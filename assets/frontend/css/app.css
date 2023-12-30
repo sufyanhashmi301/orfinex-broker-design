@@ -3886,6 +3886,9 @@ textarea.form-control.is-invalid{
 .top-2{
   top: 0.5rem;
 }
+.top-3 {
+  top: 0.75rem;
+}
 .left-2{
   left: 0.5rem;
 }
@@ -4538,6 +4541,9 @@ textarea.form-control.is-invalid{
 }
 .h-\[180px\]{
   height: 180px;
+}
+.h-\[191px\] {
+  height: 191px;
 }
 .h-1{
   height: 0.25rem;
@@ -6886,6 +6892,9 @@ textarea.form-control.is-invalid{
 }
 .pl-\[50px\]{
   padding-left: 50px;
+}
+.pl-\[60px\]{
+  padding-left: 60px;
 }
 .pt-\[0\.37rem\]{
   padding-top: 0.37rem;
@@ -16703,4 +16712,12 @@ ul.custom-list ul li{
 
 .single-badge:hover.locked::after {
   display: none;
+}
+
+:is([dir="ltr"] .ltr\:left-2) {
+  left: 0.5rem;
+}
+
+:is([dir="ltr"] .ltr\:right-2) {
+  right: 0.5rem;
 }

@@ -22,6 +22,7 @@ use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
+use App\Http\Controllers\Frontend\OffersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -218,3 +219,5 @@ Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-p
 //});
 
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
+
+Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');

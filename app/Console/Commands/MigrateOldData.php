@@ -136,6 +136,8 @@ class MigrateOldData extends Command
     //                $accountData['invest_password'] = $investPassword;
     //                $accountData['phone_password'] = $oldForexAccount->PhonePassword;
                     $accountData['group'] = $data->Group;
+                    $accountData['balance'] = $data->Balance;
+                    $accountData['equity'] = $data->Balance;
                     $accountData['leverage'] = $data->Leverage;
                     $accountData['status'] = ForexAccountStatus::Ongoing;
                     $accountData['server'] = 'MT5';

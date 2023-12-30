@@ -36,7 +36,7 @@
             <div class="card border bg-white dark:bg-slate-800 hover:bg-slate-100">
                 @if($schema->badge)
                     <div class="flex justify-end p-3">
-                        <p class="badge bg-primary-500 text-white capitalize">
+                        <p class="badge bg-slate-900 text-white capitalize">
                             {{$schema->badge}}
                         </p>
                     </div>
@@ -72,7 +72,7 @@
                             </span>
                         </li>
                     </ul>
-                    <p class="text-slate-900 dark:text-white text-xs text-center">
+                    <p class="text-slate-900 dark:text-white text-xs text-center mt-2">
                         <span class="star">*</span>
                         {{ __('Available in countries:  ') }}  {{implode(', ', json_decode($schema->country,true)) }}
                     </p>

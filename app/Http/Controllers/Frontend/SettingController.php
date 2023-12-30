@@ -18,6 +18,16 @@ class SettingController extends Controller
         return view('frontend::user.setting.index');
     }
 
+    public function profile()
+    {
+        return view('frontend::user.setting.profile.index');
+    }
+
+    public function security()
+    {
+        return view('frontend::user.setting.security.index');
+    }
+
     public function profileUpdate(Request $request)
     {
         $input = $request->all();

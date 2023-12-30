@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     //kyc apply
     Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+    Route::get('kyc/basic', [KycController::class, 'basicKyc'])->name('kyc.basic');
     Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('kyc.data');
     Route::post('kyc-submit', [KycController::class, 'submit'])->name('kyc.submit');
 
@@ -142,6 +143,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     //settings
     Route::group(['prefix' => 'settings', 'as' => 'setting.', 'controller' => SettingController::class], function () {
+        Route::get('/profile', 'profile')->name('profile');
+        Route::get('/security', 'security')->name('security');
         Route::get('/', 'settings')->name('show');
         Route::get('2fa', 'twoFa')->name('2fa');
         Route::post('action-2fa', 'actionTwoFa')->name('action-2fa');

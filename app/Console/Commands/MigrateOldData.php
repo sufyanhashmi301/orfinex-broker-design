@@ -102,7 +102,7 @@ class MigrateOldData extends Command
             'last_name' => '',
             'username' => $oldUser->username ? $oldUser->username : $oldUser->name.rand(1000, 9999),
             'country' => $meta->meta_value,
-            'phone' => $oldUser->profile_phone,
+            'phone' => $oldUser->profile_phone ? $oldUser->profile_phone: '+971',
             'email' => $oldUser->email,
             'password' => $oldUser->password,
             'kyc' => 1,

@@ -116,7 +116,7 @@ class MigrateOldData extends Command
             ->where('user_id', $oldUser->id)
 //            ->where('status', 'active')
             ->get();
-dd($forexAccounts);
+//dd($forexAccounts);
         foreach ($forexAccounts as $oldForexAccount) {
             $getUserResponse = $this->getUserApi(1063794);
             dd($getUserResponse);

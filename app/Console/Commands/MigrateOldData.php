@@ -97,7 +97,7 @@ class MigrateOldData extends Command
             'first_name' => $oldUser->name,
             'last_name' => '',
             'username' => $oldUser->username ? $oldUser->username : $oldUser->name.rand(1000, 9999),
-            'country' => $oldUser->country,
+//            'country' => $oldUser->country,
             'phone' => $oldUser->phone,
             'email' => $oldUser->email,
             'password' => $oldUser->password,

@@ -40,7 +40,8 @@ class MigrateOldData extends Command
 //        DB::table('withdraw_accounts')->truncate();
         // Migrate data from users table
         $usersOldData = DB::connection('old_connection')->table('users')
-            ->where('id',2)->get();
+//            ->where('id',2)
+            ->get();
 
         foreach ($usersOldData as $oldUser) {
             // Check if the user has a forex trading account with balance > 1
@@ -118,13 +119,12 @@ class MigrateOldData extends Command
 //            ->where('account_type', 'real')
             ->get();
 //dd($forexAccounts);
+        $forexCount=0;
         foreach ($forexAccounts as $oldForexAccount) {
             $getUserResponse = $this->getUserApi($oldForexAccount->login);
-
 //            echo $getUserResponse."\n";
             if ($getUserResponse) {
-//                dd($getUserResponse->object());
-                echo "Login final : ".$oldForexAccount->login;
+
                     $data = $getUserResponse->object();
                     $accountData['user_id'] = $user->id;
                     $accountData['forex_schema_id'] = 1;
@@ -146,8 +146,10 @@ class MigrateOldData extends Command
                     $accountData['trading_platform'] = config('forextrading.tradingPlatform');
 //                    dd($accountData) ;
                     ForexAccount::create($accountData);
+                $forexCount++;
                 }
             }
+        echo "Email: ".$user->email." Total accounts: ".$forexCount."\n";
 
 
     }

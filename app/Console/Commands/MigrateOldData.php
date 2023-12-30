@@ -122,7 +122,7 @@ class MigrateOldData extends Command
 
 //            echo $getUserResponse."\n";
             if (isset($getUserResponse)) {
-                dd($getUserResponse->object());
+//                dd($getUserResponse->object());
                 echo "Login final : ".$oldForexAccount->login;
                     $data = $getUserResponse->object();
                     $accountData['user_id'] = $user->id;
@@ -141,7 +141,8 @@ class MigrateOldData extends Command
                     $accountData['created_by'] = $user->id;
                     $accountData['first_min_deposit_paid'] = 0;
                     $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-                     ForexAccount::create($accountData);
+                    dd($accountData) ;
+                    ForexAccount::create($accountData);
                 } else {
                     return 0;
                 }

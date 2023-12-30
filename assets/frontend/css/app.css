@@ -16721,3 +16721,18 @@ ul.custom-list ul li{
 :is([dir="ltr"] .ltr\:right-2) {
   right: 0.5rem;
 }
+
+#offers-list .list-view .card .card-body {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+#offers-list .list-view .card .card-body .product-image {
+  flex-grow: 2;
+  margin-bottom: 0;
+}
+
+#offers-list .list-view .card .card-body .product-content {
+  flex-grow: 3;
+}

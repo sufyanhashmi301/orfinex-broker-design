@@ -16,9 +16,14 @@ class KycController extends Controller
 
     public function kyc()
     {
+        return view('frontend::user.kyc.index');
+    }
+
+    public function basicKyc()
+    {
         $kycs = Kyc::where('status', true)->get();
 
-        return view('frontend::user.kyc.index', compact('kycs'));
+        return view('frontend::user.kyc.basic.index', compact('kycs'));
     }
 
     public function kycData($id)

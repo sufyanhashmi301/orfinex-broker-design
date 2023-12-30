@@ -68,15 +68,13 @@
                                         <option>...</option>
                                     </select>
                                 </div>
-                                <div class="outline-buttons md:block hidden">
-                                    <div class="groupButtons">
-                                        <button class="btn inline-flex justify-center btn-outline-primary btn-sm list-view-btn" data-target="trading-accounts">
-                                            <iconify-icon class="text-xl" icon="heroicons:list-bullet"></iconify-icon>
-                                        </button>
-                                        <button class="btn inline-flex justify-center btn-outline-primary btn-sm grid-view-btn active" data-target="trading-accounts">
-                                            <iconify-icon class="text-xl" icon="heroicons-outline:view-grid"></iconify-icon>
-                                        </button>
-                                    </div>
+                                <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
+                                    <button type="button" class="btn btn-outline-dark btn-sm flex items-center justify-center grid-view-btn  active" data-target="trading-accounts">
+                                        <iconify-icon class="text-xl" icon="heroicons:view-columns"></iconify-icon>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-dark btn-sm flex items-center justify-center list-view-btn" data-target="trading-accounts">
+                                        <iconify-icon class="text-xl" icon="heroicons:list-bullet"></iconify-icon>
+                                    </button>
                                 </div>
                             </div>
                             <div class="tab-content" id="trading-accounts">

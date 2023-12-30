@@ -266,28 +266,28 @@ class ForexAccountController extends GatewayController
 //            $dataArray['InvestPassword'] = $request->password;
         }
         if ($request->archive) {
-            $updateUserApiResponse = $this->disableAccount($request->login);
+//            $updateUserApiResponse = $this->disableAccount($request->login);
 //        dd($updateUserApiResponse->object());
-            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
+//            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
                 ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
                 return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
-            } else {
-                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
-            }
+//            } else {
+//                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
+//            }
         }
         if ($request->reactive) {
 //            dd($request->all());
-            $updateUserApiResponse = $this->enableAccount($request->login);
-//        dd($updateUserApiResponse->object());
-            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
+//            $updateUserApiResponse = $this->enableAccount($request->login);
+////        dd($updateUserApiResponse->object());
+//            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
                 ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
                 return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
-            } else {
-                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again'), 'reload' => false]);
-            }
+//            } else {
+//                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again'), 'reload' => false]);
+//            }
         }
-        $dataArray['Email'] = 'sufyan@gmail.com';
-        $dataArray['status'] = 'RE';
+//        $dataArray['Email'] = 'sufyan@gmail.com';
+//        $dataArray['status'] = 'RE';
         $updateUserApiResponse = $this->sendApiPostRequest($updateUserUrl, $dataArray);
 //        dd($updateUserApiResponse->object()->data);
         if (($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0)) {

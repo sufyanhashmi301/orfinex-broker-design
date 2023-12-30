@@ -42,15 +42,16 @@ class MigrateOldData extends Command
         $usersOldData = DB::connection('old_connection')->table('users')
 //            ->where('id',2)
             ->get();
-
+        $userCount = 0;
         foreach ($usersOldData as $oldUser) {
             // Check if the user has a forex trading account with balance > 1
             if ($this->hasForexAccountWithBalance($oldUser->id)) {
+                $userCount++;
                 $this->migrateUserToNewDB($oldUser);
             }
         }
 
-        $this->info('Data migration completed successfully.');
+        $this->info('Data migration completed successfully with Total Users '.$userCount);
     }
     private function hasForexAccountWithBalance($userId)
     {
@@ -88,7 +89,7 @@ class MigrateOldData extends Command
 
     private function migrateUserToNewDB($oldUser)
     {
-        $meta = DB::connection('old_connection')
+        $userMeta = DB::connection('old_connection')
             ->table('user_metas')
             ->where('user_id', $oldUser->id)
             ->where('meta_key', 'profile_country')
@@ -101,7 +102,7 @@ class MigrateOldData extends Command
             'first_name' => $oldUser->name,
             'last_name' => '',
             'username' => $oldUser->username ? $oldUser->username : $oldUser->name.rand(1000, 9999),
-            'country' => $meta->meta_value,
+            'country' => $userMeta ? $userMeta->meta_value:'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone: '+971',
             'email' => $oldUser->email,
             'password' => $oldUser->password,

@@ -95,9 +95,10 @@
         @elseif($user->kyc == \App\Enums\KYCStatus::Verified->value)
             <div class="site-badge success"> {{ __('Your Kyc Is Verified') }} </div>
         @else
-            <form action="{{ route('user.kyc.submit') }}" method="post" enctype="multipart/form-data">
+        <div class="grid grid-cols-12 md:grid-cols-2 gap-6">
+            <div class="">
+                <form action="{{ route('user.kyc.submit') }}" method="post" enctype="multipart/form-data">
                 @csrf
-                <div class="grid grid-cols-12 md:grid-cols-2">
                     <div class="progress-steps-form">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Verification Type') }}</label>
                         <div class="input-group">
@@ -110,17 +111,35 @@
                             </select>
                         </div>
                     </div>
-
-                </div>
-
-                <div class="col-span-12">
-                    <div class="row kycData">
+                    <div class="kycData mt-4">
                     </div>
-                </div>
-
-                <button type="submit" class="btn btn-dark mt-3">{{ __('Submit Now') }}</button>
-            </form>
+                    <button type="submit" class="btn btn-dark mt-3">{{ __('Submit Now') }}</button>
+                </form>
+            </div>
+            <div>
+                <p class="text-sm dark:text-white mt-7 mb-3">
+                    The document you are providing must be valid at least 30 days and contain all of the following details:
+                </p>
+                <figure class="figure d-block">
+                    <svg alt="verification example" viewBox="0 0 320 178" class="img-fluid">
+                        <use xlink:href="{{ asset('frontend/images/cards.svg#pid-passport') }}"></use>
+                    </svg>
+                </figure>
+            </div>
+        </div>
         @endif
+    </div>
+    <div class="card-footer">
+        <ul class="space-y-3">
+            <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                <iconify-icon class="relative text-xl mr-2 text-success-500" icon="material-symbols:check-box"></iconify-icon>
+                Upload a colourful full-size (4 sides visible) photo of the document.
+            </li>
+            <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
+                <iconify-icon class="relative text-xl mr-2 text-danger-500" icon="entypo:squared-cross"></iconify-icon>
+                Do not upload selfies, screenshots and do not modify the images in graphic editors.
+            </li>
+        </ul>
     </div>
 </div>
 @endsection

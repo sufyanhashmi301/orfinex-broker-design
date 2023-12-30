@@ -1,5 +1,6 @@
 <script src="{{ asset('frontend/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('frontend/js/rt-plugins.js') }}"></script>
+<script src="{{ asset('global/js/simple-notify.min.js') }}"></script>
 <script src="{{ asset('frontend/js/app.js') }}"></script>
 <script src="{{ asset('global/js/custom.js?var=6') }}"></script>
 @include('global.__t_notify')

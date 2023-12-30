@@ -76,7 +76,7 @@ class MigrateOldData extends Command
         // Assuming this method returns the balance of the account using the API request
         $getUserResponse = $this->getUserApi($login);
 
-        if (isset($getUserResponse)) {
+        if ($getUserResponse) {
                 return BigDecimal::of($getUserResponse->object()->Balance);
         } else {
           return BigDecimal::of(0);

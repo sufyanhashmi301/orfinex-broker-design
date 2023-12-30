@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\ForexAccountStatus;
 use App\Models\Ranking;
+use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,7 @@ use App\Models\ForexAccount;
 use Illuminate\Support\Facades\Schema;
 
 class MigrateOldData extends Command
-{
+{use ForexApiTrait;
     protected $signature = 'migrate:old-data';
     protected $description = 'Migrate old data from MyISAM tables to new InnoDB tables';
 

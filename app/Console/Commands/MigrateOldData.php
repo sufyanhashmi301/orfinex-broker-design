@@ -78,7 +78,7 @@ class MigrateOldData extends Command
         if (isset($getUserResponse)) {
                 return BigDecimal::of($getUserResponse->object()->Balance);
         } else {
-          return 0;
+          return BigDecimal::of(0);
         }
     }
 

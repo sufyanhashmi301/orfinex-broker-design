@@ -89,6 +89,11 @@ class MigrateOldData extends Command
 
     private function migrateUserToNewDB($oldUser)
     {
+        $meta = DB::connection('old_connection')
+            ->table('user_metas')
+            ->where('user_id', $oldUser->id)
+            ->where('meta_key', 'profile_country')
+            ->first('meta_value');
         $rank = Ranking::find(1);
         // Migrate user data to the new database
        $dataUser =  [
@@ -97,7 +102,7 @@ class MigrateOldData extends Command
             'first_name' => $oldUser->name,
             'last_name' => '',
             'username' => $oldUser->username ? $oldUser->username : $oldUser->name.rand(1000, 9999),
-//            'country' => $oldUser->country,
+            'country' => $meta->meta_value,
             'phone' => $oldUser->profile_phone,
             'email' => $oldUser->email,
             'password' => $oldUser->password,

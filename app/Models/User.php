@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use Carbon\Carbon;
@@ -122,7 +123,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     public function totalProfit($days = null)
     {
-
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Referral)
                 ->orWhere('type', TxnType::SignupBonus)
@@ -142,6 +142,12 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'user_id');
+    }
+    public function realTradingAccounts()
+    {
+        return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing);
+
     }
 
     public function totalRoiProfit()
@@ -231,6 +237,18 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Referral);
         })->sum('amount');
+
+        return round($sum, 2);
+    }
+    public function totalForexBalance()
+    {
+        $sum = $this->realTradingAccounts()->sum('balance');
+
+        return round($sum, 2);
+    }
+    public function totalForexEquity()
+    {
+        $sum = $this->realTradingAccounts()->sum('equity');
 
         return round($sum, 2);
     }

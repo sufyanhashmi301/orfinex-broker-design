@@ -5,7 +5,7 @@
             <div class="flex-1">
                 <h4 class="text-xl font-medium text-white mb-1">
                     <span class="block font-normal">Hello!</span>
-                    <span class="block">Sufyan Hashmi</span>
+                    <span class="block">{{auth()->user()->full_name}}</span>
                 </h4>
                 <div class="flex items-center text-sm text-white text-opacity-80">
                     <iconify-icon class="text-xl mr-1" icon="heroicons:check-badge-16-solid"></iconify-icon>
@@ -31,7 +31,7 @@
                                 Balance
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                3,564
+                                {{$dataCount['total_forex_balance']}}
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                                 Equity
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                564
+                                {{$dataCount['total_forex_equity']}}
                             </div>
                         </div>
                     </div>

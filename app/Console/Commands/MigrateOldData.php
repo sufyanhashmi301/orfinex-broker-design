@@ -121,7 +121,7 @@ class MigrateOldData extends Command
             $getUserResponse = $this->getUserApi($oldForexAccount->login);
 
 //            echo $getUserResponse."\n";
-            if (isset($getUserResponse)) {
+            if ($getUserResponse) {
 //                dd($getUserResponse->object());
                 echo "Login final : ".$oldForexAccount->login;
                     $data = $getUserResponse->object();

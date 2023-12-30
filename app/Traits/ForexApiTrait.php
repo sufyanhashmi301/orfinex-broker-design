@@ -25,12 +25,12 @@ trait ForexApiTrait
 //        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
-//                if ($response->object()->Login != 0) {
+                if ($response->object()->Login != 0) {
                     return $response;
-//                }
-//                else{
-//                    return false;
-//                }
+                }
+                else{
+                    return false;
+                }
             }
         }
         else {

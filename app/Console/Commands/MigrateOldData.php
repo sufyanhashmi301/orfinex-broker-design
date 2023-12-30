@@ -114,7 +114,7 @@ class MigrateOldData extends Command
         $forexAccounts = DB::connection('old_connection')
             ->table('forex_tradings')
             ->where('user_id', $oldUser->id)
-            ->where('status', 'active')
+//            ->where('status', 'active')
             ->get();
 
         foreach ($forexAccounts as $oldForexAccount) {

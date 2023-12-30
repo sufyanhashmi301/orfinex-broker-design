@@ -19,7 +19,6 @@ trait ForexApiTrait
 
         $dataArray = array(
             'Login' => (int)$login,
-
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
@@ -28,6 +27,8 @@ trait ForexApiTrait
             if ($response->status() == 200) {
                 if ($response->object()->Login != 0) {
                     return $response;
+                }else{
+                    return false;
                 }
             }
         }

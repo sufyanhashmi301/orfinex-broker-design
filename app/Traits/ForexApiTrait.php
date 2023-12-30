@@ -32,9 +32,7 @@ trait ForexApiTrait
             }
         }
         else {
-            throw ValidationException::withMessages([
-                'invalid' => __('Some thing wrong! Please reload the page and try again!')
-            ]);
+            return false;
         }
     }
 

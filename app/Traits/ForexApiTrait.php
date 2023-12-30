@@ -23,10 +23,10 @@ trait ForexApiTrait
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-        dd($response->object(),$response->status());
+//        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
-                if (isset($response->object()->Login)) {
+                if ($response->object()->Login != 0) {
                     return $response;
                 }
             }

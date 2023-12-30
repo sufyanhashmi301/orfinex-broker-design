@@ -74,13 +74,14 @@ class MigrateOldData extends Command
     public function getForexAccountBalance($login)
     {
         // Assuming this method returns the balance of the account using the API request
-        $getUserResponse = $this->getUserApi($login);
+//        $getUserResponse = $this->getUserApi($login);
 
-        if ($getUserResponse) {
-                return BigDecimal::of($getUserResponse->object()->Balance);
-        } else {
-          return BigDecimal::of(0);
-        }
+//        if ($getUserResponse) {
+//                return BigDecimal::of($getUserResponse->object()->Balance);
+//        } else {
+//          return BigDecimal::of(0);
+//        }
+        return BigDecimal::of(5);
     }
 
 
@@ -122,7 +123,7 @@ class MigrateOldData extends Command
 
 //            echo $getUserResponse."\n";
             if ($getUserResponse) {
-                dd($getUserResponse->object());
+//                dd($getUserResponse->object());
                 echo "Login final : ".$oldForexAccount->login;
                     $data = $getUserResponse->object();
                     $accountData['user_id'] = $user->id;

@@ -135,8 +135,8 @@ class MigrateOldData extends Command
                     $accountData['currency'] = setting('site_currency', 'global');
     //                $accountData['invest_password'] = $investPassword;
     //                $accountData['phone_password'] = $oldForexAccount->PhonePassword;
-                    $accountData['group'] = $data['Group'];
-                    $accountData['leverage'] = $data['Leverage'];
+                    $accountData['group'] = $data->Group;
+                    $accountData['leverage'] = $data->Leverage;
                     $accountData['status'] = ForexAccountStatus::Ongoing;
                     $accountData['server'] = 'MT5';
                     $accountData['created_by'] = $user->id;

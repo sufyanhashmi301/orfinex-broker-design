@@ -64,7 +64,7 @@ class MigrateOldData extends Command
             $balance = $this->getForexAccountBalance($oldForexAccount->login);
 
             if ($balance->isGreaterThan(1)) {
-                echo 'Login : '.$oldForexAccount->login;
+//                echo 'Login : '.$oldForexAccount->login;
                 return true; // Migrate user if any account has balance > 1
             }
         }

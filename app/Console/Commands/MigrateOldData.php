@@ -19,7 +19,6 @@ class MigrateOldData extends Command
     public function handle()
     {
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
-
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();
 //            DB::table($table)->truncate();
@@ -36,8 +35,8 @@ class MigrateOldData extends Command
         DB::table('user_metas')->truncate();
         DB::table('tickets')->truncate();
         DB::table('invests')->truncate();
-//        DB::table('withdraw_accounts')->truncate();
 
+//        DB::table('withdraw_accounts')->truncate();
         // Migrate data from users table
         $usersOldData = DB::connection('old_connection')->table('users')
             ->where('id',2)->get();

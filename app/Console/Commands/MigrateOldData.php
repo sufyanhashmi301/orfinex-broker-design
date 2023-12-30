@@ -144,7 +144,7 @@ class MigrateOldData extends Command
                     $accountData['trading_platform'] = config('forextrading.tradingPlatform');
 //                    dd($accountData) ;
                     ForexAccount::create($accountData);
-                } 
+                }
             }
 
 

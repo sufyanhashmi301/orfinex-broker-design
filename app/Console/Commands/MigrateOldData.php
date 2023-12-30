@@ -141,7 +141,7 @@ class MigrateOldData extends Command
                     $accountData['created_by'] = $user->id;
                     $accountData['first_min_deposit_paid'] = 0;
                     $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-                    dd($accountData) ;
+//                    dd($accountData) ;
                     ForexAccount::create($accountData);
                 } else {
                     return 0;

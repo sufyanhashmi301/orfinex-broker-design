@@ -121,14 +121,14 @@ class MigrateOldData extends Command
             ->get();
 
         foreach ($forexAccounts as $oldForexAccount) {
-            $getUserResponse = $this->getUserApi($oldForexAccount->Login);
+            $getUserResponse = $this->getUserApi($oldForexAccount->login);
 
             if ($getUserResponse->status() == 200) {
                 if (isset($getUserResponse->object()->Login)) {
                     $data = $getUserResponse->object();
                     $accountData['user_id'] = $user->id;
                     $accountData['forex_schema_id'] = 1;
-                    $accountData['login'] = $oldForexAccount->Login;
+                    $accountData['login'] = $oldForexAccount->login;
                     $accountData['account_name'] = $oldForexAccount->account_name;
                     $accountData['account_type'] = $oldForexAccount->account_type;
                     $accountData['user_id'] = $user->id;

@@ -95,12 +95,17 @@ class MigrateOldData extends Command
             ->where('meta_key', 'profile_country')
             ->first('meta_value');
         $rank = Ranking::find(1);
+        $parts = explode(' ', trim($oldUser->name));
+
+// Assign the first and last names
+        $first_name = isset($parts[0]) ? $parts[0] : '';
+        $last_name = isset($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
         // Migrate user data to the new database
        $dataUser =  [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
-            'first_name' => $oldUser->name,
-            'last_name' => '',
+            'first_name' => $first_name,
+            'last_name' => $last_name,
             'username' => $oldUser->username ? $oldUser->username : $oldUser->name.rand(1000, 9999),
             'country' => $userMeta ? $userMeta->meta_value:'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone: '+971',

@@ -12,7 +12,7 @@
             <div class="grid grid-cols-12 gap-5">
                 <div class="col-span-12 lg:col-span-8">
                     <div class="space-y-5">
-                       
+
                         @if(count($realForexAccounts) == 0 && count($demoForexAccounts) == 0)
                         <div class="bg-no-repeat h-[140px] bg-cover bg-center px-10 rounded-[6px] relative flex items-center" style="background-image: url(https://cloud.orfinex.com/crm/no-account.png)">
                             <div class="flex-1">

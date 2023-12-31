@@ -205,3 +205,109 @@ function checkPassword(password,type,button) {
 }
 
 imagePreview();
+
+function submit_form(formData,btn,url,appendId=null,modalId=null,datatable=null){
+    // debugger;
+    $.ajax({
+        url : url,
+        type: 'POST', data: formData, processData: false, contentType: false,
+        beforeSend: function () {
+            $("#sppiner-loader").show();
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success : function(res) {
+            console.log(res);
+            if(res.success){
+                tNotify('success', res.success);
+                if(res.reload) {
+                    setTimeout(function(){ location.reload(); }, 900);
+                }
+                if(res.redirect) {
+                    setTimeout(function(){ window.location.replace(res.redirect); }, 900);
+                }
+                if (res.modal) {
+                    $('#'+modalId).modal('toggle');
+                    // NioApp.Form.errors(res, true);
+                    // btn.prop('disabled', false);
+                }
+            }
+            else if(res.append){
+                $('#'+appendId).html(res.append);
+                // NioApp.Toast(res.error, 'warning');
+                // setTimeout(function(){ location.reload(); }, 900);
+
+                $(".form-select").select2({
+                    matcher: matchCustom,
+                    templateResult: formatState,
+                    templateSelection: formatState
+                });
+
+                function stringMatch(term, candidate) {
+                    return candidate && candidate.toLowerCase().indexOf(term.toLowerCase()) >= 0;
+                }
+                function matchCustom(params, data) {
+                    // If there are no search terms, return all of the data
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+                    // Do not display the item if there is no 'text' property
+                    if (typeof data.text === 'undefined') {
+                        return null;
+                    }
+                    // Match text of option
+                    if (stringMatch(params.term, data.text)) {
+                        return data;
+                    }
+                    // Match attribute "data-foo" of option
+                    if (stringMatch(params.term, $(data.element).attr('data-des'))) {
+                        return data;
+                    }
+                    // Return `null` if the term should not be displayed
+                    return null;
+                }
+                function formatState(opt) {
+                    if (!opt.id) {
+                        return opt.text.toUpperCase();
+                    }
+
+                    var optimage = $(opt.element).attr('data-image');
+                    var optdes = $(opt.element).attr('data-des');
+                    // console.log(optimage)
+                    if (!optimage) {
+                        return opt.text.toUpperCase();
+                    } else {
+                        var $opt = $(
+                            '<div class="coin-item coin-btc"><div class="coin-icon"><img src="' + optimage + '" class="mr-2" width="40px" /></div><div class="coin-info"><span class="coin-name">' + opt.text.toUpperCase() + '</span><ul class="kanban-item-meta-list">' + optdes + '</ul></div></div>'
+                        );
+                        return $opt;
+                    }
+                }
+            }
+            else if(res.error){
+                // NioApp.Toast(res.error, 'warning');
+                // tNotify('warning', res.message);
+                tNotify('warning', res.error);
+                // setTimeout(function(){ location.reload(); }, 900);
+            }
+            else if (res.errors) {
+                NioApp.Form.errors(res, true);
+                tNotify('warning', res.message);
+                btn.prop('disabled', false);
+            }
+        },
+        complete: function (data) {
+            // Hide image container
+            $("#sppiner-loader").hide();
+        },
+        error: function(data) {
+            btn.prop('disabled', false);
+            // console.log(data.responseJSON.message,'data.message')
+            tNotify('warning', data.responseJSON.message);
+            // var msg = __("Sorry something went wrong! Please reload the page and try again.")
+            // tNotify('warning', msg);
+            // NioApp.Toast("Sorry something went wrong! Please reload the page and try again.", 'warning');
+        }
+    })
+}

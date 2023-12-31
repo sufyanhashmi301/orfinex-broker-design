@@ -36,12 +36,15 @@ class ReferralController extends Controller
         $level = LevelReferral::max('the_order');
         $balance = BigDecimal::of(0);
 //        dd(auth()->user()->ib_login);
-        if(auth()->user()->ib_login) {
-            $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            if (auth()->user()->ib_login) {
+                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
 //            dd($getUserResponse->object());
-            if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
 //                $this->updateUserAccount($getUserResponse);
-                $balance = $getUserResponse->object()->Balance;
+                    $balance = $getUserResponse->object()->Balance;
+                }
             }
         }
         $ibQuestions = IbQuestion::where('status', true)->get();

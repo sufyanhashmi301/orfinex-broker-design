@@ -39,9 +39,26 @@
 
 
     @if(request()->routeIs('user.referral'))
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
-                @include('frontend.default.referral.include.__dashboard')
-                @include('frontend.default.referral.modal.__qr_code')
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED )
+            @include('frontend.default.referral.include.__dashboard')
+            @include('frontend.default.referral.modal.__qr_code')
+        @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
+            <div class="card">
+                <div class="card-body p-6">
+                    <div class="progress-steps-form">
+                        <div class="transaction-status text-center px-7 py-12">
+                            <div
+                                class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                                <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
+                            </div>
+                            <h2 class="text-3xl my-5">Partner Request Pending</h2>
+                            <p class="text-sm mb-3 dark:text-white">
+                                Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @else
             <div class="card">
                 <div class="p-6">
@@ -53,20 +70,23 @@
                     </p>
                 </div>
                 <div class="card-body px-6 pb-6">
-                    <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create" class="space-y-4">
+                    <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create"
+                          class="space-y-4">
                         @csrf
                         <div class="input-area">
                             <div class="checkbox-area">
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox" class="hidden" name="checkbox">
-                                    <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0"></span>
+                                    <span
+                                        class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt=""
+                                                 class="h-[10px] w-[10px] block m-auto opacity-0"></span>
                                     <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
                                         {{ __('I have read and agree with the ') }}
                                         <a href="javascript:;" class="btn-link">IB Agreement</a>
                                     </span>
                                 </label>
-                              </div>
+                            </div>
                         </div>
                         @foreach($ibQuestions as $ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
@@ -77,18 +97,28 @@
                                         </div>
                                         @if($field->type === 'text')
                                             <div class="md:col-span-6 col-span-12">
-                                                <input name="fields[{{ $ibQuestion->name }}]" class="form-control !text-lg" type="text" value="">
+                                                <input name="fields[{{ $ibQuestion->name }}]"
+                                                       class="form-control !text-lg" type="text" value="">
                                             </div>
                                         @elseif($field->type === 'checkbox')
                                             <div class="col-span-12">
                                                 @foreach($field->options as $index=>$option)
                                                     <div class="checkbox-area mb-2">
-                                                        <label for="flexCheckDefault{{$index}}" class="inline-flex items-center cursor-pointer">
-                                                            <input class="hidden" type="checkbox" name="fields[{{ $ibQuestion->name }}][]"value="{{ $option }}" id="flexCheckDefault{{$index}}" required/>
-                                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                                                <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                                        <label for="flexCheckDefault{{$index}}"
+                                                               class="inline-flex items-center cursor-pointer">
+                                                            <input class="hidden" type="checkbox"
+                                                                   name="fields[{{ $ibQuestion->name }}][]"
+                                                                   value="{{ $option }}" id="flexCheckDefault{{$index}}"
+                                                                   required/>
+                                                            <span
+                                                                class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                                <img
+                                                                    src="{{ asset('frontend/images/icon/ck-white.svg') }}"
+                                                                    alt=""
+                                                                    class="h-[10px] w-[10px] block m-auto opacity-0">
                                                             </span>
-                                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                                            <span
+                                                                class="text-slate-500 dark:text-slate-400 text-sm leading-6">
                                                                 {{ $option }}
                                                             </span>
                                                         </label>
@@ -100,9 +130,13 @@
                                                 @foreach($field->options as $option)
                                                     <div class="basicRadio mb-2">
                                                         <label class="flex items-center cursor-pointer">
-                                                            <input type="radio" class="hidden" name="fields[{{ $ibQuestion->name }}]" value="{{ $option }}">
-                                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
+                                                            <input type="radio" class="hidden"
+                                                                   name="fields[{{ $ibQuestion->name }}]"
+                                                                   value="{{ $option }}">
+                                                            <span
+                                                                class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                                            <span
+                                                                class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
                                                                 {{ $option }}
                                                             </span>
                                                         </label>
@@ -111,10 +145,13 @@
                                             </div>
                                         @elseif($field->type === 'dropdown')
                                             <div class="md:col-span-6 col-span-12 select2-lg">
-                                                <select name="fields[{{ $ibQuestion->name }}]" class="select2 form-control w-full mt-2 py-2">
+                                                <select name="fields[{{ $ibQuestion->name }}]"
+                                                        class="select2 form-control w-full mt-2 py-2">
                                                     @foreach($field->options as $option)
-                                                        <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600"">
-                                                            {{ $option }}
+                                                        <option value="{{ $option }}"
+                                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
+                                                        ">
+                                                        {{ $option }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -134,22 +171,8 @@
                     </form>
                 </div>
             </div>
-       @endif
-       <div class="card">
-            <div class="card-body p-6">
-                <div class="progress-steps-form">
-                    <div class="transaction-status text-center px-7 py-12">
-                        <div class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
-                            <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
-                        </div>
-                        <h2 class="text-3xl my-5">Account Pending</h2>
-                        <p class="text-sm mb-3 dark:text-white">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endif
+
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend.default.referral.include.__advertisement_material')

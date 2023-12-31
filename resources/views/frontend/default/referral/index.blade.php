@@ -44,80 +44,93 @@
             @include('frontend.default.referral.modal.__qr_code')
 {{--        @else--}}
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">
+                <div class="p-6">
+                    <h4 class="card-title mb-2">
                         {{ __('Become a Introducing Broker') }}
                     </h4>
+                    <p class="dark:text-white">
+                        {{ __('Make sure your details are correct-after applying, we will reach you to discuss your experience. We will also answer all the questions you might have.') }}
+                    </p>
                 </div>
-                <div class="card-body p-6">
-                    <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create">
+                <div class="card-body px-6 pb-6">
+                    <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create" class="space-y-4">
                         @csrf
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            @foreach($ibQuestions as $ibQuestion)
-                                @foreach(json_decode($ibQuestion->fields) as $field)
-                                    <div class="input-area relative">
-                                        <label class="form-label">{{ $field->name }}</label>
+                        <div class="input-area">
+                            <div class="checkbox-area">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="hidden" name="checkbox">
+                                    <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0"></span>
+                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                        {{ __('I have read and agree with the ') }}
+                                        <a href="javascript:;" class="btn-link">IB Agreement</a>
+                                    </span>
+                                </label>
+                              </div>
+                        </div>
+                        @foreach($ibQuestions as $ibQuestion)
+                            @foreach(json_decode($ibQuestion->fields) as $field)
+                                <div class="input-area">
+                                    <div class="grid grid-cols-12">
+                                        <div class="col-span-12">
+                                            <label class="form-label text-lg font-medium">{{ $field->name }}</label>
+                                        </div>
                                         @if($field->type === 'text')
-                                            <input name="fields[{{ $ibQuestion->name }}]" class="form-control"
-                                                   type="text" value="">
+                                            <div class="md:col-span-6 col-span-12">
+                                                <input name="fields[{{ $ibQuestion->name }}]" class="form-control !text-lg" type="text" value="">
+                                            </div>
                                         @elseif($field->type === 'checkbox')
-                                            @foreach($field->options as $index=>$option)
-                                                <div class="checkbox-area">
-                                                    <label for="flexCheckDefault{{$index}}"
-                                                           class="inline-flex items-center cursor-pointer">
-                                                        <input class="hidden" type="checkbox"
-                                                               name="fields[{{ $ibQuestion->name }}][]"
-                                                               value="{{ $option }}" id="flexCheckDefault{{$index}}"
-                                                               required
-                                                        />
-                                                        <span
-                                                            class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                                <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt=""
-                                                     class="h-[10px] w-[10px] block m-auto opacity-0">
-                                            </span>
-                                                        <span
-                                                            class="text-slate-500 dark:text-slate-400 text-sm leading-6">
-                                                {{ $option }}
-                                            </span>
-                                                    </label>
-                                                </div>
-                                            @endforeach
+                                            <div class="col-span-12">
+                                                @foreach($field->options as $index=>$option)
+                                                    <div class="checkbox-area mb-2">
+                                                        <label for="flexCheckDefault{{$index}}" class="inline-flex items-center cursor-pointer">
+                                                            <input class="hidden" type="checkbox" name="fields[{{ $ibQuestion->name }}][]"value="{{ $option }}" id="flexCheckDefault{{$index}}" required/>
+                                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                                <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                                            </span>
+                                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                                                {{ $option }}
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         @elseif($field->type === 'radio')
-                                            <div class="basicRadio">
+                                            <div class="col-span-12">
                                                 @foreach($field->options as $option)
-                                                    <label for="" class="flex items-center cursor-pointer">
-                                                        <input type="radio" id="active" class="hidden"
-                                                               name="fields[{{ $ibQuestion->name }}]" checked=""
-                                                               value="{{ $option }}">
-                                                        <span
-                                                            class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                        <span class="text-secondary-500 text-sm leading-6 capitalize">
-                                                    {{ $option }}
-                                                </span>
-                                                    </label>
+                                                    <div class="basicRadio mb-2">
+                                                        <label class="flex items-center cursor-pointer">
+                                                            <input type="radio" class="hidden" name="fields[{{ $ibQuestion->name }}]" value="{{ $option }}">
+                                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
+                                                                {{ $option }}
+                                                            </span>
+                                                        </label>
+                                                    </div>
                                                 @endforeach
                                             </div>
                                         @elseif($field->type === 'dropdown')
-                                            <select name="fields[{{ $ibQuestion->name }}]"
-                                                    class="select2 form-control w-full mt-2 py-2">
-                                                @foreach($field->options as $option)
-                                                    <option value="{{ $option }}"
-                                                            class="inline-block font-Inter font-normal text-sm text-slate-600"
-                                                    ">{{ $option }}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="md:col-span-6 col-span-12 select2-lg">
+                                                <select name="fields[{{ $ibQuestion->name }}]" class="select2 form-control w-full mt-2 py-2">
+                                                    @foreach($field->options as $option)
+                                                        <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600"">
+                                                            {{ $option }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         @endif
                                     </div>
-
-                                @endforeach
-                            @endforeach
-
-                            <div class="md:col-span-2">
-                                <div class="text-right">
-                                    <button type="button" class="btn btn-dark save-btn">Register</button>
                                 </div>
+
+                            @endforeach
+                        @endforeach
+
+                        <div class="md:col-span-2">
+                            <div class="text-right">
+                                <button type="button" class="btn btn-dark save-btn">Register</button>
                             </div>
-                    </form>
+                        </div>
                     </form>
                 </div>
             </div>

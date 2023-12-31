@@ -16740,3 +16740,14 @@ ul.custom-list ul li{
 .qrCodeContainer svg {
   margin: 0 auto;
 }
+
+@media (min-width: 768px) {
+  .input-area .md\:col-span-6{
+    grid-column: span 6/span 6 !important;
+  }
+}
+
+.form-label.text-lg {
+  font-size: 1rem !important;
+  line-height: 1.75rem !important;
+}

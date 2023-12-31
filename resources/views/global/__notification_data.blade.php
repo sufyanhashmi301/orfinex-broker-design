@@ -11,12 +11,13 @@ rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-togg
             {{ __('Notifications') }}
         </h3>
         @if(count($notifications)>0)
-            <a class="text-xs font-Inter font-normal underline text-slate-500 dark:text-white"
-               href="{{ route($notifications->first()->for.'.notification.all') }}">
-                {{ __('See All') }}
-            </a>
+        <a class="text-xs font-Inter font-normal underline text-slate-500 dark:text-white"
+            href="{{ route($notifications->first()->for.'.notification.all') }}">
+            {{ __('See All') }}
+        </a>
+        @endif
     </div>
-    @endif
+    
     <div class="all-noti divide-y divide-slate-100 dark:divide-slate-900">
         {{--        {{dd($notifications)}}--}}
         @foreach($notifications as $notification)

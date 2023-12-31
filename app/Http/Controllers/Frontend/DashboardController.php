@@ -49,9 +49,11 @@ class DashboardController extends Controller
         $referral = $user->getReferrals()->first();
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')
+            ->take(3)
             ->get();
         $demoForexAccounts = ForexAccount::demoActiveAccount()
             ->orderBy('balance','desc')
+            ->take(3)
             ->get();
 
         return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts'));

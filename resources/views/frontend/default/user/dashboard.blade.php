@@ -63,16 +63,20 @@
 
                 <div class="col-span-12 lg:col-span-4">
                     <div class="space-y-5">
-                        <div class="bg-no-repeat h-[140px] bg-cover bg-center px-6 py-4 rounded-[6px] relative flex items-center" style="background-image: url(https://cloud.orfinex.com/crm/no-partner.png)">
-                            <div class="flex-1 text-center">
-                                <h6 class="font-bold text-white mb-5">
-                                    Enjoy Exclusive Benefits & Boost Your Earnings!
-                                </h6>
-                                <a href="{{ route('user.referral') }}" class="btn btn-light btn-white">Become IB Partner</a>
-                            </div>
-                        </div>
+
+                        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
                         {{--Referral and Ranking --}}
                         @include('frontend::user.include.__referral_ranking')
+                        @else
+                            <div class="bg-no-repeat h-[140px] bg-cover bg-center px-6 py-4 rounded-[6px] relative flex items-center" style="background-image: url(https://cloud.orfinex.com/crm/no-partner.png)">
+                                <div class="flex-1 text-center">
+                                    <h6 class="font-bold text-white mb-5">
+                                        Enjoy Exclusive Benefits & Boost Your Earnings!
+                                    </h6>
+                                    <a href="{{ route('user.referral') }}" class="btn btn-light btn-white">Become IB Partner</a>
+                                </div>
+                            </div>
+                        @endif
 
                     </div>
                 </div>

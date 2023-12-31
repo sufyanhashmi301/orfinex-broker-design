@@ -60,10 +60,10 @@
                         </div>
                         <div class="flex-1">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Partner
+                                Success Points
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                +5.0%
+                                0
                             </div>
                         </div>
                     </div>

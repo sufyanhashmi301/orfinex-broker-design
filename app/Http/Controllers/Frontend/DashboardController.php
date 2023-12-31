@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\App;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DashboardController extends Controller
 {
@@ -55,7 +56,8 @@ class DashboardController extends Controller
             ->orderBy('balance','desc')
             ->take(3)
             ->get();
-
-        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts'));
+        $getReferral = $user->getReferrals()->first();
+        $qrCode = QrCode::size(300)->generate($getReferral->link);
+        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode'));
     }
 }

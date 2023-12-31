@@ -32,6 +32,71 @@
             </ul>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">
+                {{ __('Become a Introducing Broker') }}
+            </h4>
+        </div>
+        <div class="card-body p-6">
+            <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                @foreach($ibQuestions as $ibQuestion)
+                    @foreach(json_decode($ibQuestion->fields) as $field)
+                        <div class="input-area relative">
+                            <label class="form-label">{{ $field->name }}</label>
+                            @if($field->type === 'text')
+                                <input name="fields[{{ $ibQuestion->name }}]" class="form-control" type="text" value="">
+                            @elseif($field->type === 'checkbox')
+                                @foreach($field->options as $index=>$option)
+                                    <div class="checkbox-area">
+                                        <label for="flexCheckDefault{{$index}}" class="inline-flex items-center cursor-pointer">
+                                            <input class="hidden" type="checkbox" name="fields[{{ $ibQuestion->name }}][]"
+                                                value="{{ $option }}" id="flexCheckDefault{{$index}}" required
+                                            />
+                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                            </span>
+                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                                {{ $option }}
+                                            </span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                                @elseif($field->type === 'radio')
+                                    <div class="basicRadio">
+                                        @foreach($field->options as $option)
+                                            <label for="" class="flex items-center cursor-pointer">
+                                                <input type="radio" id="active" class="hidden" name="fields[{{ $ibQuestion->name }}]" checked="" value="{{ $option }}">
+                                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                                <span class="text-secondary-500 text-sm leading-6 capitalize">
+                                                    {{ $option }}
+                                                </span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                @elseif($field->type === 'dropdown')
+                                    <select name="fields[{{ $ibQuestion->name }}]" class="select2 form-control w-full mt-2 py-2">
+                                        @foreach($field->options as $option)
+                                            <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600"">{{ $option }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
+                            </div>
+
+                    @endforeach
+                @endforeach
+
+                    <div class="md:col-span-2">
+                        <div class="text-right">
+                            <button type="button" class="btn btn-dark save-btn">Register</button>
+                        </div>
+                    </div>
+                </form>
+            </form>
+        </div>
+    </div>
 
     @if(request()->routeIs('user.referral'))
         @include('frontend.default.referral.include.__dashboard')
@@ -54,6 +119,17 @@
 @endsection
 @section('script')
     <script>
+        $('body').on('click', '.save-btn', function () {
+            var btn = $(this);
+            btn.prop('disabled', true);
+            let form = document.querySelector('#ib-from-create');
+            let formData = new FormData(form);
+            // formData.append('amount', $('#active_wallet_amount').val());
+            console.log('aa');
+            var url = $('#ib-from-create').attr('action');
+            submit_form(formData, btn, url, '', 'ibForm');
+        });
+
         function copyRef() {
             /* Get the text field */
             var copyApi = document.getElementById("refLink");

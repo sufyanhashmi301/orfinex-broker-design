@@ -10,13 +10,12 @@
                         </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
-                    <div class="text-center">
+                    <div class="text-center qrCodeContainer">
                         <h3 class="dark:text-white mb-2">{{ __('Scan QR Code') }}</h3>
                         <p class="dark:text-white mb-5">
                             {{ __('Scan this code to get referral link') }}
                         </p>
-                        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code">
-{{--                        <img class="border rounded-lg p-1 w-2/3 mx-auto" src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" >--}}
+                        {{ $qrCode }}
                     </div>
                 </div>
             </div>

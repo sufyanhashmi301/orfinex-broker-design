@@ -80,6 +80,7 @@ class ForexAccountController extends GatewayController
         $data['Login'] = 0;
         $data['Language'] = 0;
         $data['Rights'] = 'USER_RIGHT_ALL';
+        $data['Status'] = 'YES';
 
         $URL = config('forextrading.createUserUrl');
 //        dd($data);

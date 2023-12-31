@@ -30,7 +30,7 @@
             @elseif($user->kyc == \App\Enums\KYCStatus::Verified->value)
                 <div class="site-badge success"> {{ __('Your Kyc Is Verified') }} </div>
             @else
-            <div class="grid grid-cols-12 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="">
                     <form action="{{ route('user.kyc.submit') }}" method="post" enctype="multipart/form-data">
                     @csrf

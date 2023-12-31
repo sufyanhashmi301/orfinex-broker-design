@@ -44,7 +44,9 @@ rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-togg
         @endforeach
 
         @if($totalCount == 0)
-            <p>{{ __('Notification Not Found') }}</p>
+        <div class="text-slate-600 dark:text-slate-300 block w-full px-4 py-2 text-sm">
+            <p class="text-center mb-2">{{ __('Notification Not Found') }}</p>
+        </div>
         @endif
     </div>
 </div>

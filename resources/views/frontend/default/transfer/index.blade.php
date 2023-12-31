@@ -20,7 +20,7 @@
             </li>
         </ul>
     </div>
-    <div class="grid grid-cols-12 md:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div class="price-table rounded-[6px] shadow-base dark:bg-slate-800 p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
             <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
                 <img src="" alt="" class="ml-auto block">

@@ -24,20 +24,23 @@
     <div class="one">
         <div class="balance">
             <span class="symbol">{{ $currencySymbol }}</span>
-            {{ Str::before($user->balance, '.') }}
-            <span class="after-dot">.{{ strpos($user->balance, '.') ? Str::after($user->balance, '.') : '00' }} </span>
+            {{$dataCount['total_forex_balance']}}
         </div>
-        <div class="wallet">{{ __('Main Wallet') }}</div>
+        <div class="wallet">{{ __('Balance') }}</div>
     </div>
-
-
     <div class="one p-wal">
         <div class="balance">
             <span class="symbol">{{ $currencySymbol }}</span>
-            {{ $user->profit_balance }}
-            <span class="after-dot">.{{ strpos($user->profit_balance, '.') ? Str::after($user->profit_balance, '.') : '00' }} </span>
+            {{$dataCount['total_forex_equity']}}
         </div>
-        <div class="wallet">{{ __('Profit Wallet') }}</div>
+        <div class="wallet">{{ __('Equity') }}</div>
+    </div>
+    <div class="one p-wal">
+        <div class="balance">
+            <span class="symbol">{{ $currencySymbol }}</span>
+            0
+        </div>
+        <div class="wallet">{{ __('Success Points') }}</div>
     </div>
     <div class="info">
         <i icon-name="info"></i>{{ __('You Earned') }} {{ $dataCount['profit_last_7_days'] }} {{ $currency }} {{ __('This Week') }}
@@ -71,7 +74,7 @@
     @include('frontend::user.mobile_screen_include.dashboard.__navigations')
 
     <!-- all Statistic -->
-    @include('frontend::user.mobile_screen_include.dashboard.__statistic')
+    {{-- @include('frontend::user.mobile_screen_include.dashboard.__statistic') --}}
 
     <!-- Recent Transactions -->
     @include('frontend::user.mobile_screen_include.dashboard.__transactions')

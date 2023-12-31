@@ -39,10 +39,10 @@
 
 
     @if(request()->routeIs('user.referral'))
-       @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
-            @include('frontend.default.referral.include.__dashboard')
-            @include('frontend.default.referral.modal.__qr_code')
-       @else
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
+                @include('frontend.default.referral.include.__dashboard')
+                @include('frontend.default.referral.modal.__qr_code')
+        @else
             <div class="card">
                 <div class="p-6">
                     <h4 class="card-title mb-2">
@@ -135,6 +135,21 @@
                 </div>
             </div>
        @endif
+       <div class="card">
+            <div class="card-body p-6">
+                <div class="progress-steps-form">
+                    <div class="transaction-status text-center px-7 py-12">
+                        <div class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                            <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
+                        </div>
+                        <h2 class="text-3xl my-5">Account Pending</h2>
+                        <p class="text-sm mb-3 dark:text-white">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend.default.referral.include.__advertisement_material')

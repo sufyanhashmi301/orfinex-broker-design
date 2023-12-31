@@ -82,9 +82,9 @@ class ForexAccountController extends GatewayController
         $data['Rights'] = 'USER_RIGHT_ALL';
 
         $URL = config('forextrading.createUserUrl');
-        dd($data);
+//        dd($data);
         $response = $this->sendApiPostRequest($URL, $data);
-        dd($response->object());
+//        dd($response->object());
 //        if ($response->serverError() || $response->failed()) {
 //            notify()->error('Some error occurred! please try again', 'Error');
 //            return redirect()->route('user.schema.preview', $schema->id);

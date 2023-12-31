@@ -311,7 +311,6 @@ trait ForexApiTrait
     {
         $resData = $getUserResponse->object();
 //        dd($resData);
-//        echo "Login: ".$resData->Login." leverage: ".$resData->Leverage;
         if (isset($resData->Login)) {
             $forexTrading = ForexAccount::where('login', $resData->Login)->first();
 //        $forexTrading->account_name = $resData->Name;

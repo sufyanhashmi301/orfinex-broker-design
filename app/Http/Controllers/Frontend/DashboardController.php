@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Models\ForexAccount;
+use App\Traits\ForexApiTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
@@ -10,9 +11,14 @@ use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
+    use ForexApiTrait;
     public function dashboard(Request $request)
     {
 //        dd(getLocation());
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $this->syncForexAccounts(auth()->id());
+        }
 
         $user = auth()->user();
         $transactions = Transaction::where('user_id', $user->id);
@@ -47,6 +53,7 @@ class DashboardController extends Controller
         $demoForexAccounts = ForexAccount::demoActiveAccount()
             ->orderBy('balance','desc')
             ->get();
+
         return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts'));
     }
 }

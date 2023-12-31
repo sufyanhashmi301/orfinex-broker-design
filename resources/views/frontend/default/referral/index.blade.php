@@ -39,10 +39,10 @@
 
 
     @if(request()->routeIs('user.referral'))
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
+{{--        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)--}}
             @include('frontend.default.referral.include.__dashboard')
             @include('frontend.default.referral.modal.__qr_code')
-        @else
+{{--        @else--}}
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">
@@ -121,7 +121,7 @@
                     </form>
                 </div>
             </div>
-        @endif
+{{--        @endif--}}
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend.default.referral.include.__advertisement_material')

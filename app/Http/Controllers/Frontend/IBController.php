@@ -93,7 +93,7 @@ class IBController extends Controller
 //            ]);
 //        }
         $this->completeIBProfile($data);
-        return response()->json(['reload' => false,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
+        return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 
     }
 

@@ -15,7 +15,8 @@
                         <p class="dark:text-white mb-5">
                             {{ __('Scan this code to get referral link') }}
                         </p>
-                        <img src="{{ asset('frontend/images/QR_Code_example.png') }}" class="border rounded-lg p-1 w-2/3 mx-auto" alt="">
+                        <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code">
+{{--                        <img class="border rounded-lg p-1 w-2/3 mx-auto" src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" >--}}
                     </div>
                 </div>
             </div>

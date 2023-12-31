@@ -30,7 +30,7 @@ class MigrateOldData extends Command
         DB::table('transactions')->truncate();
         DB::table('forex_accounts')->truncate();
         DB::table('messages')->truncate();
-        DB::table('notifications')->truncate();
+//        DB::table('notifications')->truncate();
         DB::table('referral_links')->truncate();
         DB::table('referral_relationships')->truncate();
         DB::table('user_metas')->truncate();
@@ -100,13 +100,15 @@ class MigrateOldData extends Command
 // Assign the first and last names
         $first_name = isset($parts[0]) ? $parts[0] : '';
         $last_name = isset($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
+
+
         // Migrate user data to the new database
        $dataUser =  [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
             'first_name' => $first_name,
             'last_name' => $last_name,
-            'username' => $oldUser->username ? $oldUser->username : $oldUser->name.rand(1000, 9999),
+            'username' => $oldUser->username ? $oldUser->username : $first_name.rand(1000, 9999),
             'country' => $userMeta ? $userMeta->meta_value:'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone: '+971',
             'email' => $oldUser->email,
@@ -148,7 +150,7 @@ class MigrateOldData extends Command
                     $accountData['status'] = ForexAccountStatus::Ongoing;
                     $accountData['server'] = 'MT5';
                     $accountData['created_by'] = $user->id;
-                    $accountData['first_min_deposit_paid'] = 0;
+                    $accountData['first_min_deposit_paid'] = 1;
                     $accountData['trading_platform'] = config('forextrading.tradingPlatform');
 //                    dd($accountData) ;
                     ForexAccount::create($accountData);

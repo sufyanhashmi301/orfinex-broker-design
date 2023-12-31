@@ -73,14 +73,14 @@
                         </div>
                         {{--Referral and Ranking --}}
                         @include('frontend::user.include.__referral_ranking')
-                
+
                     </div>
                 </div>
-                
+
                 {{--Recent Transactions--}}
                 @include('frontend::user.include.__recent_transaction')
             </div>
-            
+
         </div>
 
          {{--for mobile--}}

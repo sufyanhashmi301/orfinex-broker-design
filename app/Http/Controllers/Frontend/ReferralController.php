@@ -8,6 +8,7 @@ use App\Models\IbQuestion;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
 use Brick\Math\BigDecimal;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ReferralController extends Controller
 {
@@ -42,7 +43,9 @@ class ReferralController extends Controller
 //            }
 //        }
         $ibQuestions = IbQuestion::where('status', true)->get();
-        return view('frontend::referral.index', compact( 'getReferral',  'level', 'balance', 'ibQuestions'));
+        $data =
+        $qrCode = QrCode::size(300)->generate($getReferral->link);
+        return view('frontend::referral.index', compact( 'getReferral',  'level', 'balance', 'ibQuestions', 'qrCode'));
     }
     public function advertisementMaterial()
     {

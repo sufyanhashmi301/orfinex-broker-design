@@ -12,12 +12,12 @@
                 @else
                     <b>{{ $levelUser->full_name }} <br> @if(setting('deposit_level'))
                             {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
-                        @endif @if(setting('investment_level'))
-                            {{ __('Invest') }} {{ $currencySymbol.$levelUser->totalInvestment() }},
                         @endif @if(setting('profit_level'))
                             {{ __('ROI Profit') }} {{ $currencySymbol.$levelUser->totalRoiProfit() }}
                         @endif</b>
                 @endif
+
+
 
             </p>
         </div>

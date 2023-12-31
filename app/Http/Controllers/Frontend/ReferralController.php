@@ -7,11 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\IbQuestion;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
+use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ReferralController extends Controller
 {
+    use ForexApiTrait;
     public function referral()
     {
 //        dd('ss');

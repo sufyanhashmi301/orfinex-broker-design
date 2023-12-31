@@ -16736,3 +16736,7 @@ ul.custom-list ul li{
 #offers-list .list-view .card .card-body .product-content {
   flex-grow: 3;
 }
+
+.qrCodeContainer svg {
+  margin: 0 auto;
+}

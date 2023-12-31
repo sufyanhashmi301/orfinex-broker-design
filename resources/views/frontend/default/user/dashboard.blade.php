@@ -12,6 +12,8 @@
             <div class="grid grid-cols-12 gap-5">
                 <div class="col-span-12 lg:col-span-8">
                     <div class="space-y-5">
+                       
+                        @if(count($realForexAccounts) == 0 && count($demoForexAccounts) == 0)
                         <div class="bg-no-repeat h-[140px] bg-cover bg-center px-10 rounded-[6px] relative flex items-center" style="background-image: url(https://cloud.orfinex.com/crm/no-account.png)">
                             <div class="flex-1">
                                 <p class="font-normal text-white text-lg mb-1">You don't have an Active Account yet.</p>
@@ -23,6 +25,7 @@
                                 <a href="{{route('user.schema')}}" class="btn btn-light btn-white">Open new account</a>
                             </div>
                         </div>
+                       @else
                         <div class="card">
                             <div class="card-header flex-wrap noborder">
                                 <div class="mb-4 sm:mb-0">
@@ -58,6 +61,7 @@
                                 </div>
                             </div>
                         </div>
+                            @endif
                     </div>
                 </div>
 

@@ -1,16 +1,24 @@
 <div id="auto-popup" class="auto-popup-section">
     <div class="auto-popup-dialog animated fadeInUp">
-        <button class="auto-popup-close auto-popup-close-now"><i icon-name="x"></i></button>
+        <button class="auto-popup-close auto-popup-close-now">
+            <i icon-name="x"></i>
+        </button>
         <div class="auto-popup-dialog-inner"
              style="background: url({{ asset('frontend/images/auto-pop.jpg') }}) no-repeat;">
             <div class="row">
                 <div class="col-md-12 col-12">
                     <div class="auto-pop-content">
                         <h2>{{ __('Congratulation!') }}</h2>
-                        <h3>{{ __('You got a Signup Bonus') }}
-                            <span>{{ Session::get('signup_bonus') }} {{ $currency }}</span></h3>
-                        <button class="site-btn grad-btn auto-popup-close-now"><i
-                                class="anticon anticon-check"></i> {{ __('Got it') }}</button>
+                        <h3>
+                            {{ __('You got a Signup Bonus') }}
+                            <span>{{ Session::get('signup_bonus') }} {{ $currency }}</span>
+                        </h3>
+                        <button class="btn inline-flex justify-center btn-dark auto-popup-close-now">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="heroicons-outline:check"></iconify-icon> 
+                            </span>
+                            <span>{{ __('Got it') }}</span>
+                        </button>
                     </div>
                 </div>
             </div>

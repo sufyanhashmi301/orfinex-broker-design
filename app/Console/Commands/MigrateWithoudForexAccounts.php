@@ -95,16 +95,23 @@ class MigrateWithoudForexAccounts extends Command
         $parts = explode(' ', trim($oldUser->name));
 
 // Assign the first and last names
-        $first_name = filled($parts[0]) ? $parts[0] : 'fname';
-        $last_name = filled($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
+        $first_name = isset($parts[0]) ? $parts[0] : 'fname';
+        $last_name = isset($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
+
+        if (!filled($first_name)) {
+            $first_name = 'fname';
+        }
+        if (!filled($last_name)) {
+            $last_name = 'lname';
+        }
 
         $username = User::where('username',$oldUser->username)->exists();
         // Migrate user data to the new database
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
-            'first_name' => filled($first_name)?$first_name:'fname',
-            'last_name' => filled($last_name)?$last_name:'lname',
+            'first_name' => $first_name,
+            'last_name' => $last_name,
             'username' => $oldUser->username ? (!$username ? $oldUser->username : $first_name . rand(10000, 99999)) : $first_name . rand(10000, 99999),
             'country' => $userMeta ? $userMeta->meta_value : 'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone : '+971',

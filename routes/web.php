@@ -224,3 +224,8 @@ Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-p
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
+
+
+Route::get('user/agreements', function () {
+    return view('frontend.default.user.setting.agreements.index');
+})->name('user.agreements');

@@ -95,7 +95,7 @@ class MigrateWithoudForexAccounts extends Command
         $parts = explode(' ', trim($oldUser->name));
 
 // Assign the first and last names
-        $first_name = isset($parts[0]) ? $parts[0] : '';
+        $first_name = isset($parts[0]) ? $parts[0] : 'name';
         $last_name = isset($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
 
 

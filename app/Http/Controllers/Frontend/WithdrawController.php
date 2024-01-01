@@ -283,9 +283,7 @@ class WithdrawController extends Controller
             notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
             return redirect()->back();
         }
-        $targetType = 'forex_withdraw';
-        $comment = 'withdraw';
-        $this->forexWithdraw($targetId, $totalAmount,$comment);
+
 
 
         $payAmount = $amount * $withdrawMethod->rate;
@@ -296,6 +294,10 @@ class WithdrawController extends Controller
         $txnInfo = Txn::new($input['amount'], $charge, $totalAmount, $withdrawMethod->name,
             'Withdraw With ' . $withdrawAccount->method_name, $type,
             TxnStatus::Pending, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
+
+        $targetType = 'forex_withdraw';
+        $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -6);
+        $this->forexWithdraw($targetId, $totalAmount,$comment);
 
         if ($withdrawMethod->type == 'auto') {
             $gatewayCode = $withdrawMethod->gateway->gateway_code;

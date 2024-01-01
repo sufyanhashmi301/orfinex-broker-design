@@ -16751,3 +16751,130 @@ ul.custom-list ul li{
   font-size: 1rem !important;
   line-height: 1.75rem !important;
 }
+
+
+/* Automatic Popup */
+.auto-popup-section {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s ease 0s;
+    /* background-color: rgba(63, 58, 100, 0.9); */
+    --tw-backdrop-blur: blur(4px);
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+
+.auto-popup-section:not(.close) .auto-popup-dialog {
+    animation-duration: 0.5s;
+    animation-delay: 0.3s;
+}
+
+.auto-popup-section.close {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.auto-popup-section.close .auto-popup-dialog {
+    animation-duration: 0.5s;
+    animation-delay: 0;
+}
+
+.auto-popup-dialog {
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 650px;
+    max-width: 90vw;
+    max-height: 100vh;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.auto-popup-close {
+    line-height: 1;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 0;
+    color: #ccc;
+    border: none;
+    background-color: transparent;
+    z-index: 2;
+}
+
+.auto-popup-close i {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.auto-popup-close:hover {
+    color: #ff0000;
+}
+
+@media only screen and (max-width: 479px) {
+    .auto-popup-close {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+.auto-popup-dialog-inner {
+    padding: 50px;
+    background-size: cover !important;
+    position: relative;
+    z-index: 1;
+}
+
+.auto-popup-dialog-inner::before {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: "";
+    left: 0;
+    top: 0;
+    background: #2a9d8f;
+    opacity: 0.7;
+    z-index: -1;
+}
+
+.auto-pop-content {
+    text-align: center;
+}
+
+.auto-pop-content h2 {
+    font-size: 52px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.auto-pop-content h3 {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 767px) {
+    .auto-popup-dialog-inner {
+        padding: 40px 30px;
+    }
+}
+
+@media only screen and (max-width: 479px) {
+    .auto-popup-dialog-inner {
+        padding: 40px 20px;
+    }
+
+    .auto-pop-content h2 {
+        font-size: 24px;
+    }
+
+    .auto-pop-content h3 {
+        font-size: 18px;
+    }
+}

@@ -20,7 +20,6 @@
                     <div class="mobile-logo text-center mb-6 lg:hidden block">
                         <a href="{{ route('home')}}">
                             <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="mb-10 dark_logo">
-                            <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="mb-10 white_logo">
                         </a>
                     </div>
                     <div class="text-center 2xl:mb-10 mb-5">

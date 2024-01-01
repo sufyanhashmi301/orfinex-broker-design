@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('All Pending') }}
+    {{ __('Pending IB Members') }}
 @endsection
 @section('content')
     <div class="main-content">
@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="title-content">
-                            <h2 class="title">{{ __('All IB') }}</h2>
+                            <h2 class="title">{{ __('Pending IB Members') }}</h2>
                         </div>
                     </div>
                 </div>

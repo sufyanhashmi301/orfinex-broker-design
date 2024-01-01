@@ -72,7 +72,7 @@ class Txn
 
         if ($status == 'success' && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
             if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                $comment =  "Deposit/".$transaction->tnx;
+                $comment =  "$transaction->method/".$transaction->tnx;
                 $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
             } else {
                 $amount = $transaction->amount;

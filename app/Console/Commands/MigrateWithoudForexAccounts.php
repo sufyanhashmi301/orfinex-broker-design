@@ -105,7 +105,7 @@ class MigrateWithoudForexAccounts extends Command
             'rankings' => json_encode([$rank->id]),
             'first_name' => $first_name,
             'last_name' => $last_name,
-            'username' => $oldUser->username ? (!$username ? $oldUser->username : $first_name . rand(10000, 99999)) : $first_name . rand(1000, 9999),
+            'username' => $oldUser->username ? (!$username ? $oldUser->username : $first_name . rand(10000, 99999)) : $first_name . rand(10000, 99999),
             'country' => $userMeta ? $userMeta->meta_value : 'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone : '+971',
             'email' => $oldUser->email,

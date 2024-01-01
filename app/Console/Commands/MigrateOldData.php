@@ -102,13 +102,19 @@ class MigrateOldData extends Command
         $first_name = isset($parts[0]) ? $parts[0] : 'fname';
         $last_name = isset($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
 
+        if (!filled($first_name)) {
+            $first_name = 'fname';
+        }
+        if (!filled($last_name)) {
+            $last_name = 'lname';
+        }
 
         // Migrate user data to the new database
        $dataUser =  [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
-           'first_name' => isset($first_name)?$first_name:'fname',
-           'last_name' => isset($last_name)?$last_name:'lname',
+           'first_name' => $first_name,
+           'last_name' => $last_name,
             'username' => $oldUser->username ? $oldUser->username : $first_name.rand(1000, 9999),
             'country' => $userMeta ? $userMeta->meta_value:'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone: '+971',

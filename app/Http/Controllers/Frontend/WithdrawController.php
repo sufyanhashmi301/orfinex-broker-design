@@ -290,12 +290,12 @@ class WithdrawController extends Controller
 
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
 
-
+        $targetType = 'forex_withdraw';
         $txnInfo = Txn::new($input['amount'], $charge, $totalAmount, $withdrawMethod->name,
             'Withdraw With ' . $withdrawAccount->method_name, $type,
             TxnStatus::Pending, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
 
-        $targetType = 'forex_withdraw';
+
         $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -6);
         $this->forexWithdraw($targetId, $totalAmount,$comment);
 

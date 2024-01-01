@@ -110,7 +110,7 @@ class MigrateWithoudForexAccounts extends Command
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone : '+971',
             'email' => $oldUser->email,
             'password' => $oldUser->password,
-            'kyc' => 1,
+            'kyc' => 0,
             'ib_login' => $oldUser->ib_login,
             'ib_status' => $oldUser->ib_status,
             'email_verified_at' => $oldUser->created_at,

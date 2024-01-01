@@ -27,6 +27,7 @@
                                         <th>{{ __('Avatar') }}</th>
                                         <th>{{ __('Username') }}</th>
                                         <th>{{ __('Email') }}</th>
+                                        <th>{{ __('IB') }}</th>
                                         <th>{{ __('KYC') }}</th>
                                         <th>{{ __('IB Status') }}</th>
                                         <th>{{ __('Action') }}</th>
@@ -68,6 +69,7 @@
                     {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
+                    {data: 'ib_login', name: 'ib_login'},
                     {data: 'kyc', name: 'kyc'},
                     {data: 'ib_status', name: 'ib_status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},

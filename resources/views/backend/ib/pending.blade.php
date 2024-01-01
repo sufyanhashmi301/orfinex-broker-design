@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('All Customers') }}
+    {{ __('All Pending') }}
 @endsection
 @section('content')
     <div class="main-content">
@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="title-content">
-                            <h2 class="title">{{ __('All Customers') }}</h2>
+                            <h2 class="title">{{ __('All IB') }}</h2>
                         </div>
                     </div>
                 </div>
@@ -40,14 +40,13 @@
                         </div>
                     </div>
                     <!-- Modal for confirm IB -->
-{{--                @can('customer-mail-send')--}}
-                    @include('backend.ib.modal.__ib_confirm')
-{{--                @endcan--}}
+                {{--                @can('customer-mail-send')--}}
+                @include('backend.ib.modal.__ib_confirm')
+                {{--                @endcan--}}
                 <!-- Modal for confirm IB -->
                     <!-- Modal for reject IB -->
                 {{--                @can('customer-mail-send')--}}
                 @include('backend.ib.modal.__ib_reject')
-                @include('backend.ib.modal.__ib_detail)
                 {{--                @endcan--}}
                 <!-- Modal for reject IB-->
                 </div>
@@ -57,7 +56,6 @@
 @endsection
 
 @section('script')
-    ]
     <script>
         (function ($) {
             "use strict";

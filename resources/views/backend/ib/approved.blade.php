@@ -63,7 +63,7 @@
             var table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.ib.pending') }}",
+                ajax: "{{ route('admin.ib.approved') }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},

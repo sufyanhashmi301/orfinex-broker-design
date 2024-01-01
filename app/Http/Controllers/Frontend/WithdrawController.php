@@ -296,7 +296,7 @@ class WithdrawController extends Controller
             TxnStatus::Pending, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
 
 
-        $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -6);
+        $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -7);
         $this->forexWithdraw($targetId, $totalAmount,$comment);
 
         if ($withdrawMethod->type == 'auto') {

@@ -95,7 +95,7 @@ class MigrateWithoudForexAccounts extends Command
         $parts = explode(' ', trim($oldUser->name));
 
 // Assign the first and last names
-        $first_name = isset($parts[0]) ? $parts[0] : 'name';
+        $first_name = isset($parts[0]) ? $parts[0] : 'fname';
         $last_name = isset($parts[1]) ? implode(' ', array_slice($parts, 1)) : $first_name;
 
         $username = User::where('username',$oldUser->username)->exists();
@@ -103,8 +103,8 @@ class MigrateWithoudForexAccounts extends Command
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
-            'first_name' => $first_name,
-            'last_name' => $last_name,
+            'first_name' => isset($first_name)?$first_name:'fname',
+            'last_name' => isset($last_name)?$last_name:'lname',
             'username' => $oldUser->username ? (!$username ? $oldUser->username : $first_name . rand(10000, 99999)) : $first_name . rand(10000, 99999),
             'country' => $userMeta ? $userMeta->meta_value : 'United Arab Emirates',
             'phone' => $oldUser->profile_phone ? $oldUser->profile_phone : '+971',

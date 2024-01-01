@@ -90,7 +90,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     public function getFullNameAttribute(): string
     {
-        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
+        $firstName = $this->attributes['first_name'] ?? 'user';
+        $lastName = $this->attributes['last_name'] ?? '';
+
+        return ucwords("{$firstName} {$lastName}");
     }
 
     public function getKycTypeAttribute(): string

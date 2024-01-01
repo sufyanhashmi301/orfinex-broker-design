@@ -95,6 +95,7 @@ class MigrateOldData extends Command
             ->where('meta_key', 'profile_country')
             ->first('meta_value');
         $rank = Ranking::find(1);
+
         $parts = explode(' ', trim($oldUser->name));
 
 // Assign the first and last names

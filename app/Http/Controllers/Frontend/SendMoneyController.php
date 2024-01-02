@@ -46,8 +46,8 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => 'required',
-            'receiver_account' => 'required',
+            'target_id' => ['required', 'different:receiver_account'],
+            'receiver_account' => ['required', 'different:target_id'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ]);
 
@@ -171,8 +171,8 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => 'required',
-            'receiver_account' => 'required',
+            'target_id' => ['required', 'different:receiver_account'],
+            'receiver_account' => ['required', 'different:target_id'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ]);
 

@@ -148,8 +148,20 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternal()
     {
+        $balance = BigDecimal::of(auth()->user()->ib_balance);
+//        dd(auth()->user()->ib_login);
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            if (auth()->user()->ib_login) {
+                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $balance = $getUserResponse->object()->Balance;
+                    auth()->user()->update(['ib_balance' => $balance]);
+                    auth()->setUser(auth()->user()->fresh());
+                }
+            }
+        }
 
-//        dd('s');
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')

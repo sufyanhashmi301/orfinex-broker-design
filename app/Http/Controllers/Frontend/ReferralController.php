@@ -34,7 +34,7 @@ class ReferralController extends Controller
 //        $totalReferralProfit = $user->totalReferralProfit();
 
         $level = LevelReferral::max('the_order');
-        $balance = BigDecimal::of(0);
+        $balance = BigDecimal::of(auth()->user()->ib_balance);
 //        dd(auth()->user()->ib_login);
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
@@ -44,6 +44,8 @@ class ReferralController extends Controller
                 if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
 //                $this->updateUserAccount($getUserResponse);
                     $balance = $getUserResponse->object()->Balance;
+                    auth()->user()->update(['ib_balance' => $balance]);
+                    auth()->setUser(auth()->user()->fresh());
                 }
             }
         }

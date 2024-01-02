@@ -27,6 +27,7 @@
         </div>
     </div>
 </div>
+@include('frontend.default.referral.modal.__qr_code')
 @endif
 <div class="row hidden">
     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">

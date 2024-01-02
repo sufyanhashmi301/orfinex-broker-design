@@ -5,10 +5,8 @@
 @section('content')
 
         <div class="md:block hidden desktop-screen-show">
-
             {{-- User Card--}}
             @include('frontend::user.include.__user_card')
-
             <div class="grid grid-cols-12 gap-5">
                 <div class="col-span-12 lg:col-span-8">
                     <div class="space-y-5">
@@ -88,7 +86,6 @@
                 {{--Recent Transactions--}}
                 @include('frontend::user.include.__recent_transaction')
             </div>
-
         </div>
 
          {{--for mobile--}}
@@ -139,5 +136,6 @@
                 $(this).text("Load more")
             }
         });
+
     </script>
 @endsection

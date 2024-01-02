@@ -33,9 +33,9 @@ class IBController extends Controller
     }
     public function update(Request $request, $id)
     {
-
+        return redirect()->back();
         $input = $request->all();
-        dd($input);
+//        dd($input);
         $validator = Validator::make($input, [
             'name' => 'required|unique:ib_questions,name,'.$id,
             'status' => 'required',

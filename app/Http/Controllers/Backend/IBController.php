@@ -31,6 +31,35 @@ class IBController extends Controller
 
         return view('backend.ib.edit', compact('kyc'));
     }
+    public function update(Request $request, $id)
+    {
+
+        $input = $request->all();
+        dd($input);
+        $validator = Validator::make($input, [
+            'name' => 'required|unique:ib_questions,name,'.$id,
+            'status' => 'required',
+            'fields' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+
+        $data = [
+            'name' => $input['name'],
+            'status' => $input['status'],
+            'fields' => json_encode($input['fields']),
+        ];
+
+        $kyc = IbQuestion::find($id);
+        $kyc->update($data);
+        notify()->success($kyc->name.' '.__(' IB Updated'));
+
+        return redirect()->route('admin.ib-form.index');
+    }
     public function destroy($id)
     {
         IbQuestion::find($id)->delete();

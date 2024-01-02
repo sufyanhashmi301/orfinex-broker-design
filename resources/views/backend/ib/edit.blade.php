@@ -35,10 +35,11 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="col-xl-3">
                                     <a href="javascript:void(0)" id="generate"
                                        class="site-btn-xs primary-btn mb-3">{{ __('Add Field option') }}</a>
                                 </div>
+
 
                                 <div class="addOptions">
 
@@ -204,45 +205,79 @@
 @section('script')
     <script>
         $(document).ready(function (e) {
+            var i = 0;
             "use strict";
-            var i = Object.keys(JSON.parse(@json($kyc->fields))).length;
 
             $("#generate").on('click', function () {
                 ++i;
-                var form = `<div class="mb-4">
-                  <div class="option-remove-row row">
+                var form = `<div class="mb-4 option-remove-row row">
                     <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
-                      <div class="site-input-groups">
-                        <input name="fields[` + i + `][name]" class="box-input" type="text" value="" required placeholder="Field Name">
-                      </div>
+                        <div class="site-input-groups">
+                            <input name="fields[${i}][name]" class="box-input" type="text" value="" required placeholder="Field Name">
+                        </div>
                     </div>
 
                     <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
-                      <div class="site-input-groups">
-                        <select name="fields[` + i + `][type]" class="form-select form-select-lg mb-3">
-                            <option value="text">Input Text</option>
-                            <option value="textarea">Textarea</option>
-                            <option value="file">File upload</option>
-                        </select>
-                      </div>
+                        <div class="site-input-groups">
+                            <select name="fields[${i}][type]" class="form-select form-select-lg mb-3 field-type">
+                                <option value="text">Input Text</option>
+                                <option value="checkbox">Checkbox</option>
+                                <option value="radio">Radio</option>
+                                <option value="dropdown">Dropdown</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 options-container" style="display: none;">
+                        <div class="site-input-groups options">
+                            <div class="option-row">
+                                <button type="button" class="delete-option"><i class="fas fa-times"></i></button>
+                                <input name="fields[${i}][options][]" class="box-input" type="text" value="" placeholder="Option 1">
+                                <button type="button" class="add-option">Add Option</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
-                      <div class="site-input-groups mb-0">
-                        <select name="fields[` + i + `][validation]" class="form-select form-select-lg mb-1">
-                            <option value="required">Required</option>
-                            <option value="nullable">Optional</option>
-                        </select>
-                      </div>
+                        <div class="site-input-groups">
+                            <select name="fields[${i}][validation]" class="form-select form-select-lg mb-3">
+                                <option value="required">Required</option>
+                                <option value="nullable">Optional</option>
+                            </select>
+                        </div>
                     </div>
+                </div>`;
+                $('.addOptions').append(form);
+            });
 
-                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-12">
-                      <button class="delete-option-row delete_desc" type="button">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                    </div>
-                  </div>`;
-                $('.addOptions').append(form)
+            $(document).on('click', '.delete-option', function () {
+                var optionRow = $(this).closest('.option-row');
+                var optionRows = optionRow.parent().find('.option-row');
+                if (optionRows.length > 1) {
+                    optionRow.remove();
+                }
+            });
+
+            $(document).on('change', '.field-type', function () {
+                var selectedType = $(this).val();
+                var optionsContainer = $(this).closest('.option-remove-row').find('.options-container');
+
+                if (selectedType === 'checkbox' || selectedType === 'radio' || selectedType === 'dropdown') {
+                    optionsContainer.show();
+                } else {
+                    optionsContainer.hide();
+                }
+            });
+
+            $(document).on('click', '.add-option', function () {
+                var optionsContainer = $(this).closest('.options');
+                var optionRow = optionsContainer.find('.option-row:first').clone();
+                optionRow.find('.box-input').val('');
+                optionsContainer.append(optionRow);
+            });
+
+            $(document).on('focus', '.box-input', function () {
+                $(this).closest('.option-remove-row').find('.delete-option').prop('disabled', false);
             });
 
             $(document).on('click', '.delete_desc', function () {

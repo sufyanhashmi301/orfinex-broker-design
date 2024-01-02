@@ -5,7 +5,7 @@ return [
     'createUserUrl' => $base_url.'user/create',
     'updateUserUrl' => $base_url.'user/update',
     'getUserUrl' => $base_url.'user/get',
-//    'getUserUrl' => $base_url.'useraccount/get',
+    'getUserUrl' => $base_url.'useraccount/get',
     'depositUrl' => $base_url.'dealer/balance',
     'withdrawUrl' => $base_url.'dealer/balance',
 //    'totalHistoryUrl' => $base_url.'total_history',

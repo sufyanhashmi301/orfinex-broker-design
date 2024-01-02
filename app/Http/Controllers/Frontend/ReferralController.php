@@ -35,7 +35,9 @@ class ReferralController extends Controller
 
         $level = LevelReferral::max('the_order');
         $balance = BigDecimal::of(auth()->user()->ib_balance);
-//        dd(auth()->user()->ib_login);
+//        auth()->user()->update(['ib_balance' => 123]);
+//        auth()->setUser(auth()->user()->fresh());
+//        dd(auth()->user()->ib_balance);
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             if (auth()->user()->ib_login) {

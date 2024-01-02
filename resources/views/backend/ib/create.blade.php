@@ -180,6 +180,10 @@
             $(document).on('focus', '.box-input', function () {
                 $(this).closest('.option-remove-row').find('.delete-option').prop('disabled', false);
             });
+
+            $(document).on('click', '.delete_desc', function () {
+                $(this).closest('.option-remove-row').parent().remove();
+            });
         });
     </script>
 @endsection

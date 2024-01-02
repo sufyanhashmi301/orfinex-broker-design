@@ -25,6 +25,19 @@ class IBController extends Controller
     {
         return view('backend.ib.create');
     }
+    public function edit($id)
+    {
+        $kyc = IbQuestion::find($id);
+
+        return view('backend.ib.edit', compact('kyc'));
+    }
+    public function destroy($id)
+    {
+        IbQuestion::find($id)->delete();
+        notify()->success(__('IB Deleted Successfully'));
+
+        return redirect()->route('admin.ib-form.index');
+    }
 
     public function IbPending(Request $request)
     {

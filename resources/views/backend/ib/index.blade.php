@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('KYC') }}
+    {{ __('IB') }}
 @endsection
 @section('content')
     <div class="main-content">
@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="title-content">
-                            <h2 class="title">{{ __('KYC Forms') }}</h2>
+                            <h2 class="title">{{ __('IB Forms') }}</h2>
                             <a href="{{ route('admin.ib-form.create') }}" class="title-btn"><i
                                     icon-name="plus-circle"></i>{{ __('Add New') }}</a>
                         </div>
@@ -96,7 +96,7 @@
                                 </div>
                                 <p>
                                     {{ __('You want to Delete') }} <strong
-                                        class="name"></strong> {{ __('KYC Verification Type?') }}
+                                        class="name"></strong> {{ __('IB Verification Type?') }}
                                 </p>
                                 <div class="action-btns">
                                     <button type="submit" class="site-btn-sm primary-btn me-2">

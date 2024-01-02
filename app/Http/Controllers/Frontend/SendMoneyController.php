@@ -107,7 +107,7 @@ class SendMoneyController extends Controller
         $balance = $this->getForexAccountBalance($targetId);
 //        dd($balance);
         if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
-            notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+            notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
             return redirect()->back();
         }
 
@@ -233,7 +233,7 @@ class SendMoneyController extends Controller
         $balance = $this->getForexAccountBalance($targetId);
 //        dd($balance);
         if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
-            notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+            notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
             return redirect()->back();
         }
 

@@ -38,28 +38,28 @@
     </div>
 
 
-{{--    @if(request()->routeIs('user.referral'))--}}
-{{--        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED )--}}
-{{--            @include('frontend.default.referral.include.__dashboard')--}}
-{{--            @include('frontend.default.referral.modal.__qr_code')--}}
-{{--        @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)--}}
-{{--            <div class="card">--}}
-{{--                <div class="card-body p-6">--}}
-{{--                    <div class="progress-steps-form">--}}
-{{--                        <div class="transaction-status text-center px-7 py-12">--}}
-{{--                            <div--}}
-{{--                                class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">--}}
-{{--                                <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>--}}
-{{--                            </div>--}}
-{{--                            <h2 class="text-3xl my-5">Partner Request Pending</h2>--}}
-{{--                            <p class="text-sm mb-3 dark:text-white">--}}
-{{--                                Your partnership request is under review and we'll confirm with you shortly. Stay tuned!--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        @else--}}
+    @if(request()->routeIs('user.referral'))
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED )
+            @include('frontend.default.referral.include.__dashboard')
+            @include('frontend.default.referral.modal.__qr_code')
+        @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
+            <div class="card">
+                <div class="card-body p-6">
+                    <div class="progress-steps-form">
+                        <div class="transaction-status text-center px-7 py-12">
+                            <div
+                                class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                                <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
+                            </div>
+                            <h2 class="text-3xl my-5">Partner Request Pending</h2>
+                            <p class="text-sm mb-3 dark:text-white">
+                                Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @else
             <div class="card">
                 <div class="p-6">
                     <h4 class="card-title mb-2">
@@ -73,21 +73,7 @@
                     <form action="{{ route('user.ib-program.store') }}" method="POST" id="ib-from-create"
                           class="space-y-4">
                         @csrf
-                        <div class="input-area">
-                            <div class="checkbox-area">
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
-                                    <span
-                                        class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt=""
-                                                 class="h-[10px] w-[10px] block m-auto opacity-0"></span>
-                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
-                                        {{ __('I have read and agree with the ') }}
-                                        <a href="javascript:;" class="btn-link">IB Agreement</a>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
+
                         @foreach($ibQuestions as $ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
                                 <div class="input-area">
@@ -162,7 +148,23 @@
 
                             @endforeach
                         @endforeach
-
+                        <br>
+                        <br>
+                        <div class="input-area">
+                            <div class="checkbox-area">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
+                                    <span
+                                        class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt=""
+                                                 class="h-[10px] w-[10px] block m-auto opacity-0"></span>
+                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                        {{ __('I have read and agree with the ') }}
+                                        <a href="javascript:;" class="btn-link">IB Agreement</a>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
                         <div class="md:col-span-2">
                             <div class="text-right">
                                 <button type="button" class="btn btn-dark save-btn">Register</button>
@@ -171,9 +173,9 @@
                     </form>
                 </div>
             </div>
-{{--        @endif--}}
+        @endif
 
-{{--    @endif--}}
+    @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend.default.referral.include.__advertisement_material')
     @endif

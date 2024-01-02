@@ -18,8 +18,7 @@
                                         class="inline-block font-Inter font-normal text-sm text-slate-600">{{ auth()->user()->ib_login }}
                                     - {{ __('IB') }}</option>
                             @endif
-{{--                            <option selected value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>--}}
-
+                            <option selected value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
                         </select>
                     </div>
                 </div>

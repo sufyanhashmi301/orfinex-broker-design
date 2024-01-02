@@ -98,6 +98,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::group(['prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
         Route::get('/', 'sendMoney')->name('view');
         Route::post('now', 'sendMoneyNow')->name('now');
+        Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
+        Route::post('now', 'sendMoneyInternalNow')->name('internal-now');
         Route::get('log', 'sendMoneyLog')->name('log');
 
     });

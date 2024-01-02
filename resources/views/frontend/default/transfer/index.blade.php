@@ -25,7 +25,7 @@
             <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
                 <img src="" alt="" class="ml-auto block">
             </div>
-        
+
             <header class="mb-6">
                 <h4 class="text-xl mb-5  text-slate-900 dark:text-slate-300  ">
                     Internal Transfer
@@ -47,7 +47,7 @@
                     Instantly transfer funds between your accounts, seamlessly and without limits.
                 </p>
                 <div>
-                    <a href="{{ route('user.wallet-exchange') }}" class="btn block-btn btn-outline-dark dark:border-slate-400 ">
+                    <a href="{{ route('user.send-money.internal-view') }}" class="btn block-btn btn-outline-dark dark:border-slate-400 ">
                         Transfer Now
                     </a>
                 </div>
@@ -57,11 +57,11 @@
             <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
                 <img src="" alt="" class="ml-auto block">
             </div>
-        
+
             <div class="text-sm font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-300 py-2 text-center absolute ltr:-right-[43px] rtl:-left-[43px] top-7 px-10 transform ltr:rotate-[45deg] rtl:-rotate-45">
                 Friends & Family
             </div>
-        
+
             <header class="mb-6">
                 <h4 class="text-xl mb-5  text-slate-100  ">
                     External Transfer
@@ -71,7 +71,7 @@
                         $500
                     </span>
                     <span class="text-xs bg-warning-50 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
-                        Semi Instant     
+                        Semi Instant
                     </span>
                 </div>
                 <p class="text-sm text-white">

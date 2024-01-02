@@ -76,7 +76,7 @@
                         <div class="input-area">
                             <div class="checkbox-area">
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="hidden" name="checkbox">
+                                    <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
                                     <span
                                         class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                             <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt=""
@@ -192,14 +192,19 @@
 @section('script')
     <script>
         $('body').on('click', '.save-btn', function () {
-            var btn = $(this);
-            btn.prop('disabled', true);
-            let form = document.querySelector('#ib-from-create');
-            let formData = new FormData(form);
-            // formData.append('amount', $('#active_wallet_amount').val());
-            console.log('aa');
-            var url = $('#ib-from-create').attr('action');
-            submit_form(formData, btn, url, '', 'ibForm');
+            if ($('#agreement-check').is(':checked')) {
+                var btn = $(this);
+                btn.prop('disabled', true);
+                let form = document.querySelector('#ib-from-create');
+                let formData = new FormData(form);
+                // formData.append('amount', $('#active_wallet_amount').val());
+                console.log('aa');
+                var url = $('#ib-from-create').attr('action');
+                submit_form(formData, btn, url, '', 'ibForm');
+            } else {
+                tNotify('error','Kindly check the agreement before proceed!')
+            }
+
         });
 
         function copyRef() {

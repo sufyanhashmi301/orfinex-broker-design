@@ -4,6 +4,8 @@
     <div class="progress-steps-form">
         <form action="{{ route('user.send-money.internal-now') }}" method="post">
             @csrf
+            <input type="hidden" name="target_type" id="selectedAccountType" value="">
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div class="input-area relative mb-5">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('Account From:') }}</label>
@@ -11,17 +13,19 @@
                         <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected disabled>--{{ __('Select Account') }}--</option>
                             @foreach($forexAccounts as $forexAccount)
-                                <option value="{{ $forexAccount->login }}">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}</option>
+                                <option value="{{ $forexAccount->login }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}</option>
                             @endforeach
                             @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
                                 <option value="{{ auth()->user()->ib_login }}" data-type="ib-account"
-                                        class="inline-block font-Inter font-normal text-sm text-slate-600">{{ auth()->user()->ib_login }}
+                                        class="inline-block font-Inter font-normal text-sm text-slate-600" data-type="forex">{{ auth()->user()->ib_login }}
                                     - {{ __('IB') }}</option>
                             @endif
-                            <option selected value="2" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
+                            <option  value="profit_wallet" data-type="wallet" class="inline-block font-Inter font-normal text-sm text-slate-600" >{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
                         </select>
                     </div>
                 </div>
+
+
                 <div class="input-area relative mb-5">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('Account To:') }}</label>
                     <div class="input-group select2-lg">
@@ -135,7 +139,11 @@
             }
             $('.previewCharge').text(finalCharge);
         })
-
+        $('#tradingAccount').on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            var selectedAccountType = selectedOption.data('type');
+            $('#selectedAccountType').val(selectedAccountType);
+        });
 
     </script>
 @endsection

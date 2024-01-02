@@ -41,6 +41,7 @@ class SendMoneyController extends Controller
 
     public function sendMoneyNow(Request $request)
     {
+
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
         }
@@ -147,6 +148,7 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternal()
     {
+
 //        dd('s');
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
@@ -166,6 +168,9 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternalNow(Request $request)
     {
+        $targetId = $request->input('target_id');
+        $targetType = $request->input('target_type');
+//        dd($targetId,$targetType);
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
         }
@@ -227,24 +232,30 @@ class SendMoneyController extends Controller
         if ($chargeType == 'percentage') {
             $charge = $amount * ($charge / 100);
         }
-
+        $user = auth()->user();
         $totalAmount = $amount + $charge;
-
-        $balance = $this->getForexAccountBalance($targetId);
+        if($targetType == 'forex') {
+            $balance = $this->getForexAccountBalance($targetId);
+        }elseif($targetType == 'wallet'){
+            $balance = BigDecimal::of($user->profit_balance);
+        }
 //        dd($balance);
         if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
             notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
             return redirect()->back();
         }
-
-        //withdraw balance
-        $targetType = 'forex_withdraw';
-        $comment = 'int/transfer/to/'.$receiverAccount;
-        $this->forexWithdraw($targetId, $totalAmount,$comment);
+        if($targetType == 'forex') {
+            //withdraw balance
+            $targetType = 'forex_withdraw';
+            $comment = 'int/transfer/to/' . $receiverAccount;
+            $this->forexWithdraw($targetId, $totalAmount, $comment);
+        }elseif($targetType == 'wallet'){
+            $targetType = 'withdraw';
+            $user->decrement('profit_balance', $totalAmount);
+        }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
-            TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id);
+        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id);
 
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;

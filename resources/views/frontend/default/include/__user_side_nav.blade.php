@@ -102,7 +102,7 @@
                 </li>
                 <li>
                     <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">
-                        {{ __('Send Money Log') }}
+                        {{ __('Transfer Log') }}
                     </a>
                 </li>
             </ul>

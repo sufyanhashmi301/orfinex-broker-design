@@ -13,7 +13,7 @@
             <small class="mt-1">The leverage range you want to adjust in account.</small>
         </div>
     </div>
-    <div class="mt-4">
+    <div class="flex items-center mt-4">
         <button type="submit" class="btn btn-dark mr-2" id="submit-leverage">
             <i icon-name="check"></i>
             {{ __('Set Leverage') }}

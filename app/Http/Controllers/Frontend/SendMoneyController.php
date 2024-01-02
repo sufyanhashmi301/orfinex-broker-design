@@ -113,7 +113,7 @@ class SendMoneyController extends Controller
 
         //withdraw balance
         $targetType = 'forex_withdraw';
-        $comment = 'transfer/to/'.$receiverAccount;
+        $comment = 'ext/transfer/to/'.$receiverAccount;
         $this->forexWithdraw($targetId, $totalAmount,$comment);
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
@@ -121,7 +121,7 @@ class SendMoneyController extends Controller
             TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id);
 
 //        $toUser->increment('balance', $amount);
-        $comment =  "transfer/from/".$targetId;
+        $comment =  "ext/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
@@ -161,7 +161,8 @@ class SendMoneyController extends Controller
         $isStepOne = 'current';
         $isStepTwo = '';
 
-        return view('frontend::send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
+        return view('frontend.default.send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
+//        return view('frontend::send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
     }
     public function sendMoneyInternalNow(Request $request)
     {
@@ -238,7 +239,7 @@ class SendMoneyController extends Controller
 
         //withdraw balance
         $targetType = 'forex_withdraw';
-        $comment = 'transfer/to/'.$receiverAccount;
+        $comment = 'int/transfer/to/'.$receiverAccount;
         $this->forexWithdraw($targetId, $totalAmount,$comment);
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
@@ -246,7 +247,7 @@ class SendMoneyController extends Controller
             TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id);
 
 //        $toUser->increment('balance', $amount);
-        $comment =  "transfer/from/".$targetId;
+        $comment =  "int/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,

@@ -1,5 +1,5 @@
-@extends('frontend::send_money.index')
-@section('send_money_content')
+@extends('frontend::send_money.index-internal')
+@section('send_money_content_internal')
 
     <div class="progress-steps-form">
         <form action="{{ route('user.send-money.internal-now') }}" method="post">

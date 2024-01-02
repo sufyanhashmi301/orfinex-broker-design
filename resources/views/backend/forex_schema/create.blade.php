@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Demo (Swap Free):') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Demo (Swap):') }}</label>
                                         <input
                                             type="text"
                                             name="demo_swap_free"
@@ -129,7 +129,7 @@
                                 </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Real (Swap Free):') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Real (Swap):') }}</label>
                                         <input
                                             type="text"
                                             name="real_swap_free"

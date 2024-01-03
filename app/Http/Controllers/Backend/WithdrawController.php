@@ -307,7 +307,7 @@ class WithdrawController extends Controller
             notify()->success('Approve successfully');
         } elseif (isset($input['reject'])) {
 
-            if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
+            if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
                 $comment =  "wd/reject/".substr($transaction->tnx, -7);
                 $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
             } else {

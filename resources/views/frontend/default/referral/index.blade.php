@@ -55,6 +55,17 @@
                             <p class="text-sm mb-3 dark:text-white">
                                 Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
                             </p>
+                            <a href="https://cloud.orfinex.com/doc/IB-Partner-Agreement.pdf" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
+                                <span>Read Partner Agreement</span>
+                            </a>
+                            <a href="https://www.trustpilot.com/review/orfinex.com" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
+                                <span>Read Our Reviews on Trustpilot</span>
+                            </a>
+                            <div class="mt-5">
+                                <p class="text-sm">If you face any issue, please visit our <a href="https://support.orfinex.com" class="btn-link">Partner Support</a> or Email us at <a href="mailto:support@orfinex.com" class="btn-link">support@orfinex.com</a>.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
+use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -26,7 +27,7 @@ use Txn;
 
 class WithdrawController extends Controller
 {
-    use ImageUpload, NotifyTrait;
+    use ImageUpload, NotifyTrait, ForexApiTrait;
 
     /**
      * Display a listing of the resource.

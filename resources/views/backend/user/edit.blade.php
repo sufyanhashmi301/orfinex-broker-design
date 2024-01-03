@@ -58,6 +58,13 @@
                                        data-bs-original-title="Fund Add or Subtract">
                                     <i icon-name="wallet"></i></a></span>
                                 @endcan
+{{--                                @can('Delete User')--}}
+                                    <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                                    <a href="javascript:void(0);" type="button" class="site-btn-round red-btn"
+                                       data-bs-toggle="tooltip" title="" data-bs-placement="top"
+                                       data-bs-original-title="Delete User">
+                                    <i icon-name="user-minus"></i></a></span>
+{{--                                @endcan--}}
                             </div>
                         </div>
                         <div class="site-card">
@@ -263,5 +270,49 @@
         @include('backend.user.include.__balance')
     @endcan
     <!-- Modal for Add or Subtract Balance End-->
+    <!-- Modal for Add or Subtract Balance -->
+{{--    @can('delete-user')--}}
+        @include('backend.user.include.__delete_user',[ 'id' => $user->id])
+{{--    @endcan--}}
+    <!-- Modal for Add or Subtract Balance End-->
 
+@endsection
+@section('script')
+
+    <script>
+        $(document).ready(function() {
+            // Set the form action dynamically when the modal is shown
+            $('#deleteConfirmationModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var url = button.data('url');
+                $('#deleteForm').attr('action', url);
+            });
+
+            // Handle form submission
+            $('#deleteForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent the form from submitting traditionally
+
+                // Submit the form asynchronously using AJAX
+                $.ajax({
+                    type: 'POST', // or 'DELETE' depending on your form method
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        // Handle success response
+                        console.log(response); // Log the response to the console (for debugging)
+                        // You can show a success message or perform other actions here
+                        $('#deleteConfirmationModal').modal('hide'); // Close the modal, for example
+                        tNotify('success',response.success)
+                        window.location.href = "{{route('admin.user.index')}}";
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        // Handle error response
+                        console.error(xhr.responseText); // Log the error response to the console (for debugging)
+                        // You can show an error message or perform other actions here
+                    }
+                });
+            });
+        });
+
+    </script>
 @endsection

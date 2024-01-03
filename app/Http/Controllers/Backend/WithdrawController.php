@@ -307,7 +307,13 @@ class WithdrawController extends Controller
             notify()->success('Approve successfully');
         } elseif (isset($input['reject'])) {
 
-            $user->increment('balance', $transaction->final_amount);
+            if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
+                $comment =  "wd/reject/".substr($transaction->tnx, -7);
+                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+            } else {
+                $user->increment('balance', $transaction->final_amount);
+            }
+
             Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
 
             $newTransaction = $transaction->replicate();

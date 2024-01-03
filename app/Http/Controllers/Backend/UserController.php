@@ -158,6 +158,11 @@ class UserController extends Controller
 
         return view('backend.user.edit', compact('user', 'level'));
     }
+    public function destroy($id)
+    {
+        User::find($id)->delete();
+        return response()->json(['success' => 'Successfully deleted!']);
+    }
 
     /**
      * @return RedirectResponse

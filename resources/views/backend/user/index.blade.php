@@ -53,7 +53,7 @@
 @endsection
 
 @section('script')
-    ]
+
     <script>
         (function ($) {
             "use strict";

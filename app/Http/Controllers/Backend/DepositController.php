@@ -275,7 +275,7 @@ class DepositController extends Controller
 
             } else {
                 if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                    $comment =  "Deposit/".$transaction->tnx;
+                    $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
                     $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
                 } else {
                     $transaction->user->increment('balance', $transaction->amount);

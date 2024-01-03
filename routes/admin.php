@@ -50,7 +50,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 //===============================  Customer Management ==================================
-Route::resource('user', UserController::class)->only('index', 'edit', 'update');
+Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
 Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
     Route::get('active', 'activeUser')->name('active');
     Route::get('disabled', 'disabled')->name('disabled');

@@ -18,7 +18,7 @@ use Validator;
 
 class DepositController extends GatewayController
 {
-    use ImageUpload, NotifyTrait,ForexApiTrait;
+    use ImageUpload, NotifyTrait, ForexApiTrait;
 
     public function deposit()
     {
@@ -32,7 +32,7 @@ class DepositController extends GatewayController
         $gateways = DepositMethod::where('status', 1)->get();
 
         $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
             $this->syncForexAccounts(auth()->id());
         }
         $forexAccounts = ForexAccount::with('schema')
@@ -58,8 +58,8 @@ class DepositController extends GatewayController
             'target_id' => 'required',
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
-        ],[
-            'target_id.required'=>__('Kindly select Forex Account for deposit')
+        ], [
+            'target_id.required' => __('Kindly select Forex Account for deposit')
         ]);
 
         if ($validator->fails()) {
@@ -84,16 +84,21 @@ class DepositController extends GatewayController
 //        dd($input);
         $targetId = $input['target_id'];
         $targetType = 'forex_deposit';
-        $forexAccount = ForexAccount::where('login',$targetId)->first();
+        $forexAccount = ForexAccount::where('login', $targetId)->first();
 //        $targetId = 124234234;
-         $this->isValidForexAccount($targetId);
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $this->isValidForexAccount($targetId);
+        }
 
-        if (!$forexAccount->first_min_deposit_paid) {
-            if ($amount < $forexAccount->schema->first_min_deposit) {
-                $currencySymbol = setting('currency_symbol', 'global');
-                $message = 'Please Deposit the first Minimum Amount of ' . $currencySymbol . $forexAccount->schema->first_min_deposit;
-                notify()->error($message, 'Error');
-                return redirect()->back();
+        if (isset($forexAccount->schema->first_min_deposit) & $forexAccount->schema->first_min_deposit > 0) {
+            if (!$forexAccount->first_min_deposit_paid) {
+                if ($amount < $forexAccount->schema->first_min_deposit) {
+                    $currencySymbol = setting('currency_symbol', 'global');
+                    $message = 'Please Deposit the first Minimum Amount of ' . $currencySymbol . $forexAccount->schema->first_min_deposit;
+                    notify()->error($message, 'Error');
+                    return redirect()->back();
+                }
             }
         }
 //        dd('ss');

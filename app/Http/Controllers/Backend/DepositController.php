@@ -8,6 +8,7 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\DepositMethod;
+use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\Invest;
 use App\Models\LevelReferral;
@@ -25,7 +26,7 @@ use Txn;
 
 class DepositController extends Controller
 {
-    use NotifyTrait, ImageUpload,ForexApiTrait;
+    use NotifyTrait, ImageUpload, ForexApiTrait;
 
     /**
      * Display a listing of the resource.
@@ -69,7 +70,7 @@ class DepositController extends Controller
             'name' => 'required',
             'gateway_id' => 'required_if:type,==,auto',
             'method_code' => 'required_if:type,==,manual',
-            'currency' =>'required',
+            'currency' => 'required',
             'currency_symbol' => 'required',
             'charge' => 'required',
             'charge_type' => 'required',
@@ -88,7 +89,7 @@ class DepositController extends Controller
 
         if (isset($input['gateway_id'])) {
             $gateway = Gateway::find($input['gateway_id']);
-            $methodCode = $gateway->gateway_code.'-'.strtolower($input['currency']);
+            $methodCode = $gateway->gateway_code . '-' . strtolower($input['currency']);
         }
 
         $data = [
@@ -110,7 +111,7 @@ class DepositController extends Controller
         ];
 
         $depositMethod = DepositMethod::create($data);
-        notify()->success($depositMethod->name.' '.__(' Method Created'));
+        notify()->success($depositMethod->name . ' ' . __(' Method Created'));
 
         return redirect()->route('admin.deposit.method.list', $depositMethod->type);
     }
@@ -130,7 +131,7 @@ class DepositController extends Controller
         $validator = Validator::make($input, [
             'name' => 'required',
             'gateway_id' => 'required_if:type,==,auto',
-            'currency' =>'required',
+            'currency' => 'required',
             'currency_symbol' => 'required',
             'charge' => 'required',
             'charge_type' => 'required',
@@ -151,12 +152,12 @@ class DepositController extends Controller
 
         $user = \Auth::user();
         if ($depositMethod->type == GatewayType::Automatic) {
-            if (! $user->can('automatic-gateway-manage')) {
+            if (!$user->can('automatic-gateway-manage')) {
                 return redirect()->route('admin.deposit.method.list', $depositMethod->type);
             }
 
         } else {
-            if (! $user->can('manual-gateway-manage')) {
+            if (!$user->can('manual-gateway-manage')) {
                 return redirect()->route('admin.deposit.method.list', $depositMethod->type);
             }
         }
@@ -183,7 +184,7 @@ class DepositController extends Controller
         }
 
         $depositMethod->update($data);
-        notify()->success($depositMethod->name.' '.__(' Method Updated'));
+        notify()->success($depositMethod->name . ' ' . __(' Method Updated'));
 
         return redirect()->route('admin.deposit.method.list', $depositMethod->type);
     }
@@ -205,7 +206,7 @@ class DepositController extends Controller
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('amount', 'backend.transaction.include.__txn_amount')
                 ->editColumn('charge', function ($request) {
-                    return $request->charge.' '.setting('site_currency', 'global');
+                    return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.deposit.include.__action')
@@ -231,7 +232,7 @@ class DepositController extends Controller
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
                 ->editColumn('charge', function ($request) {
-                    return $request->charge.' '.setting('site_currency', 'global');
+                    return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->rawColumns(['status', 'type', 'final_amount', 'username'])
@@ -247,6 +248,7 @@ class DepositController extends Controller
         $data = Transaction::find($id);
         return view('backend.deposit.include.__deposit_action', compact('data', 'id'))->render();
     }
+
 
     public function actionNow(Request $request)
     {
@@ -275,8 +277,9 @@ class DepositController extends Controller
 
             } else {
                 if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                    $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
-                    $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
+                    $this->firstMinDepositUpdate($transaction->target_id);
                 } else {
                     $transaction->user->increment('balance', $transaction->amount);
                 }
@@ -320,4 +323,14 @@ class DepositController extends Controller
 
         return redirect()->back();
     }
+
+    public function FirstMinDepositUpdate($login)
+    {
+        $forexAccount = ForexAccount::where('login', $login)->first();
+        if (!$forexAccount) {
+            return false;
+        }
+        $forexAccount->update(['first_min_deposit_paid'=>1]);
+    }
 }
+

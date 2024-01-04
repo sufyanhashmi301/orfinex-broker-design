@@ -7,11 +7,11 @@
     @foreach( $kycCredential as $key => $value)
         <li class="list-group-item">
             {{ $key }}:
-{{--            @if(file_exists('assets/'.$value))--}}
+            @if(file_exists('assets/'.$value))
                 <img src="{{ asset($value) }}" alt=""/>
-{{--            @else--}}
-{{--                <strong>{{ $value }}</strong>--}}
-{{--            @endif--}}
+            @else
+                <strong>{{ $value }}</strong>
+            @endif
         </li>
     @endforeach
 </ul>

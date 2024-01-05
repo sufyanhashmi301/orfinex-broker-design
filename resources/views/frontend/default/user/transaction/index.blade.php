@@ -1,4 +1,5 @@
-@php use App\Enums\TxnStatus; @endphp
+@php use App\Enums\TxnStatus; use App\Enums\TxnType; @endphp
+
 @extends('frontend::layouts.user')
 @section('title')
     {{ __('Schema Logs') }}
@@ -113,8 +114,11 @@
                                                 {{ str_replace('_',' ',$transaction->type->value) }}
                                             </div>
                                         </td>
+{{--                                        @if($transaction->type == 'withdraw')--}}
+{{--                                            {{dd(App\Enums\TxnType::Withdraw)}}--}}
+{{--                                            @endif--}}
                                         <td class="table-td">
-                                            <strong class="{{$transaction->type !== 'subtract' && $transaction->type !== 'investment' && $transaction->type !== 'send_money' && $transaction->type !== 'withdraw' ? 'green-color': 'red-color'}}">{{ ($transaction->type !== 'subtract' && $transaction->type !== 'investment' && $transaction->type !== 'send_money' && $transaction->type !== 'withdraw' ? '+': '-' ).$transaction->amount.' '.$transaction->currency }}</strong>
+                                            <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto]) ?  'red-color' : 'green-color'}}">{{ (in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}</strong>
                                         </td>
                                         <td class="table-td">
                                             {{ $transaction->charge }} {{ $currency }}
@@ -139,7 +143,7 @@
                                                         @endswitch
                                                     </span>
                                                 </span>
-                                            </span>                                            
+                                            </span>
                                         </td>
                                         <td class="table-td">
                                             {{ ucfirst($transaction->method) }}
@@ -189,8 +193,8 @@
                                 <div class="transaction-fee sub mb-1 dark:text-white">
                                     -{{  $transaction->charge.' '. $currency .' '.__('Fee') }} </div>
                                 <div class="transaction-gateway mb-1 dark:text-white">{{ $transaction->method }}</div>
-    
-    
+
+
                                 @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
                                     <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
                                 @elseif($transaction->status->value ==  App\Enums\TxnStatus::Success->value)
@@ -204,7 +208,7 @@
                 </div>
                 {{  $transactions->onEachSide(1)->links() }}
             </div>
-            
+
         </div>
 
     </div>

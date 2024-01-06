@@ -49,6 +49,11 @@
                 @include('backend.ib.modal.__ib_reject')
                 {{--                @endcan--}}
                 <!-- Modal for reject IB-->
+                    <!-- Modal for view IB Detail-->
+                {{--                @can('customer-mail-send')--}}
+                @include('backend.ib.modal.__ib_detail')
+                {{--                @endcan--}}
+                <!-- Modal for view IB Detail-->
                 </div>
             </div>
         </div>
@@ -63,7 +68,7 @@
             var table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.ib.all') }}",
+                ajax: "{{ route('admin.ib.all.list') }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
@@ -74,13 +79,34 @@
                 ]
             });
 
+
+            $('#dataTable').on('click', '.detail-btn', function () {
+                console.log('view');
+                let userId = $(this).data('user-id');
+
+                // Fetch the IB data for the user via an AJAX request
+                $.ajax({
+                    url: "{{ route('admin.ib.answer.view', ['user' => ':userId']) }}".replace(':userId', userId),
+                    method: 'GET',
+                    success: function (response) {
+                        // Replace the modal content with the rendered view HTML
+                        $('#jsonDataContent').html(response);
+
+                        // Show the modal
+                        $('#viewDataModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.error('Error fetching IB data:', error);
+                    }
+                });
+            });
             //confirm IB
-            $('#dataTable').on('click', '.approve-btn', function() {
+            $('#dataTable').on('click', '.approve-btn', function () {
                 // Open the confirmation modal
                 $('#confirmModal').modal('show');
                 var rowData = table.row($(this).closest('tr')).data()
                 // Handle the "Confirm" button click inside the modal
-                $('#confirmBtn').on('click', function() {
+                $('#confirmBtn').on('click', function () {
                     // var rowData = table.row($(this).closest('tr')).data();
                     approveUser(rowData.id);
 
@@ -88,13 +114,13 @@
             });
 
             //reject IB
-            $('#dataTable').on('click', '.reject-btn', function() {
+            $('#dataTable').on('click', '.reject-btn', function () {
                 // Open the confirmation modal
                 $('#rejectModal').modal('show');
                 var rowData = table.row($(this).closest('tr')).data();
 
                 // Handle the "Confirm" button click inside the modal
-                $('#rejectBtn').on('click', function() {
+                $('#rejectBtn').on('click', function () {
                     // console.log('rowData')
                     // var rowData = table.row($(this).closest('tr')).data();
 
@@ -111,47 +137,49 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(res) {
-                        if(res.success){
+                    success: function (res) {
+                        if (res.success) {
                             tNotify('success', res.success);
                             $('#confirmModal').modal('hide');
-                            if(res.reload) {
-                                setTimeout(function(){ location.reload(); }, 900);
+                            if (res.reload) {
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 900);
                             }
-                            if(res.redirect) {
-                                setTimeout(function(){ window.location.replace(res.redirect); }, 900);
+                            if (res.redirect) {
+                                setTimeout(function () {
+                                    window.location.replace(res.redirect);
+                                }, 900);
                             }
                             if (res.modal) {
-                                $('#'+modalId).modal('toggle');
+                                $('#' + modalId).modal('toggle');
                                 // NioApp.Form.errors(res, true);
                                 // btn.prop('disabled', false);
                             }
-                        }
-                        else if(res.append){
-                            $('#'+appendId).html(res.append);
+                        } else if (res.append) {
+                            $('#' + appendId).html(res.append);
                             // NioApp.Toast(res.error, 'warning');
                             // setTimeout(function(){ location.reload(); }, 900);
-                        }
-                        else if(res.error){
+                        } else if (res.error) {
                             // NioApp.Toast(res.error, 'warning');
                             // tNotify('warning', res.message);
                             tNotify('warning', res.error);
                             // setTimeout(function(){ location.reload(); }, 900);
-                        }
-                        else if (res.errors) {
+                        } else if (res.errors) {
                             NioApp.Form.errors(res, true);
                             tNotify('warning', res.message);
                             btn.prop('disabled', false);
                         }
                         table.ajax.reload();
                     },
-                    error: function(error) {
+                    error: function (error) {
                         // console.log(data.responseJSON.message,'data.message')
                         tNotify('warning', error.responseJSON.message);
                         // console.error(error);
                     }
                 });
             }
+
             function rejectUser(userId) {
                 $.ajax({
                     type: 'POST',
@@ -160,25 +188,28 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(res) {
-                        if(res.success){
+                    success: function (res) {
+                        if (res.success) {
                             tNotify('success', res.success);
 
                             $('#rejectModal').modal('hide');
-                            if(res.reload) {
-                                setTimeout(function(){ location.reload(); }, 900);
+                            if (res.reload) {
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 900);
                             }
-                            if(res.redirect) {
-                                setTimeout(function(){ window.location.replace(res.redirect); }, 900);
+                            if (res.redirect) {
+                                setTimeout(function () {
+                                    window.location.replace(res.redirect);
+                                }, 900);
                             }
                             if (res.modal) {
-                                $('#'+modalId).modal('toggle');
+                                $('#' + modalId).modal('toggle');
                                 // NioApp.Form.errors(res, true);
                                 // btn.prop('disabled', false);
                             }
-                        }
-                        else if(res.append){
-                            $('#'+appendId).html(res.append);
+                        } else if (res.append) {
+                            $('#' + appendId).html(res.append);
                             // NioApp.Toast(res.error, 'warning');
                             // setTimeout(function(){ location.reload(); }, 900);
 
@@ -191,6 +222,7 @@
                             function stringMatch(term, candidate) {
                                 return candidate && candidate.toLowerCase().indexOf(term.toLowerCase()) >= 0;
                             }
+
                             function matchCustom(params, data) {
                                 // If there are no search terms, return all of the data
                                 if ($.trim(params.term) === '') {
@@ -211,6 +243,7 @@
                                 // Return `null` if the term should not be displayed
                                 return null;
                             }
+
                             function formatState(opt) {
                                 if (!opt.id) {
                                     return opt.text.toUpperCase();
@@ -228,27 +261,26 @@
                                     return $opt;
                                 }
                             }
-                        }
-                        else if(res.error){
+                        } else if (res.error) {
                             // NioApp.Toast(res.error, 'warning');
                             // tNotify('warning', res.message);
                             tNotify('warning', res.error);
                             // setTimeout(function(){ location.reload(); }, 900);
-                        }
-                        else if (res.errors) {
+                        } else if (res.errors) {
                             NioApp.Form.errors(res, true);
                             tNotify('warning', res.message);
                             btn.prop('disabled', false);
                         }
                         table.ajax.reload();
                     },
-                    error: function(error) {
+                    error: function (error) {
                         // console.log(data.responseJSON.message,'data.message')
                         tNotify('warning', error.responseJSON.message);
                         // console.error(error);
                     }
                 });
             }
+
 
             //send mail modal form open
             $('body').on('click', '.send-mail', function () {

@@ -87,6 +87,7 @@
 
                         @foreach($ibQuestions as $ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
+{{--                                {{dd($field)}}--}}
                                 <div class="input-area">
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-12">
@@ -94,7 +95,7 @@
                                         </div>
                                         @if($field->type === 'text')
                                             <div class="md:col-span-6 col-span-12">
-                                                <input name="fields[{{ $ibQuestion->name }}]"
+                                                <input name="fields[{{ $field->name }}]"
                                                        class="form-control !text-lg" type="text" value="">
                                             </div>
                                         @elseif($field->type === 'checkbox')
@@ -104,7 +105,7 @@
                                                         <label for="flexCheckDefault{{$index}}"
                                                                class="inline-flex items-center cursor-pointer">
                                                             <input class="hidden" type="checkbox"
-                                                                   name="fields[{{ $ibQuestion->name }}][]"
+                                                                   name="fields[{{ $field->name }}][]"
                                                                    value="{{ $option }}" id="flexCheckDefault{{$index}}"
                                                                    required/>
                                                             <span
@@ -128,7 +129,7 @@
                                                     <div class="basicRadio mb-2">
                                                         <label class="flex items-center cursor-pointer">
                                                             <input type="radio" class="hidden"
-                                                                   name="fields[{{ $ibQuestion->name }}]"
+                                                                   name="fields[{{ $field->name }}]"
                                                                    value="{{ $option }}">
                                                             <span
                                                                 class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
@@ -142,7 +143,7 @@
                                             </div>
                                         @elseif($field->type === 'dropdown')
                                             <div class="md:col-span-6 col-span-12 select2-lg">
-                                                <select name="fields[{{ $ibQuestion->name }}]"
+                                                <select name="fields[{{ $field->name }}]"
                                                         class="select2 form-control w-full mt-2 py-2">
                                                     @foreach($field->options as $option)
                                                         <option value="{{ $option }}"

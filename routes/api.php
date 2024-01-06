@@ -16,6 +16,6 @@ use App\Http\Controllers\ApiController;
 Route::get('/forex', [ApiController::class, 'index'])->name('api.forex');
 
 //Route::get('/forex', 'ApiController@index')->name('api.forex');
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});

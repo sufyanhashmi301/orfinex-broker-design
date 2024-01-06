@@ -211,8 +211,8 @@ class IBController extends Controller
 //        $group = 'IB\1';
         $auth = config('forextrading.auth');
         $server = config('forextrading.server');
-        $password = 'Brk&12345';
-        $investPassword = 'Brk&12345';
+        $password = 'SNNH@2024@bol';
+        $investPassword = 'SNNH@2024@bol';
         $name = $user->full_name;
         if(!$name){
             $name = 'abc';
@@ -245,8 +245,8 @@ class IBController extends Controller
 //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
 //        }
 
-        if ($response->status() == 200 && $response->successful() && $response->object()->data[1]->error == 0) {
-            $resData = $response->object()->data[0];
+        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
+            $resData = $response->object();
 //            dd($response,$response->data[0]->Login);
 //            if ($resData->Login) {
 ////                $data = $request->all();

@@ -229,9 +229,9 @@ class IBController extends Controller
             'Name' => $name,
             'Leverage' => 1,
             'Group' => $group,
-            'MainPassword' => $password,
-            'InvestPassword' => $investPassword,
-            'PhonePassword' => $password,
+            'MasterPassword' => $password,
+            'InvestorPassword' => $investPassword,
+//            'PhonePassword' => $password,
             'Email' => $user->email,
             'Phone' =>$phone,
             'Country' => $country,
@@ -241,7 +241,7 @@ class IBController extends Controller
         $dataArray['Rights'] = 'USER_RIGHT_ALL';
         $dataArray['Status'] = 'YES';
         $URL = config('forextrading.createUserUrl');
-//        dd($dataArray,$URL);
+        dd($dataArray,$URL);
         $response = $this->sendApiPostRequest($URL, $dataArray);
         dd($response->object());
 //        if ($response->serverError() || $response->failed()) {

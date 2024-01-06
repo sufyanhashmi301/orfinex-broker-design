@@ -95,7 +95,7 @@ class IBController extends Controller
 //            ]);
 //        }
         $formData = $request->input('fields');
-        $userIbProgram = IbQuestionAnswer::create([
+        $userIbProgram = IbQuestionAnswer::updateOrCreate([
             'user_id' => auth()->id(), // Assuming you are storing the user_id
             'fields' => json_encode($formData),
         ]);

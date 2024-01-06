@@ -18,8 +18,10 @@
 <button class="btn btn-primary approve-btn" data-toggle="tooltip" data-placement="top" title="Edit">
     <i class="fas fa-edit"></i>
 </button>
-@endif
+
+
 <button type="button" class="btn btn-danger reject-btn" data-toggle="tooltip" data-placement="top" title="Reject">
     <i class="fas fa-times"></i>
 </button>
+@endif
 

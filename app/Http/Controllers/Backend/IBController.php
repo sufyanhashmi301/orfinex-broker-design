@@ -232,15 +232,18 @@ class IBController extends Controller
             'MainPassword' => $password,
             'InvestPassword' => $investPassword,
             'PhonePassword' => $password,
-            'auth' => $auth,
             'Email' => $user->email,
             'Phone' =>$phone,
             'Country' => $country,
         );
+        $dataArray['Login'] = 0;
+        $dataArray['Language'] = 0;
+        $dataArray['Rights'] = 'USER_RIGHT_ALL';
+        $dataArray['Status'] = 'YES';
         $URL = config('forextrading.createUserUrl');
 //        dd($dataArray,$URL);
-        $response = $this->sendApiRequest($URL, $dataArray);
-//        dd($response->object());
+        $response = $this->sendApiPostRequest($URL, $dataArray);
+        dd($response->object());
 //        if ($response->serverError() || $response->failed()) {
 //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
 //        }

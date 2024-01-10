@@ -233,3 +233,7 @@ Route::get('user/agreements', function () {
     return view('frontend.default.user.setting.agreements.index');
 })->name('user.agreements');
 
+Route::get('user/margin-account', function () {
+    return view('frontend.default.user.setting.margin.index');
+})->name('user.margin-account');
+

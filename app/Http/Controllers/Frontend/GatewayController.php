@@ -24,6 +24,7 @@ class GatewayController extends Controller
             $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
             $gateway['currency'] = $gatewayCurrency;
         }
+//        dd($gateway);
         return $gateway;
     }
 

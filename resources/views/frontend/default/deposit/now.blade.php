@@ -15,8 +15,6 @@
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div class="input-area relative">
                     <label for="" class="form-label">{{ __('Payment Method:') }}</label>
                     <div class="input-group select2-lg">
@@ -29,6 +27,9 @@
                     </div>
                     <div class="font-Inter text-xs text-red-500 pt-2 inline-block charge"></div>
                 </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+
                 <div class="input-area relative">
                     <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                     <div class="relative">
@@ -38,6 +39,16 @@
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                     </div>
                     <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
+                </div>
+                <div class="input-area relative conversion hidden">
+                    <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                    <div class="relative">
+                        <input type="text"  class="form-control !text-lg"
+                               oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
+                               aria-describedby="basic-addon2">
+                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+                    </div>
+                    <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
                 </div>
 
             </div>
@@ -122,6 +133,17 @@
                     $('.conversion').addClass('hidden');
                 }else {
                     $('.conversion').removeClass('hidden');
+                    $('#basic-addon2').text(globalData.currency);
+                    $('#amount').trigger('keyup')
+                    // var amount = $('#amount').val();
+                    // if (typeof amount !== 'undefined' && typeof amount === 'number' && Number.isInteger(amount)) {
+                    //     var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
+                    //     $('.charge2').text(charge + ' ' + currency)
+                    //     var total = (Number(amount) + Number(charge));
+                    //     $('#converted-amount').val((total * globalData.rate).toFixed(2))
+                    // }
+
+
                 }
 
                 $('.charge').text('Charge ' + data.charge + ' ' + (data.charge_type === 'percentage' ? ' % ' : currency))
@@ -159,7 +181,28 @@
 
                 $('.total').text(total + ' ' + currency)
 
+                $('.pay-amount').text((total * globalData.rate).toFixed(2) +' '+ globalData.currency)
+
+                $('#converted-amount').val((total * globalData.rate).toFixed(2))
+            })
+            $('#converted-amount').on('keyup', function (e) {
+                "use strict"
+                var converted_amount = $(this).val();
+                var amount = (converted_amount / globalData.rate).toFixed(2);
+                $('#amount').val(amount);
+                $('.amount').text((Number(amount)))
+                $('.currency').text(currency)
+
+                var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
+                $('.charge2').text(charge + ' ' + currency)
+
+                var total = (Number(amount) + Number(charge));
+
+                $('.total').text(total + ' ' + currency)
+
                 $('.pay-amount').text(total * globalData.rate +' '+ globalData.currency)
+
+
             })
 
 

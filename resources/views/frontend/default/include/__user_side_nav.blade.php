@@ -16,7 +16,7 @@
                     {{auth()->user()->full_name}}
                 </h4>
                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                    Biffco@example.com
+                    {{auth()->user()->email}}
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
     <button class="sidebarCloseIcon text-2xl">
       <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
     </button>
-    
+
     <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
         <a href="{{ route('user.ranking-badge') }}" class="inline-flex btn btn-outline-dark btn-sm">
             {{ __('Ranking Badge') }}
@@ -58,7 +58,7 @@
                 </span>
             </a>
         </li>
-        
+
         <li>
             <a href="{{ route('user.forex-account-logs') }}" class="navItem {{ isActive('user.forex*') }}">
                 <span class="flex items-center">

@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
+use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -26,7 +27,7 @@ use Txn;
 
 class WithdrawController extends Controller
 {
-    use ImageUpload, NotifyTrait;
+    use ImageUpload, NotifyTrait, ForexApiTrait;
 
     /**
      * Display a listing of the resource.
@@ -307,7 +308,13 @@ class WithdrawController extends Controller
             notify()->success('Approve successfully');
         } elseif (isset($input['reject'])) {
 
-            $user->increment('balance', $transaction->final_amount);
+            if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
+                $comment =  "wd/reject/".substr($transaction->tnx, -7);
+                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+            } else {
+                $user->increment('balance', $transaction->final_amount);
+            }
+
             Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
 
             $newTransaction = $transaction->replicate();

@@ -10,6 +10,7 @@ use App\Traits\ForexApiTrait;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
 
 class IBController extends Controller
 {
@@ -68,7 +69,7 @@ class IBController extends Controller
         return redirect()->route('admin.ib-form.index');
     }
 
-    public function IbPending(Request $request)
+    public function IbPendingList(Request $request)
     {
         if ($request->ajax()) {
 
@@ -94,7 +95,7 @@ class IBController extends Controller
         }
         return view('backend.ib.pending');
     }
-    public function IbApproved(Request $request)
+    public function IbApprovedList(Request $request)
     {
         if ($request->ajax()) {
 
@@ -121,7 +122,7 @@ class IBController extends Controller
         return view('backend.ib.approved');
     }
 
-    public function IbRejected(Request $request)
+    public function IbRejectedList(Request $request)
     {
         if ($request->ajax()) {
 
@@ -148,7 +149,7 @@ class IBController extends Controller
         return view('backend.ib.rejected');
     }
 
-    public function IbAll(Request $request)
+    public function IbAllList(Request $request)
     {
         if ($request->ajax()) {
 
@@ -173,6 +174,13 @@ class IBController extends Controller
                 ->make(true);
         }
         return view('backend.ib.all');
+    }
+    public function answerView(User $user)
+    {
+        $ibData = $user->ibQuestionAnswers; // Adjust this based on your actual relationship
+        return View::make('backend.ib.include.__ib_detail_render', ['user' => $user, 'ibData' => $ibData]);
+
+//        return response()->json($ibData);
     }
     public function approveIbMember(Request $request)
     {
@@ -211,8 +219,8 @@ class IBController extends Controller
 //        $group = 'IB\1';
         $auth = config('forextrading.auth');
         $server = config('forextrading.server');
-        $password = 'Brk&12345';
-        $investPassword = 'Brk&12345';
+        $password = 'SNNH@2024@bol';
+        $investPassword = 'SNNH@2024@bol';
         $name = $user->full_name;
         if(!$name){
             $name = 'abc';
@@ -229,24 +237,27 @@ class IBController extends Controller
             'Name' => $name,
             'Leverage' => 1,
             'Group' => $group,
-            'MainPassword' => $password,
-            'InvestPassword' => $investPassword,
-            'PhonePassword' => $password,
-            'auth' => $auth,
+            'MasterPassword' => $password,
+            'InvestorPassword' => $investPassword,
+//            'PhonePassword' => $password,
             'Email' => $user->email,
             'Phone' =>$phone,
             'Country' => $country,
         );
+        $dataArray['Login'] = 0;
+        $dataArray['Language'] = 0;
+        $dataArray['Rights'] = 'USER_RIGHT_ALL';
+        $dataArray['Status'] = 'YES';
         $URL = config('forextrading.createUserUrl');
 //        dd($dataArray,$URL);
-        $response = $this->sendApiRequest($URL, $dataArray);
+        $response = $this->sendApiPostRequest($URL, $dataArray);
 //        dd($response->object());
 //        if ($response->serverError() || $response->failed()) {
 //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
 //        }
 
-        if ($response->status() == 200 && $response->successful() && $response->object()->data[1]->error == 0) {
-            $resData = $response->object()->data[0];
+        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
+            $resData = $response->object();
 //            dd($response,$response->data[0]->Login);
 //            if ($resData->Login) {
 ////                $data = $request->all();
@@ -283,22 +294,9 @@ class IBController extends Controller
 
         $user = User::find($userID);
         if (!blank($user)) {
-//            if ($user->status == UserStatus::INACTIVE) {
-//                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
-//            }
-////            if ($user->ib_status == IBStatus::APPROVED) {
-//                throw ValidationException::withMessages(['invalid' => __('User has already a member of IB Program.')]);
-//            }
-//            $response = $this->saveForexAccount($user);
-
-//            if ($response) {
-                $user->ib_status = IBStatus::REJECTED;
+            $user->ib_status = IBStatus::REJECTED;
             $user->save();
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
-//            }else{
-//                throw ValidationException::withMessages(['invalid' => __('some error occurred.please try again!')]);
-//
-//            }
         }
     }
     public function saveForm(Request $request)

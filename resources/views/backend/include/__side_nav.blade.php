@@ -272,26 +272,26 @@
                         </a>
                         <ul class="dropdown-items">
                             @canany(['ib-list','ib-action'])
-                                <li class="{{ isActive('admin.ib.pending') }}">
-                                    <a href="{{ route('admin.ib.pending') }}">
+                                <li class="{{ isActive('admin.ib.pending.list') }}">
+                                    <a href="{{ route('admin.ib.pending.list') }}">
                                         <i icon-name="airplay"></i>
                                         {{ __('Pending IB') }}
                                     </a>
                                 </li>
-                                <li class="{{ isActive('admin.ib.approved') }}">
-                                    <a href="{{ route('admin.ib.approved') }}">
+                                <li class="{{ isActive('admin.ib.approved.list') }}">
+                                    <a href="{{ route('admin.ib.approved.list') }}">
                                         <i icon-name="airplay"></i>
                                         {{ __('Approved IB') }}
                                     </a>
                                 </li>
-                                <li class="{{ isActive('admin.ib.rejected') }}">
-                                    <a href="{{ route('admin.ib.rejected') }}">
+                                <li class="{{ isActive('admin.ib.rejected.list') }}">
+                                    <a href="{{ route('admin.ib.rejected.list') }}">
                                         <i icon-name="file-warning"></i>
                                         {{ __('Rejected IB') }}
                                     </a>
                                 </li>
-                                <li class="{{ isActive('admin.ib.all') }}">
-                                    <a href="{{ route('admin.ib.all') }}">
+                                <li class="{{ isActive('admin.ib.all.list') }}">
+                                    <a href="{{ route('admin.ib.all.list') }}">
                                         <i icon-name="contact"></i>
                                         {{ __('All IB Logs') }}
                                     </a>

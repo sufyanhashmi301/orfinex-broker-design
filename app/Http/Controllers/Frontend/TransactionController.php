@@ -10,12 +10,16 @@ class TransactionController extends Controller
 {
     public function transactions()
     {
+//        dd('s');
         $transactions = Transaction::search(request('query'), function ($query) {
             $query->where('user_id', auth()->user()->id)
                 ->when(request('date'), function ($query) {
                     $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));
                 });
-        })->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        })->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')
+            ->paginate(10)->withQueryString();
+//            ->get();
+//        dd($transactions);
 
         return view('frontend::user.transaction.index', compact('transactions'));
     }

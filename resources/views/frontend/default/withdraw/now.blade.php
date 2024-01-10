@@ -51,12 +51,12 @@
                                             @foreach($forexAccounts as $forexAccount)
                                                 <option value="{{ $forexAccount->login }}" data-type="forex"
                                                         class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }}
-                                                    - {{ $forexAccount->account_name }}</option>
+                                                    - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})</option>
                                             @endforeach
                                             @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
                                                 <option value="{{ auth()->user()->ib_login }}" data-type="ib-account"
                                                         class="inline-block font-Inter font-normal text-sm text-slate-600">{{ auth()->user()->ib_login }}
-                                                    - {{ __('IB') }}</option>
+                                                    - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})</option>
                                             @endif
                                         </select>
                                     </div>
@@ -161,7 +161,7 @@
             $('.withdrawFee').text(charge)
             $('.processing-time').text(info.processing_time)
             $('.withdrawAmountRange').text(info.range)
-            $('.pay-amount').text(amount * info.rate + ' ' + info.pay_currency)
+            $('.pay-amount').text(((amount * info.rate) - (charge * info.rate)).toFixed(2) + ' ' + info.pay_currency)
         })
     </script>
 @endsection

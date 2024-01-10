@@ -15,9 +15,10 @@ class ApiController extends Controller
     public function index(Request $request)
     {
 //        dd('a');
-        $data = $request->except(['URL']);
-        $response = Http::retry(3, 100)->get($request->get('URL'), $data);
-        return $response;
+//        $data = $request->except(['URL']);
+//        $response = Http::retry(3, 100)->get($request->get('URL'), $data);
+//        return $response;
+        return 'success';
     }
 
     /**

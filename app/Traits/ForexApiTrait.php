@@ -40,20 +40,7 @@ trait ForexApiTrait
 
     public function sendApiRequest($URL, $dataArray)
     {
-//        $clientIp = request()->ip();
-////        dd($clientIp);
-//        if(in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $dataArray['URL'] = $URL;
-//            $localURL = 'https://my.orfinex.com/api/forex';
-////        $localURL = env('EXT_FOREX_URL');
-////            dd($dataArray,$localURL);
-//            $resp = Http::retry(3, 100)->get($localURL, $dataArray);
-//            dd($resp->object());
-////            $data = $request->except(['URL']);
-////            $response = Http::retry(3, 100)->get($request->get('URL'), $data);
-////            dd($response);
-//        }
-//        dd('ss');
+
         try {
             return Http::retry(3, 100)->get($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
@@ -62,13 +49,6 @@ trait ForexApiTrait
     }
     public function sendApiPostRequest($URL, $dataArray)
     {
-//        $URL = config('forextrading.depositUrl');
-//
-//        $dataArray = array(
-//            'Login' => 9996864,
-//            'Amount' => 10,
-//            'Comment' => 'testing',
-//        );
         try {
             return Http::retry(3, 100)->post($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {

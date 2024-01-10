@@ -50,7 +50,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 //===============================  Customer Management ==================================
-Route::resource('user', UserController::class)->only('index', 'edit', 'update');
+Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
 Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
     Route::get('active', 'activeUser')->name('active');
     Route::get('disabled', 'disabled')->name('disabled');
@@ -75,10 +75,11 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
 
 Route::resource('ib-form', IBController::class);
 Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
-    Route::get('pending', 'IbPending')->name('pending');
-    Route::get('approved', 'IbApproved')->name('approved');
-    Route::get('rejected', 'IbRejected')->name('rejected');
-    Route::get('all', 'ibAll')->name('all');
+    Route::get('pending', 'IbPendingList')->name('pending.list');
+    Route::get('approved', 'IbApprovedList')->name('approved.list');
+    Route::get('rejected', 'IbRejectedList')->name('rejected.list');
+    Route::get('all', 'ibAllList')->name('all.list');
+    Route::get('answer/view/{user}', 'answerView')->name('answer.view');
     Route::post('approve', 'approveIbMember')->name('approve');
     Route::post('reject', 'rejectIbMember')->name('reject');
     Route::post('save/form', 'saveForm')->name('save.form');

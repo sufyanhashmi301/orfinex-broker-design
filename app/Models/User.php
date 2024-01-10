@@ -125,6 +125,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(UserMeta::class);
     }
+    public function ibQuestionAnswers()
+    {
+        return $this->hasOne(IbQuestionAnswer::class);
+    }
 
     public function totalProfit($days = null)
     {

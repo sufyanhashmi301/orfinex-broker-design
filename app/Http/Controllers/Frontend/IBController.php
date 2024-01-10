@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Enums\AccountBalanceType;
 use App\Enums\ForexTradingAccountTypesStatus;
 use App\Enums\ForexTradingStatus;
+use App\Enums\IBStatus;
 use App\Enums\TransactionCalcType;
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
@@ -12,6 +13,7 @@ use App\Enums\UserState;
 use App\Events\IBTransferEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ForexTrading;
+use App\Models\IbQuestionAnswer;
 use App\Models\Referral;
 use App\Models\Transaction;
 use App\Models\User;
@@ -84,7 +86,7 @@ class IBController extends Controller
 //        if(!array_key_exists('profile_display_full_name',$metaData)){
 //            $metaData['profile_display_full_name']='off';
 //        }
-        $data = $request->input('fields');
+//        $data = $request->input('fields');
 //        dd($data);
 //        foreach ($data as $key => $value) {
 //            auth()->user()->user_metas()->create([
@@ -92,7 +94,15 @@ class IBController extends Controller
 //                'meta_value' => $value,
 //            ]);
 //        }
-        $this->completeIBProfile($data);
+        $formData = $request->input('fields');
+        $userIbProgram = IbQuestionAnswer::updateOrCreate([
+            'user_id' => auth()->id(), // Assuming you are storing the user_id
+            'fields' => json_encode($formData),
+        ]);
+        auth()->user()->update(['ib_status' => IBStatus::PENDING]);
+
+//        dd($userIbProgram);
+//        $this->completeIBProfile($data);
         return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 
     }

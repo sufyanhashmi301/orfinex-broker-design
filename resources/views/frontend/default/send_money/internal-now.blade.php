@@ -13,12 +13,12 @@
                         <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected disabled>--{{ __('Select Account') }}--</option>
                             @foreach($forexAccounts as $forexAccount)
-                                <option value="{{ $forexAccount->login }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}({{ $forexAccount->balance }} {{$currency}})</option>
+                                <option value="{{ $forexAccount->login }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})</option>
                             @endforeach
                             @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
                                 <option value="{{ auth()->user()->ib_login }}" data-type="ib-account"
                                         class="inline-block font-Inter font-normal text-sm text-slate-600" data-type="forex">{{ auth()->user()->ib_login }}
-                                    - {{ __('IB') }}({{ auth()->user()->ib_balance }} {{$currency}})</option>
+                                    - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})</option>
                             @endif
                             <option  value="profit_wallet" data-type="wallet" class="inline-block font-Inter font-normal text-sm text-slate-600" >{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
                         </select>
@@ -32,7 +32,7 @@
                         <select  id="receiverTradingAccount" name="receiver_account" class="select2 form-control !text-lg w-full mt-2 py-2">
                             <option selected disabled>--{{ __('Select Account') }}--</option>
                             @foreach($forexAccounts as $forexAccount)
-                                <option value="{{ $forexAccount->login }}">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}({{ $forexAccount->balance }} {{$currency}})</option>
+                                <option value="{{ $forexAccount->login }}">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}({{ $forexAccount->equity }} {{$currency}})</option>
                             @endforeach
                         </select>
                     </div>

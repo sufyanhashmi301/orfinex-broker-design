@@ -195,7 +195,7 @@ class WithdrawController extends Controller
         $method = $withdrawAccount->method;
         $charge = $method->charge;
         $name = $withdrawAccount->method_name;
-        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time . $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
+        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time .' '. $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
 
         $info = [
             'name' => $name,
@@ -272,7 +272,7 @@ class WithdrawController extends Controller
         }
 
         $charge = $withdrawMethod->charge_type == 'percentage' ? (($withdrawMethod->charge / 100) * $amount) : $withdrawMethod->charge;
-        $totalAmount = $amount + (float)$charge;
+        $totalAmount = $amount ;
 
         $user = Auth::user();
         $targetId = $input['target_id'];
@@ -286,7 +286,7 @@ class WithdrawController extends Controller
 
 
 
-        $payAmount = $amount * $withdrawMethod->rate;
+        $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate)  ;
 
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
 

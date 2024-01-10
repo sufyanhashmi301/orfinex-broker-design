@@ -49,6 +49,11 @@
                 @include('backend.ib.modal.__ib_reject')
                 {{--                @endcan--}}
                 <!-- Modal for reject IB-->
+                    <!-- Modal for view IB Detail-->
+                {{--                @can('customer-mail-send')--}}
+                @include('backend.ib.modal.__ib_detail')
+                {{--                @endcan--}}
+                <!-- Modal for view IB Detail-->
                 </div>
             </div>
         </div>
@@ -64,7 +69,7 @@
             var table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.ib.rejected') }}",
+                ajax: "{{ route('admin.ib.rejected.list') }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
@@ -75,6 +80,26 @@
                 ]
             });
 
+            $('#dataTable').on('click', '.detail-btn', function () {
+                console.log('view');
+                let userId = $(this).data('user-id');
+
+                // Fetch the IB data for the user via an AJAX request
+                $.ajax({
+                    url: "{{ route('admin.ib.answer.view', ['user' => ':userId']) }}".replace(':userId', userId),
+                    method: 'GET',
+                    success: function (response) {
+                        // Replace the modal content with the rendered view HTML
+                        $('#jsonDataContent').html(response);
+
+                        // Show the modal
+                        $('#viewDataModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.error('Error fetching IB data:', error);
+                    }
+                });
+            });
             //confirm IB
             $('#dataTable').on('click', '.approve-btn', function() {
                 // Open the confirmation modal

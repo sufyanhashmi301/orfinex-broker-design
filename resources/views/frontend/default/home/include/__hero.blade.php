@@ -1,3 +1,31 @@
+<section class="bg-white dark:bg-gray-900 py-20 px-5">
+    <div class="mx-auto max-w-2xl">
+        <div class="text-center space-y-5">
+            <p class="subtitle text-primary-500 font-light uppercase">
+                Better and Secure
+            </p>
+            <h2 class="text-6xl capitalize">
+                {{--{{dd($data['hero_title'] )}}--}}
+                {{ $data['hero_title'] }}
+            </h2>
+            <p>{{ $data['hero_content'] }}</p>
+            <div class="space-x-3">
+                <a href="{{ $data['hero_button1_url'] }}" class="btn inline-flex justify-center btn-dark" target="{{ $data['hero_button1_target'] }}">
+                    <span class="flex items-center">
+                        <iconify-icon icon="{{ $data['hero_button1_icon'] }}" class="text-xl ltr:mr-2 rtl:ml-2"></iconify-icon>
+                        <span>{{ $data['hero_button1_level'] }}</span>
+                    </span>
+                </a>
+                <a href="{{ $data['hero_button2_url'] }}" class="btn inline-flex justify-center btn-outline-dark" target="{{ $data['hero_button2_target'] }}">
+                    <span class="flex items-center">
+                        <iconify-icon icon="{{ $data['hero_button2_icon'] }}" class="text-xl ltr:mr-2 rtl:ml-2"></iconify-icon>
+                        <span>{{ $data['hero_button2_lavel'] }}</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 <section class="banner light-blue-bg">
     <div class="slider-thumb"></div>
     <div class="container">

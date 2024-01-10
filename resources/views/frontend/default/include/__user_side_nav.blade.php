@@ -1,9 +1,26 @@
 
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
-<div class="logo-segment">
-    <a href="{{route('home')}}" class="flex items-center">
+<div class="logo-segment flex-wrap">
+    <a href="{{route('home')}}" class="items-center md:flex hidden">
         <img src="{{ asset(setting('site_logo','global')) }}" class="h-10" alt="Logo"/>
     </a>
+    <div class="md:hidden">
+        <div class="flex items-center">
+            <div class="flex-none">
+                <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                </div>
+            </div>
+            <div class="flex-1 text-start">
+                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                    {{auth()->user()->full_name}}
+                </h4>
+                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                    Biffco@example.com
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Sidebar Type Button -->
     <div id="sidebar_type" class="cursor-pointer text-slate-900 dark:text-white text-lg">
         <span class="sidebarDotIcon extend-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
@@ -16,6 +33,18 @@
     <button class="sidebarCloseIcon text-2xl">
       <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
     </button>
+    
+    <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
+        <a href="{{ route('user.ranking-badge') }}" class="inline-flex btn btn-outline-dark btn-sm">
+            {{ __('Ranking Badge') }}
+        </a>
+        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+            @csrf
+            <a href="{{ url('logout') }}" onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();" class="inline-flex btn btn-dark btn-sm">
+                {{ __('Logout') }}
+            </a>
+        </form>
+    </div>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
 <div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">

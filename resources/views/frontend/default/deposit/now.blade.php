@@ -135,15 +135,6 @@
                     $('.conversion').removeClass('hidden');
                     $('#basic-addon2').text(globalData.currency);
                     $('#amount').trigger('keyup')
-                    // var amount = $('#amount').val();
-                    // if (typeof amount !== 'undefined' && typeof amount === 'number' && Number.isInteger(amount)) {
-                    //     var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
-                    //     $('.charge2').text(charge + ' ' + currency)
-                    //     var total = (Number(amount) + Number(charge));
-                    //     $('#converted-amount').val((total * globalData.rate).toFixed(2))
-                    // }
-
-
                 }
 
                 $('.charge').text('Charge ' + data.charge + ' ' + (data.charge_type === 'percentage' ? ' % ' : currency))
@@ -181,14 +172,14 @@
 
                 $('.total').text(total + ' ' + currency)
 
-                $('.pay-amount').text((total * globalData.rate).toFixed(2) +' '+ globalData.currency)
+                $('.pay-amount').text((total * globalData.rate).toFixed(4) +' '+ globalData.currency)
 
-                $('#converted-amount').val((total * globalData.rate).toFixed(2))
+                $('#converted-amount').val((total * globalData.rate).toFixed(4))
             })
             $('#converted-amount').on('keyup', function (e) {
                 "use strict"
                 var converted_amount = $(this).val();
-                var amount = (converted_amount / globalData.rate).toFixed(2);
+                var amount = (converted_amount / globalData.rate).toFixed(4);
                 $('#amount').val(amount);
                 $('.amount').text((Number(amount)))
                 $('.currency').text(currency)

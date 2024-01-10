@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\ForexAccount;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 class MigrateOldData extends Command
@@ -19,6 +20,7 @@ class MigrateOldData extends Command
 
     public function handle()
     {
+//        dd(Hash::make('Brk12345'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();

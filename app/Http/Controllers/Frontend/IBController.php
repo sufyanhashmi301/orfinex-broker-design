@@ -13,6 +13,7 @@ use App\Enums\UserState;
 use App\Events\IBTransferEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ForexTrading;
+use App\Models\IbQuestion;
 use App\Models\IbQuestionAnswer;
 use App\Models\Referral;
 use App\Models\Transaction;
@@ -69,43 +70,41 @@ class IBController extends Controller
     {
 
 //        dd($request->all());
-//        $request->validate([
-//            'ib_clients_country'=> 'required|string',
-//            'ib_broker_introduced' => 'required|string',
-//            'ib_promote_platform' => 'required|string',
-//            'ib_monthly_clients' => 'required|string'
-//        ], [
-//            'ib_clients_country.required' => __("Please choose your country."),
-//            'ib_broker_introduced.required' => __("Please choose your broker introducing."),
-//            'ib_promote_platform.required' => __("Please choose your promote platform."),
-//            'ib_monthly_clients.required' => __("Please choose your promote platform."),
-//        ]);
+        $this->validate($request, $this->getValidationRules());
 
-//        $metaData = $request->only([ 'ib_clients_country', 'ib_broker_introduced', 'ib_promote_platform', 'ib_monthly_clients' ]);
-//
-//        if(!array_key_exists('profile_display_full_name',$metaData)){
-//            $metaData['profile_display_full_name']='off';
-//        }
-//        $data = $request->input('fields');
-//        dd($data);
-//        foreach ($data as $key => $value) {
-//            auth()->user()->user_metas()->create([
-//                'meta_key' => $key,
-//                'meta_value' => $value,
-//            ]);
-//        }
         $formData = $request->input('fields');
         $userIbProgram = IbQuestionAnswer::updateOrCreate([
             'user_id' => auth()->id(), // Assuming you are storing the user_id
             'fields' => json_encode($formData),
         ]);
-        auth()->user()->update(['ib_status' => IBStatus::PENDING]);
-
-//        dd($userIbProgram);
-//        $this->completeIBProfile($data);
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED) {
+            auth()->user()->update(['ib_status' => IBStatus::PENDING]);
+        }
         return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 
     }
+
+    // Your processing logic goes here
+    private function getValidationRules()
+    {
+        $rules = [];
+        $ibQuestions = IbQuestion::where('status', true)->get();
+        // Assuming $ibQuestions is your JSON data
+        foreach ($ibQuestions as $ibQuestion) {
+            foreach (json_decode($ibQuestion->fields) as $field) {
+                if ($field->validation === 'required') {
+                    // Add a rule for the current field if validation is required
+                    $rules["fields.{$field->name}"] = 'required';
+                }
+            }
+        }
+
+        // Add any additional rules as needed
+
+        return $rules;
+    }
+
+
 
     /**
      * Display the specified resource.

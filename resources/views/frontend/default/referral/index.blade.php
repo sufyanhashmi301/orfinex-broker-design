@@ -39,7 +39,7 @@
 
 
     @if(request()->routeIs('user.referral'))
-        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED )
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)
             @include('frontend.default.referral.include.__dashboard')
             @include('frontend.default.referral.modal.__qr_code')
         @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
@@ -96,7 +96,7 @@
                                         @if($field->type === 'text')
                                             <div class="md:col-span-6 col-span-12">
                                                 <input name="fields[{{ $field->name }}]"
-                                                       class="form-control !text-lg" type="text" value="">
+                                                       class="form-control !text-lg" type="text" value="" @if($field->validation === 'required') required @endif>
                                             </div>
                                         @elseif($field->type === 'checkbox')
                                             <div class="col-span-12">
@@ -107,7 +107,7 @@
                                                             <input class="hidden" type="checkbox"
                                                                    name="fields[{{ $field->name }}][]"
                                                                    value="{{ $option }}" id="flexCheckDefault{{$index}}"
-                                                                   required/>
+                                                                   @if($field->validation === 'required') required @endif />
                                                             <span
                                                                 class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                                                 <img
@@ -130,7 +130,7 @@
                                                         <label class="flex items-center cursor-pointer">
                                                             <input type="radio" class="hidden"
                                                                    name="fields[{{ $field->name }}]"
-                                                                   value="{{ $option }}">
+                                                                   value="{{ $option }}" @if($field->validation === 'required') required @endif>
                                                             <span
                                                                 class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                                             <span
@@ -144,7 +144,7 @@
                                         @elseif($field->type === 'dropdown')
                                             <div class="md:col-span-6 col-span-12 select2-lg">
                                                 <select name="fields[{{ $field->name }}]"
-                                                        class="select2 form-control w-full mt-2 py-2">
+                                                        class="select2 form-control w-full mt-2 py-2" @if($field->validation === 'required') required @endif>
                                                     @foreach($field->options as $option)
                                                         <option value="{{ $option }}"
                                                                 class="inline-block font-Inter font-normal text-sm text-slate-600"
@@ -186,7 +186,6 @@
                 </div>
             </div>
         @endif
-
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend.default.referral.include.__advertisement_material')

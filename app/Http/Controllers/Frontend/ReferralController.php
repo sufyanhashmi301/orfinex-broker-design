@@ -52,7 +52,6 @@ class ReferralController extends Controller
             }
         }
         $ibQuestions = IbQuestion::where('status', true)->get();
-        $data =
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         return view('frontend::referral.index', compact( 'getReferral',  'level', 'balance', 'ibQuestions', 'qrCode'));
     }

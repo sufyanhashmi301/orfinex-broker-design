@@ -4,10 +4,10 @@
     <a href="{{route('home')}}" class="items-center md:flex hidden">
         <img src="{{ asset(setting('site_logo','global')) }}" class="h-10" alt="Logo"/>
     </a>
-    <div class="md:hidden">
+    <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">
             <div class="flex-none">
-                <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
                     <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>

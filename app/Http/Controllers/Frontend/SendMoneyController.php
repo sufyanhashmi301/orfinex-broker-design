@@ -50,6 +50,9 @@ class SendMoneyController extends Controller
             'target_id' => ['required', 'different:receiver_account'],
             'receiver_account' => ['required', 'different:target_id'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
+        ],[
+            'target_id.required' => __('Kindly select the sender account to transfer'),
+            'receiver_account.required' => __('Kindly select the receiver account to transfer')
         ]);
 
         if ($validator->fails()) {
@@ -191,6 +194,9 @@ class SendMoneyController extends Controller
             'target_id' => ['required', 'different:receiver_account'],
             'receiver_account' => ['required', 'different:target_id'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
+        ],[
+        'target_id.required' => __('Kindly select the account from to transfer'),
+            'receiver_account.required' => __('Kindly select the receiver account to transfer')
         ]);
 
 //        dd($request->all());

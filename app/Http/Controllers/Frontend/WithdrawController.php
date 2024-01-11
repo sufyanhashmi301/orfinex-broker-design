@@ -242,7 +242,7 @@ class WithdrawController extends Controller
             'target_id' => 'required',
             'withdraw_account' => 'required',
         ],[
-            'target_id.required'=> __('Kindly, select the forex account to withdraw')
+            'target_id.required'=> __('Kindly select the forex account to withdraw')
         ]);
 
         if ($validator->fails()) {

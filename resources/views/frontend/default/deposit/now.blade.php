@@ -191,7 +191,7 @@
 
                 $('.total').text(total + ' ' + currency)
 
-                $('.pay-amount').text(total * globalData.rate +' '+ globalData.currency)
+                $('.pay-amount').text(parseFloat((total * globalData.rate +' '+ globalData.currency).toFixed(4)).toString());
 
 
             })

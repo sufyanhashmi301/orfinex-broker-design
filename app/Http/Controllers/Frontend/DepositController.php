@@ -57,7 +57,7 @@ class DepositController extends GatewayController
         $validator = Validator::make($request->all(), [
             'target_id' => 'required',
             'gateway_code' => 'required',
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
+            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [
             'target_id.required' => __('Kindly select Forex Account for deposit')
         ]);

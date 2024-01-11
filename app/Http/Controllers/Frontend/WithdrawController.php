@@ -238,8 +238,11 @@ class WithdrawController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
+            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+            'target_id' => 'required',
             'withdraw_account' => 'required',
+        ],[
+            'target_id.required'=> __('Kindly, select the forex account to withdraw')
         ]);
 
         if ($validator->fails()) {

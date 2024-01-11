@@ -61,8 +61,6 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                                 <div class="input-area relative">
                                     <label for="exampleFormControlInput1"
                                            class="form-label">{{ __('Withdraw Account') }}</label>
@@ -81,15 +79,32 @@
                                     <div
                                         class="font-Inter text-xs text-red-500 pt-2 inline-block processing-time"></div>
                                 </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+
                                 <div class="input-area relative">
                                     <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                     <div class="relative">
-                                        <input type="text" name="amount"
+                                        <input type="text" name="amount" id="amount"
                                                oninput="this.value = validateDouble(this.value)"
-                                               class="form-control !text-lg withdrawAmount" placeholder="Enter Amount">
+                                               class="form-control !text-lg withdrawAmount" placeholder="Enter Amount" aria-describedby="basic-addon1">
+                                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
+
                                     </div>
                                     <div
                                         class="font-Inter text-xs text-red-500 pt-2 inline-block withdrawAmountRange"></div>
+                                </div>
+                                <div class="input-area relative conversion hidden">
+                                    <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
+                                    <div class="relative">
+                                        <input type="text"
+                                               oninput="this.value = validateDouble(this.value)"
+                                               class="form-control !text-lg " id="converted-amount" placeholder="Enter Amount" aria-describedby="basic-addon2">
+                                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+
+                                    </div>
+                                    <div
+                                        class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
                                 </div>
                             </div>
                             <div class="transaction-list mt-5">
@@ -129,9 +144,11 @@
     <script>
         "use strict";
         var info = [];
+        var currency = @json($currency)
+
         $("#withdrawAccountId").on('change', function (e) {
             e.preventDefault();
-
+            console.log('account')
             $('.selectDetailsTbody').children().not(':first', ':second').remove();
             var accountId = $(this).val()
             var amount = $('.withdrawAmount').val();
@@ -142,8 +159,18 @@
                 url = url.replace(':amount', amount);
 
                 $.get(url, function (data) {
-                    $(data.html).insertAfter(".detailsCol");
                     info = data.info;
+                    if (info.pay_currency === currency){
+                        $('.conversion').addClass('hidden');
+                    }else {
+                        $('.conversion').removeClass('hidden');
+                        $('#basic-addon2').text(info.pay_currency);
+                        $('#amount').trigger('keyup')
+                        $('.conversion-rate').text('1' +' '+ currency + ' = ' + info.rate +' '+ info.pay_currency)
+
+                    }
+                    $(data.html).insertAfter(".detailsCol");
+
                     $('.withdrawAmountRange').text(info.range)
                     $('.processing-time').text(info.processing_time)
                 })
@@ -152,16 +179,35 @@
 
         })
 
-        $(".withdrawAmount").on('keyup', function (e) {
+        $("#amount").on('keyup', function (e) {
             "use strict"
             e.preventDefault();
+            console.log('amount')
             var amount = $(this).val()
             var charge = info.charge_type === 'percentage' ? calPercentage(amount, info.charge) : info.charge
             $('.withdrawAmount').text(amount)
             $('.withdrawFee').text(charge)
             $('.processing-time').text(info.processing_time)
             $('.withdrawAmountRange').text(info.range)
-            $('.pay-amount').text(((amount * info.rate) - (charge * info.rate)).toFixed(2) + ' ' + info.pay_currency)
+            $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
+            $('#converted-amount').val(parseFloat((amount * info.rate).toFixed(4)).toString())
+
+        })
+        $("#converted-amount").on('keyup', function (e) {
+            "use strict"
+            e.preventDefault();
+            console.log('converted-amount')
+            var converted_amount = $(this).val();
+            var amount = parseFloat((converted_amount / info.rate).toFixed(4)).toString();
+            $('#amount').val(amount);
+            var charge = info.charge_type === 'percentage' ? calPercentage(amount, info.charge) : info.charge
+            $('.withdrawAmount').text(amount)
+            $('.withdrawFee').text(charge)
+            $('.processing-time').text(info.processing_time)
+            $('.withdrawAmountRange').text(info.range)
+            $('.pay-amount').text(parseFloat(((amount * info.rate) - (charge * info.rate)).toFixed(4)).toString() + ' ' + info.pay_currency)
+
+
         })
     </script>
 @endsection

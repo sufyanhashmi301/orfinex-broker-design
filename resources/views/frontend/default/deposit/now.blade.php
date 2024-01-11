@@ -172,14 +172,14 @@
 
                 $('.total').text(total + ' ' + currency)
 
-                $('.pay-amount').text((total * globalData.rate).toFixed(4) +' '+ globalData.currency)
+                $('.pay-amount').text(parseFloat((total * globalData.rate).toFixed(4)).toString() +' '+ globalData.currency)
 
-                $('#converted-amount').val((total * globalData.rate).toFixed(4))
+                $('#converted-amount').val(parseFloat((total * globalData.rate).toFixed(4)).toString())
             })
             $('#converted-amount').on('keyup', function (e) {
                 "use strict"
                 var converted_amount = $(this).val();
-                var amount = (converted_amount / globalData.rate).toFixed(4);
+                var amount = parseFloat((converted_amount / globalData.rate).toFixed(4)).toString();
                 $('#amount').val(amount);
                 $('.amount').text((Number(amount)))
                 $('.currency').text(currency)

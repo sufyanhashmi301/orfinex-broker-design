@@ -6,7 +6,7 @@
 @section('content')
 
     <!-- Login Section -->
-    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url({{ asset('frontend/images/all-img/page-bg.png') }});">
+    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
         <div class="lg-inner-column">
             <div class="left-columns lg:w-1/2 lg:block hidden">
                 <div class="logo-box-3">
@@ -74,43 +74,6 @@
                         </button>
                     </form>
                     <!-- END: Login Form -->
-                    <div class=" relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                        <div class=" absolute inline-block bg-white dark:bg-slate-800 dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2
-                                    px-4 min-w-max text-sm text-slate-500 dark:text-slate-400font-normal ">
-                            {{ __('Or continue with') }}
-                        </div>
-                    </div>
-                    <div class="max-w-[242px] mx-auto mt-8 w-full">
-
-                        <!-- BEGIN: Social Log in Area -->
-                        <ul class="flex">
-                            <li class="flex-1">
-                                <a href="#"
-                                    class="inline-flex h-10 w-10 bg-[#1C9CEB] text-white text-2xl flex-col items-center justify-center rounded-full">
-                                    <img src="{{ asset('frontend/images/icon/tw.svg') }}" alt="">
-                                </a>
-                            </li>
-                            <li class="flex-1">
-                                <a href="#"
-                                    class="inline-flex h-10 w-10 bg-[#395599] text-white text-2xl flex-col items-center justify-center rounded-full">
-                                    <img src="{{ asset('frontend/images/icon/fb.svg') }}" alt="">
-                                </a>
-                            </li>
-                            <li class="flex-1">
-                                <a href="#"
-                                    class="inline-flex h-10 w-10 bg-[#0A63BC] text-white text-2xl flex-col items-center justify-center rounded-full">
-                                    <img src="{{ asset('frontend/images/icon/in.svg') }}" alt="">
-                                </a>
-                            </li>
-                            <li class="flex-1">
-                                <a href="#"
-                                    class="inline-flex h-10 w-10 bg-[#EA4335] text-white text-2xl flex-col items-center justify-center rounded-full">
-                                    <img src="{{ asset('frontend/images/icon/gp.svg') }}" alt="">
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- END: Social Log In Area -->
-                    </div>
                     <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-12 mt-6 uppercase text-sm text-center">
                         {{ __("Don't have an account?") }}
                         <a href="{{route('register')}}" class="text-slate-900 dark:text-white font-medium hover:underline">

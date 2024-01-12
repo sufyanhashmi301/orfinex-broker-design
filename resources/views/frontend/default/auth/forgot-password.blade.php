@@ -6,7 +6,7 @@
     <!-- Login Section -->
 
 
-    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url({{ asset('frontend/images/all-img/page-bg.png') }});">
+    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
         <div class="lg-inner-column">
             <div class="left-columns lg:w-1/2 lg:block hidden">
                 <div class="logo-box-3">

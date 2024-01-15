@@ -64,22 +64,18 @@ class ReferralController extends Controller
     {
 //        dd($request->all());
         $language = $request->input('language');
-        $activeTab = $request->input('activeTab', 'socialMediaMaterial'); // Default to 'socialMediaMaterial'
-
         $advertisements = AdvertisementMaterial::where('status', true);
 
         if ($language) {
             $advertisements->where('language', $language);
         }
-
         $advertisements = $advertisements->get()->groupBy('type');
-        $languages = Language::where('status', true)->get();
-//dd($activeTab);
-        if ($request->ajax()) {
-//            dd($activeTab);
-            return view('frontend::referral.include.__advertisement_material_partial', compact('advertisements','activeTab'));
-        }
+//        dd($advertisements);
 
+        if ($request->ajax()) {
+            return view('frontend::referral.include.__advertisement_material_partial', compact('advertisements'));
+        }
+        $languages = Language::where('status', true)->get();
         return view('frontend::referral.index', compact('advertisements','languages'));
     }
 

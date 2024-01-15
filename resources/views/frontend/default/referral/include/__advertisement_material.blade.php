@@ -15,7 +15,7 @@
             <div class="flex items-center mb-4 sm:mb-0">
                 <label for="" class="form-label me-3 mb-0">Language:</label>
                 <select class="form-control" name="language" id="language">
-                    <option selected="">Choose...</option>
+                    <option value="" selected="">Choose...</option>
                     @foreach($languages as $language)
                         <option value="{{$language->name}}">{{$language->name}}</option>
                     @endforeach

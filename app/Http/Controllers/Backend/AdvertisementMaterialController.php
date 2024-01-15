@@ -135,6 +135,8 @@ class AdvertisementMaterialController extends Controller
         $finalData = [
             'language' => $input['language'],
             'type' => $input['type'],
+            'status' => $input['status'],
+
             'icon' => $request->hasFile('img') ? self::imageUploadTrait($input['img']) : $advertisement->img,
         ];
 //        dd($finalData);

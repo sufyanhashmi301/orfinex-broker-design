@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
+use App\Models\AdvertisementMaterial;
 use App\Models\IbQuestion;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
@@ -57,8 +58,8 @@ class ReferralController extends Controller
     }
     public function advertisementMaterial()
     {
-
-        return view('frontend::referral.index');
+        $advertisements = AdvertisementMaterial::where('status',true)->get();
+        return view('frontend::referral.index',compact('advertisements'));
     }
     public function reports()
     {

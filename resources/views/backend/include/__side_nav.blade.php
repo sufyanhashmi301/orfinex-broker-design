@@ -131,6 +131,26 @@
                 </li>
             @endcanany
 
+            {{-- *************************************************************  Advertisement Management *********************************************************--}}
+            @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
+                <li class="side-nav-item category-title">
+                    <span>{{ __('Advertisement') }}</span>
+                </li>
+                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.advertisement_material*']) }}">
+                    <a href="javascript:void(0);" class="dropdown-link"><i
+                            icon-name="album"></i><span>{{ __('Manage Advertisement') }}</span>
+                        <span class="right-arrow"><i icon-name="chevron-down"></i></span></a>
+                    <ul class="dropdown-items">
+                        @can('advertisement-material-edit')
+                            <li class="side-nav-item {{ isActive('admin.advertisement_material*') }}">
+                                <a href="{{route('admin.advertisement_material.index')}}"><i
+                                        icon-name="airplay"></i><span>{{ __('Manage Advertisement Material') }}</span></a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcanany
+
             {{-- *************************************************************  Transactions *********************************************************--}}
             @canany(['transaction-list','investment-list','profit-list'])
                 <li class="side-nav-item category-title">

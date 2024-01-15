@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BlogController;
@@ -162,6 +163,9 @@ Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => Refer
     Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
     Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
 });
+//===============================  Advertisement Material ==================================
+Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
+
 Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
 
 //===============================  Site Essentials ==================================

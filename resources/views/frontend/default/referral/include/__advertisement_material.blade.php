@@ -3,10 +3,8 @@
         <h4 class="card-title mb-3">
             {{ __('Choose advertisement materials for any purpose') }}
         </h4>
-        <p class="card-text mb-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Exercitationem tempora, esse
-            totam assumenda enim amet blanditiis cupiditate! Error quibusdam sit quam laborum ipsam! In, consectetur
-            animi expedita vero soluta fuga.</p>
-        <p class="card-text">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <p class="card-text mb-3">Explore and access advertisement materials effortlessly. Simply check the available options, view the content, and download the materials for your intended purpose with ease</p>
+        <p class="card-text"></p>
     </div>
 </div>
 <div class="space-y-5">

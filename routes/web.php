@@ -135,6 +135,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
     Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
+    Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
+
     Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
     Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
     Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
@@ -236,4 +238,5 @@ Route::get('user/agreements', function () {
 Route::get('user/margin-account', function () {
     return view('frontend.default.user.setting.margin.index');
 })->name('user.margin-account');
+
 

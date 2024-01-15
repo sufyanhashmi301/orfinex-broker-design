@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdvertisementMaterial;
+use App\Models\Language;
 use App\Models\Schedule;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
@@ -49,7 +50,9 @@ class AdvertisementMaterialController extends Controller
      */
     public function create()
     {
-        return view('backend.advertisement_material.create');
+        $languages = Language::where('status', true)->get();
+
+        return view('backend.advertisement_material.create',compact('languages'));
     }
 
     /**
@@ -100,7 +103,9 @@ class AdvertisementMaterialController extends Controller
     public function edit($id)
     {
         $advertisement = AdvertisementMaterial::find($id);
-        return view('backend.advertisement_material.edit', compact('advertisement'));
+        $languages = Language::where('status', true)->get();
+
+        return view('backend.advertisement_material.edit', compact('advertisement','languages'));
     }
 
     /**

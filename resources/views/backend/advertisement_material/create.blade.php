@@ -59,15 +59,10 @@
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Select Language') }}</label>
                                         <select  name="language" class="site-nice-select w-100" placeholder="Manage Country" multiple>
-
-                                            @foreach( getCountries() as $country)
-                                                <option  value="{{ $country['name'] }}">
-                                                    {{ $country['name']  }}
-                                                </option>
+                                            @foreach($languages as $language)
+                                                <option value="{{$language->name}}">{{$language->name}}</option>
                                             @endforeach
-                                                <option  value="All" >
-                                                    {{ __('All') }}
-                                                </option>
+
                                         </select>
                                     </div>
                                 </div>
@@ -81,7 +76,7 @@
 {{--                                                    {{ $country['name']  }}--}}
 {{--                                                </option>--}}
 {{--                                            @endforeach--}}
-                                                <option  value="Social_media" >
+                                                <option  value="social_media" >
                                                     {{ __('Social Media') }}
                                                 </option>
                                             <option  value="website_banner" >

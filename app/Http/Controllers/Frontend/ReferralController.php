@@ -6,10 +6,14 @@ use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\AdvertisementMaterial;
 use App\Models\IbQuestion;
+use App\Models\Language;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ReferralController extends Controller
@@ -56,11 +60,29 @@ class ReferralController extends Controller
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         return view('frontend::referral.index', compact( 'getReferral',  'level', 'balance', 'ibQuestions', 'qrCode'));
     }
-    public function advertisementMaterial()
+    public function advertisementMaterial(Request $request)
     {
-        $advertisements = AdvertisementMaterial::where('status',true)->get();
-        return view('frontend::referral.index',compact('advertisements'));
+//        dd($request->all());
+        $language = $request->input('language');
+        $activeTab = $request->input('activeTab', 'socialMediaMaterial'); // Default to 'socialMediaMaterial'
+
+        $advertisements = AdvertisementMaterial::where('status', true);
+
+        if ($language) {
+            $advertisements->where('language', $language);
+        }
+
+        $advertisements = $advertisements->get()->groupBy('type');
+        $languages = Language::where('status', true)->get();
+//dd($activeTab);
+        if ($request->ajax()) {
+//            dd($activeTab);
+            return view('frontend::referral.include.__advertisement_material_partial', compact('advertisements','activeTab'));
+        }
+
+        return view('frontend::referral.index', compact('advertisements','languages'));
     }
+
     public function reports()
     {
 
@@ -83,6 +105,15 @@ class ReferralController extends Controller
     public function network() {
         $level = LevelReferral::max('the_order');
         return view('frontend::referral.index', compact( 'level'));
+    }
+
+    public function download($filename)
+    {
+        if (!File::exists('assets/'.$filename)) {
+            notify()->error('file not exists', 'Error');
+            return redirect()->back();
+        }
+        return response()->download('assets/'.$filename);
     }
 
 }

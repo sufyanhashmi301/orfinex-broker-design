@@ -204,6 +204,30 @@
 @endsection
 @section('script')
     <script>
+        $('body').on('change', '#language', function () {
+            var selectedLanguage = $(this).val();
+            var activeTabId = $('.nav-pills .nav-link.active').attr('id');
+
+            // Make an AJAX request to get filtered advertisements based on the selected language and active tab
+            $.ajax({
+                url: '{{ route("user.referral.advertisement.material") }}',
+                type: 'GET',
+                data: { language: selectedLanguage, activeTab: activeTabId },
+                success: function(data) {
+                    console.log(data);
+                    // Update the content of the active tab with the filtered advertisements
+                    var activeTabContent = $('.nav-pills .nav-link.active').attr('href');
+                    console.log(activeTabContent,'activeTabContent');
+                    $('#advertisement-container').html(data);
+                    $('#tabs-socialMediaMaterial').removeClass('show active');
+                    $('#tabs-websiteBanners').removeClass('show active');
+                    $(activeTabContent).addClass('show active');
+                },
+                error: function() {
+                    console.error('Error fetching advertisements.');
+                }
+            });
+        });
         $('body').on('click', '.save-btn', function () {
             if ($('#agreement-check').is(':checked')) {
                 var btn = $(this);

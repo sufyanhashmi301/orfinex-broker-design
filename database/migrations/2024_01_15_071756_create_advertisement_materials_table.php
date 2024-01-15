@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('advertisement_materials', function (Blueprint $table) {
             $table->id();
             $table->string('img');
-            $table->string('language')->default('English');
+            $table->string('language')->default('en');
             $table->string('type');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();

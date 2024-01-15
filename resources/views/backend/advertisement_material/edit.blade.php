@@ -61,11 +61,9 @@
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Select language') }}</label>
                                         <select class="site-nice-select w-100" name="language" placeholder="Language" multiple>
-                                            @foreach( getCountries() as $country)
-                                                <option value="{{$country['name']}}"   @if( $country['name'] == $advertisement->language ) selected @endif>{{$country['name']}}</option>
+                                            @foreach($languages as $language)
+                                                <option value="{{$language->name}}" @if( $language->name == $advertisement->language ) selected @endif>{{$language->name}}</option>
                                             @endforeach
-
-
                                         </select>
                                     </div>
 
@@ -74,7 +72,7 @@
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Select Type') }}</label>
                                         <select class="site-nice-select w-100" name="type" placeholder="Language" multiple>
-                                            <option  value="Social_media"  @if( 'Social_media' == $advertisement->type ) selected @endif>
+                                            <option  value="social_media"  @if( 'social_media' == $advertisement->type ) selected @endif>
                                                 {{ __('Social Media') }}
                                             </option>
                                             <option  value="website_banner" @if( 'website_banner' == $advertisement->type ) selected @endif>

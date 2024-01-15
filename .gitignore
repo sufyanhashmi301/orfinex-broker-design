@@ -3,7 +3,7 @@
 /assets/storage
 /assets/global/images/*
 /storage/*.key
-/storage/logs
+/storage
 /vendor
 .env
 .env.backup

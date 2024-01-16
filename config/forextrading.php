@@ -12,6 +12,7 @@ return [
 //    'pageHistoryUrl' => $base_url.'page_history',
 //    'pageDealUrl' => $base_url.'page_deal',
     'updateLeverageUrl' => $base_url.'user/updateleverage',
+    'updateAgentAccount' => $base_url.'user/updateagentaccount',
     'resetMasterPasswordUrl' => $base_url.'user/resetmasterpassword',
     'resetInvestorPasswordUrl' => $base_url.'user/resetinvestorpassword',
     'disableAccountUrl' => $base_url.'disable_account',

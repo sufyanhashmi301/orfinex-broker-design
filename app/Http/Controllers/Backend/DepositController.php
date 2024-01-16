@@ -246,7 +246,24 @@ class DepositController extends Controller
     {
 
         $data = Transaction::find($id);
-        return view('backend.deposit.include.__deposit_action', compact('data', 'id'))->render();
+        $gateway = $this->gateway($data->method);
+//        dd($gateway);
+        return view('backend.deposit.include.__deposit_action', compact('data', 'id', 'gateway'))->render();
+    }
+    public function gateway($code)
+    {
+        $gateway = DepositMethod::code($code)->first();
+
+        if ($gateway->type == GatewayType::Manual->value) {
+        $fieldOptions = $gateway->field_options;
+        $paymentDetails = $gateway->payment_details;
+        $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+    }else{
+        $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
+        $gateway['currency'] = $gatewayCurrency;
+    }
+//        dd($gateway);
+        return $gateway;
     }
 
 
@@ -276,6 +293,11 @@ class DepositController extends Controller
                 }
 
             } else {
+                $transaction->amount = $input['final_amount'];
+                $transaction->final_amount = $input['final_amount'];
+                $transaction->pay_amount = $input['pay_amount'];
+                $transaction->save();
+                $transaction = $transaction->fresh();
                 if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
                     $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
                     $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);

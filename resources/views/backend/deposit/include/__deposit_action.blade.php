@@ -77,8 +77,11 @@
     $('#converted-amount').on('keyup', function (e) {
         "use strict"
         var converted_amount = $(this).val();
+        var currency = $("#currency").text();
         var amount = parseFloat((converted_amount / globalData.rate).toFixed(4)).toString();
         $('#amount').val(amount);
+        $('.conversion-rate').text('1' +' '+ currency + ' = ' + globalData.rate +' '+ globalData.currency)
+
     })
 
 </script>

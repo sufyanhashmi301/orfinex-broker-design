@@ -29,6 +29,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
+                    ForexAccount::where('login',$login)->update(['status',ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -269,9 +270,8 @@ trait ForexApiTrait
             $getUserResponse = $this->getUserApi($account->login);
 //            dd($getUserResponse);
 //           dd($getUserResponse->object(),$getUserResponse->object()->Login);
-            if (isset($getUserResponse)) {
+            if (!empty($getUserResponse)) {
 //                dd($getUserResponse->object(),$getUserResponse->object()->Login);
-
                 if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
                     $this->updateUserAccount($getUserResponse);
                     if ($account->account_type == 'real') {

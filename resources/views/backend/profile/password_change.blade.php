@@ -45,7 +45,7 @@
                                     </div>
                                     <div class="col-xl-12">
                                         <button type="submit"
-                                                class="site-btn-sm primary-btn w-100 centered" disabled >{{ __('Change Password') }}</button>
+                                                class="site-btn-sm primary-btn w-100 centered" @if(env('APP_URL') == 'https://brokerdemo.brokeret.com') disabled @endif >{{ __('Change Password') }}</button>
                                     </div>
                                 </div>
                             </form>

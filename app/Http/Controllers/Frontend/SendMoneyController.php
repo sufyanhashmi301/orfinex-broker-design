@@ -22,12 +22,6 @@ class SendMoneyController extends Controller
     use ForexApiTrait;
     public function sendMoney(Request $request)
     {
-        $currentUrl = $request->url();
-//        dd($currentUrl);
-        if (str_contains($currentUrl, '//brokerdemo.brokeret.com')) {
-            // Perform actions specific to URLs containing 'example'
-            abort('403', 'Send Money Disable Now');
-        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')

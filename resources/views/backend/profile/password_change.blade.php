@@ -45,7 +45,7 @@
                                     </div>
                                     <div class="col-xl-12">
                                         <button type="submit"
-                                                class="site-btn-sm primary-btn w-100 centered">{{ __('Change Password') }}</button>
+                                                class="site-btn-sm primary-btn w-100 centered" disabled >{{ __('Change Password') }}</button>
                                     </div>
                                 </div>
                             </form>

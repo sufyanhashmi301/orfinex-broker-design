@@ -176,8 +176,8 @@
                           >
                           <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
                             {{ __('I agree with') }}
-                            <a href="{{url('/privacy-policy')}}">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
-                            <a href="{{url('/terms-and-conditions')}}">{{ __('Terms & Condition') }}</a>
+                            <a href="@if(env('APP_URL') != 'https://brokerdemo.brokeret.com'){{url('/privacy-policy')}}@endif">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
+                            <a href="@if(env('APP_URL') != 'https://brokerdemo.brokeret.com'){{url('/terms-and-conditions')}}@endif">{{ __('Terms & Condition') }}</a>
                           </span>
                         </label>
                       </div>
@@ -187,7 +187,7 @@
                     </form>
                     <!-- END: Login Form -->
                     <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-12 mt-6 uppercase text-sm text-center">
-                      {{ __('Already have an account?') }} 
+                      {{ __('Already have an account?') }}
                       <a href="{{ route('login') }}" class="text-slate-900 dark:text-white font-medium hover:underline">{{ __('Login') }}</a>
                     </div>
                 </div>

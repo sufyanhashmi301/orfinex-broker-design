@@ -29,7 +29,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status',ForexAccountStatus::Archive]);
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }

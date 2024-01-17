@@ -68,7 +68,7 @@ class ForexAccountController extends GatewayController
 
 //        $dataArray = array(
 
-        $data['Name'] = auth()->user()->full_name;
+        $data['Name'] = auth()->user()->full_name.'-demo';
         $data['Leverage'] = $request->leverage;
         $data['Group'] = $group;
         $data['MasterPassword'] = $password;

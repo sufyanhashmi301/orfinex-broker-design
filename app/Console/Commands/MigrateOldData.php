@@ -20,7 +20,7 @@ class MigrateOldData extends Command
 
     public function handle()
     {
-        dd(Hash::make('Brk12345'));
+        dd(Hash::make('admin12345'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();

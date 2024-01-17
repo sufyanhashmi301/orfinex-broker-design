@@ -20,9 +20,14 @@ use Validator;
 class SendMoneyController extends Controller
 {
     use ForexApiTrait;
-    public function sendMoney()
+    public function sendMoney(Request $request)
     {
-//        dd('s');
+        $currentUrl = $request->url();
+//        dd($currentUrl);
+        if (str_contains($currentUrl, 'https://brokerdemo.brokeret.com/')) {
+            // Perform actions specific to URLs containing 'example'
+            abort('403', 'Send Money Disable Now');
+        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')

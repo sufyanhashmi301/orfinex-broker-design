@@ -16,7 +16,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('reset:data')->everyMinute();
+        if(env('APP_URL') == 'https://brokerdemo.brokeret.com') {
+            $schedule->command('reset:data')->daily();
+        }
     }
 
     /**

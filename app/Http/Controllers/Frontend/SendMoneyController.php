@@ -24,7 +24,7 @@ class SendMoneyController extends Controller
     {
         $currentUrl = $request->url();
 //        dd($currentUrl);
-        if (str_contains($currentUrl, 'https://brokerdemo.brokeret.com/')) {
+        if (str_contains($currentUrl, 'https://brokerdemo.brokeret.com')) {
             // Perform actions specific to URLs containing 'example'
             abort('403', 'Send Money Disable Now');
         }

@@ -14,10 +14,7 @@ class Admin extends Authenticatable
 
     protected $fillable = ['avatar', 'name', 'email', 'phone', 'password', 'device_token', 'is_admin', 'status'];
 
-    public function hasRole($role)
-    {
-        return $this->role === $role;
-    }
+
     public function getCreatedAtAttribute(): string
     {
         return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');

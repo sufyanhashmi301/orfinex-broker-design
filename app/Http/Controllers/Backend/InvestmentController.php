@@ -45,7 +45,7 @@ class InvestmentController extends Controller
                 ->addIndexColumn()
                 ->addColumn('icon', 'backend.investment.include.__invest_icon')
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->addColumn('schema', 'backend.investment.include.__invest_schema')
+//                ->addColumn('schema', 'backend.investment.include.__invest_schema')
                 ->rawColumns(['icon', 'schema', 'username'])
                 ->make(true);
         }

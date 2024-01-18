@@ -176,8 +176,8 @@
                           >
                           <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
                             {{ __('I agree with') }}
-                            <a href="@if(url('/') == 'https://brokerdemo.brokeret.com'){{url('/privacy-policy')}}@endif">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
-                            <a href="@if(url('/') == 'https://brokerdemo.brokeret.com'){{url('/terms-and-conditions')}}@endif">{{ __('Terms & Condition') }}</a>
+                            <a href="@if(url('/') == 'http://brokerdemo.brokeret.com'){{url('/privacy-policy')}}@endif">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
+                            <a href="@if(url('/') == 'http://brokerdemo.brokeret.com'){{url('/terms-and-conditions')}}@endif">{{ __('Terms & Condition') }}</a>
                           </span>
                         </label>
                       </div>

@@ -309,7 +309,7 @@ class UserController extends Controller
         }
 
         try {
-
+//dd($request->all());
             $amount = $request->amount;
             $type = $request->type;
             $comment = $request->comment;

@@ -45,6 +45,7 @@
                         </div>
                         <div class="col-xl-12">
                             <select class="form-select" name="target_id" id="tradingAccount">
+                                <option value="">Select Account</option>
                                 @foreach($realForexAccounts as $forexAccount)
                                     <option value="{{$forexAccount->login}}" data-type="forex">
                                         {{ $forexAccount->login }} - {{ $forexAccount->account_name }}

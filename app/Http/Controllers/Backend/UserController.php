@@ -160,6 +160,7 @@ class UserController extends Controller
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $this->syncForexAccounts($id);
             if ($user->ib_login) {
                 $getUserResponse = $this->getUserApi($user->ib_login);
                 if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
@@ -169,6 +170,7 @@ class UserController extends Controller
                 }
             }
         }
+
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance','desc')
             ->get();

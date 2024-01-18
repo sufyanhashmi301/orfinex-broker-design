@@ -321,7 +321,7 @@ class UserController extends Controller
 
             if ($type == 'add') {
                 if($targetType == 'forex') {
-                    $this->ForexDeposit($amount,$amount,$comment);
+                    $this->ForexDeposit($targetId,$amount,$comment);
                 }
                 Txn::new($amount, 0, $amount, 'system', 'Money added in '.$targetId.' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
 
@@ -335,7 +335,7 @@ class UserController extends Controller
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
                     }
-                    $this->forexWithdraw($amount,$amount,$comment);
+                    $this->forexWithdraw($targetId,$amount,$comment);
                 }
                 Txn::new($amount, 0, $amount, 'system', 'Money subtract in '.$targetId.' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
                 $status = 'success';

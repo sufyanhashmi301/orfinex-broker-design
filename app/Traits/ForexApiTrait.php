@@ -38,6 +38,31 @@ trait ForexApiTrait
             return false;
         }
     }
+    public function getUserInfoApi($login)
+    {
+        $getUserUrl = config('forextrading.getUserInfoUrl');
+
+        $dataArray = array(
+            'Login' => (int)$login,
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+//        dd($login,$response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
 
     public function sendApiRequest($URL, $dataArray)
     {

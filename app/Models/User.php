@@ -158,10 +158,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             ->where('status', ForexAccountStatus::Ongoing);
 
     }
-    public function hasRole($role)
-    {
-        return $this->role === $role;
-    }
+
 
     public function totalRoiProfit()
     {

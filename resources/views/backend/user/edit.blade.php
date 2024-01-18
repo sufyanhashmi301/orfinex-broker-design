@@ -149,7 +149,7 @@
                                         role="tab"
                                         aria-controls="pills-transfer"
                                         aria-selected="true"
-                                    ><i icon-name="anchor"></i>{{ __('Investments') }}</a>
+                                    ><i icon-name="anchor"></i>{{ __('Forex Accounts') }}</a>
                                 </li>
                             @endcan
 

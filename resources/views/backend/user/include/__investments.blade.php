@@ -8,18 +8,20 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="site-card">
                 <div class="site-card-header">
-                    <h4 class="title">{{ __('Investments') }}</h4>
+                    <h4 class="title">{{ __('Forex Account') }}</h4>
                 </div>
                 <div class="site-card-body table-responsive">
                     <div class="site-datatable">
-                        <table id="user-investment-dataTable" class="display data-table">
+                        <table id="user-forex-account-dataTable" class="display data-table">
                             <thead>
                             <tr>
                                 <th>{{ __('Icon') }}</th>
                                 <th>{{ __('Schema') }}</th>
-                                <th>{{ __('ROI') }}</th>
-                                <th>{{ __('Profit') }}</th>
-                                <th>{{ __('Capital Back') }}</th>
+                                <th>{{ __('Login') }}</th>
+                                <th>{{ __('Group') }}</th>
+                                <th>{{ __('Balance') }}</th>
+                                <th>{{ __('Equity') }}</th>
+                                <th>{{ __('Credit') }}</th>
                                 <th>{{ __('Timeline') }}</th>
                             </tr>
                             </thead>
@@ -38,18 +40,19 @@
         (function ($) {
             "use strict";
 
-            var table = $('#user-investment-dataTable').DataTable({
+            var table = $('#user-forex-account-dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.investments',$user->id) }}",
+                ajax: "{{ route('admin.forex-accounts-real',$user->id) }}",
                 columns: [
                     {data: 'icon', name: 'icon'},
                     {data: 'schema', name: 'schema'},
-                    {data: 'rio', name: 'rio'},
-                    {data: 'profit', name: 'profit'},
-                    {data: 'capital_back', name: 'capital_back'},
-                    {data: 'next_profit_time', name: 'next_profit_time'},
+                    {data: 'login', name: 'login'},
+                    {data: 'group', name: 'group'},
+                    {data: 'balance', name: 'balance'},
+                    {data: 'equity', name: 'equity'},
+                    {data: 'credit', name: 'credit'},
                 ]
             });
         })(jQuery);

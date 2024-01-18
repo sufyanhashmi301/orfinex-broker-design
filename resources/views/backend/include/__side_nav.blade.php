@@ -428,8 +428,8 @@
                     </li>
                 @endcan
             @endcanany
-
-            @if(env('APP_URL') != 'https://brokerdemo.brokeret.com')
+{{dd(url('/'))}}
+            @if(url('/') == 'https://brokerdemo.brokeret.com')
                 {{-- ************************************************************* Site  Essentials *********************************************************--}}
                 @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
                     <li class="side-nav-item category-title">

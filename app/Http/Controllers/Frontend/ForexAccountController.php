@@ -315,4 +315,11 @@ class ForexAccountController extends GatewayController
         dd($resposne->object());
 
     }
+    public function investCancel(Request $request)
+    {
+//        dd($login);
+//        $resposne = $this->getUserInfoApi($login);
+//        dd($resposne->object());
+
+    }
 }

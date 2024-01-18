@@ -176,6 +176,7 @@ class UserController extends Controller
             ->get();
         return view('backend.user.edit', compact('user', 'level', 'realForexAccounts'));
     }
+
     public function destroy($id)
     {
         User::find($id)->delete();
@@ -294,7 +295,6 @@ class UserController extends Controller
      */
     public function balanceUpdate($id, Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'target_id' => 'required',
             'amount' => 'required',

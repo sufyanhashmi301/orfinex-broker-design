@@ -21,6 +21,8 @@
             <div class="modal-body">
                 <form action="{{ route('admin.user.balance-update',$user->id) }}" method="post">
                     @csrf
+                    <input type="hidden" name="target_type" id="selectedAccountType" value="">
+
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="switch-field">
@@ -42,12 +44,19 @@
                             </div>
                         </div>
                         <div class="col-xl-12">
-                            <select  class="form-select" name="wallet">
-                            @foreach(['main','profit'] as $type)
-                                <option value="{{$type}}">
-                                    {{ ucwords($type) .' '.__('Wallet') }}
-                                </option>
-                            @endforeach
+                            <select class="form-select" name="target_id" id="tradingAccount">
+                                @foreach($realForexAccounts as $forexAccount)
+                                    <option value="{{$forexAccount->login}}" data-type="forex">
+                                        {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
+                                        ({{ $forexAccount->equity }} {{$forexAccount->currency}})
+                                    </option>
+                                @endforeach
+                                @if($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))
+                                    <option value="{{ $user->ib_login }}" data-type="forex"
+                                            data-type="forex">{{ $user->ib_login }}
+                                        - {{ __('IB') }} ({{ $user->ib_balance }} {{$currency}})
+                                    </option>
+                                @endif
                             </select>
 
                         </div>
@@ -60,6 +69,13 @@
                                     <input type="text" name="amount" oninput="this.value = validateDouble(this.value)"
                                            class="form-control">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="site-input-groups">
+                                <label for="" class="box-input-label">{{ __('Comment Message') }}</label>
+                                <textarea name="comment" class="form-textarea mb-0"
+                                          placeholder="Comment Message"></textarea>
                             </div>
                         </div>
 

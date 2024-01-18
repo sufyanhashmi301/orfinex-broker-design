@@ -167,6 +167,7 @@ class ForexAccountController extends GatewayController
 
         return redirect()->route('user.forex-account-logs');
     }
+
     public function userAccountExist($account)
     {
 //        dd($account);
@@ -212,6 +213,7 @@ class ForexAccountController extends GatewayController
         return view('frontend::user.forex.modal.__change_leverage_render', compact('forexTrading'))->render();
 
     }
+
     public function updateAccountInfo(Request $request)
     {
 //        dd($request->all());
@@ -305,6 +307,7 @@ class ForexAccountController extends GatewayController
         }
 
     }
+
     public function getAccount($login)
     {
 //        dd($login);

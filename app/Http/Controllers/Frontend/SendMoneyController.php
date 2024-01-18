@@ -182,8 +182,6 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternalNow(Request $request)
     {
-        $targetId = $request->input('target_id');
-        $targetType = $request->input('target_type');
 //        dd($targetId,$targetType);
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
@@ -197,6 +195,7 @@ class SendMoneyController extends Controller
         'target_id.required' => __('Kindly select the account from to transfer'),
             'receiver_account.required' => __('Kindly select the receiver account to transfer')
         ]);
+        $targetType = $request->input('target_type');
 
 //        dd($request->all());
         if ($validator->fails()) {

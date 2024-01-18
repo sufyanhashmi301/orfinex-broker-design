@@ -6,6 +6,7 @@ use App\Enums\ForexAccountStatus;
 use App\Models\Ranking;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
+use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
@@ -20,7 +21,13 @@ class MigrateOldData extends Command
 
     public function handle()
     {
-        dd(Hash::make('admin12345'));
+        $timestamp = 1702310384;
+        $dateTime = new DateTime("@$timestamp");
+        $readableDateTime = $dateTime->format('Y-m-d H:i:s');
+
+//        echo $readableDateTime;
+//        dd($readableDateTime);
+//        dd(Hash::make('Restricted'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();

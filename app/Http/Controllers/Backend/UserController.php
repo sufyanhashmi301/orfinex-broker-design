@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
+use App\Models\ForexAccount;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
+use Brick\Math\BigDecimal;
 use DataTables;
 use Exception;
 use Hash;
@@ -24,7 +27,7 @@ use Txn;
 
 class UserController extends Controller
 {
-    use NotifyTrait;
+    use NotifyTrait,ForexApiTrait;
 
     /**
      * Display a listing of the resource.
@@ -155,8 +158,21 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-
-        return view('backend.user.edit', compact('user', 'level'));
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            if ($user->ib_login) {
+                $getUserResponse = $this->getUserApi($user->ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $balance = $getUserResponse->object()->Balance;
+                    $user->update(['ib_balance' => $balance]);
+                    auth()->setUser($user->fresh());
+                }
+            }
+        }
+        $realForexAccounts = ForexAccount::realActiveAccount($id)
+            ->orderBy('balance','desc')
+            ->get();
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts'));
     }
     public function destroy($id)
     {
@@ -278,10 +294,14 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
+            'target_id' => 'required',
             'amount' => 'required',
             'type' => 'required',
+            'target_type' => 'required',
+            'comment' => 'required',
         ]);
-
+        $targetId = $request->input('target_id');
+        $targetType = $request->input('target_type');
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
 
@@ -292,37 +312,30 @@ class UserController extends Controller
 
             $amount = $request->amount;
             $type = $request->type;
-            $wallet = $request->wallet;
+            $comment = $request->comment;
 
             $user = User::find($id);
             $adminUser = \Auth::user();
 
             if ($type == 'add') {
-
-                if ($wallet == 'main') {
-                    $user->balance += $amount;
-                    $user->save();
-                } else {
-                    $user->profit_balance += $amount;
-                    $user->save();
+                if($targetType == 'forex') {
+                    $this->ForexDeposit($amount,$amount,$comment);
                 }
-
-                Txn::new($amount, 0, $amount, 'system', 'Money added in '.ucwords($wallet).' Wallet from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money added in '.$targetId.' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
 
                 $status = 'success';
                 $message = __('Account Balance Update');
 
             } elseif ($type == 'subtract') {
-
-                if ($wallet == 'main') {
-                    $user->balance -= $amount;
-                    $user->save();
-                } else {
-                    $user->profit_balance -= $amount;
-                    $user->save();
+                if($targetType == 'forex') {
+                    $balance = $this->getForexAccountBalance($targetId);
+                    if (BigDecimal::of($amount)->compareTo($balance) > 0) {
+                        notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
+                        return redirect()->back();
+                    }
+                    $this->forexWithdraw($amount,$amount,$comment);
                 }
-
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in '.ucwords($wallet).' Wallet from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money subtract in '.$targetId.' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
                 $status = 'success';
                 $message = __('Account Balance Updated');
             }

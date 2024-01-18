@@ -73,7 +73,7 @@
                                     <div class="col-xl-12">
                                         <div class="admin-user-balance-card">
                                             <div class="wallet-name">
-                                                <div class="name">{{ __('Main Wallet') }}</div>
+                                                <div class="name">{{ __('Total Forex Balance') }}</div>
                                                 <div class="chip-icon">
                                                     <img class="chip"
                                                          src="{{asset('backend/materials/chip.png')}}"
@@ -84,7 +84,7 @@
                                             <div class="wallet-info">
                                                 <div class="wallet-id">{{ setting('site_currency','global') }}</div>
                                                 <div
-                                                    class="balance">{{ setting('currency_symbol','global') . $user->balance }}</div>
+                                                    class="balance">{{ setting('currency_symbol','global') . $user->totalForexBalance() }}</div>
                                             </div>
                                         </div>
                                         <div class="admin-user-balance-card">
@@ -311,6 +311,13 @@
                         // You can show an error message or perform other actions here
                     }
                 });
+            });
+
+            //forex account type selection
+            $('#tradingAccount').on('change', function () {
+                var selectedOption = $(this).find('option:selected');
+                var selectedAccountType = selectedOption.data('type');
+                $('#selectedAccountType').val(selectedAccountType);
             });
         });
 

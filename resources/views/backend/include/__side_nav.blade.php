@@ -429,7 +429,7 @@
                 @endcan
             @endcanany
 
-            @if(url('/') == 'http://brokerdemo.brokeret.com')
+            @if(url('/') != 'http://brokerdemo.brokeret.com')
                 {{-- ************************************************************* Site  Essentials *********************************************************--}}
                 @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
                     <li class="side-nav-item category-title">

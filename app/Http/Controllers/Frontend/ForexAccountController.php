@@ -307,7 +307,7 @@ class ForexAccountController extends GatewayController
     }
     public function getAccount($login)
     {
-        dd($login);
+//        dd($login);
         $resposne = $this->getUserApi($login);
         dd($resposne->object());
 

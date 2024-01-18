@@ -24,7 +24,7 @@ use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
 use Illuminate\Support\Facades\Route;
-
+use App\Traits\ForexApiTrait;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -238,5 +238,13 @@ Route::get('user/agreements', function () {
 Route::get('user/margin-account', function () {
     return view('frontend.default.user.setting.margin.index');
 })->name('user.margin-account');
+
+Route::get('get/account/{login}', function ($login) {
+//    dd($login);
+    // Your custom logic here
+    $resposne = $this->getUserApi($login);
+    dd($resposne->object());
+
+});
 
 

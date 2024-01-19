@@ -34,6 +34,7 @@ use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
+use App\Http\Controllers\Backend\SecurityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -244,6 +245,15 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
         Route::get('tune/status/{id}', 'status')->name('tune.status');
     });
 
+});
+
+//===============================  Security Settings ==================================
+Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
+    Route::get('all-sections', 'allSections')->name('all-sections');
+    Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
+    Route::get('single-session', 'singleSession')->name('single-session');
+    Route::get('blocklist-email', 'blocklistEmail')->name('blocklist-email');
+    Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
 });
 
 // show all notifications

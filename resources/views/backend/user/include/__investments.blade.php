@@ -22,7 +22,7 @@
                                 <th>{{ __('Balance') }}</th>
                                 <th>{{ __('Equity') }}</th>
                                 <th>{{ __('Credit') }}</th>
-                                <th>{{ __('Timeline') }}</th>
+
                             </tr>
                             </thead>
                             <tbody>

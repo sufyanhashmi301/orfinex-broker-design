@@ -156,20 +156,22 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+
         $user = User::find($id);
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts($id);
-//            if ($user->ib_login) {
-//                $getUserResponse = $this->getUserApi($user->ib_login);
-//                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                    $balance = $getUserResponse->object()->Balance;
-//                    $user->update(['ib_balance' => $balance]);
-//                    auth()->setUser($user->fresh());
-//                }
-//            }
-//        }
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $this->syncForexAccounts($id);
+            if ($user->ib_login) {
+                $getUserResponse = $this->getUserApi($user->ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $balance = $getUserResponse->object()->Balance;
+                    $user->update(['ib_balance' => $balance]);
+                    $user = User::find($id);
+                }
+            }
+
+        }
 
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance','desc')

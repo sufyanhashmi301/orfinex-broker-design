@@ -154,9 +154,9 @@ if (! function_exists('getLocation')) {
         $clientIp = request()->ip();
 //        dd($clientIp);
         $ip = $clientIp == ('127.0.0.1' || '::1') ? '103.77.188.202' : $clientIp;
-
+//$ip = '72.255.51.134';
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/'.$ip), true);
-
+dd($ip,$location);
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['code'] == $location['countryCode'];
         });

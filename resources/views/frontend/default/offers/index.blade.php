@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('All Schema') }}
+    {{ __('All Account Type') }}
 @endsection
 @section('content')
     <div class="mb-5">
@@ -34,7 +34,7 @@
                             <option value="bonus">Bonus</option>
                             <option value="gift">Gift</option>
                             <option value="cash back">Cash Back</option>
-                        </select>  
+                        </select>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
@@ -201,7 +201,7 @@
     </div>
     <div class="grid grid-cols-12 gap-5">
         <div class="col-span-12">
-            
+
         </div>
     </div>
 

@@ -93,7 +93,7 @@ Route::resource('staff', StaffController::class)->except('show', 'destroy', 'cre
 
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
-Route::resource('schema', ForexSchemaController::class)->except('show', 'destroy');
+Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
@@ -101,9 +101,9 @@ Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'
 
 //===============================  Transactions ==================================
 Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
-Route::get('investments//{id?}', [InvestmentController::class, 'investments'])->name('investments');
-Route::get('forex-accounts/real//{id?}', [InvestmentController::class, 'forexAccountsReal'])->name('forex-accounts-real');
-Route::get('forex-accounts/demo//{id?}', [InvestmentController::class, 'forexAccountsDemo'])->name('forex-accounts-demo');
+Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
+Route::get('forex-accounts/real/{id?}', [InvestmentController::class, 'forexAccountsReal'])->name('forex-accounts-real');
+Route::get('forex-accounts/demo/id?}', [InvestmentController::class, 'forexAccountsDemo'])->name('forex-accounts-demo');
 Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================

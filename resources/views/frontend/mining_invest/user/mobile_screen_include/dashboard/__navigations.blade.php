@@ -6,7 +6,7 @@
                 <a href="{{ route('user.schema') }}">
                     <div class="icon"><img src="{{ asset('frontend/materials/schema.png') }}" alt="">
                     </div>
-                    <div class="name">{{ __('Schemas') }}</div>
+                    <div class="name">{{ __('Account Type') }}</div>
                 </a>
             </div>
         </div>

@@ -10,7 +10,7 @@
                 <div class="md:flex md:items-center">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Schema:') }}
+                            {{ __('Select Account Type:') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">
@@ -25,7 +25,7 @@
                 <div class="md:flex md:items-center">
                     <div class="md:w-1/3">
                         <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Account Type:') }}
+                            {{ __('Select Group:') }}
                         </label>
                     </div>
                     <div class="md:w-2/3">

@@ -128,8 +128,8 @@
                                 </div>
                             </div>
                             <div class="section-design-nb">
-                                <strong>{{ __('NB:') }}</strong>{{ __('All Schemas will come from') }} <a
-                                    href="{{ route('admin.schema.index') }}">{{ __('Schemas') }}</a> {{ __('page') }}</div>
+                                <strong>{{ __('NB:') }}</strong>{{ __('All Account Type will come from') }} <a
+                                    href="{{ route('admin.accountType.index') }}">{{ __('Account Type') }}</a> {{ __('page') }}</div>
                         </div>
                     </div>
                 </div>

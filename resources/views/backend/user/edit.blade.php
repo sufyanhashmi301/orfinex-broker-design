@@ -10,8 +10,12 @@
                     <div class="col">
                         <div class="title-content">
                             <h2 class="title">{{ __('Details of')   .' '. $user->first_name .' '.  $user->last_name }} </h2>
+                            <div class="content">
                             <a href="{{ url()->previous() }}" class="title-btn"><i
                                     icon-name="corner-down-left"></i>{{ __('Back') }}</a>
+                            <a href="{{ url()->current() }}" class="title-btn"><i
+                                    icon-name="refresh-ccw"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -64,6 +68,12 @@
                                        data-bs-toggle="tooltip" title="" data-bs-placement="top"
                                        data-bs-original-title="Delete User">
                                     <i icon-name="user-minus"></i></a></span>
+
+                                    <span >
+                                    <a href="{{ url()->current() }}" type="button" class="site-btn-round suc-btn"
+                                       data-bs-toggle="tooltip" title="" data-bs-placement="top"
+                                       data-bs-original-title="Refresh">
+                                    <i icon-name="sync-alt"></i></a></span>
 {{--                                @endcan--}}
                             </div>
                         </div>
@@ -89,7 +99,7 @@
                                         </div>
                                         <div class="admin-user-balance-card">
                                             <div class="wallet-name">
-                                                <div class="name">{{ __('Profit Wallet') }}</div>
+                                                <div class="name">{{ __('Total Forex Equity') }}</div>
                                                 <div class="chip-icon">
                                                     <img
                                                         class="chip"
@@ -101,7 +111,7 @@
                                             <div class="wallet-info">
                                                 <div class="wallet-id">{{ setting('site_currency','global') }}</div>
                                                 <div
-                                                    class="balance">{{ setting('currency_symbol','global') . $user->profit_balance }}</div>
+                                                    class="balance">{{ setting('currency_symbol','global') . $user->totalForexEquity() }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -281,6 +291,10 @@
 
     <script>
         $(document).ready(function() {
+            function reloadPage() {
+                // Reload the current page
+                window.location.href = window.location.href;
+            }
             // Set the form action dynamically when the modal is shown
             $('#deleteConfirmationModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);

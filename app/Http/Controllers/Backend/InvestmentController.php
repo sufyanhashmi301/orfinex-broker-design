@@ -33,6 +33,7 @@ class InvestmentController extends Controller
      */
     public function forexAccountsReal(Request $request, $id = null)
     {
+//        dd($request->all());
         if ($request->ajax()) {
 
             if ($id) {

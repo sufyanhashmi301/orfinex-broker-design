@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Add New Forex Schema') }}
+    {{ __('Add New Account Type') }}
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
@@ -12,7 +12,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-8">
                         <div class="title-content">
-                            <h2 class="title">{{ __('Add New Forex Schema') }}</h2>
+                            <h2 class="title">{{ __('Add New Account Type') }}</h2>
                             <a href="{{ url()->previous() }}" class="title-btn"><i
                                     icon-name="corner-down-left"></i>{{ __('Back') }}</a>
                         </div>
@@ -26,7 +26,7 @@
                 <div class="col-xl-8">
                     <div class="site-card">
                         <div class="site-card-body">
-                            <form action="{{route('admin.schema.store')}}" method="post" enctype="multipart/form-data"
+                            <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data"
                                   class="row">
                                 @csrf
                                 <div class="col-xl-12">
@@ -69,11 +69,11 @@
                                 </div>
                                 <div class="col-xl-6 schema-badge">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Schema Badge:') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Account Type Badge:') }}</label>
                                         <input
                                             type="text"
                                             class="box-input"
-                                            placeholder="Schema Badge"
+                                            placeholder="Account Type Badge"
                                             name="badge"
                                             required
                                         />

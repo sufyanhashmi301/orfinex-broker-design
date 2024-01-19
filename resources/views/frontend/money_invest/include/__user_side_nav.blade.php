@@ -30,11 +30,11 @@
 
             <li class="side-nav-item {{ isActive('user.schema*') }}">
                 <a href="{{route('user.schema')}}"><i
-                        class="anticon anticon-check-square"></i><span>{{ __('All Schema') }}</span></a>
+                        class="anticon anticon-check-square"></i><span>{{ __('All Account Type') }}</span></a>
             </li>
             <li class="side-nav-item {{ isActive('user.invest*') }}">
                 <a href="{{ route('user.invest-logs') }}"><i
-                        class="anticon anticon-copy"></i><span>{{ __('Schema Logs') }}</span></a>
+                        class="anticon anticon-copy"></i><span>{{ __('Account Type Logs') }}</span></a>
             </li>
 
             <li class="side-nav-item {{ isActive('user.transactions*') }}">

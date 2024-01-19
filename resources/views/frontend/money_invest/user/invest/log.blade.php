@@ -7,7 +7,7 @@
         <div class="col-xl-12">
             <div class="site-card">
                 <div class="site-card-header">
-                    <h3 class="title">{{ __('All Invested Schemas') }}</h3>
+                    <h3 class="title">{{ __('All Invested Account Type') }}</h3>
                 </div>
                 <div class="site-card-body">
                     <div class="site-datatable">

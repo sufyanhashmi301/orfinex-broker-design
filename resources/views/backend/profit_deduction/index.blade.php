@@ -18,9 +18,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="title-content">
-                            <h2 class="title">{{ __('All Schemas') }}</h2>
+                            <h2 class="title">{{ __('All Account Type') }}</h2>
 {{--                            @can('schema-create')--}}
-{{--                                <a href="{{route('admin.schema.create')}}" class="title-btn"><i--}}
+{{--                                <a href="{{route('admin.accountType.create')}}" class="title-btn"><i--}}
 {{--                                        icon-name="plus-circle"></i>{{ __('Add New') }}</a>--}}
 {{--                            @endcan--}}
                         </div>

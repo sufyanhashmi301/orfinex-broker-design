@@ -9,9 +9,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="title-content">
-                            <h2 class="title">{{ __('All Forex Schemas') }}</h2>
+                            <h2 class="title">{{ __('All Account Type') }}</h2>
                             @can('schema-create')
-                                <a href="{{route('admin.schema.create')}}" class="title-btn"><i
+                                <a href="{{route('admin.accountType.create')}}" class="title-btn"><i
                                         icon-name="plus-circle"></i>{{ __('Add New') }}</a>
                             @endcan
                         </div>
@@ -71,7 +71,7 @@
                                             </td>
                                             <td>
                                                 @can('schema-edit')
-                                                    <a href="{{route('admin.schema.edit',$schema->id)}}"
+                                                    <a href="{{route('admin.accountType.edit',$schema->id)}}"
                                                        class="round-icon-btn primary-btn">
                                                         <i icon-name="edit-3"></i>
                                                     </a>

@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Edit Forex Schema') }}
+    {{ __('Edit Account Type') }}
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
@@ -12,7 +12,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-8">
                         <div class="title-content">
-                            <h2 class="title">{{ __('Edit Forex Schema') }}</h2>
+                            <h2 class="title">{{ __('Edit Account Type') }}</h2>
                             <a href="{{ url()->previous() }}" class="title-btn"><i
                                     icon-name="corner-down-left"></i>{{ __('Back') }}</a>
                         </div>
@@ -26,7 +26,7 @@
                 <div class="col-xl-8 col-lg-12 col-md-12">
                     <div class="site-card">
                         <div class="site-card-body">
-                            <form action="{{route('admin.schema.update',$schema->id)}}" method="post"
+                            <form action="{{route('admin.accountType.update',$schema->id)}}" method="post"
                                   enctype="multipart/form-data" class="row">
                                 @method('PUT')
                                 @csrf

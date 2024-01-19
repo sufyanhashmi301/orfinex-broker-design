@@ -1,13 +1,13 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Schema Logs') }}
+    {{ __('Account Type Logs') }}
 @endsection
 @section('content')
     <div class="row">
         <div class="col-xl-12">
             <div class="site-card">
                 <div class="site-card-header">
-                    <h3 class="title">{{ __('All Invested Schemas') }}</h3>
+                    <h3 class="title">{{ __('All Invested Account Type') }}</h3>
                 </div>
                 <div class="site-card-body">
                     <div class="site-datatable">

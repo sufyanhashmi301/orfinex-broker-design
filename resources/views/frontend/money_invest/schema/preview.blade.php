@@ -17,7 +17,7 @@
                                 <table class="table preview-table">
                                     <tbody>
                                     <tr>
-                                        <td><strong>{{ __('Select Schema:') }}</strong></td>
+                                        <td><strong>{{ __('Select Account Type:') }}</strong></td>
                                         <td>
                                             <div class="input-group mb-0">
                                                 <select class="site-nice-select" aria-label="Default select example"

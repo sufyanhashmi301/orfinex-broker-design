@@ -103,9 +103,9 @@
                 <li class="side-nav-item category-title">
                     <span>{{ __('Forex') }}</span>
                 </li>
-                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.schedule*','admin.schema*']) }}">
+                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.schedule*','admin.accountType*']) }}">
                     <a href="javascript:void(0);" class="dropdown-link"><i
-                            icon-name="album"></i><span>{{ __('Manage Forex Schema') }}</span>
+                            icon-name="album"></i><span>{{ __('Account Type') }}</span>
                         <span class="right-arrow"><i icon-name="chevron-down"></i></span></a>
                     <ul class="dropdown-items">
                         {{--                        @canany(['schema-list','schema-create','schema-edit'])--}}
@@ -115,16 +115,23 @@
                         {{--                            </li>--}}
                         {{--                        @endcanany--}}
                         @can('schema-edit')
-                            <li class="side-nav-item {{ isActive('admin.schema*') }}">
-                                <a href="{{route('admin.schema.index')}}"><i
-                                        icon-name="airplay"></i><span>{{ __('Manage Forex Schema') }}</span></a>
+                            <li class="side-nav-item {{ isActive('admin.accountType*') }}">
+                                <a href="{{route('admin.accountType.index')}}"><i
+                                        icon-name="airplay"></i><span>{{ __('Account Type') }}</span></a>
                             </li>
                         @endcan
+                        @can('investment-list')
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
+                                <a href="{{route('admin.forex-accounts-real')}}"><i
+                                        icon-name="anchor"></i><span>{{ __('forex Accounts') }}</span></a>
+                            </li>
+                        @endcan
+
                         {{--                        @can('schema-edit')--}}
-                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">
-                            <a href="{{route('admin.profit.deduction.index')}}"><i
-                                    icon-name="airplay"></i><span>{{ __('Manage Profits') }}</span></a>
-                        </li>
+{{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
+{{--                            <a href="{{route('admin.profit.deduction.index')}}"><i--}}
+{{--                                    icon-name="airplay"></i><span>{{ __('Manage Profits') }}</span></a>--}}
+{{--                        </li>--}}
                         {{--                        @endcan--}}
 
                     </ul>
@@ -163,9 +170,9 @@
                     </li>
                 @endcan
                 @can('investment-list')
-                    <li class="side-nav-item {{ isActive('admin.investments') }}">
-                        <a href="{{route('admin.investments')}}"><i
-                                icon-name="anchor"></i><span>{{ __('Investments') }}</span></a>
+                    <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
+                        <a href="{{route('admin.forex-accounts-real')}}"><i
+                                icon-name="anchor"></i><span>{{ __('forex Accounts') }}</span></a>
                     </li>
                 @endcan
                 @can('profit-list')

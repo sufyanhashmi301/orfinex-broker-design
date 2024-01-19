@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Edit Schema') }}
+    {{ __('Edit Account Type') }}
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
@@ -12,7 +12,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-8">
                         <div class="title-content">
-                            <h2 class="title">{{ __('Edit Schema') }}</h2>
+                            <h2 class="title">{{ __('Edit Account Type') }}</h2>
                             <a href="{{ url()->previous() }}" class="title-btn"><i
                                     icon-name="corner-down-left"></i>{{ __('Back') }}</a>
                         </div>
@@ -26,7 +26,7 @@
                 <div class="col-xl-8 col-lg-12 col-md-12">
                     <div class="site-card">
                         <div class="site-card-body">
-                            <form action="{{route('admin.schema.update',$schema->id)}}" method="post"
+                            <form action="{{route('admin.accountType.update',$schema->id)}}" method="post"
                                   enctype="multipart/form-data" class="row">
                                 @method('PUT')
                                 @csrf
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="schema-name @if($schema->featured) col-xl-6 @else col-xl-12 @endif">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Schema Name:') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Account Type Name:') }}</label>
                                         <input
                                             type="text"
                                             name="name"
@@ -71,11 +71,11 @@
                                 </div>
                                 <div class="col-xl-6 schema-badge @if(!$schema->featured) hidden @endif">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Schema Badge:') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Account Type Badge:') }}</label>
                                         <input
                                             type="text"
                                             class="box-input"
-                                            placeholder="Schema Badge"
+                                            placeholder="Account Type Badge"
                                             name="badge"
                                             value="{{$schema->badge}}"
                                         />
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="col-xl-6">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Schema Type:') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Account Type Type:') }}</label>
                                         <div class="switch-field same-type">
                                             <input
                                                 type="radio"
@@ -309,7 +309,7 @@
 
                                 <div class="col-xl-6 schema-cancel">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Schema Cancel:') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Account Type Cancel:') }}</label>
                                         <div class="switch-field same-type">
                                             <input
                                                 type="radio"
@@ -348,7 +348,7 @@
 
                                 <div class="col-xl-6">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Schema Trending:') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Account Type Trending:') }}</label>
                                         <div class="switch-field same-type">
                                             <input
                                                 type="radio"
@@ -395,7 +395,7 @@
                                 </div>
                                 <div class="col-xl-12">
                                     <button type="submit" class="site-btn-sm primary-btn w-100">
-                                        {{ __('Update Schema') }}
+                                        {{ __('Update Account Type') }}
                                     </button>
                                 </div>
                             </form>

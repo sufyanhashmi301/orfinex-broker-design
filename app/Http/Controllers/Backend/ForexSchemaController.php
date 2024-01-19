@@ -105,7 +105,7 @@ class ForexSchemaController extends Controller
 
         notify()->success('schema created successfully');
 
-        return redirect()->route('admin.schema.index');
+        return redirect()->route('admin.accountType.index');
     }
 
     /**
@@ -172,6 +172,6 @@ class ForexSchemaController extends Controller
 
         notify()->success('schema Update successfully');
 
-        return redirect()->route('admin.schema.index');
+        return redirect()->route('admin.accountType.index');
     }
 }

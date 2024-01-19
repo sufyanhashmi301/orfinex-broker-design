@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Schema Preview') }}
+    {{ __('Account Type Preview') }}
 @endsection
 @section('content')
     <div class="row">

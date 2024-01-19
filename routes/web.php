@@ -68,8 +68,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('kyc.data');
     Route::post('kyc-submit', [KycController::class, 'submit'])->name('kyc.submit');
 
-    Route::get('schemas', [ForexSchemaController::class, 'index'])->name('schema');
-    Route::get('schema-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
+    Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
+    Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 
     //Forex accounts
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
@@ -203,7 +203,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
 Route::get('theme-mode', [HomeController::class, 'themeMode'])->name('mode-theme');
 
 //without auth
-Route::get('schema-select/{id}', [ForexSchemaController::class, 'schemaSelect'])->name('user.schema.select');
+Route::get('accountType-select/{id}', [ForexSchemaController::class, 'schemaSelect'])->name('user.schema.select');
 Route::get('notification-tune', [AppController::class, 'notificationTune'])->name('notification-tune');
 
 //site cron job

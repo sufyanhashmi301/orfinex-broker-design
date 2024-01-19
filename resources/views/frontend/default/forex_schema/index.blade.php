@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('All Schema') }}
+    {{ __('All Account Type') }}
 @endsection
 @section('content')
 <div class="mb-5">

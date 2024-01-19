@@ -78,7 +78,6 @@ class Kernel extends HttpKernel
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,
         'IB' => IBMiddleware::class,
-        'detectCountry' => \App\Http\Middleware\DetectCountryMiddleware::class,
 
     ];
 }

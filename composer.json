@@ -34,7 +34,6 @@
         "shakurov/coinbase": "^0.7.7",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^5.5",
-        "stevebauman/location": "^7.1",
         "stripe/stripe-php": "^9.8",
         "twilio/sdk": "^7.3",
         "unicodeveloper/laravel-paystack": "1.0.*",

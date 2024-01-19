@@ -39,7 +39,7 @@ class ReferralController extends Controller
 //        $totalReferralProfit = $user->totalReferralProfit();
 
         $level = LevelReferral::max('the_order');
-        $balance = BigDecimal::of(auth()->user()->ib_balance);
+        $balance = isset(auth()->user()->ib_balance) ? BigDecimal::of(auth()->user()->ib_balance) : BigDecimal::of(0);
 //        auth()->user()->update(['ib_balance' => 123]);
 //        auth()->setUser(auth()->user()->fresh());
 //        dd(auth()->user()->ib_balance);

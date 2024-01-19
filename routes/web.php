@@ -247,4 +247,10 @@ Route::get('get/account/{login}', function ($login) {
 
 });
 
+Route::get('user/deposit-methods', function () {
+    return view('frontend.default.deposit.deposit-methods');
+})->name('user.deposit-methods');
 
+Route::get('user/platform', function () {
+    return view('frontend.default.terminal.index');
+})->name('user.platform');

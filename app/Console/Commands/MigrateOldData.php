@@ -27,7 +27,7 @@ class MigrateOldData extends Command
 
 //        echo $readableDateTime;
 //        dd($readableDateTime);
-//        dd(Hash::make('Restricted'));
+        dd(Hash::make('BrokerAdmin@2024'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();

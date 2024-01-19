@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
     });
     //Send Money
-    Route::group(['prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
+    Route::group(['middleware' => 'KYC','prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
         Route::get('/', 'sendMoney')->name('view');
         Route::post('now', 'sendMoneyNow')->name('now');
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
@@ -134,14 +134,15 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
     });
 
-    Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
-    Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
-    Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
+    Route::group(['middleware' => 'KYC'], function () {
+        Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+        Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
+        Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
 
-    Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
-    Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
-    Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
-
+        Route::get('referral/network', [ReferralController::class, 'network'])->name('referral.network');
+        Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
+        Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
+    });
 //    Route::get('referral/advertisement-material', function () {
 //        return view('frontend::referral.index');
 //    })->name('referral.advertisement-material');

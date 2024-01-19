@@ -2,14 +2,12 @@
     @csrf
     <h3 class="title mb-4">{{ __('Update').' '. $plugin->name }}</h3>
 
-
     @foreach(json_decode($plugin->data) as $key => $value)
         <div class="site-input-groups">
             <label for="" class="box-input-label">{{ ucwords(str_replace('_',' ',$key)) }}</label>
             <input type="text" name="data[{{ $key }}]" class="box-input mb-0" value="{{ $value }}" required=""/>
         </div>
     @endforeach
-
 
     <div class="site-input-groups">
         <label class="box-input-label" for="">{{ __('Status:') }}</label>
@@ -28,7 +26,6 @@
                 name="status"
                 value="0"
                 @if(!$plugin->status) checked @endif
-
             />
             <label for="plugin-status-no">{{ __('DeActive') }}</label>
         </div>

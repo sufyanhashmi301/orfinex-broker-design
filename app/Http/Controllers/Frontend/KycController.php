@@ -58,16 +58,31 @@ class KycController extends Controller
                 self::delete($value);
             }
         }
+//        $kycCredential1[] = json_decode('{"Front Side":{},"Back Side":{},"kyc_type_of_name":"National ID Card","kyc_time_of_time":"2024-01-04T22:51:47.025821Z"}');
+//        dd($kycCredential['Front Page']);
+//        dd($kycCredential1);
         foreach ($kycCredential as $key => $value) {
-
+//dd($key,$value);
             if (is_file($value)) {
-                $kycCredential[$key] = self::imageUploadTrait($value);
+//                dd(self::kycImageUploadTrait($value));
+                $path = self::kycImageUploadTrait($value);
+                if(isset($path) && !empty($path)) {
+                    $kycCredential[$key] = $path;
+                }else{
+                    notify()->error('kindly Set the '.$key, 'Error');
+                    return redirect()->back();
+                }
             }
         }
+////        dd($kycCredential['Front Page']);
+//        if(isset($kycCredential['Front Page'])){
+//
+//        }
+//        dd($kycCredential);
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),
-            'kyc' => KYCStatus::Pending,
+//            'kyc' => KYCStatus::Pending,
         ]);
         $shortcodes = [
             '[[full_name]]' => $user->full_name,

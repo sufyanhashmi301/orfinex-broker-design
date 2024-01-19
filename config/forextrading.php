@@ -6,6 +6,7 @@ return [
     'updateUserUrl' => $base_url.'user/update',
     'getUserInfoUrl' => $base_url.'user/get',
     'getUserUrl' => $base_url.'useraccount/get',
+    'getRoiUrl' => $base_url.'stastistic/roi',
     'depositUrl' => $base_url.'dealer/balance',
     'withdrawUrl' => $base_url.'dealer/balance',
 //    'totalHistoryUrl' => $base_url.'total_history',

@@ -114,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            @if(url('/') != 'http://brokerdemo.brokeret.com')
+
             <div class="card">
                 <div class="card-body p-6">
                     <div class="space-y-6">
@@ -137,7 +137,7 @@
                     </div>
                 </div>
             </div>
-                @endif
+
         </div>
     </div>
 

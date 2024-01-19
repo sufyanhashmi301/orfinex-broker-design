@@ -85,7 +85,7 @@
                                     </div>
                                     <div class="col-xl-12">
                                         <button type="submit"
-                                                class="site-btn-sm primary-btn w-100 centered"  @if(url('/') == 'http://brokerdemo.brokeret.com') disabled @endif>{{ __('Save Changes') }}</button>
+                                                class="site-btn-sm primary-btn w-100 centered"  >{{ __('Save Changes') }}</button>
                                     </div>
                                 </div>
                             </div>

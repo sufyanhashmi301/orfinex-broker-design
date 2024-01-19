@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Investments') }}
+    {{ __('Forex Accounts') }}
 @endsection
 @section('content')
     <div class="main-content">

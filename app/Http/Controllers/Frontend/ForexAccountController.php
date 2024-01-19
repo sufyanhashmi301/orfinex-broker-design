@@ -67,11 +67,8 @@ class ForexAccountController extends GatewayController
         $password = $request->main_password;
 
 //        $dataArray = array(
-        if(url('/') == 'http://brokerdemo.brokeret.com') {
-            $data['Name'] = auth()->user()->full_name . '-demo';
-        }else{
-            $data['Name'] = auth()->user()->full_name;
-        }
+
+        $data['Name'] = auth()->user()->full_name;
         $data['Leverage'] = $request->leverage;
         $data['Group'] = $group;
         $data['MasterPassword'] = $password;
@@ -188,6 +185,7 @@ class ForexAccountController extends GatewayController
     public function forexAccountLogs(Request $request)
     {
 //        $this->getUserApi(9996792);
+
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts(auth()->id());
@@ -314,6 +312,7 @@ class ForexAccountController extends GatewayController
     public function getAccount($login)
     {
 //        dd($login);
+//        $resposne = $this->getUserInfoApi($login);
         $resposne = $this->getUserInfoApi($login);
         dd($resposne->object());
 

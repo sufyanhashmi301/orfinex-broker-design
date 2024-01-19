@@ -69,12 +69,6 @@
                                        data-bs-original-title="Delete User">
                                     <i icon-name="user-minus"></i></a></span>
 
-                                    <span >
-                                    <a href="{{ url()->current() }}" type="button" class="site-btn-round suc-btn"
-                                       data-bs-toggle="tooltip" title="" data-bs-placement="top"
-                                       data-bs-original-title="Refresh">
-                                    <i icon-name="sync-alt"></i></a></span>
-{{--                                @endcan--}}
                             </div>
                         </div>
                         <div class="site-card">

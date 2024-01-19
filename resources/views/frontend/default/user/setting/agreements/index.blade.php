@@ -27,7 +27,7 @@
             </h4>
         </header>
         <div class="card-body p-6">
-            @if(url('/') != 'http://brokerdemo.brokeret.com')
+
             <ul class="list-item space-y-3 h-full overflow-x-auto">
                 <li class="flex items-center space-x-3 rtl:space-x-reverse border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
                     <div>
@@ -237,7 +237,7 @@
                     </div>
                 </li>
             </ul>
-                @endif
+
         </div>
     </div>
 @endsection

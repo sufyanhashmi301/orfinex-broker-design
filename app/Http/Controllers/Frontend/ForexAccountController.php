@@ -67,8 +67,11 @@ class ForexAccountController extends GatewayController
         $password = $request->main_password;
 
 //        $dataArray = array(
-
-        $data['Name'] = auth()->user()->full_name.'-demo';
+        if(url('/') == 'http://brokerdemo.brokeret.com') {
+            $data['Name'] = auth()->user()->full_name . '-demo';
+        }else{
+            $data['Name'] = auth()->user()->full_name;
+        }
         $data['Leverage'] = $request->leverage;
         $data['Group'] = $group;
         $data['MasterPassword'] = $password;

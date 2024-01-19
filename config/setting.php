@@ -235,6 +235,62 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'new_trading_accounts', // unique name for field
+                'label' => 'New Trading Accounts', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => '90_days_in_activity_trade_disable', // unique name for field
+                'label' => '90 Days In-Activity Trade Disable', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'delete_archived_accounts', // unique name for field
+                'label' => 'Delete Archived Accounts', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'automatic_withdrawals', // unique name for field
+                'label' => 'Automatic Withdrawals', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'automatic_deposits', // unique name for field
+                'label' => 'Automatic Deposits', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'automatic_kyc', // unique name for field
+                'label' => 'Automatic KYC (SumSub)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'disable_trading', // unique name for field
+                'label' => 'Disable Trading (No Balance)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
         ],
     ],
 

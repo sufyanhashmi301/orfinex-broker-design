@@ -21,6 +21,7 @@ class PluginController extends Controller
     public function plugin($type)
     {
 
+        dd($type);
         $titles = [
             'system' => __('Third Party System Plugins'),
             'sms' => __('All Plugins adds the ability to send SMS'),

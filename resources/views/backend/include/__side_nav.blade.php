@@ -50,7 +50,7 @@
             @canany(['kyc-list','kyc-action','kyc-form-manage'])
                 <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.kyc*']) }}">
                     <a href="javascript:void(0);" class="dropdown-link"><i
-                            icon-name="check-square"></i><span>{{ __('KYC Management') }}</span><span
+                            icon-name="check-square"></i><span>{{ __('Compliance & KYC') }}</span><span
                             class="right-arrow"><i icon-name="chevron-down"></i></span></a>
                     <ul class="dropdown-items">
                         @canany(['kyc-list','kyc-action'])
@@ -104,9 +104,13 @@
                     <span>{{ __('Forex') }}</span>
                 </li>
                 <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.schedule*','admin.accountType*']) }}">
-                    <a href="javascript:void(0);" class="dropdown-link"><i
-                            icon-name="album"></i><span>{{ __('Account Type') }}</span>
-                        <span class="right-arrow"><i icon-name="chevron-down"></i></span></a>
+                    <a href="javascript:void(0);" class="dropdown-link">
+                        <i icon-name="album"></i>
+                        <span>{{ __('Account Type') }}</span>
+                        <span class="right-arrow">
+                            <i icon-name="chevron-down"></i>
+                        </span>
+                    </a>
                     <ul class="dropdown-items">
                         {{--                        @canany(['schema-list','schema-create','schema-edit'])--}}
                         {{--                            <li class="side-nav-item {{ isActive('admin.schedule*') }}">--}}
@@ -120,12 +124,6 @@
                                         icon-name="airplay"></i><span>{{ __('Account Type') }}</span></a>
                             </li>
                         @endcan
-                        @can('investment-list')
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
-                                <a href="{{route('admin.forex-accounts-real')}}"><i
-                                        icon-name="anchor"></i><span>{{ __('forex Accounts') }}</span></a>
-                            </li>
-                        @endcan
 
                         {{--                        @can('schema-edit')--}}
 {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
@@ -136,135 +134,54 @@
 
                     </ul>
                 </li>
+                
+                @can('investment-list')
+                    <li class="side-nav-item side-nav-dropdown">
+                        <a href="javascript:void(0);" class="dropdown-link">
+                            <i icon-name="album"></i>
+                            <span>{{ __('Forex Accounts') }}</span>
+                            <span class="right-arrow">
+                                <i icon-name="chevron-down"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-items">
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
+                                <a href="{{route('admin.forex-accounts-real')}}">
+                                    <i icon-name="anchor"></i>
+                                    <span>{{ __('Live Accounts') }}</span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
+                                <a href="{{route('admin.forex-accounts-real')}}">
+                                    <i icon-name="anchor"></i>
+                                    <span>{{ __('Demo Accounts') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                @endcan
             @endcanany
 
             {{-- *************************************************************  Advertisement Management *********************************************************--}}
             @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
                 <li class="side-nav-item category-title">
-                    <span>{{ __('Advertisement') }}</span>
+                    <span>{{ __('Affiliate') }}</span>
                 </li>
                 <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.advertisement_material*']) }}">
                     <a href="javascript:void(0);" class="dropdown-link"><i
-                            icon-name="album"></i><span>{{ __('Manage Advertisement') }}</span>
+                            icon-name="album"></i><span>{{ __('IB Resources') }}</span>
                         <span class="right-arrow"><i icon-name="chevron-down"></i></span></a>
                     <ul class="dropdown-items">
                         @can('advertisement-material-edit')
                             <li class="side-nav-item {{ isActive('admin.advertisement_material*') }}">
                                 <a href="{{route('admin.advertisement_material.index')}}"><i
-                                        icon-name="airplay"></i><span>{{ __('Manage Advertisement Material') }}</span></a>
+                                        icon-name="airplay"></i><span>{{ __('Manage Resources Material') }}</span></a>
                             </li>
                         @endcan
                     </ul>
                 </li>
-            @endcanany
-
-            {{-- *************************************************************  Transactions *********************************************************--}}
-            @canany(['transaction-list','investment-list','profit-list'])
-                <li class="side-nav-item category-title">
-                    <span>{{ __('Transactions') }}</span>
-                </li>
-                @can('transaction-list')
-                    <li class="side-nav-item {{ isActive('admin.transactions') }}">
-                        <a href="{{route('admin.transactions')}}"><i
-                                icon-name="cast"></i><span>{{ __('Transactions') }}</span></a>
-                    </li>
-                @endcan
-                @can('investment-list')
-                    <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
-                        <a href="{{route('admin.forex-accounts-real')}}"><i
-                                icon-name="anchor"></i><span>{{ __('forex Accounts') }}</span></a>
-                    </li>
-                @endcan
-                @can('profit-list')
-                    <li class="side-nav-item {{ isActive('admin.all-profits') }}">
-                        <a href="{{route('admin.all-profits')}}"><i
-                                icon-name="credit-card"></i><span>{{ __('User Profits') }}</span></a>
-                    </li>
-                @endcan
-            @endcanany
-
-            {{-- *************************************************************  Essentials *********************************************************--}}
-            @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-            'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
-            'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-
-                <li class="side-nav-item category-title">
-                    <span>{{ __('Essentials') }}</span>
-                </li>
-
-                @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
-                    @can('automatic-gateway-manage')
-                        <li class="side-nav-item {{ isActive('admin.gateway*') }}">
-                            <a href="{{ route('admin.gateway.automatic') }}"><i
-                                    icon-name="door-open"></i><span>{{ __('Automatic Gateways') }}</span></a>
-                        </li>
-                    @endcan
-
-                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.deposit*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="arrow-down-circle"></i><span>{{ __('Deposits') }}</span><span
-                                class="right-arrow"><i icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-
-                            @can('automatic-gateway-manage')
-                                <li class="{{ isActive('admin.deposit.method.list','auto') }}"><a
-                                        href="{{ route('admin.deposit.method.list','auto') }}"><i
-                                            icon-name="workflow"></i>{{ __('Automatic Methods') }}</a></li>
-                            @endcan
-
-                            @can('manual-gateway-manage')
-                                <li class="{{ isActive('admin.deposit.method.list','manual') }}"><a
-                                        href="{{route('admin.deposit.method.list','manual')}}"><i
-                                            icon-name="compass"></i>{{ __('Manual Methods') }}</a></li>
-                            @endcan
-
-                            @canany(['deposit-list','deposit-action'])
-                                <li class="{{ isActive('admin.deposit.manual.pending') }}"><a
-                                        href="{{ route('admin.deposit.manual.pending') }}"><i
-                                            icon-name="columns"></i>{{ __('Pending Manual Deposits') }}</a></li>
-                                <li class="{{ isActive('admin.deposit.history') }}"><a
-                                        href="{{ route('admin.deposit.history') }}"><i
-                                            icon-name="clipboard-check"></i>{{ __('Deposit History') }}</a></li>
-                            @endcanany
-                        </ul>
-                    </li>
-                @endcanany
-
-                @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.withdraw*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="landmark"></i><span>{{ __('Withdraw') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @can('withdraw-method-manage')
-                                <li class="{{ isActive('admin.withdraw.method.list','auto')  }}">
-                                    <a
-                                        href="{{ route('admin.withdraw.method.list','auto') }}"><i
-                                            icon-name="workflow"></i>{{ __('Automatic Methods') }}</a></li>
-                                <li class="{{ isActive('admin.withdraw.method.list','manual') }}">
-                                    <a
-                                        href="{{route('admin.withdraw.method.list','manual')}}"><i
-                                            icon-name="compass"></i>{{ __('Manual Methods') }}</a></li>
-
-                            @endcan
-                            @canany(['withdraw-list','withdraw-action'])
-                                <li class="{{ isActive('admin.withdraw.pending')  }}"><a
-                                        href="{{ route('admin.withdraw.pending') }}"><i
-                                            icon-name="wallet"></i>{{ __('Pending Withdraws') }}</a></li>
-                            @endcanany
-                            @can('withdraw-schedule')
-                                <li class="{{ isActive('admin.withdraw.schedule') }}"><a
-                                        href="{{ route('admin.withdraw.schedule') }}"><i
-                                            icon-name="alarm-clock"></i>{{ __('Withdraw Schedule') }}</a></li>
-                            @endcan
-                            @can('withdraw-list')
-                                <li class="{{ isActive('admin.withdraw.history') }}"><a
-                                        href="{{ route('admin.withdraw.history') }}"><i
-                                            icon-name="piggy-bank"></i>{{ __('Withdraw History') }}</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
+                
 
                 @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
                     <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.referral*']) }}">
@@ -360,6 +277,109 @@
                                     </a>
                                 </li>
                             @endcanany
+                        </ul>
+                    </li>
+                @endcanany
+            @endcanany
+
+            {{-- *************************************************************  Transactions *********************************************************--}}
+            @canany(['transaction-list','investment-list','profit-list'])
+                <li class="side-nav-item category-title">
+                    <span>{{ __('Transactions') }}</span>
+                </li>
+                @can('transaction-list')
+                    <li class="side-nav-item {{ isActive('admin.transactions') }}">
+                        <a href="{{route('admin.transactions')}}"><i
+                                icon-name="cast"></i><span>{{ __('Transactions') }}</span></a>
+                    </li>
+                @endcan
+                @can('profit-list')
+                    <li class="side-nav-item {{ isActive('admin.all-profits') }}">
+                        <a href="{{route('admin.all-profits')}}"><i
+                                icon-name="credit-card"></i><span>{{ __('User Profits') }}</span></a>
+                    </li>
+                @endcan
+            @endcanany
+
+            {{-- *************************************************************  Essentials *********************************************************--}}
+            @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
+            'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
+            'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
+
+                <li class="side-nav-item category-title">
+                    <span>{{ __('Essentials') }}</span>
+                </li>
+
+                @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+                    @can('automatic-gateway-manage')
+                        <li class="side-nav-item {{ isActive('admin.gateway*') }}">
+                            <a href="{{ route('admin.gateway.automatic') }}"><i
+                                    icon-name="door-open"></i><span>{{ __('Automatic Gateways') }}</span></a>
+                        </li>
+                    @endcan
+
+                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.deposit*']) }}">
+                        <a href="javascript:void(0);" class="dropdown-link"><i
+                                icon-name="arrow-down-circle"></i><span>{{ __('Deposits') }}</span><span
+                                class="right-arrow"><i icon-name="chevron-down"></i></span></a>
+                        <ul class="dropdown-items">
+
+                            @can('automatic-gateway-manage')
+                                <li class="{{ isActive('admin.deposit.method.list','auto') }}"><a
+                                        href="{{ route('admin.deposit.method.list','auto') }}"><i
+                                            icon-name="workflow"></i>{{ __('Automatic Methods') }}</a></li>
+                            @endcan
+
+                            @can('manual-gateway-manage')
+                                <li class="{{ isActive('admin.deposit.method.list','manual') }}"><a
+                                        href="{{route('admin.deposit.method.list','manual')}}"><i
+                                            icon-name="compass"></i>{{ __('Manual Methods') }}</a></li>
+                            @endcan
+
+                            @canany(['deposit-list','deposit-action'])
+                                <li class="{{ isActive('admin.deposit.manual.pending') }}"><a
+                                        href="{{ route('admin.deposit.manual.pending') }}"><i
+                                            icon-name="columns"></i>{{ __('Pending Manual Deposits') }}</a></li>
+                                <li class="{{ isActive('admin.deposit.history') }}"><a
+                                        href="{{ route('admin.deposit.history') }}"><i
+                                            icon-name="clipboard-check"></i>{{ __('Deposit History') }}</a></li>
+                            @endcanany
+                        </ul>
+                    </li>
+                @endcanany
+
+                @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
+                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.withdraw*']) }}">
+                        <a href="javascript:void(0);" class="dropdown-link"><i
+                                icon-name="landmark"></i><span>{{ __('Withdraw') }}</span><span class="right-arrow"><i
+                                    icon-name="chevron-down"></i></span></a>
+                        <ul class="dropdown-items">
+                            @can('withdraw-method-manage')
+                                <li class="{{ isActive('admin.withdraw.method.list','auto')  }}">
+                                    <a
+                                        href="{{ route('admin.withdraw.method.list','auto') }}"><i
+                                            icon-name="workflow"></i>{{ __('Automatic Methods') }}</a></li>
+                                <li class="{{ isActive('admin.withdraw.method.list','manual') }}">
+                                    <a
+                                        href="{{route('admin.withdraw.method.list','manual')}}"><i
+                                            icon-name="compass"></i>{{ __('Manual Methods') }}</a></li>
+
+                            @endcan
+                            @canany(['withdraw-list','withdraw-action'])
+                                <li class="{{ isActive('admin.withdraw.pending')  }}"><a
+                                        href="{{ route('admin.withdraw.pending') }}"><i
+                                            icon-name="wallet"></i>{{ __('Pending Withdraws') }}</a></li>
+                            @endcanany
+                            @can('withdraw-schedule')
+                                <li class="{{ isActive('admin.withdraw.schedule') }}"><a
+                                        href="{{ route('admin.withdraw.schedule') }}"><i
+                                            icon-name="alarm-clock"></i>{{ __('Withdraw Schedule') }}</a></li>
+                            @endcan
+                            @can('withdraw-list')
+                                <li class="{{ isActive('admin.withdraw.history') }}"><a
+                                        href="{{ route('admin.withdraw.history') }}"><i
+                                            icon-name="piggy-bank"></i>{{ __('Withdraw History') }}</a></li>
+                            @endcan
                         </ul>
                     </li>
                 @endcanany

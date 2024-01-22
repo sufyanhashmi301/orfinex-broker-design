@@ -2,6 +2,13 @@
 @section('title')
     {{ __('Forex Accounts') }}
 @endsection
+@section('style')
+    <style>
+        .data-card {
+            flex-direction: column !important;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="main-content">
         <div class="page-title">
@@ -16,6 +23,80 @@
             </div>
         </div>
         <div class="container-fluid">
+            <div class="site-tab-bars py-4">
+                <div class="row gx-2">
+                    <div class="col-xl-2 col-md-3">
+                        <div class="d-flex flex-col text-center border-end">
+                            <div class="icon-square d-flex align-items-center justify-content-center bg-light mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                            </div>
+                            <div class="content">
+                                <p class="small my-2">Live Accounts</p>
+                                <h4 class="count lead fw-bold mb-0">4</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-3">
+                        <div class="d-flex flex-col text-center border-end">
+                            <div class="icon-square d-flex align-items-center justify-content-center bg-light mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                            </div>
+                            <div class="content">
+                                <p class="small my-2">With Deposit</p>
+                                <h4 class="count lead fw-bold mb-0">4</h4>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-3">
+                        <div class="d-flex flex-col text-center border-end">
+                            <div class="icon-square d-flex align-items-center justify-content-center bg-light mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                            </div>
+                            <div class="content">
+                                <p class="small my-2">Without Deposit</p>
+                                <h4 class="count lead fw-bold mb-0">4</h4>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-3">
+                        <div class="d-flex flex-col text-center border-end">
+                            <div class="icon-square d-flex align-items-center justify-content-center bg-light mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                            </div>
+                            <div class="content">
+                                <p class="small my-2">With Bonus</p>
+                                <h4 class="count lead fw-bold mb-0">4</h4>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-3">
+                        <div class="d-flex flex-col text-center border-end">
+                            <div class="icon-square d-flex align-items-center justify-content-center bg-light mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                            </div>
+                            <div class="content">
+                                <p class="small my-2">Active Accounts</p>
+                                <h4 class="count lead fw-bold mb-0">4</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-md-3">
+                        <div class="d-flex flex-col text-center">
+                            <div class="icon-square d-flex align-items-center justify-content-center bg-light mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
+                            </div>
+                            <div class="content">
+                                <p class="small my-2">Approved</p>
+                                <h4 class="count lead fw-bold mb-0">4</h4>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xl-12">
                     <div class="site-card">
@@ -23,18 +104,22 @@
                             <div class="site-datatable">
                                 <table id="dataTable" class="display data-table">
                                     <thead>
-                                    <tr>
-                                        <th>{{ __('Icon') }}</th>
-                                        <th>{{ __('Schema') }}</th>
-                                        <th>{{ __('User') }}</th>
-                                        <th>{{ __('Login') }}</th>
-                                        <th>{{ __('Group') }}</th>
-                                        <th>{{ __('Balance') }}</th>
-                                        <th>{{ __('Equity') }}</th>
-                                        <th>{{ __('Credit') }}</th>
-                                    </tr>
+                                        <tr>
+                                            <th>{{ __('Account Number') }}</th>
+                                            <th>{{ __('User') }}</th>
+                                            <th>{{ __('Account Type') }}</th>
+                                            <th>{{ __('Group') }}</th>
+                                            <th>{{ __('Currency') }}</th>
+                                            <th>{{ __('Leverage') }}</th>
+                                            <th>{{ __('Balance') }}</th>
+                                            <th>{{ __('Agent/IB Number') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Created At') }}</th>
+                                            <th>{{ __('Actions') }}</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -55,12 +140,15 @@
                 ajax: "{{ route('admin.forex-accounts-real') }}",
                 columns: [
                     {data: 'icon', name: 'icon'},
-                    {data: 'schema', name: 'schema'},
                     {data: 'username', name: 'username'},
+                    {data: 'schema', name: 'schema'},
                     {data: 'login', name: 'login'},
                     {data: 'group', name: 'group'},
                     {data: 'balance', name: 'balance'},
                     {data: 'equity', name: 'equity'},
+                    {data: 'credit', name: 'credit'},
+                    {data: 'credit', name: 'credit'},
+                    {data: 'credit', name: 'credit'},
                     {data: 'credit', name: 'credit'},
                 ]
             });

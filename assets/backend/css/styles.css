@@ -312,6 +312,12 @@ img {
   animation-timing-function: linear;
 }
 
+.icon-square {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+}
+
 @keyframes spining {
   from {
     transform: rotate(0deg);

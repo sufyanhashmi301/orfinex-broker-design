@@ -138,7 +138,7 @@
                 @can('investment-list')
                     <li class="side-nav-item side-nav-dropdown">
                         <a href="javascript:void(0);" class="dropdown-link">
-                            <i icon-name="album"></i>
+                            <i icon-name="contact-2"></i>
                             <span>{{ __('Forex Accounts') }}</span>
                             <span class="right-arrow">
                                 <i icon-name="chevron-down"></i>
@@ -147,13 +147,13 @@
                         <ul class="dropdown-items">
                             <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
                                 <a href="{{route('admin.forex-accounts-real')}}">
-                                    <i icon-name="anchor"></i>
+                                    <i icon-name="candlestick-chart"></i>
                                     <span>{{ __('Live Accounts') }}</span>
                                 </a>
                             </li>
                             <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
                                 <a href="{{route('admin.forex-accounts-real')}}">
-                                    <i icon-name="anchor"></i>
+                                    <i icon-name="line-chart"></i>
                                     <span>{{ __('Demo Accounts') }}</span>
                                 </a>
                             </li>

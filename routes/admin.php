@@ -35,6 +35,7 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\SecurityController;
+use App\Http\Controllers\Backend\LinkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -257,6 +258,12 @@ Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => Secur
     Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
 });
 
+//===============================  Links Settings ==================================
+Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
+    Route::get('document-links', 'documentLinks')->name('document-links');
+    Route::get('platform-links', 'platformLinks')->name('platform-links');
+});
+
 // show all notifications
 Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
 Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
@@ -324,4 +331,3 @@ Route::get('ib-resources/new', function () {
 Route::get('/loyalty-points', function () {
     return view('backend.loyalty_points.create');
 });
-

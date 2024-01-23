@@ -21,9 +21,9 @@
         </ul>
     </div>
     <div class="card mb-5">
-        <div class="card-header noborder">
+        <div class="card-header !items-end noborder">
             <div class="flex items-end flex-wrap gap-3 w-full md:w-1/2">
-                <div class="flex-auto">
+                <div class="flex-1">
                     <label for="" class="form-label">Account</label>
                     <select name="" class="select2 form-control w-full py-2">
                         <option value="43741242">
@@ -32,7 +32,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="flex-auto md:flex-none">
+                <div class="">
                     <input class="form-control py-2 flatpickr flatpickr-input" id="range-picker" data-mode="range" value="" type="text">
                 </div>
             </div>
@@ -76,82 +76,172 @@
                     </div>
                 </div>
             </div>
+            <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-3 " id="pills-tabHorizontal" role="tablist">
+                <li class="nav-item text-center" role="presentation">
+                    <a href="#pills-runingOrdersHorizontal" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-300" id="pills-runingOrders-tabHorizontal" data-bs-toggle="pill" data-bs-target="#pills-runingOrdersHorizontal" role="tab" aria-controls="pills-runingOrdersHorizontal" aria-selected="true">
+                        Runing Orders
+                    </a>
+                </li>
+                <li class="nav-item text-center" role="presentation">
+                    <a href="#pills-ordersHistoryHorizontal" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300" id="pills-ordersHistory-tabHorizontal" data-bs-toggle="pill" data-bs-target="#pills-ordersHistoryHorizontal" role="tab" aria-controls="pills-ordersHistoryHorizontal" aria-selected="false">
+                        Orders History
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header border-none">
-            <h4 class="card-title">Orders History</h4>
+    
+    <div class="tab-content" id="pills-tabContentHorizontal">
+        <div class="tab-pane fade show active" id="pills-runingOrdersHorizontal" role="tabpanel" aria-labelledby="pills-runingOrders-tabHorizontal">
+            <div class="card">
+                <div class="card-header border-none">
+                    <h4 class="card-title">Runing Orders</h4>
+                </div>
+                <div class="card-body flex flex-col p-6 pt-0">
+                    <div class="overflow-x-auto -mx-6">
+                        <div class="inline-block min-w-full align-middle">
+                            <div class="overflow-hidden ">
+                                <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                    <thead class="bg-slate-200 dark:bg-slate-700">
+                                        <tr>
+                                            <th scope="col" class="table-th">Symbol</th>
+                                            <th scope="col" class="table-th">ContractSize</th>
+                                            <th scope="col" class="table-th">Order</th>
+                                            <th scope="col" class="table-th">PriceOrder</th>
+                                            <th scope="col" class="table-th">PriceCurrent</th>
+                                            <th scope="col" class="table-th">PriceSL</th>
+                                            <th scope="col" class="table-th">PriceTP</th>
+                                            <th scope="col" class="table-th">TimeSetup</th>
+                                            <th scope="col" class="table-th">TimeSetupMsc</th>
+                                            <th scope="col" class="table-th">Type</th>
+                                            <th scope="col" class="table-th">TypeFill</th>
+                                            <th scope="col" class="table-th">VolumeCurrent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                        <tr>
+                                            <td class="table-td">
+                                                USOil
+                                            </td>
+                                            <td class="table-td">
+                                                100.0
+                                            </td>
+                                            <td class="table-td">
+                                                3617723
+                                            </td>
+                                            <td class="table-td">
+                                                69.0
+                                            </td>
+                                            <td class="table-td">
+                                                73.35
+                                            </td>
+                                            <td class="table-td">
+                                                0.0
+                                            </td>
+                                            <td class="table-td">
+                                                74.0
+                                            </td>
+                                            <td class="table-td">
+                                                1704918935
+                                            </td>
+                                            <td class="table-td">
+                                                1704918935519
+                                            </td>
+                                            <td class="table-td">
+                                                2
+                                            </td>
+                                            <td class="table-td">
+                                                2
+                                            </td>
+                                            <td class="table-td">
+                                                100
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body flex flex-col p-6 pt-0">
-            <div class="overflow-x-auto -mx-6">
-                <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="bg-slate-200 dark:bg-slate-700">
-                                <tr>
-                                    <th scope="col" class="table-th">Deal</th>
-                                    <th scope="col" class="table-th">Entry</th>
-                                    <th scope="col" class="table-th">Login</th>
-                                    <th scope="col" class="table-th">Order</th>
-                                    <th scope="col" class="table-th">Position Id</th>
-                                    <th scope="col" class="table-th">Price</th>
-                                    <th scope="col" class="table-th">Price Position</th>
-                                    <th scope="col" class="table-th">Price SL</th>
-                                    <th scope="col" class="table-th">Price TP</th>
-                                    <th scope="col" class="table-th">Profit</th>
-                                    <th scope="col" class="table-th">Symbol</th>
-                                    <th scope="col" class="table-th">Time</th>
-                                    <th scope="col" class="table-th">Time Msc</th>
-                                    <th scope="col" class="table-th">Volume</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                <tr>
-                                    <td class="table-td">
-                                        4617191
-                                    </td>
-                                    <td class="table-td">
-                                        1
-                                    </td>
-                                    <td class="table-td">
-                                        6735
-                                    </td>
-                                    <td class="table-td">
-                                        3733223
-                                    </td>
-                                    <td class="table-td">
-                                        3023239
-                                    </td>
-                                    <td class="table-td">
-                                        2028.51
-                                    </td>
-                                    <td class="table-td">
-                                        1986.0
-                                    </td>
-                                    <td class="table-td">
-                                        0.0
-                                    </td>
-                                    <td class="table-td">
-                                        0.0
-                                    </td>
-                                    <td class="table-td">
-                                        21255.0
-                                    </td>
-                                    <td class="table-td">
-                                        XAUUSD
-                                    </td>
-                                    <td class="table-td">
-                                        1705927239
-                                    </td>
-                                    <td class="table-td">
-                                        1705927239678
-                                    </td>
-                                    <td class="table-td">
-                                        50000
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <div class="tab-pane fade" id="pills-ordersHistoryHorizontal" role="tabpanel" aria-labelledby="pills-ordersHistory-tabHorizontal">
+            <div class="card">
+                <div class="card-header border-none">
+                    <h4 class="card-title">Orders History</h4>
+                </div>
+                <div class="card-body flex flex-col p-6 pt-0">
+                    <div class="overflow-x-auto -mx-6">
+                        <div class="inline-block min-w-full align-middle">
+                            <div class="overflow-hidden ">
+                                <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                    <thead class="bg-slate-200 dark:bg-slate-700">
+                                        <tr>
+                                            <th scope="col" class="table-th">Deal</th>
+                                            <th scope="col" class="table-th">Entry</th>
+                                            <th scope="col" class="table-th">Login</th>
+                                            <th scope="col" class="table-th">Order</th>
+                                            <th scope="col" class="table-th">PositionId</th>
+                                            <th scope="col" class="table-th">Price</th>
+                                            <th scope="col" class="table-th">PricePosition</th>
+                                            <th scope="col" class="table-th">PriceSL</th>
+                                            <th scope="col" class="table-th">PriceTP</th>
+                                            <th scope="col" class="table-th">Profit</th>
+                                            <th scope="col" class="table-th">Symbol</th>
+                                            <th scope="col" class="table-th">Time</th>
+                                            <th scope="col" class="table-th">TimeMsc</th>
+                                            <th scope="col" class="table-th">Volume</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                        <tr>
+                                            <td class="table-td">
+                                                4617191
+                                            </td>
+                                            <td class="table-td">
+                                                1
+                                            </td>
+                                            <td class="table-td">
+                                                6735
+                                            </td>
+                                            <td class="table-td">
+                                                3733223
+                                            </td>
+                                            <td class="table-td">
+                                                3023239
+                                            </td>
+                                            <td class="table-td">
+                                                2028.51
+                                            </td>
+                                            <td class="table-td">
+                                                1986.0
+                                            </td>
+                                            <td class="table-td">
+                                                0.0
+                                            </td>
+                                            <td class="table-td">
+                                                0.0
+                                            </td>
+                                            <td class="table-td">
+                                                21255.0
+                                            </td>
+                                            <td class="table-td">
+                                                XAUUSD
+                                            </td>
+                                            <td class="table-td">
+                                                1705927239
+                                            </td>
+                                            <td class="table-td">
+                                                1705927239678
+                                            </td>
+                                            <td class="table-td">
+                                                50000
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

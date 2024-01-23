@@ -1099,7 +1099,8 @@ textarea.form-control.is-invalid{
   box-shadow: none;
 }
 .nav-pills .nav-link.active{
-  background: rgb(37, 99, 235);
+  /* background: rgb(37, 99, 235); */
+  background: rgb(15, 23, 42);
   color: #fff;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
@@ -5380,6 +5381,9 @@ textarea.form-control.is-invalid{
 }
 .items-end{
   align-items: flex-end;
+}
+.\!items-end{
+  align-items: flex-end !important;
 }
 .items-center{
   align-items: center;

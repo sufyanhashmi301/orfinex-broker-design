@@ -102,4 +102,10 @@ class SettingController extends Controller
         }
 
     }
+
+    public static function userPermissions()
+    {
+        return view('backend.setting.user_permissions.index');
+    }
+
 }

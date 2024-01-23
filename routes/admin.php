@@ -234,6 +234,7 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
     Route::get('mail', 'mailSetting')->name('mail');
     Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
     Route::post('update', 'update')->name('update');
+    Route::get('user-permissions', 'userPermissions')->name('user-permissions');
 
     Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
     Route::get('plugin-data/{id}', [PluginController::class, 'pluginData'])->name('plugin.data');
@@ -319,3 +320,8 @@ Route::get('/ib-resources', function () {
 Route::get('ib-resources/new', function () {
     return view('backend.ib.resources.create');
 });
+
+Route::get('/loyalty-points', function () {
+    return view('backend.loyalty_points.create');
+});
+

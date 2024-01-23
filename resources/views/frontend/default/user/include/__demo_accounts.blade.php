@@ -36,6 +36,8 @@
                     @endforeach
                 </tbody>
             </table>
+            {{  $demoForexAccounts->links() }}
+
         </div>
     </div>
 </div>

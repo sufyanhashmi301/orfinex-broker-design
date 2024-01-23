@@ -50,12 +50,10 @@ class DashboardController extends Controller
         $referral = $user->getReferrals()->first();
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')
-            ->take(3)
-            ->get();
+            ->paginate(3)->withQueryString();
         $demoForexAccounts = ForexAccount::demoActiveAccount()
             ->orderBy('balance','desc')
-            ->take(3)
-            ->get();
+            ->paginate(3)->withQueryString();
         $getReferral = $user->getReferrals()->first();
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode'));

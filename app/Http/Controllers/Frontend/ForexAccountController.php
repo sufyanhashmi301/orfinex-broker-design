@@ -325,4 +325,9 @@ class ForexAccountController extends GatewayController
 //        dd($resposne->object());
 
     }
+
+    public function accountStats()
+    {
+        return view('frontend::user.forex.stats');
+    }
 }

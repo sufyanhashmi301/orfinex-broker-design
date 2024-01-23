@@ -8,8 +8,33 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Details of')   .' '. $user->first_name .' '.  $user->last_name }} </h2>
+                        <div class="title-content flex-wrap flex-md-nowrap">
+                            <div class="flex flex-wrap flex-md-nowrap align-items-stretch gap-2 mb-2 mb-md-0">
+                                <a href="" class="btn btn-dark btn-sm">
+                                    <i icon-name="plus"></i>
+                                    Add Tag
+                                </a>
+                                <div class="position-relative px-3 py-1 rounded bg-white border">
+                                    <div class="position-absolute left-0 bg-danger rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
+                                    <span class="small ps-3 pe-1">National ID card</span>
+                                    <a href="" class="btn-link text-dark">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                            <path d="M18 6 6 18"/>
+                                            <path d="m6 6 12 12"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                                <div class="position-relative px-3 py-1 rounded bg-white border">
+                                    <div class="position-absolute left-0 bg-info rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
+                                    <span class="small ps-3 pe-1">Passport</span>
+                                    <a href="" class="btn-link text-dark">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                            <path d="M18 6 6 18"/>
+                                            <path d="m6 6 12 12"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
                             <div class="content">
                             <a href="{{ url()->previous() }}" class="title-btn"><i
                                     icon-name="corner-down-left"></i>{{ __('Back') }}</a>

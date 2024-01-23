@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::post('update/account', [ForexAccountController::class, 'updateAccountInfo'])->name('update.account');
 
         Route::get('log', [ForexAccountController::class, 'depositLog'])->name('log');
+        Route::get('stats', [ForexAccountController::class, 'accountStats'])->name('stats');
     });
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');

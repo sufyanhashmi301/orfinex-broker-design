@@ -48,6 +48,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ib_status',
         'kyc',
         'kyc_credential',
+        'risk_profile_tags',
         'google2fa_secret',
         'two_fa',
         'deposit_status',
@@ -84,6 +85,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'two_fa' => 'boolean',
     ];
 
+    public function riskProfileTags()
+    {
+        return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tags_users');
+    }
     public function getUpdatedAtAttribute(): string
     {
         return Carbon::parse($this->attributes['updated_at'])->format('M d Y h:i');

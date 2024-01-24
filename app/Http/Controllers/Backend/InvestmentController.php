@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\ForexAccountStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\Invest;
@@ -44,13 +45,24 @@ class InvestmentController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('icon', 'backend.investment.include.__invest_icon')
+                ->addColumn('ib_number', 'backend.user.include.__ib_number')
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('schema', 'backend.investment.include.__invest_schema')
-                ->rawColumns(['icon', 'schema', 'username'])
+                ->addColumn('status', 'backend.investment.include.__status')
+                ->addColumn('action', '')
+                ->rawColumns(['ib_number', 'schema', 'username', 'status','action'])
                 ->make(true);
         }
+        $withBalance = ForexAccount::where('account_type','real')->where('balance', '>',0)->count();
+        $withoutBalance = ForexAccount::where('account_type','real')->where('balance',0)->count();
+        $unActiveAccounts = ForexAccount::where('account_type','real')->where('status','!=',ForexAccountStatus::Ongoing)->count();
 
-        return view('backend.investment.index');
+        $data = [
+        'TotalAccounts' => ForexAccount::count(),
+        'withBalance' => $withBalance,
+        'withoutBalance' => $withoutBalance,
+        'unActiveAccounts' => $unActiveAccounts,
+        ];
+        return view('backend.investment.index',compact('data'));
     }
 }

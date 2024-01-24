@@ -2,6 +2,9 @@
 @section('title')
     {{ __('Customer Details') }}
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+@endsection
 @section('content')
     <div class="main-content">
         <div class="page-title">
@@ -10,30 +13,26 @@
                     <div class="col">
                         <div class="title-content flex-wrap flex-md-nowrap">
                             <div class="flex flex-wrap flex-md-nowrap align-items-stretch gap-2 mb-2 mb-md-0">
-                                <a href="" class="btn btn-dark btn-sm">
+                                <span data-bs-toggle="modal" data-bs-target="#addTags">
+                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
                                     <i icon-name="plus"></i>
                                     Add Tag
                                 </a>
-                                <div class="position-relative px-3 py-1 rounded bg-white border">
-                                    <div class="position-absolute left-0 bg-danger rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
-                                    <span class="small ps-3 pe-1">National ID card</span>
-                                    <a href="" class="btn-link text-dark">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                            <path d="M18 6 6 18"/>
-                                            <path d="m6 6 12 12"/>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <div class="position-relative px-3 py-1 rounded bg-white border">
-                                    <div class="position-absolute left-0 bg-info rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
-                                    <span class="small ps-3 pe-1">Passport</span>
-                                    <a href="" class="btn-link text-dark">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                            <path d="M18 6 6 18"/>
-                                            <path d="m6 6 12 12"/>
-                                        </svg>
-                                    </a>
-                                </div>
+                                </span>
+{{--                                {{dd($user->riskProfileTags)}}--}}
+                                @foreach($user->riskProfileTags as $tag)
+                                    <div class="position-relative px-3 py-1 rounded bg-white border">
+                                        <div class="position-absolute left-0 bg-danger rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
+                                        <span class="small ps-3 pe-1">{{$tag->name}}</span>
+                                        <a href="#" class="btn-link text-dark" onclick="confirmDelete({{ $tag->id }},'{{ $tag->name }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                <path d="M18 6 6 18"/>
+                                                <path d="m6 6 12 12"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                @endforeach
+
                             </div>
                             <div class="content">
                             <a href="{{ url()->previous() }}" class="title-btn"><i
@@ -299,6 +298,10 @@
         @include('backend.user.include.__balance')
     @endcan
     <!-- Modal for Add or Subtract Balance End-->
+    {{--    @can('customer-balance-add-or-subtract')--}}
+    @include('backend.user.include.__tags')
+    @include('backend.user.include.__tag_delete')
+    {{--    @endcan--}}
     <!-- Modal for Add or Subtract Balance -->
 {{--    @can('delete-user')--}}
         @include('backend.user.include.__delete_user',[ 'id' => $user->id])
@@ -307,9 +310,25 @@
 
 @endsection
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
 
     <script>
+        function confirmDelete(tagId,tagName) {
+            $('#risk_profile_tag_id').val(tagId)
+            $('#risk_profile_tag_name').text(tagName)
+            $('#deleteTagModal').modal('show');
+        }
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            // maxItemCount:7,
+            // searchResultLimit:7,
+            // renderChoiceLimit:7
+        });
         $(document).ready(function() {
+
+
+
+
             function reloadPage() {
                 // Reload the current page
                 window.location.href = window.location.href;

@@ -15,7 +15,7 @@
                         <table id="user-forex-account-dataTable" class="display data-table">
                             <thead>
                             <tr>
-                                <th>{{ __('Icon') }}</th>
+{{--                                <th>{{ __('Icon') }}</th>--}}
                                 <th>{{ __('Schema') }}</th>
                                 <th>{{ __('Login') }}</th>
                                 <th>{{ __('Group') }}</th>
@@ -46,7 +46,7 @@
                 autoWidth: false,
                 ajax: "{{ route('admin.forex-accounts-real',$user->id) }}",
                 columns: [
-                    {data: 'icon', name: 'icon'},
+                    // {data: 'icon', name: 'icon'},
                     {data: 'schema', name: 'schema'},
                     {data: 'login', name: 'login'},
                     {data: 'group', name: 'group'},

@@ -7,6 +7,7 @@ use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\LevelReferral;
+use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Traits\ForexApiTrait;
@@ -176,7 +177,9 @@ class UserController extends Controller
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance','desc')
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts'));
+        $tags = RiskProfileTag::where('status',true)
+            ->get();
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags'));
     }
 
     public function destroy($id)

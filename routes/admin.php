@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\ProfitController;
 use App\Http\Controllers\Backend\ProfitDeductionController;
 use App\Http\Controllers\Backend\RankingController;
 use App\Http\Controllers\Backend\ReferralController;
+use App\Http\Controllers\Backend\RiskProfileTagController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\ScheduleController;
 use App\Http\Controllers\Backend\ForexSchemaController;
@@ -74,6 +75,11 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
     Route::post('action-now', 'actionNow')->name('action.now');
     Route::get('all', 'kycAll')->name('all');
 
+});
+Route::resource('risk-profile-tag', RiskProfileTagController::class);
+Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
+    Route::post('update/{id}', 'tagsUpdate')->name('tag.update');
+    Route::post('delete/{id}', 'tagDelete')->name('tag.delete');
 });
 
 Route::resource('ib-form', IBController::class);

@@ -31,8 +31,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                             </div>
                             <div class="content">
-                                <p class="small my-2">Live Accounts</p>
-                                <h4 class="count lead fw-bold mb-0">4</h4>
+                                <p class="small my-2">Total Accounts</p>
+                                <h4 class="count lead fw-bold mb-0">{{$data['TotalAccounts']}}</h4>
                             </div>
                         </div>
                         <div class="position-absolute h-100 end-0 top-0 bg-light d-none d-md-block" style="width: 2px;"></div>
@@ -43,8 +43,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                             </div>
                             <div class="content">
-                                <p class="small my-2">With Deposit</p>
-                                <h4 class="count lead fw-bold mb-0">4</h4>
+                                <p class="small my-2">With Balance</p>
+                                <h4 class="count lead fw-bold mb-0">{{$data['withBalance']}}</h4>
                             </div>
                         </div>
                         <div class="position-absolute h-100 end-0 top-0 bg-light d-none d-md-block" style="width: 2px;"></div>
@@ -55,8 +55,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                             </div>
                             <div class="content">
-                                <p class="small my-2">Without Deposit</p>
-                                <h4 class="count lead fw-bold mb-0">4</h4>
+                                <p class="small my-2">With Bonus</p>
+                                <h4 class="count lead fw-bold mb-0">0</h4>
                             </div>
                         </div>
                         <div class="position-absolute h-100 end-0 top-0 bg-light d-none d-lg-block" style="width: 2px;"></div>
@@ -67,8 +67,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                             </div>
                             <div class="content">
-                                <p class="small my-2">With Bonus</p>
-                                <h4 class="count lead fw-bold mb-0">4</h4>
+                                <p class="small my-2">Without Balance</p>
+                                <h4 class="count lead fw-bold mb-0">{{$data['withoutBalance']}}</h4>
                             </div>
                         </div>
                         <div class="position-absolute h-100 end-0 top-0 bg-light d-none d-md-block" style="width: 2px;"></div>
@@ -79,8 +79,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                             </div>
                             <div class="content">
-                                <p class="small my-2">Active Accounts</p>
-                                <h4 class="count lead fw-bold mb-0">4</h4>
+                                <p class="small my-2">Without Bonus</p>
+                                <h4 class="count lead fw-bold mb-0">0</h4>
                             </div>
                         </div>
                         <div class="position-absolute h-100 end-0 top-0 bg-light d-none d-md-block" style="width: 2px;"></div>
@@ -91,8 +91,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
                             </div>
                             <div class="content">
-                                <p class="small my-2">Approved</p>
-                                <h4 class="count lead fw-bold mb-0">4</h4>
+                                <p class="small my-2">Un-Active Accounts</p>
+                                <h4 class="count lead fw-bold mb-0">{{$data['unActiveAccounts']}}</h4>
                             </div>
                         </div>
                     </div>
@@ -140,17 +140,18 @@
                 serverSide: true,
                 ajax: "{{ route('admin.forex-accounts-real') }}",
                 columns: [
-                    {data: 'icon', name: 'icon'},
+                    {data: 'login', name: 'login'},
                     {data: 'username', name: 'username'},
                     {data: 'schema', name: 'schema'},
-                    {data: 'login', name: 'login'},
+                    // {data: 'login', name: 'login'},
                     {data: 'group', name: 'group'},
+                    {data: 'currency', name: 'currency'},
+                    {data: 'leverage', name: 'leverage'},
                     {data: 'balance', name: 'balance'},
-                    {data: 'equity', name: 'equity'},
-                    {data: 'credit', name: 'credit'},
-                    {data: 'credit', name: 'credit'},
-                    {data: 'credit', name: 'credit'},
-                    {data: 'credit', name: 'credit'},
+                    {data: 'ib_number', name: 'ib_number'},
+                    {data: 'status', name: 'status'},
+                    {data: 'created_at', name: 'created_at'},
+                    {data: 'action', name: 'action'},
                 ]
             });
 

@@ -83,7 +83,10 @@ class ForexAccount extends Model
     {
         return $this->hasOne(ForexSchema::class, 'id', 'forex_schema_id');
     }
-
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'target_id','login');
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id')->withDefault();

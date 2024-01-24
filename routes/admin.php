@@ -78,8 +78,8 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
 });
 Route::resource('risk-profile-tag', RiskProfileTagController::class);
 Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
-    Route::post('update/{id}', 'tagsUpdate')->name('tag.update');
-    Route::post('delete/{id}', 'tagDelete')->name('tag.delete');
+    Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
+    Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 });
 
 Route::resource('ib-form', IBController::class);

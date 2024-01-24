@@ -47,7 +47,7 @@
                 </li>
             @endcanany
 
-            @canany(['kyc-list','kyc-action','kyc-form-manage'])
+            @canany(['kyc-list','kyc-action','kyc-form-manage','risk-profile-tag'])
                 <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.kyc*']) }}">
                     <a href="javascript:void(0);" class="dropdown-link"><i
                             icon-name="check-square"></i><span>{{ __('Compliance & KYC') }}</span><span
@@ -73,6 +73,12 @@
                                         icon-name="check-square"></i>{{ __('KYC Form') }}</a>
                             </li>
                         @endcan
+                            {{--                            @can('kyc-form-manage')--}}
+                            <li class="{{ isActive('admin.risk-profile-tag*') }}">
+                                <a href="{{ route('admin.risk-profile-tag.index') }}"><i
+                                        icon-name="check-square"></i>{{ __('Risk Profile Tag Form') }}</a>
+                            </li>
+                            {{--                            @endcan--}}
 
                     </ul>
                 </li>
@@ -134,7 +140,7 @@
 
                     </ul>
                 </li>
-                
+
                 @can('investment-list')
                     <li class="side-nav-item side-nav-dropdown">
                         <a href="javascript:void(0);" class="dropdown-link">
@@ -158,7 +164,7 @@
                                 </a>
                             </li>
                         </ul>
-                        
+
                     </li>
                 @endcan
             @endcanany
@@ -188,7 +194,7 @@
                         </li>
                     </ul>
                 </li>
-                
+
 
                 @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
                     <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.referral*']) }}">

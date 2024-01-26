@@ -35,14 +35,14 @@
                     <div class="flex items-center flex-wrap gap-4">
                         <div class="flex-none w-1/5 md:block hidden">
                             <span class="flex relative h-12 w-12 mx-auto">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-12 w-12 bg-success-500"></span>
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-600 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-12 w-12 bg-slate-900"></span>
                             </span>
                         </div>
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-4">
                                 <h5 class="text-xl text-slate-900 font-medium">Funded Account: 9997452</h5>
-                                <span class="badge bg-success-500 text-white capitalize">
+                                <span class="badge bg-slate-900 text-white capitalize">
                                     Active
                                 </span>
                             </div>

@@ -84,7 +84,6 @@
                 </li>
             @endcanany
 
-
             {{-- *************************************************************  Staff Management *********************************************************--}}
             @canany(['role-list','role-create','role-edit','staff-list','staff-create','staff-edit'])
                 <li class="side-nav-item category-title">

@@ -293,6 +293,274 @@ return [
             ],
         ],
     ],
+    'document_links' => [
+        'title' => 'Document Links',
+        'elements' => [
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'aml_policy_link', // unique name for field
+                'label' => 'AML Policy Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'aml_policy_show', // unique name for field
+                'label' => 'AML Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'client_agreement_link', // unique name for field
+                'label' => 'Client Agreement Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'client_agreement_show', // unique name for field
+                'label' => 'Client Agreement', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'complaints_handling_policy_link', // unique name for field
+                'label' => 'Complaints Handling Policy Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'complaints_handling_policy_show', // unique name for field
+                'label' => 'Complaints Handling Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'cookies_policy_link', // unique name for field
+                'label' => 'Cookies Policy Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'cookies_policy_show', // unique name for field
+                'label' => 'Cookies Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'IB_partner_agreement_link', // unique name for field
+                'label' => 'IB Partner Agreement Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'IB_partner_agreement_show', // unique name for field
+                'label' => 'IB Partner Agreement', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'order_execution_policy_link', // unique name for field
+                'label' => 'Order Execution Policy Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'order_execution_policy_show', // unique name for field
+                'label' => 'Order Execution Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'privacy_policy_link', // unique name for field
+                'label' => 'Privacy Policy Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'privacy_policy_show', // unique name for field
+                'label' => 'Privacy Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'risk_disclosure_link', // unique name for field
+                'label' => 'Risk Disclosure Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'risk_disclosure_show', // unique name for field
+                'label' => 'Risk Disclosure', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'US_clients_policy_link', // unique name for field
+                'label' => 'US Clients Policy Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'US_clients_policy_show', // unique name for field
+                'label' => 'US Clients Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+
+        ],
+
+    ],
+    'platform_links' => [
+        'title' => 'Platform Links',
+        'elements' => [
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'desktop_terminal_windows_link', // unique name for field
+                'label' => 'Desktop Terminal - Windows Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'desktop_terminal_windows_show', // unique name for field
+                'label' => 'Desktop Terminal - Windows', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'desktop_terminal_mac_link', // unique name for field
+                'label' => 'Desktop Terminal - Mac Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'desktop_terminal_mac_show', // unique name for field
+                'label' => 'Desktop Terminal - Mac', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mobile_application_android_link', // unique name for field
+                'label' => 'Mobile Application - Android Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'mobile_application_android_show', // unique name for field
+                'label' => 'Mobile Application - Android', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mobile_application_iOS_link', // unique name for field
+                'label' => 'Mobile Application - iOS Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'mobile_application_iOS_show', // unique name for field
+                'label' => 'Mobile Application - iOS', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mobile_application_Android_APK_link', // unique name for field
+                'label' => 'Mobile Application - Android (APK) Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'mobile_application_Android_APK_show', // unique name for field
+                'label' => 'Mobile Application - Android (APK)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'web_terminal_link', // unique name for field
+                'label' => 'Web Terminal (No Download)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'web_terminal_show', // unique name for field
+                'label' => 'Web Terminal (No Download)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
+
+    ],
+
 
     'fee' => [
         'title' => 'Site Fee, Limit and Bonus Settings',

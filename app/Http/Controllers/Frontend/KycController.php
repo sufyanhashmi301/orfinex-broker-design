@@ -82,7 +82,7 @@ class KycController extends Controller
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),
-//            'kyc' => KYCStatus::Pending,
+            'kyc' => KYCStatus::Pending,
         ]);
         $shortcodes = [
             '[[full_name]]' => $user->full_name,

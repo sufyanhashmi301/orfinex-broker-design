@@ -38,6 +38,14 @@ return [
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
             [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'link_thumbnail', // unique name for field
+                'label' => 'Link Thumbnail Image ', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
+                'value' => 'default/auth-bg.jpg', // default value if you want
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_admin_prefix', // unique name for field

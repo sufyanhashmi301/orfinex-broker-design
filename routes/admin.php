@@ -253,6 +253,8 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
         Route::get('tune/status/{id}', 'status')->name('tune.status');
     });
 
+    Route::get('server', 'serverSetting')->name('server');
+
 });
 
 //===============================  Security Settings ==================================

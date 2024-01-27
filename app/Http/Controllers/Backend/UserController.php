@@ -165,10 +165,12 @@ class UserController extends Controller
             $this->syncForexAccounts($id);
             if ($user->ib_login) {
                 $getUserResponse = $this->getUserApi($user->ib_login);
-                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-                    $balance = $getUserResponse->object()->Balance;
-                    $user->update(['ib_balance' => $balance]);
-                    $user = User::find($id);
+                if($getUserResponse) {
+                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                        $balance = $getUserResponse->object()->Balance;
+                        $user->update(['ib_balance' => $balance]);
+                        $user = User::find($id);
+                    }
                 }
             }
 

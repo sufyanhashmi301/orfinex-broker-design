@@ -110,7 +110,7 @@
                                             type="text"
                                             name="demo_swap_free"
                                             class="box-input"
-                                            placeholder="Demo (Swap Free) Group"
+                                            placeholder="Demo (Swap) Group"
                                             required
                                         />
                                     </div>
@@ -134,7 +134,7 @@
                                             type="text"
                                             name="real_swap_free"
                                             class="box-input"
-                                            placeholder="Real (Swap Free) Group"
+                                            placeholder="Real (Swap) Group"
                                             required
                                         />
                                     </div>

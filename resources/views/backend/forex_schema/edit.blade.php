@@ -96,13 +96,13 @@
                                 </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Demo (Swap Free):') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Demo (Swap):') }}</label>
                                         <input
                                             type="text"
                                             name="demo_swap_free"
                                             value="{{$schema->demo_swap_free}}"
                                             class="box-input"
-                                            placeholder="Demo (Swap Free) Group"
+                                            placeholder="Demo (Swap) Group"
                                             required
                                         />
                                     </div>
@@ -122,13 +122,13 @@
                                 </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Real (Swap Free):') }}</label>
+                                        <label class="box-input-label" for="">{{ __('Real (Swap):') }}</label>
                                         <input
                                             type="text"
                                             name="real_swap_free"
                                             value="{{$schema->real_swap_free}}"
                                             class="box-input"
-                                            placeholder="Real (Swap Free) Group"
+                                            placeholder="Real (Swap) Group"
                                             required
                                         />
                                     </div>

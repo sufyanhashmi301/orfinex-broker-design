@@ -31,13 +31,13 @@
                     <div class="md:w-2/3">
                         <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-group" name="group" required>
                             @if($schema->real_swap_free)
-                                <option value="real_swap_free">{{__('Real (Swap Free)')}}</option>
+                                <option value="real_swap_free">{{__('Real (Swap)')}}</option>
                             @endif
                             @if($schema->real_islamic)
                                 <option value="real_islamic">{{__('Real (Islamic)')}}</option>
                             @endif
                             @if($schema->demo_swap_free)
-                                <option value="demo_swap_free">{{__('Demo (Swap Free)')}}</option>
+                                <option value="demo_swap_free">{{__('Demo (Swap)')}}</option>
                             @endif
                             @if($schema->demo_islamic)
                                 <option value="demo_islamic">{{__('Demo (Islamic)')}}</option>

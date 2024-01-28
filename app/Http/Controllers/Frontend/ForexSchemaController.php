@@ -35,13 +35,13 @@ class ForexSchemaController extends Controller
         $currency = setting('site_currency', 'global');
         $groupDropdown = '';
         if($schema->real_swap_free)
-            $groupDropdown .='<option value="real_swap_free">'.__("Real (Swap Free)").'</option>';
+            $groupDropdown .='<option value="real_swap_free">'.__("Real (Swap)").'</option>';
 
         if($schema->real_islamic)
             $groupDropdown .='<option value="real_islamic">'.__("Real (Islamic)").'</option>';
 
         if($schema->demo_swap_free)
-            $groupDropdown .='<option value="demo_swap_free">'.__("Demo (Swap Free)").'</option>';
+            $groupDropdown .='<option value="demo_swap_free">'.__("Demo (Swap)").'</option>';
 
         if($schema->demo_islamic)
             $groupDropdown .='<option value="demo_islamic">'.__("Demo (Islamic)").'</option>';

@@ -108,4 +108,9 @@ class SettingController extends Controller
         return view('backend.setting.user_permissions.index');
     }
 
+    public static function serverSetting()
+    {
+        return view('backend.server_settings.server.index');
+    }
+
 }

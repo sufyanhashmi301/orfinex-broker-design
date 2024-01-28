@@ -31,37 +31,68 @@
     <div class="grid grid-cols-3 gap-5">
         <div class="xl:col-span-2 col-span-12">
             <div class="card mb-5">
-                <div class="card-body p-6">
+                <div class="card-body p-6 space-y-4">
                     <div class="flex items-center flex-wrap gap-4">
                         <div class="flex-none w-1/5 md:block hidden">
                             <span class="flex relative h-12 w-12 mx-auto">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-600 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-12 w-12 bg-slate-900"></span>
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-12 w-12 bg-success-500"></span>
                             </span>
                         </div>
                         <div class="flex-1">
-                            <div class="flex justify-between items-center mb-4">
+                            <div class="flex justify-between items-center mb-1">
                                 <h5 class="text-xl text-slate-900 font-medium">Funded Account: 9997452</h5>
-                                <span class="badge bg-slate-900 text-white capitalize">
-                                    Active
-                                </span>
+                                <div class="flex items-setrech gap-2">
+                                    <span class="badge bg-success-500 flex-inline items-center justify-center text-white capitalize !px-3">
+                                        Active
+                                    </span>
+                                    <a href="" class="btn btn-sm btn-light w-8 h-8 inline-flex items-center justify-center">
+                                        <iconify-icon class="text-xl" icon="zondicons:reload"></iconify-icon>
+                                    </a>
+                                </div>
                             </div>
-                            <p class="text-slate-600 font-light mb-1">INV-87420146</p>
+                            <p class="text-sm text-slate-600 font-light mb-4">INV-87420146</p>
                             <div class="flex justify-between flex-wrap gap-4">
                                 <div class="flex-1">
                                     <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-w-[184px] space-y-5">
-                                        <div class="flex justify-between text-xs text-slate-600 font-medium dark:text-slate-300">
-                                            <span>Type Challenge Funding Program</span>
+                                        <div class="flex justify-between text-slate-600 dark:text-slate-300">
+                                            <span class="text-sm">Challenge Funding Program</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex-1">
                                     <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-w-[184px] space-y-5">
-                                        <div class="flex justify-between text-xs text-slate-600 font-medium dark:text-slate-300">
-                                            <span>Starting Balance</span>
-                                            <span>$10,000.00</span>
+                                        <div class="flex justify-between text-slate-600 dark:text-slate-300">
+                                            <span class="text-sm">Starting Balance</span>
+                                            <span class="text-sm font-medium text-slate-900">$10,000.00</span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between flex-wrap gap-4">
+                        <div class="flex-1">
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
+                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
+                                    <span class="text-sm">P&L:</span>
+                                    <span class="text-sm font-medium text-slate-900">$8154.16</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
+                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
+                                    <span class="text-sm">Equity:</span>
+                                    <span class="text-sm font-medium text-slate-900">$8154.16</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
+                                <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
+                                    <span class="text-sm">Balance:</span>
+                                    <span class="text-sm font-medium text-slate-900">$8154.16</span>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +138,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="grid xl:grid-cols-2 grid-cols-1 gap-5">
+            <div class="grid grid-cols-1 gap-5">
                 <div class="card">
                     <div class="card-header noborder">
                         <h6 class="card-title">
@@ -117,74 +148,74 @@
                     <div class="card-body px-4 pb-6 pt-0">
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                                <h5 class="text-slate-900 dark:text-slate-300 text-sm mb-4">
-                                    Minimum Trading Days
-                                </h5>
+                                <div class="flex items-center justify-between mb-4">
+                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                        Minimum Trading Days
+                                    </h5>
+                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                </div>
                                 <ul class="space-y-3">
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Minimum</span>
                                         <span class="text-slate-900 font-medium">4 days</span>
                                     </li>
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Current Result</span>
                                         <span class="text-slate-900 font-medium">7 days</span>
                                     </li>
-                                    <li>
-                                        <span class="badge bg-slate-900 text-white capitalize">Ongoing</span>
-                                    </li>
                                 </ul>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                                <h5 class="text-slate-900 dark:text-slate-300 text-sm mb-4">
-                                    Daily Loss Limit
-                                </h5>
+                                <div class="flex items-center justify-between mb-4">
+                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                        Daily Loss Limit
+                                    </h5>
+                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                </div>
                                 <ul class="space-y-3">
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Max Loss</span>
                                         <span class="text-slate-900 font-medium">$500</span>
                                     </li>
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Max Loss Recorded</span>
                                         <span class="text-slate-900 font-medium">$0.00</span>
-                                    </li>
-                                    <li>
-                                        <span class="badge bg-slate-900 text-white capitalize">Ongoing</span>
                                     </li>
                                 </ul>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                                <h5 class="text-slate-900 dark:text-slate-300 text-sm mb-4">
-                                    Overall Loss Limit
-                                </h5>
+                                <div class="flex items-center justify-between mb-4">
+                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                        Stopout Level
+                                    </h5>
+                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                </div>
                                 <ul class="space-y-3">
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
-                                        <span>Max Loss</span>
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                                        <span>Minimum Level</span>
                                         <span class="text-slate-900 font-medium">$1000</span>
                                     </li>
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
-                                        <span>Max Loss Recorded</span>
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                                        <span>Current</span>
                                         <span class="text-slate-900 font-medium">$0.00</span>
-                                    </li>
-                                    <li>
-                                        <span class="badge bg-slate-900 text-white capitalize">Ongoing</span>
                                     </li>
                                 </ul>
                             </div>
                             <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                                <h5 class="text-slate-900 dark:text-slate-300 text-sm mb-4">
-                                    Profit Target
-                                </h5>
+                                <div class="flex items-center justify-between mb-4">
+                                    <h5 class="text-slate-900 dark:text-slate-300 text-sm">
+                                        Profit Target
+                                    </h5>
+                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                </div>
                                 <ul class="space-y-3">
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Minimum</span>
                                         <span class="text-slate-900 font-medium">1000</span>
                                     </li>
-                                    <li class="flex items-center justify-between text-xs text-slate-500 gap-2">
+                                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Current Result</span>
                                         <span class="text-slate-900 font-medium">$0.00</span>
-                                    </li>
-                                    <li>
-                                        <span class="badge bg-slate-900 text-white capitalize">Ongoing</span>
                                     </li>
                                 </ul>
                             </div>

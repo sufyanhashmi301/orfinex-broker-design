@@ -9,7 +9,15 @@ return [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_logo', // unique name for field
-                'label' => 'Site Logo', // you know what label it is
+                'label' => 'Site Logo (Dark)', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
+                'value' => 'default/fav.png', // default value if you want
+            ],
+            [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_logo_light', // unique name for field
+                'label' => 'Site Logo (Light)', // you know what label it is
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -26,6 +34,14 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'login_bg', // unique name for field
                 'label' => 'Admin Login Cover', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
+                'value' => 'default/auth-bg.jpg', // default value if you want
+            ],
+            [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'link_thumbnail', // unique name for field
+                'label' => 'Link Thumbnail Image ', // you know what label it is
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],

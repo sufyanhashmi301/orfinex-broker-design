@@ -164,7 +164,7 @@ class UserController extends Controller
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts($id);
             if ($user->ib_login) {
-                $getUserResponse = $this->getUserApi($user->ib_login);
+                $getUserResponse = $this->getUserIBApi($user->ib_login);
                 if($getUserResponse) {
                     if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
                         $balance = $getUserResponse->object()->Balance;

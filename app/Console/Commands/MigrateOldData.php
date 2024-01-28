@@ -27,13 +27,14 @@ class MigrateOldData extends Command
 
 //        echo $readableDateTime;
 //        dd($readableDateTime);
-        dd(Hash::make('BrokerAdmin@2024'));
+//        dd(Hash::make('BrokerAdmin@2024'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();
 //            DB::table($table)->truncate();
 //            Schema::enableForeignKeyConstraints();
 //        }
+
         DB::table('users')->truncate();
         DB::table('transactions')->truncate();
         DB::table('transactions')->truncate();
@@ -94,7 +95,6 @@ class MigrateOldData extends Command
         }
 //        return BigDecimal::of(5);
     }
-
 
     private function migrateUserToNewDB($oldUser)
     {

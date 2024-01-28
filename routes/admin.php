@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
+use App\Http\Controllers\Backend\ImportController;
 use App\Http\Controllers\Backend\InvestmentController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\LanguageController;
@@ -337,3 +338,7 @@ Route::get('ib-resources/new', function () {
 Route::get('/loyalty-points', function () {
     return view('backend.loyalty_points.create');
 });
+Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
+Route::post('import', [ImportController::class, 'import'])->name('import');
+
+

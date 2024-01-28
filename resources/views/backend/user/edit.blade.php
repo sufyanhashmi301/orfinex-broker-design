@@ -259,6 +259,10 @@
                         @can('investment-list')
                             @include('backend.user.include.__investments')
                         @endcan
+                    <!-- investments -->
+                    @can('IB-List')
+                        @include('backend.user.include.__investments')
+                    @endcan
 
                         <!-- earnings -->
                         @can('profit-list')

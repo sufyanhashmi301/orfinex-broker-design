@@ -14,7 +14,7 @@ class ForexSchemaController extends Controller
     {
 //        $this->sendApiPostRequest('url','data');
 //        $this->getUserApi(554944);
-        $schemas = ForexSchema::where('status', true)->get();
+        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
 
         return view('frontend::forex_schema.index', compact('schemas'));
     }
@@ -22,7 +22,7 @@ class ForexSchemaController extends Controller
     public function schemaPreview($id)
     {
 
-        $schemas = ForexSchema::where('status', true)->get();
+        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
         $schema = ForexSchema::find($id);
 
         return view('frontend::forex_schema.preview', compact('schema', 'schemas'));

@@ -30,11 +30,13 @@
                                     <thead>
                                     <tr>
                                         <th scope="col">{{ __('Icon') }}</th>
+                                        <th scope="col">{{ __('Priority') }}</th>
                                         <th scope="col">{{ __('Title') }}</th>
                                         <th scope="col">{{ __('Leverage') }}</th>
                                         <th scope="col">{{ __('Country') }}</th>
                                         <th scope="col">{{ __('Badge') }}</th>
                                         <th scope="col">{{ __('Status') }}</th>
+
                                         <th scope="col">{{ __('Action') }}</th>
                                     </tr>
                                     </thead>
@@ -48,6 +50,7 @@
                                                     alt=""
                                                 />
                                             </td>
+                                            <td><strong>{{$schema->priority}}</strong></td>
                                             <td><strong>{{$schema->title}}</strong></td>
                                             <td>
                                                 <strong>{{$schema->leverage}}</strong>

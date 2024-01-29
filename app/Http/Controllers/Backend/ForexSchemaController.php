@@ -37,7 +37,7 @@ class ForexSchemaController extends Controller
      */
     public function index()
     {
-        $schemas = ForexSchema::all();
+        $schemas = ForexSchema::orderBy('priority','asc')->get();
 
         return view('backend.forex_schema.index', compact('schemas'));
     }
@@ -69,6 +69,7 @@ class ForexSchemaController extends Controller
             'is_ib_partner' => 'required',
             'is_internal_transfer' => 'required',
             'is_external_transfer' => 'required',
+            'priority' => 'required|integer|unique:forex_schemas,priority',
         ]);
 
         if ($validator->fails()) {
@@ -96,6 +97,7 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => $input['is_external_transfer'],
             'is_bonus' => $input['is_bonus'],
             'status' => $input['status'],
+            'priority' => $input['priority'],
             'icon' => self::imageUploadTrait($input['icon']),
         ];
 //        dd($finalData);
@@ -136,6 +138,8 @@ class ForexSchemaController extends Controller
             'is_ib_partner' => 'required',
             'is_internal_transfer' => 'required',
             'is_external_transfer' => 'required',
+            'priority' => 'required|integer|unique:forex_schemas,priority,' . $id,
+
         ]);
 
         if ($validator->fails()) {
@@ -164,6 +168,7 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => $input['is_external_transfer'],
             'is_bonus' => $input['is_bonus'],
             'status' => $input['status'],
+            'priority' => $input['priority'],
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
         ];
 //        dd($finalData);

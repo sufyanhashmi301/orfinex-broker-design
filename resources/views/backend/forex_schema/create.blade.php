@@ -151,6 +151,19 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="col-xl-6 ">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Priority:') }}</label>
+                                        <input
+                                            type="text"
+                                            name="priority"
+                                            oninput="this.value = validateDouble(this.value)"
+                                            class="box-input"
+                                            placeholder="Priority e.g 1,2,3.."
+                                            required
+                                        />
+                                    </div>
+                                </div>
 
                                 <div class="col-xl-12">
                                     <div class="site-input-groups">

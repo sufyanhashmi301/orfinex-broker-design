@@ -160,6 +160,20 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="col-xl-6 ">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Priority:') }}</label>
+                                        <input
+                                            type="text"
+                                            name="priority"
+                                            value="{{$schema->priority}}"
+                                            oninput="this.value = validateDouble(this.value)"
+                                            class="box-input"
+                                            placeholder="Priority e.g 1,2,3.."
+
+                                        />
+                                    </div>
+                                </div>
                                 <div class="col-xl-12">
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ForexSchema
- * 
+ *
  * @property int $id
  * @property string|null $icon
  * @property string $title
@@ -66,6 +66,7 @@ class ForexSchema extends Model
 		'is_external_transfer',
 		'is_bonus',
 		'status',
-		'country'
+		'country',
+		'priority'
 	];
 }

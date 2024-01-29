@@ -12,7 +12,7 @@
                         {{ __('Total Earnings') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        $ {{$balance}}
+                        3,564
                     </div>
                 </div>
             </div>

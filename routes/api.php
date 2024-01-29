@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
@@ -15,7 +14,7 @@ use App\Http\Controllers\ApiController;
 |
 */
 Route::get('/forex', [ApiController::class, 'index'])->name('api.forex');
-Route::middleware('auth:sanctum')->get('/chat-gpt/{id}',  [ApiController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
+
 //Route::get('/forex', 'ApiController@index')->name('api.forex');
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();

@@ -35,18 +35,6 @@ if (! function_exists('tnotify')) {
         ]);
     }
 }
-if (!function_exists('is_route')) {
-    /**
-     * check current route
-     * @param $name
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function is_route($name)
-    {
-        return request()->routeIs($name);
-    }
-}
 
 if (! function_exists('setting')) {
     function setting($key, $section = null, $default = null)
@@ -106,6 +94,18 @@ if (! function_exists('curl_get_file_contents')) {
 
         return false;
 
+    }
+}
+if (!function_exists('is_route')) {
+    /**
+     * check current route
+     * @param $name
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_route($name)
+    {
+        return request()->routeIs($name);
     }
 }
 

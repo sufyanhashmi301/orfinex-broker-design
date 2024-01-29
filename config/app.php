@@ -184,7 +184,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-
         /*
          * Package Service Providers...
          */
@@ -235,7 +234,6 @@ return [
         'Paystack' => Unicodeveloper\Paystack\Facades\Paystack::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class,
-
     ])->toArray(),
 
 ];

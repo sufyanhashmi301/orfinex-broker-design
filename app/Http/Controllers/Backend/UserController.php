@@ -28,7 +28,7 @@ use Txn;
 
 class UserController extends Controller
 {
-    use NotifyTrait,ForexApiTrait;
+    use NotifyTrait, ForexApiTrait;
 
     /**
      * Display a listing of the resource.
@@ -65,7 +65,7 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', function ($request) {
-                    return $request->balance.' '.setting('site_currency');
+                    return $request->balance . ' ' . setting('site_currency');
                 })
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
@@ -74,7 +74,7 @@ class UserController extends Controller
                     return safe($request->username);
                 })
                 ->editColumn('total_profit', function ($request) {
-                    return $request->total_profit.' '.setting('site_currency');
+                    return $request->total_profit . ' ' . setting('site_currency');
                 })
                 ->addColumn('action', 'backend.user.include.__action')
                 ->rawColumns(['avatar', 'kyc', 'status', 'action'])
@@ -99,10 +99,10 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('balance', function ($request) {
-                    return $request->balance.' '.setting('site_currency');
+                    return $request->balance . ' ' . setting('site_currency');
                 })
                 ->editColumn('total_profit', function ($request) {
-                    return $request->total_profit.' '.setting('site_currency');
+                    return $request->total_profit . ' ' . setting('site_currency');
                 })
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
@@ -133,13 +133,13 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', function ($request) {
-                    return $request->balance.' '.setting('site_currency');
+                    return $request->balance . ' ' . setting('site_currency');
                 })
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
                 })
                 ->editColumn('total_profit', function ($request) {
-                    return $request->total_profit.' '.setting('site_currency');
+                    return $request->total_profit . ' ' . setting('site_currency');
                 })
                 ->addColumn('action', 'backend.user.include.__action')
                 ->rawColumns(['avatar', 'kyc', 'status', 'action'])
@@ -152,7 +152,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Application|Factory|View
      */
     public function edit($id)
@@ -161,11 +161,11 @@ class UserController extends Controller
         $user = User::find($id);
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
         $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
             $this->syncForexAccounts($id);
             if ($user->ib_login) {
-                $getUserResponse = $this->getUserIBApi($user->ib_login);
-                if($getUserResponse) {
+                $getUserResponse = $this->getUserApi($user->ib_login);
+                if ($getUserResponse) {
                     if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
                         $balance = $getUserResponse->object()->Balance;
                         $user->update(['ib_balance' => $balance]);
@@ -177,9 +177,9 @@ class UserController extends Controller
         }
 
         $realForexAccounts = ForexAccount::realActiveAccount($id)
-            ->orderBy('balance','desc')
+            ->orderBy('balance', 'desc')
             ->get();
-        $tags = RiskProfileTag::where('status',true)
+        $tags = RiskProfileTag::where('status', true)
             ->get();
         return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags'));
     }
@@ -225,7 +225,7 @@ class UserController extends Controller
 
         $user = User::find($id);
 
-        if ($user->status != $input['status'] && ! $input['status']) {
+        if ($user->status != $input['status'] && !$input['status']) {
 
             $shortcodes = [
                 '[[full_name]]' => $user->full_name,
@@ -255,7 +255,7 @@ class UserController extends Controller
         $validator = Validator::make($input, [
             'first_name' => 'required',
             'last_name' => 'required',
-            'username' => 'required|unique:users,username,'.$id,
+            'username' => 'required|unique:users,username,' . $id,
         ]);
 
         if ($validator->fails()) {
@@ -327,24 +327,24 @@ class UserController extends Controller
             $adminUser = \Auth::user();
 
             if ($type == 'add') {
-                if($targetType == 'forex') {
-                    $this->ForexDeposit($targetId,$amount,$comment);
+                if ($targetType == 'forex') {
+                    $this->ForexDeposit($targetId, $amount, $comment);
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money added in '.$targetId.' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
 
                 $status = 'success';
                 $message = __('Account Balance Update');
 
             } elseif ($type == 'subtract') {
-                if($targetType == 'forex') {
+                if ($targetType == 'forex') {
                     $balance = $this->getForexAccountBalance($targetId);
                     if (BigDecimal::of($amount)->compareTo($balance) > 0) {
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
                     }
-                    $this->forexWithdraw($targetId,$amount,$comment);
+                    $this->forexWithdraw($targetId, $amount, $comment);
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in '.$targetId.' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
                 $status = 'success';
                 $message = __('Account Balance Updated');
             }

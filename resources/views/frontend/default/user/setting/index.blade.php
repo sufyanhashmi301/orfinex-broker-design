@@ -115,29 +115,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body p-6">
-                    <div class="space-y-6">
-                        <div class="flex space-x-3 rtl:space-x-reverse items-center">
-                            <div class="flex-none h-8 w-8 rounded-full bg-success-500 text-white flex flex-col items-center justify-center text-lg">
-                                <iconify-icon icon="fa6-solid:sack-dollar"></iconify-icon>
-                            </div>
-                            <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
-                                Margin 4x360
-                            </div>
-                        </div>
-                        <div class="text-slate-600 dark:text-slate-300 text-sm">
-                            Application of Account Opening of Margin 4x360
-                        </div>
-                        <a href="{{ route('user.margin-account') }}" class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
-                        dark:text-slate-300">
-                            <span>Apply Now</span>
-                            <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 

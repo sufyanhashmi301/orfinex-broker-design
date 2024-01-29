@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -13,12 +12,13 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id,Request $request)
+    public function index(Request $request)
     {
-        $user = User::with('realTradingAccounts')->where('id',$id)->first();
-//        dd($user);
-        return response()->json(['user' => $user]);
-
+//        dd('a');
+//        $data = $request->except(['URL']);
+//        $response = Http::retry(3, 100)->get($request->get('URL'), $data);
+//        return $response;
+        return 'success';
     }
 
     /**

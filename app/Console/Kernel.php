@@ -16,7 +16,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
+        if(url('/') == 'http://brokerdemo.brokeret.com') {
+            $schedule->command('reset:data')->daily();
+        }
     }
 
     /**

@@ -105,19 +105,19 @@
                             <div class="site-datatable">
                                 <table id="dataTable" class="display data-table">
                                     <thead>
-                                        <tr>
-                                            <th>{{ __('Account Number') }}</th>
-                                            <th>{{ __('User') }}</th>
-                                            <th>{{ __('Account Type') }}</th>
-                                            <th>{{ __('Group') }}</th>
-                                            <th>{{ __('Currency') }}</th>
-                                            <th>{{ __('Leverage') }}</th>
-                                            <th>{{ __('Balance') }}</th>
-                                            <th>{{ __('Agent/IB Number') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Created At') }}</th>
-                                            <th>{{ __('Actions') }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ __('Account Number') }}</th>
+                                        <th>{{ __('User') }}</th>
+                                        <th>{{ __('Account Type') }}</th>
+                                        <th>{{ __('Group') }}</th>
+                                        <th>{{ __('Currency') }}</th>
+                                        <th>{{ __('Leverage') }}</th>
+                                        <th>{{ __('Balance') }}</th>
+                                        <th>{{ __('Agent/IB Number') }}</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Created At') }}</th>
+                                        <th>{{ __('Actions') }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
 

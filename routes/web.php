@@ -75,13 +75,12 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
     Route::get('forex-account-logs', [ForexAccountController::class, 'forexAccountLogs'])->name('forex-account-logs');
     Route::get('invest-cancel/{id}', [ForexAccountController::class, 'investCancel'])->name('invest-cancel');
-    Route::get('get/api/{id?}', [ForexAccountController::class, 'getAccount'])->name('get-account');
+    Route::get('forex/api/{id?}', [ForexAccountController::class, 'getAccount'])->name('get-api');
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
         Route::post('get/leverage', [ForexAccountController::class, 'getLeverage'])->name('get.leverage');
         Route::post('update/account', [ForexAccountController::class, 'updateAccountInfo'])->name('update.account');
 
         Route::get('log', [ForexAccountController::class, 'depositLog'])->name('log');
-        Route::get('stats', [ForexAccountController::class, 'accountStats'])->name('stats');
     });
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');
@@ -256,11 +255,3 @@ Route::get('user/deposit-methods', function () {
 Route::get('user/platform', function () {
     return view('frontend.default.terminal.index');
 })->name('user.platform');
-
-Route::get('user/fund-board', function () {
-    return view('frontend.default.fund_board.index');
-})->name('user.fund-board');
-
-Route::get('user/fund/detail', function () {
-    return view('frontend.default.fund_board.detail');
-})->name('user.fund.detail');

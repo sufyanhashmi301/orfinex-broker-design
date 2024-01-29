@@ -37,7 +37,6 @@
                 </tbody>
             </table>
             {{  $realForexAccounts->links() }}
-
         </div>
     </div>
 </div>

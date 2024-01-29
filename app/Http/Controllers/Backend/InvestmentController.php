@@ -42,7 +42,7 @@ class InvestmentController extends Controller
             } else {
                 $data = ForexAccount::query()->with('schema')->latest();
             }
-//dd($data);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('ib_number', 'backend.user.include.__ib_number')
@@ -58,10 +58,10 @@ class InvestmentController extends Controller
         $unActiveAccounts = ForexAccount::where('account_type','real')->where('status','!=',ForexAccountStatus::Ongoing)->count();
 
         $data = [
-        'TotalAccounts' => ForexAccount::count(),
-        'withBalance' => $withBalance,
-        'withoutBalance' => $withoutBalance,
-        'unActiveAccounts' => $unActiveAccounts,
+            'TotalAccounts' => ForexAccount::count(),
+            'withBalance' => $withBalance,
+            'withoutBalance' => $withoutBalance,
+            'unActiveAccounts' => $unActiveAccounts,
         ];
         return view('backend.investment.index',compact('data'));
     }

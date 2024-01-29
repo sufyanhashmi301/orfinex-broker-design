@@ -81,10 +81,7 @@
                                 <span>{{ __('Withdraw') }}</span>
                             </span>
                         </a>
-                        <a class="btn btn-sm btn-dark mt-0" href=""
-                        type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#tradeModal">
+                        <a href="javascript:;" class="btn btn-sm btn-dark mt-0">
                             <span class="flex items-center">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="tabler:chart-candle"></iconify-icon>
                                 <span>{{ __('Trade') }}</span>

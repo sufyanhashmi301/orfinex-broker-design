@@ -20,21 +20,13 @@
                     {{ __('Withdraw') }}
                 </a>
             @endif
-            <a class="text-center" href=""
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#tradeModal">
+            <a href="" class="text-center">
                 <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">
                     <iconify-icon class="text-slate-800 dark:text-white text-lg" icon="tabler:chart-candle"></iconify-icon>
                 </div>
                 {{ __('Trade') }}
             </a>
         </div>
-        <li>
-            <a href="{{route('user.forex.stats')}}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                Account Stats
-            </a>
-        </li>
         <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-account-info"
           href=""

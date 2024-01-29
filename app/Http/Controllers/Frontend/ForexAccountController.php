@@ -61,14 +61,18 @@ class ForexAccountController extends GatewayController
         $schema = ForexSchema::find($input['schema_id']);
 
         $group = $schema[$request->group];
+//        $group = 'real\Standard';
 
 
         $server = config('forextrading.server');
         $password = $request->main_password;
 
 //        $dataArray = array(
-
-        $data['Name'] = auth()->user()->full_name;
+        if(url('/') == 'http://brokerdemo.brokeret.com') {
+            $data['Name'] = auth()->user()->full_name . '-demo';
+        }else{
+            $data['Name'] = auth()->user()->full_name;
+        }
         $data['Leverage'] = $request->leverage;
         $data['Group'] = $group;
         $data['MasterPassword'] = $password;
@@ -185,7 +189,12 @@ class ForexAccountController extends GatewayController
     public function forexAccountLogs(Request $request)
     {
 //        $this->getUserApi(9996792);
-
+//        $this->getPositionList(9996792);
+//        $this->getPositionListGroup(9996792);
+//        $this->getOrderOpenUser(9996792);
+//        $this->getDealListUser(9996792);
+//        $this->getUserAccountBalance(9996792);
+//        $this->dealerCreditUrl(9996792,1,2);
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts(auth()->id());
@@ -311,11 +320,12 @@ class ForexAccountController extends GatewayController
 
     public function getAccount($login)
     {
-        $this->getUserApi(9996792);
 //        dd($login);
+        $resposne = $this->getUserApi($login);
 //        $resposne = $this->getUserInfoApi($login);
-        $resposne = $this->getUserInfoApi($login);
-        dd($resposne->object());
+//        $resposne = $this->getMT5GroupList();
+//        $resposne = $this->getRoiApi($login);
+//        dd($resposne->object());
 
     }
     public function investCancel(Request $request)
@@ -324,10 +334,5 @@ class ForexAccountController extends GatewayController
 //        $resposne = $this->getUserInfoApi($login);
 //        dd($resposne->object());
 
-    }
-
-    public function accountStats()
-    {
-        return view('frontend::user.forex.stats');
     }
 }

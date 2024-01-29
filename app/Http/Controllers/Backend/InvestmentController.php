@@ -42,7 +42,7 @@ class InvestmentController extends Controller
             } else {
                 $data = ForexAccount::query()->with('schema')->latest();
             }
-
+//dd($data);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('ib_number', 'backend.user.include.__ib_number')

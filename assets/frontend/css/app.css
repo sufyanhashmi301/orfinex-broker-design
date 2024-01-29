@@ -4794,6 +4794,9 @@ textarea.form-control.is-invalid{
 .w-3\/4 {
   width: 75%;
 }
+.w-\[48\%\]{
+  width: 48%;
+}
 .w-\[140px\]{
   width: 140px;
 }
@@ -15790,6 +15793,9 @@ ul.custom-list ul li{
   }
   .md\:w-\[250px\]{
     width: 250px;
+  }
+  .md\:w-\[48\%\]{
+    width: 48%;
   }
   .md\:w-1\/2{
     width: 50%;

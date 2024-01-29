@@ -228,8 +228,7 @@
                                     ><i icon-name="network"></i>{{ __('Referral Tree') }}</a>
                                 </li>
                             @endif
-
-
+                                
                             @canany(['support-ticket-list','support-ticket-action'])
                                 <li class="nav-item" role="presentation">
                                     <a

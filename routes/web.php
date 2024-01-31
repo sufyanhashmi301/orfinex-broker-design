@@ -255,3 +255,21 @@ Route::get('user/deposit-methods', function () {
 Route::get('user/platform', function () {
     return view('frontend.default.terminal.index');
 })->name('user.platform');
+
+
+Route::get('user/fund-board', function () {
+    return view('frontend.default.fund_board.index');
+})->name('user.fund-board');
+
+Route::get('user/fund/detail', function () {
+    return view('frontend.default.fund_board.detail');
+})->name('user.fund.detail');
+
+Route::get('user/downloads', function () {
+    return view('frontend.default.user.downloads');
+})->name('user.downloads');
+
+Route::get('user/economic_calendar', function () {
+    return view('frontend.default.user.economic_calendar');
+})->name('user.economic_calendar');
+

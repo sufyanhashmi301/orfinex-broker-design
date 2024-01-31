@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{ asset('global/css/simple-notify.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('global/css/custom.css') }}"/>
     <link rel="stylesheet" href="{{ asset('frontend/css/rt-plugins.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/app.css') }}">
     <!-- End : Theme CSS-->
     <script src="{{ asset('frontend/js/settings.js') }}" sync></script>

@@ -9,6 +9,20 @@
                 <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
                     <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
+                <div class="relative gap-2 lg:gap-5 hidden lg:flex">
+                    <a href="{{route('user.economic_calendar')}}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                        <iconify-icon icon="lucide:calendar-days" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
+                        Economic Calendar
+                    </a>
+                    <a href="{{route('user.downloads')}}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                        <iconify-icon icon="lucide:download-cloud" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
+                        Downloads
+                    </a>
+                    <a href="{{ route('user.ticket.index') }}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                        <iconify-icon icon="lucide:headset" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
+                        Support
+                    </a>
+                </div>
             </div>
             <!-- end vertcial -->
 

@@ -7,28 +7,6 @@
     <div class="card-body p-6">
         <form action="{{ route('user.setting.profile-update') }}" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-4">
-                <div class="mb-3">
-                    <div class="body-title mb-2">{{ __('Avatar:') }}</div>
-                    <div class="wrap-custom-file">
-                        <input
-                            type="file"
-                            name="avatar"
-                            id="avatar"
-                            accept=".gif, .jpg, .png"
-                        />
-                        <label for="avatar" @if($user->avatar && file_exists('assets/'.$user->avatar)) class="file-ok"
-                                style="background-image: url({{ asset($user->avatar) }})" @endif>
-                            <img
-                                class="upload-icon"
-                                src="{{ asset('global/materials/upload.svg') }}"
-                                alt=""
-                            />
-                            <span>{{ __('Update Avatar') }}</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
             <div class="progress-steps-form">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area relative">
@@ -63,9 +41,9 @@
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Email Address') }}</label>
                         <input type="email" disabled class="form-control !text-lg disabled" value="{{ $user->email }}" placeholder="Email Address" />
                     </div>
-                    <div class="input-area relative">
+                    <div class="input-area relative phone-input-wrapper">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Phone') }}</label>
-                        <input type="text" class="form-control !text-lg" name="phone" value="{{ $user->phone }}" placeholder="Phone"/>
+                        <input type="text" class="form-control !text-lg w-full" name="phone" id="phone" value="{{ $user->phone }}" placeholder="Phone"/>
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">

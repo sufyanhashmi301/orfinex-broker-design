@@ -75,7 +75,7 @@ class MigrateOldData extends Command
         }
 
         $this->info('Total Users ' . $userCount);
-        session(['forex-count' => 2734]);
+        session(['forex-count' => 0]);
         foreach ($usersOldData as $oldUser) {
             // Check if the user has a forex trading account with balance > 1
             if ($oldUser->email) {

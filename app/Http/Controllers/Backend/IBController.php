@@ -195,7 +195,7 @@ class IBController extends Controller
 //            if ($user->status == UserStatus::INACTIVE) {
 //                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
 //            }
-            if ($user->ib_status !== IBStatus::APPROVED) {
+            if ($user->ib_status == IBStatus::APPROVED) {
                 $message = __('User has already a member of IB Program');
                 if($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
@@ -239,12 +239,14 @@ class IBController extends Controller
     public function saveForexAccount($user)
     {
         $ibSchema = IbSchema::where('type','ib')->where('status',true)->first();
+//        dd($ibSchema);
         if(!$ibSchema){
             return false;
         }
         $group = $ibSchema->group;
+//        dd($group);
 //        $group = 'IB\1';
-        $auth = config('forextrading.auth');
+
         $server = config('forextrading.server');
         $password = 'SNNH@2024@bol';
         $investPassword = 'SNNH@2024@bol';

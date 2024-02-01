@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
+use App\Http\Controllers\Backend\IBSchemaController;
 use App\Http\Controllers\Backend\InvestmentController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\LanguageController;
@@ -65,6 +66,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserControlle
     Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
     Route::post('mail-send', 'mailSend')->name('mail-send');
     Route::get('transaction/{id}', 'transaction')->name('transaction');
+    Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
 });
 
 Route::resource('kyc-form', KycController::class);
@@ -103,6 +105,7 @@ Route::resource('staff', StaffController::class)->except('show', 'destroy', 'cre
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');

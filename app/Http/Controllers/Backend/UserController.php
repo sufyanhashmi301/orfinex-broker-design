@@ -451,6 +451,20 @@ class UserController extends Controller
                 ->make(true);
         }
     }
+    public function ibInfo($id, Request $request)
+    {
+//dd($id);
+        if ($request->ajax()) {
+            $data = User::where('id', $id)->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('ib_status', 'backend.user.include.__ib_status')
+                ->addColumn('action', 'backend.user.include.__ib_action')
+                ->rawColumns(['ib_status','action'])
+                ->make(true);
+        }
+    }
 
     /**
      * @return RedirectResponse

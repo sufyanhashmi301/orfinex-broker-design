@@ -62,19 +62,19 @@ class MigrateOldData extends Command
 //            ->where('id',2)
             ->get();
         $userCount = 0;
-//        foreach ($usersOldData as $oldUser) {
-//            // Check if the user has a forex trading account with balance > 1
-//            if ($oldUser->email) {
-//                if (!User::where('email', $oldUser->email)->exists()) {
-//                    $this->migrateUserToNewDB($oldUser);
-//                    $userCount++;
-//                }
-//            } else {
-//                echo "Email not exist of Login: " . $oldUser->login . "\n";
-//            }
-//        }
+        foreach ($usersOldData as $oldUser) {
+            // Check if the user has a forex trading account with balance > 1
+            if ($oldUser->email) {
+                if (!User::where('email', $oldUser->email)->exists()) {
+                    $this->migrateUserToNewDB($oldUser);
+                    $userCount++;
+                }
+            } else {
+                echo "Email not exist of Login: " . $oldUser->login . "\n";
+            }
+        }
 
-//        $this->info('Total Users ' . $userCount);
+        $this->info('Total Users ' . $userCount);
         session(['forex-count' => 2734]);
         foreach ($usersOldData as $oldUser) {
             // Check if the user has a forex trading account with balance > 1

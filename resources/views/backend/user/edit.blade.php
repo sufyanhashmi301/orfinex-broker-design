@@ -180,6 +180,21 @@
                                     ><i icon-name="anchor"></i>{{ __('Forex Accounts') }}</a>
                                 </li>
                             @endcan
+                            @can('investment-list')
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link"
+                                        id="pills-transfer-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#ib-info"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="ib-info"
+                                        aria-selected="true"
+                                    ><i icon-name="anchor"></i>{{ __('IB') }}</a>
+                                </li>
+                            @endcan
 
                             @can('profit-list')
                                 <li class="nav-item" role="presentation">
@@ -259,9 +274,9 @@
                         @can('investment-list')
                             @include('backend.user.include.__investments')
                         @endcan
-                    <!-- investments -->
+                    <!-- IB -->
                     @can('IB-List')
-                        @include('backend.user.include.__investments')
+                        @include('backend.user.include.__ib_info')
                     @endcan
 
                         <!-- earnings -->
@@ -329,9 +344,6 @@
             // renderChoiceLimit:7
         });
         $(document).ready(function() {
-
-
-
 
             function reloadPage() {
                 // Reload the current page

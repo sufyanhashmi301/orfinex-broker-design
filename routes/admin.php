@@ -66,6 +66,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserControlle
     Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
     Route::post('mail-send', 'mailSend')->name('mail-send');
     Route::get('transaction/{id}', 'transaction')->name('transaction');
+    Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
 });
 
 Route::resource('kyc-form', KycController::class);

@@ -19,7 +19,7 @@
                                     Add Tag
                                 </a>
                                 </span>
-{{--                                {{dd($user->riskProfileTags)}}--}}
+                                {{--                                {{dd($user->riskProfileTags)}}--}}
                                 @foreach($user->riskProfileTags as $tag)
                                     <div class="position-relative px-3 py-1 rounded bg-white border">
                                         <div class="position-absolute left-0 bg-danger rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
@@ -35,10 +35,10 @@
 
                             </div>
                             <div class="content">
-                            <a href="{{ url()->previous() }}" class="title-btn"><i
-                                    icon-name="corner-down-left"></i>{{ __('Back') }}</a>
-                            <a href="{{ url()->current() }}" class="title-btn"><i
-                                    icon-name="refresh-ccw"></i></a>
+                                <a href="{{ url()->previous() }}" class="title-btn"><i
+                                        icon-name="corner-down-left"></i>{{ __('Back') }}</a>
+                                <a href="{{ url()->current() }}" class="title-btn"><i
+                                        icon-name="refresh-ccw"></i></a>
                             </div>
                         </div>
                     </div>
@@ -86,8 +86,8 @@
                                        data-bs-original-title="Fund Add or Subtract">
                                     <i icon-name="wallet"></i></a></span>
                                 @endcan
-{{--                                @can('Delete User')--}}
-                                    <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                                {{--                                @can('Delete User')--}}
+                                <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
                                     <a href="javascript:void(0);" type="button" class="site-btn-round red-btn"
                                        data-bs-toggle="tooltip" title="" data-bs-placement="top"
                                        data-bs-original-title="Delete User">
@@ -138,10 +138,10 @@
                         </div>
 
                         <!-- User Status Update -->
-                        @can('all-type-status')
-                            @include('backend.user.include.__status_update')
-                        @endcan
-                        <!-- User Status Update End-->
+                    @can('all-type-status')
+                        @include('backend.user.include.__status_update')
+                    @endcan
+                    <!-- User Status Update End-->
 
                     </div>
                 </div>
@@ -265,9 +265,10 @@
 
                     <div class="tab-content" id="pills-tabContent">
                         <!-- basic Info -->
-                        @canany(['customer-basic-manage','customer-change-password'])
-                            @include('backend.user.include.__basic_info')
-                        @endcanany
+                    @canany(['customer-basic-manage','customer-change-password'])
+                        @include('backend.user.include.__basic_info')
+                    @endcanany
+
 
 
                         <!-- investments -->
@@ -277,24 +278,25 @@
                     <!-- IB -->
                     @can('IB-List')
                         @include('backend.user.include.__ib_info')
+                        @include('backend.user.include.__ib_add')
                     @endcan
 
-                        <!-- earnings -->
-                        @can('profit-list')
-                            @include('backend.user.include.__earnings')
-                        @endcan
+                    <!-- earnings -->
+                    @can('profit-list')
+                        @include('backend.user.include.__earnings')
+                    @endcan
 
-                        <!-- transaction -->
-                        @can('transaction-list')
-                            @include('backend.user.include.__transactions')
-                        @endcan
+                    <!-- transaction -->
+                    @can('transaction-list')
+                        @include('backend.user.include.__transactions')
+                    @endcan
 
-                        <!-- Referral Tree -->
-                        @if(setting('site_referral','global') == 'level')
-                            @include('backend.user.include.__referral_tree')
-                        @endif
+                    <!-- Referral Tree -->
+                    @if(setting('site_referral','global') == 'level')
+                        @include('backend.user.include.__referral_tree')
+                    @endif
 
-                        <!-- ticket -->
+                    <!-- ticket -->
                         @canany(['support-ticket-list','support-ticket-action'])
                             @include('backend.user.include.__ticket')
                         @endcan
@@ -322,9 +324,9 @@
     @include('backend.user.include.__tag_delete')
     {{--    @endcan--}}
     <!-- Modal for Add or Subtract Balance -->
-{{--    @can('delete-user')--}}
-        @include('backend.user.include.__delete_user',[ 'id' => $user->id])
-{{--    @endcan--}}
+    {{--    @can('delete-user')--}}
+    @include('backend.user.include.__delete_user',[ 'id' => $user->id])
+    {{--    @endcan--}}
     <!-- Modal for Add or Subtract Balance End-->
 
 @endsection

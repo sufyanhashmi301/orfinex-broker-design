@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\IBStatus;
 use App\Http\Controllers\Controller;
 use App\Models\IbQuestion;
+use App\Models\IbSchema;
 use App\Models\User;
 use App\Traits\ForexApiTrait;
 use DataTables;
@@ -194,20 +195,42 @@ class IBController extends Controller
 //            if ($user->status == UserStatus::INACTIVE) {
 //                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
 //            }
-            if ($user->ib_status == IBStatus::APPROVED) {
-                return response()->json(['error' => __('User has already a member of IB Program'), 'reload' => false]);
+            if ($user->ib_status !== IBStatus::APPROVED) {
+                $message = __('User has already a member of IB Program');
+                if($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                }else{
+                    notify()->error($message, 'Error Log');
+
+                    return redirect()->back();
+                }
             }
 
             $responseLogin = $this->saveForexAccount($user);
+//            $responseLogin = 1223
 
             if ($responseLogin) {
                 $user->ib_login = $responseLogin;
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 //                event(new NewIBEvent($user));
-                return response()->json(['title' => 'Account Approved for IB', 'success' => __('User has been successfully approved as IB Member.'), 'reload' => $isReload]);
+                $message = __('User has been successfully approved as IB Member');
+                if($request->ajax()) {
+                    return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
+                }else{
+                    notify()->success($message, 'IB added');
+
+                    return redirect()->back();
+                }
             }else{
-                return response()->json(['error' => __('some error occurred.please try again!'), 'reload' => false]);
+                $message = __('some error occurred.please try again');
+                if($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                }else{
+                    notify()->error($message, 'Error Log');
+
+                    return redirect()->back();
+                }
             }
         }
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
@@ -215,7 +238,11 @@ class IBController extends Controller
     }
     public function saveForexAccount($user)
     {
-        $group = config('forextrading.group');
+        $ibSchema = IbSchema::where('type','ib')->where('status',true)->first();
+        if(!$ibSchema){
+            return false;
+        }
+        $group = $ibSchema->group;
 //        $group = 'IB\1';
         $auth = config('forextrading.auth');
         $server = config('forextrading.server');

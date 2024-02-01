@@ -108,7 +108,7 @@
                 <li class="side-nav-item category-title">
                     <span>{{ __('Forex') }}</span>
                 </li>
-                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.schedule*','admin.accountType*']) }}">
+                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.schedule*','admin.accountType*','admin.ibAccountType*']) }}">
                     <a href="javascript:void(0);" class="dropdown-link">
                         <i icon-name="album"></i>
                         <span>{{ __('Account Type') }}</span>
@@ -127,6 +127,12 @@
                             <li class="side-nav-item {{ isActive('admin.accountType*') }}">
                                 <a href="{{route('admin.accountType.index')}}"><i
                                         icon-name="airplay"></i><span>{{ __('Account Type') }}</span></a>
+                            </li>
+                        @endcan
+                        @can('schema-edit')
+                            <li class="side-nav-item {{ isActive('admin.ibAccountType*') }}">
+                                <a href="{{route('admin.ibAccountType.index')}}"><i
+                                        icon-name="airplay"></i><span>{{ __('IB Account Type') }}</span></a>
                             </li>
                         @endcan
 

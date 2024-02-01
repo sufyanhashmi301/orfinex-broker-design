@@ -9,11 +9,12 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
-use App\Http\Controllers\Backend\ImportController;
+use App\Http\Controllers\Backend\IBSchemaController;
 use App\Http\Controllers\Backend\InvestmentController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\LevelReferralController;
+use App\Http\Controllers\Backend\LinkController;
 use App\Http\Controllers\Backend\NavigationController;
 use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\PageController;
@@ -37,7 +38,6 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\SecurityController;
-use App\Http\Controllers\Backend\LinkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -82,6 +82,7 @@ Route::resource('risk-profile-tag', RiskProfileTagController::class);
 Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
     Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
     Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+
 });
 
 Route::resource('ib-form', IBController::class);
@@ -104,6 +105,7 @@ Route::resource('staff', StaffController::class)->except('show', 'destroy', 'cre
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
@@ -243,7 +245,6 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
     Route::get('mail', 'mailSetting')->name('mail');
     Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
     Route::post('update', 'update')->name('update');
-    Route::get('user-permissions', 'userPermissions')->name('user-permissions');
 
     Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
     Route::get('plugin-data/{id}', [PluginController::class, 'pluginData'])->name('plugin.data');
@@ -255,8 +256,6 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
         Route::get('tune/status/{id}', 'status')->name('tune.status');
     });
 
-    Route::get('server', 'serverSetting')->name('server');
-
 });
 
 //===============================  Security Settings ==================================
@@ -266,12 +265,6 @@ Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => Secur
     Route::get('single-session', 'singleSession')->name('single-session');
     Route::get('blocklist-email', 'blocklistEmail')->name('blocklist-email');
     Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
-});
-
-//===============================  Links Settings ==================================
-Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
-    Route::get('document-links', 'documentLinks')->name('document-links');
-    Route::get('platform-links', 'platformLinks')->name('platform-links');
 });
 
 // show all notifications
@@ -301,6 +294,12 @@ Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::get('template-edit/{id}', 'editTemplate')->name('template-edit');
         Route::post('template-update', 'updateTemplate')->name('template-update');
     });
+});
+
+//===============================  Links Settings ==================================
+Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
+    Route::get('document-links', 'documentLinks')->name('document-links');
+    Route::get('platform-links', 'platformLinks')->name('platform-links');
 });
 
 //===============================  Others ==================================
@@ -337,11 +336,3 @@ Route::get('/ib-resources', function () {
 Route::get('ib-resources/new', function () {
     return view('backend.ib.resources.create');
 });
-
-Route::get('/loyalty-points', function () {
-    return view('backend.loyalty_points.create');
-});
-Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
-Route::post('import', [ImportController::class, 'import'])->name('import');
-
-

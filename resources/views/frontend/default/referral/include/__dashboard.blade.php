@@ -49,10 +49,10 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Current Balance') }}
+                        {{ __('IB Account') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        $ {{$balance}}
+                        {{$user->ib_login}}
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
             <div class="card">
                 <div class="card-header noborder">
                     <h4 class="card-title">
-                        {{ __('Referral URL') }} 
+                        {{ __('Referral URL') }}
                         @if(setting('site_referral','global') == 'level')
                             {{ __('and Tree') }}
                         @endif

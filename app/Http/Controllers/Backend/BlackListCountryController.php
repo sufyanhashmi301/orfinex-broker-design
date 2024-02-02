@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\IbSchema;
+use App\Models\BlackListCountry;
 use App\Models\Schedule;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
@@ -15,7 +15,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class IBSchemaController extends Controller
+class BlackListCountryController extends Controller
 {
     use ImageUpload;
 
@@ -38,9 +38,9 @@ class IBSchemaController extends Controller
      */
     public function index()
     {
-        $schemas = IbSchema::orderBy('priority','asc')->get();
+        $countries = BlackListCountry::orderBy('name','asc')->get();
 
-        return view('backend.ib_schema.index', compact('schemas'));
+        return view('backend.black_list_countries.index', compact('countries'));
     }
 
     /**
@@ -50,7 +50,7 @@ class IBSchemaController extends Controller
      */
     public function create()
     {
-        return view('backend.ib_schema.create');
+        return view('backend.black_list_countries.create');
     }
 
     /**
@@ -61,13 +61,9 @@ class IBSchemaController extends Controller
     public function store(Request $request)
     {
 //        dd($request->all());
-
         $validator = Validator::make($request->all(), [
-            'icon' => 'required',
-            'title' => 'required',
-            'group' => 'required',
-            'type' => 'required|unique:ib_schemas,type',
-//            'priority' => 'required|integer|unique:ib_schemas,priority',
+            'name' => 'required|unique:black_list_countries,name',
+//            'priority' => 'required|integer|unique:black_list_countries,priority',
         ]);
 
         if ($validator->fails()) {
@@ -79,21 +75,15 @@ class IBSchemaController extends Controller
         $input = $request->all();
 
         $finalData = [
-            'title' => $input['title'],
-            'badge' => $input['badge'],
-            'group' => $input['group'],
-            'type' => $input['type'],
-            'desc' => $input['desc'],
-            'status' => $input['status'],
-//            'priority' => $input['priority'],
-            'icon' => self::imageUploadTrait($input['icon']),
+            'name' => $input['name'],
+
         ];
 
-        IbSchema::create($finalData);
+        BlackListCountry::create($finalData);
 
-        notify()->success('ib schema created successfully');
+        notify()->success('Black List Country created successfully');
 
-        return redirect()->route('admin.ibAccountType.index');
+        return redirect()->route('admin.blackListCountry.index');
     }
 
     /**
@@ -104,8 +94,8 @@ class IBSchemaController extends Controller
      */
     public function edit($id)
     {
-        $schema = IbSchema::find($id);
-        return view('backend.ib_schema.edit', compact('schema'));
+        $schema = BlackListCountry::find($id);
+        return view('backend.black_list_countries.edit', compact('schema'));
     }
 
     /**
@@ -120,7 +110,7 @@ class IBSchemaController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'group' => 'required',
-            'type' => Rule::unique('ib_schemas')->ignore($id),
+            'type' => Rule::unique('black_list_countries')->ignore($id),
 
         ]);
 
@@ -130,7 +120,7 @@ class IBSchemaController extends Controller
             return redirect()->back();
         }
 
-        $schema = IbSchema::find($id);
+        $schema = BlackListCountry::find($id);
         $input = $request->all();
 //dd($input);
         $finalData = [
@@ -148,8 +138,18 @@ class IBSchemaController extends Controller
 
         $schema->update($finalData);
 
-        notify()->success('schema Update successfully');
+        notify()->success('Black List Country Update successfully');
 
-        return redirect()->route('admin.ibAccountType.index');
+        return redirect()->route('admin.blackListCountry.index');
+    }
+
+    public function destroy($id)
+    {
+//        dd($id);
+        // Perform   the deletion logic here
+        BlackListCountry::destroy($id);
+
+        return redirect()->route('admin.blackListCountry.index')
+            ->with('success', 'Country deleted successfully');
     }
 }

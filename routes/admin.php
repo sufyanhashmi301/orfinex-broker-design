@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BlogController;
+use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\CustomCssController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepositController;
@@ -106,6 +107,7 @@ Route::resource('staff', StaffController::class)->except('show', 'destroy', 'cre
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
 Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
+Route::resource('blackListCountry', BlackListCountryController::class)->except('show'  );
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');

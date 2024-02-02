@@ -35,7 +35,6 @@ class IBController extends Controller
     }
     public function update(Request $request, $id)
     {
-        return redirect()->back();
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
@@ -96,6 +95,7 @@ class IBController extends Controller
         }
         return view('backend.ib.pending');
     }
+
     public function IbApprovedList(Request $request)
     {
         if ($request->ajax()) {
@@ -201,7 +201,6 @@ class IBController extends Controller
                     return response()->json(['error' => $message, 'reload' => false]);
                 }else{
                     notify()->error($message, 'Error Log');
-
                     return redirect()->back();
                 }
             }

@@ -113,7 +113,14 @@ if (! function_exists('getCountries')) {
 
     function getCountries()
     {
-        return json_decode(file_get_contents(resource_path().'/json/CountryCodes.json'), true);
+       $countries =  json_decode(file_get_contents(resource_path().'/json/CountryCodes.json'), true);
+
+        $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
+
+        $filteredCountries = collect($countries)->reject(function ($country) use ($excludedCountries) {
+            return in_array($country["name"], $excludedCountries);
+        })->values();
+        return $filteredCountries;
     }
 }
 

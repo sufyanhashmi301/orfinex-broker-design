@@ -135,6 +135,12 @@
                                         icon-name="airplay"></i><span>{{ __('IB Account Type') }}</span></a>
                             </li>
                         @endcan
+                        @can('black-list-countries')
+                            <li class="side-nav-item {{ isActive('admin.blackListCountry*') }}">
+                                <a href="{{route('admin.blackListCountry.index')}}"><i
+                                        icon-name="airplay"></i><span>{{ __('Black List Countries') }}</span></a>
+                            </li>
+                        @endcan
 
                         {{--                        @can('schema-edit')--}}
 {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}

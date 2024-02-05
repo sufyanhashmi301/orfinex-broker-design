@@ -65,6 +65,8 @@ class ForexSchemaController extends Controller
             'icon' => 'required',
             'title' => 'required',
             'leverage' => 'required',
+            'commission' => 'required',
+            'spread' => 'required',
             'is_withdraw' => 'required',
             'is_ib_partner' => 'required',
             'is_internal_transfer' => 'required',
@@ -83,6 +85,8 @@ class ForexSchemaController extends Controller
         $finalData = [
             'title' => $input['title'],
             'badge' => $input['badge'],
+            'commission' => $input['commission'],
+            'spread' => $input['spread'],
             'leverage' => $input['leverage'],
             'first_min_deposit' => $input['first_min_deposit'],
             'real_swap_free' => $input['real_swap_free'],
@@ -134,6 +138,8 @@ class ForexSchemaController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'leverage' => 'required',
+            'spread' => 'required',
+            'commission' => 'required',
             'is_withdraw' => 'required',
             'is_ib_partner' => 'required',
             'is_internal_transfer' => 'required',
@@ -154,6 +160,8 @@ class ForexSchemaController extends Controller
         $finalData = [
             'title' => $input['title'],
             'badge' => $input['badge'],
+            'spread' => $input['spread'],
+            'commission' => $input['commission'],
             'leverage' => $input['leverage'],
             'first_min_deposit' => !empty($input['first_min_deposit']) ? $input['first_min_deposit'] : null,
             'real_swap_free' => $input['real_swap_free'],

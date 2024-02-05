@@ -60,7 +60,7 @@
                                 {{ __('Spread') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ $schema->is_internal_transfer ? 'Anytime' : 'No' }}
+                                {{ $schema->spread ? $schema->spread : 'NA' }}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -68,7 +68,7 @@
                                 {{ __('Commission') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ $schema->is_external_transfer ? 'Anytime' : 'No' }}
+                                {{ $schema->commission ? $schema->commission : 'NA' }}
                             </span>
                         </li>
                     </ul>

@@ -188,6 +188,7 @@ Route::resource('ranking', RankingController::class)->only('index', 'store', 'up
 
 Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
+    Route::get('global', 'globalSettings')->name('global');
     Route::get('site', 'siteTheme')->name('site');
     Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
@@ -338,3 +339,14 @@ Route::get('/ib-resources', function () {
 Route::get('ib-resources/new', function () {
     return view('backend.ib.resources.create');
 });
+
+Route::get('/loyalty-points', function () {
+    return view('backend.loyalty_points.create');
+});
+Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
+Route::post('import', [ImportController::class, 'import'])->name('import');
+
+Route::get('/reports', function () {
+    return view('backend.reports.index');
+});
+

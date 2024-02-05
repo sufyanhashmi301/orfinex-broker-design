@@ -18,13 +18,23 @@
                 <div class="col-xl-12">
                     <div class="site-tab-bars">
                         <ul>
+                            <li class="{{ isActive('admin.theme.global') }}">
+                                <a href="{{ route('admin.theme.global') }}">
+                                    <i icon-name="globe"></i>
+                                    {{ __('Global Settings') }}
+                                </a>
+                            </li>
                             <li class="{{ isActive('admin.theme.site') }}">
-                                <a href="{{ route('admin.theme.site') }}"><i
-                                        icon-name="roller-coaster"></i>{{ __('Site Theme') }}</a>
+                                <a href="{{ route('admin.theme.site') }}">
+                                    <i icon-name="roller-coaster"></i>
+                                    {{ __('Site Theme') }}
+                                </a>
                             </li>
                             <li class="{{ isActive('admin.theme.dynamic-landing') }}">
-                                <a href="{{ route('admin.theme.dynamic-landing') }}"><i
-                                        icon-name="warehouse"></i>{{ __('Site Dynamic Landing Theme') }}</a>
+                                <a href="{{ route('admin.theme.dynamic-landing') }}">
+                                    <i icon-name="warehouse"></i>
+                                    {{ __('Site Dynamic Landing Theme') }}
+                                </a>
                             </li>
 
                         </ul>

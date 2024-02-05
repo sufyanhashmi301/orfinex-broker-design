@@ -2173,12 +2173,12 @@ img {
 }
 
 .layout .page-container .main-content .data-card {
-  background: #5e3fc9;
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
   border-radius: 6px;
-  padding: 25px;
+  padding: 25px 18px;
   transition: 0.2s;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
   display: flex;
   flex-direction: row;
   box-shadow: 0px 2px 5px #8c9acc33;
@@ -2192,7 +2192,7 @@ img {
   line-height: 46px;
   text-align: center;
   border-radius: 50%;
-  background: #ffffff;
+  /* background: #ffffff; */
   color: #ef476f;
 }
 
@@ -2232,7 +2232,7 @@ img {
   transition: 0.5s;
 }
 
-.layout .page-container .main-content .row [class*="col"]:nth-of-type(12n + 1) .data-card {
+/* .layout .page-container .main-content .row [class*="col"]:nth-of-type(12n + 1) .data-card {
   background: #ef476f;
 }
 
@@ -2326,7 +2326,7 @@ img {
 
 .layout .page-container .main-content .row [class*="col"]:nth-of-type(12n + 12) .data-card .icon {
   color: #41658a;
-}
+} */
 
 .layout.nav-folded .logo {
   width: 80px;

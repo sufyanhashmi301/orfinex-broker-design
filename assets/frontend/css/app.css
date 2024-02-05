@@ -17007,3 +17007,7 @@ ul.custom-list ul li{
 .phone-input-wrapper .iti{
   width: 100%;
 }
+
+.dark #economicCalendarWidget iframe body {
+  background-color: red;
+}

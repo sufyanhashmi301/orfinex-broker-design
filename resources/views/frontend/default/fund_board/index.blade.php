@@ -101,29 +101,32 @@
             </div>
         </div>
     </div>
-
+    
     <div class="card mt-5">
         <header class="card-header noborder">
-            <h4 class="card-title">Active Plan (1)</h4>
+            <h4 class="card-title">Active Fund</h4>
         </header>
         <div class="card-body p-6 pt-0">
-            <div class="overflow-x-auto -mx-6">
+            {{-- <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead class="bg-slate-200 dark:bg-slate-700">
                                 <tr>
                                     <th scope="col" class=" table-th ">
-                                        Plan Name
+                                        Fund Title
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Activation Date
+                                        Balance
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Returned until now
+                                        Equity
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Action
+                                        Profit
+                                    </th>
+                                    <th scope="col" class=" table-th ">
+                                        Detail
                                     </th>
                                 </tr>
                             </thead>
@@ -132,9 +135,7 @@
                                     <td class="table-td">
                                         <div class="flex items-center">
                                             <div class="flex-none">
-                                                <div class="h-10 w-10 rounded-full flex flex-col items-center justify-center text-2xl bg-[#E5F9FF] dark:bg-slate-900 text-info-500 ltr:mr-3 rtl:ml-3">
-                                                    <iconify-icon icon="ph:clock-counter-clockwise-light"></iconify-icon>
-                                                </div>
+                                                <iconify-icon icon="ph:check-circle-fill" class="text-4xl text-success-500 mr-2"></iconify-icon>
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
@@ -144,14 +145,92 @@
                                         </div>
                                     </td>
                                     <td class="table-td">
-                                        16 Jan, 2024 03:20 PM
+                                        <span class="font-medium">$1203</span>
                                     </td>
                                     <td class="table-td">
-                                        <span class="font-medium">0.00 USD</span>
+                                        $1200
+                                    </td>
+                                    <td class="table-td">
+                                        <span class="text-success-500">
+                                            $230
+                                        </span>
                                     </td>
                                     <td class="table-td">
                                         <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
-                                            Fund Matrics
+                                            Matrics
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> --}}
+            <div class="flex flex-col items-center justify-center">
+                <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
+                    You do not have any challenges yet.
+                </p>
+                <a href="" class="btn btn-outline-dark inline-flex items-center justify-center">
+                    Start a New Challenge
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-5">
+        <header class="card-header noborder">
+            <h4 class="card-title">Active Challenge (1)</h4>
+        </header>
+        <div class="card-body p-6 pt-0">
+            <div class="overflow-x-auto -mx-6">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead class="bg-slate-200 dark:bg-slate-700">
+                                <tr>
+                                    <th scope="col" class=" table-th ">
+                                        Challenge Title
+                                    </th>
+                                    <th scope="col" class=" table-th ">
+                                        Stage / Phase
+                                    </th>
+                                    <th scope="col" class=" table-th ">
+                                        Activation Date
+                                    </th>
+                                    <th scope="col" class=" table-th ">
+                                        Current Status
+                                    </th>
+                                    <th scope="col" class=" table-th ">
+                                        Detail
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                <tr>
+                                    <td class="table-td">
+                                        <div class="flex items-center">
+                                            <div class="flex-none">
+                                                <iconify-icon icon="ph:check-circle-fill" class="text-4xl text-warning-500 mr-2"></iconify-icon>
+                                            </div>
+                                            <div class="flex-1 text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    Beginner - 10000 USD
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="table-td">
+                                        <span class="font-medium">Phase 1</span>
+                                    </td>
+                                    <td class="table-td">
+                                        16 Jan, 2024 03:20 PM
+                                    </td>
+                                    <td class="table-td">
+                                        <span class="text-success-500">Active</span>
+                                    </td>
+                                    <td class="table-td">
+                                        <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
+                                            Matrics
                                         </a>
                                     </td>
                                 </tr>
@@ -165,7 +244,7 @@
 
     <div class="card mt-5">
         <header class="card-header noborder">
-            <h4 class="card-title">Violated plan (1)</h4>
+            <h4 class="card-title">Violated Challenge (1)</h4>
         </header>
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">
@@ -175,16 +254,19 @@
                             <thead class="bg-slate-200 dark:bg-slate-700">
                                 <tr>
                                     <th scope="col" class=" table-th ">
-                                        Plan Name
+                                        Challenge Title
+                                    </th>
+                                    <th scope="col" class=" table-th ">
+                                        Stage / Phase
                                     </th>
                                     <th scope="col" class=" table-th ">
                                         Activation Date
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Returned until now
+                                        Violation Date
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Action
+                                        Detail
                                     </th>
                                 </tr>
                             </thead>
@@ -193,9 +275,7 @@
                                     <td class="table-td">
                                         <div class="flex items-center">
                                             <div class="flex-none">
-                                                <div class="h-10 w-10 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger-500 ltr:mr-3 rtl:ml-3">
-                                                    <iconify-icon icon="gravity-ui:seal-percent"></iconify-icon>
-                                                </div>
+                                                <iconify-icon icon="mdi:close-circle" class="text-4xl text-danger-500 mr-2"></iconify-icon>
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
@@ -205,14 +285,17 @@
                                         </div>
                                     </td>
                                     <td class="table-td">
+                                        <span class="font-medium">Phase 2</span>
+                                    </td>
+                                    <td class="table-td">
                                         16 Jan, 2024 03:20 PM
                                     </td>
                                     <td class="table-td">
-                                        <span class="font-medium">0.00 USD</span>
+                                        16 Jan, 2024 03:20 PM
                                     </td>
                                     <td class="table-td">
                                         <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
-                                            Fund Matrics
+                                            Matrics
                                         </a>
                                     </td>
                                 </tr>

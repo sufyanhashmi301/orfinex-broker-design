@@ -79,6 +79,30 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="col-xl-6 schema-badge">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Account Type Spread:') }}</label>
+                                        <input
+                                            type="text"
+                                            class="box-input"
+                                            placeholder="Account Type Spread"
+                                            name="spread"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 schema-badge">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Account Type Commission:') }}</label>
+                                        <input
+                                            type="text"
+                                            class="box-input"
+                                            placeholder="Account Type Commission"
+                                            name="commission"
+                                            required
+                                        />
+                                    </div>
+                                </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Leverage:') }}</label>

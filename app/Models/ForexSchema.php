@@ -54,6 +54,7 @@ class ForexSchema extends Model
 		'title',
 		'desc',
 		'badge',
+		'badge',
 		'leverage',
 		'first_min_deposit',
 		'real_swap_free',
@@ -67,6 +68,8 @@ class ForexSchema extends Model
 		'is_bonus',
 		'status',
 		'country',
+		'spread',
+		'commission',
 		'priority'
 	];
 }

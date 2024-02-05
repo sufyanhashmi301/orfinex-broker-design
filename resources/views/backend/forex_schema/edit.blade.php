@@ -81,6 +81,30 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="col-xl-6 schema-spread">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Schema Spread:') }}</label>
+                                        <input
+                                            type="text"
+                                            class="box-input"
+                                            placeholder="Schema Spread"
+                                            name="spread"
+                                            value="{{$schema->spread}}"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 schema-commission">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Schema Commission:') }}</label>
+                                        <input
+                                            type="text"
+                                            class="box-input"
+                                            placeholder="Schema Commission"
+                                            name="commission"
+                                            value="{{$schema->commission}}"
+                                        />
+                                    </div>
+                                </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Leverage:') }}</label>

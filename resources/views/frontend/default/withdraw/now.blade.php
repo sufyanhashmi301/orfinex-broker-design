@@ -29,7 +29,7 @@
                     <h4 class="card-title">{{ __('Withdraw Money') }}</h4>
                     <div>
                         <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-dark">
-                            {{ __('Withdraw Account') }}
+                            {{ __('Add Withdraw Account') }}
                         </a>
                     </div>
                 </div>

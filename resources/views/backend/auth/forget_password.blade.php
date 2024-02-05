@@ -3,22 +3,25 @@
     {{ __('Reset Password') }}
 @endsection
 @section('auth-content')
+    <div class="logo d-sm-none mb-3">
+        <a href="{{ route('home') }}">
+            <img src="{{asset(setting('site_logo','global') )}}" height="65" alt="{{asset(setting('site_title','global') )}}"/>
+        </a>
+    </div>
     <div class="login">
-        <div
-            class="side-img primary-overlay"
-            style="background: url( {{asset( setting('login_bg','global') )}} ) no-repeat center center;">
-            <div class="title">
-                <h3>{{ __('Admin Reset Password') }}</h3>
+        <div class="side-img primary-overlay" style="background: url( {{asset( setting('login_bg','global') )}} ) no-repeat center center;">
+            
+            <div class="logo">
+                <a href="{{ route('home') }}">
+                    <img src="{{asset(setting('site_logo','global') )}}" alt="{{asset(setting('site_title','global') )}}"/>
+                </a>
             </div>
         </div>
         <div class="login-content">
-            <div class="logo">
-                <a href="{{ route('home') }}"><img src="{{asset(setting('site_logo','global') )}}"
-                                                   alt="{{asset(setting('site_title','global') )}}"/></a>
+            <div class="title mb-4">
+                <h3>{{ __('Admin Reset Password') }}</h3>
             </div>
             <div class="auth-body">
-
-
                 <form action="{{ route('admin.forget.password.submit') }}" method="post">
                     @csrf
 

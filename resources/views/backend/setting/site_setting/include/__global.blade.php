@@ -10,9 +10,7 @@
             @foreach( $fields['elements'] as $key => $field)
                 @if($field['type'] == 'file')
                     <div class="site-input-groups row">
-                        <div
-                            class="col-xl-4 col-lg-4 col-md-3 col-12 col-label"
-                        >
+                        <div class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
                             {{ __($field['label']) }}
                         </div>
                         <div class="col-xl-8 col-lg-8 col-md-9 col-12">

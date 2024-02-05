@@ -7,7 +7,7 @@
 
 
 <!--Auth Page-->
-<div class="admin-auth">
+<div class="admin-auth" style="background: url(https://cloud.orfinex.com/crm/orfinexlogin.png) no-repeat center center;background-size:cover;">
     <x:notify-messages/>
     @yield('auth-content')
 </div>

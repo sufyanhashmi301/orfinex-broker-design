@@ -83,7 +83,7 @@
                                     <span data-bs-toggle="modal" data-bs-target="#addSubBal">
                                     <a href="javascript:void(0);" type="button" class="site-btn-round primary-btn"
                                        data-bs-toggle="tooltip" title="" data-bs-placement="top"
-                                       data-bs-original-title="Fund Add or Subtract">
+                                       data-bs-original-title="Add Funds">
                                     <i icon-name="wallet"></i></a></span>
                                 @endcan
                                 {{--                                @can('Delete User')--}}

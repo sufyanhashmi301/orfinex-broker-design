@@ -570,12 +570,12 @@
             @endcanany
 
 
-            @can('custom-css')
+            {{-- @can('custom-css')
                 <li class="side-nav-item {{ isActive('admin.custom-css') }}">
                     <a href="{{ route('admin.custom-css') }}"><i
                             icon-name="braces"></i><span>{{ __('Custom CSS') }}</span></a>
                 </li>
-            @endcan
+            @endcan --}}
 
             <li class="side-nav-item {{ isActive('admin.clear-cache') }}">
                 <a href="{{ route('admin.clear-cache') }}"><i

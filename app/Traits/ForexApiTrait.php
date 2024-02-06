@@ -475,30 +475,30 @@ trait ForexApiTrait
         if (!isset($userID))
             $userID = auth()->user()->id;
 
-//        $realAccounts = ForexAccount::where('user_id', $userID)
-//            ->where('status', ForexAccountStatus::Ongoing)
-//            ->get();
-//
-//        $balance = 0;
-//        foreach ($realAccounts as $account) {
-////            dd($account);
-//            $getUserResponse = $this->getUserApi($account->login);
-////            dd($getUserResponse);
-////           dd($getUserResponse->object(),$getUserResponse->object()->Login);
-//            if (!empty($getUserResponse)) {
-////                dd($getUserResponse->object(),$getUserResponse->object()->Login);
-//                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                    $this->updateUserAccount($getUserResponse);
-//                    if ($account->account_type == 'real') {
-//                        $balance += $getUserResponse->object()->Balance;
-//                    }
-//
-//                }
-//
-//            }
-//        }
-////        dd($balance);
-//        $this->updateTotalBalance($userID, $balance);
+        $realAccounts = ForexAccount::where('user_id', $userID)
+            ->where('status', ForexAccountStatus::Ongoing)
+            ->get();
+
+        $balance = 0;
+        foreach ($realAccounts as $account) {
+//            dd($account);
+            $getUserResponse = $this->getUserApi($account->login);
+//            dd($getUserResponse);
+//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
+            if (!empty($getUserResponse)) {
+//                dd($getUserResponse->object(),$getUserResponse->object()->Login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $this->updateUserAccount($getUserResponse);
+                    if ($account->account_type == 'real') {
+                        $balance += $getUserResponse->object()->Balance;
+                    }
+
+                }
+
+            }
+        }
+//        dd($balance);
+        $this->updateTotalBalance($userID, $balance);
 
     }
 

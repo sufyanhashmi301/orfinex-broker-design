@@ -12,17 +12,20 @@
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="heroicons:plus-small-20-solid"></iconify-icon>
                 <span>{{ $notify['a'] }}</span>
             </a>
-            <a href="https://www.trustpilot.com/review/orfinex.com" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+            @if(setting('trust_pilot_review_show','platform_links',false))
+            <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
                 <span>Review us on Trustpilot</span>
             </a>
+            @endif
+
             <div class="mt-5">
                 <p class="text-sm">
-                    If you face any issue, please visit our 
+                    If you face any issue, please visit our
                     <a href="https://support.orfinex.com/" target="_blank" class="btn-link">
                         Customer Support
-                    </a> 
-                    or Email us at 
+                    </a>
+                    or Email us at
                     <a href="mailto:support@orfinex.com" class="btn-link">
                         support@orfinex.com
                     </a>.

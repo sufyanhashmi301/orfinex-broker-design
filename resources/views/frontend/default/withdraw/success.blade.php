@@ -55,12 +55,12 @@
                     <div class="mt-5">
                         <p class="text-sm">
                             If you face any issue, please visit our
-                            <a href="https://support.orfinex.com/" target="_blank" class="btn-link">
+                            <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn-link">
                                 Customer Support
                             </a>
                             or Email us at
-                            <a href="mailto:support@orfinex.com" class="btn-link">
-                                support@orfinex.com
+                            <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">
+                                {{ setting('support_email','global')}}
                             </a>.
                         </p>
                     </div>

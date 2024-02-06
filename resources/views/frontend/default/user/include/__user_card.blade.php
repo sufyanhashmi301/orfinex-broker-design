@@ -1,16 +1,18 @@
 <div class="grid grid-cols-12 gap-5 mb-5">
     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
         <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative flex items-center"
-            style="background-image: url({{ asset('frontend/images/all-img/widget-bg-3.png') }})">
+             style="background-image: url({{ asset('frontend/images/all-img/widget-bg-3.png') }})">
             <div class="flex-1">
                 <h4 class="text-xl font-medium text-white mb-1">
                     <span class="block font-normal">Hello!</span>
                     <span class="block">{{auth()->user()->full_name}}</span>
                 </h4>
-                <div class="flex items-center text-sm text-white text-opacity-80">
-                    <iconify-icon class="text-xl mr-1" icon="heroicons:check-badge-16-solid"></iconify-icon>
-                    <span>Your Rank: {{ $user->rank->ranking }}</span>
-                </div>
+                @if(setting('user_ranking', 'permission',false))
+                    <div class="flex items-center text-sm text-white text-opacity-80">
+                        <iconify-icon class="text-xl mr-1" icon="heroicons:check-badge-16-solid"></iconify-icon>
+                        <span>Your Rank: {{ $user->rank->ranking }}</span>
+                    </div>
+                @endif
             </div>
             <div class="flex-none">
                 <a href="{{ route('user.ranking-badge') }}" class="btn-light bg-white btn-sm btn">Details</a>
@@ -93,33 +95,33 @@
             </div>
         </div>
     </div>
-{{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
-{{--        <div class="single">--}}
-{{--            <div class="icon"><i class="anticon anticon-check-square"></i></div>--}}
-{{--            <div class="content">--}}
-{{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['total_investment'] }}</span></h4>--}}
-{{--                <p>{{ __('Total Investment') }}</p>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
-{{--        <div class="single">--}}
-{{--            <div class="icon"><i class="anticon anticon-credit-card"></i></div>--}}
-{{--            <div class="content">--}}
-{{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['total_profit'] }}</span></h4>--}}
-{{--                <p>{{ __('Total Profit') }}</p>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
-{{--        <div class="single">--}}
-{{--            <div class="icon"><i class="anticon anticon-arrow-right"></i></div>--}}
-{{--            <div class="content">--}}
-{{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['total_transfer'] }}</span></h4>--}}
-{{--                <p>{{ __('Total Transfer ') }}</p>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    {{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
+    {{--        <div class="single">--}}
+    {{--            <div class="icon"><i class="anticon anticon-check-square"></i></div>--}}
+    {{--            <div class="content">--}}
+    {{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['total_investment'] }}</span></h4>--}}
+    {{--                <p>{{ __('Total Investment') }}</p>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
+    {{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
+    {{--        <div class="single">--}}
+    {{--            <div class="icon"><i class="anticon anticon-credit-card"></i></div>--}}
+    {{--            <div class="content">--}}
+    {{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['total_profit'] }}</span></h4>--}}
+    {{--                <p>{{ __('Total Profit') }}</p>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
+    {{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
+    {{--        <div class="single">--}}
+    {{--            <div class="icon"><i class="anticon anticon-arrow-right"></i></div>--}}
+    {{--            <div class="content">--}}
+    {{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['total_transfer'] }}</span></h4>--}}
+    {{--                <p>{{ __('Total Transfer ') }}</p>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
         <div class="single">
             <div class="icon"><i class="anticon anticon-money-collect"></i></div>
@@ -148,15 +150,15 @@
             </div>
         </div>
     </div>
-{{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
-{{--        <div class="single">--}}
-{{--            <div class="icon"><i class="anticon anticon-gold"></i></div>--}}
-{{--            <div class="content">--}}
-{{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['investment_bonus'] }}</span></h4>--}}
-{{--                <p>{{ __('Investment Bonus') }}</p>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    {{--    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">--}}
+    {{--        <div class="single">--}}
+    {{--            <div class="icon"><i class="anticon anticon-gold"></i></div>--}}
+    {{--            <div class="content">--}}
+    {{--                <h4><b>{{ $currencySymbol }}</b><span class="count">{{ $dataCount['investment_bonus'] }}</span></h4>--}}
+    {{--                <p>{{ __('Investment Bonus') }}</p>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
         <div class="single">
             <div class="icon"><i class="anticon anticon-inbox"></i></div>

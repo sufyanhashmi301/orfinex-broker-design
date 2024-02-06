@@ -39,6 +39,7 @@ if (! function_exists('tnotify')) {
 if (! function_exists('setting')) {
     function setting($key, $section = null, $default = null)
     {
+
         if (is_null($key)) {
             return new \App\Models\Setting();
         }
@@ -49,6 +50,7 @@ if (! function_exists('setting')) {
         }
 
         $value = \App\Models\Setting::get($key, $section, $default);
+//        dd($value);
 
         return is_null($value) ? value($default) : $value;
     }

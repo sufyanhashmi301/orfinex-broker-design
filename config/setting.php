@@ -577,7 +577,7 @@ return [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'trust_pilot_review_link', // unique name for field
-                'label' => 'Trust pilot Review', // you know what label it is
+                'label' => 'Trust Pilot Review', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
@@ -585,7 +585,7 @@ return [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'trust_pilot_review_show', // unique name for field
-                'label' => 'Trust pilot Review', // you know what label it is
+                'label' => 'Trust Pilot Review', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],

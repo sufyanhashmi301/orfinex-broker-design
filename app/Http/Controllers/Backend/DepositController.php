@@ -69,7 +69,7 @@ class DepositController extends Controller
             'logo' => 'required_if:type,==,manual',
             'name' => 'required',
             'gateway_id' => 'required_if:type,==,auto',
-            'method_code' => 'required_if:type,==,manual',
+            'method_code' => 'unique:deposit_methods,gateway_code|required_if:type,==,manual',
             'currency' => 'required',
             'currency_symbol' => 'required',
             'charge' => 'required',

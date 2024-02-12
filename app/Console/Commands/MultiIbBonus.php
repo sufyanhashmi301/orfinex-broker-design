@@ -35,7 +35,7 @@ class MultiIbBonus extends Command
         //level referral
 //        if (setting('site_referral', 'global') == 'level' && setting('investment_level')) {
         $ibSchema = IbSchema::where('type','multi_ib')->where('status',true)->first();
-        if(!$ibSchema){
+        if(!$ibSchema || !setting('multi_ib_level')){
             return false;
         }
 

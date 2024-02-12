@@ -451,17 +451,13 @@
                     </li>
                 @endcan
             @endcanany
-<<<<<<< Updated upstream
 
-
-            ************************************************************* Site  Essentials *********************************************************
+            {{-- ************************************************************* Site  Essentials ********************************************************* --}}
             @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
                 <li class="side-nav-item category-title">
                     <span>{{ __('Site Essentials') }}</span>
                 </li>
                 @can('landing-page-manage')
-
-                    site theme Management
                     <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.theme*']) }}">
                         <a href="javascript:void(0);" class="dropdown-link"><i
                                 icon-name="palette"></i><span>{{ __('Theme Manage') }}</span><span
@@ -478,7 +474,6 @@
 
                         </ul>
                     </li>
-                    end site theme Management
 
                     <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.page.section.section*']) }}">
                         <a href="javascript:void(0);" class="dropdown-link"><i
@@ -527,8 +522,6 @@
                     </li>
                 @endcan
             @endcanany
-=======
->>>>>>> Stashed changes
 
             {{-- ************************************************************* Site  Essentials ********************************************************* --}}
             @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])

@@ -33,7 +33,7 @@
                     </select>
                 </div>
                 <div class="">
-                    <input class="form-control py-2 flatpickr flatpickr-input" id="range-picker" data-mode="range" value="" type="text">
+                    <input class="form-control py-2 h-[40px] flatpickr flatpickr-input" id="range-picker" data-mode="range" value="" type="text">
                 </div>
             </div>
         </div>

@@ -64,7 +64,7 @@
                                     <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-w-[184px] space-y-5">
                                         <div class="flex justify-between text-slate-600 dark:text-slate-300">
                                             <span class="text-sm">Starting Balance</span>
-                                            <span class="text-sm font-medium text-slate-900">$10,000.00</span>
+                                            <span class="text-sm font-medium text-slate-900 dark:text-white">$10,000.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
                                 <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
                                     <span class="text-sm">P&L:</span>
-                                    <span class="text-sm font-medium text-slate-900">$8154.16</span>
+                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8154.16</span>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
                                 <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
                                     <span class="text-sm">Equity:</span>
-                                    <span class="text-sm font-medium text-slate-900">$8154.16</span>
+                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8154.16</span>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
                                 <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
                                     <span class="text-sm">Balance:</span>
-                                    <span class="text-sm font-medium text-slate-900">$8154.16</span>
+                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8154.16</span>
                                 </div>
                             </div>
                         </div>
@@ -229,140 +229,232 @@
                         </h6>
                     </div>
                     <div class="card-body p-6 pt-0">
-                        <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+                        <ul class="divide-y divide-slate-100 dark:divide-slate-700 md:columns-2 gap-7">
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="material-symbols:balance"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Equity
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Total Trades
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">$10,000.00</span>
+                                        <span class="block text-slate-600 font-medium text-sm">166</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="material-symbols:account-balance-wallet"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Balance
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Profit Trades
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">$10,000.00</span>
+                                        <span class="block text-slate-600 font-medium text-sm">135</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="heroicons:arrow-trending-up"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Avg. Winning Trade
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Loss Trades
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">$11.68</span>
+                                        <span class="block text-slate-600 font-medium text-sm">31</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="heroicons:arrow-trending-down-20-solid"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Avg. Losing Trade
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Long Trades
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">$0.00</span>
+                                        <span class="block text-slate-600 font-medium text-sm">139</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="fe:line-chart"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Trades
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Short Trades
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">4</span>
+                                        <span class="block text-slate-600 font-medium text-sm">27</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="ic:baseline-grid-on"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Lots
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Gross Profit
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">0.06</span>
+                                        <span class="block text-slate-600 font-medium text-sm">$19,733.55</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="system-uicons:chevron-close"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Average RRR
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Gross Loss
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">0</span>
+                                        <span class="block text-slate-600 font-medium text-sm">-$11,579.33</span>
                                     </div>
                                 </div>
                             </li>
                             <li class="block py-[8px]">
                                 <div class="flex space-x-2 rtl:space-x-reverse">
                                     <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
-                                        <div class="flex-none">
-                                            <iconify-icon icon="dashicons:chart-line"></iconify-icon>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
-                                                Win Rate
-                                            </span>
-                                        </div>
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Total Net Profit
+                                        </span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="block text-slate-600 font-medium text-sm">75%</span>
+                                        <span class="block text-slate-600 font-medium text-sm">$8,154.16</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Profit Factor
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">1.70</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Win Rate
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">81.33%</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Best Profit
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">$2,121.00</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Biggest Loss
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">-$3,869.50</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Largest Pip Win
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">15.15</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Largest Pip Loss
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">-27.25</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Avg. Profit
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">$152.13</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Avg. Loss
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">-$364.46</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Expectancy
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">$55.66</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Avg. Trade Size
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">2.83</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="block py-[8px]">
+                                <div class="flex space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                        <span class="block text-slate-600 font-medium text-sm dark:text-slate-300">
+                                            Avg. Trade Duration
+                                        </span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="block text-slate-600 font-medium text-sm">00:21:25</span>
                                     </div>
                                 </div>
                             </li>
@@ -378,19 +470,19 @@
                     <div class="flex flex-wrap gap-3">
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Total Alloted Fund</div>
-                            <div class="text-xl font-medium text-slate-900">$10,000.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$10,000.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Max Draw Down</div>
-                            <div class="text-xl font-medium text-slate-900">$1,000.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$1,000.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Daily Max Draw Down</div>
-                            <div class="text-xl font-medium text-slate-900">$500.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$500.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Profit Split</div>
-                            <div class="text-xl font-medium text-slate-900">80 / 20</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">80 / 20</div>
                         </div>
                     </div>
                 </div>
@@ -403,19 +495,19 @@
                     <div class="flex flex-wrap gap-3">
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Balance</div>
-                            <div class="text-xl font-medium text-slate-900">$10,000.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$10,000.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Profit</div>
-                            <div class="text-xl font-medium text-slate-900">$0.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$0.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Growth</div>
-                            <div class="text-xl font-medium text-slate-900">0%</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">0%</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Days</div>
-                            <div class="text-xl font-medium text-slate-900">7</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">7</div>
                         </div>
                     </div>
                 </div>
@@ -428,19 +520,19 @@
                     <div class="flex flex-wrap gap-3">
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Previous Day Balance</div>
-                            <div class="text-xl font-medium text-slate-900">$10,000.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$10,000.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Current Equity</div>
-                            <div class="text-xl font-medium text-slate-900">10,000.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">10,000.00</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Today's Draw Down</div>
-                            <div class="text-xl font-medium text-slate-900">$0</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$0</div>
                         </div>
                         <div class="flex-1 p-2">
                             <div class="text-xs text-slate-500 mb-2">Remaining Draw Down</div>
-                            <div class="text-xl font-medium text-slate-900">$500.00</div>
+                            <div class="text-xl font-medium text-slate-900 dark:text-white">$500.00</div>
                         </div>
                     </div>
                 </div>
@@ -463,7 +555,7 @@
                             <div class="fromGroup">
                                 <div class="relative">
                                     <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" value="9997452" id="copyLogin" readonly>
-                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button" data-target="copyLogin">
+                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyLogin">
                                         <iconify-icon icon="lucide:copy"></iconify-icon>
                                     </button>
                                 </div>
@@ -474,7 +566,7 @@
                             <div class="fromGroup">
                                 <div class="relative">
                                     <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="password" id="password" value="9997452" readonly>
-                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password">
+                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password dark:text-slate-200">
                                         <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
                                     </button>
                                 </div>
@@ -485,7 +577,7 @@
                             <div class="fromGroup">
                                 <div class="relative">
                                     <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="text" value="OrfinexPrime-MT5" id="copyServer" readonly>
-                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button" data-target="copyServer">
+                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServer">
                                         <iconify-icon icon="lucide:copy"></iconify-icon>
                                     </button>
                                 </div>

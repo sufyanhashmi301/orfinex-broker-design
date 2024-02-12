@@ -18,7 +18,7 @@ class IBProfitRecord extends Command
      *
      * @var string
      */
-    protected $signature = 'ib:profit';
+    protected $signature = 'ib:record';
 
     /**
      * The console command description.

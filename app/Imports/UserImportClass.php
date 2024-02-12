@@ -11,7 +11,7 @@ class UserImportClass implements ToModel
 {
     public function model(array $row)
     {
-        if(!UserImport::where('email',$row[6])->exists()) {
+//        if(!UserImport::where('email',$row[6])->exists()) {
             return new UserImport([
                 'login' => $row[0],
                 'f_name' => $row[1],
@@ -21,9 +21,9 @@ class UserImportClass implements ToModel
                 'country' => $row[5],
                 'email' => $row[6],
                 'leverage' => $row[7],
-                'register_time' => isset($row[15]) ? Carbon::createFromFormat('Y.m.d H:i', $row[15])->format('Y-m-d H:i:s') : Carbon::now()
+                'register_time' => isset($row[14]) ? Carbon::createFromFormat('Y.m.d H:i', $row[14])->format('Y-m-d H:i:s') : Carbon::now()
                 // Map other columns as needed
-            ]);
+//            ]);
         }
     }
 }

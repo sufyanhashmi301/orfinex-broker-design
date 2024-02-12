@@ -38,7 +38,7 @@ class MultiIbBonus extends Command
 //            dd($IBTransaction->user);
             $level = LevelReferral::where('type', 'multi_ib')->max('the_order') + 1;
             creditMultiIbBonus($IBTransaction->user, 'multi_ib', $IBTransaction->profit, $level);
-            $IBTransaction->clear_at = Carbon::now();
+//            $IBTransaction->clear_at = Carbon::now();
             $IBTransaction->save();
         }
         return Command::SUCCESS;

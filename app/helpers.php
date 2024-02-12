@@ -297,11 +297,12 @@ function creditMultiIbBonus($user, $type, $mainAmount, $level = null, $depth = 1
             $forexApiTrait = new class {
                 use ForexApiTrait;
             };
-//            if(!isset($referrer->multi_ib_login)){
-//                createMultiIBAccount($referrer);
-//            }
-//            $comment = 'MultiIB-Bonus' . '/' . substr($transaction->tnx, -7);
-//            $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
+            if(!isset($referrer->multi_ib_login)){
+                createMultiIBAccount($referrer);
+                $user->fresh();
+            }
+            $comment = 'MultiIB-Bonus' . '/' . substr($transaction->tnx, -7);
+            $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
         }
         creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }

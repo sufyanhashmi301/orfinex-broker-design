@@ -309,6 +309,9 @@ class DepositController extends Controller
 
                 //level referral
                 if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
+                    if(!isset($transaction->user->multi_ib_login)) {
+                        createMultiIBAccount($transaction->user);
+                    }
                     $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
                     creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
                 }

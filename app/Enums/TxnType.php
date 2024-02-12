@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use App\Console\Commands\MultiIbBonus;
+
 enum TxnType: string
 {
     case Deposit = 'deposit';
@@ -19,5 +21,6 @@ enum TxnType: string
     case Investment = 'investment';
     case Interest = 'interest';
     case Refund = 'refund';
+    case MultiIB = 'multi_ib';
 
 }

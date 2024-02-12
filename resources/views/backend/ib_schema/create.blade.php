@@ -84,6 +84,7 @@
                                         <label class="box-input-label" for="">{{ __('Select IB Type:') }}</label>
                                         <select name="type" id="" class="site-nice-select w-100" required>
                                             <option value="ib">{{__("IB")}}</option>
+                                            <option value="multi_ib">{{__("Multi IB")}}</option>
                                         </select>
                                     </div>
 

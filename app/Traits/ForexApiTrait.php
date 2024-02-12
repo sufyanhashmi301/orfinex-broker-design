@@ -16,20 +16,20 @@ trait ForexApiTrait
     public function getUserApi($login)
     {
         $getUserUrl = config('forextrading.getUserUrl');
-
+        $login = $login;
         $dataArray = array(
             'Login' => (int)$login,
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-//        dd($login,$response->object(),$response->status());
+//        dd($login,$getUserUrl,$response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
                 if ($response->object()->Login != 0) {
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Unknown]);
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -38,12 +38,12 @@ trait ForexApiTrait
             return false;
         }
     }
-    public function getUserIBApi($login)
+    public function getRoiApi($login)
     {
-        $getUserUrl = config('forextrading.getUserUrl');
+        $getUserUrl = config('forextrading.getRoiUrl').'?login=<Login>';
 
         $dataArray = array(
-            'Login' => (int)$login,
+//            'login' => '<'.$login.'>',
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
@@ -54,7 +54,154 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    User::where('ib_login',$login)->update(['ib_status'=>ForexAccountStatus::Unknown]);
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public function getMT5GroupList()
+    {
+        $getUserUrl = config('forextrading.getMT5GroupList');
+
+        $dataArray = array(
+//            'login' => '<'.$login.'>',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+        dd($getUserUrl,$response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public function getPositionList($login)
+    {
+        $getUserUrl = config('forextrading.getPositionList');
+        $dataArray = array(
+            'Logins' => '1973154',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+        dd($login,$response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public function getOrderOpenUser($login)
+    {
+        $getUserUrl = config('forextrading.getOrderOpenUser');
+        $dataArray = array(
+            'Login' => '1973154',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+        dd($login,$response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public function getUserAccountBalance($login)
+    {
+        $getUserUrl = config('forextrading.getUserAccountBalance');
+        $dataArray = array(
+            'Login' => '6735',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+        dd($response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public function getDealListUser($login)
+    {
+        $getUserUrl = config('forextrading.getDealListUser');
+        $dataArray = array(
+            'Login' => '6735',
+            'fromDate' => '1705881600',
+            'toDate' => '1705967999',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+//        dd($login,$response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+    }
+    public function getPositionListGroup($group)
+    {
+        $getUserUrl = config('forextrading.getPositionListGroup');
+        $dataArray = array(
+            'group' => 'real\Classic\Islamic1',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+        dd($response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                if ($response->object()->Login != 0) {
+                    return $response;
+                }
+                else{
+                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -91,7 +238,6 @@ trait ForexApiTrait
 
     public function sendApiRequest($URL, $dataArray)
     {
-
         try {
             return Http::retry(3, 100)->get($URL, $dataArray);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
@@ -183,6 +329,25 @@ trait ForexApiTrait
         ];
         $response = $this->sendApiPostRequest($url, $dataArray);
 //        dd($response->object());
+        if ($response->status() == 200 && $response->object() == 10009) {
+            return true;
+        } else {
+            $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
+            notify()->error($message, 'Error');
+        }
+    }
+    public function dealerCreditUrl($login, $amount, $comment)
+    {
+        $url = config('forextrading.dealerCreditUrl');
+
+        $dataArray = [
+            'Login' => 6735,
+            'Amount' => 1,
+            'Comment' => 'credit balance',
+
+        ];
+        $response = $this->sendApiPostRequest($url, $dataArray);
+        dd($response->object());
         if ($response->status() == 200 && $response->object() == 10009) {
             return true;
         } else {

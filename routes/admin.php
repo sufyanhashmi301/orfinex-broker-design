@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
 use App\Http\Controllers\Backend\IBSchemaController;
+use App\Http\Controllers\Backend\ImportController;
 use App\Http\Controllers\Backend\InvestmentController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\LanguageController;

@@ -451,6 +451,7 @@
                     </li>
                 @endcan
             @endcanany
+<<<<<<< Updated upstream
 
 
             ************************************************************* Site  Essentials *********************************************************
@@ -526,8 +527,47 @@
                     </li>
                 @endcan
             @endcanany
+=======
+>>>>>>> Stashed changes
 
+            {{-- ************************************************************* Site  Essentials ********************************************************* --}}
+            @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
+                <li class="side-nav-item category-title">
+                    <span>{{ __('Site Essentials') }}</span>
+                </li>
+                @can('landing-page-manage')
+                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.theme*']) }}">
+                        <a href="javascript:void(0);" class="dropdown-link">
+                            <i icon-name="palette"></i>
+                            <span>{{ __('Theme Manage') }}</span>
+                            <span class="right-arrow">
+                                <i icon-name="chevron-down"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-items">
+                            <li class="{{ isActive('admin.theme.global') }}">
+                                <a href="{{ route('admin.theme.global') }}">
+                                    <i icon-name="globe"></i>
+                                    {{ __('Site Global Settings') }}
+                                </a>
+                            </li>
+                            <li class="{{ isActive('admin.theme.site') }}">
+                                <a href="{{ route('admin.theme.site') }}">
+                                    <i icon-name="roller-coaster"></i>
+                                    {{ __('Site Theme') }}
+                                </a>
+                            </li>
+                            <li class="{{ isActive('admin.theme.dynamic-landing') }}">
+                                <a href="{{ route('admin.theme.dynamic-landing') }}">
+                                    <i icon-name="warehouse"></i>
+                                    {{ __('Dynamic Landing Theme') }}
+                                </a>
+                            </li>
 
+                        </ul>
+                    </li>
+                @endcan
+            @endcanany
 
             {{-- **************************************************** Newslatter Templates  *************************************************************** --}}
 

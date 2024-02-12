@@ -261,6 +261,14 @@ Route::get('user/fund-board', function () {
     return view('frontend.default.fund_board.index');
 })->name('user.fund-board');
 
+Route::get('user/fund/plans', function () {
+    return view('frontend.default.fund_board.plans');
+})->name('user.fund.plans');
+
+Route::get('user/fund/details', function () {
+    return view('frontend.default.fund_board.plan_details');
+})->name('user.fund.details');
+
 Route::get('user/fund/detail', function () {
     return view('frontend.default.fund_board.detail');
 })->name('user.fund.detail');
@@ -272,3 +280,7 @@ Route::get('user/downloads', function () {
 Route::get('user/economic_calendar', function () {
     return view('frontend.default.user.economic_calendar');
 })->name('user.economic_calendar');
+
+
+Route::post('/sumsub-test', [SumsubController::class, 'testSumsub'])->name('Sumsubtest');
+

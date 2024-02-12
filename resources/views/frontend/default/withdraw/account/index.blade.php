@@ -22,6 +22,20 @@
     </div>
     <div class="grid grid-cols-12 gap-5">
         <div class="col-span-12">
+            @if(count($accounts) == 0)
+            <div class="max-w-xl text-center py-10 mx-auto space-y-5">
+                <div class="w-20 h-20 bg-danger-500 text-white rounded-full inline-flex items-center justify-center">
+                    <iconify-icon icon="fa6-solid:box-open" class="text-5xl"></iconify-icon>
+                </div>
+                <h4 class="text-3xl text-slate-900 dark:text-white">
+                    {{ __("You're almost ready to withdraw!") }}
+                </h4>
+                <p class="text-slate-600 dark:text-slate-100">{{ __('To make a withdraw, please add a withdraw account from your profile (withdraw accounts).') }}</p>
+                <a href="{{ route('user.withdraw.account.create') }}" class="btn btn-dark inline-flex items-center justify-center">
+                    Add Withdraw Account
+                </a>
+            </div>
+            @else
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">{{ __('Withdraw Accounts') }}</h4>
@@ -64,6 +78,7 @@
                     </ul>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 @endsection

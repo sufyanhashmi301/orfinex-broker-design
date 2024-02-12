@@ -32,6 +32,29 @@
                 </div>
                 <div class="col-xl-12">
                     <div class="profile-card-single">
+                        <h5 class="heading">{{ __('Multi IB') }}</h5>
+                        <div class="switch-field">
+                            <input
+                                type="radio"
+                                id="is_multi_ib1"
+                                name="is_multi_ib"
+                                value="1"
+                                @if($user->is_multi_ib) checked @endif
+                            />
+                            <label for="is_multi_ib1">{{ __('Active') }}</label>
+                            <input
+                                type="radio"
+                                id="is_multi_ib2"
+                                name="is_multi_ib"
+                                value="0"
+                                @if(!$user->is_multi_ib) checked @endif
+                            />
+                            <label for="is_multi_ib2">{{ __('Disabled') }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="profile-card-single">
                         <h5 class="heading">{{ __('Email Verification') }}</h5>
                         <div class="switch-field">
                             <input

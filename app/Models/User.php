@@ -46,6 +46,11 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ib_login',
         'ib_balance',
         'ib_status',
+        'multi_ib_login',
+        'multi_ib_balance',
+        'is_multi_ib',
+        'multi_ib_calc_at',
+
         'kyc',
         'kyc_credential',
         'risk_profile_tags',

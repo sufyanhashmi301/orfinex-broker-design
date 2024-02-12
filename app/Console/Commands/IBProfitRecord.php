@@ -88,7 +88,9 @@ class IBProfitRecord extends Command
                 $data['level_share'] = $record->Profit;
                 $data['process_time'] = Carbon::createFromTimestamp($record->Time)->toDateTimeString();
                 $data['calc_at'] = $startIbCalc;
-                IbTransaction::create($data);
+                if(!IbTransaction::where('deal',$record->Deal)->exists()) {
+                    IbTransaction::create($data);
+                }
             }
         }
     }

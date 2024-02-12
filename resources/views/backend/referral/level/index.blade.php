@@ -95,20 +95,20 @@
                             <div class="col-sm-6">
                                 <form action="{{ route('admin.referral.level-status') }}" method="post" id="MultiIB-status">
                                     @csrf
-                                    <input type="hidden" name="type" value="investment_level">
+                                    <input type="hidden" name="type" value="multi_ib_level">
                                     <div class="switch-field m-0">
                                         <input
                                             type="radio"
                                             id="MultiIB-1"
                                             name="status"
-                                            @checked(setting('investment_level'))
+                                            @checked(setting('multi_ib_level','global',1))
                                         />
                                         <label for="MultiIB-1" class="MultiIB-status toggle-switch">{{ __('Active') }}</label>
                                         <input
                                             type="radio"
                                             id="MultiIB-0"
                                             name="status"
-                                            @checked(!setting('investment_level'))
+                                            @checked(!setting('multi_ib_level','global',0))
                                         />
                                         <label for="MultiIB-0" class="MultiIB-status toggle-switch">{{ __('DeActive') }}</label>
                                     </div>

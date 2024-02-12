@@ -45,14 +45,12 @@ if (! function_exists('setting')) {
         if (is_null($key)) {
             return new \App\Models\Setting();
         }
-
         if (is_array($key)) {
 
             return \App\Models\Setting::set($key[0], $key[1]);
         }
 
         $value = \App\Models\Setting::get($key, $section, $default);
-//        dd($value);
 
         return is_null($value) ? value($default) : $value;
     }
@@ -297,6 +295,7 @@ function creditMultiIbBonus($user, $type, $mainAmount, $level = null, $depth = 1
             $forexApiTrait = new class {
                 use ForexApiTrait;
             };
+
             if(!isset($referrer->multi_ib_login)){
                 createMultiIBAccount($referrer);
                 $user->fresh();

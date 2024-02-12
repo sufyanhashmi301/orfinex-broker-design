@@ -63,7 +63,6 @@ class IBSchemaController extends Controller
 //        dd($request->all());
 
         $validator = Validator::make($request->all(), [
-            'icon' => 'required',
             'title' => 'required',
             'group' => 'required',
             'type' => 'required|unique:ib_schemas,type',
@@ -86,7 +85,7 @@ class IBSchemaController extends Controller
             'desc' => $input['desc'],
             'status' => $input['status'],
 //            'priority' => $input['priority'],
-            'icon' => self::imageUploadTrait($input['icon']),
+
         ];
 
         IbSchema::create($finalData);
@@ -142,7 +141,6 @@ class IBSchemaController extends Controller
 
             'status' => $input['status'],
 //            'priority' => $input['priority'],
-            'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
         ];
 //        dd($finalData);
 

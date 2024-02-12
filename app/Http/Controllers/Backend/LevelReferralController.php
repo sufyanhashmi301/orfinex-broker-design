@@ -108,9 +108,9 @@ class LevelReferralController extends Controller
 
     public function statusUpdate(Request $request)
     {
-
         $key = $request->type;
-        $value = setting($key) ? 0 : 1;
+        $value = setting($key,'global',1) ? 0 : 1;
+
         Setting::add($key, $value, 'boolean');
         notify()->success(ucwords(str_replace('_', ' ', $key)).'  Status Updated');
 

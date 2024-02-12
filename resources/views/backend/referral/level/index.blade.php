@@ -91,26 +91,26 @@
                 <div class="col-xl-4 col-md-12">
                     <div class="site-card">
                         <div class="site-card-header">
-                            <h3 class="title">{{ __('Investment Bounty') }}</h3>
+                            <h3 class="title">{{ __('Multi IB Bounty') }}</h3>
                             <div class="col-sm-6">
-                                <form action="{{ route('admin.referral.level-status') }}" method="post" id="investment-status">
+                                <form action="{{ route('admin.referral.level-status') }}" method="post" id="MultiIB-status">
                                     @csrf
                                     <input type="hidden" name="type" value="investment_level">
                                     <div class="switch-field m-0">
                                         <input
                                             type="radio"
-                                            id="investment-1"
+                                            id="MultiIB-1"
                                             name="status"
                                             @checked(setting('investment_level'))
                                         />
-                                        <label for="investment-1" class="investment-status toggle-switch">{{ __('Active') }}</label>
+                                        <label for="MultiIB-1" class="MultiIB-status toggle-switch">{{ __('Active') }}</label>
                                         <input
                                             type="radio"
-                                            id="investment-0"
+                                            id="MultiIB-0"
                                             name="status"
                                             @checked(!setting('investment_level'))
                                         />
-                                        <label for="investment-0" class="investment-status toggle-switch">{{ __('DeActive') }}</label>
+                                        <label for="MultiIB-0" class="MultiIB-status toggle-switch">{{ __('DeActive') }}</label>
                                     </div>
                                 </form>
                             </div>
@@ -119,9 +119,9 @@
                         <div class="site-card-body">
                             <p class="paragraph">{{ __('You can') }}
                                 <strong>{{ __('Add').','. __('Edit').' '. __('or').' '. __('Delete') }}</strong> {{ __('any of the') }}
-                                <strong>{{ __('Level Referred User Investment Bounty') }}</strong></p>
+                                <strong>{{ __('Level Referred User Multi IB Bounty') }}</strong></p>
 
-                            @foreach($investments as $raw)
+                            @foreach($multiIBs as $raw)
                                 <div class="single-gateway">
                                     <div class="gateway-name">
                                         <div class="gateway-title">

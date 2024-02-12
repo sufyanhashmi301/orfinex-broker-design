@@ -3,7 +3,9 @@
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\Gateway;
+use App\Models\IbSchema;
 use Carbon\Carbon;
+use App\Traits\ForexApiTrait;
 
 if (! function_exists('isActive')) {
     function isActive($route, $parameter = null)
@@ -33,18 +35,6 @@ if (! function_exists('tnotify')) {
             'type' => $type,
             'message' => $message,
         ]);
-    }
-}
-if (!function_exists('is_route')) {
-    /**
-     * check current route
-     * @param $name
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function is_route($name)
-    {
-        return request()->routeIs($name);
     }
 }
 
@@ -268,16 +258,113 @@ function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 
 
         $fromUserReferral = $fromUser == null ? $user : $fromUser;
 
-        $description = ucwords($type).' Referral Bonus Via '.$fromUserReferral->full_name.' - Level '.$depth;
+        $description = ucwords($type).' Referral Bonus Via '.$fromUserReferral->full_name.' - Level '.$depth.' in referral account '.$user->multi_ib_login;
 
-        Txn::new($amount, 0, $amount, 'system', $description, TxnType::Referral, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
+        $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::Referral, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
 
         $referrer->profit_balance += $amount;
         $referrer->save();
+
+        $forexApiTrait = new class {
+            use ForexApiTrait;
+        };
+        $comment = 'referral-bonus' . '/' . substr($transaction->tnx, -7);
+        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
         creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
+function creditMultiIbBonus($user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
+{
+    $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
+//   dd($user->ref_id);
+    if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
+        $referrer = \App\Models\User::find($user->ref_id);
+//        dd($referrer);
 
+        if($referrer->is_multi_ib) {
+            $bounty = $LevelReferral->bounty;
+            $amount = (float)($mainAmount * $bounty) / 100;
+//dd($amount);
+            $fromUserReferral = $fromUser == null ? $user : $fromUser;
+
+            $description = ucwords($type) . ' Multi IB Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in Multi IB account ' . $user->multi_ib_login;
+
+            $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::MultiIB, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
+
+            $referrer->multi_ib_balance += $amount;
+            $referrer->save();
+
+            $forexApiTrait = new class {
+                use ForexApiTrait;
+            };
+//            if(!isset($referrer->multi_ib_login)){
+//                createMultiIBAccount($referrer);
+//            }
+//            $comment = 'MultiIB-Bonus' . '/' . substr($transaction->tnx, -7);
+//            $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
+        }
+        creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
+    }
+}
+function createMultiIBAccount($user)
+{
+    $ibSchema = IbSchema::where('type','multi_ib')->where('status',true)->first();
+//        dd($ibSchema);
+    if(!$ibSchema){
+        return false;
+    }
+    $group = $ibSchema->group;
+
+    $server = config('forextrading.server');
+    $password = 'SNNH@2024@bol';
+    $investPassword = 'SNNH@2024@bol';
+    $name = $user->full_name;
+    if(!$name){
+        $name = 'abc';
+    }
+    $phone = $user->phone;
+    if(!$phone){
+        $phone = 12345678;
+    }
+    $country = $user->country;
+    if(!$country){
+        $country = 'UAE';
+    }
+    $dataArray = array(
+        'Name' => $name,
+        'Leverage' => 1,
+        'Group' => $group,
+        'MasterPassword' => $password,
+        'InvestorPassword' => $investPassword,
+//            'PhonePassword' => $password,
+        'Email' => $user->email,
+        'Phone' =>$phone,
+        'Country' => $country,
+    );
+    $dataArray['Login'] = 0;
+    $dataArray['Language'] = 0;
+    $dataArray['Rights'] = 'USER_RIGHT_ALL';
+    $dataArray['Status'] = 'YES';
+    $URL = config('forextrading.createUserUrl');
+//        dd($dataArray,$URL);
+    $forexApiTrait = new class {
+        use ForexApiTrait;
+    };
+    $response = $forexApiTrait->sendApiPostRequest($URL, $dataArray);
+//        dd($response->object());
+//        if ($response->serverError() || $response->failed()) {
+//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
+//        }
+
+    if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
+        $resData = $response->object();
+        $user->multi_ib_login = $resData->Login;
+        $user->save();
+        return $resData->Login;
+    }
+    return false;
+    //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
+}
 if (! function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {

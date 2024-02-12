@@ -86,6 +86,7 @@
                                         <label class="box-input-label" for="">{{ __('Select IB Type:') }}</label>
                                         <select name="type" id="" class="site-nice-select w-100" required>
                                             <option value="ib" @if($schema->type == 'ib') selected @endif>{{__("IB")}}</option>
+                                            <option value="multi_ib" @if($schema->type == 'multi_ib') selected @endif>{{__("Multi IB")}}</option>
                                         </select>
                                     </div>
 

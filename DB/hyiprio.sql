@@ -1395,6 +1395,7 @@ INSERT INTO `settings` (`id`, `name`, `val`, `type`, `created_at`, `updated_at`)
 (57, 'investment_cancellation_daily_limit', '7', 'int', '2023-05-24 11:15:41', '2023-05-24 11:15:41'),
 (58, 'referral_code_limit', '10', 'integer', '2023-06-11 20:56:07', '2023-06-11 20:56:07'),
 (59, 'site_currency_type', 'fiat', 'string', '2023-07-20 12:18:23', '2023-08-13 15:38:25');
+(60, 'multi_ib_level', '1', 'boolean', NULL, '2023-03-28 06:35:55');
 
 -- --------------------------------------------------------
 

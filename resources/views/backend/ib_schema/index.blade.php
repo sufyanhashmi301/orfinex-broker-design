@@ -29,7 +29,6 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th scope="col">{{ __('Icon') }}</th>
                                         <th scope="col">{{ __('Title') }}</th>
                                         <th scope="col">{{ __('Group') }}</th>
                                         <th scope="col">{{ __('Badge') }}</th>
@@ -40,13 +39,6 @@
                                     <tbody>
                                     @foreach($schemas as $schema)
                                         <tr>
-                                            <td>
-                                                <img
-                                                    class="avatar"
-                                                    src="{{ asset($schema->icon) }}"
-                                                    alt=""
-                                                />
-                                            </td>
                                             <td><strong>{{$schema->title}}</strong></td>
                                             <td>
                                                 <strong>{{$schema->group}}</strong>

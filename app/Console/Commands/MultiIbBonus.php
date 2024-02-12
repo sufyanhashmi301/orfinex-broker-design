@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\IbSchema;
 use App\Models\IbTransaction;
 use App\Models\LevelReferral;
 use Carbon\Carbon;
@@ -33,12 +34,17 @@ class MultiIbBonus extends Command
     {
         //level referral
 //        if (setting('site_referral', 'global') == 'level' && setting('investment_level')) {
+        $ibSchema = IbSchema::where('type','multi_ib')->where('status',true)->first();
+        if(!$ibSchema){
+            return false;
+        }
+
         $IBTransactions = IbTransaction::whereNull('clear_at')->get();
         Foreach($IBTransactions as $IBTransaction){
 //            dd($IBTransaction->user);
             $level = LevelReferral::where('type', 'multi_ib')->max('the_order') + 1;
             creditMultiIbBonus($IBTransaction->user, 'multi_ib', $IBTransaction->profit, $level);
-//            $IBTransaction->clear_at = Carbon::now();
+            $IBTransaction->clear_at = Carbon::now();
             $IBTransaction->save();
         }
         return Command::SUCCESS;

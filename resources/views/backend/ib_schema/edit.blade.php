@@ -30,32 +30,7 @@
                                   enctype="multipart/form-data" class="row">
                                 @method('PUT')
                                 @csrf
-                                <div class="col-xl-12">
-                                    <div class="row">
-                                        <div class="col-xl-3">
-                                            <div class="site-input-groups">
-                                                <label class="box-input-label" for="">{{ __('Upload Icon:') }}</label>
-                                                <div class="wrap-custom-file">
-                                                    <input
-                                                        type="file"
-                                                        name="icon"
-                                                        id="schema-icon"
-                                                        accept=".gif, .jpg, .png"
-                                                    />
-                                                    <label for="schema-icon" class="file-ok"
-                                                           style="background-image: url({{ asset($schema->icon) }})">
-                                                        <img
-                                                            class="upload-icon"
-                                                            src="{{ asset('global/materials/upload.svg')}}"
-                                                            alt=""
-                                                        />
-                                                        <span>{{ __('Update Avatar') }}</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="col-xl-6 schema-name">
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Title:') }}</label>

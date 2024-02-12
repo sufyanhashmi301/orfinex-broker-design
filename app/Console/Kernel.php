@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\IBProfitRecord;
+use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\ResetData;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -19,6 +21,8 @@ class Kernel extends ConsoleKernel
         if(url('/') == 'http://brokerdemo.brokeret.com') {
             $schedule->command('reset:data')->daily();
         }
+        $schedule->command('ib:record')->dailyAt('00:10');
+        $schedule->command('multiIB:Bonus')->dailyAt('00:30');
     }
 
     /**
@@ -37,5 +41,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         SynchroniseMissingTranslationKeys::class,
         ResetData::class,
+        IBProfitRecord::class,
+        MultiIbBonus::class,
     ];
 }

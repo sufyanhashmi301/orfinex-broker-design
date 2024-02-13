@@ -29,7 +29,7 @@
                     <div class="flex-none">
                         <div class="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4 ring-slate-100 relative">
                             <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="" class="w-full h-full object-cover rounded-full">
-                            <a href="profile-setting" class="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]">
+                            <a href="{{route('user.setting.profile')}}" class="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center justify-center md:top-[140px] top-[100px]">
                                 <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
                             </a>
                         </div>
@@ -264,5 +264,7 @@
             showSelectedDialCode: true,
             utilsScript: "{{ asset('frontend/js/utils.js') }}",
         });
+
+
     </script>
 @endsection

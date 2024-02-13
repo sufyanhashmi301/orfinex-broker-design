@@ -19,10 +19,10 @@
                             {{ __('Enter the Email you would like to associate with your account below.') }}
                         </p>
                     </div>
-                    <form action="" method="post">
+                    <form action="{{route('user.setting.info-update')}}" method="post">
                         @csrf
                         <div class="input-area phone-input-wrapper my-7">
-                            <input type="text" class="form-control !text-lg" value="{{ $user->email }}">
+                            <input type="text" name="email" class="form-control !text-lg" value="{{ $user->email }}">
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-2/3">

@@ -156,6 +156,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('2fa', 'twoFa')->name('2fa');
         Route::post('action-2fa', 'actionTwoFa')->name('action-2fa');
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
+        Route::post('info-update', 'infoUpdate')->name('info-update');
 
         Route::post('/2fa/verify', function () {
             return redirect(route('user.dashboard'));

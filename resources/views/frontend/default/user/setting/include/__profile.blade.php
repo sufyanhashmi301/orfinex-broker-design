@@ -5,7 +5,7 @@
         </h4>
     </header>
     <div class="card-body p-6">
-        <form action="{{ route('user.setting.profile-update') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('user.setting.profile-update') }}" id="profile-update-form" method="post" enctype="multipart/form-data">
             @csrf
             <div class="progress-steps-form">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-dark">{{ __('Save Changes') }}</button>
+                        <button type="submit" class="btn btn-dark" id="profile-update-save">{{ __('Save Changes') }}</button>
                     </div>
                 </div>
             </div>

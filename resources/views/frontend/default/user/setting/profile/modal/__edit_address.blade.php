@@ -19,10 +19,10 @@
                             {{ __('Enter the Address you would like to associate with your account below.') }}
                         </p>
                     </div>
-                    <form action="" method="post">
+                    <form action="{{route('user.setting.info-update')}}" method="post">
                         @csrf
                         <div class="input-area phone-input-wrapper my-7">
-                            <input type="text" class="form-control !text-lg" value="{{ $user->address }}">
+                            <input type="text" name="address" class="form-control !text-lg" value="{{ $user->address }}">
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-2/3">

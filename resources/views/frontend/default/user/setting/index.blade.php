@@ -48,7 +48,7 @@
             <div class="profile-info-500 md:flex md:text-start text-center flex-1 max-w-[516px] md:space-y-0 space-y-4">
                 <div class="flex-1">
                     <div class="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                        $100
+                        ${{auth()->user()->totalForexBalance()}}
                     </div>
                     <div class="text-sm text-slate-600 font-light dark:text-slate-300">
                         Total Balance
@@ -57,7 +57,7 @@
                 <!-- end single -->
                 <div class="flex-1">
                     <div class="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                        $100
+                        ${{auth()->user()->totalForexEquity()}}
                     </div>
                     <div class="text-sm text-slate-600 font-light dark:text-slate-300">
                         Equity

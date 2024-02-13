@@ -189,11 +189,12 @@ trait ForexApiTrait
     {
         $getUserUrl = config('forextrading.getDealListUser');
         $dataArray = array(
-            'Login' => '9997821',
-//            'fromDate' => $start,
-//            'toDate' => $end,
-            'fromDate' => '1707091200',
-            'toDate' => '1707177599',
+            'Login' => $login,
+            'fromDate' => $start,
+            'toDate' => $end,
+//            'Login' => '9997821',
+//            'fromDate' => '1707696000',
+//            'toDate' => '1707782399',
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);

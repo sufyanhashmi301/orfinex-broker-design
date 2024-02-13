@@ -43,7 +43,6 @@ class IBProfitRecord extends Command
             } else {
                 $startIbCalc = Carbon::now()->startOfDay();
             }
-//            dd($startIbCalc,Carbon::now());
             if ($startIbCalc > Carbon::now()) {
                 return false;
             }

@@ -271,7 +271,7 @@ function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 
         creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
-function creditMultiIbBonus($user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
+function creditMultiIbBonus($IBTransaction,$user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
 {
     $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
 //   dd($user->ref_id);
@@ -285,26 +285,26 @@ function creditMultiIbBonus($user, $type, $mainAmount, $level = null, $depth = 1
 //dd($amount);
             $fromUserReferral = $fromUser == null ? $user : $fromUser;
 
-            $description = ucwords(str_replace('_', ' ', $type)) . ' Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in Multi IB account ' . $referrer->multi_ib_login;
-
-            $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::MultiIB, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
-
-            $referrer->multi_ib_balance += $amount;
-            $referrer->save();
-
             $forexApiTrait = new class {
                 use ForexApiTrait;
             };
             if(!isset($referrer->multi_ib_login)){
                 createMultiIBAccount($referrer);
-                $referrer->fresh();
+                $referrer = $referrer->fresh();
             }
-            $comment = 'MIB' . '/from/'.$user->id.'/' . substr($transaction->tnx, -7);
+            $description = ucwords(str_replace('_', ' ', $type)) . ' Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in Multi IB account ' . $referrer->multi_ib_login;
+            $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::MultiIB, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
+
+            $referrer->multi_ib_balance += $amount;
+            $referrer->save();
+
+            $comment = 'MIB' . '/'.$IBTransaction->client_no.'/' . $IBTransaction->trade_id;
             $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
         }
-        creditMultiIbBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
+        creditMultiIbBonus($IBTransaction,$referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
+
 function createMultiIBAccount($user)
 {
     $ibSchema = IbSchema::where('type','multi_ib')->where('status',true)->first();

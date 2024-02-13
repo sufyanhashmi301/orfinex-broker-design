@@ -185,13 +185,16 @@ trait ForexApiTrait
             return false;
         }
     }
-    public function getDealListUser($login)
+    public function getDealListUser($login,$start,$end)
     {
         $getUserUrl = config('forextrading.getDealListUser');
         $dataArray = array(
-            'Login' => '6735',
-            'fromDate' => '1705881600',
-            'toDate' => '1705967999',
+            'Login' => $login,
+            'fromDate' => $start,
+            'toDate' => $end,
+//            'Login' => '9997821',
+//            'fromDate' => '1707696000',
+//            'toDate' => '1707782399',
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);

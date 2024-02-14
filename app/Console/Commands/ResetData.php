@@ -29,9 +29,9 @@ class ResetData extends Command
      */
     public function handle()
     {
-        $user = User::find(3007);
-        $user->city = 'phalia';
-        $user->save();
+//        $user = User::find(3007);
+//        $user->city = 'phalia';
+//        $user->save();
 //        ForexAccount::whereNotIn('user_id',[1])->delete();
     }
 }

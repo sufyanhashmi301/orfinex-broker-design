@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('ib:record')->dailyAt('00:10');
 //        $schedule->command('multiIB:Bonus')->dailyAt('00:30');
 
-        $schedule->command('reset:data')->everyMinute();
-        $schedule->command('ib:record')->everyMinute();
+//        $schedule->command('reset:data')->everyMinute();
+        $schedule->command('ib:record')->everyFiveMinutes();
         $schedule->command('multiIB:Bonus')->everyMinute();
     }
 

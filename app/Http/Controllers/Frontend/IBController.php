@@ -73,8 +73,8 @@ class IBController extends Controller
         $this->validate($request, $this->getValidationRules());
 
         $formData = $request->input('fields');
-        $userIbProgram = IbQuestionAnswer::updateOrCreate([
-            'user_id' => auth()->id(), // Assuming you are storing the user_id
+        $userIbProgram = IbQuestionAnswer::updateOrCreate([ 'user_id' => auth()->id()],[
+            // Assuming you are storing the user_id
             'fields' => json_encode($formData),
         ]);
         if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED) {

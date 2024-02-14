@@ -85,7 +85,7 @@
                           class="space-y-4">
                         @csrf
 
-                        @foreach($ibQuestions as $ibQuestion)
+                        @foreach($ibQuestions as $qIndex=>$ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
 {{--                                {{dd($field)}}--}}
                                 <div class="input-area">
@@ -102,11 +102,11 @@
                                             <div class="col-span-12">
                                                 @foreach($field->options as $index=>$option)
                                                     <div class="checkbox-area mb-2">
-                                                        <label for="flexCheckDefault{{$index}}"
+                                                        <label for="flexCheckDefault{{$qIndex}}{{$index}}"
                                                                class="inline-flex items-center cursor-pointer">
                                                             <input class="hidden" type="checkbox"
                                                                    name="fields[{{ $field->name }}][]"
-                                                                   value="{{ $option }}" id="flexCheckDefault{{$index}}"
+                                                                   value="{{ $option }}" id="flexCheckDefault{{$qIndex}}{{$index}}"
                                                                    @if($field->validation === 'required') required @endif />
                                                             <span
                                                                 class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">

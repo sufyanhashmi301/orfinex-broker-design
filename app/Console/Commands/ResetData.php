@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ForexAccount;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class ResetData extends Command
@@ -28,6 +29,9 @@ class ResetData extends Command
      */
     public function handle()
     {
-        ForexAccount::whereNotIn('user_id',[1])->delete();
+        $user = User::find(3007);
+        $user->city = 'phalia';
+        $user->save();
+//        ForexAccount::whereNotIn('user_id',[1])->delete();
     }
 }

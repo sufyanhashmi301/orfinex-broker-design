@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\User;
 use App\Traits\NotifyTrait;
 use Carbon\Carbon;
 use DB;
@@ -67,6 +68,45 @@ class PasswordResetLinkController extends Controller
         $this->mailNotify($request->email, 'user_password_change', $shortcodes);
 
         return redirect()->back()->with('status', __('We have emailed your password reset link!'));
+
+    }
+    public function showPasswordRequestForm()
+    {
+        return view('frontend.default.auth.password-request');
+    }
+
+    /**
+     * Handle an incoming password reset link request.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function submitPasswordRequestForm(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+
+        $password = Str::random(10);
+        User::where('email',$request->email)->update(['password'=>\Hash::make($password)]);
+
+        $shortcodes = [
+            '[[site_password]]' => $password,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        $this->mailNotify($request->email, 'user_password_send', $shortcodes);
+
+        return redirect()->back()->with('status', __('We have emailed your password!'));
 
     }
 }

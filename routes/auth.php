@@ -37,6 +37,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.update');
+    Route::get('password-request', [PasswordResetLinkController::class, 'showPasswordRequestForm'])
+        ->name('password.request.form');
+
+    Route::post('password-request', [PasswordResetLinkController::class, 'submitPasswordRequestForm'])
+        ->name('password.request.submit');
 });
 
 Route::middleware('auth')->group(function () {
@@ -55,6 +60,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
 });
 
 //================================ Admin Auth Section ================================

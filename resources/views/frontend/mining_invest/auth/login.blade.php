@@ -76,6 +76,7 @@
                                                 href="{{ route('password.request') }}">{{ __('Forget Password') }}</a></span>
                                     @endif
                                 </div>
+
                                 <button type="submit" class="site-btn-big primary-btn w-100">
                                     {{ __('Account Login') }}
                                 </button>

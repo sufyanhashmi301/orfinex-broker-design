@@ -72,6 +72,13 @@
                                 </a>
                             @endif
                         </div>
+                        <div class="flex justify-center">
+                            @if (Route::has('password.request.form'))
+                                <a href="{{ route('password.request.form') }}" class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium text-center">
+                                    {{ __('Get Password') }}
+                                </a>
+                            @endif
+                        </div>
                         <button type="submit" class="btn btn-dark block w-full text-center">
                             {{ __('Account Login') }}
                         </button>

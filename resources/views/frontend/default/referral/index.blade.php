@@ -64,7 +64,7 @@
                                 <span>Read Our Reviews on Trustpilot</span>
                             </a>
                             <div class="mt-5">
-                                <p class="text-sm">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.</p>
+                                <p class="text-sm">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>, Partner Support <a href="mailto:partners@mbfx.co" class="btn-link">partners@mbfx.co</a>.</p>
                             </div>
                         </div>
                     </div>

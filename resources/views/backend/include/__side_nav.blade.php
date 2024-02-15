@@ -185,7 +185,7 @@
                 <li class="side-nav-item category-title">
                     <span>{{ __('Affiliate') }}</span>
                 </li>
-                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.advertisement_material*']) }}">
+                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.advertisement_material*','admin.links.document-links','admin.links.platform-links']) }}">
                     <a href="javascript:void(0);" class="dropdown-link">
                         <i icon-name="layers"></i>
                         <span>{{ __('Resources') }}</span>
@@ -197,7 +197,7 @@
                                         icon-name="airplay"></i><span>{{ __('IB Resources') }}</span></a>
                             </li>
                         @endcan
-                        <li class="side-nav-item {{ isActive('admin.links.document-links') }}">
+                        <li class="side-nav-item {{ isActive(['admin.links.document-links','admin.links.platform-links']) }}">
                             <a href="{{route('admin.links.document-links')}}">
                                 <i icon-name="link"></i>
                                 <span>{{ __('Links') }}</span>

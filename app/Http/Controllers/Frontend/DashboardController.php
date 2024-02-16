@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Jobs\AgentReferralJob;
 use App\Models\ForexAccount;
 use App\Traits\ForexApiTrait;
 use Illuminate\Http\Request;
@@ -16,12 +17,16 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
 //        dd(getLocation());
+        $user = auth()->user();
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts(auth()->id());
+
+        }
+        if(!$user->ref_id) {
+            AgentReferralJob::dispatch($user);
         }
 
-        $user = auth()->user();
         $transactions = Transaction::where('user_id', $user->id);
 
         $recentTransactions = $transactions->latest()->take(5)->get();

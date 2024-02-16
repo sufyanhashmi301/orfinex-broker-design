@@ -213,12 +213,21 @@ class IBController extends Controller
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 //                event(new NewIBEvent($user));
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[email]]' => $user->email,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[status]]' => IBStatus::APPROVED,
+                ];
+                $this->mailNotify($user->email, 'ib_action', $shortcodes);
+                $this->smsNotify('ib_action', $shortcodes, $user->phone);
+                $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
                 $message = __('User has been successfully approved as IB Member');
                 if($request->ajax()) {
                     return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
                 }else{
                     notify()->success($message, 'IB added');
-
                     return redirect()->back();
                 }
             }else{

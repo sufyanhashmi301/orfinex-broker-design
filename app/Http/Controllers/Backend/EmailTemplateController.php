@@ -40,6 +40,7 @@ class EmailTemplateController extends Controller
     public function edit($id)
     {
         $template = EmailTemplate::find($id);
+//        dd($template);
 
         return view('backend.email.edit', compact('template'));
     }

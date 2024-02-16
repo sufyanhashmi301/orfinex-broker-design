@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
+use App\Jobs\AgentReferralJob;
 use App\Models\ForexAccount;
 use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
@@ -159,6 +160,9 @@ class UserController extends Controller
     {
 
         $user = User::find($id);
+        if(!$user->ref_id) {
+            AgentReferralJob::dispatch($user);
+        }
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {

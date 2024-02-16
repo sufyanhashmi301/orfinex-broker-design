@@ -77,9 +77,21 @@ class IBController extends Controller
             // Assuming you are storing the user_id
             'fields' => json_encode($formData),
         ]);
-        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED) {
-            auth()->user()->update(['ib_status' => IBStatus::PENDING]);
+        $user = auth()->user();
+        if($user->ib_status != \App\Enums\IBStatus::APPROVED) {
+            $user->update(['ib_status' => IBStatus::PENDING]);
         }
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' => 'Pending',
+        ];
+
+        $this->mailNotify(setting('site_email', 'global'), 'ib_request', $shortcodes);
+        $this->pushNotify('ib_request', $shortcodes, route('admin.ib.pending.list'), $user->id);
+
         return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 
     }

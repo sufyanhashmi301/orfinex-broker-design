@@ -22,6 +22,7 @@ use App\Services\ProfileService;
 use App\Services\Transaction\TransactionService;
 use App\Traits\ForexApi;
 use App\Traits\ForexApiTrait;
+use App\Traits\NotifyTrait;
 use App\Traits\ProfileTrait;
 use Brick\Math\BigDecimal;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,7 +31,7 @@ use Illuminate\Validation\ValidationException;
 
 class IBController extends Controller
 {
-    use ForexApiTrait,ProfileTrait;
+    use ForexApiTrait,ProfileTrait,NotifyTrait;
     private $profileService;
 
 

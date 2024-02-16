@@ -8,6 +8,7 @@ use App\Models\IbQuestion;
 use App\Models\IbSchema;
 use App\Models\User;
 use App\Traits\ForexApiTrait;
+use App\Traits\NotifyTrait;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\View;
 
 class IBController extends Controller
 {
-    Use ForexApiTrait;
+    Use ForexApiTrait,NotifyTrait;
     public function index(Request $request)
     {
 

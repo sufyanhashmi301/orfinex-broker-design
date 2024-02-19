@@ -428,6 +428,17 @@ trait ForexApiTrait
         return $this->sendApiPostRequest($url, $dataArray);
 
     }
+    public function updateAgent($login, $agent)
+    {
+        $url = config('forextrading.updateAgentAccount');
+
+        $dataArray = array(
+            'Login' => $login,
+            'Agent' => $agent,
+        );
+        return $this->sendApiPostRequest($url, $dataArray);
+
+    }
     public function updateMainPassword($login, $password)
     {
         $url = config('forextrading.resetMasterPasswordUrl');

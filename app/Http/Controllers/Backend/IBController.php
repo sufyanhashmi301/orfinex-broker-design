@@ -285,8 +285,8 @@ class IBController extends Controller
                     return redirect()->back();
                 }
             }
-            $response = $this->getUserInfoApi($request->ib_login)->object();
-            if($response->Login == 0){
+            $response = $this->getUserInfoApi($request->ib_login);
+            if(!$response){
                 $message = __(':ib not exist in MT5. Kindly enter the correct IB account ',['ib'=>$request->ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
@@ -295,6 +295,7 @@ class IBController extends Controller
                     return redirect()->back();
                 }
             }
+
 //            $responseLogin = 1223
                 $user->ib_login = $request->ib_login;
 //                $user->ib_status = IBStatus::APPROVED;

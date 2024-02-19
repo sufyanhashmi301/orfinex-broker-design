@@ -18,7 +18,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-
         if(url('/') == 'http://brokerdemo.brokeret.com') {
             $schedule->command('reset:data')->daily();
         }
@@ -27,6 +26,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('ib:record')->everyMinute();
         $schedule->command('multiIB:Bonus')->everyMinute();
+        $schedule->command('queue:work --stop-when-empty')
+            ->everyMinute()
+            ->withoutOverlapping();
     }
 
     /**

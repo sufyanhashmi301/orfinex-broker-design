@@ -254,6 +254,83 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
+    public function updateIbMember(Request $request)
+    {
+        $input = $request->all();
+        $ibLogin = $request->ib_login;
+        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
+
+        $validator = Validator::make($input, [
+            'ib_login' => 'required|unique:users,ib_login,' . $userID,
+        ]);
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+//       dd($userID);
+        $isReload = ($request->get('reload')) ? $request->get('reload') : false;
+
+        $user = User::find($userID);
+        if (!blank($user)) {
+//            if ($user->status == UserStatus::INACTIVE) {
+//                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
+//            }
+            if ($user->ib_login == $request->ib_login) {
+                $message = __('Already assigns same IB number :ib',['ib'=>$request->ib_login]);
+                if ($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                } else {
+                    notify()->error($message, 'Error Log');
+                    return redirect()->back();
+                }
+            }
+            $response = $this->getUserInfoApi($request->ib_login)->object();
+            if($response->Login == 0){
+                $message = __(':ib not exist in MT5. Kindly enter the correct IB account ',['ib'=>$request->ib_login]);
+                if ($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                } else {
+                    notify()->error($message, 'Error Log');
+                    return redirect()->back();
+                }
+            }
+//            $responseLogin = 1223
+                $user->ib_login = $request->ib_login;
+//                $user->ib_status = IBStatus::APPROVED;
+                $user->save();
+
+                $this->updateChildAgents($user);
+//                event(new NewIBEvent($user));
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[email]]' => $user->email,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[status]]' => IBStatus::APPROVED,
+                ];
+                $this->mailNotify($user->email, 'ib_action', $shortcodes);
+                $this->smsNotify('ib_action', $shortcodes, $user->phone);
+                $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
+                $message = __('User has been successfully updated IB account');
+                if ($request->ajax()) {
+                    return response()->json(['title' => 'Account Updated for IB', 'success' => $message, 'reload' => $isReload]);
+                } else {
+                    notify()->success($message, 'IB Updated successfully');
+                    return redirect()->back();
+                }
+            } else {
+                $message = __('some error occurred.please try again');
+                if ($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                } else {
+                    notify()->error($message, 'Error Log');
+
+                    return redirect()->back();
+                }
+            }
+        }
+
 
     public function updateChildAgents($pUser)
     {

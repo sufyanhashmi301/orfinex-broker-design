@@ -10,14 +10,22 @@
             <div class="site-card">
                 <div class="site-card-header">
                     <h4 class="title">{{ __('IB Account') }}</h4>
-                    <div class="flex flex-wrap flex-md-nowrap align-items-stretch gap-2 mb-2 mb-md-0">
+
+                    <div class="content">
                                 <span data-bs-toggle="modal" data-bs-target="#addIBModal">
                                 <a href="javascript:void(0)" class="btn btn-dark btn-sm">
                                     <i icon-name="plus"></i>
                                     Add New IB
                                 </a>
                                 </span>
+                                <span data-bs-toggle="modal" data-bs-target="#updateIBModal">
+                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
+                                    <i icon-name="plus"></i>
+                                    Update IB
+                                </a>
+                                </span>
                     </div>
+
                 </div>
 
                 <div class="site-card-body table-responsive">

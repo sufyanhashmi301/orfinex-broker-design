@@ -279,6 +279,7 @@
                     @can('IB-List')
                         @include('backend.user.include.__ib_info')
                         @include('backend.user.include.__ib_add')
+                        @include('backend.user.include.__ib_update')
                     @endcan
 
                     <!-- earnings -->

@@ -1,9 +1,9 @@
-<!-- Confirmation Modal -->
+
 <div
     class="modal fade"
-    id="addIBModal"
+    id="updateIBModal"
     tabindex="-1"
-    aria-labelledby="addIBModalLabel"
+    aria-labelledby="sendEmailModalLabel"
     aria-hidden="true"
 >
     <div class="modal-dialog modal-md modal-dialog-centered">
@@ -16,20 +16,27 @@
                     aria-label="Close"
                 ></button>
                 <div class="popup-body-text">
-                    <h3 class="title mb-4"> {{ __('Add IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span></h3>
-                    <form id="addIBModalForm" action="{{ route('admin.ib.approve') }}" method="POST">
+                    <h3 class="title mb-4"> {{ __('Update IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span></h3>
+                    <form action="{{ route('admin.ib.update') }}" method="post" >
                         @csrf
 
                         <input type="hidden" name="user_id" value="{{$user->id}}">
 
-                        <p>
-                            Are you sure you want to add IB Account?
-                        </p>
+                        <div class="site-input-groups">
+                            <label for="" class="box-input-label">{{ __('IB Login:') }}</label>
+                            <input
+                                type="text"
+                                name="ib_login"
+                                value="{{ $user->ib_login}}"
+                                class="box-input mb-0"
+                                required=""
+                            />
+                        </div>
 
                         <div class="action-btns">
                             <button type="submit" class="site-btn-sm primary-btn me-2">
                                 <i icon-name="send"></i>
-                                {{ __('Add IB') }}
+                                {{ __('Update IB') }}
                             </button>
                             <a
                                 href="#"
@@ -47,5 +54,3 @@
         </div>
     </div>
 </div>
-
-

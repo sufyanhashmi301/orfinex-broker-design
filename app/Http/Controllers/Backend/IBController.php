@@ -298,7 +298,7 @@ class IBController extends Controller
 
 //            $responseLogin = 1223
                 $user->ib_login = $request->ib_login;
-//                $user->ib_status = IBStatus::APPROVED;
+                $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
                 $this->updateChildAgents($user);

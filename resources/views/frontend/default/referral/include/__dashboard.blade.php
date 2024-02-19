@@ -9,10 +9,10 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Total Earnings') }}
+                        {{ __('Total Balance') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        $ {{$balance}}
+                        ${{$user->ib_balance}}
                     </div>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                         {{ __('Total Payouts') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        564
+                        ${{$user->totalIBWithdraw()}}
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
             <div class="card">
                 <div class="card-body p-6">
                     <div class="text-center mb-3">
-                        <h5 class="text-center text-success-600">$0.00</h5>
+                        <h5 class="text-center text-success-600">${{$user->ib_balance}}</h5>
                         <p class="text-center">Balance</p>
                     </div>
                     <form action="" class="space-y-2">

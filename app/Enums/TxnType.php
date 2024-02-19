@@ -22,5 +22,6 @@ enum TxnType: string
     case Interest = 'interest';
     case Refund = 'refund';
     case MultiIB = 'multi_ib';
+    case IB = 'ib';
 
 }

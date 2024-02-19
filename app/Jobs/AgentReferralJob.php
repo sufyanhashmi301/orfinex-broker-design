@@ -46,22 +46,26 @@ class AgentReferralJob implements ShouldQueue
 
         foreach($forexAccounts as $forexAccount) {
             // Send request to Forex API to get user info
-            $userInfo = $this->getUserInfoApi($forexAccount->login)->object();
+            $userInfo = $this->getUserInfoApi($forexAccount->login);
 
             // Check if the agent is not 0 in the response
-            if ($userInfo->Agent !== 0) {
+            if ($userInfo) {
+                $userInfo = $userInfo->object();
                 // Send request to get info of the agent
-                $agentInfo = $this->getUserInfoApi($userInfo->Agent)->object();
+                $agentInfo = $this->getUserInfoApi($userInfo->Agent);
 
-                // Find the agent's email in the users table
-                $agentUser = User::where('email', $agentInfo->Email)->first();
+                if($agentInfo) {
+                    $agentInfo = $agentInfo->object();
+                    // Find the agent's email in the users table
+                    $agentUser = User::where('email', $agentInfo->Email)->first();
 
-                // If the agent is found, find the referral link
-                if ($agentUser) {
-                    $referral = ReferralLink::where('user_id',$agentUser->id)->first();
-                    if(!ReferralRelationship::where('user_id',$this->user->id)->exists()) {
-                        // Call the UserReferred event
-                        event(new UserReferred($referral->id, $this->user));
+                    // If the agent is found, find the referral link
+                    if ($agentUser) {
+                        $referral = ReferralLink::where('user_id', $agentUser->id)->first();
+                        if (!ReferralRelationship::where('user_id', $this->user->id)->exists()) {
+                            // Call the UserReferred event
+                            event(new UserReferred($referral->id, $this->user));
+                        }
                     }
                 }
             }

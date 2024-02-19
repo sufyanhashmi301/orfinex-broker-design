@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\IBStatus;
 use App\Enums\InvestStatus;
 use App\Enums\ForexAccountStatus;
 
@@ -13,6 +14,7 @@ use App\Models\ForexSchema;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Schema;
+use App\Models\User;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -61,14 +63,18 @@ class ForexAccountController extends GatewayController
         $schema = ForexSchema::find($input['schema_id']);
 
         $group = $schema[$request->group];
+//        $group = 'real\Standard';
 
 
         $server = config('forextrading.server');
         $password = $request->main_password;
 
 //        $dataArray = array(
-
-        $data['Name'] = auth()->user()->full_name;
+        if(url('/') == 'http://brokerdemo.brokeret.com') {
+            $data['Name'] = auth()->user()->full_name . '-demo';
+        }else{
+            $data['Name'] = auth()->user()->full_name;
+        }
         $data['Leverage'] = $request->leverage;
         $data['Group'] = $group;
         $data['MasterPassword'] = $password;
@@ -113,6 +119,12 @@ class ForexAccountController extends GatewayController
                 $accountData['trading_platform'] = config('forextrading.tradingPlatform');
                 $forexTrading = ForexAccount::create($accountData);
 
+                if($user->ref_id) {
+                    $referrer = User::find($user->ref_id);
+                    if($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)){
+                         $this->updateAgent($resData->Login, $referrer->ib_login);
+                    }
+                }
 //                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
 //                    event(new NewForexAccountEvent($forexTrading));
 
@@ -184,7 +196,13 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountLogs(Request $request)
     {
-//        $this->getUserApi(9996792);
+//        dd($this->getUserInfoApi(9996792));
+//        $this->getPositionList(9996792);
+//        $this->getPositionListGroup(9996792);
+//        $this->getOrderOpenUser(9996792);
+//        $this->getDealListUser(9997821);
+//        $this->getUserAccountBalance(9996792);
+//        $this->dealerCreditUrl(9996792,1,2);
 
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
@@ -311,11 +329,12 @@ class ForexAccountController extends GatewayController
 
     public function getAccount($login)
     {
-        $this->getUserApi(9996792);
 //        dd($login);
+        $resposne = $this->getUserApi($login);
 //        $resposne = $this->getUserInfoApi($login);
-        $resposne = $this->getUserInfoApi($login);
-        dd($resposne->object());
+//        $resposne = $this->getMT5GroupList();
+//        $resposne = $this->getRoiApi($login);
+//        dd($resposne->object());
 
     }
     public function investCancel(Request $request)
@@ -324,10 +343,5 @@ class ForexAccountController extends GatewayController
 //        $resposne = $this->getUserInfoApi($login);
 //        dd($resposne->object());
 
-    }
-
-    public function accountStats()
-    {
-        return view('frontend::user.forex.stats');
     }
 }

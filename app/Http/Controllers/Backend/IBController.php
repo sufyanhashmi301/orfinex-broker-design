@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\IBStatus;
 use App\Http\Controllers\Controller;
+use App\Models\ForexAccount;
 use App\Models\IbQuestion;
 use App\Models\IbSchema;
 use App\Models\User;
@@ -16,30 +17,33 @@ use Illuminate\Support\Facades\View;
 
 class IBController extends Controller
 {
-    Use ForexApiTrait,NotifyTrait;
+    use ForexApiTrait, NotifyTrait;
+
     public function index(Request $request)
     {
 
         $questions = IbQuestion::all();
-        return view('backend.ib.index',compact('questions'));
+        return view('backend.ib.index', compact('questions'));
     }
 
     public function create()
     {
         return view('backend.ib.create');
     }
+
     public function edit($id)
     {
         $kyc = IbQuestion::find($id);
 
         return view('backend.ib.edit', compact('kyc'));
     }
+
     public function update(Request $request, $id)
     {
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
-            'name' => 'required|unique:ib_questions,name,'.$id,
+            'name' => 'required|unique:ib_questions,name,' . $id,
             'status' => 'required',
             'fields' => 'required',
         ]);
@@ -58,10 +62,11 @@ class IBController extends Controller
 
         $kyc = IbQuestion::find($id);
         $kyc->update($data);
-        notify()->success($kyc->name.' '.__(' IB Updated'));
+        notify()->success($kyc->name . ' ' . __(' IB Updated'));
 
         return redirect()->route('admin.ib-form.index');
     }
+
     public function destroy($id)
     {
         IbQuestion::find($id)->delete();
@@ -74,7 +79,7 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
 
-            $data = User::where('ib_status',IBStatus::PENDING)->latest();
+            $data = User::where('ib_status', IBStatus::PENDING)->latest();
 //            dd($data);
 
             return Datatables::of($data)
@@ -91,7 +96,7 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status',  'action'])
+                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.pending');
@@ -101,7 +106,7 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
 
-            $data = User::where('ib_status',IBStatus::APPROVED)->latest();
+            $data = User::where('ib_status', IBStatus::APPROVED)->latest();
 //            dd($data);
 
             return Datatables::of($data)
@@ -118,7 +123,7 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status',  'action'])
+                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.approved');
@@ -128,7 +133,7 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
 
-            $data = User::where('ib_status',IBStatus::REJECTED)->latest();
+            $data = User::where('ib_status', IBStatus::REJECTED)->latest();
 //            dd($data);
 
             return Datatables::of($data)
@@ -145,7 +150,7 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status',  'action'])
+                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.rejected');
@@ -172,11 +177,12 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status',  'action'])
+                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.all');
     }
+
     public function answerView(User $user)
     {
         $ibData = $user->ibQuestionAnswers; // Adjust this based on your actual relationship
@@ -184,6 +190,7 @@ class IBController extends Controller
 
 //        return response()->json($ibData);
     }
+
     public function approveIbMember(Request $request)
     {
 //        dd($request->all());
@@ -198,9 +205,9 @@ class IBController extends Controller
 //            }
             if ($user->ib_status == IBStatus::APPROVED) {
                 $message = __('User has already a member of IB Program');
-                if($request->ajax()) {
+                if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
-                }else{
+                } else {
                     notify()->error($message, 'Error Log');
                     return redirect()->back();
                 }
@@ -213,6 +220,8 @@ class IBController extends Controller
                 $user->ib_login = $responseLogin;
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
+
+                $this->updateChildAgents($user);
 //                event(new NewIBEvent($user));
                 $shortcodes = [
                     '[[full_name]]' => $user->full_name,
@@ -225,17 +234,17 @@ class IBController extends Controller
                 $this->smsNotify('ib_action', $shortcodes, $user->phone);
                 $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
                 $message = __('User has been successfully approved as IB Member');
-                if($request->ajax()) {
+                if ($request->ajax()) {
                     return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
-                }else{
+                } else {
                     notify()->success($message, 'IB added');
                     return redirect()->back();
                 }
-            }else{
+            } else {
                 $message = __('some error occurred.please try again');
-                if($request->ajax()) {
+                if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
-                }else{
+                } else {
                     notify()->error($message, 'Error Log');
 
                     return redirect()->back();
@@ -245,11 +254,26 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
+
+    public function updateChildAgents($pUser)
+    {
+        $users = User::where('ref_id', $pUser->id)->get();
+        foreach ($users as $user) {
+            $forexAccounts = ForexAccount::where('user_id', $user->id)
+                ->where('account_type', 'real')
+                ->get();
+//        dd($forexAccounts,$this->user);
+            foreach ($forexAccounts as $forexAccount) {
+                $this->updateAgent($forexAccount->login, $pUser->ib_login);
+            }
+        }
+    }
+
     public function saveForexAccount($user)
     {
-        $ibSchema = IbSchema::where('type','ib')->where('status',true)->first();
+        $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
 //        dd($ibSchema);
-        if(!$ibSchema){
+        if (!$ibSchema) {
             return false;
         }
         $group = $ibSchema->group;
@@ -260,15 +284,15 @@ class IBController extends Controller
         $password = 'SNNH@2024@bol';
         $investPassword = 'SNNH@2024@bol';
         $name = $user->full_name;
-        if(!$name){
+        if (!$name) {
             $name = 'abc';
         }
         $phone = $user->phone;
-        if(!$phone){
+        if (!$phone) {
             $phone = 12345678;
         }
         $country = $user->country;
-        if(!$country){
+        if (!$country) {
             $country = 'UAE';
         }
         $dataArray = array(
@@ -279,7 +303,7 @@ class IBController extends Controller
             'InvestorPassword' => $investPassword,
 //            'PhonePassword' => $password,
             'Email' => $user->email,
-            'Phone' =>$phone,
+            'Phone' => $phone,
             'Country' => $country,
         );
         $dataArray['Login'] = 0;
@@ -324,6 +348,7 @@ class IBController extends Controller
         return false;
         //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
     }
+
     public function rejectIbMember(Request $request)
     {
         $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
@@ -337,6 +362,7 @@ class IBController extends Controller
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
         }
     }
+
     public function saveForm(Request $request)
     {
         $input = $request->all();
@@ -359,7 +385,7 @@ class IBController extends Controller
         ];
 
         $kyc = IbQuestion::create($data);
-        notify()->success($kyc->name.' '.__(' IB Created'));
+        notify()->success($kyc->name . ' ' . __(' IB Created'));
 
         return redirect()->route('admin.ib-form.index');
     }

@@ -23,9 +23,9 @@ class DashboardController extends Controller
             $this->syncForexAccounts(auth()->id());
 
         }
-        if(!$user->ref_id) {
-            AgentReferralJob::dispatch($user);
-        }
+//        if(!$user->ref_id) {
+//            AgentReferralJob::dispatch($user);
+//        }
 
         $transactions = Transaction::where('user_id', $user->id);
 

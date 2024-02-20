@@ -10,5 +10,5 @@
     </style>
 @endsection
 @section('content')
-    <iframe src="https://108.181.199.20:8080/portal/registration/provider" class="w-full h-screen" frameborder="0"></iframe>
+    <iframe src="http://108.181.199.20:8080/portal/registration/provider" class="w-full h-screen" frameborder="0"></iframe>
 @endsection

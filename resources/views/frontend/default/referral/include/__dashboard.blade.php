@@ -151,26 +151,26 @@
                     </form>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-body p-6">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-200 dark:bg-slate-900 dark:text-white">
-                        <iconify-icon icon="bi:gift"></iconify-icon>
-                    </div>
-                    <h5 class="card-title my-2">Attach to level a partner</h5>
-                    <p class="text-sm dark:text-white mb-4">Join casecade and get guidance and support you need to grow!</p>
-                    <a href="" class="btn btn-dark block-btn">Attach</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body p-6">
-                    <div class="text-center">
-                        <img src="" class="rounded-full" alt="...">
-                        <h5 class="card-title my-2">Rebate</h5>
-                        <p class="text-sm dark:text-white mb-4">Boost your income by increasing client retention and attracting new clients.</p>
-                        <a href="" class="btn btn-dark block-btn">More details</a>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="card">--}}
+{{--                <div class="card-body p-6">--}}
+{{--                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-200 dark:bg-slate-900 dark:text-white">--}}
+{{--                        <iconify-icon icon="bi:gift"></iconify-icon>--}}
+{{--                    </div>--}}
+{{--                    <h5 class="card-title my-2">Attach to level a partner</h5>--}}
+{{--                    <p class="text-sm dark:text-white mb-4">Join casecade and get guidance and support you need to grow!</p>--}}
+{{--                    <a href="" class="btn btn-dark block-btn">Attach</a>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            <div class="card">--}}
+{{--                <div class="card-body p-6">--}}
+{{--                    <div class="text-center">--}}
+{{--                        <img src="" class="rounded-full" alt="...">--}}
+{{--                        <h5 class="card-title my-2">Rebate</h5>--}}
+{{--                        <p class="text-sm dark:text-white mb-4">Boost your income by increasing client retention and attracting new clients.</p>--}}
+{{--                        <a href="" class="btn btn-dark block-btn">More details</a>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
     </div>
 </div>

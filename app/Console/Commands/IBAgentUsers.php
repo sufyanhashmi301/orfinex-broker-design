@@ -47,7 +47,7 @@ class IBAgentUsers extends Command
                     if (!ReferralRelationship::where('user_id', $childUser->id)->exists()) {
                         // Call the UserReferred event
                         event(new UserReferred($referral->id, $childUser));
-                        echo "parent User: ".$parentReferral->email.", child: ".$childUser->email.' Agent: '.$userOld->agent."\n";
+//                        echo "parent User: ".$parentReferral->email.", child: ".$childUser->email.' Agent: '.$userOld->agent."\n";
                     }else{
                         echo "already created referral : ".$childUser->email." id: ".$childUser->id.' Agent: '.$userOld->agent."\n";
                     }

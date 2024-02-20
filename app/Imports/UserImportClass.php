@@ -20,7 +20,8 @@ class UserImportClass implements ToModel
                 'group' => $row[4],
                 'country' => $row[5],
                 'email' => $row[6],
-                'leverage' => $row[7]
+                'leverage' => $row[7],
+                'agent' => $row[15]
 //                'register_time' => isset($row[14]) ? Carbon::createFromFormat('Y.m.d H:i', $row[14])->format('Y-m-d H:i:s') : Carbon::now()
                 // Map other columns as needed
             ]);

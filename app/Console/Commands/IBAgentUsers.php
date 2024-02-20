@@ -33,21 +33,27 @@ class IBAgentUsers extends Command
      */
     public function handle()
     {
-        $users = UserImport::whereNotNull('agent')->get();
+        $users = UserImport::where('agent','!=',0)->get();
         foreach ($users as $userOld){
-            $user = User::where('email',$userOld->email)->first();
-            if($user) {
-                $user->update(['ib_login' => $userOld->agent,'ib_status' => IBStatus::APPROVED]);
+//            dd($userOld);
+            $childUser = User::where('email',$userOld->email)->first();
+            if($childUser) {
                 $agentAccount = ForexAccount::where('login',$userOld->agent)->first();
                 if($agentAccount) {
                     $parentReferral = $agentAccount->user;
+                    $parentReferral->update(['ib_login' => $userOld->agent,'ib_status' => IBStatus::APPROVED]);
 
                     $referral = $parentReferral->getReferrals()->first();
-                    if (!ReferralRelationship::where('user_id', $user->id)->exists()) {
+                    if (!ReferralRelationship::where('user_id', $childUser->id)->exists()) {
                         // Call the UserReferred event
-                        event(new UserReferred($referral->id, $user));
+                        event(new UserReferred($referral->id, $childUser));
+                        echo "parent User: ".$parentReferral->email.", child: ".$childUser->email.' Agent: '.$userOld->agent.'\n';
+                    }else{
+                        echo "already created referral : ".$childUser->email." id: ".$childUser->id.' Agent: '.$userOld->agent.'\n';
                     }
                 }
+            }else{
+                echo "Not exist user : ".$userOld->email." login: ".$userOld->login.' Agent: '.$userOld->agent.'\n';
             }
 
         }

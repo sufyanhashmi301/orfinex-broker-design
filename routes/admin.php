@@ -96,6 +96,8 @@ Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::cla
     Route::get('answer/view/{user}', 'answerView')->name('answer.view');
     Route::post('approve', 'approveIbMember')->name('approve');
     Route::post('update', 'updateIbMember')->name('update');
+    Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
+    Route::post('multi/update', 'updateMIbMember')->name('multi.update');
     Route::post('reject', 'rejectIbMember')->name('reject');
     Route::post('save/form', 'saveForm')->name('save.form');
 

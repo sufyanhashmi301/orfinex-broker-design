@@ -280,6 +280,8 @@
                         @include('backend.user.include.__ib_info')
                         @include('backend.user.include.__ib_add')
                         @include('backend.user.include.__ib_update')
+                        @include('backend.user.include.__mib_add')
+                        @include('backend.user.include.__mib_update')
                     @endcan
 
                     <!-- earnings -->

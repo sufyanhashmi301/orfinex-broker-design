@@ -177,6 +177,16 @@ class UserController extends Controller
                     }
                 }
             }
+            if ($user->multi_ib_login) {
+                $getUserResponse = $this->getUserApi($user->multi_ib_login);
+                if ($getUserResponse) {
+                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                        $balance = $getUserResponse->object()->Balance;
+                        $user->update(['multi_ib_balance' => $balance]);
+                        $user = User::find($id);
+                    }
+                }
+            }
 
         }
 

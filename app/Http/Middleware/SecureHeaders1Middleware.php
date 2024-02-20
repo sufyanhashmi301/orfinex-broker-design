@@ -11,7 +11,7 @@ class SecureHeaders1Middleware
         $response = $next($request);
 
         // Set Content-Security-Policy header
-        $response->headers->set('Content-Security-Policy', "default-src 'self'; frame-src 'self' http://108.181.199.20:8080; style-src 'self' 'unsafe-inline'");
+//        $response->headers->set('Content-Security-Policy', "default-src 'self'; style-src 'self' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com");
 
         return $response;
     }

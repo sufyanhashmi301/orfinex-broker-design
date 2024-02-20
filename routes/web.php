@@ -287,13 +287,13 @@ Route::post('/sumsub-test', [SumsubController::class, 'testSumsub'])->name('Sums
 
 Route::get('user/provider_access', function () {
     return view('frontend.default.copy_trading.provider_access');
-})->name('user.provider_access')->middleware('secure.headers');;
+})->name('user.provider_access')->middleware('secure_header');;
 
 Route::get('user/follower_access', function () {
     return view('frontend.default.copy_trading.follower_access');
-})->name('user.follower_access')->middleware('secure.headers');;
+})->name('user.follower_access')->middleware('secure_header');;
 
 Route::get('user/ratings', function () {
     return view('frontend.default.copy_trading.ratings');
-})->name('user.ratings')->middleware('secure.headers');;
+})->name('user.ratings')->middleware('secure_header');;
 

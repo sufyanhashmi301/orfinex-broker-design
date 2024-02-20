@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\IBMiddleware;
+use App\Http\Middleware\SecureHeaders1Middleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -23,7 +24,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\SecureHeaders::class,
-        \App\Http\Middleware\SecureHeadersMiddleware::class,
     ];
 
     /**
@@ -79,6 +79,8 @@ class Kernel extends HttpKernel
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,
         'IB' => IBMiddleware::class,
+        'secure_header' => SecureHeaders1Middleware::class,
+
 
     ];
 }

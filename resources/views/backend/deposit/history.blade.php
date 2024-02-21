@@ -13,6 +13,7 @@
                             <th>{{ __('Date') }}</th>
                             <th>{{ __('User') }}</th>
                             <th>{{ __('Transaction ID') }}</th>
+                            <th>{{ __('Account') }}</th>
                             <th>{{ __('Amount') }}</th>
                             <th>{{ __('Gateway') }}</th>
                             <th>{{ __('Charge') }}</th>
@@ -43,6 +44,7 @@
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
                     {data: 'tnx', name: 'tnx'},
+                    {data: 'target_id', name: 'target_id'},
                     {data: 'final_amount', name: 'final_amount'},
                     {data: 'method', name: 'method'},
                     {data: 'charge', name: 'charge'},

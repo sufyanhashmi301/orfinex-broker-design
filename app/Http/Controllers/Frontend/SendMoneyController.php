@@ -22,6 +22,18 @@ class SendMoneyController extends Controller
     use ForexApiTrait;
     public function sendMoney(Request $request)
     {
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            if (auth()->user()->ib_login) {
+                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $balance = $getUserResponse->object()->Balance;
+                    auth()->user()->update(['ib_balance' => $balance]);
+                    auth()->setUser(auth()->user()->fresh());
+                }
+            }
+            $this->syncForexAccounts(auth()->id());
+        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -121,14 +133,14 @@ class SendMoneyController extends Controller
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
-            TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id);
+            TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
         $comment =  "ext/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
-            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note']);
+            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id,  'User', [], $input['note'], $receiverAccount, $targetType);
 
         notify()->success('Successfully Send Money', 'success');
 
@@ -162,6 +174,7 @@ class SendMoneyController extends Controller
                     auth()->setUser(auth()->user()->fresh());
                 }
             }
+            $this->syncForexAccounts(auth()->id());
         }
 
         $forexAccounts = ForexAccount::with('schema')
@@ -192,7 +205,7 @@ class SendMoneyController extends Controller
             'receiver_account' => ['required', 'different:target_id'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
-        'target_id.required' => __('Kindly select the account from to transfer'),
+            'target_id.required' => __('Kindly select the account from to transfer'),
             'receiver_account.required' => __('Kindly select the receiver account to transfer')
         ]);
         $targetType = $request->input('target_type');
@@ -271,14 +284,14 @@ class SendMoneyController extends Controller
         }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id);
+        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
-            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note']);
+            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, $targetType);
 
         notify()->success('Successfully Send Money', 'success');
 

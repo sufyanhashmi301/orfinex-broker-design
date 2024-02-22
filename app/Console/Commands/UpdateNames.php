@@ -30,7 +30,7 @@ class UpdateNames extends Command
     {
         $lname = 'lname';
         // Get users with specified last name
-        $users = User::where('last_name', $lname)->get();
+        $users = User::whereNull('last_name')->get();
 
         foreach ($users as $user) {
             // Split the first name into an array of words

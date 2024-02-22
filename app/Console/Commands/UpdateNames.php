@@ -38,7 +38,7 @@ class UpdateNames extends Command
             if($user){
                 $user->first_name = $userImport->f_name;
 
-            if (!isset($userImport->last_name)) {
+            if (!isset($userImport->last_name) || empty($userImport->last_name)) {
                 // Split the first name into an array of words
                 $firstNameParts = explode(' ', $userImport->first_name);
 

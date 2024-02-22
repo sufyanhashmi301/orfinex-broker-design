@@ -221,7 +221,6 @@ class SendMoneyController extends Controller
         $dayLimit = (float) Setting('send_money_day_limit', 'fee');
         if ($todayTransaction >= $dayLimit) {
             notify()->error(__('Today Send Money limit has been reached'), 'Error');
-
             return redirect()->back();
         }
         $input = $request->all();

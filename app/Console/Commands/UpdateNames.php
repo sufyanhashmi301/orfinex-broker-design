@@ -32,15 +32,14 @@ class UpdateNames extends Command
         $lname = 'lname';
         // Get users with specified last name
 //        $users = User::all();
-        $users =  UserImport::all();
-        foreach ($users as $userImport) {
-            $user= User::where('email',$userImport->email)->first();
-            if($user){
-                $user->first_name = $userImport->f_name;
+//        $user= User::where('email','walimuhammad5173865')->first();
+//        dd($user);
+        $users= User::where('last_name','')->get();
+        foreach ($users as $user) {
 
-            if (!isset($userImport->last_name) || empty($userImport->last_name)) {
+//            if (!isset($user->last_name) || empty($user->last_name)) {
                 // Split the first name into an array of words
-                $firstNameParts = explode(' ', $userImport->first_name);
+                $firstNameParts = explode(' ', $user->first_name);
 
                 // Determine the number of parts in the first name
                 $numParts = count($firstNameParts);
@@ -58,10 +57,10 @@ class UpdateNames extends Command
                     $user->last_name = $firstNameParts[2];
                 }
                 $user->save();
-            }else{
-                $user->last_name = $userImport->l_name;
-                $user->save();
-            }
+//            }else{
+//                $user->last_name = $user->l_name;
+//                $user->save();
+//            }
             }
 
 

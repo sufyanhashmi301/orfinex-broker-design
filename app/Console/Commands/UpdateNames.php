@@ -64,7 +64,7 @@ class UpdateNames extends Command
             }
 
 
-            }
+//            }
 //            }
 //        }
 

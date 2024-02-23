@@ -65,7 +65,6 @@ class ForexAccountController extends GatewayController
         $group = $schema[$request->group];
 //        $group = 'real\Standard';
 
-
         $server = config('forextrading.server');
         $password = $request->main_password;
 
@@ -79,7 +78,6 @@ class ForexAccountController extends GatewayController
         $data['Group'] = $group;
         $data['MasterPassword'] = $password;
         $data['InvestorPassword'] = 'SNNH@2024@bol';
-//        $data['PhonePassword'] = $password;
         $data['Email'] = auth()->user()->email;
         $data['Phone'] = auth()->user()->phone;
         $data['Country'] = auth()->user()->country;
@@ -337,6 +335,7 @@ class ForexAccountController extends GatewayController
 //        dd($resposne->object());
 
     }
+
     public function investCancel(Request $request)
     {
 //        dd($login);

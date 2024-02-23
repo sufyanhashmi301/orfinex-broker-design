@@ -49,7 +49,6 @@ class SendMoneyController extends Controller
 
         return view('frontend::send_money.now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
     }
-
     public function sendMoneyNow(Request $request)
     {
 
@@ -217,13 +216,12 @@ class SendMoneyController extends Controller
             return redirect()->back();
         }
         //daily limit
-        $todayTransaction = Transaction::where('type', TxnType::SendMoney)->whereDate('created_at', Carbon::today())->count();
-        $dayLimit = (float) Setting('send_money_day_limit', 'fee');
-        if ($todayTransaction >= $dayLimit) {
-            notify()->error(__('Today Send Money limit has been reached'), 'Error');
-
-            return redirect()->back();
-        }
+//        $todayTransaction = Transaction::where('type', TxnType::SendMoney)->whereDate('created_at', Carbon::today())->count();
+//        $dayLimit = (float) Setting('send_money_day_limit', 'fee');
+//        if ($todayTransaction >= $dayLimit) {
+//            notify()->error(__('Today Send Money limit has been reached'), 'Error');
+//            return redirect()->back();
+//        }
         $input = $request->all();
         $amount = (float) $input['amount'];
         $targetId = $input['target_id'];
@@ -244,8 +242,8 @@ class SendMoneyController extends Controller
         }
         $this->isValidForexAccount($receiverAccount);
 
-        $min = setting('min_send', 'fee');
-        $max = setting('max_send', 'fee');
+        $min = setting('internal_min_send', 'fee');
+        $max = setting('internal_max_send', 'fee');
         if ($amount < $min || $amount > $max) {
             $currencySymbol = setting('currency_symbol', 'global');
             $message = 'Please Send the Amount within the range '.$currencySymbol.$min.' to '.$currencySymbol.$max;
@@ -254,9 +252,9 @@ class SendMoneyController extends Controller
             return redirect()->back();
         }
 
-        $chargeType = Setting('send_charge_type', 'fee');
+        $chargeType = Setting('internal_send_charge_type', 'fee');
 
-        $charge = (float) Setting('send_charge', 'fee');
+        $charge = (float) Setting('internal_send_charge', 'fee');
 
         if ($chargeType == 'percentage') {
             $charge = $amount * ($charge / 100);
@@ -284,7 +282,7 @@ class SendMoneyController extends Controller
         }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
+        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoneyInternal, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;

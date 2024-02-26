@@ -10,7 +10,7 @@
                 @if($me)
                     {{ __("It's Me") }}( {{ $levelUser->full_name }} )
                 @else
-                    <b>{{ $levelUser->full_name }} <br> @if(setting('deposit_level'))
+                    <b>{{ $levelUser->email }} <br> @if(setting('deposit_level'))
                             {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
                         @endif
                         @if(setting('profit_level'))

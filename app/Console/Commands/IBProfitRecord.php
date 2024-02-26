@@ -34,7 +34,10 @@ class IBProfitRecord extends Command
      */
     public function handle()
     {
-        $users = User::whereNotNull('ib_login')->where('ib_status', IBStatus::APPROVED)->get();
+        $users = User::whereNotNull('ib_login')
+            ->where('email', 'testing123@gmail.com')
+            ->where('ib_status', IBStatus::APPROVED)
+            ->get();
 //        dd($users);
         foreach ($users as $user) {
 //            dd($user);

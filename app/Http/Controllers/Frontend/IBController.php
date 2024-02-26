@@ -79,9 +79,7 @@ class IBController extends Controller
             'fields' => json_encode($formData),
         ]);
         $user = auth()->user();
-        if($user->ib_status != \App\Enums\IBStatus::APPROVED) {
-            $user->update(['ib_status' => IBStatus::PENDING]);
-        }
+
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[email]]' => $user->email,
@@ -89,10 +87,12 @@ class IBController extends Controller
             '[[site_url]]' => route('home'),
             '[[status]]' => 'Pending',
         ];
+        if($user->ib_status != \App\Enums\IBStatus::APPROVED) {
+            $user->update(['ib_status' => IBStatus::PENDING]);
 
-        $this->mailNotify($user->email, 'ib_request', $shortcodes);
-        $this->pushNotify('ib_request', $shortcodes, route('admin.ib.pending.list'), $user->id);
-
+            $this->mailNotify($user->email, 'ib_request', $shortcodes);
+            $this->pushNotify('ib_request', $shortcodes, route('admin.ib.pending.list'), $user->id);
+        }
         return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 
     }

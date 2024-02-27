@@ -35,47 +35,71 @@
 
     </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Jost', sans-serif; font-weight: 400; background: #5e3fc9;">
-<div class="container" style="width: 650px; margin: 0 auto; padding-top:15px; padding-bottom: 15px;">
-    <div class="header" style="padding: 15px 15px; background: #fff;">
-        <a href="{{ $details['site_link'] }}" style="text-decoration: none; transition: 0.3s;">
-            <img style="height: 20px; width: auto;" src="{{ $details['site_logo'] }}" alt="">
-        </a>
+<body style="margin: 0; padding: 0; font-family: 'Jost', sans-serif; font-weight: 400; background: #f8f9fa;">
+    <div class="container" style="width: 650px; margin: 0 auto; padding-top:15px; padding-bottom: 15px;">
+        <div class="header" style="padding: 15px 15px; text-align: center">
+            <a href="{{ $details['site_link'] }}" style="text-decoration: none; transition: 0.3s;">
+                <img style="height: 50px; width: auto;" src="{{ $details['site_logo'] }}" alt="">
+            </a>
 
-    </div>
-    <div class="main-content">
-        <div class="banner" style="margin-bottom: 0px;">
-            <img style="max-width: 100%;" src="{{ $details['banner'] }}" alt="">
         </div>
-        <div class="contents" style="color: #666; background: #fff; padding: 35px;">
-            <h2 class="title"
-                style="font-size: 24px; font-weight: 500; color: #333; margin-bottom: 40px;">{{ $details['title'] }}</h2>
-            <div class="greetings" style="margin-bottom: 15px; margin-top: 15px;">
-                {{ $details['salutation'] }}
+        <div class="main-content" style="background-color: #ffffff; padding: 35px;">
+            <div class="banner" style="margin-bottom: 0px;">
+                <img style="max-width: 100%;" src="{{ $details['banner'] }}" alt="">
             </div>
-            <p style="margin-bottom: 0px; line-height: 32px; font-size: 16px;">{!! $details['message_body'] !!}</p>
-            <a href="{{ $details['button_link'] }}" class="btn-link"
-               style="margin-top: 35px; display: inline-block; padding: 18px 42px; border-radius: 3px; color: #001219; background: #ffffff; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #e73667; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">{{ $details['button_level'] }}</a>
+            <div class="contents" style="color: #666; background: #fff; padding: 35px;">
+                <h2 class="title" style="font-size: 24px; font-weight: 500; color: #333; margin-bottom: 40px;">
+                    {{ $details['title'] }}
+                </h2>
+                <div class="greetings" style="margin-bottom: 15px; margin-top: 15px;">
+                    {{ $details['salutation'] }}
+                </div>
+                <p style="margin-bottom: 0px; line-height: 32px; font-size: 16px;">
+                    {!! $details['message_body'] !!}
+                </p>
+                <a href="{{ $details['button_link'] }}" class="btn-link" style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: #001219; background: #ffffff; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #ff0000; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
+                    {{ $details['button_level'] }}
+                </a>
 
-            @if($details['footer_status'])
-                <div class="content-footer" style="margin-top: 50px;">
-                    <img class="footer-logo" style="height: 15px; margin-bottom: 5px;" src="{{ $details['site_logo'] }}"
-                         alt="{{ $details['site_title'] }}">
-                    <p style="font-size: 14px !important; line-height: 12px !important;">{!! $details['footer_body'] !!}</p>
+                @if($details['footer_status'])
+                    <div class="content-footer" style="margin-top: 50px;">
+                        <img class="footer-logo" style="height: 25px; margin-bottom: 5px;" src="{{ $details['site_logo'] }}" alt="{{ $details['site_title'] }}">
+                        <p style="font-size: 14px !important; line-height: 12px !important;">
+                            {!! $details['footer_body'] !!}
+                        </p>
+                    </div>
+                @endif
+            </div>
+            @if($details['bottom_status'])
+                <div class="newslatter-bottom" style="padding: 35px; background: #fff; margin-top: 15px;">
+                    <h3 class="title"
+                        style="font-size: 18px; margin-bottom: 10px; font-weight: 500;">{{ $details['bottom_title'] }}</h3>
+                    <p class="text" style="font-size: 14px; line-height: 24px;">{!! $details['bottom_body'] !!}</p>
+                    <a href="{{ $details['site_link'] }}" class="link" style="font-size: 14px; font-weight: 500; color: #ff0000; display: inline-block; margin-top: 10px; text-decoration: none;">
+                    Learn More
+                    </a>
                 </div>
             @endif
-        </div>
-        @if($details['bottom_status'])
-            <div class="newslatter-bottom" style="padding: 35px; background: #fff; margin-top: 15px;">
-                <h3 class="title"
-                    style="font-size: 18px; margin-bottom: 10px; font-weight: 500;">{{ $details['bottom_title'] }}</h3>
-                <p class="text" style="font-size: 14px; line-height: 24px;">{!! $details['bottom_body'] !!}</p>
-                <a href="{{ $details['site_link'] }}" class="link"
-                   style="font-size: 14px; font-weight: 500; color: #e73667; display: inline-block; margin-top: 10px; text-decoration: none;">Learn
-                    More</a>
+            <div class="footer-banner" style="margin-bottom: 0px;">
+                <img style="max-width: 100%;" src="{{ $details['banner'] }}" alt="">
             </div>
-        @endif
+            <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
+                <span style="font-size: small;">
+                    You received this email because you made a trade on your Orfinex Prime Real Trading Account. If you have any questions or need assistance, please contact us via email at support@orfinex.com or visit 
+                    <a href="https://support.orfinex.com" target="_blank">
+                        <b>Support Portal</b>
+                    </a>.
+                </span>
+            </div>
+            <div style="font-size: small; text-align: center;line-height: 14px !important;">
+                Risk warning: Trading in financial markets involves risks. Please ensure you understand these risks and are prepared to manage them.
+            </div>
+        </div>
+        <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
+            <font size="1">
+                ORFINEX is a brand name of ORFINEX PRIME PTY LTD, which is a Corporate Authorized Representative who holds an Australian Financial Services License issued by the Australian Securities and Investments Commission (ASIC), AFSR no. 001306799 and ACN No# 672 906 320.
+            </font>
+        </div>
     </div>
-</div>
 </body>
 </html>

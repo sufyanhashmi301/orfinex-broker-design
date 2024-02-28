@@ -295,7 +295,10 @@ class DepositController extends Controller
             } else {
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
-                $transaction->pay_amount = $input['pay_amount'];
+                $transaction->pay_amount = $input['final_amount'];
+                if(isset($input['pay_amount'])) {
+                    $transaction->pay_amount = $input['pay_amount'];
+                }
                 $transaction->save();
                 $transaction = $transaction->fresh();
                 if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {

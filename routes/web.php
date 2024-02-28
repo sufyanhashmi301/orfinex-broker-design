@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::get('invest-logs', [InvestController::class, 'investLogs'])->name('invest-logs');
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
     Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
+    Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {

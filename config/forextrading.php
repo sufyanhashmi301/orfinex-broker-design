@@ -13,6 +13,7 @@ return [
     'getOrderOpenUser' => $base_url.'order/open/user',
     'getDealListUser' => $base_url.'deal/list/user',
     'getUserAccountBalance' => $base_url.'useraccount/balance',
+    'getOrderList' => $base_url.'/order/list/user',
     'depositUrl' => $base_url.'dealer/balance',
     'withdrawUrl' => $base_url.'dealer/balance',
     'dealerCreditUrl' => $base_url.'dealer/credit',

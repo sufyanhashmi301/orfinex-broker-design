@@ -59,6 +59,17 @@ class SendMoneyController extends Controller
 
             return redirect()->back();
         }
+        $input = $request->all();
+        $targetId = $input['target_id'];
+        $fromForexAccount = ForexAccount::where('login', $targetId)->first();
+        if (!$fromForexAccount->schema->is_external_transfer) {
+            notify()->error(__("You haven't allowed external transfer of :plan accounts. Kindly choose different account",['plan'=>$fromForexAccount->schema->title]), 'Error');
+            return redirect()->back();
+        }
+        if (!$fromForexAccount->schema->is_internal_transfer) {
+            notify()->error(__("You haven't allowed internal transfer of :plan accounts. Kindly choose different account",['plan'=>$fromForexAccount->schema->title]), 'Error');
+            return redirect()->back();
+        }
         //daily limit
         $todayTransaction = Transaction::where('type', TxnType::SendMoney)->whereDate('created_at', Carbon::today())->count();
         $dayLimit = (float) Setting('send_money_day_limit', 'fee');
@@ -67,13 +78,12 @@ class SendMoneyController extends Controller
 
             return redirect()->back();
         }
-        $input = $request->all();
-        $amount = (float) $input['amount'];
-        $targetId = $input['target_id'];
+
 //dd($input);
         $fromUser = \Auth::user();
         $receiverAccount = $input['receiver_account'];
         $toUserForexAccount = ForexAccount::where('login', $receiverAccount)->first();
+
 //        dd($toUserForexAccount);
         if(!$toUserForexAccount){
             notify()->error(__('Please add a valid receiver Account!. or May be your receiver account is not active'), 'Error');
@@ -87,6 +97,7 @@ class SendMoneyController extends Controller
         }
         $this->isValidForexAccount($receiverAccount);
 
+        $amount = (float) $input['amount'];
         $min = setting('min_send', 'fee');
         $max = setting('max_send', 'fee');
         if ($amount < $min || $amount > $max) {

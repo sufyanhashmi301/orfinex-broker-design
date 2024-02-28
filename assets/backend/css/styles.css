@@ -1972,14 +1972,7 @@ img {
   list-style: none;
   margin: 0;
   padding-left: 0;
-  overflow: auto;
-  height: calc(100vh - 70px);
   padding: 15px;
-  overflow-y: scroll;
-}
-
-.layout .side-nav .side-nav-inside .side-nav-menu::-webkit-scrollbar {
-  width: 0px;
 }
 
 .layout .side-nav .side-nav-inside .side-nav-menu .side-nav-item {
@@ -2092,6 +2085,23 @@ img {
 .layout .side-nav::-webkit-scrollbar {
   width: 0px;
 }
+
+.layout .side-nav::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #171B2B;
+}
+
+.layout .side-nav::-webkit-scrollbar {
+  width: 8px;
+  background-color: #171B2B;
+}
+
+.layout .side-nav::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: #555;
+}
+
 
 .layout .page-container {
   min-height: 100vh;

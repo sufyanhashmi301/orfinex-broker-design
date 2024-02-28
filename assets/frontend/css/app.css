@@ -3967,6 +3967,9 @@ textarea.form-control.is-invalid{
 .bottom-1\/2{
   bottom: 50%;
 }
+.bottom-full{
+  bottom: 100%;
+}
 .left-\[calc\(50\%-1px\)\]{
   left: calc(50% - 1px);
 }

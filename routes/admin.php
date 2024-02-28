@@ -352,3 +352,10 @@ Route::get('/reports', function () {
     return view('backend.reports.index');
 });
 
+Route::get('/bonus', function () {
+    return view('backend.bonus.index');
+});
+
+Route::get('/bonus/create', function () {
+    return view('backend.bonus.create');
+});

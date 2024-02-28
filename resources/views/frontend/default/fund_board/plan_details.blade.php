@@ -223,73 +223,18 @@
                         <div class="input-area relative">
                             <div class="mb-3">
                                 <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
-                                    Payment Source
-                                </p>
-                                <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    Select your source to pay for service charges.
-                                </p>
-                            </div>
-                            <div class="grid grid-cols-1 gap-5">
-                                <div class="w-full inline-flex items-center justify-between cursor-pointer p-3 rounded border dark:border-slate-700">
-                                    <div class="flex items-center dark:text-white">
-                                        <iconify-icon icon="lucide:wallet" class="text-xl mr-2"></iconify-icon>
-                                        <span>Wallets</span>
-                                    </div>
-                                    <iconify-icon icon="lucide:check-circle-2" class="text-xl dark:text-white"></iconify-icon>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-area relative">
-                            <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
-                                    Payment Source
+                                    Payment Gateway
                                 </p>
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
                                     Select your source to pay for service charges.
                                 </p>
                             </div>
                             <div class="grid grid-cols-1 gap-5 mb-5">
-                                <div class="form-select-img">
-                                    <select name="account_from" class="form-select">
-                                        <option value="1" class="py-2" selected=""
-                                            data-image="https://my.orfinexfund.com/assets/images/wallet-icon.png"
-                                            data-des="<li><span class='font-medium'>Balance : </span><span class='text-primary'>19,617.00</span></li>"
-                                            data-select2-id="974">Main Wallet</option>
-                                        <option value="2" class="py-2"
-                                            data-image="https://my.orfinexfund.com/assets/images/wallet-icon.png"
-                                            data-des="<li><span class='font-medium'>Balance : </span><span class='text-primary'>0.00</span></li>"
-                                            data-select2-id="1473">Affiliate Wallet</option>
+                                <div class="input-group select2-lg">
+                                    <select name="account_from" class="select2 form-control !text-lg w-full">
+                                        <option value="1" class="py-2" selected="">Main Wallet</option>
+                                        <option value="2" class="py-2">Affiliate Wallet</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                <div class="input-area relative">
-                                    <label class="form-label">
-                                        Full Name
-                                        <span class="text-danger-500">*</span>
-                                    </label>
-                                    <input type="text" class="form-control py-2 h-[48px]" name="name" value="user">
-                                </div>
-                                <div class="input-area relative">
-                                    <label class="form-label">
-                                        Email
-                                        <span class="text-danger-500">*</span>
-                                    </label>
-                                    <input type="email" name="email" class="form-control py-2 h-[48px]" value="user@orfinexfund.com">
-                                </div>
-                                <div class="input-area relative phone-input-wrapper">
-                                    <label class="form-label">
-                                        Phone Number
-                                        <span class="text-danger-500">*</span>
-                                    </label>
-                                    <input type="tel" id="phone_number" class="form-control py-2 h-[48px]" name="phone_number" value="+92 333 1234567">
-                                </div>
-                                <div class="input-area relative phone-input-wrapper">
-                                    <label class="form-label">
-                                        Whatsapp Number
-                                        <span class="text-danger-500">*</span>
-                                    </label>
-                                    <input type="tel" id="profile_whatsapp" class="form-control py-2 h-[48px]" name="profile_whatsapp" value="+92 333 1234567">
                                 </div>
                             </div>
                         </div>

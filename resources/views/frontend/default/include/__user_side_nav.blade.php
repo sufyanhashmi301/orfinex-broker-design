@@ -161,6 +161,11 @@
                         {{ __('Transfer Log') }}
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
+                        {{ __('Forex History') }}
+                    </a>
+                </li>
             </ul>
         </li>
 

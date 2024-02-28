@@ -214,6 +214,30 @@ trait ForexApiTrait
             return false;
         }
     }
+    public function getOrderList($login,$start,$end)
+    {
+        $getUserUrl = config('forextrading.getOrderList');
+        $dataArray = array(
+            'Login' => $login,
+            'fromDate' => $start,
+            'toDate' => $end,
+//            'Login' => '9997821',
+//            'fromDate' => 0,
+//            'fromDate' => '1707696000',
+//            'toDate' => '1707782399',
+        );
+//        dd($getUserUrl);
+        $response = $this->sendApiRequest($getUserUrl, $dataArray);
+//        dd($login,$response->object(),$response->status());
+        if (isset($response)) {
+            if ($response->status() == 200) {
+                return $response;
+            }
+        }
+        else {
+            return false;
+        }
+    }
     public function getPositionListGroup($group)
     {
         $getUserUrl = config('forextrading.getPositionListGroup');

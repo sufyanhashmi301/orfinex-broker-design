@@ -51,7 +51,8 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyNow(Request $request)
     {
-
+        notify()->error(__('Send Money Disable Now'), 'Error');
+        return redirect()->back();
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
         }
@@ -205,6 +206,8 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternalNow(Request $request)
     {
+        notify()->error(__('Send Money Disable Now'), 'Error');
+        return redirect()->back();
 //        dd($targetId,$targetType);
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');

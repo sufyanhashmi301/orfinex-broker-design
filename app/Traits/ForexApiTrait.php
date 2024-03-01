@@ -29,7 +29,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+//                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -54,7 +54,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    User::where('ib_login',$login)->update(['ib_status'=>ForexAccountStatus::Unknown]);
+//                    User::where('ib_login',$login)->update(['ib_status'=>ForexAccountStatus::Unknown]);
                     return false;
                 }
             }
@@ -79,7 +79,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -104,7 +104,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -128,7 +128,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -152,7 +152,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -176,7 +176,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -248,7 +248,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -273,7 +273,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }

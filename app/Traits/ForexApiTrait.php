@@ -29,7 +29,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+//                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -54,7 +54,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    User::where('ib_login',$login)->update(['ib_status'=>ForexAccountStatus::Unknown]);
+//                    User::where('ib_login',$login)->update(['ib_status'=>ForexAccountStatus::Unknown]);
                     return false;
                 }
             }
@@ -79,7 +79,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -104,7 +104,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -128,7 +128,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -145,16 +145,16 @@ trait ForexApiTrait
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-//        dd($login,$response->object(),$response->status());
+        dd($login,$response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
-//                if ($response->object()->Login != 0) {
+                if ($response->object()->Login != 0) {
                     return $response;
-//                }
-//                else{
-//                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
-//                    return false;
-//                }
+                }
+                else{
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    return false;
+                }
             }
         }
         else {
@@ -169,14 +169,14 @@ trait ForexApiTrait
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-//        dd($response->object(),$response->status());
+        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
                 if ($response->object()->Login != 0) {
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -200,14 +200,8 @@ trait ForexApiTrait
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
 //        dd($login,$response->object(),$response->status());
         if (isset($response)) {
-            if ($response->status() == 200 && count($response->object()) > 0) {
-//                if ($response->object()->Login != 0) {
-                    return $response;
-//                }
-//                else{
-////                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
-//                    return false;
-//                }
+            if ($response->status() == 200) {
+                return $response;
             }
         }
         else {
@@ -253,7 +247,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -278,7 +272,7 @@ trait ForexApiTrait
                     return $response;
                 }
                 else{
-                    ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
+                    //ForexAccount::where('login',$login)->update(['status'=>ForexAccountStatus::Archive]);
                     return false;
                 }
             }
@@ -311,9 +305,7 @@ trait ForexApiTrait
 
         $dataArray = array(
             'Login' => $login,
-
         );
-
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
         if ($response->status() == 200) {
             if (isset($response->object()->Login)) {
@@ -555,9 +547,7 @@ trait ForexApiTrait
                     if ($account->account_type == 'real') {
                         $balance += $getUserResponse->object()->Balance;
                     }
-
                 }
-
             }
         }
 //        dd($balance);

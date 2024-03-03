@@ -1,9 +1,9 @@
 
 <div
     class="modal fade"
-    id="updateIBModal"
+    id="addReferralModal"
     tabindex="-1"
-    aria-labelledby="updateIBModalLabel"
+    aria-labelledby="addReferralModalLabel"
     aria-hidden="true"
 >
     <div class="modal-dialog modal-md modal-dialog-centered">
@@ -16,27 +16,30 @@
                     aria-label="Close"
                 ></button>
                 <div class="popup-body-text">
-                    <h3 class="title mb-4"> {{ __('Update IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span></h3>
-                    <form action="{{ route('admin.ib.update') }}" method="post" >
+                    <h3 class="title mb-4"> {{ __('Add Referral Under ') }} <span id="referral-add-name">{{ $user->full_name ?? ''}}</span></h3>
+                    <form action="{{ route('admin.referral.direct.add') }}" method="post" >
                         @csrf
 
-                        <input type="hidden" name="user_id" value="{{$user->id}}">
-
-                        <div class="site-input-groups">
-                            <label for="" class="box-input-label">{{ __('IB Login:') }}</label>
-                            <input
-                                type="text"
-                                name="ib_login"
-                                value="{{ $user->ib_login}}"
-                                class="box-input mb-0"
-                                required=""
-                            />
+                        <input type="hidden" name="ref_id" value="{{$user->id}}">
+                        <div class="formGroup">
+                            <label class="block capitalize form-label">{{ __('Select User*') }}</label>
+                            <div class="relative ">
+                                <select name="user_id" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
+                                    @foreach( $users as $user)
+                                        <option  value="{{ $user->id }}"
+                                                 class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $user->email  }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-
+<br>
+<br>
                         <div class="action-btns">
                             <button type="submit" class="site-btn-sm primary-btn me-2">
                                 <i icon-name="send"></i>
-                                {{ __('Update IB') }}
+                                {{ __('Add Referral') }}
                             </button>
                             <a
                                 href="#"

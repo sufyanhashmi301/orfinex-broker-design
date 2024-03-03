@@ -185,7 +185,17 @@ class UserController extends Controller
             ->get();
         $tags = RiskProfileTag::where('status',true)
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags'));
+        $users = User::where(function ($query) use ($id,$user) {
+            $query->where(function ($subquery) use ($id,$user) {
+                $subquery->whereNull('ref_id')
+                    ->orWhere('ref_id', '<>', $id);
+            })
+                ->where('id', '<>', $id)
+                ->where('id', '<>', $user->ref_id);
+        })
+            ->get();
+
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users'));
     }
 
     public function destroy($id)

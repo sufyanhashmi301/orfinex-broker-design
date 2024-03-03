@@ -175,6 +175,9 @@ Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => Refer
     Route::post('update', 'update')->name('update');
     Route::post('delete', 'delete')->name('delete');
 
+    Route::get('direct/list/{id}', 'directList')->name('direct.list');
+    Route::post('direct/add', 'addDirectReferral')->name('direct.add');
+    Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
     Route::get('target', 'target')->name('target');
     Route::post('target-store', 'targetStore')->name('target-store');
     Route::post('target-update', 'targetUpdate')->name('target-update');

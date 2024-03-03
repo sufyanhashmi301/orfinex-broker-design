@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\ReferralType;
 use App\Http\Controllers\Controller;
 use App\Models\Referral;
+use App\Models\ReferralLink;
+use App\Models\ReferralRelationship;
 use App\Models\ReferralTarget;
+use App\Models\User;
+use DataTables;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -75,6 +79,49 @@ class ReferralController extends Controller
 
         return redirect()->route('admin.referral.index');
     }
+    public function addDirectReferral(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'ref_id' => 'required',
+            'user_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+
+        $input = $request->all();
+//        dd($input);
+
+        $pUser = User::find($input['ref_id']);
+        $pUser->getReferrals();
+        $referral = ReferralLink::find($input['ref_id']);
+//        dd($referral);
+        if (!is_null($referral)) {
+            //remove referrals & IB
+            ReferralRelationship::where('user_id',$input['user_id'])->delete();
+            $childUser = User::find($input['user_id']);
+            remove_child_agent($childUser);
+
+            //add referrals & IB
+            ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $input['user_id']]);
+            User::find($input['user_id'])->update([
+                'ref_id' => $referral->user->id,
+            ]);
+            add_child_agent($pUser);
+
+            notify()->success('Referral created successfully');
+
+            return redirect()->back();
+        }else{
+            notify()->error('Did not find referral link of parent user. Please try again');
+
+            return redirect()->back();
+        }
+    }
 
     /**
      * @return RedirectResponse
@@ -99,6 +146,31 @@ class ReferralController extends Controller
         notify()->success('Referral Delete successfully');
 
         return redirect()->route('admin.referral.index');
+
+    }
+    public function deleteDirectReferral(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+
+        $referral = User::find($request->id);
+
+        if (null != $referral) {
+            $referral->ref_id = null;
+            $referral->save();
+            ReferralRelationship::where('user_id',$request->id)->delete();
+            remove_child_agent($referral);
+        }
+        notify()->success('Referral Delete successfully');
+
+        return redirect()->back();
 
     }
 
@@ -190,5 +262,35 @@ class ReferralController extends Controller
         notify()->success('Referral Updated successfully');
 
         return redirect()->route('admin.referral.index');
+    }
+
+    public function directList($id, Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = User::where('ref_id', $id)->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->editColumn('status', 'backend.user.include.__status')
+                ->editColumn('full_name', function ($data) {
+                    return $data->first_name . ' ' . $data->last_name;
+                })
+                ->editColumn('balance', function ($request) {
+                    return $request->balance . ' ' . setting('site_currency');
+                })
+                ->editColumn('email', function ($request) {
+                    return safe($request->email);
+                })
+                ->editColumn('username', function ($request) {
+                    return safe($request->username);
+                })
+
+                ->addColumn('action', 'backend.user.include.__direct_referral_action')
+                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
+                ->make(true);
+        }
     }
 }

@@ -221,7 +221,7 @@ class IBController extends Controller
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
-                $this->updateChildAgents($user);
+               add_child_agent($user);
 //                event(new NewIBEvent($user));
                 $shortcodes = [
                     '[[full_name]]' => $user->full_name,
@@ -301,7 +301,7 @@ class IBController extends Controller
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
-                $this->updateChildAgents($user);
+                add_child_agent($user);
 //                event(new NewIBEvent($user));
                 $shortcodes = [
                     '[[full_name]]' => $user->full_name,
@@ -466,19 +466,7 @@ class IBController extends Controller
         }
 
 
-    public function updateChildAgents($pUser)
-    {
-        $users = User::where('ref_id', $pUser->id)->get();
-        foreach ($users as $user) {
-            $forexAccounts = ForexAccount::where('user_id', $user->id)
-                ->where('account_type', 'real')
-                ->get();
-//        dd($forexAccounts,$this->user);
-            foreach ($forexAccounts as $forexAccount) {
-                $this->updateAgent($forexAccount->login, $pUser->ib_login);
-            }
-        }
-    }
+
 
     public function saveForexAccount($user)
     {

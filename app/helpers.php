@@ -2,8 +2,10 @@
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
+use App\Models\User;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
 
@@ -491,6 +493,58 @@ if (!function_exists('user_meta')) {
             }
         }
         return ($default) ? $default : false;
+    }
+}
+if (!function_exists('add_child_agent')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function add_child_agent($pUser)
+    {
+        $users = User::where('ref_id', $pUser->id)->get();
+        foreach ($users as $user) {
+            $forexAccounts = ForexAccount::where('user_id', $user->id)
+                ->where('account_type', 'real')
+                ->get();
+//        dd($forexAccounts,$this->user);
+            $forexApiTrait = new class {
+                use ForexApiTrait;
+            };
+            foreach ($forexAccounts as $forexAccount) {
+                if($pUser->ib_login) {
+                    $forexApiTrait->updateAgent($forexAccount->login, $pUser->ib_login);
+                }
+            }
+        }
+    }
+}
+if (!function_exists('remove_child_agent')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function remove_child_agent($user)
+    {
+            $forexAccounts = ForexAccount::where('user_id', $user->id)
+                ->where('account_type', 'real')
+                ->get();
+//        dd($forexAccounts,$this->user);
+            $forexApiTrait = new class {
+                use ForexApiTrait;
+            };
+            foreach ($forexAccounts as $forexAccount) {
+                $forexApiTrait->updateAgent($forexAccount->login, 0);
+            }
+
     }
 }
 

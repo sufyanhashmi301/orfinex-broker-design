@@ -233,6 +233,21 @@
                                     <a
                                         href=""
                                         class="nav-link"
+                                        id="pills-direct-referral-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-direct-referral"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-transfer"
+                                        aria-selected="true"
+                                    ><i icon-name="network"></i>{{ __('Direct Referrals') }}</a>
+                                </li>
+                            @endif
+                            @if(setting('site_referral','global') == 'level')
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-tree"
@@ -296,6 +311,12 @@
 
                     <!-- Referral Tree -->
                     @if(setting('site_referral','global') == 'level')
+                        @include('backend.user.include.__referral_direct')
+                        @include('backend.user.include.__referral_add')
+
+                    @endif
+                    <!-- Referral Tree -->
+                    @if(setting('site_referral','global') == 'level')
                         @include('backend.user.include.__referral_tree')
                     @endif
 
@@ -331,6 +352,11 @@
     @include('backend.user.include.__delete_user',[ 'id' => $user->id])
     {{--    @endcan--}}
     <!-- Modal for Add or Subtract Balance End-->
+    <!-- Modal for add referral-->
+{{--    @can('customer-mail-send')--}}
+        @include('backend.user.include.__delete_direct_referral')
+{{--    @endcan--}}
+    <!-- Modal for add referral-->
 
 @endsection
 @section('script')
@@ -392,6 +418,14 @@
                 var selectedAccountType = selectedOption.data('type');
                 $('#selectedAccountType').val(selectedAccountType);
             });
+
+            //send mail modal form open
+            $('body').on('click', '.delete-direct-referral', function () {
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                $('#referralName').html(name);
+                $('#referralId').val(id);
+            })
         });
 
     </script>

@@ -24,7 +24,7 @@
                         <div class="formGroup">
                             <label class="block capitalize form-label">{{ __('Select User*') }}</label>
                             <div class="relative ">
-                                <select name="user_id" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
+                                <select name="user_id" id="countrySelect" class="select2 form-control py-2 h-[48px] w-full mt-2">
                                     @foreach( $users as $user)
                                         <option  value="{{ $user->id }}"
                                                  class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">

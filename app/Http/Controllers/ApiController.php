@@ -20,6 +20,21 @@ class ApiController extends Controller
         return response()->json(['user' => $user]);
 
     }
+    public function getForex(Request $request)
+    {
+
+        $data = $request->except(['URL']);
+        $response = Http::retry(3, 100)->get($request->get('URL'), $data);
+        return $response->object();
+
+    }
+    public function postForex(Request $request)
+    {
+        $data = $request->except(['URL']);
+        $response = Http::retry(3, 100)->post($request->get('URL'), $data);
+        return $response->object();
+
+    }
 
     /**
      * Show the form for creating a new resource.

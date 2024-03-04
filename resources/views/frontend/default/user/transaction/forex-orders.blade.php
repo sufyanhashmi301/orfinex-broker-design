@@ -145,22 +145,24 @@
         <!-- Transactions -->
         <div class="card all-feature-mobile mobile-transactions mb-3">
             <div class="card-header">
-                <h4 class="card-title">{{ __('All Transactions') }}</h4>
+                <h4 class="card-title">{{ __('Forex Orders Log') }}</h4>
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
                 <div class="filter mb-3">
                     <form action="{{ route('user.forex.transactions') }}" method="get">
-                        <div class="search flex items-center gap-2">
+                        <div class="search flex items-center flex-wrap gap-2">
                             <select   name="login" class="select2 form-control !text-lg w-full mt-2 py-2">
                                 <option selected disabled>--{{ __('Select Account') }}--</option>
                                 @foreach($forexAccounts as $forexAccount)
                                     <option value="{{ $forexAccount->login }}" @if(request()->get('login') == $forexAccount->login ) selected @endif>{{ $forexAccount->login }}</option>
                                 @endforeach
                             </select>
-                            <input type="date" class="form-control" name="start_date" value="{{ request()->get('start_date') }}"/>
-                            <input type="date" class="form-control" name="end_date" value="{{ request()->get('end_date') }}"/>
-                            <button type="submit" class="apply-btn h-10 btn btn-dark">
-                                <iconify-icon icon="lucide:search"></iconify-icon>
+                            <div class="w-full flex gap-2">
+                                <input type="date" class="form-control" name="start_date" value="{{ request()->get('start_date') }}"/>
+                                <input type="date" class="form-control" name="end_date" value="{{ request()->get('end_date') }}"/>
+                            </div>
+                            <button type="submit" class="apply-btn h-10 btn btn-dark inline-flex items-center justify-center w-full">
+                                Filter
                             </button>
                         </div>
                     </form>

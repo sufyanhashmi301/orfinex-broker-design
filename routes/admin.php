@@ -362,3 +362,15 @@ Route::get('/bonus', function () {
 Route::get('/bonus/create', function () {
     return view('backend.bonus.create');
 });
+
+Route::get('/challenges', function () {
+    return view('backend.funded.index');
+});
+Route::get('/challenge/create', function () {
+    return view('backend.funded.create');
+});
+
+Route::get('/step_rules/create', function () {
+    return view('backend.funded.step_rules');
+});
+

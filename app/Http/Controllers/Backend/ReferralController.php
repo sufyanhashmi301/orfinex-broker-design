@@ -98,7 +98,7 @@ class ReferralController extends Controller
 
         $pUser = User::find($input['ref_id']);
         $pUser->getReferrals();
-        $referral = ReferralLink::find($input['ref_id']);
+        $referral = ReferralLink::where('user_id',$input['ref_id'])->first();
 //        dd($referral);
         if (!is_null($referral)) {
             //remove referrals & IB

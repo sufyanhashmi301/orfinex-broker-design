@@ -1,3 +1,8 @@
+<style>
+    .select2-container {
+        display: block;
+    }
+</style>
 <div
     class="tab-pane fade"
     id="pills-direct-referral"
@@ -62,5 +67,9 @@
                 ]
             });
         })(jQuery);
+
+        $('.select2').select2({
+            dropdownParent: $('#addReferralModal')
+        });
     </script>
 @endpush

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Jobs\AgentReferralJob;
 use App\Models\ForexAccount;
 use App\Traits\ForexApiTrait;
+use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
@@ -13,11 +14,22 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DashboardController extends Controller
 {
-    use ForexApiTrait;
+    use ForexApiTrait,NotifyTrait;
     public function dashboard(Request $request)
     {
-//        dd(getLocation());
         $user = auth()->user();
+//        $shortcodes = [
+//            '[[full_name]]' => $user->first_name.' '.$user->last_name,
+//            '[[message]]' => '.New User added our system.',
+//            '[[site_title]]' => setting('site_title', 'global'),
+//            '[[site_url]]' => route('home'),
+//        ];
+//
+//        //notify method call
+//
+//        $this->mailNotify($user->email, 'new_user', $shortcodes);
+//        dd(getLocation());
+
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts(auth()->id());

@@ -45,6 +45,8 @@ class RewardUser
                 '[[child_full_name]]' => $event->user->first_name.' '.$event->user->last_name,
                 '[[child_email]]' => $event->user->email,
                 '[[message]]' => '.New User added under your IB.',
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
             ];
             //send email to parent/referral user
             $this->mailNotify($referral->email, 'new_user_ib', $shortcodes);

@@ -25,7 +25,7 @@
                 </div>
                 <div class="site-card-body table-responsive">
                     <div class="site-datatable">
-                        <table id="user-referral-dataTable" class="display data-table">
+                        <table id="user-referral-dataTable2" class="display data-table">
                             <thead>
                             <tr>
                                 <th>{{ __('Avatar') }}</th>
@@ -51,7 +51,7 @@
     <script>
         (function ($) {
             "use strict";
-            $('#user-referral-dataTable').DataTable({
+            $('#user-referral-dataTable2').DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,

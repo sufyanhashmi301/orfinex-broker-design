@@ -126,16 +126,13 @@ class ForexAccountController extends GatewayController
 //                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
 //                    event(new NewForexAccountEvent($forexTrading));
 
-
-
                 $shortcodes = [
                     '[[full_name]]' => $forexTrading->user->full_name,
-                    '[[login]]' => $resData->Login,
+                    '[[login]]' => $forexTrading->login,
                     '[[plan_name]]' => $schema->title,
                     '[[site_title]]' => setting('site_title', 'global'),
                     '[[site_url]]' => route('home'),
                 ];
-
                 $this->mailNotify($forexTrading->user->email, 'user_forex_account_creation', $shortcodes);
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);

@@ -30,6 +30,6 @@ return [
     'enableAccountUrl' => $base_url.'enable_account',
 //    'auth' => '49239111601',
     'group' => 'IB\1',
-    'server' => 'MBFXGlobal-Server',
+    'server' => 'OrfinexPrime-MT5',
     'tradingPlatform' => 'MT5',
 ];

@@ -58,7 +58,7 @@
                 ajax: "{{ route('admin.referral.direct.list',$user->id) }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
-                    {data: 'full_name', name: 'full_name'},
+                    {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
                     {data: 'kyc', name: 'kyc'},

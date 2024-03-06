@@ -457,6 +457,57 @@ return [
                 'value' => 1, // default value if you want
             ],
 
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'client_portal_link', // unique name for field
+                'label' => 'Client Portal Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'client_portal_show', // unique name for field
+                'label' => 'Client Portal Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'partnership_link', // unique name for field
+                'label' => 'Partnership Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'partnership_show', // unique name for field
+                'label' => 'Partnership Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_link', // unique name for field
+                'label' => 'Copy Trading Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_show', // unique name for field
+                'label' => 'Copy Trading Policy', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
 
         ],
 

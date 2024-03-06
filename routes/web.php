@@ -279,6 +279,10 @@ Route::get('user/downloads', function () {
     return view('frontend.default.user.downloads');
 })->name('user.downloads');
 
+Route::get('user/portal/guide', function () {
+    return view('frontend.default.user.portal_guide');
+})->name('portal.guide');
+
 Route::get('user/economic_calendar', function () {
     return view('frontend.default.user.economic_calendar');
 })->name('user.economic_calendar');

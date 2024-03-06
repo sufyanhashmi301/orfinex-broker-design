@@ -23,7 +23,7 @@ class EmailTemplateController extends Controller
 
         if ($request->ajax()) {
 
-            $data = EmailTemplate::query()->latest();
+            $data = EmailTemplate::query()->orderBy('name','asc');
 
             return Datatables::of($data)
                 ->addIndexColumn()

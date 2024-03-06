@@ -302,9 +302,20 @@ class WithdrawController extends Controller
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
         $user = User::find($transaction->user_id);
-
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[txn]]' => $transaction->tnx,
+            '[[method_name]]' => $transaction->method,
+            '[[withdraw_amount]]' => $transaction->amount.setting('site_currency', 'global'),
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[message]]' => $transaction->approval_cause,
+            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
+        ];
         if (isset($input['approve'])) {
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+            $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
+
             notify()->success('Approve successfully');
         } elseif (isset($input['reject'])) {
 
@@ -323,21 +334,13 @@ class WithdrawController extends Controller
             $newTransaction['method'] = 'system';
             $newTransaction->tnx = 'TRX'.strtoupper(Str::random(10));
             $newTransaction->save();
+
+            $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
+
             notify()->success('Reject successfully');
         }
 
-        $shortcodes = [
-            '[[full_name]]' => $user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[method_name]]' => $transaction->method,
-            '[[withdraw_amount]]' => $transaction->amount.setting('site_currency', 'global'),
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
 
-        $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
         $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
         $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
 

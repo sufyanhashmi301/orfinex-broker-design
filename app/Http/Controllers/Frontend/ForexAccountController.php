@@ -128,16 +128,15 @@ class ForexAccountController extends GatewayController
 
 
 
-//                $shortcodes = [
-//                    '[[full_name]]' => $tnxInfo->user->full_name,
-//                    '[[txn]]' => $tnxInfo->tnx,
-//                    '[[plan_name]]' => $tnxInfo->invest->schema->name,
-//                    '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-//                    '[[site_title]]' => setting('site_title', 'global'),
-//                    '[[site_url]]' => route('home'),
-//                ];
-//
-//                $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
+                $shortcodes = [
+                    '[[full_name]]' => $forexTrading->user->full_name,
+                    '[[login]]' => $resData->Login,
+                    '[[plan_name]]' => $schema->title,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $this->mailNotify($forexTrading->user->email, 'user_forex_account_creation', $shortcodes);
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 

@@ -231,8 +231,8 @@ class IBController extends Controller
                     '[[status]]' => IBStatus::APPROVED,
                 ];
                 $this->mailNotify($user->email, 'ib_action', $shortcodes);
-                $this->smsNotify('ib_action', $shortcodes, $user->phone);
                 $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
+//                $this->smsNotify('ib_action', $shortcodes, $user->phone);
 
                 //MIB account
                 $this->mIBProcess($user);
@@ -626,6 +626,16 @@ class IBController extends Controller
         if (!blank($user)) {
             $user->ib_status = IBStatus::REJECTED;
             $user->save();
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::REJECTED,
+            ];
+            $this->mailNotify($user->email, 'ib_reject_action', $shortcodes);
+            $this->pushNotify('ib_reject_action', $shortcodes, route('user.referral'), $user->id);
+//                $this->smsNotify('ib_action', $shortcodes, $user->phone);
             return response()->json(['title' => 'Account rejected for IB', 'success' => __('User has been successfully rejected as IB Member.'), 'reload' => $isReload]);
         }
     }

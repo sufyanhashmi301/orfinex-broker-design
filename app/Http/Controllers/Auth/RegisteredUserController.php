@@ -84,6 +84,7 @@ class RegisteredUserController extends Controller
         ];
 
         //notify method call
+
         $this->mailNotify($user->email, 'new_user', $shortcodes);
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);

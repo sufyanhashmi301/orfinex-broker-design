@@ -76,10 +76,11 @@ class EmailTemplateController extends Controller
         ];
 
         $template = EmailTemplate::find($input['id']);
+//        dd($input,$data);
         if (isset($input['banner']) && is_file($input['banner'])) {
             $data['banner'] = self::imageUploadTrait($input['banner'], $template->banner);
         }
-
+//dd($data);
         $template->update($data);
 
         notify()->success(__('Email Template Updated Successfully'));

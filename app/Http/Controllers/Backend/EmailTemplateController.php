@@ -72,6 +72,10 @@ class EmailTemplateController extends Controller
             'bottom_status' => $input['bottom_status'],
             'bottom_title' => $input['bottom_title'],
             'bottom_body' => nl2br($input['bottom_body']),
+            'support_link' => $input['support_link'],
+            'note' => nl2br($input['note']),
+            'warning_content' => nl2br($input['warning_content']),
+            'company_info' => nl2br($input['company_info']),
             'status' => $input['status'],
         ];
 

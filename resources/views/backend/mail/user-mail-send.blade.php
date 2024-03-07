@@ -87,7 +87,7 @@
                 <span style="font-size: small;">
                     {!! $details['note'] !!}
                     @if(isset($details['support_link']))
-                    <a href="{{$details['support_link'])}}" target="_blank">
+                    <a href="{{$details['support_link']}}" target="_blank">
                         <b>Support Portal</b>
                     </a>
                         @endif

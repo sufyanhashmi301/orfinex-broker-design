@@ -277,7 +277,7 @@ trait ForexApiTrait
         if (in_array($clientIp, ['127.0.0.1', '::1'])) {
             $dataArray['URL'] = $URL;
 //            $dataArray['Login'] = 88868;
-            $localURL = 'https://brokerdemo.brokeret.com/api/get/forex';
+            $localURL = 'https://client.mbfx.co/api/get/forex';
 //            dd($localURL,$dataArray);
             $response = Http::retry(3, 100)->get($localURL, $dataArray);
             return $response;
@@ -295,7 +295,7 @@ trait ForexApiTrait
         $clientIp = request()->ip();
         if (in_array($clientIp, ['127.0.0.1', '::1'])) {
             $dataArray['URL'] = $URL;
-            $localURL = 'https://brokerdemo.brokeret.com/api/post/forex';
+            $localURL = 'https://client.mbfx.co/api/post/forex';
 //            dd($localURL,$dataArray);
             return Http::retry(3, 100)->get($localURL, $dataArray);
         } else {

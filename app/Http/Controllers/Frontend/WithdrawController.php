@@ -225,6 +225,8 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
 
+        notify()->error(__('Withdrawals are currently disabled for a short period. We apologize for any inconvenience and will be back soon'), 'Error');
+        return redirect()->back();
         if (!setting('user_withdraw', 'permission') || !\Auth::user()->withdraw_status) {
             abort('403', __('Withdraw Disable Now'));
         }

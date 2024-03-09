@@ -225,6 +225,10 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
 
+
+//        notify()->error(__('Withdrawals are currently disabled for a short period. We apologize for any inconvenience and will be back soon'), 'Error');
+//        return redirect()->back();
+
         if (!setting('user_withdraw', 'permission') || !\Auth::user()->withdraw_status) {
             abort('403', __('Withdraw Disable Now'));
         }
@@ -236,18 +240,19 @@ class WithdrawController extends Controller
         if (in_array($today, $withdrawOffDays)) {
             abort('403', __('Today is the off day of withdraw'));
         }
-
-        $validator = Validator::make($request->all(), [
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+        $input = $request->all();
+//        dd($input);
+        $validator = Validator::make($input, [
             'target_id' => 'required',
             'withdraw_account' => 'required',
+            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
+
         ],[
             'target_id.required'=> __('Kindly select the forex account to withdraw')
         ]);
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
@@ -256,7 +261,6 @@ class WithdrawController extends Controller
         $dayLimit = (float)Setting('withdraw_day_limit', 'fee');
         if ($todayTransaction >= $dayLimit) {
             notify()->error(__('Today Withdraw limit has been reached'), 'Error');
-
             return redirect()->back();
         }
 
@@ -270,25 +274,22 @@ class WithdrawController extends Controller
             $currencySymbol = setting('currency_symbol', 'global');
             $message = 'Please Withdraw the Amount within the range ' . $currencySymbol . $withdrawMethod->min_withdraw . ' to ' . $currencySymbol . $withdrawMethod->max_withdraw;
             notify()->error($message, 'Error');
-
             return redirect()->back();
         }
 
         $charge = $withdrawMethod->charge_type == 'percentage' ? (($withdrawMethod->charge / 100) * $amount) : $withdrawMethod->charge;
-        $totalAmount = $amount ;
+        $totalAmount = BigDecimal::of($amount)->abs();
 
         $user = Auth::user();
         $targetId = $input['target_id'];
 
         $balance = $this->getForexAccountBalance($targetId);
-//        dd($balance);
-        if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
+
+        if ($totalAmount->compareTo($balance) > 0) {
             notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
             return redirect()->back();
         }
-
-
-
+        $totalAmount = $totalAmount->toFloat();
         $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate)  ;
 
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
@@ -300,13 +301,16 @@ class WithdrawController extends Controller
 
 
         $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -7);
-        $this->forexWithdraw($targetId, $totalAmount,$comment);
+        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
+        if(!$withdrawResponse){
+            Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
+            return redirect()->back();
+        }
 
+//        dd($withdrawMethod->type);
         if ($withdrawMethod->type == 'auto') {
             $gatewayCode = $withdrawMethod->gateway->gateway_code;
-
             return self::withdrawAutoGateway($gatewayCode, $txnInfo);
-
         }
 
         $symbol = setting('currency_symbol', 'global');

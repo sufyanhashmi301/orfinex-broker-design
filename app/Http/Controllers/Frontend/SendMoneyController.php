@@ -140,7 +140,10 @@ class SendMoneyController extends Controller
         //withdraw balance
         $targetType = 'forex_withdraw';
         $comment = 'ext/transfer/to/'.$receiverAccount;
-        $this->forexWithdraw($targetId, $totalAmount,$comment);
+        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
+        if(!$withdrawResponse){
+            return redirect()->back();
+        }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
@@ -206,8 +209,8 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternalNow(Request $request)
     {
-        notify()->error(__('Send Money Disable Now'), 'Error');
-        return redirect()->back();
+//        notify()->error(__('Send Money Disable Now'), 'Error');
+//        return redirect()->back();
 //        dd($targetId,$targetType);
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
@@ -289,7 +292,10 @@ class SendMoneyController extends Controller
             //withdraw balance
             $targetType = 'forex_withdraw';
             $comment = 'int/transfer/to/' . $receiverAccount;
-            $this->forexWithdraw($targetId, $totalAmount, $comment);
+            $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount, $comment);
+            if(!$withdrawResponse){
+                return redirect()->back();
+            }
         }elseif($targetType == 'wallet'){
             $targetType = 'withdraw';
             $user->decrement('profit_balance', $totalAmount);
@@ -301,9 +307,10 @@ class SendMoneyController extends Controller
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
-        $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
-            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
+
+        $receiveDescription = 'Transfer Money From '.$fromUser->username.'-'.$targetId;
+        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
+
 
         notify()->success('Successfully Send Money', 'success');
 

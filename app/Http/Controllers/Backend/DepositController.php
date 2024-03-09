@@ -322,6 +322,7 @@ class DepositController extends Controller
 
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
+
             notify()->success('Approve successfully');
 
         } elseif (isset($input['reject'])) {

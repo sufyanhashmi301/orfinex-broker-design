@@ -368,7 +368,10 @@ class UserController extends Controller
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
                     }
-                    $this->forexWithdraw($targetId, $amount, $comment);
+                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
+                    if(!$withdrawResponse){
+                        return redirect()->back();
+                    }
                 }
                 Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
                 $status = 'success';

@@ -34,7 +34,7 @@ class PerfectmoneyTxn extends BaseTxn
 
         $pm = new PerfectMoney;
         $sendMoney = $pm->getBalance($this->amount, $this->sendTo);
-
+//dd($sendMoney,$this->amount,$this->sendTo);
         if($sendMoney['status'] == 'success')
         {
             Txn::update($this->txn, TxnStatus::Success, $this->userId);

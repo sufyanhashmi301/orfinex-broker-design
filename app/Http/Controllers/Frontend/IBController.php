@@ -241,8 +241,10 @@ class IBController extends Controller
 //dd('s');
         //***************** Validation complete *******************
 
-        $this->ibTransferProcess($request, $user_id, $amount, $sourceFrom, $sourceTo);
-
+        $ibTransferProcessResponse = $this->ibTransferProcess($request, $user_id, $amount, $sourceFrom, $sourceTo);
+        if(!$ibTransferProcessResponse){
+            return false;
+        }
         //debit entry of user
         $tnxData = [
             'user_id' => $user_id,
@@ -320,7 +322,11 @@ class IBController extends Controller
             $account->save();
         } else {
             $comment = "IB-Tr/To/,'#".$sourceTo."'/".get_ref_code(auth()->user()->id);
-            $this->forexWithdraw($sourceFrom, $amount, $comment);
+            $withdrawResponse = $this->forexWithdraw($sourceFrom, $amount, $comment);
+            if(!$withdrawResponse){
+//                Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
+                return false;
+            }
         }
 
         if ($request->get('account_to') == AccountBalanceType::MAIN) {

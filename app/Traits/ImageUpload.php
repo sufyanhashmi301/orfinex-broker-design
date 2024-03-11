@@ -84,8 +84,10 @@ trait ImageUpload
 
     protected function delete($path)
     {
-        if (file_exists('assets/'.$path)) {
-            @unlink('assets/'.$path);
+        if (is_string($path)) {
+            if (file_exists('assets/' . $path)) {
+                @unlink('assets/' . $path);
+            }
         }
     }
 }

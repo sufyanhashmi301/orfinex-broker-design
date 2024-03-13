@@ -10,7 +10,7 @@
                     <div class="col">
                         <div class="title-content">
                             <h2 class="title">{{ __('All IB Account Type') }}</h2>
-                            @can('schema-create')
+                            @can('ib-account-type-create')
                                 <a href="{{route('admin.ibAccountType.create')}}" class="title-btn"><i
                                         icon-name="plus-circle"></i>{{ __('Add New') }}</a>
                             @endcan

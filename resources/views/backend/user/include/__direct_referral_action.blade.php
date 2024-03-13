@@ -2,14 +2,14 @@
     <a href="{{route('admin.user.edit',$id)}}" class="round-icon-btn primary-btn" data-bs-toggle="tooltip"
        title="Edit User" data-bs-original-title="Edit User"><i icon-name="edit-3"></i></a>
 @endcanany
-{{--@can('customer-mail-send')--}}
+@can('user-direct-referral-remove')
     <span type="button"
           data-id="{{$id}}"
           data-name="{{ $first_name.' '. $last_name }}" class="delete-direct-referral"
            data-bs-toggle="modal" data-bs-target="#deleteReferralConfirmationModal"
     ><button class="round-icon-btn red-btn" data-bs-toggle="tooltip" title="Delete Referral"
              data-bs-original-title="Delete"><i icon-name="trash-2"></i></button></span>
-{{--@endcan--}}
+@endcan
 
 <script>
     lucide.createIcons();

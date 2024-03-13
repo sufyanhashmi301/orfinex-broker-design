@@ -10,8 +10,10 @@
                     <div class="col">
                         <div class="title-content">
                             <h2 class="title">{{ __('IB Forms') }}</h2>
-                            <a href="{{ route('admin.ib-form.create') }}" class="title-btn"><i
-                                    icon-name="plus-circle"></i>{{ __('Add New') }}</a>
+                            @can('ib-form-create')
+                                <a href="{{ route('admin.ib-form.create') }}" class="title-btn"><i
+                                        icon-name="plus-circle"></i>{{ __('Add New') }}</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -46,15 +48,20 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                @can('ib-form-edit')
+
                                                 <a href="{{ route('admin.ib-form.edit',$question->id) }}"
                                                    class="round-icon-btn primary-btn">
                                                     <i icon-name="edit-3"></i>
                                                 </a>
+                                                @endcan
+                                                @can('ib-form-delete')
                                                 <button type="button" data-id="{{ $question->id }}"
                                                         data-name="{{ $question->name }}"
                                                         class="round-icon-btn red-btn deleteKyc">
                                                     <i icon-name="trash-2"></i>
                                                 </button>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -123,7 +130,7 @@
 @endsection
 @section('script')
     <script>
-        $('.deleteKyc').on('click',function (e) {
+        $('.deleteKyc').on('click', function (e) {
             "use strict";
             e.preventDefault();
             var id = $(this).data('id');

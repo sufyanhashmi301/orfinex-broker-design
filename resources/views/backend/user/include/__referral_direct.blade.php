@@ -15,12 +15,15 @@
                 <div class="site-card-header">
                     <h4 class="title">{{ __('Direct referrals of :name',['name'=>$user->full_name]) }}</h4>
                     <div class="content">
-                                <span data-bs-toggle="modal" data-bs-target="#addReferralModal">
+                        @can('user-direct-referral-create')
+
+                        <span data-bs-toggle="modal" data-bs-target="#addReferralModal">
                                 <a href="javascript:void(0)" class="btn btn-dark btn-sm">
                                     <i icon-name="plus"></i>
                                     Add Referral
                                 </a>
                                 </span>
+                        @endcan
                     </div>
                 </div>
                 <div class="site-card-body table-responsive">

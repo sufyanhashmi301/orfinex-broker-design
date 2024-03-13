@@ -57,6 +57,7 @@ class IBProfitRecord extends Command
                 $response = $this->getDealListUser($user->ib_login, $start, $end);
             if ($response) {
                 $records = $response->object();
+//                dd($records);
                 if (count($records) > 0) {
                    $this->saveIBTransaction($records,$user,$startIbCalc);
                 }

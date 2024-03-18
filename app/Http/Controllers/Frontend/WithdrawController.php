@@ -253,9 +253,13 @@ class WithdrawController extends Controller
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
-
+        $user = Auth::user();
         //daily limit
-        $todayTransaction = Transaction::where('type', TxnType::Withdraw)->orWhere('type', TxnType::WithdrawAuto)->whereDate('created_at', Carbon::today())->count();
+        $todayTransaction = Transaction::where('user_id',$user->id)
+            ->where('type', TxnType::Withdraw)
+            ->orWhere('type', TxnType::WithdrawAuto)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
         $dayLimit = (float)Setting('withdraw_day_limit', 'fee');
         if ($todayTransaction >= $dayLimit) {
             notify()->error(__('Today Withdraw limit has been reached'), 'Error');
@@ -278,7 +282,7 @@ class WithdrawController extends Controller
         $charge = $withdrawMethod->charge_type == 'percentage' ? (($withdrawMethod->charge / 100) * $amount) : $withdrawMethod->charge;
         $totalAmount = BigDecimal::of($amount)->abs();
 
-        $user = Auth::user();
+
         $targetId = $input['target_id'];
 
         $balance = $this->getForexAccountBalance($targetId);

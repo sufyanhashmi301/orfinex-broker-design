@@ -195,6 +195,7 @@ class KycController extends Controller
         $user = User::find($input['id']);
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
+//        dd($input);
         $user->update([
             'kyc' => $input['status'],
             'kyc_credential' => $kycCredential,
@@ -209,7 +210,13 @@ class KycController extends Controller
             '[[message]]' => $input['message'],
             '[[status]]' => $input['status'],
         ];
-        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
+        //reject kyc status
+        if($input['status'] == 1){
+            $this->mailNotify($user->email, 'kyc_approve', $shortcodes);
+        }
+        if($input['status'] == 3){
+            $this->mailNotify($user->email, 'kyc_reject', $shortcodes);
+        }
         $this->smsNotify('kyc_action', $shortcodes, $user->phone);
         $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
 

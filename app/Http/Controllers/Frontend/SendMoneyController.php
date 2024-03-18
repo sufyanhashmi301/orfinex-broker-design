@@ -146,7 +146,7 @@ class SendMoneyController extends Controller
         }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
+        $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
             TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
@@ -170,6 +170,19 @@ class SendMoneyController extends Controller
             'view_name' => 'send_money',
         ];
         Session::put('user_notify', $notify);
+
+        $shortcodes = [
+            '[[sender_name]]' => $txnInfoSender->user->full_name,
+            '[[receiver_name]]' => $toUser->full_name,
+            '[[txn]]' => $txnInfoSender->tnx,
+            '[[account_from]]' => $targetId,
+            '[[account_to]]' => $receiverAccount,
+            '[[amount]]' => $txnInfoSender->amount,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' =>  'Completed',
+        ];
+        $this->mailNotify($txnInfo->user->email, 'external_transfer_sender', $shortcodes);
 
         return redirect()->route('user.notify');
 
@@ -302,14 +315,15 @@ class SendMoneyController extends Controller
         }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoneyInternal, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
+        $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoneyInternal, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
 
         $receiveDescription = 'Transfer Money From '.$fromUser->username.'-'.$targetId;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
+        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
+            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
 
 
         notify()->success('Successfully Send Money', 'success');
@@ -326,7 +340,18 @@ class SendMoneyController extends Controller
             'view_name' => 'send_money',
         ];
         Session::put('user_notify', $notify);
-
+        $shortcodes = [
+            '[[sender_name]]' => $txnInfoSender->user->full_name,
+            '[[receiver_name]]' => $toUser->full_name,
+            '[[txn]]' => $txnInfoSender->tnx,
+            '[[account_from]]' => $targetId,
+            '[[account_to]]' => $receiverAccount,
+            '[[amount]]' => $txnInfoSender->amount,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' =>  'Completed',
+        ];
+        $this->mailNotify($txnInfo->user->email, 'internal_transfer_sender', $shortcodes);
         return redirect()->route('user.notify');
 
     }

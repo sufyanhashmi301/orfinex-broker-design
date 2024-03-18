@@ -126,18 +126,14 @@ class ForexAccountController extends GatewayController
 //                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
 //                    event(new NewForexAccountEvent($forexTrading));
 
-
-
-//                $shortcodes = [
-//                    '[[full_name]]' => $tnxInfo->user->full_name,
-//                    '[[txn]]' => $tnxInfo->tnx,
-//                    '[[plan_name]]' => $tnxInfo->invest->schema->name,
-//                    '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-//                    '[[site_title]]' => setting('site_title', 'global'),
-//                    '[[site_url]]' => route('home'),
-//                ];
-//
-//                $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
+                $shortcodes = [
+                    '[[full_name]]' => $forexTrading->user->full_name,
+                    '[[login]]' => $forexTrading->login,
+                    '[[plan_name]]' => $schema->title,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+                $this->mailNotify($forexTrading->user->email, 'user_forex_account_creation', $shortcodes);
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 
@@ -282,6 +278,16 @@ class ForexAccountController extends GatewayController
             $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
 //            dd($updateUserApiResponse->object(),$request->login, $request->leverage);
             if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
+                $user = Auth()->user();
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[login]]' => $request->login,
+                    '[[leverage]]' => $request->leverage,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $this->mailNotify($user->email, 'user_update_leverage', $shortcodes);
                 return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
             } else {
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
@@ -297,6 +303,16 @@ class ForexAccountController extends GatewayController
             $updateUserApiResponse = $this->updateMainPassword($request->login, $request->main_password);
 //        dd($updateUserApiResponse->object());
             if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
+                $user = Auth()->user();
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[login]]' => $request->login,
+                    '[[password]]' => $request->main_password,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $this->mailNotify($user->email, 'user_update_master_password', $shortcodes);
                 return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
             } else {
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
@@ -306,6 +322,16 @@ class ForexAccountController extends GatewayController
             $updateUserApiResponse = $this->updateInvestorPassword($request->login, $request->invest_password);
 //        dd($updateUserApiResponse->object());
             if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
+                $user = Auth()->user();
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[login]]' => $request->login,
+                    '[[password]]' => $request->invest_password,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $this->mailNotify($user->email, 'user_update_investor_password', $shortcodes);
                 return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
             } else {
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
@@ -317,6 +343,15 @@ class ForexAccountController extends GatewayController
 //        dd($updateUserApiResponse->object());
 //            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
                 ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
+            $user = Auth()->user();
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[login]]' => $request->login,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+
+            $this->mailNotify($user->email, 'user_archive_forex_account', $shortcodes);
                 return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
 //            } else {
 //                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');

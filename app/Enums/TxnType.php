@@ -11,6 +11,7 @@ enum TxnType: string
     case Subtract = 'subtract';
     case ManualDeposit = 'manual_deposit';
     case SendMoney = 'send_money';
+    case SendMoneyInternal = 'send_money_internal';
     case Exchange = 'exchange';
     case Referral = 'referral';
     case SignupBonus = 'signup_bonus';

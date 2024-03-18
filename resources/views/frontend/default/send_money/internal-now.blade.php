@@ -52,7 +52,7 @@
                         </span>
                     </div>
                     <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max">
-                        {{ 'Minimum '. setting('min_send','fee').' '.$currency.' and Maximum '. setting('max_send','fee').' '.$currency }}
+                        {{ 'Minimum '. setting('internal_min_send','fee').' '.$currency.' and Maximum '. setting('internal_max_send','fee').' '.$currency }}
                     </div>
                 </div>
             </div>
@@ -127,8 +127,8 @@
             var amount = $(this).val();
             $('.previewAmount').text(amount);
 
-            var charge = @json(setting('send_charge','fee'));
-            var chargeType = @json(setting('send_charge_type','fee'));
+            var charge = @json(setting('internal_send_charge','fee'));
+            var chargeType = @json(setting('internal_send_charge_type','fee'));
 
 
             if (chargeType === 'percentage') {

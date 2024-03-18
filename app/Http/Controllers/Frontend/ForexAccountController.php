@@ -219,6 +219,31 @@ class ForexAccountController extends GatewayController
 
         return view('frontend::user.forex.log',compact('realForexAccounts','demoForexAccounts','archiveForexAccounts'));
     }
+    public function testForexAccount(Request $request)
+    {
+        dd($this->getUserInfoApi(88876));
+//        $this->getPositionList(9996792);
+//        $this->getPositionListGroup(9996792);
+//        $this->getOrderOpenUser(9996792);
+//        $this->getDealListUser(9997821);
+//        $this->getUserAccountBalance(9996792);
+//        $this->dealerCreditUrl(9996792,1,2);
+
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $this->syncForexAccounts(auth()->id());
+        }        $realForexAccounts = ForexAccount::realActiveAccount()
+            ->orderBy('balance','desc')
+            ->get();
+        $demoForexAccounts = ForexAccount::demoActiveAccount()
+            ->orderBy('balance','desc')
+            ->get();
+        $archiveForexAccounts = ForexAccount::archiveAccount()
+            ->orderBy('balance','desc')
+            ->get();
+
+        return view('frontend::user.forex.log',compact('realForexAccounts','demoForexAccounts','archiveForexAccounts'));
+    }
 
     public function getLeverage(Request $request)
     {

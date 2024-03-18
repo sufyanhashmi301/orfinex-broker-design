@@ -104,7 +104,7 @@
             @endcanany
 
             {{-- *************************************************************  Plan Management *********************************************************--}}
-            @canany(['schedule-manage','schema-list','schema-create','schema-edit'])
+            @canany(['schedule-manage','schema-list','schema-create','schema-edit','ib-account-type-list'])
                 <li class="side-nav-item category-title">
                     <span>{{ __('Forex') }}</span>
                 </li>
@@ -129,7 +129,7 @@
                                         icon-name="airplay"></i><span>{{ __('Account Type') }}</span></a>
                             </li>
                         @endcan
-                        @can('schema-edit')
+                        @can('ib-account-type-list')
                             <li class="side-nav-item {{ isActive('admin.ibAccountType*') }}">
                                 <a href="{{route('admin.ibAccountType.index')}}"><i
                                         icon-name="airplay"></i><span>{{ __('IB Account Type') }}</span></a>
@@ -181,10 +181,12 @@
             @endcanany
 
             {{-- *************************************************************  Advertisement Management *********************************************************--}}
-            @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
+            @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit','ib-list','ib-action','ib-form-manage'])
                 <li class="side-nav-item category-title">
                     <span>{{ __('Affiliate') }}</span>
                 </li>
+                @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
+
                 <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.advertisement_material*','admin.links.document-links','admin.links.platform-links']) }}">
                     <a href="javascript:void(0);" class="dropdown-link">
                         <i icon-name="layers"></i>
@@ -205,7 +207,7 @@
                         </li>
                     </ul>
                 </li>
-
+                @endcan
 
                 @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
                     <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.referral*']) }}">

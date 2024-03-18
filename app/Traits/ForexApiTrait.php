@@ -326,9 +326,10 @@ trait ForexApiTrait
     {
 //        dd($login);
         $getUserResponse = $this->getUserApi($login);
+//        dd($getUserResponse->object());
         if ($getUserResponse->status() == 200) {
             if (isset($getUserResponse->object()->Login)) {
-                return BigDecimal::of($getUserResponse->object()->Balance);
+                return BigDecimal::of($getUserResponse->object()->MarginFree)->minus($getUserResponse->object()->Credit);
             } else {
                 throw ValidationException::withMessages([
                     'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])
@@ -360,6 +361,7 @@ trait ForexApiTrait
         } else {
             $message = __('You do not have enough money! Kindly select valid amount', ['login' => $login]);
             notify()->error($message, 'Error');
+            return false;
         }
     }
 

@@ -60,10 +60,12 @@ trait Payment
     {
 
         $gatewayTxn = self::gatewayMap($gatewayCode, $txnInfo);
+//            dd($gatewayTxn,config('app.demo'));
         if ($gatewayTxn && config('app.demo') == 0) {
+//            dd('demo');
             $gatewayTxn->withdraw();
         }
-
+//        dd('real');
         $symbol = setting('currency_symbol', 'global');
         $notify = [
             'card-header' => 'Withdraw Money',

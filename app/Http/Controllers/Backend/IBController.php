@@ -221,7 +221,7 @@ class IBController extends Controller
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
-                add_child_agent($user);
+                $this->updateChildAgents($user);
 //                event(new NewIBEvent($user));
                 $shortcodes = [
                     '[[full_name]]' => $user->full_name,
@@ -233,10 +233,6 @@ class IBController extends Controller
                 $this->mailNotify($user->email, 'ib_action', $shortcodes);
                 $this->smsNotify('ib_action', $shortcodes, $user->phone);
                 $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
-
-                //MIB account
-                $this->mIBProcess($user);
-
                 $message = __('User has been successfully approved as IB Member');
                 if ($request->ajax()) {
                     return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
@@ -258,7 +254,6 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
-
     public function updateIbMember(Request $request)
     {
         $input = $request->all();
@@ -282,7 +277,7 @@ class IBController extends Controller
 //                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
 //            }
             if ($user->ib_login == $request->ib_login) {
-                $message = __('Already assigns same IB number :ib', ['ib' => $request->ib_login]);
+                $message = __('Already assigns same IB number :ib',['ib'=>$request->ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -291,8 +286,8 @@ class IBController extends Controller
                 }
             }
             $response = $this->getUserInfoApi($request->ib_login);
-            if (!$response) {
-                $message = __(':ib not exist in MT5. Kindly enter the correct IB account ', ['ib' => $request->ib_login]);
+            if(!$response){
+                $message = __(':ib not exist in MT5. Kindly enter the correct IB account ',['ib'=>$request->ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -302,44 +297,41 @@ class IBController extends Controller
             }
 
 //            $responseLogin = 1223
-            $user->ib_login = $request->ib_login;
-            $user->ib_status = IBStatus::APPROVED;
-            $user->save();
+                $user->ib_login = $request->ib_login;
+                $user->ib_status = IBStatus::APPROVED;
+                $user->save();
 
-            add_child_agent($user);
-
+                $this->updateChildAgents($user);
 //                event(new NewIBEvent($user));
-            $shortcodes = [
-                '[[full_name]]' => $user->full_name,
-                '[[email]]' => $user->email,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[status]]' => IBStatus::APPROVED,
-            ];
-            $this->mailNotify($user->email, 'ib_action', $shortcodes);
-            $this->smsNotify('ib_action', $shortcodes, $user->phone);
-            $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
-
-            $message = __('User has been successfully updated IB account');
-            if ($request->ajax()) {
-                return response()->json(['title' => 'Account Updated for IB', 'success' => $message, 'reload' => $isReload]);
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[email]]' => $user->email,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[status]]' => IBStatus::APPROVED,
+                ];
+                $this->mailNotify($user->email, 'ib_action', $shortcodes);
+                $this->smsNotify('ib_action', $shortcodes, $user->phone);
+                $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
+                $message = __('User has been successfully updated IB account');
+                if ($request->ajax()) {
+                    return response()->json(['title' => 'Account Updated for IB', 'success' => $message, 'reload' => $isReload]);
+                } else {
+                    notify()->success($message, 'IB Updated successfully');
+                    return redirect()->back();
+                }
             } else {
-                notify()->success($message, 'IB Updated successfully');
-                return redirect()->back();
-            }
-        } else {
-            $message = __('some error occurred.please try again');
-            if ($request->ajax()) {
-                return response()->json(['error' => $message, 'reload' => false]);
-            } else {
-                notify()->error($message, 'Error Log');
+                $message = __('some error occurred.please try again');
+                if ($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                } else {
+                    notify()->error($message, 'Error Log');
 
-                return redirect()->back();
+                    return redirect()->back();
+                }
             }
         }
-    }
-
-    public function approveMIbMember(Request $request)
+   public function approveMIbMember(Request $request)
     {
 //        dd($request->all());
         $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
@@ -361,10 +353,25 @@ class IBController extends Controller
                 }
             }
 
-            //MIB account
-            $response = $this->mIBProcess($user);
+            $responseLogin = $this->saveMIBAccount($user);
+//            $responseLogin = 1223
 
-            if($response){
+            if ($responseLogin) {
+                $user->multi_ib_login = $responseLogin;
+//                $user->ib_status = IBStatus::APPROVED;
+                $user->save();
+
+//                event(new NewIBEvent($user));
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[email]]' => $user->email,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[status]]' => IBStatus::APPROVED,
+                ];
+                $this->mailNotify($user->email, 'mib_action', $shortcodes);
+//                $this->smsNotify('mib_action', $shortcodes, $user->phone);
+                $this->pushNotify('mib_action', $shortcodes, route('user.referral'), $user->id);
                 $message = __('User has been successfully approved as MIB Member');
                 if ($request->ajax()) {
                     return response()->json(['title' => 'Account Approved for MIB', 'success' => $message, 'reload' => $isReload]);
@@ -386,7 +393,6 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
-
     public function updateMIbMember(Request $request)
     {
         $input = $request->all();
@@ -407,7 +413,7 @@ class IBController extends Controller
         $user = User::find($userID);
         if (!blank($user)) {
             if ($user->multi_ib_login == $request->multi_ib_login) {
-                $message = __('Already assigns same MIB number :ib', ['ib' => $request->multi_ib_login]);
+                $message = __('Already assigns same MIB number :ib',['ib'=>$request->multi_ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -416,8 +422,8 @@ class IBController extends Controller
                 }
             }
             $response = $this->getUserInfoApi($request->multi_ib_login);
-            if (!$response) {
-                $message = __(':ib not exist in MT5. Kindly enter the correct MIB account ', ['ib' => $request->multi_ib_login]);
+            if(!$response){
+                $message = __(':ib not exist in MT5. Kindly enter the correct MIB account ',['ib'=>$request->multi_ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -427,60 +433,51 @@ class IBController extends Controller
             }
 
 //            $responseLogin = 1223
-            $user->multi_ib_login = $request->multi_ib_login;
-            $user->is_multi_ib = 1;
-            $user->save();
+                $user->ib_login = $request->multi_ib_login;
+                $user->save();
 
-            $shortcodes = [
-                '[[full_name]]' => $user->full_name,
-                '[[email]]' => $user->email,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[status]]' => IBStatus::APPROVED,
-            ];
-            $this->mailNotify($user->email, 'mib_action', $shortcodes);
-            $this->pushNotify('mib_action', $shortcodes, route('user.referral'), $user->id);
-            $message = __('User has been successfully updated MIB account');
-            if ($request->ajax()) {
-                return response()->json(['title' => 'Account Updated for MIB', 'success' => $message, 'reload' => $isReload]);
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[email]]' => $user->email,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                    '[[status]]' => IBStatus::APPROVED,
+                ];
+                $this->mailNotify($user->email, 'mib_action', $shortcodes);
+                $this->pushNotify('mib_action', $shortcodes, route('user.referral'), $user->id);
+                $message = __('User has been successfully updated MIB account');
+                if ($request->ajax()) {
+                    return response()->json(['title' => 'Account Updated for MIB', 'success' => $message, 'reload' => $isReload]);
+                } else {
+                    notify()->success($message, 'MIB Updated successfully');
+                    return redirect()->back();
+                }
             } else {
-                notify()->success($message, 'MIB Updated successfully');
-                return redirect()->back();
+                $message = __('some error occurred.please try again');
+                if ($request->ajax()) {
+                    return response()->json(['error' => $message, 'reload' => false]);
+                } else {
+                    notify()->error($message, 'Error Log');
+
+                    return redirect()->back();
+                }
             }
-        } else {
-            $message = __('some error occurred.please try again');
-            if ($request->ajax()) {
-                return response()->json(['error' => $message, 'reload' => false]);
-            } else {
-                notify()->error($message, 'Error Log');
+        }
 
-                return redirect()->back();
+
+    public function updateChildAgents($pUser)
+    {
+        $users = User::where('ref_id', $pUser->id)->get();
+        foreach ($users as $user) {
+            $forexAccounts = ForexAccount::where('user_id', $user->id)
+                ->where('account_type', 'real')
+                ->get();
+//        dd($forexAccounts,$this->user);
+            foreach ($forexAccounts as $forexAccount) {
+                $this->updateAgent($forexAccount->login, $pUser->ib_login);
             }
         }
     }
-    public function mIBProcess($user){
-        //MIB account
-        $responseLogin = $this->saveMIBAccount($user);
-        if ($responseLogin) {
-            $user->multi_ib_login = $responseLogin;
-            $user->is_multi_ib = 1;
-            $user->save();
-
-            $shortcodes = [
-                '[[full_name]]' => $user->full_name,
-                '[[email]]' => $user->email,
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[status]]' => IBStatus::APPROVED,
-            ];
-            $this->mailNotify($user->email, 'mib_action', $shortcodes);
-            $this->pushNotify('mib_action', $shortcodes, route('user.referral'), $user->id);
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 
     public function saveForexAccount($user)
     {
@@ -561,7 +558,6 @@ class IBController extends Controller
         return false;
         //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
     }
-
     public function saveMIBAccount($user)
     {
         $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();

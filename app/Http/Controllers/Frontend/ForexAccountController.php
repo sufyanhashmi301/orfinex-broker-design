@@ -196,7 +196,7 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountLogs(Request $request)
     {
-//        dd($this->getUserInfoApi(9996792));
+//        $this->getUserInfoApi(11111134);
 //        $this->getPositionList(9996792);
 //        $this->getPositionListGroup(9996792);
 //        $this->getOrderOpenUser(9996792);

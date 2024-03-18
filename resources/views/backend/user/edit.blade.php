@@ -3,7 +3,7 @@
     {{ __('Customer Details') }}
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}">
 @endsection
 @section('content')
     <div class="main-content">
@@ -22,10 +22,14 @@
                                 {{--                                {{dd($user->riskProfileTags)}}--}}
                                 @foreach($user->riskProfileTags as $tag)
                                     <div class="position-relative px-3 py-1 rounded bg-white border">
-                                        <div class="position-absolute left-0 bg-danger rounded-full" style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
+                                        <div class="position-absolute left-0 bg-danger rounded-full"
+                                             style="width: 8px; height: 8px; top: calc(50% - 4px);"></div>
                                         <span class="small ps-3 pe-1">{{$tag->name}}</span>
-                                        <a href="#" class="btn-link text-dark" onclick="confirmDelete({{ $tag->id }},'{{ $tag->name }}')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                        <a href="#" class="btn-link text-dark"
+                                           onclick="confirmDelete({{ $tag->id }},'{{ $tag->name }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
                                                 <path d="M18 6 6 18"/>
                                                 <path d="m6 6 12 12"/>
                                             </svg>
@@ -180,7 +184,7 @@
                                     ><i icon-name="anchor"></i>{{ __('Forex Accounts') }}</a>
                                 </li>
                             @endcan
-                            @can('investment-list')
+                            @can('user-ib-mib-manage')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -228,21 +232,23 @@
                                 </li>
                             @endcan
 
-                            @if(setting('site_referral','global') == 'level')
-                                <li class="nav-item" role="presentation">
-                                    <a
-                                        href=""
-                                        class="nav-link"
-                                        id="pills-direct-referral-tab"
-                                        data-bs-toggle="pill"
-                                        data-bs-target="#pills-direct-referral"
-                                        type="button"
-                                        role="tab"
-                                        aria-controls="pills-transfer"
-                                        aria-selected="true"
-                                    ><i icon-name="network"></i>{{ __('Direct Referrals') }}</a>
-                                </li>
-                            @endif
+                            @can('user-direct-referral-list')
+                                @if(setting('site_referral','global') == 'level')
+                                    <li class="nav-item" role="presentation">
+                                        <a
+                                            href=""
+                                            class="nav-link"
+                                            id="pills-direct-referral-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#pills-direct-referral"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="pills-transfer"
+                                            aria-selected="true"
+                                        ><i icon-name="network"></i>{{ __('Direct Referrals') }}</a>
+                                    </li>
+                                @endif
+                            @endcan
                             @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
@@ -286,12 +292,12 @@
 
 
 
-                        <!-- investments -->
-                        @can('investment-list')
-                            @include('backend.user.include.__investments')
-                        @endcan
+                    <!-- investments -->
+                    @can('investment-list')
+                        @include('backend.user.include.__investments')
+                    @endcan
                     <!-- IB -->
-                    @can('IB-List')
+                    @can('user-ib-mib-manage')
                         @include('backend.user.include.__ib_info')
                         @include('backend.user.include.__ib_add')
                         @include('backend.user.include.__ib_update')
@@ -351,9 +357,9 @@
     {{--    @endcan--}}
     <!-- Modal for Add or Subtract Balance End-->
     <!-- Modal for add referral-->
-{{--    @can('customer-mail-send')--}}
-        @include('backend.user.include.__delete_direct_referral')
-{{--    @endcan--}}
+    {{--    @can('customer-mail-send')--}}
+    @include('backend.user.include.__delete_direct_referral')
+    {{--    @endcan--}}
     <!-- Modal for add referral-->
 
 @endsection
@@ -361,23 +367,25 @@
     <script src="{{ asset('backend/js/choices.min.js') }}"></script>
 
     <script>
-        function confirmDelete(tagId,tagName) {
+        function confirmDelete(tagId, tagName) {
             $('#risk_profile_tag_id').val(tagId)
             $('#risk_profile_tag_name').text(tagName)
             $('#deleteTagModal').modal('show');
         }
+
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
             removeItemButton: true,
             // maxItemCount:7,
             // searchResultLimit:7,
             // renderChoiceLimit:7
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             function reloadPage() {
                 // Reload the current page
                 window.location.href = window.location.href;
             }
+
             // Set the form action dynamically when the modal is shown
             $('#deleteConfirmationModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
@@ -386,7 +394,7 @@
             });
 
             // Handle form submission
-            $('#deleteForm').on('submit', function(e) {
+            $('#deleteForm').on('submit', function (e) {
                 e.preventDefault(); // Prevent the form from submitting traditionally
 
                 // Submit the form asynchronously using AJAX
@@ -394,15 +402,15 @@
                     type: 'POST', // or 'DELETE' depending on your form method
                     url: $(this).attr('action'),
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         // Handle success response
                         console.log(response); // Log the response to the console (for debugging)
                         // You can show a success message or perform other actions here
                         $('#deleteConfirmationModal').modal('hide'); // Close the modal, for example
-                        tNotify('success',response.success)
+                        tNotify('success', response.success)
                         window.location.href = "{{route('admin.user.index')}}";
                     },
-                    error: function(xhr, textStatus, errorThrown) {
+                    error: function (xhr, textStatus, errorThrown) {
                         // Handle error response
                         console.error(xhr.responseText); // Log the error response to the console (for debugging)
                         // You can show an error message or perform other actions here

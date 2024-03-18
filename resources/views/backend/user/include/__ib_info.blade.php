@@ -12,20 +12,46 @@
                     <h4 class="title">{{ __('IB Account') }}</h4>
 
                     <div class="content">
-                                <span data-bs-toggle="modal" data-bs-target="#addIBModal">
+                        @can('user-ib-create')
+                            <span data-bs-toggle="modal" data-bs-target="#addIBModal">
                                 <a href="javascript:void(0)" class="btn btn-dark btn-sm">
                                     <i icon-name="plus"></i>
                                     Add New IB
                                 </a>
                                 </span>
-                                <span data-bs-toggle="modal" data-bs-target="#updateIBModal">
+                        @endcan
+                        @can('user-ib-update')
+
+                            <span data-bs-toggle="modal" data-bs-target="#updateIBModal">
                                 <a href="javascript:void(0)" class="btn btn-dark btn-sm">
                                     <i icon-name="plus"></i>
                                     Update IB
                                 </a>
                                 </span>
+                        @endcan
+
                     </div>
 
+                    <div class="content">
+                        @can('user-mib-create')
+
+                            <span data-bs-toggle="modal" data-bs-target="#addMIBModal">
+                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
+                                    <i icon-name="plus"></i>
+                                    Add New Multi IB
+                                </a>
+                                </span>
+                        @endcan
+                        @can('user-mib-update')
+
+                            <span data-bs-toggle="modal" data-bs-target="#updateMIBModal">
+                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
+                                    <i icon-name="plus"></i>
+                                    Update Multi IB
+                                </a>
+                                </span>
+                        @endcan
+                    </div>
                 </div>
 
                 <div class="site-card-body table-responsive">
@@ -38,15 +64,50 @@
                                 <th>{{ __('Balance') }}</th>
                                 <th>{{ __('status') }}</th>
                                 <th></th>
-{{--                                <th>{{ __('Group') }}</th>--}}
-{{--                                <th>{{ __('Balance') }}</th>--}}
-{{--                                <th>{{ __('Equity') }}</th>--}}
-{{--                                <th>{{ __('Credit') }}</th>--}}
+                                {{--                                <th>{{ __('Group') }}</th>--}}
+                                {{--                                <th>{{ __('Balance') }}</th>--}}
+                                {{--                                <th>{{ __('Equity') }}</th>--}}
+                                {{--                                <th>{{ __('Credit') }}</th>--}}
 
                             </tr>
                             </thead>
                             <tbody>
+<<<<<<< Updated upstream
 
+=======
+                            <tr>
+                                <td>
+                                    <strong>{{ __('IB') }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ $user->ib_login }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ $user->ib_balance }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ ucfirst($user->ib_status)}}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>{{ __('Multi IB') }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ $user->multi_ib_login }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ $user->multi_ib_balance }}</strong>
+                                </td>
+                                <td>
+                                    @if(isset($user->multi_ib_login ))
+                                        <strong>{{ __('Approved') }}</strong>
+                                    @else
+                                        <strong>{{ __('Unprocessed') }}</strong>
+                                    @endif
+                                </td>
+                            </tr>
+>>>>>>> Stashed changes
                             </tbody>
                         </table>
                     </div>

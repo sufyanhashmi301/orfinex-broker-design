@@ -356,7 +356,7 @@ class UserController extends Controller
                 if ($targetType == 'forex') {
                     $this->ForexDeposit($targetId, $amount, $comment);
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
 
                 $status = 'success';
                 $message = __('Account Balance Update');
@@ -373,7 +373,7 @@ class UserController extends Controller
                         return redirect()->back();
                     }
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
                 $status = 'success';
                 $message = __('Account Balance Updated');
             }

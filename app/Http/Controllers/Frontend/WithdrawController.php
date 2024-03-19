@@ -256,8 +256,10 @@ class WithdrawController extends Controller
         $user = Auth::user();
         //daily limit
         $todayTransaction = Transaction::where('user_id',$user->id)
-            ->where('type', TxnType::Withdraw)
-            ->orWhere('type', TxnType::WithdrawAuto)
+            ->where(function($query) {
+                        $query->where('type', TxnType::Withdraw)
+                            ->orWhere('type', TxnType::WithdrawAuto);
+            })
             ->whereDate('created_at', Carbon::today())
             ->count();
         $dayLimit = (float)Setting('withdraw_day_limit', 'fee');

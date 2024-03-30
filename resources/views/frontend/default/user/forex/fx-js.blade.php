@@ -326,6 +326,25 @@
             update_user_info(formData, btn);
         }
     });
+
+    //depoist demo account
+    $('body').on('click', '.dropdown-deposit-demo-account', function () {
+        $('.deposit-demo-account-login').text($(this).data('login'));
+        $('.deposit-demo-account-login').val($(this).data('login'));
+    });
+    $('body').on('click', '#deposit-demo-account-submit', function () {
+        var amount = $('#demo-amount').val();
+        if (amount) {
+            var btn = $(this);
+            btn.prop('disabled', true);
+            let formData = new FormData();
+            formData.append('target_id', $('#deposit-demo-account-login').val());
+            formData.append('amount', $('#demo-amount').val());
+            var url = $('#deposit-demo-form').attr('action');
+            deposit_demo(url,formData, btn);
+        }
+    });
+
     //update user password
     $('body').on('click', '.dropdown-update-password', function () {
         $('.update-password-modal-login').text($(this).data('login'));
@@ -407,4 +426,60 @@
             }
         })
     }
+    function deposit_demo(url, formData, btn) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        // Convert formData to FormData object if it's not already
+        if (!(formData instanceof FormData)) {
+            formData = new FormData(formData);
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false, // Don't process the data
+            contentType: false, // Don't set contentType
+            success: function (res) {
+                // console.log(res, 'res');
+                if (res.success) {
+                    tNotify('success', res.success);
+                    if (res.reload) {
+                        setTimeout(function () {
+                            location.reload();
+                        }, 900);
+                    }
+                } else if (res.error) {
+                    tNotify('warning', res.error);
+                    btn.prop('disabled', false);
+                } else if (res.errors) {
+                    tNotify('warning', res.message);
+                    btn.prop('disabled', false);
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                console.log(xhr.responseText,'error');
+
+                var errorMessage = "Sorry, something went wrong! Please try again.";
+
+                // Check if there are specific errors provided
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Extract error messages
+                    var errorMessages = Object.values(xhr.responseJSON.errors).flat();
+                    errorMessage = errorMessages.join('<br>');
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    // Use the general error message if no specific errors found
+                    errorMessage = xhr.responseJSON.message;
+                }
+
+                tNotify('warning', errorMessage);
+                btn.prop('disabled', false);
+            }
+        });
+    }
+
 </script>

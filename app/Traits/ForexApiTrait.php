@@ -276,11 +276,15 @@ trait ForexApiTrait
 //        dd($clientIp);
         if (in_array($clientIp, ['127.0.0.1', '::1'])) {
             $dataArray['URL'] = $URL;
-//            $dataArray['Login'] = 88868;
+//            $dataArray['Login'] = 874641;
             $localURL = 'https://client.mbfx.co/api/get/forex';
 //            dd($localURL,$dataArray);
-            $response = Http::retry(3, 100)->get($localURL, $dataArray);
+            $response = Http::withoutVerifying()
+                ->retry(3, 100)
+                ->get($localURL, $dataArray);
+//            dd($response->object());
             return $response;
+
         } else {
             try {
                 return Http::retry(3, 100)->get($URL, $dataArray);
@@ -297,7 +301,8 @@ trait ForexApiTrait
             $dataArray['URL'] = $URL;
             $localURL = 'https://client.mbfx.co/api/post/forex';
 //            dd($localURL,$dataArray);
-            return Http::retry(3, 100)->get($localURL, $dataArray);
+            return Http::withoutVerifying()
+                ->retry(3, 100)->get($localURL, $dataArray);
         } else {
             try {
                 return Http::retry(3, 100)->post($URL, $dataArray);
@@ -313,21 +318,21 @@ trait ForexApiTrait
 
         $dataArray = array(
             'Login' => $login,
-
         );
 
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-        if ($response->status() == 200) {
-            if (isset($response->object()->Login)) {
-                return true;
-            } else {
-                $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
-                notify()->error($message, 'Error');
-            }
+        if ($response->status() != 200) {
+            $message = __('The forex account :login is not exist in MT5! Please choose valid account', ['login' => $login]);
+            notify()->error($message, 'Error');
+            return false;
         }
-        throw ValidationException::withMessages([
-            'invalid' => __('Some thing wrong! Please reload the page and try again!')
-        ]);
+        if (!isset($response->object()->Login)) {
+            return false;
+        }
+        if ($response->object()->Login == 0) {
+            return false;
+        }
+        return true;
     }
 
 //

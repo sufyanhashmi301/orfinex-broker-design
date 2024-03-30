@@ -170,10 +170,14 @@
             @include('frontend::user.mobile_screen_include.dashboard.__index')
         </div>
 
+        <!-- Modal for Account password -->
+        @include('frontend.default.user.forex.modal.__deposit_demo_account')
 
 @endsection
 @section('script')
+    @include('frontend.default.user.forex.fx-js')
     <script>
+
         function copyRef() {
             /* Get the text field */
             var textToCopy = $('#refLink').val();

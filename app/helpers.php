@@ -365,6 +365,16 @@ function createMultiIBAccount($user)
     return false;
     //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
 }
+if (! function_exists('first_min_deposit')) {
+    function first_min_deposit($login)
+    {
+        $forexAccount = ForexAccount::where('login', $login)->where('first_min_deposit_paid', 0)->first();
+        if (!$forexAccount) {
+            return false;
+        }
+        $forexAccount->update(['first_min_deposit_paid'=>1]);
+    }
+}
 if (! function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {

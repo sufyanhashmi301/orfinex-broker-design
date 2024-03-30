@@ -192,12 +192,12 @@ trait Payment
             $txnInfo->update([
                 'status' => TxnStatus::Success,
             ]);
-            Txn::update($ref, 'success', $txnInfo->user_id);
+            Txn::update($ref, TxnStatus::Success, $txnInfo->user_id);
 
-            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-                creditReferralBonus($txnInfo->user, 'deposit', $txnInfo->amount, $level);
-            }
+//            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
+//                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
+//                creditReferralBonus($txnInfo->user, 'deposit', $txnInfo->amount, $level);
+//            }
 
             if ($isRedirect) {
                 return redirect(URL::temporarySignedRoute(

@@ -102,7 +102,7 @@
                 <i icon-name="package-plus"></i>
             </div>
             <div class="content">
-                <h4>11</h4>
+                <h4>0</h4>
                 <p>{{ __('Live Accounts') }}</p>
             </div>
         </div>
@@ -114,7 +114,7 @@
                 <i icon-name="sprout"></i>
             </div>
             <div class="content">
-                <h4>15</h4>
+                <h4>0</h4>
                 <p>{{ __('Demo Accounts') }}</p>
             </div>
         </div>

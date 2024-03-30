@@ -4,6 +4,7 @@ namespace App\Facades\Txn;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Models\LevelReferral;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Traits\ForexApiTrait;
@@ -69,18 +70,31 @@ class Txn
         $uId = $userId == null ? auth()->user()->id : $userId;
 
         $user = User::find($uId);
+//        dd($status,$transaction->type,$transaction);
 
-        if ($status == 'success' && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
+        if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
+//            dd($transaction);
             if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
                 $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
                 $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+                first_min_deposit($transaction->target_id);
             } else {
                 $amount = $transaction->amount;
                 $user->increment('balance', $amount);
             }
 
-        }
+            //level referral
+            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
+                if(!isset($transaction->user->multi_ib_login)) {
+                    createMultiIBAccount($transaction->user);
+                }
+                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
+                creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
+            }
 
+
+        }
+//        dd($status,$status == TxnStatus::Success,$transaction->type,TxnType::ManualDeposit, $transaction->type == TxnType::ManualDeposit);
         if (isset($transaction->target_id) && $transaction->target_type == 'withdraw_deposit') {
             $this->WithdrawDeposit($transaction);
         }

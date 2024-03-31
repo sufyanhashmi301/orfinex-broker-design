@@ -79,6 +79,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     //Forex accounts
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
     Route::get('forex-account-logs', [ForexAccountController::class, 'forexAccountLogs'])->name('forex-account-logs');
+    Route::get('test', [ForexAccountController::class, 'testForexAccount'])->name('forex-account-test');
     Route::get('invest-cancel/{id}', [ForexAccountController::class, 'investCancel'])->name('invest-cancel');
     Route::get('forex/api/{id?}', [ForexAccountController::class, 'getAccount'])->name('get-api');
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
@@ -92,12 +93,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::get('invest-logs', [InvestController::class, 'investLogs'])->name('invest-logs');
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
     Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
+    Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
         Route::get('', [DepositController::class, 'deposit'])->name('amount');
         Route::get('gateway/{code}', [GatewayController::class, 'gateway'])->name('gateway');
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
+        Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
     });
     //Send Money
@@ -158,6 +161,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('2fa', 'twoFa')->name('2fa');
         Route::post('action-2fa', 'actionTwoFa')->name('action-2fa');
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
+        Route::post('info-update', 'infoUpdate')->name('info-update');
 
         Route::post('/2fa/verify', function () {
             return redirect(route('user.dashboard'));
@@ -263,6 +267,14 @@ Route::get('user/fund-board', function () {
     return view('frontend.default.fund_board.index');
 })->name('user.fund-board');
 
+Route::get('user/fund/plans', function () {
+    return view('frontend.default.fund_board.plans');
+})->name('user.fund.plans');
+
+Route::get('user/fund/details', function () {
+    return view('frontend.default.fund_board.plan_details');
+})->name('user.fund.details');
+
 Route::get('user/fund/detail', function () {
     return view('frontend.default.fund_board.detail');
 })->name('user.fund.detail');
@@ -274,3 +286,7 @@ Route::get('user/downloads', function () {
 Route::get('user/economic_calendar', function () {
     return view('frontend.default.user.economic_calendar');
 })->name('user.economic_calendar');
+
+
+Route::post('/sumsub-test', [SumsubController::class, 'testSumsub'])->name('Sumsubtest');
+

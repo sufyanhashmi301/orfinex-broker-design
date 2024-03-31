@@ -27,9 +27,9 @@ class Kernel extends ConsoleKernel
 
 //        $schedule->command('ib:record')->everyMinute();
 //        $schedule->command('multiIB:Bonus')->everyMinute();
-        $schedule->command('queue:work --stop-when-empty')
-            ->everyMinute()
-            ->withoutOverlapping();
+//        $schedule->command('queue:work --stop-when-empty')
+//            ->everyMinute()
+//            ->withoutOverlapping();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Plugin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Sumsub\AppTokenUsageExample\SumsubClient;
 
 class SumsubController extends Controller
@@ -39,7 +40,11 @@ class SumsubController extends Controller
     }
     public function UpdateKycStatus(Request $request)
     {
-        dd($request->all());
+//        dd($request->all());
+        $data = $request->all();
+
+        // Log the data
+        Log::info('WebHooks by Sumsub:', $data);
         try {
             $user = \Auth::user();
             $user->update([

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plugin;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -42,13 +43,16 @@ class SumsubController extends Controller
     {
 //        dd($request->all());
         $data = $request->all();
-
+        $user = User::find(1);
         // Log the data
         Log::info('WebHooks by Sumsub:', $data);
         try {
-            $user = \Auth::user();
+//            $user = \Auth::user();
+//            $user->update([
+//                'kyc' => 1,
+//            ]);
             $user->update([
-                'kyc' => 1,
+                'kyc_credential' => $data,
             ]);
             return response()->json(['status' => 200, 'success' => 'Verification completed']);
         } catch (\Throwable $th) {

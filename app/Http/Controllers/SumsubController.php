@@ -39,6 +39,26 @@ class SumsubController extends Controller
         }
         return view('frontend::user.kyc.advance.index', compact('sumsubstatus', 'currentTime', 'lastUpdatedTime'));
     }
+    public function UpdateKycStatusByWebhook(Request $request)
+    {
+//        dd($request->all());
+        $data = $request->all();
+        $user = User::find(1);
+        // Log the data
+        Log::info('WebHooks by Sumsub:', $data);
+        try {
+//            $user = \Auth::user();
+//            $user->update([
+//                'kyc' => 1,
+//            ]);
+            $user->update([
+                'kyc_credential' => $data,
+            ]);
+            return response()->json(['status' => 200, 'success' => 'Verification completed']);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+        }
+    }
     public function UpdateKycStatus(Request $request)
     {
 //        dd($request->all());

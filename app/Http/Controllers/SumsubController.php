@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plugin;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Sumsub\AppTokenUsageExample\SumsubClient;
 
@@ -36,8 +37,9 @@ class SumsubController extends Controller
         }
         return view('frontend::user.kyc.advance.index', compact('sumsubstatus', 'currentTime', 'lastUpdatedTime'));
     }
-    public function UpdateKycStatus()
+    public function UpdateKycStatus(Request $request)
     {
+        dd($request->all());
         try {
             $user = \Auth::user();
             $user->update([

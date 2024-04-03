@@ -207,6 +207,14 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return round($sum, 2);
     }
+    public function totalMIBWithdraw()
+    {
+        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::MultiIB);
+        })->sum('amount');
+
+        return round($sum, 2);
+    }
 
     public function totalInvestment()
     {

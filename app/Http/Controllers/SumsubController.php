@@ -31,6 +31,7 @@ class SumsubController extends Controller
 
                 $user->update([
                     'kyc_token' => $accessTokenInfo['token'],
+                    'applicant_id' => $applicantId,
                     'kyc_created_at' => Carbon::now()
                 ]);
             } catch (\Throwable $th) {
@@ -41,23 +42,47 @@ class SumsubController extends Controller
     }
     public function UpdateKycStatusByWebhook(Request $request)
     {
-//        dd($request->all());
-        $data = $request->all();
-        $user = User::find(1);
-        // Log the data
-        Log::info('WebHooks by Sumsub:', $data);
-        try {
-//            $user = \Auth::user();
-//            $user->update([
-//                'kyc' => 1,
-//            ]);
-            $user->update([
-                'kyc_credential' => $data,
-            ]);
-            return response()->json(['status' => 200, 'success' => 'Verification completed']);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+        $webhookData = $request->all();
+        // Extract relevant data from webhook response
+        $applicantId = $webhookData['applicantId'];
+        $reviewStatus = $webhookData['reviewStatus'];
+        $reviewResult = $webhookData['reviewResult']['reviewAnswer'];
+
+// Find user by external user ID
+        $user = User::where('applicant_id', $applicantId)->first();
+
+        if ($user) {
+            // Update KYC status based on review status and result
+            if ($reviewStatus === 'completed' && $reviewResult === 'GREEN') {
+                $user->update([
+                    'kyc' => 1,
+                    'kyc_credential' => $webhookData,
+                ]);
+            } else {
+                // Handle other review statuses or results accordingly
+            }
+        } else {
+            // Handle case where user is not found
         }
+
+        return redirect()->route('user.kyc.advance');
+//        dd($request->all());
+//        $data = $request->all();
+//        $user = User::where();
+//        // Log the data
+//        Log::info('WebHooks by Sumsub:', $data);
+//        try {
+////            $user = \Auth::user();
+////            $user->update([
+////                'kyc' => 1,
+////            ]);
+//            $user->update([
+//                'kyc_credential' => $data,
+//            ]);
+//            return response()->json(['status' => 200, 'success' => 'Verification completed']);
+//        } catch (\Throwable $th) {
+//            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+//        }
     }
     public function UpdateKycStatus(Request $request)
     {

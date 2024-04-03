@@ -50,6 +50,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'kyc',
         'kyc_credential',
         'kyc_token',
+        'applicant_id',
         'kyc_created_at',
         'risk_profile_tags',
         'google2fa_secret',

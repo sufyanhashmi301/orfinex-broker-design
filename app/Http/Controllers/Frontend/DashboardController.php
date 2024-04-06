@@ -19,9 +19,9 @@ class DashboardController extends Controller
 //        dd(getLocation());
         $user = auth()->user();
         $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts(auth()->id());
-//        }
+        }
 //        if(!$user->ref_id) {
 //            AgentReferralJob::dispatch($user);
 //        }

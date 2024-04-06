@@ -169,7 +169,7 @@ trait ForexApiTrait
         );
 //        dd($getUserUrl);
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-        dd($response->object(),$response->status());
+//        dd($response->object(),$response->status());
         if (isset($response)) {
             if ($response->status() == 200) {
                 if ($response->object()->Login != 0) {
@@ -568,7 +568,7 @@ trait ForexApiTrait
 //            dd($account);
             $getUserResponse = $this->getUserApi($account->login);
 //            dd($getUserResponse);
-           dd($getUserResponse->object(),$getUserResponse->object()->Login);
+//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
             if (!empty($getUserResponse)) {
 //                dd($getUserResponse->object(),$getUserResponse->object()->Login);
                 if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {

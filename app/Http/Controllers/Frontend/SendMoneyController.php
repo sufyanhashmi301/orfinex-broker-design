@@ -10,6 +10,7 @@ use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Traits\ForexApiTrait;
+use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ use Validator;
 
 class SendMoneyController extends Controller
 {
-    use ForexApiTrait;
+    use ForexApiTrait,NotifyTrait;
     public function sendMoney(Request $request)
     {
         $clientIp = request()->ip();

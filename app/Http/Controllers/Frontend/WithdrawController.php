@@ -303,12 +303,14 @@ class WithdrawController extends Controller
         $targetType = 'forex_withdraw';
         $txnInfo = Txn::new($input['amount'], $charge, $totalAmount, $withdrawMethod->name,
             'Withdraw With ' . $withdrawAccount->method_name, $type,
-            TxnStatus::Pending, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
+            TxnStatus::None, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
 
 
         $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -7);
         $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
-        if(!$withdrawResponse){
+        if($withdrawResponse){
+            Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+        }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
             return redirect()->back();
         }
@@ -356,7 +358,7 @@ class WithdrawController extends Controller
             'Login' => $login,
             'Withdraw' => $totalAmount,
             'Comment' => "Withdraw/USD",
-            'auth' => $auth,
+
         ];
 //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);

@@ -144,8 +144,7 @@ class Txn
         $dataArray = [
             'Login' => $tnx->target_id,
             'Withdraw' => $tnx->final_amount,
-            'Comment' => "Withdraw/" . $tnx->final_amount,
-            'auth' => $auth,
+            'Comment' => "Withdraw/" . $tnx->final_amount
         ];
 //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);

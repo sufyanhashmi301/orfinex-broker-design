@@ -351,19 +351,18 @@ trait ForexApiTrait
     {
 //        dd($login);
         $getUserResponse = $this->getUserApi($login);
-//        dd($getUserResponse->object());
-        if ($getUserResponse->status() == 200) {
+//        dd($getUserResponse);
+        if ($getUserResponse) {
             if (isset($getUserResponse->object()->Login)) {
                 return BigDecimal::of($getUserResponse->object()->MarginFree)->minus($getUserResponse->object()->Credit);
             } else {
                 throw ValidationException::withMessages([
                     'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])
                 ]);
+                return BigDecimal::of(0);
             }
         }
-        throw ValidationException::withMessages([
-            'invalid' => __('Some thing wrong! Please reload the page and try again!')
-        ]);
+        return BigDecimal::of(0);
     }
 
     public function forexWithdraw($login, $amount, $comment)
@@ -380,7 +379,7 @@ trait ForexApiTrait
         ];
 //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiPostRequest($withdrawUrl, $dataArray);
-//        dd($withdrawResponse->object());
+//        dd($withdrawResponse->object(),$amount);
         if ($withdrawResponse->status() == 200 && $withdrawResponse->object() == 10009) {
             return true;
         } else {

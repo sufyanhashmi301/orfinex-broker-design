@@ -166,27 +166,27 @@ class UserController extends Controller
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
         $clientIp = request()->ip();
         if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-            $this->syncForexAccounts($id);
-            if ($user->ib_login) {
-                $getUserResponse = $this->getUserApi($user->ib_login);
-                if ($getUserResponse) {
-                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-                        $balance = $getUserResponse->object()->Balance;
-                        $user->update(['ib_balance' => $balance]);
-                        $user = User::find($id);
-                    }
-                }
-            }
-            if ($user->multi_ib_login) {
-                $getUserResponse = $this->getUserApi($user->multi_ib_login);
-                if ($getUserResponse) {
-                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-                        $balance = $getUserResponse->object()->Balance;
-                        $user->update(['multi_ib_balance' => $balance]);
-                        $user = User::find($id);
-                    }
-                }
-            }
+//            $this->syncForexAccounts($id);
+//            if ($user->ib_login) {
+//                $getUserResponse = $this->getUserApi($user->ib_login);
+//                if ($getUserResponse) {
+//                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+//                        $balance = $getUserResponse->object()->Balance;
+//                        $user->update(['ib_balance' => $balance]);
+//                        $user = User::find($id);
+//                    }
+//                }
+//            }
+//            if ($user->multi_ib_login) {
+//                $getUserResponse = $this->getUserApi($user->multi_ib_login);
+//                if ($getUserResponse) {
+//                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+//                        $balance = $getUserResponse->object()->Balance;
+//                        $user->update(['multi_ib_balance' => $balance]);
+//                        $user = User::find($id);
+//                    }
+//                }
+//            }
 
         }
 

@@ -51,16 +51,24 @@ class AddDeletedUsers extends Command
                 echo 'User ID: ' . $user->ID . ' already exists' . '\n';
                 continue;
             }
-                $getUserResponse = $this->getUserApi($missingUser->login);
+
+                $getUserResponse = $this->getUserInfoUrl($missingUser->login);
+
 //            $getUserResponse = $this->getUserInfoUrl(874641);
 //                dd($getUserResponse->object());
 
             $data = $getUserResponse->object();
-//            dd($data->Email);
-            echo 'Missing Email: ' . $data->Email . '\n';
+
+
+            if($data->Login == 0){
+                echo 'Account Not exist: ' . $missingUser->login  . "\n";
+                continue;
+            }
+//            dd($data);
+            echo 'Missing Email: ' . $data->Email . "\n";
 
             if ( User::where('email', $data->Email)->exists()) {
-                echo 'Email: ' . $data->Email . ' already exists' . '\n';
+                echo 'Email: ' . $data->Email . ' already exists' . "\n";
                 continue;
             }
 
@@ -68,7 +76,8 @@ class AddDeletedUsers extends Command
 //                $IbParent = $this->getUserInfoUrl(874641);
                 $IbParent = $this->getUserInfoUrl($data->Agent);
                 $parentUser = User::where('email',$IbParent->Email)->first();
-                echo 'Parent Email: ' . $parentUser->email . ' of '. $data->Email. '\n';
+
+                echo 'Parent Email: ' . $parentUser->email . ' of '. $data->Email. "\n";
 
             }
             $firstNameParts = explode(' ', $data->Name);

@@ -19,6 +19,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasTickets;
 
+    protected $primaryKey = 'id'; // Ensure that the primary key is set to 'id'
+
     /**
      * The attributes that are mass assignable.
      *

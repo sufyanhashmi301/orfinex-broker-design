@@ -75,11 +75,12 @@ class AddDeletedUsers extends Command
             if($data->Agent != 0 ){
 //                $IbParent = $this->getUserInfoUrl(874641);
                 $IbParent = $this->getUserInfoUrl($data->Agent);
-                if($data->Login == 0){
+                $IbParent = $IbParent->object();
+                if($IbParent->Login == 0){
                     echo 'IB Account Not exist in Mt5: ' . $data->Agent  . "\n";
 //                    continue;
                 }else {
-                    $parentUser = User::where('email', $IbParent->object()->Email)->first();
+                    $parentUser = User::where('email', $IbParent->Email)->first();
 
                     echo 'Parent Email: ' . $parentUser->email . ' of ' . $data->Email . "\n";
                 }

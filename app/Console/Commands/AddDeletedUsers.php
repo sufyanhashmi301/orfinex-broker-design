@@ -56,7 +56,7 @@ class AddDeletedUsers extends Command
 
 //            $getUserResponse = $this->getUserInfoUrl(874641);
 //                dd($getUserResponse->object());
-            if(!getUserResponse){
+            if(!$getUserResponse){
                 echo 'Account Not exist: ' . $missingUser->login  . "\n";
                 continue;
             }

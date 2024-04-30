@@ -52,38 +52,38 @@ class AddDeletedUsers extends Command
                 continue;
             }
 
-                $getUserResponse = $this->getUserInfoUrl($missingUser->login);
-
+            $getUserResponse = $this->getUserInfoUrl($missingUser->login);
+            $data = $getUserResponse->object();
 //            $getUserResponse = $this->getUserInfoUrl(874641);
 //                dd($getUserResponse->object());
-            if(!$getUserResponse){
-                echo 'Account Not exist: ' . $missingUser->login  . "\n";
+            if (!$getUserResponse) {
+                echo 'Account Not exist: ' . $missingUser->login . "\n";
                 continue;
             }
 
-            $data = $getUserResponse->object();
-
-
-            if($data->Login == 0){
-                echo 'Account Not exist: ' . $missingUser->login  . "\n";
+            if ($data->Login == 0) {
+                echo 'Account Not exist: ' . $missingUser->login . "\n";
                 continue;
+            }
+            if ($missingUser->account_type == 'real' && ($data->Balance > 0 || $data->Equity > 0)) {
+                echo 'Account Not exist: ' . $missingUser->login . ' balance: ' . $data->Balance . "\n";
             }
 //            dd($data);
             echo 'Missing Email: ' . $data->Email . "\n";
 
-            if ( User::where('email', $data->Email)->exists()) {
+            if (User::where('email', $data->Email)->exists()) {
                 echo 'Email: ' . $data->Email . ' already exists' . "\n";
                 continue;
             }
 
-            if($data->Agent != 0 ){
+            if ($data->Agent != 0) {
 //                $IbParent = $this->getUserInfoUrl(874641);
                 $IbParent = $this->getUserInfoUrl($data->Agent);
                 $IbParent = $IbParent->object();
-                if($IbParent->Login == 0){
-                    echo 'IB Account Not exist in Mt5: ' . $data->Agent  . "\n";
+                if ($IbParent->Login == 0) {
+                    echo 'IB Account Not exist in Mt5: ' . $data->Agent . "\n";
 //                    continue;
-                }else {
+                } else {
                     $parentUser = User::where('email', $IbParent->Email)->first();
 
                     echo 'Parent Email: ' . $parentUser->email . ' of ' . $data->Email . "\n";
@@ -127,7 +127,6 @@ class AddDeletedUsers extends Command
 
 // Save the new user to the database
 //            $newUser->save();
-
 
 
 //            $user = User::create([

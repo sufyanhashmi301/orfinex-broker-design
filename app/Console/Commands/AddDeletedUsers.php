@@ -84,11 +84,11 @@ class AddDeletedUsers extends Command
                 if (User::where('email', $data->Email)->exists()) {
                     echo 'Email: ' . $data->Email . ' already exists' . "\n";
                     $newUser = User::where('email', $data->Email)->first();
-//                    $this->updateRecordWithNewUser($newUser, $missingUserOldID);
+                    $this->updateRecordWithNewUser($missingUserOldID, $newUser);
 
                 } else {
                     echo 'Missing Email: ' . $data->Email .' Account: ' . $missingUser->login . ' balance: ' . $data->Balance . "\n";
-//                    $newUser = $this->createUser($data, $missingUserOldID);
+                    $newUser = $this->createUser($data, $missingUserOldID);
 //                    $newUser =  $this->updateRecordWithNewUser($newUser, $missingUserOldID);
                 }
 
@@ -114,6 +114,25 @@ class AddDeletedUsers extends Command
 //            Transaction::where('user_id',$missingUserOldID)->update(['user_id'=>$user->id]);
 
         }
+
+        echo  '************ Deleted Records ****************' ."\n";
+
+        //delete records
+        foreach ($missingUsers as $missingUser) {
+//            dd($missingUser);
+            $missingUserOldID = $missingUser->user_id;
+            $user = User::find($missingUserOldID);
+            if ($user) {
+                echo 'User ID: ' . $user->ID . ' already exists' ."\n";
+                continue;
+            }
+
+            echo  'UserID: ' . $missingUserOldID .' Account: ' . $missingUser->login ."\n";
+
+            $this->deleteRecords($missingUserOldID);
+
+        }
+
 
 
         return Command::SUCCESS;
@@ -185,7 +204,6 @@ class AddDeletedUsers extends Command
         Notification::where('user_id', $missingUserOldID)->delete();
         ReferralLink::where('user_id', $missingUserOldID)->delete();
         ReferralRelationship::where('user_id', $missingUserOldID)->delete();
-        ReferralRelationship::where('referral_link_id', $missingUserOldID)->delete();
 
         User::where('ref_id', $missingUserOldID)->update(['ref_id' => null]);
         Ticket::where('user_id', $missingUserOldID)->delete();

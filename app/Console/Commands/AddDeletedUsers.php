@@ -40,7 +40,7 @@ class AddDeletedUsers extends Command
         $missingUsers = DB::table('forex_accounts')
             ->leftJoin('users', 'forex_accounts.user_id', '=', 'users.id')
             ->whereNull('users.id')
-            ->select('forex_accounts.user_id', 'forex_accounts.login')
+            ->select('forex_accounts.user_id', 'forex_accounts.login', 'forex_accounts.account_type')
             ->get();
 
         foreach ($missingUsers as $missingUser) {

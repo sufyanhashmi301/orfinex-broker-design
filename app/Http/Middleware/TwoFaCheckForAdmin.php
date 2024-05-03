@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use PragmaRX\Google2FALaravel\Google2FA;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 
-class TwoFaCheck
+class TwoFaCheckForAdmin
 {
     /**
      * Handle an incoming request.
@@ -47,8 +47,8 @@ class TwoFaCheck
 //dd(Auth::guard('admin')->check());
 //        dd(Auth::guard('admin')->check());
 //        if(Auth::guard('admin')->check()){
-//            return  redirect()->route('admin.staff.2fa.pin');
+            return  redirect()->route('admin.staff.2fa.pin');
 //        }
-        return $authenticator->makeRequestOneTimePasswordResponse();
+//        return $authenticator->makeRequestOneTimePasswordResponse();
     }
 }

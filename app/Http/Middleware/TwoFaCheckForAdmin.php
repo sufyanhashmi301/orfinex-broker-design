@@ -24,7 +24,7 @@ class TwoFaCheckForAdmin
 //        $guard = Auth::guard();
 //        dd(Auth::guard('web')->check());
 //        dd($request->user());
-        if (! setting('fa_verification', 'permission') || ! $request->user()->two_fa) {
+        if (! $request->user()->two_fa) {
             return $next($request);
         }
 //        $user = Auth::user(); // Retrieve the authenticated user

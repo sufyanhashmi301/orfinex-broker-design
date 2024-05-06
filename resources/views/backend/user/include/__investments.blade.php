@@ -20,7 +20,7 @@
                                 <th>{{ __('Login') }}</th>
                                 <th>{{ __('Group') }}</th>
                                 <th>{{ __('Balance') }}</th>
-                                <th>{{ __('Equity') }}</th>
+{{--                                <th>{{ __('Equity') }}</th>--}}
                                 <th>{{ __('Credit') }}</th>
 
                             </tr>
@@ -52,7 +52,7 @@
                     {data: 'login', name: 'login'},
                     {data: 'group', name: 'group'},
                     {data: 'balance', name: 'balance'},
-                    {data: 'equity', name: 'equity'},
+                    // {data: 'equity', name: 'equity'},
                     {data: 'credit', name: 'credit'},
                 ]
             });

@@ -8,6 +8,22 @@
 @else
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($demoForexAccounts as $account)
+            @php
+                $balance = 0;
+                $equity = 0;
+                $leverage = $account->leverage;
+
+                $mt5Account = DB::connection('mt5_db')
+                           ->table('mt5_accounts')
+                           ->where('Login', $account->login)
+                           ->first();
+
+                if ($mt5Account) {
+                   $balance = $mt5Account->Balance;
+                   $equity = $mt5Account->Equity;
+                   $leverage = $mt5Account->MarginLeverage;
+                }
+            @endphp
         <div class="card lg:h-full border trading-account-card">
             <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
                 <div class="grid-view-layout">

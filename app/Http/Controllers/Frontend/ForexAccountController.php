@@ -202,10 +202,11 @@ class ForexAccountController extends GatewayController
 //        $this->getUserAccountBalance(9996792);
 //        $this->dealerCreditUrl(9996792,1,2);
 
-        $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->syncForexAccounts(auth()->id());
-        }        $realForexAccounts = ForexAccount::realActiveAccount()
+//        $clientIp = request()->ip();
+//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+//            $this->syncForexAccounts(auth()->id());
+//        }
+        $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')
             ->get();
         $demoForexAccounts = ForexAccount::demoActiveAccount()
@@ -227,10 +228,11 @@ class ForexAccountController extends GatewayController
 //        $this->getUserAccountBalance(9996792);
 //        $this->dealerCreditUrl(9996792,1,2);
 
-        $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->syncForexAccounts(auth()->id());
-        }        $realForexAccounts = ForexAccount::realActiveAccount()
+//        $clientIp = request()->ip();
+//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+//            $this->syncForexAccounts(auth()->id());
+//        }
+        $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')
             ->get();
         $demoForexAccounts = ForexAccount::demoActiveAccount()

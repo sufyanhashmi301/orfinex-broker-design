@@ -1,12 +1,12 @@
 @php
-
+    $credit=0;
     $account = DB::connection('mt5_db')
-                ->table('mt5_users')
+                ->table('mt5_accounts')
                 ->where('Login', $login)
                 ->first();
-if($account){
-    $credit = $account->Credit;
-}
+    if($account){
+        $credit = $account->Credit;
+    }
 
 @endphp
 <strong

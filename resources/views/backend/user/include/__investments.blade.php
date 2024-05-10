@@ -20,7 +20,7 @@
                                 <th>{{ __('Login') }}</th>
                                 <th>{{ __('Group') }}</th>
                                 <th>{{ __('Balance') }}</th>
-{{--                                <th>{{ __('Equity') }}</th>--}}
+                                <th>{{ __('Equity') }}</th>
                                 <th>{{ __('Credit') }}</th>
 
                             </tr>
@@ -45,14 +45,14 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.forex-accounts-real',$user->id) }}",
+                ajax: "{{ route('admin.forex-accounts',['type'=>'real'],$user->id) }}",
                 columns: [
                     // {data: 'icon', name: 'icon'},
                     {data: 'schema', name: 'schema'},
                     {data: 'login', name: 'login'},
                     {data: 'group', name: 'group'},
                     {data: 'balance', name: 'balance'},
-                    // {data: 'equity', name: 'equity'},
+                    {data: 'equity', name: 'equity'},
                     {data: 'credit', name: 'credit'},
                 ]
             });

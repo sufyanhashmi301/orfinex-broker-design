@@ -12,12 +12,7 @@
                 $balance = 0;
                 $equity = 0;
                 $leverage = $account->leverage;
-
-                $mt5Account = DB::connection('mt5_db')
-                           ->table('mt5_accounts')
-                           ->where('Login', $account->login)
-                           ->first();
-
+                $mt5Account = get_mt5_account($account->login);
                 if ($mt5Account) {
                    $balance = $mt5Account->Balance;
                    $equity = $mt5Account->Equity;

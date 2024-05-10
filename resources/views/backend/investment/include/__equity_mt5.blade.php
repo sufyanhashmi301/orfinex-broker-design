@@ -1,12 +1,12 @@
 @php
-
-    $account = DB::connection('mt5_db')
-                ->table('mt5_users')
-                ->where('Login', $login)
-                ->first();
-if($account){
-    $equity = $account->Equity;
-}
+    $equity=0;
+        $account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+    if($account){
+        $equity = $account->Equity;
+    }
 
 @endphp
 <strong

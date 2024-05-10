@@ -128,8 +128,7 @@ Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'
 //===============================  Transactions ==================================
 Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
 Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
-Route::get('forex-accounts/real/{id?}', [InvestmentController::class, 'forexAccountsReal'])->name('forex-accounts-real');
-Route::get('forex-accounts/demo/id?}', [InvestmentController::class, 'forexAccountsDemo'])->name('forex-accounts-demo');
+Route::get('forex-accounts/{type?}/{id?}', [InvestmentController::class, 'forexAccounts'])->name('forex-accounts');
 Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================

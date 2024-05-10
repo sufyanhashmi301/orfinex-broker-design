@@ -310,6 +310,10 @@ class WithdrawController extends Controller
         $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
         if($withdrawResponse){
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+
+            //update Balance & Equity of mt5 DB with new updated balance
+            $balance = $this->getForexAccountBalance($targetId);
+            mt5_update_balance($targetId,$balance);
         }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
             return redirect()->back();

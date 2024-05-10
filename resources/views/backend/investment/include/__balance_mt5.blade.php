@@ -1,13 +1,12 @@
 @php
-
-    $account = DB::connection('mt5_db')
-                ->table('mt5_users')
-                ->where('Login', $login)
-                ->first();
-if($account){
-    $balance = $account->Balance;
-}
-
+        $balance=0;
+        $account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+        if($account){
+            $balance = $account->Balance;
+        }
 @endphp
 <strong
     class="green-color">{{ $balance.' '.$currency }}</strong>

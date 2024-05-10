@@ -168,6 +168,12 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             ->where('status', ForexAccountStatus::Ongoing);
 
     }
+    public function demoTradingAccounts()
+    {
+        return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing);
+
+    }
 
 
     public function totalRoiProfit()

@@ -1,13 +1,36 @@
 <?php
 
+use App\Enums\FundedSchemeTypes;
+use App\Enums\FundedSchemeSubTypes;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Enums\AccountBalanceType;
+use App\Models\Account;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
+
+use App\Helpers\NioHash;
+
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
+
+
+if (!function_exists('has_route')) {
+    /**
+     * check if route exist
+     * @param $name
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function has_route($name)
+    {
+        return Route::has($name);
+    }
+}
 
 if (! function_exists('isActive')) {
     function isActive($route, $parameter = null)
@@ -557,3 +580,741 @@ if (!function_exists('remove_child_agent')) {
     }
 }
 
+if (!function_exists('AccType')) {
+    /**
+     * @param $name |string
+     * @param $object |boolean
+     * @return string|boolean|object
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function AccType($name = null, $object = true)
+    {
+//        dd($name);
+        $name = strtoupper($name);
+        $acType = get_enums(AccountBalanceType::class, false);
+        $acType = ($object === true) ? (object)$acType : $acType;
+//        dd($name,$acType);
+
+        if (empty($name)) return $acType;
+
+        return isset($acType->$name) ? $acType->$name : false;
+    }
+}
+
+if (!function_exists('get_enums')) {
+    /**
+     * @param $enumClass
+     * @param bool $flipArray
+     * @return array
+     * @throws ReflectionException
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_enums($enumClass, $flipArray = true)
+    {
+        try {
+            $reflector = new \ReflectionClass($enumClass);
+            $enums = $reflector->getConstants();
+            return $flipArray ? array_flip($enums) : $enums;
+        } catch (\Exception $e) {
+            if (env('APP_DEBUG', false)) {
+                save_error_log($e, 'enum-refection');
+            }
+            return [];
+        }
+    }
+}
+
+if (!function_exists('account_balance')) {
+    /**
+     * @param $account
+     * @param $userId | auth->user
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function account_balance($account = null, $type = 'base')
+    {
+        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
+        $userid = auth()->user()->id;
+        $account = Account::where('user_id', $userid)->where('balance', $account)->first();
+        $amount = (!blank($account)) ? data_get($account, 'amount', 0.00) : 0.00;
+
+        if ($type == 'alter' || $type == 'secondary') {
+            return to_amount(base_to_secondary($amount), secondary_currency());
+        }
+
+        return to_amount($amount, base_currency());
+    }
+}
+
+if (!function_exists('user_balance')) {
+    /**
+     * @param $balance
+     * @param $userId | auth->user
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function user_balance($balance = null, $userId = null)
+    {
+        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
+        $userid = !empty($userId) ? $userId : auth()->user()->id;
+        $account = Account::where('user_id', $userid)->where('balance', $balance)->first();
+
+        if (!blank($account)) {
+            $amount = data_get($account, 'amount', 0.00);
+            return ($amount) ? $amount : 0.00;
+        }
+
+        return 0;
+    }
+}
+
+if (!function_exists('the_inv')) {
+    /**
+     * @param $tnxID
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function the_inv($InvID)
+    {
+        return config('investorm.inv_prefix') . '-' . $InvID;
+    }
+}
+
+if (!function_exists('css_state')) {
+    /**
+     * @param $status
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function css_state($status, $prefix = '', $default = '', $type = 'user')
+    {
+//        dd($type);
+        $statusClass = false;
+        $prefix = ($prefix) ? $prefix . '-' : '';
+        $default = ($default) ? ' ' . $prefix . 'gray' : '';
+
+        if ($type == 'user') {
+            $statusClass = [
+                UserStatus::ACTIVE => $prefix . 'success',
+                UserStatus::INACTIVE => $prefix . 'warning',
+                UserStatus::SUSPEND => $prefix . 'danger',
+                UserStatus::LOCKED => $prefix . 'info',
+                UserStatus::DELETED => $prefix . 'gray',
+                \App\Enums\ForexTradingStatus::ARCHIVE => $prefix . 'gray',
+
+                ComplianceStatus::UNPROCESSED => $prefix . 'gray',
+                ComplianceStatus::PENDING => $prefix . 'warning',
+                ComplianceStatus::APPROVED => $prefix . 'success',
+                ComplianceStatus::REJECTED => $prefix . 'danger',
+
+                UserState::LEAD => $prefix . 'info',
+                UserState::CLIENT => $prefix . 'success',
+                UserState::RETIRING => $prefix . 'warning',
+                UserState::RETIRED => $prefix . 'danger',
+
+
+                1 => $prefix . 'success',
+                0 => $prefix . 'danger',
+            ];
+        } elseif ($type == 'tnx') {
+            $statusClass = [
+                TransactionStatus::PENDING => $prefix . 'warning',
+                TransactionStatus::ONHOLD => $prefix . 'info',
+                TransactionStatus::CONFIRMED => $prefix . 'info',
+                TransactionStatus::CANCELLED => $prefix . 'danger',
+                TransactionStatus::FAILED => $prefix . 'warning',
+                TransactionStatus::COMPLETED => $prefix . 'success',
+            ];
+        } elseif ($type == 'static') {
+            $statusClass = [
+                'pending' => $prefix . 'warning',
+                'active' => $prefix . 'primary',
+                'inactive' => $prefix . 'gray',
+                'completed' => $prefix . 'success',
+                'cancelled' => $prefix . 'danger',
+                'violated' => $prefix . 'danger',
+            ];
+        }
+
+        return ($statusClass[$status]) ? ' ' . $statusClass[$status] : $default;
+    }
+}
+
+if (!function_exists('the_state') && function_exists('css_state')) {
+    /**
+     * @param $status
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function the_state($status, $attr = [])
+    {
+        $prams = ['prefix' => '', 'default' => '', 'type' => 'static'];
+        $prams = array_merge($prams, $attr);
+        extract($prams);
+
+        return css_state($status, $prefix, $default, $type);
+    }
+}
+
+if (!function_exists('fst2n')) {
+    /**
+     * @param $account
+     * @version 1.0.0
+     * @since 1.0
+     */
+
+    function fst2n($account = null)
+    {
+        $account = (empty($account)) ? FundedSchemeTypes::DIRECT_FUNDING : $account;
+        $nameMap = [
+            FundedSchemeTypes::DIRECT_FUNDING => __(sys_settings('direct_funding', 'Direct Funding')),
+            FundedSchemeTypes::CHALLENGE_FUNDING => __(sys_settings('challenge_funding', 'Challenge Funding')),
+            FundedSchemeTypes::DEMO_FUNDING => __(sys_settings('demo_funding', 'Demo Funding')),
+            FundedSchemeTypes::MANUAL_FUNDING => __(sys_settings('manual_funding', 'Manual Funding')),
+            ];
+
+        return Arr::get($nameMap, $account);
+    }
+}
+
+if (!function_exists('fsst2n')) {
+    /**
+     * @param $account
+     * @version 1.0.0
+     * @since 1.0
+     */
+
+    function fsst2n($account = null)
+    {
+//        dd($account);
+        $account = (empty($account)) ? FundedSchemeSubTypes::TWO_STEP_CHALLENGE : $account;
+        $nameMap = [
+            FundedSchemeSubTypes::TWO_STEP_CHALLENGE => __(sys_settings('direct_funding', '2 Step Challenge')),
+            FundedSchemeSubTypes::SINGLE_STEP_CHALLENGE => __(sys_settings('direct_funding', '1 Step Challenge')),
+            FundedSchemeSubTypes::LEVERAGE_1 => __(sys_settings('direct_funding', __('Leverage 1::leverage',['leverage'=>FundedSchemeSubTypes::LEVERAGE_1]))),
+            FundedSchemeSubTypes::LEVERAGE_2 => __(sys_settings('direct_funding',  __('Leverage 1::leverage',['leverage'=>FundedSchemeSubTypes::LEVERAGE_2]))),
+            FundedSchemeSubTypes::LEVERAGE_3 => __(sys_settings('direct_funding',  __('Leverage 1::leverage',['leverage'=>FundedSchemeSubTypes::LEVERAGE_3]))),
+
+            ];
+
+        return Arr::get($nameMap, $account);
+    }
+}
+
+if (!function_exists('to_minus')) {
+    /**
+     * @param $amount1
+     * @param $amount2
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function to_minus($amount1, $amount2)
+    {
+        $total = BigDecimal::of($amount1)->minus(BigDecimal::of($amount2));
+        return is_object($total) ? (string)$total : $total;
+    }
+}
+
+if (!function_exists('get_decimal')) {
+    /**
+     * @param $method
+     * @param $what
+     * @return integer
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_decimal($method = 'calc', $what = true)
+    {
+        $for = ($what == 'crypto') ? $what : 'fiat';
+        $type = ($method == 'display') ? $method : 'calc';
+        $fback = ($what == 'crypto') ? 6 : 2;
+//        dd('decimal_fiat_calc')
+
+        return sys_settings('decimal_' . $for . '_' . $type, $fback);
+    }
+}
+
+if (!function_exists('dp_calc') && function_exists('get_decimal')) {
+    /**
+     * @param $for
+     * @return integer
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function dp_calc($for = 'fiat')
+    {
+        return get_decimal('calc', $for);
+    }
+}
+
+if (!function_exists('percentage_of_total_calc')) {
+    /**
+     * @param @what
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function percentage_of_total_calc($amount, $total)
+    {
+        $base_currency = base_currency();
+        $scale = (is_crypto($base_currency)) ? dp_calc('crypto') : dp_calc('fiat');
+        $percentage = (BigDecimal::of($total)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of(100))->dividedBy($total, $scale, RoundingMode::CEILING) : 0;
+
+        return is_object($percentage) ? (string)$percentage : $percentage;
+
+    }
+
+}
+
+if (!function_exists('base_currency')) {
+    /**
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function base_currency()
+    {
+        return sys_settings('base_currency', 'USD');
+    }
+}
+
+if (!function_exists('amount_format')) {
+    /**
+     * @param $amount , $attr
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function amount_format($amount, $attr = [])
+    {
+        $output = empty($amount) ? 0.0 : $amount;
+        $default = [
+            'point' => '.',
+            'thousand' => '',
+            'decimal' => 4,
+            'trim' => true,
+            'zero' => true
+        ];
+        $default = array_merge($default, $attr);
+        extract($default);
+
+        $decimal = (int)$decimal;
+        $decimal = ($decimal > 0) ? $decimal : 0;
+        $type = is_crypto(base_currency()) ? 'crypto' : 'fiat';
+        $zeroAdd = (dp_display($type) < 2) ? '.0' : '.00';
+        $zeroLen = strlen($zeroAdd);
+
+        $output = number_format($amount, $decimal, $point, $thousand);
+        $output = ($trim === true) ? rtrim($output, '0') : $output;
+        $output = (substr($output, -1)) === '.' ? str_replace('.', (($trim === true) ? $zeroAdd : '0'), $output) : $output;
+        $output = ($zero === false && (substr($output, -$zeroLen) === $zeroAdd)) ? str_replace($zeroAdd, '', $output) : $output;
+        return $output;
+    }
+}
+
+if (!function_exists('get_decimal')) {
+    /**
+     * @param $method
+     * @param $what
+     * @return integer
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_decimal($method = 'calc', $what = true)
+    {
+        $for = ($what == 'crypto') ? $what : 'fiat';
+        $type = ($method == 'display') ? $method : 'calc';
+        $fback = ($what == 'crypto') ? 6 : 2;
+//        dd('decimal_fiat_calc')
+
+        return sys_settings('decimal_' . $for . '_' . $type, $fback);
+    }
+}
+
+if (!function_exists('dp_display') && function_exists('get_decimal')) {
+    /**
+     * @param $for
+     * @return integer
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function dp_display($for = 'fiat')
+    {
+        return get_decimal('display', $for);
+    }
+}
+
+if (!function_exists('get_currencies')) {
+    /**
+     * @param $output
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_currencies($output = true, $only = '')
+    {
+        $all = collect(config('currencies'));
+        $currencies = (in_array($only, ['fiat', 'crypto'])) ? $all->where('type', $only) : $all;
+
+        if ($output === true || $output === 'key') {
+            return $currencies->keys()->toArray();
+        } elseif ($output === 'list') {
+            $list = [];
+            foreach ($currencies as $currency) {
+                $list[$currency['code']] = $currency['name'];
+            }
+            return $list;
+        }
+        return $currencies->toArray();
+    }
+}
+
+if (!function_exists('get_currency')) {
+    /**
+     * @param $name
+     * @return string|array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_currency($code, $key = '', $object = false)
+    {
+        $code = strtoupper($code);
+        $currencies = get_currencies('full');
+
+        if (isset($currencies[$code])) {
+            $get_code = $currencies[$code];
+
+            if (isset($get_code[$key])) return $get_code[$key];
+
+            return ($object === true) ? json_decode(json_encode($get_code)) : $get_code;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('is_crypto')) {
+    /**
+     * @param $code
+     * @return boolean
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_crypto($code)
+    {
+
+        return (get_currency($code, 'type') === 'fiat' || get_currency($code, 'type') === true) ? false : true;
+    }
+}
+
+if (!function_exists('to_amount')) {
+    /**
+     * @param $num , $currency, $round
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function to_amount($num, $currency, $attr = [])
+    {
+        $round = isset($attr['round']) ? $attr['round'] : 'display';
+        $zero = isset($attr['zero']) ? $attr['zero'] : true;
+        $thousand = isset($attr['thousand']) ? $attr['thousand'] : ',';
+        $trim = isset($attr['trim']) ? $attr['trim'] : true;
+        $dp_opt = isset($attr['dp']) ? $attr['dp'] : 'display';
+
+        $type = is_crypto($currency) ? 'crypto' : 'fiat';
+        $amount = is_object($num) ? (string)$num : $num;
+
+        if (in_array($round, ['up', 'down', 'zero'])) {
+            $amount = ($round === 'up') ? ceil($amount) : (($round === 'down') ? floor($amount) : $amount);
+            $rounded = 0;
+        } else {
+            $rounded = ($dp_opt == 'display') ? dp_display($type) : dp_calc($type);
+        }
+        $return = amount_format($amount, ['decimal' => $rounded, 'thousand' => $thousand, 'zero' => $zero, 'trim' => $trim]);
+        return ($return) ? $return : 0;
+    }
+}
+
+if (!function_exists('amount')) {
+    /**
+     * @param $num , $currency, $attr|array
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function amount($num, $currency, $attr = [])
+    {
+        $default = ['zero' => false];
+        $param = array_merge($default, $attr);
+
+        return to_amount($num, $currency, $param);
+    }
+}
+
+if (!function_exists('amount_z')) {
+    /**
+     * @param $num , $currency, $attr|array
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function amount_z($num, $currency, $attr = [])
+    {
+        $default = ['zero' => true];
+        $param = array_merge($default, $attr);
+
+        return amount($num, $currency, $param);
+    }
+}
+
+if (!function_exists('money')) {
+    /**
+     * @param $num , $currency, $attr|array
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function money($num, $currency, $attr = [])
+    {
+        $default = ['zero' => true];
+        $param = array_merge($default, $attr);
+        return to_amount($num, $currency, $param) . ' ' . strtoupper($currency);
+    }
+}
+
+if (!function_exists('show_date')) {
+    /**
+     * @param $date
+     * @param false $withTime
+     * @return string|void
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function show_date($date, $withTime = false, $zone = true)
+    {
+        if (empty($date)) {
+            return;
+        }
+//dd($date);
+        if (!($date instanceof Carbon)) {
+            if (1 === preg_match('~^[1-9][0-9]*$~', $date)) {
+                $date = Carbon::createFromTimestamp($date);
+            } else {
+                $date = Carbon::parse($date);
+            }
+        }
+
+        $format = sys_settings('date_format');
+//dd($format);
+        if ($withTime) {
+            $format .= ' ' . sys_settings('time_format');
+        }
+
+        if ($zone == true) {
+            $timezone = sys_settings('time_zone');
+            return $date->timezone($timezone)->format($format);
+        }
+
+        return $date->format($format);
+    }
+}
+
+if (!function_exists('the_hash')) {
+    /**
+     * @param $data
+     * @param $match
+     * @return string|boolean
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function the_hash($data, $match = null)
+    {
+        return NioHash::of($data, $match);
+    }
+}
+
+if (!function_exists('get_hash')) {
+    /**
+     * @param $data
+     * @return string|boolean
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_hash($data)
+    {
+        return NioHash::toID($data);
+    }
+}
+
+if (!function_exists('is_data')) {
+    /**
+     * @param $array
+     * @param $array
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function the_data($array = null, $key = null, $default = null)
+    {
+        $data = data_get($array, $key, $default);
+
+        return ($data) ? $data : $default;
+    }
+}
+
+if (!function_exists('is_json')) {
+    /**
+     * check json value
+     * @param $string , $decoded
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_json($string, $decoded = false)
+    {
+        if (is_array($string)) return false;
+        json_decode($string);
+        $check = (json_last_error() == JSON_ERROR_NONE);
+
+        if ($decoded && $check) {
+            return json_decode($string);
+        }
+
+        return $check;
+    }
+}
+
+if (!function_exists('sys_settings')) {
+    /**
+     * @param $key
+     * @param null $default
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function sys_settings($key, $default = null)
+    {
+//        dd($key,$default);
+        $settings = Cache::remember('sys_settings', 1800, function () {
+            return \App\Models\Setting::all()->pluck('value', 'key');
+        });
+//dd($settings);
+        $value = $settings->get($key) ?? $default;
+
+
+        return is_json($value) ? json_decode($value, true) : $value;
+    }
+}
+
+
+if (!function_exists("gss") && function_exists("sys_settings")) {
+    /**
+     * @param $key
+     * @param null $default
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function gss($key, $default = null)
+    {
+        return sys_settings($key, $default);
+    }
+}
+
+if (!function_exists('get_page')) {
+    /**
+     * @param $key
+     * @param $where
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function get_page($key, $where = 'id')
+    {
+        if (empty($key)) return false;
+
+        $page = Page::where($where, $key)->first();
+
+        if (!blank($page)) {
+            return $page;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('the_page')) {
+    /**
+     * @param $name
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function the_page($name = '')
+    {
+        $pageMap = [
+            'terms' => get_page(gss('page_terms')),
+            'policy' => get_page(gss('page_privacy')),
+            'contact' => get_page(gss('page_contact')),
+            'support' => get_page(gss('page_contact')),
+        ];
+
+        if (in_array($name, array_keys($pageMap))) {
+            return $pageMap[$name];
+        } else {
+            return get_page($name, 'slug');
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('get_page_link')) {
+    /**
+     * @param $id
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function get_page_link($name = '', $text = '', $target = false)
+    {
+        $page = the_page($name);
+
+        if (!empty($page)) {
+            $new_target = ($target == true || !empty($menu->menu_link)) ? ' target="_blank"' : '';
+            $ba = '<a href="' . $page->link . '"' . $new_target . '>';
+            $aa = '</a>';
+            $tx = ($text) ? __($text) : (($page->menu_name) ? $page->menu_name : $page->name);
+
+            return $ba . $tx . $aa;
+        }
+
+        return ($text) ? __($text) : '';
+    }
+}
+
+if (!function_exists('get_mail_link')) {
+    /**
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function get_mail_link($text = null)
+    {
+        $mail = sys_settings('site_email');
+//        $mail = sys_settings('user_ref_id_prefix');
+//        {{ __('e.g :site_code######',['site_code'=>sys_settings('user_ref_id_prefix')]) }}
+//        ,['site_name'=>sys_settings('site_name')])
+
+        if (!empty($mail)) {
+            $ba = '<a href="mailto:' . $mail . '">';
+            $aa = '</a>';
+            $tx = ($text) ? __($text) : $mail;
+
+            return $ba . $tx . $aa;
+        }
+
+        return ($text) ? __($text) : '';
+
+    }
+}

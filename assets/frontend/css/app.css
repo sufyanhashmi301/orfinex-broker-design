@@ -3806,6 +3806,9 @@ textarea.form-control.is-invalid{
 .absolute{
   position: absolute;
 }
+.\!absolute{
+  position: absolute !important;
+}
 .relative{
   position: relative;
 }
@@ -3922,6 +3925,9 @@ textarea.form-control.is-invalid{
 .-right-0{
   right: -0px;
 }
+.-right-5{
+  right: -1.25rem;
+}
 .top-\[3px\]{
   top: 3px;
 }
@@ -4008,6 +4014,9 @@ textarea.form-control.is-invalid{
 }
 .left-3{
   left: 0.75rem;
+}
+.-left-5{
+  left: -1.25rem;
 }
 .z-30{
   z-index: 30;
@@ -15700,6 +15709,9 @@ ul.custom-list ul li{
   .sm\:text-center{
     text-align: center;
   }
+  .sm\:text-right{
+    text-align: right;
+  }
   .sm\:font-bold{
     font-weight: 700;
   }
@@ -15773,6 +15785,12 @@ ul.custom-list ul li{
   }
   .md\:col-span-2{
     grid-column: span 2 / span 2;
+  }
+  .md\:col-span-5{
+    grid-column: span 5 / span 5;
+  }
+  .md\:col-span-7{
+    grid-column: span 7 / span 7;
   }
   .md\:columns-2{
     columns: 2;
@@ -17060,4 +17078,41 @@ ul.custom-list ul li{
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
   --tw-ring-color: rgb(71 85 105 / var(--tw-ring-opacity));
   --tw-ring-opacity: 0.9;
+}
+
+
+.pricing-tab-switcher {
+  height: 30px;
+  width: 55px;
+  display: inline-block;
+  border-radius: 30px;
+  position: relative;
+  margin: 0 15px;
+  -webkit-transform: translateY(0px);
+  -ms-transform: translateY(0px);
+  transform: translateY(0px);
+  cursor: pointer;
+  background: #e5e7eb;
+  border: 2px solid rgba(255, 255, 255, 1);
+}
+
+.pricing-tab-switcher:before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  bottom: 4px;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 20px;
+  background: #ffffff;
+  transition: .3s;
+}
+
+.pricing-tab-switcher.active {
+  background: #111112;
+}
+
+.pricing-tab-switcher.active:before {
+  left: calc(100% - 26px);
 }

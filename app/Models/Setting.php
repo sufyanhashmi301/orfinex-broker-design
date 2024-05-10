@@ -18,6 +18,11 @@ class Setting extends Model
      */
     protected $guarded = [];
 
+    protected $fillable = [
+        'key',
+        'value'
+    ];
+
     /**
      * Add a settings value
      *

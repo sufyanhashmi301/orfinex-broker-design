@@ -23,6 +23,8 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
+use App\Http\Controllers\Frontend\PricingInvestmentController;
+use App\Http\Controllers\Frontend\PricingInvestController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 /*
@@ -288,3 +290,37 @@ Route::get('user/economic_calendar', function () {
 
 Route::post('/sumsub-test', [SumsubController::class, 'testSumsub'])->name('Sumsubtest');
 
+Route::post('user/get/payment/all/from/accounts', [ForexAccountController::class, 'getAllPaymentFromAccounts'])->name('user.get.all.payment.from.accounts');
+
+Route::group(['prefix' => 'user/pricing', 'as' => 'user.pricing.', 'controller' => PricingInvestmentController::class], function () {
+    Route::get('/fund', 'index')->name('dashboard');
+    Route::get('/fund/plans', 'planList')->name('plans');
+    Route::get('/fund/plan/{id}', 'investmentDetails')->name('details');
+    Route::get('/fund/plan/show/{id}', 'showInvestmentDetails')->name('show.details');
+    Route::get('/fund/history/{type?}', 'investmentHistory')->name('history');
+    Route::get('/fund/transactions/{type?}', 'transactionList')->name('transactions');
+    Route::post('plan/migrate/{id?}', 'migrateInvestment')->name('plan.migrate');
+    Route::post('plan/certificate/{id?}', 'planCertificate')->name('plan.certificate');
+    Route::post('get/discount/{id?}', 'getDiscountByCode')->name('get.discount.by.code');
+    Route::post('add/referral/{id?}', 'addReferral')->name('add.referral');
+    Route::get('plan/certificate/download/{id?}', 'planCertificateDownload')->name('plan.certificate.download');
+
+    Route::get('/fund/payout', 'payoutInvest')->name('payout');
+    Route::post('/fund/payout/proceed', 'payoutProceed')->name('payout.proceed');
+
+    //Route::post('/available/balance/transfer', 'transferAvailableBalance')->name('available.balance.transfer');
+    //Route::post('/external/transfer', 'externalTransferBalance')->name('external.transfer');
+    Route::post('/forex-trading/wallet/transfer', 'forexTradingTransfer')->name('forex-trading.wallet.transfer');
+    Route::post('/investments/merge', 'mergeInvestments')->name('merge');
+    Route::post('/investments/convert/orfin', 'convertToOrfin')->name('convert.orfin');
+    Route::post('get/mergeable/plans', 'mergeablePlans')->name('mergeable.plans');
+});
+
+Route::group(['prefix' => 'user/pricing', 'as' => 'user.pricing.', 'controller' => PricingInvestController::class], function () {
+    Route::post('/invest/{ucode?}', 'showPlans')->name('invest');
+    Route::post('/invest/funded/preview', 'previewInvest')->name('invest.preview');
+    Route::post('/invest/confirm', 'confirmInvest')->name('invest.confirm');
+    Route::post('/invest/cancel/{id}', 'cancelInvestment')->name('invest.cancel');
+    Route::post('/invest/show/data', 'showData')->name('show.data');
+    Route::post('/invest/show/data/invest', 'showDataInvest')->name('show.data.invest');
+});

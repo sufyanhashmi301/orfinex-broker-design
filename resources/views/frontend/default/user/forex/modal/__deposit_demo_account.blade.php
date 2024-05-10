@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="p-6 space-y-4">
-                    <form action="{{route('user.deposit.demo.now')}}" method="post" id="deposit-demo-form">
+                    <form action="" method="post" id="deposit-demo-form">
                         @csrf
                         <input type="hidden" name="login" id="deposit-demo-account-login"
                                class="form-control deposit-demo-account-login">

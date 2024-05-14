@@ -71,6 +71,73 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserControlle
     Route::get('transaction/{id}', 'transaction')->name('transaction');
     Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
 });
+Route::name('investment.')->prefix('admin/investment')->group(function () {
+    Route::get('/dashboard', 'Admin\InvestDashboardController@index')->name('dashboard');;
+
+    Route::get('/history/{status?}', 'Admin\InvestedPlansController@investedPlanList')->name('list');
+    Route::get('/plan/details/{id}', 'Admin\InvestedPlansController@showInvestmentDetails')->name('details');
+    Route::get('/plan/action', 'Admin\InvestedPlansController@showInvestmentDetails')->name('plan.action');
+    Route::post('plan/approve/{id?}', 'Admin\InvestedPlansController@approveInvestment')->name('plan.approve');
+    Route::post('plan/cancel/{id?}', 'Admin\InvestedPlansController@cancelInvestment')->name('plan.cancel');
+    Route::post('plan/migrate/{id?}', 'Admin\InvestedPlansController@migrateInvestment')->name('plan.migrate');
+
+    Route::get('/profits/{type?}', 'Admin\LedgerProfitsController@profitList')->name('profits.list');
+    Route::get('/transactions/{type?}', 'Admin\LedgerProfitsController@transactionList')->name('transactions.list');
+
+    Route::post('/payout/profits', 'Admin\LedgerProfitsController@profitsPayout')->name('profits.payout');
+
+    // Schemes
+    Route::get('/schemes/{status?}', 'Admin\InvestmentSchemeController@schemeList')->name('schemes');
+    Route::get('/scheme/{action?}', 'Admin\InvestmentSchemeController@actionScheme')->name('scheme.action');
+    Route::post('/scheme/update/{id?}', 'Admin\InvestmentSchemeController@updateScheme')->name('scheme.update');
+    Route::post('/scheme/status', 'Admin\InvestmentSchemeController@updateSchemeStatus')->name('scheme.status');
+
+    //********************* Tokens ********************************
+    Route::get('token/history/{status?}', 'Admin\TokenInvestedPlansController@investedPlanList')->name('token.list');
+    Route::get('token/plan/details/{id}', 'Admin\TokenInvestedPlansController@showInvestmentDetails')->name('token.details');
+    Route::get('token/plan/action', 'Admin\TokenInvestedPlansController@showInvestmentDetails')->name('token.plan.action');
+    Route::post('token/plan/approve/{id?}', 'Admin\TokenInvestedPlansController@approveInvestment')->name('token.plan.approve');
+    Route::post('token/plan/cancel/{id?}', 'Admin\TokenInvestedPlansController@cancelInvestment')->name('token.plan.cancel');
+    Route::post('token/plan/migrate/{id?}', 'Admin\TokenInvestedPlansController@migrateInvestment')->name('token.plan.migrate');
+
+    Route::get('token/profits/{type?}', 'Admin\TokenLedgerProfitsController@profitList')->name('token.profits.list');
+    Route::get('token/transactions/{type?}', 'Admin\TokenLedgerProfitsController@transactionList')->name('token.transactions.list');
+
+    Route::post('token/payout/profits', 'Admin\TokenLedgerProfitsController@profitsPayout')->name('token.profits.payout');
+
+    // Schemes
+    Route::get('token/schemes/{status?}', 'Admin\TokenInvestmentSchemeController@schemeList')->name('token.schemes');
+    Route::get('token/scheme/{action?}', 'Admin\TokenInvestmentSchemeController@actionScheme')->name('token.scheme.action');
+    Route::post('token/scheme/update/{id?}', 'Admin\TokenInvestmentSchemeController@updateScheme')->name('token.scheme.update');
+    Route::post('token/scheme/status', 'Admin\TokenInvestmentSchemeController@updateSchemeStatus')->name('token.scheme.status');
+
+
+});
+
+Route::name('pricing.investment.')->prefix('admin/pricing/investment')->group(function () {
+    Route::get('/dashboard', 'Admin\InvestDashboardController@index')->name('dashboard');;
+
+    Route::get('/history/{status?}', 'Admin\PricingInvestedPlansController@investedPlanList')->name('list');
+    Route::get('/plan/details/{id}', 'Admin\PricingInvestedPlansController@showInvestmentDetails')->name('details');
+    Route::get('/plan/action', 'Admin\PricingInvestedPlansController@showInvestmentDetails')->name('plan.action');
+    Route::post('plan/approve/{id?}', 'Admin\PricingInvestedPlansController@approveInvestment')->name('plan.approve');
+    Route::post('plan/cancel/{id?}', 'Admin\PricingInvestedPlansController@cancelInvestment')->name('plan.cancel');
+    Route::post('plan/migrate/{id?}', 'Admin\PricingInvestedPlansController@migrateInvestment')->name('plan.migrate');
+
+    Route::get('/profits/{type?}', 'Admin\LedgerProfitsController@profitList')->name('profits.list');
+    Route::get('/transactions/{type?}', 'Admin\LedgerProfitsController@transactionList')->name('transactions.list');
+
+    Route::post('/payout/profits', 'Admin\LedgerProfitsController@profitsPayout')->name('profits.payout');
+
+    // Schemes
+    Route::get('/schemes/{status?}', 'Admin\InvestmentSchemeController@schemeList')->name('schemes');
+    Route::get('/scheme/{action?}', 'Admin\InvestmentSchemeController@actionScheme')->name('scheme.action');
+    Route::post('/scheme/update/{id?}', 'Admin\InvestmentSchemeController@updateScheme')->name('scheme.update');
+    Route::post('/scheme/status', 'Admin\InvestmentSchemeController@updateSchemeStatus')->name('scheme.status');
+
+    Route::get('banks', 'Admin\FundedBankController@index')->name('banks');
+
+});
 
 Route::resource('kyc-form', KycController::class);
 Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {

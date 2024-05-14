@@ -327,7 +327,7 @@
             </div>
         @endif
     </div>
-    @include('investment.admin.pricing.invest.plan_migrate_model',['invest','plans'])
+    @include('backend.investment.pricing.invest.plan_migrate_model',['invest','plans'])
 
 @endsection
 

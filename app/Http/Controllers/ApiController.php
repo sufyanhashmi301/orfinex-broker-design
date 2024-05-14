@@ -36,21 +36,6 @@ class ApiController extends Controller
 
     }
 
-    public function getForex(Request $request)
-    {
-
-        $data = $request->except(['URL']);
-        $response = Http::retry(3, 100)->get($request->get('URL'), $data);
-        return $response->object();
-
-    }
-    public function postForex(Request $request)
-    {
-        $data = $request->except(['URL']);
-        $response = Http::retry(3, 100)->post($request->get('URL'), $data);
-        return $response->object();
-
-    }
 
 
     /**

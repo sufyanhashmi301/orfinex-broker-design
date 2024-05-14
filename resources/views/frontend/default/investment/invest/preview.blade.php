@@ -62,7 +62,7 @@
             </a>
         </div>
         <div class="nk-pps-action pt-3 mb-n4">
-            <a href="{{ route('user.pricing.investment.dashboard') }}" class="btn btn-outline-danger btn-trans">{{ __('Cancel') }}</a>
+            <a href="{{ route('user.pricing.dashboard') }}" class="btn btn-outline-danger btn-trans">{{ __('Cancel') }}</a>
         </div>
     </div>
 </div>

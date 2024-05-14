@@ -7,6 +7,8 @@ use App\Enums\ForexTradingAccountTypesStatus;
 use App\Enums\ForexTradingStatus;
 use App\Enums\RefundType;
 use App\Enums\ActionType;
+use App\Enums\TxnType;
+use App\Enums\TxnStatus;
 use App\Enums\LedgerTnxType;
 use App\Enums\InvestmentStatus;
 use App\Enums\TransactionStatus;
@@ -14,6 +16,7 @@ use App\Enums\TransactionCalcType;
 use App\Enums\TransactionType;
 
 use App\Events\NewForexAccountEvent;
+
 use App\Models\AccountGroup;
 use App\Models\AccountType;
 use App\Models\ForexTrading;
@@ -47,7 +50,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-
+use Txn;
 
 class PricingInvestmentProcessor
 {
@@ -635,32 +638,36 @@ class PricingInvestmentProcessor
             $account = ForexTrading::where('login', $source)->first();
         }
 //        dd($account);
+        $amount = Arr::get($invest, 'total');
+        $fees = Arr::get($invest, 'meta.fees', 0);
+        $depositType = TxnType::Funded;
+        $txnInfo = Txn::new($amount,$fees , to_sum($amount, $fees), AccountBalanceType::FUNDED, 'funded account', $depositType, TxnStatus::Pending, 'USD', $amount, auth()->id(), null, 'User', $manualData ?? [], 'none', $account->id, AccountBalanceType::FUNDED);
 
-        $transaction = new Transaction();
-        $transaction->tnx = generate_unique_tnx();
-        $transaction->type = TransactionType::PRICING_INVESTMENT;
-        $transaction->user_id = $userId;
-        $transaction->account_from = $account->id;
-        $transaction->calc = TransactionCalcType::DEBIT;
-        $transaction->amount = Arr::get($invest, 'total');
-        $transaction->fees = Arr::get($invest, 'meta.fees', 0);
-        $transaction->total = to_sum($transaction->amount, $transaction->fees);
-        $transaction->currency = Arr::get($invest, 'currency');
-        $transaction->tnx_amount = Arr::get($invest, 'total');
-        $transaction->tnx_fees = Arr::get($invest, 'meta.fees', 0);
-        $transaction->tnx_total = to_sum($transaction->tnx_amount, $transaction->tnx_fees);
-        $transaction->tnx_currency = Arr::get($invest, 'currency');
-        $transaction->tnx_method = AccountBalanceType::PRICING_INVEST;
-        $transaction->exchange = Arr::get($invest, 'meta.exchange', 1);
-        $transaction->status = TransactionStatus::NONE;
-        $transaction->description = __('Invest on :Name', ['name' => Arr::get($invest, 'scheme.name')]);
-        $transaction->meta = $this->toTnxMeta($invest);
-        $transaction->pay_from = $source;
-        $transaction->pay_to = AccountBalanceType::PRICING_INVEST;
-        $transaction->created_by = $userId;
-        $transaction->save();
-//        dd($transaction);
-        return $transaction;
+//        $transaction = new Transaction();
+//        $transaction->tnx = generate_unique_tnx();
+//        $transaction->type = TransactionType::PRICING_INVESTMENT;
+//        $transaction->user_id = $userId;
+//        $transaction->account_from = $account->id;
+//        $transaction->calc = TransactionCalcType::DEBIT;
+//        $transaction->amount = Arr::get($invest, 'total');
+//        $transaction->fees = Arr::get($invest, 'meta.fees', 0);
+//        $transaction->total = to_sum($transaction->amount, $transaction->fees);
+//        $transaction->currency = Arr::get($invest, 'currency');
+//        $transaction->tnx_amount = Arr::get($invest, 'total');
+//        $transaction->tnx_fees = Arr::get($invest, 'meta.fees', 0);
+//        $transaction->tnx_total = to_sum($transaction->tnx_amount, $transaction->tnx_fees);
+//        $transaction->tnx_currency = Arr::get($invest, 'currency');
+//        $transaction->tnx_method = AccountBalanceType::PRICING_INVEST;
+//        $transaction->exchange = Arr::get($invest, 'meta.exchange', 1);
+//        $transaction->status = TransactionStatus::NONE;
+//        $transaction->description = __('Invest on :Name', ['name' => Arr::get($invest, 'scheme.name')]);
+//        $transaction->meta = $this->toTnxMeta($invest);
+//        $transaction->pay_from = $source;
+//        $transaction->pay_to = AccountBalanceType::PRICING_INVEST;
+//        $transaction->created_by = $userId;
+//        $transaction->save();
+////        dd($transaction);
+        return $txnInfo;
     }
 
     public function createForexAccountForPricing($invest)
@@ -945,9 +952,9 @@ class PricingInvestmentProcessor
                 throw ValidationException::withMessages(['transaction' => __("Failed to approved the investment. Please try again or contact us if the problem persists.")]);
             }
 
-            $transaction->status = TransactionStatus::PENDING;
-            $transaction->reference = $invest->pvx;
-            $transaction->save();
+//            $transaction->status = TransactionStatus::PENDING;
+//            $transaction->reference = $invest->pvx;
+//            $transaction->save();
 
             $this->transactionService->confirmTransactionForInvestment($transaction, [
                 'id' => auth()->user()->id,
@@ -955,8 +962,8 @@ class PricingInvestmentProcessor
             ]);
 
             if ($source_type == 'wallets') {
-                $ledgerBalance = $this->getLedgerBalance($userAccount->id);
-                $this->createLedgerEntry($transaction, $ledgerBalance);
+//                $ledgerBalance = $this->getLedgerBalance($userAccount->id);
+//                $this->createLedgerEntry($transaction, $ledgerBalance);
                 $fees = BigDecimal::of(data_get($invest, 'meta.fees', 0));
                 $userAccount->amount = BigDecimal::of($userAccount->amount)->minus(BigDecimal::of($invest->total))->minus($fees);
                 $userAccount->save();

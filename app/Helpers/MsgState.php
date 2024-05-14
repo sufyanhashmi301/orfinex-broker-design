@@ -539,8 +539,8 @@ class MsgState
                 'class'	=> ''
             ],
             'button' => [
-                'text'	=> has_route('user.pricing.investment.dashboard') ? __('View Invested Plans') : __('Go to Dashboard'),
-                'url'	=> has_route('user.pricing.investment.dashboard') ? route('user.pricing.investment.dashboard') : route('dashboard'),
+                'text'	=> has_route('user.pricing.dashboard') ? __('View Invested Plans') : __('Go to Dashboard'),
+                'url'	=> has_route('user.pricing.dashboard') ? route('user.pricing.dashboard') : route('dashboard'),
                 'class'	=> 'btn-primary'
             ],
             'link' =>  false,
@@ -556,13 +556,13 @@ class MsgState
                 'class' => ''
             ],
             'button' => [
-                'text'  => has_route('user.pricing.investment.dashboard') ? __('Return to Funded') : __('Go to Dashboard'),
-                'url'   => has_route('user.pricing.investment.dashboard') ? route('user.pricing.investment.dashboard') : route('dashboard'),
+                'text'  => has_route('user.pricing.dashboard') ? __('Return to Funded') : __('Go to Dashboard'),
+                'url'   => has_route('user.pricing.dashboard') ? route('user.pricing.dashboard') : route('dashboard'),
                 'class' => 'btn-primary'
             ],
             'link' =>  [
-                'text'  =>  has_route('user.pricing.investment.dashboard') ? __('Go to Dashboard') : '',
-                'url'   =>  has_route('user.pricing.investment.dashboard') ? route('dashboard') : '',
+                'text'  =>  has_route('user.pricing.dashboard') ? __('Go to Dashboard') : '',
+                'url'   =>  has_route('user.pricing.dashboard') ? route('dashboard') : '',
                 'class' => ''
             ],
             'help'  => self::helps('simple-ask')
@@ -620,7 +620,7 @@ class MsgState
             ],
             'button' => [
                 'text'  => __('Try Again'),
-                'url'   => route('user.pricing.investment.dashboard'),
+                'url'   => route('user.pricing.dashboard'),
                 'class' => 'btn-primary'
             ],
             'link' =>  [

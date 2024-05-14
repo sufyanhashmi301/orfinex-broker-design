@@ -453,8 +453,6 @@ class PricingInvestmentController extends Controller
         return view("frontend::investment.show-plan", compact("invest", "plans"));
     }
 
-
-
     public function payoutInvest(Request $request)
     {
         $min = min_to_compare();

@@ -116,10 +116,10 @@ class PricingInvestController extends Controller
 //        dd($totalAmount,$discount,$swap_free_amount);
 
         $input['bank'] = [];
-        if($request->payment_type == 'wallets') {
+//        if($request->payment_type == 'wallets') {
             $accountFrom = explode('_', $request->get('account_from'));
 
-        }
+//        }
 //        elseif($request->payment_type == 'banks'){
 //            $accountFrom = explode('_', $request->get('account_from_banks'));
 //            $bank = Bank::find(get_hash($accountFrom[1]));
@@ -212,13 +212,13 @@ class PricingInvestController extends Controller
             throw ValidationException::withMessages(["scheme" => __("Sorry unable process subscription")]);
         }
 
-        return $this->wrapInTransaction(function ($subscription,$plan) {
+//        return $this->wrapInTransaction(function ($subscription,$plan) {
             $invest = $this->investment->confirmSubscription($subscription);
 //            event(new FundedEvent($invest));
-            if ($plan->approval == FundedApproval::AUTO) {
-            $this->investment->approveSubscription($invest, 'auto-approved');
-            $invest->fresh();
-            }
+//            if ($plan->approval == FundedApproval::AUTO) {
+//            $this->investment->approveSubscription($invest, 'auto-approved');
+//            $invest->fresh();
+//            }
 
 //            try {
 //                ProcessEmail::dispatch('investment-placed-customer', data_get($invest, 'user'), null, $invest);
@@ -226,10 +226,10 @@ class PricingInvestController extends Controller
 //            } catch (\Exception $e) {
 //                save_mailer_log($e, 'investment-placed');
 //            }
-
+//dd($invest);
             return ['append'=> view("frontend::investment.invest.success", compact('invest'))->render()];
 //       return response()->json(['append'=>$append]);
-            }, $subscription,$plan);
+//            }, $subscription,$plan);
 
     }
 
@@ -346,15 +346,16 @@ class PricingInvestController extends Controller
 
         $subType = $request->sub_type;
         $stage = $request->stage;
-        // if(isset($type)){
-        //     $schemeQuery->where('type', $type);
-        // }
-        // if(isset($subType)){
-        //     $schemeQuery->where('sub_type', $subType);
-        // }
-        // if($type == FundedSchemeTypes::CHALLENGE_FUNDING && $subType == FundedSchemeSubTypes::TWO_STEP_CHALLENGE){
-        //     $schemeQuery->where('stage', $stage);
-        // }
+         if(isset($type)){
+             $schemeQuery->where('type', $type);
+         }
+         if(isset($subType)){
+             $schemeQuery->where('sub_type', $subType);
+         }
+//         dd($type,$subType,$stage);
+         if($type == FundedSchemeTypes::CHALLENGE_FUNDING && $subType == FundedSchemeSubTypes::TWO_STEP_CHALLENGE){
+             $schemeQuery->where('stage', $stage);
+         }
 //        switch ($schemeOrder) {
 //            case "reverse":
 //                $schemeQuery->orderBy('id', 'desc');
@@ -376,7 +377,7 @@ class PricingInvestController extends Controller
     }
     public function showDataInvest(Request $request)
     {
-    //    dd($request->all());
+//        dd($request->all());
         $investCode = $request->invest_id;
         $invest = PricingScheme::find(get_hash($investCode));
 //        dd($invest);
@@ -393,15 +394,15 @@ class PricingInvestController extends Controller
 
         $subType = $request->sub_type;
         $stage = $request->stage;
-        // if(isset($type)){
-        //     $schemeQuery->where('type', $type);
-        // }
-        // if(isset($subType)){
-        //     $schemeQuery->where('sub_type', $subType);
-        // }
-        // if($type == FundedSchemeTypes::CHALLENGE_FUNDING && $subType == FundedSchemeSubTypes::TWO_STEP_CHALLENGE){
-        //     $schemeQuery->where('stage', $stage);
-        // }
+         if(isset($type)){
+             $schemeQuery->where('type', $type);
+         }
+         if(isset($subType)){
+             $schemeQuery->where('sub_type', $subType);
+         }
+         if($type == FundedSchemeTypes::CHALLENGE_FUNDING && $subType == FundedSchemeSubTypes::TWO_STEP_CHALLENGE){
+             $schemeQuery->where('stage', $stage);
+         }
 //        switch ($schemeOrder) {
 //            case "reverse":
 //                $schemeQuery->orderBy('id', 'desc');

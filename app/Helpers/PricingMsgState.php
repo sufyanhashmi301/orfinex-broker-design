@@ -556,13 +556,13 @@ class PricingMsgState
                 'class' => ''
             ],
             'button' => [
-                'text'  => has_route('user.pricing.investment.dashboard') ? __('Return to Funded') : __('Go to Dashboard'),
-                'url'   => has_route('user.pricing.investment.dashboard') ? route('user.pricing.investment.dashboard') : route('user.dashboard'),
+                'text'  => has_route('user.pricing.dashboard') ? __('Return to Funded') : __('Go to Dashboard'),
+                'url'   => has_route('user.pricing.dashboard') ? route('user.pricing.dashboard') : route('user.dashboard'),
                 'class' => 'btn-dark'
             ],
             'link' =>  [
-                'text'  =>  has_route('user.pricing.investment.dashboard') ? __('Go to Dashboard') : '',
-                'url'   =>  has_route('user.pricing.investment.dashboard') ? route('user.dashboard') : '',
+                'text'  =>  has_route('user.pricing.dashboard') ? __('Go to Dashboard') : '',
+                'url'   =>  has_route('user.pricing.dashboard') ? route('user.dashboard') : '',
                 'class' => ''
             ],
             'help'  => self::helps('simple-ask')
@@ -582,8 +582,8 @@ class PricingMsgState
                 'class' => 'btn-dark'
             ],
             'link' =>  [
-                'text'  => has_route('user.pricing.investment.plans') ? __('Check our available plans') : __('Go to Dashboard'),
-                'url'   => has_route('user.pricing.investment.plans') ? route('user.pricing.investment.plans') : route('user.dashboard'),
+                'text'  => has_route('user.pricing.plans') ? __('Check our available plans') : __('Go to Dashboard'),
+                'url'   => has_route('user.pricing.plans') ? route('user.pricing.plans') : route('user.dashboard'),
                 'class' => ''
             ],
             'help'  => self::helps('simple-problem')

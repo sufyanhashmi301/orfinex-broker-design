@@ -28,6 +28,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use App\Enums\TxnStatus;
+use Txn;
 
 
 class TransactionService extends Service
@@ -896,14 +898,14 @@ class TransactionService extends Service
 
     public function confirmTransactionForInvestment($transaction, $completedBy = [], $auto = false)
     {
-        if (in_array($transaction->status, [TransactionStatus::COMPLETED])) {
+        if (in_array($transaction->status, [TxnStatus::Success])) {
             throw new \Exception(__("Transaction already completed."));
         }
 
         if (!in_array($transaction->status, [
-            TransactionStatus::PENDING,
-            TransactionStatus::ONHOLD,
-            TransactionStatus::CONFIRMED
+            TxnStatus::None,
+            TxnStatus::Pending,
+            TxnStatus::Failed
         ])) {
             throw new \Exception(__("Invalid transaction status."));
         }
@@ -919,11 +921,12 @@ class TransactionService extends Service
 //            $userAccount->save();
 //        }
 
-        $transaction->status = TransactionStatus::COMPLETED;
-        $transaction->completed_at = Carbon::now();
-        $transaction->completed_by = $completedBy;
-        $transaction->save();
-        $transaction->fresh();
+          Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, 'System');
+//        $transaction->status = TransactionStatus::COMPLETED;
+//        $transaction->completed_at = Carbon::now();
+//        $transaction->completed_by = $completedBy;
+//        $transaction->save();
+//        $transaction->fresh();
 
 //        if (has_deposit_bonus()) {
 //            $this->addDepositBonus($transaction);

@@ -31,10 +31,10 @@ class DepositController extends GatewayController
         $isStepTwo = '';
         $gateways = DepositMethod::where('status', 1)->get();
 
-        $clientIp = request()->ip();
-        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-            $this->syncForexAccounts(auth()->id());
-        }
+//        $clientIp = request()->ip();
+//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
+//            $this->syncForexAccounts(auth()->id());
+//        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -102,7 +102,6 @@ class DepositController extends GatewayController
             }
         }
 //        dd('ss');
-
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;
         $payAmount = $finalAmount * $gatewayInfo->rate;

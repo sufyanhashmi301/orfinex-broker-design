@@ -1318,3 +1318,160 @@ if (!function_exists('get_mail_link')) {
 
     }
 }
+
+if (!function_exists('percentage_calc')) {
+    /**
+     * @param @what
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function percentage_calc($percent,$amount)
+    {
+        $base_currency = base_currency();
+        $scale = (is_crypto($base_currency)) ? dp_calc('crypto') : dp_calc('fiat');
+        $amount = (BigDecimal::of($amount)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of($percent))->dividedBy(100, $scale, RoundingMode::CEILING) : 0;
+
+        return is_object($amount) ? (string) $amount : $amount;
+
+    }
+
+}
+if (!function_exists('percentage_of_total_calc')) {
+    /**
+     * @param @what
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function percentage_of_total_calc($amount,$total)
+    {
+        $base_currency = base_currency();
+        $scale = (is_crypto($base_currency)) ? dp_calc('crypto') : dp_calc('fiat');
+        $percentage = (BigDecimal::of($total)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of(100))->dividedBy($total, $scale, RoundingMode::CEILING) : 0;
+
+        return is_object($percentage) ? (string) $percentage : $percentage;
+
+    }
+
+}
+if (!function_exists('getAccountBalance')) {
+    /**
+     * @param @what
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function getAccountBalance($name = null, $echo = false)
+    {
+        $name = (empty($name)) ? AccType('main') : $name;
+        $userID = auth()->user()->id;
+        return Account::getBalance($name, $userID, $echo);
+    }
+}
+if (!function_exists('w2n')) {
+    /**
+     * @param $account
+     * @version 1.0.0
+     * @since 1.0
+     */
+
+    function w2n($account=null)
+    {
+        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
+        $nameMap = [
+            AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
+            AccountBalanceType::INVEST => __(sys_settings('account_invest', 'Investment Account')),
+            AccountBalanceType::REFERRAL => __(sys_settings('account_referral', 'Referral Account')),
+            AccountBalanceType::MAIN_HOLD => __(sys_settings('account_hold_fund', 'Funds Hold')),
+            AccountBalanceType::INVEST_HOLD => __(sys_settings('account_hold_invest', 'Investment Hold')),
+            AccountBalanceType::SCHEME_PARTNER_BONUS => __(sys_settings('scheme_partner_bonus', 'Plan Partner Bonus')),
+            AccountBalanceType::TOKEN_SCHEME_PARTNER_BONUS => __(sys_settings('token_scheme_partner_bonus', 'OFN Plan Partner Bonus')),
+            AccountBalanceType::SCHEME_PROFIT_BONUS => __(sys_settings('scheme_profit_bonus', 'Plan Profit Bonus')),
+            AccountBalanceType::TOKEN_SCHEME_PROFIT_BONUS => __(sys_settings('token_scheme_profit_bonus', 'OFN Plan Profit Bonus')),
+            AccountBalanceType::REWARD_SALARY => __(sys_settings('reward_salary', 'Reward Salary')),
+            AccountBalanceType::P2P_WALLET => __(sys_settings('p2p_wallet', 'P2P Wallet')),
+            AccountBalanceType::FOREX_TRADING => __(sys_settings('forex_trading', 'Forex Trading')),
+            AccountBalanceType::ORFIN_MAIN => __(sys_settings('orfin_main_wallet', 'OFN Main Wallet')),
+            AccountBalanceType::ORFIN_INVEST => __(sys_settings('orfin_invest_wallet', 'OFN Invest Wallet')),
+            AccountBalanceType::MASTER_IB => __(sys_settings('master_ib', 'Master IB')),
+            AccountBalanceType::AFFILIATE_WALLET => __(sys_settings('affiliate_wallet', 'Affiliate')),
+            AccountBalanceType::MASTER_AFFILIATE => __(sys_settings('master_affiliate', 'Master Affiliate')),
+        ];
+
+        return Arr::get($nameMap, $account);
+    }
+}
+if (!function_exists('get_user_account')) {
+
+    /**
+     * @param $userId
+     * @param string $balance
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_user_account($userId, $balance = null)
+    {
+        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
+        $account = Account::where('user_id', $userId)
+            ->where('balance', $balance)
+            ->first();
+
+        if (blank($account)) {
+            $account = Account::create([
+                'user_id' => $userId,
+                'balance' => $balance,
+                'amount' => 0.00
+            ]);
+        }
+
+        return $account;
+    }
+}
+if (!function_exists('generate_unique_ivx')) {
+    /**
+     * @since 1.0
+     * @param $$model
+     * @param $column
+     * @version 1.0.0
+     */
+    function generate_unique_ivx($model, $column): string
+    {
+        $lastEntry = $model::orderBy('id', 'desc')->latest()->first();
+        $nextID  = (isset($lastEntry->id)) ? sprintf('%04s', ($lastEntry->id + 1)) : sprintf('%04s', 1);
+
+        $increment = (int) (mt_rand(10, 99) . substr(time(), -2) . $nextID);
+        $duplicate = $model::where($column, $increment)->first();
+
+        if (blank($duplicate)) {
+            return $increment;
+        } else {
+            return generate_unique_ivx($model, $column);
+        }
+    }
+}
+if (!function_exists('to_sum')) {
+    /**
+     * @param $amount1
+     * @param $amount2
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function to_sum($amount1, $amount2)
+    {
+        $total = BigDecimal::of($amount1)->plus(BigDecimal::of($amount2));
+        return is_object($total) ? (string)$total : $total;
+    }
+}
+if (!function_exists('is_route')) {
+    /**
+     * check current route
+     * @param $name
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_route($name)
+    {
+        return request()->routeIs($name);
+    }
+}
+

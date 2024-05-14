@@ -16,7 +16,8 @@ class DashboardController extends Controller
     use ForexApiTrait;
     public function dashboard(Request $request)
     {
-//        dd(getLocation());
+
+//        dd($decoded_string);
         $user = auth()->user();
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {

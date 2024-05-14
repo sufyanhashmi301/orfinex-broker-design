@@ -14,6 +14,7 @@
 
         $(this).addClass('active').siblings().removeClass('active');
     });
+
     $('.leverage-btn').on('click', function () {
         console.log('leverage-btn')
         var leverage = $(this).data('leverage');

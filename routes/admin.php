@@ -40,6 +40,7 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\SecurityController;
+use App\Http\Controllers\Backend\ChallengeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,13 +79,11 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
     Route::get('action/{id}', 'depositAction')->name('action');
     Route::post('action-now', 'actionNow')->name('action.now');
     Route::get('all', 'kycAll')->name('all');
-
 });
 Route::resource('risk-profile-tag', RiskProfileTagController::class);
 Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
     Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
     Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
-
 });
 
 Route::resource('ib-form', IBController::class);
@@ -96,11 +95,8 @@ Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::cla
     Route::get('answer/view/{user}', 'answerView')->name('answer.view');
     Route::post('approve', 'approveIbMember')->name('approve');
     Route::post('update', 'updateIbMember')->name('update');
-    Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
-    Route::post('multi/update', 'updateMIbMember')->name('multi.update');
     Route::post('reject', 'rejectIbMember')->name('reject');
     Route::post('save/form', 'saveForm')->name('save.form');
-
 });
 
 //===============================  Role Management ==================================
@@ -111,7 +107,7 @@ Route::resource('staff', StaffController::class)->except('show', 'destroy', 'cre
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
 Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-Route::resource('blackListCountry', BlackListCountryController::class)->except('show'  );
+Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
@@ -167,7 +163,6 @@ Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => Withd
 
     Route::get('action/{id}', 'withdrawAction')->name('action');
     Route::post('action-now', 'actionNow')->name('action.now');
-
 });
 Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
     Route::get('index', 'index')->name('index');
@@ -265,7 +260,6 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
         Route::get('tune', 'setTune')->name('tune');
         Route::get('tune/status/{id}', 'status')->name('tune.status');
     });
-
 });
 
 //===============================  Security Settings ==================================
@@ -296,7 +290,6 @@ Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::get('/', 'template')->name('index');
         Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
         Route::post('template-update', 'update_template')->name('template-update');
-
     });
 
     Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
@@ -364,3 +357,10 @@ Route::get('/bonus', function () {
 Route::get('/bonus/create', function () {
     return view('backend.bonus.create');
 });
+
+Route::resource('challenges', ChallengeController::class)->except('show', 'destroy');
+
+Route::resource('challenges', ChallengeController::class)->except('show', 'destroy');
+
+Route::get('/step_rules/create', [ChallengeController::class, 'step_rules_index'])->name('step-rules');
+Route::post('/step_rules/create', [ChallengeController::class, 'step_rules_create'])->name('step-rules.create');

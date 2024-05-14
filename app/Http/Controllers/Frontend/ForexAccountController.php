@@ -368,4 +368,18 @@ class ForexAccountController extends GatewayController
 //        dd($resposne->object());
 
     }
+
+    public function getAllPaymentFromAccounts(Request $request)
+    {
+
+        $forexAccounts = ForexAccount::realActiveAccount()
+            ->orderBy('balance','desc')
+            ->get();
+
+        $response =  view('frontend::user.forex.include.all-payment-from-accounts-dropdown', compact('forexAccounts'))->render();
+
+        return response()->json(['append' => $response, 'reload' => false]);
+
+    }
+
 }

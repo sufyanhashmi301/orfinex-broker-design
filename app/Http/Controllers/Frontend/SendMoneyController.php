@@ -52,8 +52,7 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyNow(Request $request)
     {
-        notify()->error(__('Send Money Disable Now'), 'Error');
-        return redirect()->back();
+
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
         }
@@ -72,17 +71,6 @@ class SendMoneyController extends Controller
 
             return redirect()->back();
         }
-        $input = $request->all();
-        $targetId = $input['target_id'];
-        $fromForexAccount = ForexAccount::where('login', $targetId)->first();
-        if (!$fromForexAccount->schema->is_external_transfer) {
-            notify()->error(__("You haven't allowed external transfer of :plan accounts. Kindly choose different account",['plan'=>$fromForexAccount->schema->title]), 'Error');
-            return redirect()->back();
-        }
-        if (!$fromForexAccount->schema->is_internal_transfer) {
-            notify()->error(__("You haven't allowed internal transfer of :plan accounts. Kindly choose different account",['plan'=>$fromForexAccount->schema->title]), 'Error');
-            return redirect()->back();
-        }
         //daily limit
         $todayTransaction = Transaction::where('type', TxnType::SendMoney)->whereDate('created_at', Carbon::today())->count();
         $dayLimit = (float) Setting('send_money_day_limit', 'fee');
@@ -91,12 +79,13 @@ class SendMoneyController extends Controller
 
             return redirect()->back();
         }
-
+        $input = $request->all();
+        $amount = (float) $input['amount'];
+        $targetId = $input['target_id'];
 //dd($input);
         $fromUser = \Auth::user();
         $receiverAccount = $input['receiver_account'];
         $toUserForexAccount = ForexAccount::where('login', $receiverAccount)->first();
-
 //        dd($toUserForexAccount);
         if(!$toUserForexAccount){
             notify()->error(__('Please add a valid receiver Account!. or May be your receiver account is not active'), 'Error');
@@ -110,7 +99,6 @@ class SendMoneyController extends Controller
         }
         $this->isValidForexAccount($receiverAccount);
 
-        $amount = (float) $input['amount'];
         $min = setting('min_send', 'fee');
         $max = setting('max_send', 'fee');
         if ($amount < $min || $amount > $max) {
@@ -141,10 +129,7 @@ class SendMoneyController extends Controller
         //withdraw balance
         $targetType = 'forex_withdraw';
         $comment = 'ext/transfer/to/'.$receiverAccount;
-        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
-        if(!$withdrawResponse){
-            return redirect()->back();
-        }
+        $this->forexWithdraw($targetId, $totalAmount,$comment);
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
@@ -210,8 +195,6 @@ class SendMoneyController extends Controller
     }
     public function sendMoneyInternalNow(Request $request)
     {
-//        notify()->error(__('Send Money Disable Now'), 'Error');
-//        return redirect()->back();
 //        dd($targetId,$targetType);
         if (! setting('transfer_status', 'permission') || ! \Auth::user()->transfer_status) {
             abort('403', 'Send Money Disable Now');
@@ -293,10 +276,7 @@ class SendMoneyController extends Controller
             //withdraw balance
             $targetType = 'forex_withdraw';
             $comment = 'int/transfer/to/' . $receiverAccount;
-            $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount, $comment);
-            if(!$withdrawResponse){
-                return redirect()->back();
-            }
+            $this->forexWithdraw($targetId, $totalAmount, $comment);
         }elseif($targetType == 'wallet'){
             $targetType = 'withdraw';
             $user->decrement('profit_balance', $totalAmount);
@@ -308,10 +288,9 @@ class SendMoneyController extends Controller
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
-
-        $receiveDescription = 'Transfer Money From '.$fromUser->username.'-'.$targetId;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
-
+        $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
+        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
+            TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
 
         notify()->success('Successfully Send Money', 'success');
 

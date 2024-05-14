@@ -69,6 +69,26 @@
         </li>
 
         <li class="sidebar-menu-title">MENU</li>
+        <li class="">
+            <a href="javascript:void(0);" class="navItem">
+              <span class="flex items-center">
+                <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
+                <span>{{ __('Direct Funding') }}</span>
+              </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('user.pricing.plans') }}" class="{{ isActive('user.pricing.plans') }}">
+                        {{ __('Get Fund') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.pricing.dashboard') }}" class="{{ isActive('user.pricing.dashboard') }}">
+                        {{ __('Fund Board') }}
+                    </a>
+            </ul>
+        </li>
         <li>
             <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
                 <span class="flex items-center">
@@ -141,6 +161,9 @@
                 </li>
             </ul>
         </li>
+
+
+
 
         @if(setting('sign_up_referral','permission'))
             <li>

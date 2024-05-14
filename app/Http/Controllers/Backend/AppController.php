@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Challenge;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Rules\MatchOldPassword;
@@ -94,7 +95,7 @@ class AppController extends Controller
         $user = \Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:admins,email,'.$user->id,
+            'email' => 'required|email|unique:admins,email,' . $user->id,
         ]);
 
         if ($validator->fails()) {
@@ -160,5 +161,4 @@ class AppController extends Controller
 
         return redirect()->back();
     }
-
 }

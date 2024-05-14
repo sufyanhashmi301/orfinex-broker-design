@@ -436,8 +436,8 @@ img {
 }
 
 .form-check.form-switch input {
-  height: 18px;
-  width: 35px;
+  height: 18px !important;
+  width: 35px !important;
   box-shadow: none !important;
 }
 
@@ -3421,6 +3421,10 @@ img {
 .site-input-groups .joint-input .form-control:focus {
   border: 2px solid rgba(94, 63, 201, 0.3);
   box-shadow: none;
+}
+
+.input-group>.form-control, .input-group>.form-select {
+  width: 1% !important;
 }
 
 .site-input-groups .required {

@@ -31,6 +31,7 @@
                         @endcan
 
                     </div>
+
                     <div class="content">
                         @can('user-mib-create')
 
@@ -51,7 +52,6 @@
                                 </span>
                         @endcan
                     </div>
-
                 </div>
 
                 <div class="site-card-body table-responsive">
@@ -59,7 +59,7 @@
                         <table id="ib-info-dataTable" class="display data-table">
                             <thead>
                             <tr>
-                                <th>{{ __('Type') }}</th>
+{{--                                <th>{{ __('Icon') }}</th>--}}
                                 <th>{{ __('Login') }}</th>
                                 <th>{{ __('Balance') }}</th>
                                 <th>{{ __('status') }}</th>
@@ -72,6 +72,9 @@
                             </tr>
                             </thead>
                             <tbody>
+<<<<<<< Updated upstream
+
+=======
                             <tr>
                                 <td>
                                     <strong>{{ __('IB') }}</strong>
@@ -104,6 +107,7 @@
                                     @endif
                                 </td>
                             </tr>
+>>>>>>> Stashed changes
                             </tbody>
                         </table>
                     </div>
@@ -114,23 +118,23 @@
 </div>
 @push('single-script')
     <script>
-        {{--(function ($) {--}}
-        {{--    "use strict";--}}
-        {{--    var table = $('#ib-info-dataTable').DataTable();--}}
-        {{--    table.destroy();--}}
-        {{--    var table = $('#ib-info-dataTable').DataTable({--}}
-        {{--        processing: true,--}}
-        {{--        serverSide: true,--}}
-        {{--        autoWidth: false,--}}
-        {{--        ajax: "{{ route('admin.user.ib-info',$user->id) }}",--}}
-        {{--        columns: [--}}
-        {{--            {data: 'ib_login', name: 'ib_login'},--}}
-        {{--            {data: 'ib_balance', name: 'ib_balance'},--}}
-        {{--            {data: 'ib_status', name: 'ib_status'},--}}
-        {{--            // {data: 'action', name: 'action'},--}}
+        (function ($) {
+            "use strict";
+            var table = $('#ib-info-dataTable').DataTable();
+            table.destroy();
+            var table = $('#ib-info-dataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: "{{ route('admin.user.ib-info',$user->id) }}",
+                columns: [
+                    {data: 'ib_login', name: 'ib_login'},
+                    {data: 'ib_balance', name: 'ib_balance'},
+                    {data: 'ib_status', name: 'ib_status'},
+                    // {data: 'action', name: 'action'},
 
-        {{--        ]--}}
-        {{--    });--}}
-        {{--})(jQuery);--}}
+                ]
+            });
+        })(jQuery);
     </script>
 @endpush

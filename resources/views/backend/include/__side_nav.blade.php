@@ -103,83 +103,6 @@
                 @endcanany
             @endcanany
 
-            {{-- *************************************************************  Plan Management *********************************************************--}}
-            @canany(['schedule-manage','schema-list','schema-create','schema-edit','ib-account-type-list'])
-                <li class="side-nav-item category-title">
-                    <span>{{ __('Forex') }}</span>
-                </li>
-                <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.schedule*','admin.accountType*','admin.ibAccountType*']) }}">
-                    <a href="javascript:void(0);" class="dropdown-link">
-                        <i icon-name="album"></i>
-                        <span>{{ __('Account Type') }}</span>
-                        <span class="right-arrow">
-                            <i icon-name="chevron-down"></i>
-                        </span>
-                    </a>
-                    <ul class="dropdown-items">
-                        {{--                        @canany(['schema-list','schema-create','schema-edit'])--}}
-                        {{--                            <li class="side-nav-item {{ isActive('admin.schedule*') }}">--}}
-                        {{--                                <a href="{{route('admin.schedule.index')}}"><i--}}
-                        {{--                                        icon-name="alarm-check"></i><span>{{ __('Schedule') }}</span></a>--}}
-                        {{--                            </li>--}}
-                        {{--                        @endcanany--}}
-                        @can('schema-edit')
-                            <li class="side-nav-item {{ isActive('admin.accountType*') }}">
-                                <a href="{{route('admin.accountType.index')}}"><i
-                                        icon-name="airplay"></i><span>{{ __('Account Type') }}</span></a>
-                            </li>
-                        @endcan
-                        @can('ib-account-type-list')
-                            <li class="side-nav-item {{ isActive('admin.ibAccountType*') }}">
-                                <a href="{{route('admin.ibAccountType.index')}}"><i
-                                        icon-name="airplay"></i><span>{{ __('IB Account Type') }}</span></a>
-                            </li>
-                        @endcan
-                        @can('black-list-countries')
-                            <li class="side-nav-item {{ isActive('admin.blackListCountry*') }}">
-                                <a href="{{route('admin.blackListCountry.index')}}"><i
-                                        icon-name="airplay"></i><span>{{ __('Black List Countries') }}</span></a>
-                            </li>
-                        @endcan
-
-                        {{--                        @can('schema-edit')--}}
-{{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
-{{--                            <a href="{{route('admin.profit.deduction.index')}}"><i--}}
-{{--                                    icon-name="airplay"></i><span>{{ __('Manage Profits') }}</span></a>--}}
-{{--                        </li>--}}
-                        {{--                        @endcan--}}
-
-                    </ul>
-                </li>
-
-                @can('investment-list')
-                    <li class="side-nav-item side-nav-dropdown">
-                        <a href="javascript:void(0);" class="dropdown-link">
-                            <i icon-name="contact-2"></i>
-                            <span>{{ __('Forex Accounts') }}</span>
-                            <span class="right-arrow">
-                                <i icon-name="chevron-down"></i>
-                            </span>
-                        </a>
-                        <ul class="dropdown-items">
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
-                                <a href="{{route('admin.forex-accounts-real')}}">
-                                    <i icon-name="candlestick-chart"></i>
-                                    <span>{{ __('Live Accounts') }}</span>
-                                </a>
-                            </li>
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
-                                <a href="{{route('admin.forex-accounts-real')}}">
-                                    <i icon-name="line-chart"></i>
-                                    <span>{{ __('Demo Accounts') }}</span>
-                                </a>
-                            </li>
-                        </ul>
-
-                    </li>
-                @endcan
-            @endcanany
-
             {{-- *************************************************************  Advertisement Management *********************************************************--}}
             @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit','ib-list','ib-action','ib-form-manage'])
                 <li class="side-nav-item category-title">
@@ -231,53 +154,6 @@
                     </li>
                 @endcanany
 
-                @canany(['ib-list','ib-action','ib-form-manage'])
-                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.ib*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link">
-                            <i icon-name="users"></i>
-                            <span>{{ __('Manage IB') }}</span>
-                            <span class="right-arrow">
-                                <i icon-name="chevron-down"></i>
-                            </span>
-                        </a>
-                        <ul class="dropdown-items">
-                            @canany(['ib-list','ib-action'])
-                                <li class="{{ isActive('admin.ib.pending.list') }}">
-                                    <a href="{{ route('admin.ib.pending.list') }}">
-                                        <i icon-name="airplay"></i>
-                                        {{ __('Pending IB') }}
-                                    </a>
-                                </li>
-                                <li class="{{ isActive('admin.ib.approved.list') }}">
-                                    <a href="{{ route('admin.ib.approved.list') }}">
-                                        <i icon-name="airplay"></i>
-                                        {{ __('Approved IB') }}
-                                    </a>
-                                </li>
-                                <li class="{{ isActive('admin.ib.rejected.list') }}">
-                                    <a href="{{ route('admin.ib.rejected.list') }}">
-                                        <i icon-name="file-warning"></i>
-                                        {{ __('Rejected IB') }}
-                                    </a>
-                                </li>
-                                <li class="{{ isActive('admin.ib.all.list') }}">
-                                    <a href="{{ route('admin.ib.all.list') }}">
-                                        <i icon-name="contact"></i>
-                                        {{ __('All IB Logs') }}
-                                    </a>
-                                </li>
-                            @endcanany
-                            @can('ib-form-manage')
-                                <li class="{{ isActive('admin.ib-form*') }}">
-                                    <a href="{{ route('admin.ib-form.index') }}">
-                                        <i icon-name="check-square"></i>
-                                        {{ __('IB Form') }}
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
             @endcanany
 
             {{-- *************************************************************  Transactions *********************************************************--}}
@@ -346,41 +222,6 @@
                     </li>
                 @endcanany
 
-                @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.withdraw*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="landmark"></i><span>{{ __('Withdraw') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @can('withdraw-method-manage')
-                                <li class="{{ isActive('admin.withdraw.method.list','auto')  }}">
-                                    <a
-                                        href="{{ route('admin.withdraw.method.list','auto') }}"><i
-                                            icon-name="workflow"></i>{{ __('Automatic Methods') }}</a></li>
-                                <li class="{{ isActive('admin.withdraw.method.list','manual') }}">
-                                    <a
-                                        href="{{route('admin.withdraw.method.list','manual')}}"><i
-                                            icon-name="compass"></i>{{ __('Manual Methods') }}</a></li>
-
-                            @endcan
-                            @canany(['withdraw-list','withdraw-action'])
-                                <li class="{{ isActive('admin.withdraw.pending')  }}"><a
-                                        href="{{ route('admin.withdraw.pending') }}"><i
-                                            icon-name="wallet"></i>{{ __('Pending Withdraws') }}</a></li>
-                            @endcanany
-                            @can('withdraw-schedule')
-                                <li class="{{ isActive('admin.withdraw.schedule') }}"><a
-                                        href="{{ route('admin.withdraw.schedule') }}"><i
-                                            icon-name="alarm-clock"></i>{{ __('Withdraw Schedule') }}</a></li>
-                            @endcan
-                            @can('withdraw-list')
-                                <li class="{{ isActive('admin.withdraw.history') }}"><a
-                                        href="{{ route('admin.withdraw.history') }}"><i
-                                            icon-name="piggy-bank"></i>{{ __('Withdraw History') }}</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
 
                 @canany(['ranking-list','ranking-create','ranking-edit'])
                     <li class="side-nav-item {{ isActive('admin.ranking*') }}">
@@ -459,39 +300,6 @@
                 <li class="side-nav-item category-title">
                     <span>{{ __('Site Essentials') }}</span>
                 </li>
-                @can('landing-page-manage')
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.theme*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="palette"></i><span>{{ __('Theme Manage') }}</span><span
-                                class="right-arrow"><i icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            <li class="{{ isActive('admin.theme.site') }}">
-                                <a href="{{ route('admin.theme.site') }}"><i
-                                        icon-name="roller-coaster"></i>{{ __('Site Theme') }}</a>
-                            </li>
-                            <li class="{{ isActive('admin.theme.dynamic-landing') }}">
-                                <a href="{{ route('admin.theme.dynamic-landing') }}"><i
-                                        icon-name="warehouse"></i>{{ __('Dynamic Landing Theme') }}</a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.page.section.section*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="home"></i><span>{{ __('Landing Page') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @foreach($landingSections as $section)
-                                <li class="@if(request()->is('admin/page/section/'.$section->code)) active @endif">
-                                    <a href="{{ route('admin.page.section.section',$section->code) }}"><i
-                                            icon-name="egg"></i>{{ $section->name }}</a>
-                                </li>
-                            @endforeach
-
-                        </ul>
-                    </li>
-                @endcan
                 @can('page-manage')
                     <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.page.edit*','admin.page.create']) }}">
                         <a href="javascript:void(0);" class="dropdown-link"><i
@@ -546,18 +354,7 @@
                                     {{ __('Site Global Settings') }}
                                 </a>
                             </li>
-                            <li class="{{ isActive('admin.theme.site') }}">
-                                <a href="{{ route('admin.theme.site') }}">
-                                    <i icon-name="roller-coaster"></i>
-                                    {{ __('Site Theme') }}
-                                </a>
-                            </li>
-                            <li class="{{ isActive('admin.theme.dynamic-landing') }}">
-                                <a href="{{ route('admin.theme.dynamic-landing') }}">
-                                    <i icon-name="warehouse"></i>
-                                    {{ __('Dynamic Landing Theme') }}
-                                </a>
-                            </li>
+                          
 
                         </ul>
                     </li>

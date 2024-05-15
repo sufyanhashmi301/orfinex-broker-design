@@ -1,4 +1,0 @@
-<strong>
-    {{ $balance }}
-</strong>
-

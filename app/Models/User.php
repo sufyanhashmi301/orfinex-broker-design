@@ -198,14 +198,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return round($sum, 2);
     }
-    public function totalIBWithdraw()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::IB);
-        })->sum('amount');
 
-        return round($sum, 2);
-    }
     public function totalInvestment()
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {

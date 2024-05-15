@@ -31,7 +31,7 @@
         </span>
     </div>
     <button class="sidebarCloseIcon text-2xl">
-      <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
+        <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
     </button>
 
     <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
@@ -59,15 +59,6 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ route('user.forex-account-logs') }}" class="navItem {{ isActive('user.forex*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
-                    <span>{{ __('My Accounts') }}</span>
-                </span>
-            </a>
-        </li>
-
         <li class="sidebar-menu-title">MENU</li>
         <li class="">
             <a href="javascript:void(0);" class="navItem">
@@ -89,81 +80,33 @@
                     </a>
             </ul>
         </li>
+
         <li>
-            <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
+            <a href="{{ route('user.contracts') }}" class="navItem {{ isActive('user.contracts') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
-                    <span>{{ __('New Account') }}</span>
+                    <iconify-icon class="nav-icon" icon="lucide:notebook-pen"></iconify-icon>
+                    <span>{{ __('Contracts') }}</span>
                 </span>
             </a>
         </li>
 
         <li>
-            <a href="{{ route('user.deposit.amount') }}" class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
+            <a href="{{ route('user.certificates') }}" class="navItem {{ isActive('user.certificates') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
-                    <span>{{ __('Deposit') }}</span>
+                    <iconify-icon class="nav-icon" icon="ph:certificate"></iconify-icon>
+                    <span>{{ __('Certificates') }}</span>
                 </span>
             </a>
         </li>
 
         <li>
-            <a href="{{ route('user.transfer') }}" class="navItem {{ isActive('user.transfer') }}">
+            <a href="{{ route('user.transactions') }}" class="navItem {{ isActive('user.transactions') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
-                    <span>{{ __('Transfer') }}</span>
+                    <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
+                    <span>{{ __('All History') }}</span>
                 </span>
             </a>
         </li>
-
-        <li>
-            <a href="{{ route('user.withdraw.view') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
-                    <span>{{ __('Withdraw') }}</span>
-                </span>
-            </a>
-        </li>
-
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-              <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
-                <span>{{ __('History') }}</span>
-              </span>
-              <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('user.transactions') }}" class="{{ isActive('user.transactions') }}">
-                        {{ __('All History') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.deposit.log') }}" class="{{ isActive('user.deposit.log') }}">
-                        {{ __('Deposits') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.withdraw.log') }}" class="{{ isActive('user.withdraw.log') }}">
-                        {{ __('Withdrawals') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">
-                        {{ __('Transfer Log') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
-                        {{ __('Forex History') }}
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-
-
 
         @if(setting('sign_up_referral','permission'))
             <li>
@@ -188,7 +131,7 @@
             <a href="{{ route('user.ticket.index') }}" class="navItem {{ isActive('user.ticket*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:support"></iconify-icon>
-                    <span>{{ __('Support Tickets') }}</span>
+                    <span>{{ __('Support') }}</span>
                 </span>
             </a>
         </li>

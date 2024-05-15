@@ -47,26 +47,26 @@
     </div>
 </div>
 
-<div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">
-    <a href="{{ route('user.deposit.amount') }}" class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
-        <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:download"></iconify-icon> 
-        </div>
-        <span class="text-sm">{{ __('Deposit') }}</span>
-    </a>
-    <a href="{{ route('user.schema') }}" class=" bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
-        <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:box"></iconify-icon>  
-        </div>
-        <span class="text-sm">{{ __('Accounts') }}</span>
-    </a>
-    <a href="{{ route('user.withdraw.view') }}" class=" bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
-        <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:send"></iconify-icon>  
-        </div>
-        <span class="text-sm">{{ __('Withdraw') }}</span>
-    </a>
-</div>
+{{--<div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">--}}
+{{--    <a href="{{ route('user.deposit.amount') }}" class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">--}}
+{{--        <div class="mx-auto text-2xl">--}}
+{{--            <iconify-icon icon="lucide:download"></iconify-icon> --}}
+{{--        </div>--}}
+{{--        <span class="text-sm">{{ __('Deposit') }}</span>--}}
+{{--    </a>--}}
+{{--    <a href="{{ route('user.schema') }}" class=" bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">--}}
+{{--        <div class="mx-auto text-2xl">--}}
+{{--            <iconify-icon icon="lucide:box"></iconify-icon>  --}}
+{{--        </div>--}}
+{{--        <span class="text-sm">{{ __('Accounts') }}</span>--}}
+{{--    </a>--}}
+{{--    <a href="{{ route('user.withdraw.view') }}" class=" bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">--}}
+{{--        <div class="mx-auto text-2xl">--}}
+{{--            <iconify-icon icon="lucide:send"></iconify-icon>  --}}
+{{--        </div>--}}
+{{--        <span class="text-sm">{{ __('Withdraw') }}</span>--}}
+{{--    </a>--}}
+{{--</div>--}}
 
 <div class="space-y-3">
 

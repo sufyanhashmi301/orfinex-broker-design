@@ -367,6 +367,9 @@ video {
   --tw-backdrop-opacity:  ;
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
 }
 ::backdrop{
   --tw-border-spacing-x: 0;
@@ -17115,4 +17118,19 @@ ul.custom-list ul li{
 
 .pricing-tab-switcher.active:before {
   left: calc(100% - 26px);
+}
+
+
+.bg-gradient-to-tr {
+  background-image: linear-gradient(to top right, var(--tw-gradient-stops));
+}
+
+.from-secondary {
+  --tw-gradient-from: #2BEDD2 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(43 237 210 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-primary {
+  --tw-gradient-to: #20ED55 var(--tw-gradient-to-position);
 }

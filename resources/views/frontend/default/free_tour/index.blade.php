@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 
-@section('title', __('Active Plan Dashboard'))
+@section('title', __('Free Tour'))
 @push('style')
     <style>
         #account_credentials_card {
@@ -42,11 +42,11 @@
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-1">
                                 <h5 class="text-xl text-slate-900 font-medium">
-                                    Funded Account: {{data_get($invest,'login')}}
+                                    Funded Account: 9999999
                                 </h5>
                                 <div class="flex items-setrech gap-2">
-                                    <span class="badge {{ the_state($invest->status, ['prefix' => 'bg']) }}-500 flex-inline items-center justify-center text-white capitalize !px-3">
-                                        {{ ucfirst($invest->status) }}
+                                    <span class="badge bg-success-500 flex-inline items-center justify-center text-white capitalize !px-3">
+                                        Active
                                     </span>
                                     <a href="" class="btn btn-sm btn-light w-8 h-8 inline-flex items-center justify-center">
                                         <iconify-icon class="text-xl" icon="zondicons:reload"></iconify-icon>
@@ -54,14 +54,14 @@
                                 </div>
                             </div>
                             <p class="text-sm text-slate-600 font-light mb-4">
-                                INV{{ the_inv($invest->pvx) }}
+                                INV-36530001
                             </p>
                             <div class="flex justify-between flex-wrap gap-4">
                                 <div class="flex-1">
                                     <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 min-w-[184px] space-y-5">
                                         <div class="flex justify-between text-slate-600 dark:text-slate-300">
                                             <span class="text-sm">
-                                                {{ __('Type :type Program',['type'=>fst2n(data_get($invest->pricing_scheme,'type'))]) }}
+                                                Type Challenge Funding Program
                                             </span>
                                         </div>
                                     </div>
@@ -71,7 +71,7 @@
                                         <div class="flex justify-between text-slate-600 dark:text-slate-300">
                                             <span class="text-sm">Starting Balance</span>
                                             <span class="text-sm font-medium text-slate-900 dark:text-white">
-                                                ${{ amount_z($invest->amount_allotted, base_currency()) }}
+                                                $50,000
                                             </span>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
                                 <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
                                     <span class="text-sm">P&L:</span>
-                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8154.16</span>
+                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8,500</span>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
                                 <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
                                     <span class="text-sm">Equity:</span>
-                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8154.16</span>
+                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$58,500</span>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                             <div class="bg-slate-50 dark:bg-slate-900 rounded p-4 space-y-5">
                                 <div class="flex justify-between gap-3 text-slate-600 dark:text-slate-300">
                                     <span class="text-sm">Balance:</span>
-                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$8154.16</span>
+                                    <span class="text-sm font-medium text-slate-900 dark:text-white">$57,600</span>
                                 </div>
                             </div>
                         </div>
@@ -161,19 +161,19 @@
                                     <h5 class="text-slate-900 dark:text-slate-300 text-sm">
                                         Minimum Trading Days
                                     </h5>
-                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                    <span class="badge bg-warning-500 text-white capitalize">Passed</span>
                                 </div>
                                 <ul class="space-y-3">
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Minimum</span>
                                         <span class="text-slate-900 font-medium">
-                                            {{data_get($invest->pricing_scheme,'min_trading_days')}} days
+                                            4 days
                                         </span>
                                     </li>
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Current Result</span>
                                         <span class="text-slate-900 font-medium">
-                                            {{\Carbon\Carbon::parse($invest->term_start)->diffInDays(\Carbon\Carbon::now())}} days
+                                            27 days
                                         </span>
                                     </li>
                                 </ul>
@@ -189,13 +189,13 @@
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Max Loss</span>
                                         <span class="text-slate-900 font-medium">
-                                            ${{data_get($invest,'daily_drawdown_limit')}}
+                                            $1,250.00
                                         </span>
                                     </li>
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Max Loss Recorded</span>
                                         <span class="text-slate-900 font-medium">
-                                            $@if(\Brick\Math\BigDecimal::of(to_minus($invest->snap_equity,$invest->current_equity))->isGreaterThan(0)) {{ amount_z(to_minus($invest->snap_equity,$invest->current_equity), base_currency()) }} @else {{ amount_z(0, base_currency()) }} @endif
+                                            $0.00
                                         </span>
                                     </li>
                                 </ul>
@@ -223,19 +223,19 @@
                                     <h5 class="text-slate-900 dark:text-slate-300 text-sm">
                                         Profit Target
                                     </h5>
-                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                    <span class="badge bg-warning-500 text-white capitalize">Passed</span>
                                 </div>
                                 <ul class="space-y-3">
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Minimum</span>
                                         <span class="text-slate-900 font-medium">
-                                            {{data_get($invest->pricing_scheme,'profit_target')}}
+                                            6,250
                                         </span>
                                     </li>
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                                         <span>Current Result</span>
                                         <span class="text-slate-900 font-medium">
-                                            ${{ amount_z($invest->profit, base_currency()) }}
+                                            $8,500
                                         </span>
                                     </li>
                                 </ul>
@@ -491,25 +491,25 @@
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Total Alloted Fund</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($invest->amount_allotted, base_currency()) }}
+                                    $50,000
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Max Draw Down</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($invest->max_drawdown_limit, base_currency()) }}
+                                    $6,250
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Daily Max Draw Down</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($invest->daily_drawdown_limit, base_currency()) }}
+                                    $2,500
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Profit Split</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    {{data_get($invest,'profit_share_user')}} / {{data_get($invest,'profit_share_admin')}}
+                                    80 / 20
                                 </div>
                             </div>
                         </div>
@@ -524,25 +524,25 @@
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Balance</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($invest->max_balance, base_currency()) }}
+                                    $57,600
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Profit</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($invest->profit, base_currency()) }}
+                                    $8,500
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Growth</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    {{amount($growthPercentage,base_currency())}}%
+                                    14.5%
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Days</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    {{\Carbon\Carbon::parse($invest->term_start)->diffInDays(\Carbon\Carbon::now())}}
+                                    27
                                 </div>
                             </div>
                         </div>
@@ -557,25 +557,25 @@
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Previous Day Balance</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($invest->snap_balance, base_currency()) }}
+                                    $56,300
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Current Equity</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    {{ amount_z($invest->current_equity, base_currency()) }}
+                                    $58,500
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Today's Draw Down</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{$todayDrawddown}}
+                                    $0
                                 </div>
                             </div>
                             <div class="flex-1 p-2">
                                 <div class="text-xs text-slate-500 mb-2">Remaining Draw Down</div>
                                 <div class="text-xl font-medium text-slate-900 dark:text-white">
-                                    ${{ amount_z($remainingLoss, base_currency()) }}
+                                    $2,500
                                 </div>
                             </div>
                         </div>
@@ -599,7 +599,7 @@
                             <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="">Login</label>
                             <div class="fromGroup">
                                 <div class="relative">
-                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" value="{{data_get($invest,'login')}}" id="copyLogin" readonly>
+                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" value="9999999" id="copyLogin" readonly>
                                     <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyLogin">
                                         <iconify-icon icon="lucide:copy"></iconify-icon>
                                     </button>
@@ -607,11 +607,22 @@
                             </div>
                         </div>
                         <div class="bg-slate-100 dark:bg-slate-900 rounded-md p-3 py-2">
-                            <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="">Password</label>
+                            <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="">Master Password</label>
                             <div class="fromGroup">
                                 <div class="relative">
-                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="password" id="password" value="{{data_get($invest,'main_password')}}" readonly>
+                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="password" id="password" value="12345678" readonly>
                                     <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password dark:text-slate-200">
+                                        <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-900 rounded-md p-3 py-2">
+                            <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="">Investor Password</label>
+                            <div class="fromGroup">
+                                <div class="relative">
+                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="password" id="investor_password" value="12345678" readonly>
+                                    <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-inv-password dark:text-slate-200">
                                         <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
                                     </button>
                                 </div>
@@ -621,7 +632,7 @@
                             <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="">Server</label>
                             <div class="fromGroup">
                                 <div class="relative">
-                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="text" value="{{__('OrfinexPrime-MT5')}}" id="copyServer" readonly>
+                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="text" value="{{__('AssignedServer-Live')}}" id="copyServer" readonly>
                                     <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServer">
                                         <iconify-icon icon="lucide:copy"></iconify-icon>
                                     </button>
@@ -646,9 +657,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal for certificate download -->
-    @include('frontend.default.investment.modal.__certificate_download')
 
 @endsection
 
@@ -679,6 +687,17 @@
                 }
             });
 
+            $('.toggle-inv-password').on('click', function() {
+                var passwordInput = $('#investor_password');
+                var toggleButton = $('.toggle-password');
+
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                } else {
+                    passwordInput.attr('type', 'password');
+                }
+            });
+
             $('.copy-button').on('click', function() {
                 var targetId = $(this).data('target');
                 var copyText = $('#' + targetId);
@@ -687,39 +706,6 @@
                 document.execCommand('copy');
             });
             
-        });
-
-        $(document).ready(function(){
-            // $('.certificate-btn').on('click', function() {
-            //     var imagePath = $(this).data('image');
-            //     $('#certificateImage').attr('src', imagePath);
-            //     $('.downloadBtn').data('image', imagePath);
-            // });
-
-            $('body').on('click', '.downloadBtn', function(e) {
-                e.preventDefault();
-
-                var id = $(this).data('id'); // Replace with the actual filename of the image
-
-                var url = '{{ route("user.pricing.plan.certificate.download", ":id") }}';
-                url = url.replace(':id', id);
-
-                // Create a hidden anchor element
-                var downloadLink = document.createElement('a');
-                downloadLink.href = url;
-                downloadLink.download = id;
-
-                // Trigger the click event of the anchor element
-                downloadLink.click();
-
-                //     var imagePath = $('.certificate-btn').data('image');
-                //     var link = document.createElement('a');
-                //     link.href = imagePath;
-                //     link.download = 'orfinexcertificate.png';
-                //     document.body.appendChild(link);
-                //     link.click();
-                //     document.body.removeChild(link);
-            });
         });
     </script>
 @endpush

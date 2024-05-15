@@ -354,7 +354,7 @@
                                     {{ __('Site Global Settings') }}
                                 </a>
                             </li>
-                          
+
 
                         </ul>
                     </li>

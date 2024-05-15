@@ -11,7 +11,7 @@
             <div class="col-span-12 lg:col-span-8">
                 <div class="space-y-5">
 
-                    @if(count($realForexAccounts) == 0 && count($demoForexAccounts) == 0)
+{{--                    @if(count($realForexAccounts) == 0 && count($demoForexAccounts) == 0)--}}
                         <div class="relative bg-gradient-to-tr from-secondary to-primary text-center space-y-3 rounded-lg px-6 py-4">
                             <h1 class="text-3xl font-bold">
                                 Introducing <span class="font-black">GrowMoreFund</span> Challenge
@@ -34,43 +34,43 @@
                                 </div>
                             </div>
                         </div>
-                    @else
-                        <div class="card">
-                            <div class="card-header flex-wrap noborder">
-                                <div class="mb-4 sm:mb-0">
-                                    <ul class="nav nav-tabs flex flex-row flex-wrap list-none border-b-0 pl-0" id="tabs-tab" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                            <a href="#tabs-realAccounts"
-                                               class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 my-2 hover:border-transparent focus:border-transparent active dark:text-slate-300"
-                                               id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"
-                                               aria-controls="tabs-realAccounts" aria-selected="true">Live Accounts</a>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <a href="#tabs-demoAccounts"
-                                               class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300"
-                                               id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"
-                                               aria-controls="tabs-demoAccounts" aria-selected="false">Demo Accounts</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="sm:space-x-4 space-x-2 rtl:space-x-reverse">
-                                    <a href="{{route('user.schema')}}" class="btn btn-dark">Open New Account</a>
-                                </div>
-                            </div>
-                            <div class="card-body px-6 pb-6">
-                                <div class="tab-content" id="trading-accounts">
-                                    <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
-                                        {{--Live Accounts--}}
+{{--                    @else--}}
+{{--                        <div class="card">--}}
+{{--                            <div class="card-header flex-wrap noborder">--}}
+{{--                                <div class="mb-4 sm:mb-0">--}}
+{{--                                    <ul class="nav nav-tabs flex flex-row flex-wrap list-none border-b-0 pl-0" id="tabs-tab" role="tablist">--}}
+{{--                                        <li class="nav-item" role="presentation">--}}
+{{--                                            <a href="#tabs-realAccounts"--}}
+{{--                                               class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 my-2 hover:border-transparent focus:border-transparent active dark:text-slate-300"--}}
+{{--                                               id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"--}}
+{{--                                               aria-controls="tabs-realAccounts" aria-selected="true">Live Accounts</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="nav-item" role="presentation">--}}
+{{--                                            <a href="#tabs-demoAccounts"--}}
+{{--                                               class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300"--}}
+{{--                                               id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"--}}
+{{--                                               aria-controls="tabs-demoAccounts" aria-selected="false">Demo Accounts</a>--}}
+{{--                                        </li>--}}
+{{--                                    </ul>--}}
+{{--                                </div>--}}
+{{--                                <div class="sm:space-x-4 space-x-2 rtl:space-x-reverse">--}}
+{{--                                    <a href="{{route('user.schema')}}" class="btn btn-dark">Open New Account</a>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div class="card-body px-6 pb-6">--}}
+{{--                                <div class="tab-content" id="trading-accounts">--}}
+{{--                                    <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">--}}
+{{--                                        --}}{{--Live Accounts--}}
 {{--                                        @include('frontend::user.include.__live_accounts')--}}
-                                    </div>
-                                    <div class="tab-pane fade" id="tabs-demoAccounts" role="tabpanel" aria-labelledby="tabs-demoAccounts-tab">
-                                        {{--Demo Accounts--}}
+{{--                                    </div>--}}
+{{--                                    <div class="tab-pane fade" id="tabs-demoAccounts" role="tabpanel" aria-labelledby="tabs-demoAccounts-tab">--}}
+{{--                                        --}}{{--Demo Accounts--}}
 {{--                                        @include('frontend::user.include.__demo_accounts')--}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    @endif--}}
                 </div>
             </div>
 

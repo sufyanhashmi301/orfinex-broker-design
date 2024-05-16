@@ -41,6 +41,11 @@ use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\SecurityController;
 use App\Http\Controllers\Backend\ChallengeController;
+use App\Http\Controllers\Backend\InvestDashboardController;
+use App\Http\Controllers\Backend\PricingInvestedPlansController;
+use App\Http\Controllers\Backend\PricingInvestmentSchemeController;
+use App\Http\Controllers\Backend\LedgerProfitsController;
+use App\Http\Controllers\Backend\FundedBankController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -402,6 +407,37 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withou
 Route::get('/ib-resources', function () {
     return view('backend.ib.resources.index');
 });
+
+
+Route::group(['prefix' => 'pricing', 'as' => 'pricing.', 'controller' => PricingInvestedPlansController::class], function () {
+    Route::get('/dashboard', 'index')->name('dashboard');;
+
+    Route::get('/history/{status?}', 'investedPlanList')->name('list');
+    Route::get('/plan/details/{id}', 'showInvestmentDetails')->name('details');
+    Route::get('/plan/action', 'showInvestmentDetails')->name('plan.action');
+    Route::post('plan/approve/{id?}', 'approveInvestment')->name('plan.approve');
+    Route::post('plan/cancel/{id?}', 'cancelInvestment')->name('plan.cancel');
+    Route::post('plan/migrate/{id?}', 'migrateInvestment')->name('plan.migrate');
+});
+
+Route::group(['prefix' => 'pricing', 'as' => 'pricing.', 'controller' => LedgerProfitsController::class], function () {
+    Route::get('/profits/{type?}', 'profitList')->name('profits.list');
+    Route::get('/transactions/{type?}', 'transactionList')->name('transactions.list');
+
+    Route::post('/payout/profits', 'profitsPayout')->name('profits.payout');
+});
+
+Route::group(['prefix' => 'pricing', 'as' => 'pricing.', 'controller' => PricingInvestmentSchemeController::class], function () {
+    // Schemes
+    Route::get('/schemes/{status?}', 'schemeList')->name('schemes');
+    Route::get('/scheme/{action?}', 'actionScheme')->name('scheme.action');
+    Route::post('/scheme/update/{id?}', 'updateScheme')->name('scheme.update');
+    Route::post('/scheme/save/{id?}', 'saveScheme')->name('scheme.save');
+    Route::post('/scheme/status', 'updateSchemeStatus')->name('scheme.status');
+
+});
+
+Route::post('banks', [FundedBankController::class, 'index'])->name('banks');
 
 Route::get('ib-resources/new', function () {
     return view('backend.ib.resources.create');

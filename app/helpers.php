@@ -580,6 +580,75 @@ if (!function_exists('remove_child_agent')) {
     }
 }
 
+
+if (!function_exists('the_uid')) {
+    /**
+     * @param $userId
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function the_uid($userID)
+    {
+        return config('investorm.uid_prefix') . str_pad($userID, 5, '0', STR_PAD_LEFT);
+    }
+}
+
+if (!function_exists('str_protect')) {
+    /**
+     * @param $string
+     * @param int | $len
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function str_protect($string, $len = 3)
+    {
+        return is_demo_user() ? substr($string, 0, $len) . '...' . substr($string, -$len) : $string;
+    }
+}
+
+if (!function_exists('is_demo_user')) {
+    /**
+     * @return bool
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_demo_user()
+    {
+        $user = (auth()->check()) ? auth()->user() : false;
+        if (is_demo() && !empty($user)) {
+            return ($user->role == UserRoles::ADMIN) ? true : false;
+        }
+        return false;
+    }
+}
+
+if (!function_exists('is_demo')) {
+    /**
+     * @param $string
+     * @return bool
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_demo($name = null)
+    {
+//        dd($name);
+        $demo = env('DEMO_MODE', false);
+//        dd($demo);
+//
+        if (empty($name)) {
+            return ($demo) ? true : false;
+        }
+
+        if (in_array($name, ['private', 'live'])) {
+            return ($demo === $name) ? true : false;
+        }
+
+        return false;
+    }
+}
+
 if (!function_exists('AccType')) {
     /**
      * @param $name |string

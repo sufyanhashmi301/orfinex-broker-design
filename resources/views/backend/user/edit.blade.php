@@ -169,36 +169,7 @@
                                     ><i icon-name="user"></i>{{ __('Informations') }}</a>
                                 </li>
                             @endcanany
-                            @can('investment-list')
-                                <li class="nav-item" role="presentation">
-                                    <a
-                                        href=""
-                                        class="nav-link"
-                                        id="pills-transfer-tab"
-                                        data-bs-toggle="pill"
-                                        data-bs-target="#pills-transfer"
-                                        type="button"
-                                        role="tab"
-                                        aria-controls="pills-transfer"
-                                        aria-selected="true"
-                                    ><i icon-name="anchor"></i>{{ __('Forex Accounts') }}</a>
-                                </li>
-                            @endcan
-                            @can('user-ib-mib-manage')
-                                <li class="nav-item" role="presentation">
-                                    <a
-                                        href=""
-                                        class="nav-link"
-                                        id="pills-transfer-tab"
-                                        data-bs-toggle="pill"
-                                        data-bs-target="#ib-info"
-                                        type="button"
-                                        role="tab"
-                                        aria-controls="ib-info"
-                                        aria-selected="true"
-                                    ><i icon-name="anchor"></i>{{ __('IB') }}</a>
-                                </li>
-                            @endcan
+
 
                             @can('profit-list')
                                 <li class="nav-item" role="presentation">
@@ -294,16 +265,9 @@
 
                     <!-- investments -->
                     @can('investment-list')
-                        @include('backend.user.include.__investments')
+{{--                        @include('backend.user.include.__investments')--}}
                     @endcan
-                    <!-- IB -->
-                    @can('user-ib-mib-manage')
-                        @include('backend.user.include.__ib_info')
-                        @include('backend.user.include.__ib_add')
-                        @include('backend.user.include.__ib_update')
-                        @include('backend.user.include.__mib_add')
-                        @include('backend.user.include.__mib_update')
-                    @endcan
+
 
                     <!-- earnings -->
                     @can('profit-list')

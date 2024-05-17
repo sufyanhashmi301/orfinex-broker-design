@@ -47,7 +47,7 @@
             @endif
         </div>
     </div>
-    
+
     <div class="space-y-5 mb-6">
         <div class="card">
             <div class="card-body p-6">
@@ -57,7 +57,7 @@
                             <div class="nk-wgacc-sub">
                                 <div class="shrink-0">
                                     <div class="number text-2xl font-bold whitespace-nowrap">
-                                        {{ amount_z($invest->total, $currency) }} 
+                                        {{ amount_z($invest->total, $currency) }}
                                         <span class="font-normal">{{ $currency }}</span>
                                     </div>
                                 </div>
@@ -102,14 +102,14 @@
                     <li class="flex justify-between items-center py-[8px] px-5">
                         <div class="sub-text">{{ __('Leverage') }}</div>
                         <div class="lead-text">
-                            <span class="currency">1 :</span> 
+                            <span class="currency">1 :</span>
                             {{ data_get($invest, 'leverage') }}
                         </div>
                     </li>
                     <li class="flex justify-between items-center py-[8px] px-5">
                         <div class="sub-text">{{ __('Profit Share (%)') }}</div>
-                        <div class="lead-text"> 
-                            {{ data_get($invest, 'profit_share_user') }} / {{ data_get($invest, 'profit_share_admin') }} 
+                        <div class="lead-text">
+                            {{ data_get($invest, 'profit_share_user') }} / {{ data_get($invest, 'profit_share_admin') }}
                         </div>
                     </li>
                     <li class="flex justify-between items-center py-[8px] px-5">
@@ -259,7 +259,7 @@
                                     <th scope="col" class="table-th">{{ __('Date & Time') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">
-                                        <iconify-icon class="icon ntext-lg" icon="lucide:info" title="{{ __("The profit transfered into account balance or not.") }}"></iconify-icon>    
+                                        <iconify-icon class="icon ntext-lg" icon="lucide:info" title="{{ __("The profit transfered into account balance or not.") }}"></iconify-icon>
                                     </th>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
@@ -304,7 +304,7 @@
             </div>
         </div>
     @endif
-    @include('backend.investment.pricing.invest.plan_migrate_model',['invest','plans'])
+    @include('backend.pricing.invest.plan_migrate_model',['invest','plans'])
 
 @endsection
 

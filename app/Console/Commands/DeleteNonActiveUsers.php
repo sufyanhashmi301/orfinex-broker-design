@@ -39,21 +39,19 @@ class DeleteNonActiveUsers extends Command
      */
     public function handle()
     {
-        $users = DB::select("SELECT *
-                    FROM users
-                    WHERE id NOT IN (
-                        SELECT user_id FROM login_activities WHERE created_at >= NOW() - INTERVAL 4 MONTH
-                        UNION
-                        SELECT user_id FROM transactions WHERE target_type = 'forex_deposit' AND status = 'success' AND created_at >= NOW() - INTERVAL 4 MONTH
-                        UNION
-                        SELECT user_id FROM forex_accounts fa
-                            WHERE account_type = 'real'
-                            AND EXISTS (
-                                SELECT 1 FROM orfi2024nex_mt5db.mt5_accounts ma
-                                WHERE ma.Equity > 0
-                                AND ma.Login = fa.login
-                            ))");
-
+        $filteredusers = DB::connection('mt5_db')->table('users')
+//            ->where('id',2)
+            ->pluck('id');
+        $users = User::whereIn('id',$filteredusers)->get();
+//        $users = DB::select("SELECT users.*, forex_accounts.login AS forex_login FROM users
+//                             LEFT JOIN forex_accounts ON users.id = forex_accounts.user_id WHERE users.id NOT IN (
+//                                SELECT user_id FROM login_activities WHERE created_at >= NOW() - INTERVAL 4 MONTH
+//                            UNION
+//                            SELECT user_id FROM transactions WHERE target_type = 'forex_deposit' AND status = 'success' AND created_at >= NOW() - INTERVAL 4 MONTH
+//                            UNION
+//                            SELECT user_id FROM forex_accounts fa WHERE account_type = 'real' AND
+//                                            EXISTS ( SELECT 1 FROM orfinex_new.mt5_accounts ma WHERE ma.Equity > 0 AND ma.Login = fa.login ) )");
+//dd($users);
         foreach ($users as $user){
 //            dd($user);
             $this->deleteRecords($user->id);
@@ -75,5 +73,6 @@ class DeleteNonActiveUsers extends Command
         ForexAccount::where('user_id', $missingUserOldID)->delete();
         IbQuestionAnswer::where('user_id', $missingUserOldID)->delete();
         Transaction::where('user_id', $missingUserOldID)->delete();
+        User::where('id', $missingUserOldID)->delete();
     }
 }

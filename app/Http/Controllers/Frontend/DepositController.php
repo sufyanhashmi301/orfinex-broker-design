@@ -8,6 +8,7 @@ use App\Enums\TxnType;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
 use App\Models\Transaction;
+use App\Rules\ForexLoginBelongsToUser;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -55,7 +56,7 @@ class DepositController extends GatewayController
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => 'required',
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [

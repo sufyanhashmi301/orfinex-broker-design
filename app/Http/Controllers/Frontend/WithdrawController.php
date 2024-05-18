@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Models\WithdrawAccount;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
+use App\Rules\ForexLoginBelongsToUser;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -241,8 +242,8 @@ class WithdrawController extends Controller
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
-            'target_id' => 'required',
-            'withdraw_account' => 'required',
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
+            'withdraw_account' => ['required'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
         ],[

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\ForexAccountStatus;
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Rules\ForexLoginBelongsToUser;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -59,8 +58,8 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required', 'different:receiver_account'],
-            'receiver_account' => ['required', 'different:target_id'],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
+            'receiver_account' => ['required','integer', 'different:target_id'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
             'target_id.required' => __('Kindly select the sender account to transfer'),
@@ -231,8 +230,8 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required', 'different:receiver_account'],
-            'receiver_account' => ['required', 'different:target_id'],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
+            'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
             'target_id.required' => __('Kindly select the account from to transfer'),

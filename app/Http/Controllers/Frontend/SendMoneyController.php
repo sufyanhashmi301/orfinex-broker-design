@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\ForexAccountStatus;
+use App\Enums\TxnType;
+use App\Enums\TxnStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\Transaction;

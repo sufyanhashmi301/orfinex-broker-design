@@ -53,7 +53,7 @@
                                 {{ __('Balance') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->balance}} {{$account->currency}}
+                                {{$balance}} {{$account->currency}}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -61,7 +61,7 @@
                                 {{ __('Leverage') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->leverage}}
+                                {{$leverage}}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -69,7 +69,7 @@
                                 {{ __('Equity') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->equity}}
+                                {{$equity}}
                             </span>
                         </li>
                     </ul>

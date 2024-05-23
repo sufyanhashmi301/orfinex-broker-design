@@ -58,7 +58,7 @@
                                 {{ __('Leverage') }}
                             </span>
                                 <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->leverage}}
+                                {{$leverage}}
                             </span>
                             </li>
                             <li class="flex items-center py-3">

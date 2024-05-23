@@ -179,10 +179,7 @@ class DepositController extends GatewayController
 //        dd($input);
         $targetId = $input['target_id'];
         $targetType = 'forex_deposit_demo';
-        $isDemoAccount = ForexAccount::where('login', $targetId)->where('account_type', 'demo')->first();
-        if(!$isDemoAccount){
-            return response()->json(['error' => __('Your Account is not Demo Type, kindly choose Demo account to submit'), 'reload' => false]);
-        }
+   
         $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
            $isValid =  $this->isValidForexAccount($targetId);

@@ -15,6 +15,7 @@ use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Session;
 use Txn;
 use Validator;
@@ -60,12 +61,21 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
-            'receiver_account' => ['required','integer', 'different:target_id'],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
+            'receiver_account' => ['required','integer', 'different:target_id',
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
-            'target_id.required' => __('Kindly select the sender account to transfer'),
-            'receiver_account.required' => __('Kindly select the receiver account to transfer')
+            'target_id.required' => __('Kindly select the sender account to transfer.'),
+            'receiver_account.required' => __('Kindly select the receiver account to transfer.'),            'target_id.exists' => 'The selected forex account does not exist or is not of type real.',
+            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
+            'receiver_account.exists' => 'The selected account to(receiver) does not exist or is not of type real.',
+
         ]);
 
         if ($validator->fails()) {
@@ -232,12 +242,21 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
-            'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
+            'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
             'target_id.required' => __('Kindly select the account from to transfer'),
-            'receiver_account.required' => __('Kindly select the receiver account to transfer')
+            'receiver_account.required' => __('Kindly select the receiver account to transfer'),
+            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
+            'receiver_account.exists' => 'The selected account to(receiver) does not exist or is not of type real.',
+
         ]);
         $targetType = $request->input('target_type');
 

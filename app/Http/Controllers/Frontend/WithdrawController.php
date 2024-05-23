@@ -24,6 +24,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Session;
 use Txn;
 use Validator;
@@ -244,12 +245,16 @@ class WithdrawController extends Controller
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
-            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
             'withdraw_account' => ['required'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
         ],[
-            'target_id.required'=> __('Kindly select the forex account to withdraw')
+            'target_id.required'=> __('Kindly select the forex account to withdraw'),
+            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
         ]);
 
         if ($validator->fails()) {

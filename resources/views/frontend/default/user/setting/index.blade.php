@@ -96,12 +96,12 @@
                                         {{ $user->email }}
                                     </a>
                                 </div>
-                                <button class="h-8 w-8 btn-dark inline-flex items-center justify-center rounded-full"
-                                type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#emailEditModal">
-                                    <iconify-icon icon="heroicons:pencil-square" class="text-lg"></iconify-icon>
-                                </button>
+{{--                                <button class="h-8 w-8 btn-dark inline-flex items-center justify-center rounded-full"--}}
+{{--                                type="button"--}}
+{{--                                data-bs-toggle="modal"--}}
+{{--                                data-bs-target="#emailEditModal">--}}
+{{--                                    <iconify-icon icon="heroicons:pencil-square" class="text-lg"></iconify-icon>--}}
+{{--                                </button>--}}
                             </li>
                             <!-- end single list -->
                             <li class="flex space-x-3 rtl:space-x-reverse">
@@ -222,7 +222,7 @@
                             </div>
                         </div>
                     </a>
-        
+
                     <a href="{{ route('user.margin-account') }}" class="card">
                         <div class="card-body p-5">
                             <div class="space-y-6">
@@ -240,7 +240,7 @@
                             </div>
                         </div>
                     </a>
-        
+
                 </div>
             </div>
         </div>
@@ -248,10 +248,10 @@
 
     <!-- Modal for Edit Phone -->
     @include('frontend.default.user.setting.profile.modal.__edit_phone')
-    
+
     <!-- Modal for Edit Email -->
-    @include('frontend.default.user.setting.profile.modal.__edit_email')
-    
+{{--    @include('frontend.default.user.setting.profile.modal.__edit_email')--}}
+
     <!-- Modal for Edit Email -->
     @include('frontend.default.user.setting.profile.modal.__edit_address')
 

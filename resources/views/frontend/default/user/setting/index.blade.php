@@ -96,12 +96,12 @@
                                         {{ $user->email }}
                                     </a>
                                 </div>
-                                <button class="h-8 w-8 btn-dark inline-flex items-center justify-center rounded-full"
-                                type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#emailEditModal">
-                                    <iconify-icon icon="heroicons:pencil-square" class="text-lg"></iconify-icon>
-                                </button>
+{{--                                <button class="h-8 w-8 btn-dark inline-flex items-center justify-center rounded-full"--}}
+{{--                                type="button"--}}
+{{--                                data-bs-toggle="modal"--}}
+{{--                                data-bs-target="#emailEditModal">--}}
+{{--                                    <iconify-icon icon="heroicons:pencil-square" class="text-lg"></iconify-icon>--}}
+{{--                                </button>--}}
                             </li>
                             <!-- end single list -->
                             <li class="flex space-x-3 rtl:space-x-reverse">
@@ -222,7 +222,24 @@
                             </div>
                         </div>
                     </a>
-        
+
+                    <a href="{{ route('user.margin-account') }}" class="card">
+                        <div class="card-body p-5">
+                            <div class="space-y-6">
+                                <div class="flex space-x-3 rtl:space-x-reverse items-center">
+                                    <div class="flex-none h-8 w-8 rounded-full bg-success-500 text-white flex flex-col items-center justify-center text-lg">
+                                        <iconify-icon icon="fa6-solid:sack-dollar"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
+                                        Margin 4x360
+                                    </div>
+                                </div>
+                                <div class="text-slate-600 dark:text-slate-300 text-sm">
+                                    Application of Account Opening of Margin 4x360
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -230,10 +247,10 @@
 
     <!-- Modal for Edit Phone -->
     @include('frontend.default.user.setting.profile.modal.__edit_phone')
-    
+
     <!-- Modal for Edit Email -->
-    @include('frontend.default.user.setting.profile.modal.__edit_email')
-    
+{{--    @include('frontend.default.user.setting.profile.modal.__edit_email')--}}
+
     <!-- Modal for Edit Email -->
     @include('frontend.default.user.setting.profile.modal.__edit_address')
 

@@ -85,9 +85,9 @@ class SettingController extends Controller
         }
 
         $data = [];
-        if(isset($input['email'])) {
-            $data['email'] = $input['email'];
-        }
+//        if(isset($input['email'])) {
+//            $data['email'] = $input['email'];
+//        }
         if(isset($input['phone'])) {
             $data['phone'] = $input['phone'];
         }

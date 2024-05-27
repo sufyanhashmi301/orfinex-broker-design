@@ -409,12 +409,12 @@
                                             icon-name="settings-2"></i>{{ __('Site Settings') }}</a>
                                 </li>
                             @endcan
-                            @can('email-setting')
-                                <li class="{{ isActive('admin.settings.mail') }}">
-                                    <a href="{{ route('admin.settings.mail') }}"><i
-                                            icon-name="inbox"></i>{{ __('Email Settings') }}</a>
-                                </li>
-                            @endcan
+{{--                            @can('email-setting')--}}
+{{--                                <li class="{{ isActive('admin.settings.mail') }}">--}}
+{{--                                    <a href="{{ route('admin.settings.mail') }}"><i--}}
+{{--                                            icon-name="inbox"></i>{{ __('Email Settings') }}</a>--}}
+{{--                                </li>--}}
+{{--                            @endcan--}}
                             @can('plugin-setting')
                                 <li class="{{ isActive('admin.settings.plugin','system') }}">
                                     <a href="{{ route('admin.settings.plugin','system') }}"><i

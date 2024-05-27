@@ -197,13 +197,6 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountLogs(Request $request)
     {
-//        $this->getUserInfoApi(11111134);
-//        $this->getPositionList(9996792);
-//        $this->getPositionListGroup(9996792);
-//        $this->getOrderOpenUser(9996792);
-//        $this->getDealListUser(9997821);
-//        $this->getUserAccountBalance(9996792);
-//        $this->dealerCreditUrl(9996792,1,2);
 
         $clientIp = request()->ip();
         if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
@@ -266,6 +259,7 @@ class ForexAccountController extends GatewayController
                 notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
             }
         }
+
 //        if ($request->name) {
 //            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
 //            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);

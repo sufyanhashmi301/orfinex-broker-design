@@ -18,8 +18,7 @@ class DashboardController extends Controller
     {
 //        dd(getLocation(),'dashboar');
         $user = auth()->user();
-
-        remove_child_agent($user);
+        
 //        $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
 //            $this->syncForexAccounts(auth()->id());

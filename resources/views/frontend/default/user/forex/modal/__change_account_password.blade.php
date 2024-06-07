@@ -37,7 +37,7 @@
                                 <li class="text-xs mb-1 text-danger-500" id="number-check-main">At least one number
                                 </li>
                                 <li class="text-xs mb-1 text-danger-500" id="special-check-main">At least one special
-                                    character(!@#$%^&*(),-.?":{}|<>)
+                                    character(!@#$%^&*(),?:{}|<>)
                                 </li>
                             </ul>
                         </div>

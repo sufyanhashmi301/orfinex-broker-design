@@ -8,8 +8,10 @@ use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
 use App\Models\User;
+use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
+
 
 if (!function_exists('isActive')) {
     function isActive($route, $parameter = null)
@@ -531,12 +533,17 @@ if (!function_exists('add_child_agent')) {
                 ->where('account_type', 'real')
                 ->get();
 //        dd($forexAccounts,$this->user);
-            $forexApiTrait = new class {
-                use ForexApiTrait;
-            };
+//            $forexApiTrait = new class {
+//                use ForexApiTrait;
+//            };
+            $forexApiService = app(ForexApiService::class);
             foreach ($forexAccounts as $forexAccount) {
                 if ($pUser->ib_login) {
-                    $forexApiTrait->updateAgent($forexAccount->login, $pUser->ib_login);
+                    $data = [
+                        'login' => $forexAccount->login,
+                        'agent' => $pUser->ib_login,
+                    ];
+                    $forexApiService->updateAgentAccount($data);
                 }
             }
         }
@@ -557,11 +564,14 @@ if (!function_exists('remove_child_agent')) {
             ->where('account_type', 'real')
             ->get();
 //        dd($forexAccounts,$this->user);
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = app(ForexApiService::class);
         foreach ($forexAccounts as $forexAccount) {
-            $forexApiTrait->updateAgent($forexAccount->login, 0);
+            $data = [
+                'login' => $forexAccount->login,
+                'agent' => 0,
+            ];
+           $forexApiService->updateAgentAccount($data);
+//            $forexApiTrait->updateAgent($forexAccount->login, 0);
         }
 
     }

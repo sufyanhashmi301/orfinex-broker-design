@@ -108,9 +108,12 @@ class WithdrawController extends Controller
     public function edit($id)
     {
         $withdrawMethods = WithdrawMethod::all();
-        $withdrawAccount = WithdrawAccount::find($id);
+        $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
+        if($withdrawAccount){
+            return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
+        }
+        return redirect()->back();
 
-        return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
 
     }
 

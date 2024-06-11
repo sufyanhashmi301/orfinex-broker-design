@@ -1,8 +1,8 @@
-@extends('frontend::layouts.auth')
+@extends('backend.auth.index')
 @section('title')
     {{ __('2FA Security') }}
 @endsection
-@section('content')
+@section('auth-content')
     <div class="loginwrapper bg-cover bg-no-repeat bg-center"
          style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
         <div class="lg-inner-column">
@@ -21,9 +21,9 @@
                         </a>
                     </div>
                     <div class="text-center 2xl:mb-10 mb-5">
-                        <h4 class="font-medium">👋 {{ __('Welcome Back!') }}</h4>
+                        <h4 class="font-medium">👋 {{ __('Welcome Back Admin!') }}</h4>
                         <div class="text-slate-500 dark:text-slate-400 text-base">
-                            {{ __('Sign in to continue with') }} {{ setting('site_title','global') }} {{ __('User Panel') }}
+                            {{ __('Sign in to continue with') }} {{ setting('site_title','global') }} {{ __('Admin Panel') }}
                         </div>
                     </div>
                     @if ($errors->any())
@@ -35,7 +35,7 @@
                         </div>
                     @endif
                     <div class="site-auth-form">
-                        <form method="POST" action="{{ route('user.setting.2fa.verify') }}">
+                        <form method="POST" action="{{ route('admin.2fa.verify') }}">
                             @csrf
 
                             <div class="single-field">
@@ -61,19 +61,25 @@
                                 {{ __('Authenticate Now') }}
                             </button>
                         </form>
-                            <form method="POST" action="{{ route('admin.logout') }}">
-                                @csrf
-
-                                <button type="submit" class="underline text-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                                    {{ __('Log Out') }}
-                                </button>
-                            </form>
+                        <br>
+                        <br>
 
                     </div>
                 </div>
             </div>
         </div>
+        <div class="site-auth-form">
+        <form method="POST" action="{{ route('admin.logout') }}">
+            @csrf
+
+            <button type="submit" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                {{ __('Log Out') }}
+            </button>
+        </form>
+        </div>
+
     </div>
+
 @endsection
 
 

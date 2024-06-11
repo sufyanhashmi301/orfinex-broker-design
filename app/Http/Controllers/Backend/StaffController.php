@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use PragmaRX\Google2FALaravel\Support\Authenticator;
 use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
@@ -138,5 +139,71 @@ class StaffController extends Controller
         notify()->success('Staff updated successfully');
 
         return redirect()->route('admin.staff.index');
+    }
+    public function security()
+    {
+        return view('backend.staff.security.index');
+    }
+    public function twoFaPin()
+    {
+        return view('backend.auth.two_fa_pin');
+    }
+    public function twoFa()
+    {
+        $user = \Auth::user();
+        $google2fa = app('pragmarx.google2fa');
+        $secret = $google2fa->generateSecretKey();
+//dd($user,$google2fa,$secret);
+        $user->update([
+            'google2fa_secret' => $secret,
+        ]);
+        notify()->success(__('QR Code And Secret Key Generate successfully'));
+
+        return redirect()->back();
+
+    }
+
+    public function actionTwoFa(Request $request)
+    {
+        $user = \Auth::user();
+
+        if ($request->status == 'disable') {
+
+            if (Hash::check(request('one_time_password'), $user->password)) {
+                $user->update([
+                    'two_fa' => 0,
+                ]);
+                notify()->success(__('2Fa Authentication Disable successfully'));
+
+                return redirect()->back();
+            }
+
+            notify()->warning(__('Wrong Your Password'));
+
+            return redirect()->back();
+
+        } elseif ($request->status == 'enable') {
+            session([
+                config('google2fa.session_var') => [
+                    'auth_passed' => false,
+                ],
+            ]);
+
+            $authenticator = app(Authenticator::class)->boot($request);
+            if ($authenticator->isAuthenticated()) {
+
+                $user->update([
+                    'two_fa' => 1,
+                ]);
+                notify()->success(__('2Fa Authentication Enable successfully'));
+
+                return redirect()->back();
+
+            }
+
+            notify()->warning(__('2Fa Authentication Wrong One Time Key'));
+
+            return redirect()->back();
+        }
     }
 }

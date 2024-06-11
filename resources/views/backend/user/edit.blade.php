@@ -116,7 +116,7 @@
                                             <div class="wallet-info">
                                                 <div class="wallet-id">{{ setting('site_currency','global') }}</div>
                                                 <div
-                                                    class="balance">{{ setting('currency_symbol','global') . mt5_total_balance($user->id) }}</div>
+                                                    class="balance">{{ setting('currency_symbol','global') . $user->totalForexBalance() }}</div>
                                             </div>
                                         </div>
                                         <div class="admin-user-balance-card">
@@ -133,7 +133,7 @@
                                             <div class="wallet-info">
                                                 <div class="wallet-id">{{ setting('site_currency','global') }}</div>
                                                 <div
-                                                    class="balance">{{ setting('currency_symbol','global') . mt5_total_equity($user->id) }}</div>
+                                                    class="balance">{{ setting('currency_symbol','global') . $user->totalForexEquity() }}</div>
                                             </div>
                                         </div>
                                     </div>

@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->text('kyc_token')->nullable()->after('kyc_credential');
-            $table->string('applicant_id')->nullable()->after('kyc_token');
-            $table->timestamp('kyc_created_at')->nullable()->after('applicant_id');
+            $table->string('kyc_token', 500)->nullable()->after('kyc_credential');
+            $table->timestamp('kyc_created_at')->nullable()->after('kyc_token');
+
         });
     }
 

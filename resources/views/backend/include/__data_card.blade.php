@@ -102,7 +102,7 @@
                 <i icon-name="package-plus"></i>
             </div>
             <div class="content">
-                <h4>{{$data['total_live_forex_accounts']}}</h4>
+                <h4>0</h4>
                 <p>{{ __('Live Accounts') }}</p>
             </div>
         </div>
@@ -111,10 +111,10 @@
     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
         <div class="data-card">
             <div class="icon bg-light">
-                <i icon-name="package-plus"></i>
+                <i icon-name="sprout"></i>
             </div>
             <div class="content">
-                <h4>{{$data['total_demo_forex_accounts']}}</h4>
+                <h4>0</h4>
                 <p>{{ __('Demo Accounts') }}</p>
             </div>
         </div>

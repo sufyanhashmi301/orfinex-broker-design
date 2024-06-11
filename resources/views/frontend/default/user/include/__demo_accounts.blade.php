@@ -20,7 +20,7 @@
                             {{$account->trading_platform}} {{ucfirst($account->account_type)}}
                         </td>
                         <td class="table-td">
-                            {{get_mt5_account_equity($account->login)}} $
+                            {{$account->equity}} $
                         </td>
                         <td class="table-td">
                             <div class="flex space-x-3 rtl:space-x-reverse">

@@ -108,7 +108,7 @@ class SettingController extends Controller
         $user = \Auth::user();
         $google2fa = app('pragmarx.google2fa');
         $secret = $google2fa->generateSecretKey();
-//dd($google2fa,$secret);
+
         $user->update([
             'google2fa_secret' => $secret,
         ]);

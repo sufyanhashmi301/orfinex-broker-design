@@ -8,7 +8,6 @@ use App\Models\Kyc;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
-use Sumsub\AppTokenUsageExample\SumsubClient;
 use Validator;
 
 class KycController extends Controller
@@ -25,42 +24,6 @@ class KycController extends Controller
         $kycs = Kyc::where('status', true)->get();
 
         return view('frontend::user.kyc.basic.index', compact('kycs'));
-    }
-    public function advanceKyc()
-    {
-        $SUMSUB_SECRET_KEY = 'qxjq7aQDCDVDHZihPww9PBn9eCkAgiMi';
-        $SUMSUB_APP_TOKEN = 'sbx:Lv8TQG3jd87Tk67GwJNKG1vk.4kwEhe5x2qU1swGIfWw1YyipF4cmlN3U';
-
-        $user = \Auth::user();
-        if (empty($user->kyc_token)) {
-            $externalUserId = $user->id;
-            $levelName = 'Orfinex Verification';
-
-            $testObject = new SumsubClient($SUMSUB_APP_TOKEN, $SUMSUB_SECRET_KEY);
-
-            $applicantId = $testObject->createApplicant($externalUserId, $levelName);
-
-            $testObject->getApplicantStatus($applicantId);
-
-            $accessTokenInfo = $testObject->getAccessToken($externalUserId, $levelName);
-
-            $user->update([
-                'kyc_token' => $accessTokenInfo['token'],
-            ]);
-        }
-        return view('frontend::user.kyc.advance.index');
-    }
-    public function UpdateKycStatus(Request $req)
-    {
-        try {
-            $user = \Auth::user();
-            $user->update([
-                'kyc' => 1,
-            ]);
-            return response()->json(['status' => 200,'success' => 'Verification completed']);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
-        }
     }
 
     public function kycData($id)
@@ -95,27 +58,27 @@ class KycController extends Controller
                 self::delete($value);
             }
         }
-        //        $kycCredential1[] = json_decode('{"Front Side":{},"Back Side":{},"kyc_type_of_name":"National ID Card","kyc_time_of_time":"2024-01-04T22:51:47.025821Z"}');
-        //        dd($kycCredential['Front Page']);
-        //        dd($kycCredential1);
+//        $kycCredential1[] = json_decode('{"Front Side":{},"Back Side":{},"kyc_type_of_name":"National ID Card","kyc_time_of_time":"2024-01-04T22:51:47.025821Z"}');
+//        dd($kycCredential['Front Page']);
+//        dd($kycCredential1);
         foreach ($kycCredential as $key => $value) {
-            //dd($key,$value);
+//dd($key,$value);
             if (is_file($value)) {
-                //                dd(self::kycImageUploadTrait($value));
+//                dd(self::kycImageUploadTrait($value));
                 $path = self::kycImageUploadTrait($value);
-                if (isset($path) && !empty($path)) {
+                if(isset($path) && !empty($path)) {
                     $kycCredential[$key] = $path;
-                } else {
-                    notify()->error('kindly Set the ' . $key, 'Error');
+                }else{
+                    notify()->error('kindly Set the '.$key, 'Error');
                     return redirect()->back();
                 }
             }
         }
-        ////        dd($kycCredential['Front Page']);
-        //        if(isset($kycCredential['Front Page'])){
-        //
-        //        }
-        //        dd($kycCredential);
+////        dd($kycCredential['Front Page']);
+//        if(isset($kycCredential['Front Page'])){
+//
+//        }
+//        dd($kycCredential);
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),

@@ -52,11 +52,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::group(['middleware' => [ '2fa']], function () {
-Route::middleware(['2fa_admin'])->group(function () {
-//Admin Dashboard
-    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
+//Admin Dashboard
+Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 //===============================  Customer Management ==================================
 Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
@@ -108,18 +106,12 @@ Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::cla
 //===============================  Role Management ==================================
 Route::resource('roles', RoleController::class)->except('show', 'destroy');
 Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
-Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
-Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
-Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
-Route::post('/2fa/verify', function () {
-//            dd(route('admin.dashboard'));
-    return redirect(route('admin.dashboard'));
-})->name('2fa.verify');
+
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
 Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
+Route::resource('blackListCountry', BlackListCountryController::class)->except('show'  );
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
@@ -128,7 +120,8 @@ Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'
 //===============================  Transactions ==================================
 Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
 Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
-Route::get('forex-accounts/{type?}/{id?}', [InvestmentController::class, 'forexAccounts'])->name('forex-accounts');
+Route::get('forex-accounts/real/{id?}', [InvestmentController::class, 'forexAccountsReal'])->name('forex-accounts-real');
+Route::get('forex-accounts/demo/id?}', [InvestmentController::class, 'forexAccountsDemo'])->name('forex-accounts-demo');
 Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================
@@ -344,6 +337,7 @@ Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('
 Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
 Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
 Route::get('/ib-resources', function () {
     return view('backend.ib.resources.index');
@@ -370,7 +364,3 @@ Route::get('/bonus', function () {
 Route::get('/bonus/create', function () {
     return view('backend.bonus.create');
 });
-});
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
-
-Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');

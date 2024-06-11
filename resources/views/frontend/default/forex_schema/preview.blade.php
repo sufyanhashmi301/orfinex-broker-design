@@ -88,7 +88,7 @@
                                 At least one number
                             </li>
                             <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
-                                At least one special character(!@#$%^&*(),?:{}|<>)
+                                At least one special character(!@#$%^&*(),-.?":{}|<>)
                             </li>
                         </ul>
                     </div>

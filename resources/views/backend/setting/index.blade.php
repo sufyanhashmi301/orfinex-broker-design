@@ -25,12 +25,12 @@
                                 </li>
                             @endcan
 
-{{--                            @can('email-setting')--}}
-{{--                                <li class="{{ isActive('admin.settings.mail') }}">--}}
-{{--                                    <a href="{{ route('admin.settings.mail') }}"><i--}}
-{{--                                            icon-name="mail"></i>{{ __('Email Settings') }}</a>--}}
-{{--                                </li>--}}
-{{--                            @endcan--}}
+                            @can('email-setting')
+                                <li class="{{ isActive('admin.settings.mail') }}">
+                                    <a href="{{ route('admin.settings.mail') }}"><i
+                                            icon-name="mail"></i>{{ __('Email Settings') }}</a>
+                                </li>
+                            @endcan
 
                             @can('plugin-setting')
 

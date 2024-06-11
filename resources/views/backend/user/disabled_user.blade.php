@@ -28,7 +28,7 @@
                                         <th>{{ __('User') }}</th>
                                         <th>{{ __('Email') }}</th>
                                         <th>{{ __('Balance') }}</th>
-{{--                                        <th>{{ __('Profit') }}</th>--}}
+                                        <th>{{ __('Profit') }}</th>
                                         <th>{{ __('KYC') }}</th>
                                         <th>{{ __('Status') }}</th>
                                         <th>{{ __('Action') }}</th>
@@ -68,7 +68,7 @@
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
-                    // {data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
+                    {data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
                     {data: 'kyc', name: 'kyc'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},

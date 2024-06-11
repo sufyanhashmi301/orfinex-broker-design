@@ -98,6 +98,7 @@
                 $('#editPlugin').modal('show');
 
             })
+
         })
     </script>
 

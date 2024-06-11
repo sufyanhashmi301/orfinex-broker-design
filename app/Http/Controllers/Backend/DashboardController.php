@@ -7,7 +7,6 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\Invest;
 use App\Models\LoginActivities;
@@ -142,8 +141,6 @@ class DashboardController extends Controller
             'investment_bonus' => $transaction->totalInvestBonus(),
             'total_gateway' => $totalGateway,
             'total_ticket' => Ticket::count(),
-            'total_live_forex_accounts' => ForexAccount::where('account_type', 'real')->count(),
-            'total_demo_forex_accounts' => ForexAccount::where('account_type', 'demo')->count(),
 
             'browser' => $browser,
             'platform' => $platform,

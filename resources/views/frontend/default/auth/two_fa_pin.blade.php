@@ -3,8 +3,7 @@
     {{ __('2FA Security') }}
 @endsection
 @section('content')
-    <div class="loginwrapper bg-cover bg-no-repeat bg-center"
-         style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
+    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
         <div class="lg-inner-column">
             <div class="left-columns lg:w-1/2 lg:block hidden">
                 <div class="logo-box-3">
@@ -27,49 +26,42 @@
                         </div>
                     </div>
                     @if ($errors->any())
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            @foreach($errors->all() as $error)
-                                <strong>You Entered {{$error}}</strong>
-                            @endforeach
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="site-auth-form">
-                        <form method="POST" action="{{ route('user.setting.2fa.verify') }}">
-                            @csrf
-
-                            <div class="single-field">
-                                <p>{{ __('Please enter the') }}
-                                    <strong>{{ __('OTP') }}</strong> {{ __('generated on your Authenticator App.') }}
-                                    <br> {{ __('Ensure you submit the current one because it refreshes every 30 seconds.') }}
-                                </p>
-
-                                <label class="box-label" for="password">{{ __('One Time Password') }}</label>
-                                <div class="password">
-                                    <input
-                                        class="form-control"
-                                        type="password"
-                                        id="one_time_password"
-                                        name="one_time_password"
-                                        placeholder="Enter your Pin"
-                                        required
-                                    />
-                                </div>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                @foreach($errors->all() as $error)
+                                    <strong>You Entered {{$error}}</strong>
+                                @endforeach
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <br>
-                            <button type="submit" class="btn btn-dark block w-full text-center">
-                                {{ __('Authenticate Now') }}
-                            </button>
-                        </form>
-                            <form method="POST" action="{{ route('admin.logout') }}">
+                        @endif
+                        <div class="site-auth-form">
+                            <form method="POST" action="{{ route('user.setting.2fa.verify') }}">
                                 @csrf
 
-                                <button type="submit" class="underline text-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                                    {{ __('Log Out') }}
+                                <div class="single-field">
+                                    <p>{{ __('Please enter the') }}
+                                        <strong>{{ __('OTP') }}</strong> {{ __('generated on your Authenticator App.') }}
+                                        <br> {{ __('Ensure you submit the current one because it refreshes every 30 seconds.') }}
+                                    </p>
+
+                                    <label class="box-label" for="password">{{ __('One Time Password') }}</label>
+                                    <div class="password">
+                                        <input
+                                            class="form-control"
+                                            type="password"
+                                            id="one_time_password"
+                                            name="one_time_password"
+                                            placeholder="Enter your Pin"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-dark block w-full text-center">
+                                    {{ __('Authenticate Now') }}
                                 </button>
                             </form>
 
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>

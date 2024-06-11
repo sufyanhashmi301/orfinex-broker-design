@@ -59,9 +59,9 @@ Route::middleware('auth')->group(function () {
 
 //================================ Admin Auth Section ================================
 
-Route::group(['prefix' => 'clinic', 'as' => 'admin.'], function () {
-    Route::get('door', [AuthController::class, 'loginView'])->name('login-view');
-    Route::post('door', [AuthController::class, 'authenticate'])->name('login');
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::get('login', [AuthController::class, 'loginView'])->name('login-view');
+    Route::post('login', [AuthController::class, 'authenticate'])->name('login');
 
     // Forget Password
     Route::get('forget-password', [ForgetPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.now');

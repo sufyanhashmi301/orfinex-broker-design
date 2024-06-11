@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
@@ -100,10 +101,9 @@ class StaffController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:admins,email,'.$id,
+            'email' => 'required|email|unique:admins,email,' . $id,
             'password' => 'same:confirm-password',
             'role' => ['required', Rule::notIn('Super-Admin')],
             'status' => 'boolean',
@@ -111,13 +111,12 @@ class StaffController extends Controller
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
         $input = $request->all();
 
-        if (! empty($input['password'])) {
+        if (!empty($input['password'])) {
             $input['password'] = Hash::make($input['password']);
         } else {
             $input = Arr::except($input, ['password']);
@@ -127,9 +126,11 @@ class StaffController extends Controller
 
         if ($staff->getRoleNames()->first() === 'Super-Admin') {
             notify()->warning('Super admin not changeable');
-
             return redirect()->back();
         }
+
+        // Invalidate the user's session
+        $this->invalidateUserSession($staff);
 
         $staff->update($input);
         DB::table('model_has_roles')->where('model_id', $id)->delete();
@@ -137,8 +138,26 @@ class StaffController extends Controller
         $staff->assignRole($request->input('role'));
 
         notify()->success('Staff updated successfully');
-
         return redirect()->route('admin.staff.index');
+    }
+
+    protected function invalidateUserSession($user)
+    {
+        // Path to the session files
+        $sessionFilesPath = storage_path('framework/sessions');
+
+        // Get all session files
+        $sessionFiles = File::files($sessionFilesPath);
+
+        // Iterate over session files and delete those belonging to the user
+        foreach ($sessionFiles as $file) {
+            $content = File::get($file);
+
+            // Check if the session file contains the user's ID
+            if (str_contains($content, 'login_web_' . $user->id)) {
+                File::delete($file);
+            }
+        }
     }
     public function security()
     {

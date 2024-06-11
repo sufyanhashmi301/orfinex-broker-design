@@ -230,6 +230,7 @@ class UserController extends Controller
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
             'transfer_status' => 'required',
+            'account_limit' => 'required|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -247,6 +248,7 @@ class UserController extends Controller
             'withdraw_status' => $input['withdraw_status'],
             'transfer_status' => $input['transfer_status'],
             'email_verified_at' => $input['email_verified'] == 1 ? now() : null,
+            'account_limit' => $input['account_limit'],
         ];
 
         $user = User::find($id);

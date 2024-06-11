@@ -14,8 +14,8 @@ class ForexApiService
     {
         // $this->baseUrl = Setting::where('name', 'api_base_url')->value('val');
         // $this->apiKey = Setting::where('name', 'api_key')->value('val');
-        $this->baseUrl = 'http://92.204.253.130:5001/api';
-        $this->apiKey = 'PVTfAIPjQZ4GganFp6bCI0ni7p1YSAxM';
+        $this->baseUrl = 'http://18.132.1.74:2087/api';
+        $this->apiKey = 'PfXLvvEAqAKPMzX';
     }
 
     public function createUser($data)

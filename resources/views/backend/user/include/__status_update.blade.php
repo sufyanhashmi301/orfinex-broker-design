@@ -191,6 +191,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-xl-12">
+                    <div class="profile-card-single">
+                        <h5 class="heading">{{ __('Forex Accounts Create limit') }}</h5>
+                        <input type="text" name="account_limit" value="{{$user->account_limit}}"
+                               oninput="this.value = validateDouble(this.value)"
+                               class="form-control">
+                    </div>
+                </div>
+                <br>
                 <div class="col-12">
                     <button type="submit" class="site-btn-sm primary-btn w-100 centered">
                         {{ __('Save Changes') }}

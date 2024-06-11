@@ -59,6 +59,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'deposit_status',
         'withdraw_status',
         'transfer_status',
+        'account_limit',
         'ref_id',
         'password',
     ];

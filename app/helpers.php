@@ -1,11 +1,9 @@
 <?php
 
-use App\Enums\FundedSchemeTypes;
-use App\Enums\FundedSchemeSubTypes;
+use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
-use App\Enums\AccountBalanceType;
-use App\Models\Account;
+use App\Helpers\NioHash;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
@@ -13,26 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
 
-use App\Helpers\NioHash;
-
-use Brick\Math\BigDecimal;
-use Brick\Math\RoundingMode;
-
-
-if (!function_exists('has_route')) {
-    /**
-     * check if route exist
-     * @param $name
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function has_route($name)
-    {
-        return Route::has($name);
-    }
-}
-
-if (! function_exists('isActive')) {
+if (!function_exists('isActive')) {
     function isActive($route, $parameter = null)
     {
 
@@ -53,7 +32,7 @@ if (! function_exists('isActive')) {
     }
 }
 
-if (! function_exists('tnotify')) {
+if (!function_exists('tnotify')) {
     function tnotify($type, $message)
     {
         session()->flash('tnotify', [
@@ -63,7 +42,7 @@ if (! function_exists('tnotify')) {
     }
 }
 
-if (! function_exists('setting')) {
+if (!function_exists('setting')) {
     function setting($key, $section = null, $default = null)
     {
 
@@ -81,7 +60,7 @@ if (! function_exists('setting')) {
     }
 }
 
-if (! function_exists('oldSetting')) {
+if (!function_exists('oldSetting')) {
 
     function oldSetting($field, $section)
     {
@@ -89,7 +68,7 @@ if (! function_exists('oldSetting')) {
     }
 }
 
-if (! function_exists('settingValue')) {
+if (!function_exists('settingValue')) {
 
     function settingValue($field)
     {
@@ -97,7 +76,7 @@ if (! function_exists('settingValue')) {
     }
 }
 
-if (! function_exists('getPageSetting')) {
+if (!function_exists('getPageSetting')) {
 
     function getPageSetting($key)
     {
@@ -105,7 +84,7 @@ if (! function_exists('getPageSetting')) {
     }
 }
 
-if (! function_exists('curl_get_file_contents')) {
+if (!function_exists('curl_get_file_contents')) {
 
     function curl_get_file_contents($URL)
     {
@@ -124,11 +103,11 @@ if (! function_exists('curl_get_file_contents')) {
     }
 }
 
-if (! function_exists('getCountries')) {
+if (!function_exists('getCountries')) {
 
     function getCountries()
     {
-       $countries =  json_decode(file_get_contents(resource_path().'/json/CountryCodes.json'), true);
+        $countries = json_decode(file_get_contents(resource_path() . '/json/CountryCodes.json'), true);
 
         $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
 
@@ -139,18 +118,18 @@ if (! function_exists('getCountries')) {
     }
 }
 
-if (! function_exists('getJsonData')) {
+if (!function_exists('getJsonData')) {
 
     function getJsonData($fileName)
     {
-        return file_get_contents(resource_path()."/json/$fileName.json");
+        return file_get_contents(resource_path() . "/json/$fileName.json");
     }
 }
 
-if (! function_exists('getTimezone')) {
+if (!function_exists('getTimezone')) {
     function getTimezone()
     {
-        $timeZones = json_decode(file_get_contents(resource_path().'/json/timeZone.json'), true);
+        $timeZones = json_decode(file_get_contents(resource_path() . '/json/timeZone.json'), true);
 
         return array_values(Arr::sort($timeZones, function ($value) {
             return $value['name'];
@@ -158,7 +137,7 @@ if (! function_exists('getTimezone')) {
     }
 }
 
-if (! function_exists('getIpAddress')) {
+if (!function_exists('getIpAddress')) {
     function getIpAddress()
     {
         $ipaddress = '';
@@ -182,13 +161,13 @@ if (! function_exists('getIpAddress')) {
     }
 }
 
-if (! function_exists('getLocation')) {
+if (!function_exists('getLocation')) {
     function getLocation()
     {
         $clientIp = request()->ip();
-        $ip = $clientIp == in_array($clientIp,['127.0.0.1' , '::1']) ? '72.255.51.134' : $clientIp;
+        $ip = $clientIp == in_array($clientIp, ['127.0.0.1', '::1']) ? '72.255.51.134' : $clientIp;
 
-        $location = json_decode(curl_get_file_contents('http://ip-api.com/json/'.$ip), true);
+        $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['code'] == $location['countryCode'];
@@ -205,14 +184,14 @@ if (! function_exists('getLocation')) {
     }
 }
 
-if (! function_exists('carbonInstance')) {
+if (!function_exists('carbonInstance')) {
     function carbonInstance($dataTime): Carbon
     {
         return Carbon::create($dataTime->toString());
     }
 }
 
-if (! function_exists('gateway_info')) {
+if (!function_exists('gateway_info')) {
     function gateway_info($code)
     {
         $info = Gateway::where('gateway_code', $code)->first();
@@ -221,11 +200,11 @@ if (! function_exists('gateway_info')) {
     }
 }
 
-if (! function_exists('plugin_active')) {
+if (!function_exists('plugin_active')) {
     function plugin_active($name)
     {
         $plugin = \App\Models\Plugin::where('name', $name)->where('status', true)->first();
-        if (! $plugin) {
+        if (!$plugin) {
             $plugin = \App\Models\Plugin::where('type', $name)->where('status', true)->first();
         }
 
@@ -233,24 +212,24 @@ if (! function_exists('plugin_active')) {
     }
 }
 
-if (! function_exists('default_plugin')) {
+if (!function_exists('default_plugin')) {
     function default_plugin($type)
     {
         return \App\Models\Plugin::where('type', $type)->where('status', 1)->first('name')?->name;
     }
 }
 
-if (! function_exists('br2nl')) {
+if (!function_exists('br2nl')) {
     function br2nl($input)
     {
         return preg_replace('/<br\\s*?\/??>/i', '', $input);
     }
 }
 
-if (! function_exists('safe')) {
+if (!function_exists('safe')) {
     function safe($input)
     {
-        if (! env('APP_DEMO', false)) {
+        if (!env('APP_DEMO', false)) {
             return $input;
         }
 
@@ -258,10 +237,10 @@ if (! function_exists('safe')) {
 
             $emailParts = explode('@', $input);
             $username = $emailParts[0];
-            $hiddenUsername = substr($username, 0, 2).str_repeat('*', strlen($username) - 2);
-            $hiddenEmailDomain = substr($emailParts[1], 0, 2).str_repeat('*', strlen($emailParts[1]) - 3).$emailParts[1][strlen($emailParts[1]) - 1];
+            $hiddenUsername = substr($username, 0, 2) . str_repeat('*', strlen($username) - 2);
+            $hiddenEmailDomain = substr($emailParts[1], 0, 2) . str_repeat('*', strlen($emailParts[1]) - 3) . $emailParts[1][strlen($emailParts[1]) - 1];
 
-            return $hiddenUsername.'@'.$hiddenEmailDomain;
+            return $hiddenUsername . '@' . $hiddenEmailDomain;
 
         }
 
@@ -277,11 +256,11 @@ function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 
         $referrer = \App\Models\User::find($user->ref_id);
 
         $bounty = $LevelReferral->bounty;
-        $amount = (float) ($mainAmount * $bounty) / 100;
+        $amount = (float)($mainAmount * $bounty) / 100;
 
         $fromUserReferral = $fromUser == null ? $user : $fromUser;
 
-        $description = ucwords($type).' Referral Bonus Via '.$fromUserReferral->full_name.' - Level '.$depth.' in referral account '.$user->multi_ib_login;
+        $description = ucwords($type) . ' Referral Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in referral account ' . $user->multi_ib_login;
 
         $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::Referral, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
 
@@ -296,7 +275,8 @@ function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 
         creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
-function creditMultiIbBonus($IBTransaction,$user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
+
+function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
 {
     $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
 //   dd($user->ref_id);
@@ -304,7 +284,7 @@ function creditMultiIbBonus($IBTransaction,$user, $type, $mainAmount, $level = n
         $referrer = \App\Models\User::find($user->ref_id);
 //        dd($referrer);
 
-        if($referrer->is_multi_ib) {
+        if ($referrer->is_multi_ib) {
             $bounty = $LevelReferral->bounty;
             $amount = (float)($mainAmount * $bounty) / 100;
 //dd($amount);
@@ -313,7 +293,7 @@ function creditMultiIbBonus($IBTransaction,$user, $type, $mainAmount, $level = n
             $forexApiTrait = new class {
                 use ForexApiTrait;
             };
-            if(!isset($referrer->multi_ib_login)){
+            if (!isset($referrer->multi_ib_login)) {
                 createMultiIBAccount($referrer);
                 $referrer = $referrer->fresh();
             }
@@ -323,17 +303,18 @@ function creditMultiIbBonus($IBTransaction,$user, $type, $mainAmount, $level = n
             $referrer->multi_ib_balance += $amount;
             $referrer->save();
 
-            $comment = 'MIB' . '/'.$IBTransaction->client_no.'/' . $IBTransaction->trade_id;
+            $comment = 'MIB' . '/' . $IBTransaction->client_no . '/' . $IBTransaction->trade_id;
             $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
         }
-        creditMultiIbBonus($IBTransaction,$referrer, $type, $mainAmount, $level, $depth + 1, $user);
+        creditMultiIbBonus($IBTransaction, $referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
+
 function createMultiIBAccount($user)
 {
-    $ibSchema = IbSchema::where('type','multi_ib')->where('status',true)->first();
+    $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();
 //        dd($ibSchema);
-    if(!$ibSchema){
+    if (!$ibSchema) {
         return false;
     }
     $group = $ibSchema->group;
@@ -342,15 +323,15 @@ function createMultiIBAccount($user)
     $password = 'SNNH@2024@bol';
     $investPassword = 'SNNH@2024@bol';
     $name = $user->full_name;
-    if(!$name){
+    if (!$name) {
         $name = 'abc';
     }
     $phone = $user->phone;
-    if(!$phone){
+    if (!$phone) {
         $phone = 12345678;
     }
     $country = $user->country;
-    if(!$country){
+    if (!$country) {
         $country = 'UAE';
     }
     $dataArray = array(
@@ -361,7 +342,7 @@ function createMultiIBAccount($user)
         'InvestorPassword' => $investPassword,
 //            'PhonePassword' => $password,
         'Email' => $user->email,
-        'Phone' =>$phone,
+        'Phone' => $phone,
         'Country' => $country,
     );
     $dataArray['Login'] = 0;
@@ -388,17 +369,18 @@ function createMultiIBAccount($user)
     return false;
     //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
 }
-if (! function_exists('first_min_deposit')) {
+
+if (!function_exists('first_min_deposit')) {
     function first_min_deposit($login)
     {
         $forexAccount = ForexAccount::where('login', $login)->where('first_min_deposit_paid', 0)->first();
         if (!$forexAccount) {
             return false;
         }
-        $forexAccount->update(['first_min_deposit_paid'=>1]);
+        $forexAccount->update(['first_min_deposit_paid' => 1]);
     }
 }
-if (! function_exists('txn_type')) {
+if (!function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {
         $result = [];
@@ -426,17 +408,17 @@ if (! function_exists('txn_type')) {
     }
 }
 
-if (! function_exists('is_custom_rate')) {
+if (!function_exists('is_custom_rate')) {
     function is_custom_rate($gateway_code)
     {
-        if (in_array($gateway_code,['nowpayments','coinremitter','blockchain'])) {
+        if (in_array($gateway_code, ['nowpayments', 'coinremitter', 'blockchain'])) {
             return 'USD';
         }
         return null;
     }
 }
 
-if (! function_exists('site_theme')) {
+if (!function_exists('site_theme')) {
     function site_theme()
     {
         $theme = new \App\Models\Theme();
@@ -444,7 +426,7 @@ if (! function_exists('site_theme')) {
         return $theme->active();
     }
 }
-if (! function_exists('generate_date_range_array')) {
+if (!function_exists('generate_date_range_array')) {
     function generate_date_range_array($startDate, $endDate): array
     {
         $startDate = Carbon::parse($startDate);
@@ -460,19 +442,24 @@ if (! function_exists('generate_date_range_array')) {
         return $dates->toArray();
     }
 }
-if (! function_exists('calPercentage')) {
-    function calPercentage($num, $percentage) {
+if (!function_exists('calPercentage')) {
+    function calPercentage($num, $percentage)
+    {
         return $num * ($percentage / 100);
     }
 }
-if (! function_exists('getQRCode')) {
-    function getQRCode($data) {
+if (!function_exists('getQRCode')) {
+    function getQRCode($data)
+    {
 
         return "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=$data";
-    };
+    }
+
+    ;
 }
-if (! function_exists('generateDummyPassword')) {
-    function generateDummyPassword($length = 12) {
+if (!function_exists('generateDummyPassword')) {
+    function generateDummyPassword($length = 12)
+    {
         $lowercase = 'abcdefghijklmnopqrstuvwxyz';
         $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $special = '!@#$%^&*()-_?';
@@ -548,7 +535,7 @@ if (!function_exists('add_child_agent')) {
                 use ForexApiTrait;
             };
             foreach ($forexAccounts as $forexAccount) {
-                if($pUser->ib_login) {
+                if ($pUser->ib_login) {
                     $forexApiTrait->updateAgent($forexAccount->login, $pUser->ib_login);
                 }
             }
@@ -566,633 +553,149 @@ if (!function_exists('remove_child_agent')) {
      */
     function remove_child_agent($user)
     {
-            $forexAccounts = ForexAccount::where('user_id', $user->id)
-                ->where('account_type', 'real')
-                ->get();
+        $forexAccounts = ForexAccount::where('user_id', $user->id)
+            ->where('account_type', 'real')
+            ->get();
 //        dd($forexAccounts,$this->user);
-            $forexApiTrait = new class {
-                use ForexApiTrait;
-            };
-            foreach ($forexAccounts as $forexAccount) {
-                $forexApiTrait->updateAgent($forexAccount->login, 0);
-            }
-
-    }
-}
-
-
-if (!function_exists('the_uid')) {
-    /**
-     * @param $userId
-     * @return string
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function the_uid($userID)
-    {
-        return config('investorm.uid_prefix') . str_pad($userID, 5, '0', STR_PAD_LEFT);
-    }
-}
-
-if (!function_exists('str_protect')) {
-    /**
-     * @param $string
-     * @param int | $len
-     * @return string
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function str_protect($string, $len = 3)
-    {
-        return is_demo_user() ? substr($string, 0, $len) . '...' . substr($string, -$len) : $string;
-    }
-}
-
-if (!function_exists('is_demo_user')) {
-    /**
-     * @return bool
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function is_demo_user()
-    {
-        $user = (auth()->check()) ? auth()->user() : false;
-        if (is_demo() && !empty($user)) {
-            return ($user->role == UserRoles::ADMIN) ? true : false;
-        }
-        return false;
-    }
-}
-
-if (!function_exists('is_demo')) {
-    /**
-     * @param $string
-     * @return bool
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function is_demo($name = null)
-    {
-//        dd($name);
-        $demo = env('DEMO_MODE', false);
-//        dd($demo);
-//
-        if (empty($name)) {
-            return ($demo) ? true : false;
+        $forexApiTrait = new class {
+            use ForexApiTrait;
+        };
+        foreach ($forexAccounts as $forexAccount) {
+            $forexApiTrait->updateAgent($forexAccount->login, 0);
         }
 
-        if (in_array($name, ['private', 'live'])) {
-            return ($demo === $name) ? true : false;
-        }
-
-        return false;
     }
 }
-
-if (!function_exists('AccType')) {
+if (!function_exists('get_mt5_account')) {
     /**
-     * @param $name |string
-     * @param $object |boolean
-     * @return string|boolean|object
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function AccType($name = null, $object = true)
-    {
-//        dd($name);
-        $name = strtoupper($name);
-        $acType = get_enums(AccountBalanceType::class, false);
-        $acType = ($object === true) ? (object)$acType : $acType;
-//        dd($name,$acType);
-
-        if (empty($name)) return $acType;
-
-        return isset($acType->$name) ? $acType->$name : false;
-    }
-}
-
-if (!function_exists('get_enums')) {
-    /**
-     * @param $enumClass
-     * @param bool $flipArray
-     * @return array
-     * @throws ReflectionException
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_enums($enumClass, $flipArray = true)
-    {
-        try {
-            $reflector = new \ReflectionClass($enumClass);
-            $enums = $reflector->getConstants();
-            return $flipArray ? array_flip($enums) : $enums;
-        } catch (\Exception $e) {
-            if (env('APP_DEBUG', false)) {
-                save_error_log($e, 'enum-refection');
-            }
-            return [];
-        }
-    }
-}
-
-if (!function_exists('account_balance')) {
-    /**
-     * @param $account
-     * @param $userId | auth->user
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function account_balance($account = null, $type = 'base')
-    {
-        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
-        $userid = auth()->user()->id;
-        $account = Account::where('user_id', $userid)->where('balance', $account)->first();
-        $amount = (!blank($account)) ? data_get($account, 'amount', 0.00) : 0.00;
-
-        if ($type == 'alter' || $type == 'secondary') {
-            return to_amount(base_to_secondary($amount), secondary_currency());
-        }
-
-        return to_amount($amount, base_currency());
-    }
-}
-
-if (!function_exists('user_balance')) {
-    /**
-     * @param $balance
-     * @param $userId | auth->user
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function user_balance($balance = null, $userId = null)
-    {
-        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
-        $userid = !empty($userId) ? $userId : auth()->user()->id;
-        $account = Account::where('user_id', $userid)->where('balance', $balance)->first();
-
-        if (!blank($account)) {
-            $amount = data_get($account, 'amount', 0.00);
-            return ($amount) ? $amount : 0.00;
-        }
-
-        return 0;
-    }
-}
-
-if (!function_exists('the_inv')) {
-    /**
-     * @param $tnxID
-     * @return string
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function the_inv($InvID)
-    {
-        return config('investorm.inv_prefix') . '-' . $InvID;
-    }
-}
-
-if (!function_exists('css_state')) {
-    /**
-     * @param $status
-     * @return string
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function css_state($status, $prefix = '', $default = '', $type = 'user')
-    {
-//        dd($type);
-        $statusClass = false;
-        $prefix = ($prefix) ? $prefix . '-' : '';
-        $default = ($default) ? ' ' . $prefix . 'gray' : '';
-
-        if ($type == 'user') {
-            $statusClass = [
-                UserStatus::ACTIVE => $prefix . 'success',
-                UserStatus::INACTIVE => $prefix . 'warning',
-                UserStatus::SUSPEND => $prefix . 'danger',
-                UserStatus::LOCKED => $prefix . 'info',
-                UserStatus::DELETED => $prefix . 'gray',
-                \App\Enums\ForexTradingStatus::ARCHIVE => $prefix . 'gray',
-
-                ComplianceStatus::UNPROCESSED => $prefix . 'gray',
-                ComplianceStatus::PENDING => $prefix . 'warning',
-                ComplianceStatus::APPROVED => $prefix . 'success',
-                ComplianceStatus::REJECTED => $prefix . 'danger',
-
-                UserState::LEAD => $prefix . 'info',
-                UserState::CLIENT => $prefix . 'success',
-                UserState::RETIRING => $prefix . 'warning',
-                UserState::RETIRED => $prefix . 'danger',
-
-
-                1 => $prefix . 'success',
-                0 => $prefix . 'danger',
-            ];
-        } elseif ($type == 'tnx') {
-            $statusClass = [
-                TransactionStatus::PENDING => $prefix . 'warning',
-                TransactionStatus::ONHOLD => $prefix . 'info',
-                TransactionStatus::CONFIRMED => $prefix . 'info',
-                TransactionStatus::CANCELLED => $prefix . 'danger',
-                TransactionStatus::FAILED => $prefix . 'warning',
-                TransactionStatus::COMPLETED => $prefix . 'success',
-            ];
-        } elseif ($type == 'static') {
-            $statusClass = [
-                'pending' => $prefix . 'warning',
-                'active' => $prefix . 'primary',
-                'inactive' => $prefix . 'gray',
-                'completed' => $prefix . 'success',
-                'cancelled' => $prefix . 'danger',
-                'violated' => $prefix . 'danger',
-            ];
-        }
-
-        return ($statusClass[$status]) ? ' ' . $statusClass[$status] : $default;
-    }
-}
-
-if (!function_exists('the_state') && function_exists('css_state')) {
-    /**
-     * @param $status
-     * @return string
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function the_state($status, $attr = [])
-    {
-        $prams = ['prefix' => '', 'default' => '', 'type' => 'static'];
-        $prams = array_merge($prams, $attr);
-        extract($prams);
-
-        return css_state($status, $prefix, $default, $type);
-    }
-}
-
-if (!function_exists('fst2n')) {
-    /**
-     * @param $account
-     * @version 1.0.0
-     * @since 1.0
-     */
-
-    function fst2n($account = null)
-    {
-        $account = (empty($account)) ? FundedSchemeTypes::DIRECT_FUNDING : $account;
-        $nameMap = [
-            FundedSchemeTypes::DIRECT_FUNDING => __(sys_settings('direct_funding', 'Direct Funding')),
-            FundedSchemeTypes::CHALLENGE_FUNDING => __(sys_settings('challenge_funding', 'Challenge Funding')),
-            FundedSchemeTypes::DEMO_FUNDING => __(sys_settings('demo_funding', 'Demo Funding')),
-            FundedSchemeTypes::MANUAL_FUNDING => __(sys_settings('manual_funding', 'Manual Funding')),
-            ];
-
-        return Arr::get($nameMap, $account);
-    }
-}
-
-if (!function_exists('fsst2n')) {
-    /**
-     * @param $account
-     * @version 1.0.0
-     * @since 1.0
-     */
-
-    function fsst2n($account = null)
-    {
-//        dd($account);
-        $account = (empty($account)) ? FundedSchemeSubTypes::TWO_STEP_CHALLENGE : $account;
-        $nameMap = [
-            FundedSchemeSubTypes::TWO_STEP_CHALLENGE => __(sys_settings('direct_funding', '2 Step Challenge')),
-            FundedSchemeSubTypes::SINGLE_STEP_CHALLENGE => __(sys_settings('direct_funding', '1 Step Challenge')),
-            FundedSchemeSubTypes::LEVERAGE_1 => __(sys_settings('direct_funding', __('Leverage 1::leverage',['leverage'=>FundedSchemeSubTypes::LEVERAGE_1]))),
-            FundedSchemeSubTypes::LEVERAGE_2 => __(sys_settings('direct_funding',  __('Leverage 1::leverage',['leverage'=>FundedSchemeSubTypes::LEVERAGE_2]))),
-            FundedSchemeSubTypes::LEVERAGE_3 => __(sys_settings('direct_funding',  __('Leverage 1::leverage',['leverage'=>FundedSchemeSubTypes::LEVERAGE_3]))),
-
-            ];
-
-        return Arr::get($nameMap, $account);
-    }
-}
-
-if (!function_exists('to_minus')) {
-    /**
-     * @param $amount1
-     * @param $amount2
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function to_minus($amount1, $amount2)
-    {
-        $total = BigDecimal::of($amount1)->minus(BigDecimal::of($amount2));
-        return is_object($total) ? (string)$total : $total;
-    }
-}
-
-if (!function_exists('get_decimal')) {
-    /**
-     * @param $method
-     * @param $what
-     * @return integer
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_decimal($method = 'calc', $what = true)
-    {
-        $for = ($what == 'crypto') ? $what : 'fiat';
-        $type = ($method == 'display') ? $method : 'calc';
-        $fback = ($what == 'crypto') ? 6 : 2;
-//        dd('decimal_fiat_calc')
-
-        return sys_settings('decimal_' . $for . '_' . $type, $fback);
-    }
-}
-
-if (!function_exists('dp_calc') && function_exists('get_decimal')) {
-    /**
-     * @param $for
-     * @return integer
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function dp_calc($for = 'fiat')
-    {
-        return get_decimal('calc', $for);
-    }
-}
-
-if (!function_exists('percentage_of_total_calc')) {
-    /**
-     * @param @what
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function percentage_of_total_calc($amount, $total)
-    {
-        $base_currency = base_currency();
-        $scale = (is_crypto($base_currency)) ? dp_calc('crypto') : dp_calc('fiat');
-        $percentage = (BigDecimal::of($total)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of(100))->dividedBy($total, $scale, RoundingMode::CEILING) : 0;
-
-        return is_object($percentage) ? (string)$percentage : $percentage;
-
-    }
-
-}
-
-if (!function_exists('base_currency')) {
-    /**
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function base_currency()
-    {
-        return sys_settings('base_currency', 'USD');
-    }
-}
-
-if (!function_exists('amount_format')) {
-    /**
-     * @param $amount , $attr
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function amount_format($amount, $attr = [])
-    {
-        $output = empty($amount) ? 0.0 : $amount;
-        $default = [
-            'point' => '.',
-            'thousand' => '',
-            'decimal' => 4,
-            'trim' => true,
-            'zero' => true
-        ];
-        $default = array_merge($default, $attr);
-        extract($default);
-
-        $decimal = (int)$decimal;
-        $decimal = ($decimal > 0) ? $decimal : 0;
-        $type = is_crypto(base_currency()) ? 'crypto' : 'fiat';
-        $zeroAdd = (dp_display($type) < 2) ? '.0' : '.00';
-        $zeroLen = strlen($zeroAdd);
-
-        $output = number_format($amount, $decimal, $point, $thousand);
-        $output = ($trim === true) ? rtrim($output, '0') : $output;
-        $output = (substr($output, -1)) === '.' ? str_replace('.', (($trim === true) ? $zeroAdd : '0'), $output) : $output;
-        $output = ($zero === false && (substr($output, -$zeroLen) === $zeroAdd)) ? str_replace($zeroAdd, '', $output) : $output;
-        return $output;
-    }
-}
-
-if (!function_exists('get_decimal')) {
-    /**
-     * @param $method
-     * @param $what
-     * @return integer
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_decimal($method = 'calc', $what = true)
-    {
-        $for = ($what == 'crypto') ? $what : 'fiat';
-        $type = ($method == 'display') ? $method : 'calc';
-        $fback = ($what == 'crypto') ? 6 : 2;
-//        dd('decimal_fiat_calc')
-
-        return sys_settings('decimal_' . $for . '_' . $type, $fback);
-    }
-}
-
-if (!function_exists('dp_display') && function_exists('get_decimal')) {
-    /**
-     * @param $for
-     * @return integer
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function dp_display($for = 'fiat')
-    {
-        return get_decimal('display', $for);
-    }
-}
-
-if (!function_exists('get_currencies')) {
-    /**
-     * @param $output
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
      * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function get_currencies($output = true, $only = '')
+    function get_mt5_account($login)
     {
-        $all = collect(config('currencies'));
-        $currencies = (in_array($only, ['fiat', 'crypto'])) ? $all->where('type', $only) : $all;
+        return DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->first();
 
-        if ($output === true || $output === 'key') {
-            return $currencies->keys()->toArray();
-        } elseif ($output === 'list') {
-            $list = [];
-            foreach ($currencies as $currency) {
-                $list[$currency['code']] = $currency['name'];
-            }
-            return $list;
-        }
-        return $currencies->toArray();
     }
 }
-
-if (!function_exists('get_currency')) {
+if (!function_exists('get_mt5_account_balance')) {
     /**
-     * @param $name
-     * @return string|array|mixed
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function get_currency($code, $key = '', $object = false)
+    function get_mt5_account_balance($login)
     {
-        $code = strtoupper($code);
-        $currencies = get_currencies('full');
-
-        if (isset($currencies[$code])) {
-            $get_code = $currencies[$code];
-
-            if (isset($get_code[$key])) return $get_code[$key];
-
-            return ($object === true) ? json_decode(json_encode($get_code)) : $get_code;
+        $balance = 0.0;
+        $mt5Account = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->first();
+        if ($mt5Account) {
+            $balance = $mt5Account->Balance;
         }
+        return $balance;
 
-        return false;
     }
 }
-
-if (!function_exists('is_crypto')) {
+if (!function_exists('get_mt5_account_equity')) {
     /**
-     * @param $code
-     * @return boolean
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function is_crypto($code)
+    function get_mt5_account_equity($login)
     {
+        $equity = 0.0;
+        $mt5Account = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->first();
+        if ($mt5Account) {
+            $equity = $mt5Account->Equity;
+        }
+        return $equity;
 
-        return (get_currency($code, 'type') === 'fiat' || get_currency($code, 'type') === true) ? false : true;
     }
 }
-
-if (!function_exists('to_amount')) {
+if (!function_exists('mt5_total_balance')) {
     /**
-     * @param $num , $currency, $round
-     * @return string
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function to_amount($num, $currency, $attr = [])
+    function mt5_total_balance($user_id)
     {
-        $round = isset($attr['round']) ? $attr['round'] : 'display';
-        $zero = isset($attr['zero']) ? $attr['zero'] : true;
-        $thousand = isset($attr['thousand']) ? $attr['thousand'] : ',';
-        $trim = isset($attr['trim']) ? $attr['trim'] : true;
-        $dp_opt = isset($attr['dp']) ? $attr['dp'] : 'display';
+        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
-        $type = is_crypto($currency) ? 'crypto' : 'fiat';
-        $amount = is_object($num) ? (string)$num : $num;
+        $totalBalance = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $forexAccounts)
+            ->sum('Balance');
 
-        if (in_array($round, ['up', 'down', 'zero'])) {
-            $amount = ($round === 'up') ? ceil($amount) : (($round === 'down') ? floor($amount) : $amount);
-            $rounded = 0;
-        } else {
-            $rounded = ($dp_opt == 'display') ? dp_display($type) : dp_calc($type);
-        }
-        $return = amount_format($amount, ['decimal' => $rounded, 'thousand' => $thousand, 'zero' => $zero, 'trim' => $trim]);
-        return ($return) ? $return : 0;
+        return $totalBalance;
+
     }
 }
-
-if (!function_exists('amount')) {
+if (!function_exists('mt5_total_equity')) {
     /**
-     * @param $num , $currency, $attr|array
-     * @return string
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function amount($num, $currency, $attr = [])
+    function mt5_total_equity($user_id)
     {
-        $default = ['zero' => false];
-        $param = array_merge($default, $attr);
+        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
 
-        return to_amount($num, $currency, $param);
+        $totalEquity = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $forexAccounts)
+            ->sum('Equity');
+
+        return $totalEquity;
+
     }
 }
-
-if (!function_exists('amount_z')) {
+if (!function_exists('mt5_update_balance')) {
     /**
-     * @param $num , $currency, $attr|array
-     * @return string
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function amount_z($num, $currency, $attr = [])
+    function mt5_update_balance($login, $balance)
     {
-        $default = ['zero' => true];
-        $param = array_merge($default, $attr);
+//        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+//            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->update(['Balance' => $balance, 'Equity' => $balance]);
 
-        return amount($num, $currency, $param);
     }
 }
-
-if (!function_exists('money')) {
-    /**
-     * @param $num , $currency, $attr|array
-     * @return string
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function money($num, $currency, $attr = [])
-    {
-        $default = ['zero' => true];
-        $param = array_merge($default, $attr);
-        return to_amount($num, $currency, $param) . ' ' . strtoupper($currency);
-    }
-}
-
-if (!function_exists('show_date')) {
-    /**
-     * @param $date
-     * @param false $withTime
-     * @return string|void
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function show_date($date, $withTime = false, $zone = true)
-    {
-        if (empty($date)) {
-            return;
-        }
-//dd($date);
-        if (!($date instanceof Carbon)) {
-            if (1 === preg_match('~^[1-9][0-9]*$~', $date)) {
-                $date = Carbon::createFromTimestamp($date);
-            } else {
-                $date = Carbon::parse($date);
-            }
-        }
-
-        $format = sys_settings('date_format');
-//dd($format);
-        if ($withTime) {
-            $format .= ' ' . sys_settings('time_format');
-        }
-
-        if ($zone == true) {
-            $timezone = sys_settings('time_zone');
-            return $date->timezone($timezone)->format($format);
-        }
-
-        return $date->format($format);
-    }
-}
-
 if (!function_exists('the_hash')) {
     /**
      * @param $data
@@ -1217,330 +720,6 @@ if (!function_exists('get_hash')) {
     function get_hash($data)
     {
         return NioHash::toID($data);
-    }
-}
-
-if (!function_exists('is_data')) {
-    /**
-     * @param $array
-     * @param $array
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function the_data($array = null, $key = null, $default = null)
-    {
-        $data = data_get($array, $key, $default);
-
-        return ($data) ? $data : $default;
-    }
-}
-
-if (!function_exists('is_json')) {
-    /**
-     * check json value
-     * @param $string , $decoded
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function is_json($string, $decoded = false)
-    {
-        if (is_array($string)) return false;
-        json_decode($string);
-        $check = (json_last_error() == JSON_ERROR_NONE);
-
-        if ($decoded && $check) {
-            return json_decode($string);
-        }
-
-        return $check;
-    }
-}
-
-if (!function_exists('sys_settings')) {
-    /**
-     * @param $key
-     * @param null $default
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function sys_settings($key, $default = null)
-    {
-//        dd($key,$default);
-        $settings = Cache::remember('sys_settings', 1800, function () {
-            return \App\Models\Setting::all()->pluck('value', 'key');
-        });
-//dd($settings);
-        $value = $settings->get($key) ?? $default;
-
-
-        return is_json($value) ? json_decode($value, true) : $value;
-    }
-}
-
-
-if (!function_exists("gss") && function_exists("sys_settings")) {
-    /**
-     * @param $key
-     * @param null $default
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function gss($key, $default = null)
-    {
-        return sys_settings($key, $default);
-    }
-}
-
-if (!function_exists('get_page')) {
-    /**
-     * @param $key
-     * @param $where
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function get_page($key, $where = 'id')
-    {
-        if (empty($key)) return false;
-
-        $page = Page::where($where, $key)->first();
-
-        if (!blank($page)) {
-            return $page;
-        }
-
-        return false;
-    }
-}
-
-if (!function_exists('the_page')) {
-    /**
-     * @param $name
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function the_page($name = '')
-    {
-        $pageMap = [
-            'terms' => get_page(gss('page_terms')),
-            'policy' => get_page(gss('page_privacy')),
-            'contact' => get_page(gss('page_contact')),
-            'support' => get_page(gss('page_contact')),
-        ];
-
-        if (in_array($name, array_keys($pageMap))) {
-            return $pageMap[$name];
-        } else {
-            return get_page($name, 'slug');
-        }
-
-        return false;
-    }
-}
-
-if (!function_exists('get_page_link')) {
-    /**
-     * @param $id
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function get_page_link($name = '', $text = '', $target = false)
-    {
-        $page = the_page($name);
-
-        if (!empty($page)) {
-            $new_target = ($target == true || !empty($menu->menu_link)) ? ' target="_blank"' : '';
-            $ba = '<a href="' . $page->link . '"' . $new_target . '>';
-            $aa = '</a>';
-            $tx = ($text) ? __($text) : (($page->menu_name) ? $page->menu_name : $page->name);
-
-            return $ba . $tx . $aa;
-        }
-
-        return ($text) ? __($text) : '';
-    }
-}
-
-if (!function_exists('get_mail_link')) {
-    /**
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function get_mail_link($text = null)
-    {
-        $mail = sys_settings('site_email');
-//        $mail = sys_settings('user_ref_id_prefix');
-//        {{ __('e.g :site_code######',['site_code'=>sys_settings('user_ref_id_prefix')]) }}
-//        ,['site_name'=>sys_settings('site_name')])
-
-        if (!empty($mail)) {
-            $ba = '<a href="mailto:' . $mail . '">';
-            $aa = '</a>';
-            $tx = ($text) ? __($text) : $mail;
-
-            return $ba . $tx . $aa;
-        }
-
-        return ($text) ? __($text) : '';
-
-    }
-}
-
-if (!function_exists('percentage_calc')) {
-    /**
-     * @param @what
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function percentage_calc($percent,$amount)
-    {
-        $base_currency = base_currency();
-        $scale = (is_crypto($base_currency)) ? dp_calc('crypto') : dp_calc('fiat');
-        $amount = (BigDecimal::of($amount)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of($percent))->dividedBy(100, $scale, RoundingMode::CEILING) : 0;
-
-        return is_object($amount) ? (string) $amount : $amount;
-
-    }
-
-}
-if (!function_exists('percentage_of_total_calc')) {
-    /**
-     * @param @what
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function percentage_of_total_calc($amount,$total)
-    {
-        $base_currency = base_currency();
-        $scale = (is_crypto($base_currency)) ? dp_calc('crypto') : dp_calc('fiat');
-        $percentage = (BigDecimal::of($total)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of(100))->dividedBy($total, $scale, RoundingMode::CEILING) : 0;
-
-        return is_object($percentage) ? (string) $percentage : $percentage;
-
-    }
-
-}
-if (!function_exists('getAccountBalance')) {
-    /**
-     * @param @what
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function getAccountBalance($name = null, $echo = false)
-    {
-        $name = (empty($name)) ? AccType('main') : $name;
-        $userID = auth()->user()->id;
-        return Account::getBalance($name, $userID, $echo);
-    }
-}
-if (!function_exists('w2n')) {
-    /**
-     * @param $account
-     * @version 1.0.0
-     * @since 1.0
-     */
-
-    function w2n($account=null)
-    {
-        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
-        $nameMap = [
-            AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
-            AccountBalanceType::INVEST => __(sys_settings('account_invest', 'Investment Account')),
-            AccountBalanceType::REFERRAL => __(sys_settings('account_referral', 'Referral Account')),
-            AccountBalanceType::MAIN_HOLD => __(sys_settings('account_hold_fund', 'Funds Hold')),
-            AccountBalanceType::INVEST_HOLD => __(sys_settings('account_hold_invest', 'Investment Hold')),
-            AccountBalanceType::SCHEME_PARTNER_BONUS => __(sys_settings('scheme_partner_bonus', 'Plan Partner Bonus')),
-            AccountBalanceType::TOKEN_SCHEME_PARTNER_BONUS => __(sys_settings('token_scheme_partner_bonus', 'OFN Plan Partner Bonus')),
-            AccountBalanceType::SCHEME_PROFIT_BONUS => __(sys_settings('scheme_profit_bonus', 'Plan Profit Bonus')),
-            AccountBalanceType::TOKEN_SCHEME_PROFIT_BONUS => __(sys_settings('token_scheme_profit_bonus', 'OFN Plan Profit Bonus')),
-            AccountBalanceType::REWARD_SALARY => __(sys_settings('reward_salary', 'Reward Salary')),
-            AccountBalanceType::P2P_WALLET => __(sys_settings('p2p_wallet', 'P2P Wallet')),
-            AccountBalanceType::FOREX_TRADING => __(sys_settings('forex_trading', 'Forex Trading')),
-            AccountBalanceType::ORFIN_MAIN => __(sys_settings('orfin_main_wallet', 'OFN Main Wallet')),
-            AccountBalanceType::ORFIN_INVEST => __(sys_settings('orfin_invest_wallet', 'OFN Invest Wallet')),
-            AccountBalanceType::MASTER_IB => __(sys_settings('master_ib', 'Master IB')),
-            AccountBalanceType::AFFILIATE_WALLET => __(sys_settings('affiliate_wallet', 'Affiliate')),
-            AccountBalanceType::MASTER_AFFILIATE => __(sys_settings('master_affiliate', 'Master Affiliate')),
-        ];
-
-        return Arr::get($nameMap, $account);
-    }
-}
-if (!function_exists('get_user_account')) {
-
-    /**
-     * @param $userId
-     * @param string $balance
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_user_account($userId, $balance = null)
-    {
-        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
-        $account = Account::where('user_id', $userId)
-            ->where('balance', $balance)
-            ->first();
-
-        if (blank($account)) {
-            $account = Account::create([
-                'user_id' => $userId,
-                'balance' => $balance,
-                'amount' => 0.00
-            ]);
-        }
-
-        return $account;
-    }
-}
-if (!function_exists('generate_unique_ivx')) {
-    /**
-     * @since 1.0
-     * @param $$model
-     * @param $column
-     * @version 1.0.0
-     */
-    function generate_unique_ivx($model, $column): string
-    {
-        $lastEntry = $model::orderBy('id', 'desc')->latest()->first();
-        $nextID  = (isset($lastEntry->id)) ? sprintf('%04s', ($lastEntry->id + 1)) : sprintf('%04s', 1);
-
-        $increment = (int) (mt_rand(10, 99) . substr(time(), -2) . $nextID);
-        $duplicate = $model::where($column, $increment)->first();
-
-        if (blank($duplicate)) {
-            return $increment;
-        } else {
-            return generate_unique_ivx($model, $column);
-        }
-    }
-}
-if (!function_exists('to_sum')) {
-    /**
-     * @param $amount1
-     * @param $amount2
-     * @return mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function to_sum($amount1, $amount2)
-    {
-        $total = BigDecimal::of($amount1)->plus(BigDecimal::of($amount2));
-        return is_object($total) ? (string)$total : $total;
-    }
-}
-if (!function_exists('is_route')) {
-    /**
-     * check current route
-     * @param $name
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function is_route($name)
-    {
-        return request()->routeIs($name);
     }
 }
 

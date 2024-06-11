@@ -48,8 +48,8 @@ class DashboardController extends Controller
             'investment_bonus' => $user->totalInvestBonus(),
             'rank_achieved' => $user->rankAchieved(),
             'total_ticket' => $user->ticket->count(),
-            'total_forex_balance' => mt5_total_balance($user->id),
-            'total_forex_equity' => mt5_total_equity($user->id),
+            'total_forex_balance' => $user->totalForexBalance(),
+            'total_forex_equity' => $user->totalForexEquity(),
         ];
         $referral = $user->getReferrals()->first();
         $realForexAccounts = ForexAccount::realActiveAccount()

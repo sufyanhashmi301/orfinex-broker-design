@@ -162,14 +162,14 @@
                             </span>
                         </a>
                         <ul class="dropdown-items">
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
-                                <a href="{{route('admin.forex-accounts-real')}}">
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts') }}">
+                                <a href="{{route('admin.forex-accounts',['type'=>'real'])}}">
                                     <i icon-name="candlestick-chart"></i>
                                     <span>{{ __('Live Accounts') }}</span>
                                 </a>
                             </li>
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
-                                <a href="{{route('admin.forex-accounts-real')}}">
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts') }}">
+                                <a href="{{route('admin.forex-accounts',['type'=>'demo'])}}">
                                     <i icon-name="line-chart"></i>
                                     <span>{{ __('Demo Accounts') }}</span>
                                 </a>
@@ -409,12 +409,12 @@
                                             icon-name="settings-2"></i>{{ __('Site Settings') }}</a>
                                 </li>
                             @endcan
-                            @can('email-setting')
-                                <li class="{{ isActive('admin.settings.mail') }}">
-                                    <a href="{{ route('admin.settings.mail') }}"><i
-                                            icon-name="inbox"></i>{{ __('Email Settings') }}</a>
-                                </li>
-                            @endcan
+{{--                            @can('email-setting')--}}
+{{--                                <li class="{{ isActive('admin.settings.mail') }}">--}}
+{{--                                    <a href="{{ route('admin.settings.mail') }}"><i--}}
+{{--                                            icon-name="inbox"></i>{{ __('Email Settings') }}</a>--}}
+{{--                                </li>--}}
+{{--                            @endcan--}}
                             @can('plugin-setting')
                                 <li class="{{ isActive('admin.settings.plugin','system') }}">
                                     <a href="{{ route('admin.settings.plugin','system') }}"><i

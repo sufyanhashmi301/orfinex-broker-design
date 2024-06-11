@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminLoginActivity;
+use App\Models\LoginActivities;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Foundation\Application;
@@ -18,6 +20,8 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest:admin')->except('logout');
+//        $this->middleware('google2fa')->only('admin.login-view', 'enable2fa', 'disable2fa', 'verify2fa');
+
     }
 
     /**
@@ -39,10 +43,11 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
+//dd($request->all());
         if ($this->guard()->attempt($credentials)) {
             $request->session()->regenerate();
-            smilify('success', 'Successfully login your account 🔥 !');
+            AdminLoginActivity::add();
+//            smilify('success', 'Successfully login your account 🔥 !');
 
             return redirect()->intended('admin');
         }
@@ -55,7 +60,7 @@ class AuthController extends Controller
     /**
      * @return Guard|StatefulGuard
      */
-    protected function guard()
+        protected function guard()
     {
         return Auth::guard('admin');
     }
@@ -65,7 +70,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->guard()->logout();
+        $this->guard('admin')->logout();
         $request->session()->invalidate();
 
         return redirect()->route('admin.login');

@@ -80,7 +80,6 @@ class UserController extends Controller
 
             return redirect()->back();
         }
-
         $input = $request->all();
 
         $amount = (float) $input['amount'];

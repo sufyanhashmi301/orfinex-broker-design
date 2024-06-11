@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Models\WithdrawAccount;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
+use App\Rules\ForexLoginBelongsToUser;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -23,6 +24,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Session;
 use Txn;
 use Validator;
@@ -108,9 +110,12 @@ class WithdrawController extends Controller
     public function edit($id)
     {
         $withdrawMethods = WithdrawMethod::all();
-        $withdrawAccount = WithdrawAccount::find($id);
+        $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
+        if($withdrawAccount){
+            return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
+        }
+        return redirect()->back();
 
-        return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
 
     }
 
@@ -243,12 +248,16 @@ class WithdrawController extends Controller
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
-            'target_id' => 'required',
-            'withdraw_account' => 'required',
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
+            'withdraw_account' => ['required'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
         ],[
-            'target_id.required'=> __('Kindly select the forex account to withdraw')
+            'target_id.required'=> __('Kindly select the forex account to withdraw'),
+            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
         ]);
 
         if ($validator->fails()) {
@@ -310,6 +319,10 @@ class WithdrawController extends Controller
         $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
         if($withdrawResponse){
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+
+            //update Balance & Equity of mt5 DB with new updated balance
+            $balance = $this->getForexAccountBalance($targetId);
+            mt5_update_balance($targetId,$balance);
         }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
             return redirect()->back();

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Language;
 use App\Models\Theme;
+use App\Services\ForexApiService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Paginator::defaultView('frontend::include.__pagination');
+        $this->app->singleton(ForexApiService::class, function ($app) {
+            return new ForexApiService();
+        });
 
     }
 

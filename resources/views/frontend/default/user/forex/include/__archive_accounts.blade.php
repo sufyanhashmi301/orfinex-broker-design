@@ -8,6 +8,17 @@
 @else
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($archiveForexAccounts as $account)
+            @php
+                $balance = 0;
+                $equity = 0;
+                $leverage = $account->leverage;
+                $mt5Account = get_mt5_account($account->login);
+                if ($mt5Account) {
+                   $balance = $mt5Account->Balance;
+                   $equity = $mt5Account->Equity;
+                   $leverage = $mt5Account->MarginLeverage;
+                }
+            @endphp
         <div class="card lg:h-full border trading-account-card">
             <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
                 <div class="grid-view-layout">
@@ -37,7 +48,7 @@
                                 {{ __('Balance') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->balance}} {{$account->currency}}
+                                {{$balance}} {{$account->currency}}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -45,7 +56,7 @@
                                 {{ __('Leverage') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->leverage}}
+                                {{$equity}}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -53,7 +64,7 @@
                                 {{ __('Equity') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->equity}}
+                                {{$equity}}
                             </span>
                         </li>
                     </ul>

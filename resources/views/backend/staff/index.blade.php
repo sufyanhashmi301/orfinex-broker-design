@@ -56,6 +56,15 @@
 
                                             </td>
                                             <td>
+                                                <a href="{{route('admin.staff.security',$staff->id)}}"><button class="round-icon-btn primary-btn"
+                                                        data-id="{{$staff->id}}" type="button"
+                                                        data-bs-toggle="tooltip" title=""
+                                                        data-bs-placement="top"
+                                                        data-bs-original-title="2FA Security">
+                                                    <i icon-name="edit-3"></i>
+                                                </button>
+                                                </a>
+
                                                 @if($staff->getRoleNames()->first() === 'Super-Admin')
                                                     <button class="round-icon-btn red-btn" type="button"
                                                             data-bs-toggle="tooltip" title="" data-bs-placement="top"
@@ -72,6 +81,7 @@
                                                             <i icon-name="edit-3"></i>
                                                         </button>
                                                     @endcan
+
                                                 @endif
                                             </td>
                                         </tr>
@@ -97,6 +107,7 @@
             @include('backend.staff.modal.__edit_staff')
         @endcan
         <!-- Modal for Edit Staff-->
+
 
     </div>
 @endsection

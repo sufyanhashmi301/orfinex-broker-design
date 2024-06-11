@@ -95,12 +95,13 @@
         </div>
     </div>
 
+
     <!-- Modal for Account details -->
     @include('frontend.default.user.forex.modal.__trade')
 
     <!-- Modal for Account password -->
     @include('frontend.default.user.forex.modal.__deposit_demo_account')
-    
+
         <!-- Modal for Account details -->
     @include('frontend.default.user.forex.modal.__account_details')
 

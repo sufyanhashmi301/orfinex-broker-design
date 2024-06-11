@@ -15,6 +15,7 @@
                         </select>
                     </div>
                 </div>
+                
                 <div class="input-area relative">
                     <label for="" class="form-label">{{ __('Payment Method:') }}</label>
                     <div class="input-group select2-lg">

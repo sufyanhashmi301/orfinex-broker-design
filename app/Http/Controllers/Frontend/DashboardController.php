@@ -16,8 +16,7 @@ class DashboardController extends Controller
     use ForexApiTrait;
     public function dashboard(Request $request)
     {
-
-//        dd($decoded_string);
+//        dd(getLocation(),'dashboar');
         $user = auth()->user();
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
@@ -26,7 +25,6 @@ class DashboardController extends Controller
 //        if(!$user->ref_id) {
 //            AgentReferralJob::dispatch($user);
 //        }
-
 
         $transactions = Transaction::where('user_id', $user->id);
 

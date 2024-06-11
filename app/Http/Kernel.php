@@ -74,6 +74,7 @@ class Kernel extends HttpKernel
         'XSS' => \App\Http\Middleware\XSS::class,
         'KYC' => \App\Http\Middleware\KYC::class,
         '2fa' => \App\Http\Middleware\TwoFaCheck::class,
+        '2fa_admin' => \App\Http\Middleware\TwoFaCheckForAdmin::class,
         'isActive' => \App\Http\Middleware\CheckDeactivate::class,
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,

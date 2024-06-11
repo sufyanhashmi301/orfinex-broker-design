@@ -32,7 +32,7 @@
                     @endif
                 </p>
 
-                <form action="{{ route('user.setting.action-2fa') }}" method="POST">
+                <form action="{{ route('admin.staff.action-2fa') }}" method="POST">
                     @csrf
 
                     <div class="input-area">
@@ -56,7 +56,7 @@
             </div>
 
         @else
-            <a href="{{ route('user.setting.2fa') }}"
+            <a href="{{ route('admin.staff.2fa') }}"
                class="btn btn-dark">{{ __('Obtaining a Secret Key for Two-Factor Authentication') }}</a>
         @endif
     </div>

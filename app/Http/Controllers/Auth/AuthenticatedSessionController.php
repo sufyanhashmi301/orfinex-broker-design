@@ -33,6 +33,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+//        dd($request->all());
         $oldTheme = session()->get('site-color-mode');
 
         $request->authenticate();

@@ -40,12 +40,6 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\SecurityController;
-use App\Http\Controllers\Backend\ChallengeController;
-use App\Http\Controllers\Backend\InvestDashboardController;
-use App\Http\Controllers\Backend\PricingInvestedPlansController;
-use App\Http\Controllers\Backend\PricingInvestmentSchemeController;
-use App\Http\Controllers\Backend\LedgerProfitsController;
-use App\Http\Controllers\Backend\FundedBankController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,9 +52,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+//Route::group(['middleware' => [ '2fa']], function () {
+Route::middleware(['2fa_admin'])->group(function () {
 //Admin Dashboard
-Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+
 
 //===============================  Customer Management ==================================
 Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
@@ -76,73 +72,6 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserControlle
     Route::get('transaction/{id}', 'transaction')->name('transaction');
     Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
 });
-Route::name('investment.')->prefix('admin/investment')->group(function () {
-    Route::get('/dashboard', 'Admin\InvestDashboardController@index')->name('dashboard');;
-
-    Route::get('/history/{status?}', 'Admin\InvestedPlansController@investedPlanList')->name('list');
-    Route::get('/plan/details/{id}', 'Admin\InvestedPlansController@showInvestmentDetails')->name('details');
-    Route::get('/plan/action', 'Admin\InvestedPlansController@showInvestmentDetails')->name('plan.action');
-    Route::post('plan/approve/{id?}', 'Admin\InvestedPlansController@approveInvestment')->name('plan.approve');
-    Route::post('plan/cancel/{id?}', 'Admin\InvestedPlansController@cancelInvestment')->name('plan.cancel');
-    Route::post('plan/migrate/{id?}', 'Admin\InvestedPlansController@migrateInvestment')->name('plan.migrate');
-
-    Route::get('/profits/{type?}', 'Admin\LedgerProfitsController@profitList')->name('profits.list');
-    Route::get('/transactions/{type?}', 'Admin\LedgerProfitsController@transactionList')->name('transactions.list');
-
-    Route::post('/payout/profits', 'Admin\LedgerProfitsController@profitsPayout')->name('profits.payout');
-
-    // Schemes
-    Route::get('/schemes/{status?}', 'Admin\InvestmentSchemeController@schemeList')->name('schemes');
-    Route::get('/scheme/{action?}', 'Admin\InvestmentSchemeController@actionScheme')->name('scheme.action');
-    Route::post('/scheme/update/{id?}', 'Admin\InvestmentSchemeController@updateScheme')->name('scheme.update');
-    Route::post('/scheme/status', 'Admin\InvestmentSchemeController@updateSchemeStatus')->name('scheme.status');
-
-    //********************* Tokens ********************************
-    Route::get('token/history/{status?}', 'Admin\TokenInvestedPlansController@investedPlanList')->name('token.list');
-    Route::get('token/plan/details/{id}', 'Admin\TokenInvestedPlansController@showInvestmentDetails')->name('token.details');
-    Route::get('token/plan/action', 'Admin\TokenInvestedPlansController@showInvestmentDetails')->name('token.plan.action');
-    Route::post('token/plan/approve/{id?}', 'Admin\TokenInvestedPlansController@approveInvestment')->name('token.plan.approve');
-    Route::post('token/plan/cancel/{id?}', 'Admin\TokenInvestedPlansController@cancelInvestment')->name('token.plan.cancel');
-    Route::post('token/plan/migrate/{id?}', 'Admin\TokenInvestedPlansController@migrateInvestment')->name('token.plan.migrate');
-
-    Route::get('token/profits/{type?}', 'Admin\TokenLedgerProfitsController@profitList')->name('token.profits.list');
-    Route::get('token/transactions/{type?}', 'Admin\TokenLedgerProfitsController@transactionList')->name('token.transactions.list');
-
-    Route::post('token/payout/profits', 'Admin\TokenLedgerProfitsController@profitsPayout')->name('token.profits.payout');
-
-    // Schemes
-    Route::get('token/schemes/{status?}', 'Admin\TokenInvestmentSchemeController@schemeList')->name('token.schemes');
-    Route::get('token/scheme/{action?}', 'Admin\TokenInvestmentSchemeController@actionScheme')->name('token.scheme.action');
-    Route::post('token/scheme/update/{id?}', 'Admin\TokenInvestmentSchemeController@updateScheme')->name('token.scheme.update');
-    Route::post('token/scheme/status', 'Admin\TokenInvestmentSchemeController@updateSchemeStatus')->name('token.scheme.status');
-
-
-});
-
-Route::name('pricing.investment.')->prefix('admin/pricing/investment')->group(function () {
-    Route::get('/dashboard', 'Admin\InvestDashboardController@index')->name('dashboard');;
-
-    Route::get('/history/{status?}', 'Admin\PricingInvestedPlansController@investedPlanList')->name('list');
-    Route::get('/plan/details/{id}', 'Admin\PricingInvestedPlansController@showInvestmentDetails')->name('details');
-    Route::get('/plan/action', 'Admin\PricingInvestedPlansController@showInvestmentDetails')->name('plan.action');
-    Route::post('plan/approve/{id?}', 'Admin\PricingInvestedPlansController@approveInvestment')->name('plan.approve');
-    Route::post('plan/cancel/{id?}', 'Admin\PricingInvestedPlansController@cancelInvestment')->name('plan.cancel');
-    Route::post('plan/migrate/{id?}', 'Admin\PricingInvestedPlansController@migrateInvestment')->name('plan.migrate');
-
-    Route::get('/profits/{type?}', 'Admin\LedgerProfitsController@profitList')->name('profits.list');
-    Route::get('/transactions/{type?}', 'Admin\LedgerProfitsController@transactionList')->name('transactions.list');
-
-    Route::post('/payout/profits', 'Admin\LedgerProfitsController@profitsPayout')->name('profits.payout');
-
-    // Schemes
-    Route::get('/schemes/{status?}', 'Admin\InvestmentSchemeController@schemeList')->name('schemes');
-    Route::get('/scheme/{action?}', 'Admin\InvestmentSchemeController@actionScheme')->name('scheme.action');
-    Route::post('/scheme/update/{id?}', 'Admin\InvestmentSchemeController@updateScheme')->name('scheme.update');
-    Route::post('/scheme/status', 'Admin\InvestmentSchemeController@updateSchemeStatus')->name('scheme.status');
-
-    Route::get('banks', 'Admin\FundedBankController@index')->name('banks');
-
-});
 
 Route::resource('kyc-form', KycController::class);
 Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
@@ -151,11 +80,13 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
     Route::get('action/{id}', 'depositAction')->name('action');
     Route::post('action-now', 'actionNow')->name('action.now');
     Route::get('all', 'kycAll')->name('all');
+
 });
 Route::resource('risk-profile-tag', RiskProfileTagController::class);
 Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
     Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
     Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+
 });
 
 Route::resource('ib-form', IBController::class);
@@ -167,14 +98,23 @@ Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::cla
     Route::get('answer/view/{user}', 'answerView')->name('answer.view');
     Route::post('approve', 'approveIbMember')->name('approve');
     Route::post('update', 'updateIbMember')->name('update');
+    Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
+    Route::post('multi/update', 'updateMIbMember')->name('multi.update');
     Route::post('reject', 'rejectIbMember')->name('reject');
     Route::post('save/form', 'saveForm')->name('save.form');
+
 });
 
 //===============================  Role Management ==================================
 Route::resource('roles', RoleController::class)->except('show', 'destroy');
 Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
-
+Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
+Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
+Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
+Route::post('/2fa/verify', function () {
+//            dd(route('admin.dashboard'));
+    return redirect(route('admin.dashboard'));
+})->name('2fa.verify');
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
@@ -235,6 +175,7 @@ Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => Withd
 
     Route::get('action/{id}', 'withdrawAction')->name('action');
     Route::post('action-now', 'actionNow')->name('action.now');
+
 });
 Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
     Route::get('index', 'index')->name('index');
@@ -332,6 +273,7 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
         Route::get('tune', 'setTune')->name('tune');
         Route::get('tune/status/{id}', 'status')->name('tune.status');
     });
+
 });
 
 //===============================  Security Settings ==================================
@@ -362,6 +304,7 @@ Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::get('/', 'template')->name('index');
         Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
         Route::post('template-update', 'update_template')->name('template-update');
+
     });
 
     Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
@@ -402,42 +345,10 @@ Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('
 Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
 Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
 Route::get('/ib-resources', function () {
     return view('backend.ib.resources.index');
 });
-
-
-Route::group(['prefix' => 'pricing', 'as' => 'pricing.', 'controller' => PricingInvestedPlansController::class], function () {
-    Route::get('/dashboard', 'index')->name('dashboard');;
-
-    Route::get('/history/{status?}', 'investedPlanList')->name('list');
-    Route::get('/plan/details/{id}', 'showInvestmentDetails')->name('details');
-    Route::get('/plan/action', 'showInvestmentDetails')->name('plan.action');
-    Route::post('plan/approve/{id?}', 'approveInvestment')->name('plan.approve');
-    Route::post('plan/cancel/{id?}', 'cancelInvestment')->name('plan.cancel');
-    Route::post('plan/migrate/{id?}', 'migrateInvestment')->name('plan.migrate');
-});
-
-Route::group(['prefix' => 'pricing', 'as' => 'pricing.', 'controller' => LedgerProfitsController::class], function () {
-    Route::get('/profits/{type?}', 'profitList')->name('profits.list');
-    Route::get('/transactions/{type?}', 'transactionList')->name('transactions.list');
-
-    Route::post('/payout/profits', 'profitsPayout')->name('profits.payout');
-});
-
-Route::group(['prefix' => 'pricing', 'as' => 'pricing.', 'controller' => PricingInvestmentSchemeController::class], function () {
-    // Schemes
-    Route::get('/schemes/{status?}', 'schemeList')->name('schemes');
-    Route::get('/scheme/{action?}', 'actionScheme')->name('scheme.action');
-    Route::post('/scheme/update/{id?}', 'updateScheme')->name('scheme.update');
-    Route::post('/scheme/save/{id?}', 'saveScheme')->name('scheme.save');
-    Route::post('/scheme/status', 'updateSchemeStatus')->name('scheme.status');
-
-});
-
-Route::post('banks', [FundedBankController::class, 'index'])->name('banks');
 
 Route::get('ib-resources/new', function () {
     return view('backend.ib.resources.create');
@@ -460,10 +371,7 @@ Route::get('/bonus', function () {
 Route::get('/bonus/create', function () {
     return view('backend.bonus.create');
 });
+});
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
-Route::resource('challenges', ChallengeController::class)->except('show', 'destroy');
-
-Route::resource('challenges', ChallengeController::class)->except('show', 'destroy');
-
-Route::get('/step_rules/create', [ChallengeController::class, 'step_rules_index'])->name('step-rules');
-Route::post('/step_rules/create', [ChallengeController::class, 'step_rules_create'])->name('step-rules.create');
+Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');

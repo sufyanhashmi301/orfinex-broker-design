@@ -18,13 +18,11 @@ class DashboardController extends Controller
     {
 //        dd(getLocation(),'dashboar');
         $user = auth()->user();
+
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             $this->syncForexAccounts(auth()->id());
         }
-//        if(!$user->ref_id) {
-//            AgentReferralJob::dispatch($user);
-//        }
 
         $transactions = Transaction::where('user_id', $user->id);
 

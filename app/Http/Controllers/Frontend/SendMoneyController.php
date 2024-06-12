@@ -33,7 +33,7 @@ class SendMoneyController extends Controller
                     auth()->setUser(auth()->user()->fresh());
                 }
             }
-            $this->syncForexAccounts(auth()->id());
+//            $this->syncForexAccounts(auth()->id());
         }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
@@ -189,7 +189,7 @@ class SendMoneyController extends Controller
                     auth()->setUser(auth()->user()->fresh());
                 }
             }
-            $this->syncForexAccounts(auth()->id());
+//            $this->syncForexAccounts(auth()->id());
         }
 
         $forexAccounts = ForexAccount::with('schema')

@@ -166,21 +166,30 @@ if (!function_exists('getIpAddress')) {
 if (!function_exists('getLocation')) {
     function getLocation()
     {
+        $location = [
+            'country_code' => 'AE',
+            'name' => 'United Arab Emirates',
+            'dial_code' => '+971',
+            'ip' => [],
+        ];
+
         $clientIp = request()->ip();
         $ip = $clientIp == in_array($clientIp, ['127.0.0.1', '::1']) ? '72.255.51.134' : $clientIp;
 
-        $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
+        $locationApi = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
+        if ($locationApi) {
+            $currentCountry = collect(getCountries())->first(function ($value, $key) use ($locationApi) {
+                return $value['code'] == $locationApi['countryCode'];
+            });
 
-        $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
-            return $value['code'] == $location['countryCode'];
-        });
 
-        $location = [
-            'country_code' => $currentCountry['code'],
-            'name' => $currentCountry['name'],
-            'dial_code' => $currentCountry['dial_code'],
-            'ip' => $location['query'] ?? [],
-        ];
+            $location = [
+                'country_code' => $currentCountry['code'],
+                'name' => $currentCountry['name'],
+                'dial_code' => $currentCountry['dial_code'],
+                'ip' => $location['query'] ?? [],
+            ];
+        }
 
         return new \Illuminate\Support\Fluent($location);
     }

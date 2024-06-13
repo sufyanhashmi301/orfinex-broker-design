@@ -214,41 +214,6 @@ Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeContro
     Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
 });
 
-Route::group(['prefix' => 'navigation', 'as' => 'navigation.', 'controller' => NavigationController::class], function () {
-    Route::get('menu', 'index')->name('menu');
-    Route::post('menu-add', 'store')->name('menu.add');
-    Route::get('menu-edit/{id}', 'edit')->name('menu.edit');
-    Route::post('menu-update', 'update')->name('menu.update');
-    Route::post('menu-delete', 'delete')->name('menu.delete');
-    Route::get('menu-delete/{id}/{type}', 'typeDelete')->name('menu.type.delete');
-    Route::post('menu-position-update', 'positionUpdate')->name('position.update');
-
-    Route::get('header', 'header')->name('header');
-    Route::get('footer', 'footer')->name('footer');
-
-    Route::get('translate/{id}', 'translate')->name('translate');
-    Route::post('translate', 'translateNow')->name('translate.now');
-});
-Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
-    Route::get('create', 'create')->name('create');
-    Route::post('store', 'store')->name('store')->withoutMiddleware('XSS');
-    Route::get('edit/{name}', 'edit')->name('edit');
-    Route::post('update', 'update')->name('update')->withoutMiddleware('XSS');
-    Route::post('delete/now', 'deleteNow')->name('delete.now');
-
-    Route::get('section/{section}', 'landingSection')->name('section.section');
-    Route::post('section/update', 'landingSectionUpdate')->name('section.section.update');
-    Route::post('content-store', 'contentStore')->name('content-store');
-    Route::get('content-edit/{id}', 'contentEdit')->name('content-edit');
-    Route::post('content-update', 'contentUpdate')->name('content-update');
-    Route::post('content-delete', 'contentDelete')->name('content-delete');
-
-    Route::resource('blog', BlogController::class)->except('show')->withoutMiddleware('XSS');
-
-    Route::get('settings', 'pageSetting')->name('setting');
-    Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
-});
-Route::get('footer-content', [PageController::class, 'footerContent'])->name('footer-content');
 
 Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
     Route::post('store', 'store')->name('store');

@@ -446,84 +446,9 @@
                                 icon-name="languages"></i><span>{{ __('Language Settings') }}</span></a>
                     </li>
                 @endcan
-                @can('page-manage')
-                    <li class="side-nav-item {{ isActive('admin.page.setting') }}">
-                        <a href="{{ route('admin.page.setting') }}"><i
-                                icon-name="layout"></i><span>{{ __('Page Settings') }}</span></a>
-                    </li>
-                @endcan
+
             @endcanany
 
-            {{-- ************************************************************* Site  Essentials ********************************************************* --}}
-            @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
-                <li class="side-nav-item category-title">
-                    <span>{{ __('Site Essentials') }}</span>
-                </li>
-                @can('landing-page-manage')
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.theme*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="palette"></i><span>{{ __('Theme Manage') }}</span><span
-                                class="right-arrow"><i icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            <li class="{{ isActive('admin.theme.site') }}">
-                                <a href="{{ route('admin.theme.site') }}"><i
-                                        icon-name="roller-coaster"></i>{{ __('Site Theme') }}</a>
-                            </li>
-                            <li class="{{ isActive('admin.theme.dynamic-landing') }}">
-                                <a href="{{ route('admin.theme.dynamic-landing') }}"><i
-                                        icon-name="warehouse"></i>{{ __('Dynamic Landing Theme') }}</a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.page.section.section*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="home"></i><span>{{ __('Landing Page') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @foreach($landingSections as $section)
-                                <li class="@if(request()->is('admin/page/section/'.$section->code)) active @endif">
-                                    <a href="{{ route('admin.page.section.section',$section->code) }}"><i
-                                            icon-name="egg"></i>{{ $section->name }}</a>
-                                </li>
-                            @endforeach
-
-                        </ul>
-                    </li>
-                @endcan
-                @can('page-manage')
-                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.page.edit*','admin.page.create']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="layout-grid"></i><span>{{ __('Pages') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @foreach($pages as $page)
-                                <li class="@if(request()->is('admin/page/edit/'.$page->code)) active @endif">
-                                    <a href="{{ route('admin.page.edit',$page->code) }}"><i
-                                            icon-name="egg"></i>{{ $page->title }}</a>
-                                </li>
-                            @endforeach
-                            <li class="{{ isActive('admin.page.create') }}">
-                                <a href="{{ route('admin.page.create') }}"><i
-                                        icon-name="egg"></i>{{ __('Add New Page') }}</a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
-                @can('navigation-manage')
-                    <li class="side-nav-item {{ isActive('admin.navigation*') }}">
-                        <a href="{{ route('admin.navigation.menu') }}"><i
-                                icon-name="menu"></i><span>{{ __('Site Navigations') }}</span></a>
-                    </li>
-                @endcan
-                @can('footer-manage')
-                    <li class="side-nav-item {{ isActive('admin.footer-content') }}">
-                        <a href="{{ route('admin.footer-content') }}"><i
-                                icon-name="list-end"></i><span>{{ __('Footer Contents') }}</span></a>
-                    </li>
-                @endcan
-            @endcanany
 
             {{-- ************************************************************* Site  Essentials ********************************************************* --}}
             @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])

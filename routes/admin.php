@@ -203,7 +203,6 @@ Route::resource('ranking', RankingController::class)->only('index', 'store', 'up
 
 Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
-    Route::get('global', 'globalSettings')->name('global');
     Route::get('site', 'siteTheme')->name('site');
     Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 

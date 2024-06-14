@@ -181,10 +181,10 @@ class ForexAccountController extends GatewayController
     public function forexAccountLogs(Request $request)
     {
 
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            sync_forex_accounts(auth()->id());
+        }
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance', 'desc')
             ->get();
@@ -270,6 +270,7 @@ class ForexAccountController extends GatewayController
             $updateUserApiResponse = $this->forexApiService->setUserLeverage($data);
 
             if ($updateUserApiResponse['success']) {
+                ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
                 return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
             } else {
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);

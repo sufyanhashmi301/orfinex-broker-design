@@ -559,6 +559,86 @@ if (!function_exists('add_child_agent')) {
     }
 }
 
+if (!function_exists('sync_forex_accounts')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function sync_forex_accounts($pUser)
+    {
+        if (!isset($userID))
+            $userID = auth()->user()->id;
+
+        $realAccounts = ForexAccount::where('user_id', $userID)
+            ->where('status', ForexAccountStatus::Ongoing)
+//            ->where('login', 1003462)
+            ->get();
+
+        $balance = 0;
+        $forexApiService = app(ForexApiService::class);
+        foreach ($realAccounts as $account) {
+//            dd($account);
+            $data = [
+                'login' => $account->login
+            ];
+            $getUserResponse = $forexApiService->getBalance($data);
+//            dd($getUserResponse);
+//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
+//            if (!empty($getUserResponse)) {
+//                dd($getUserResponse->object(),$getUserResponse->object()->Login);
+                if ($getUserResponse['success']) {
+
+                    update_user_account_by_api_response($getUserResponse['result']);
+//                    if ($account->account_type == 'real') {
+//                        $balance += $getUserResponse->object()->Balance;
+//                    }
+                }
+            }
+//        }
+//        dd($balance);
+//        update_total_balance($userID, $balance);
+    }
+}
+
+if (!function_exists('update_user_account_by_api_response')) {
+    function update_user_account_by_api_response($resData, $lastDeposit = false)
+    {
+//        dd($resData);
+//        $resData = $getUserResponse->object();
+//        dd($resData);
+        if (isset($resData['login'])) {
+            $forexTrading = ForexAccount::where('login', $resData['login'])->first();
+//        $forexTrading->account_name = $resData->Name;
+            if ($forexTrading) {
+//                $forexTrading->leverage = $resData['leverage'];
+//      $forexTrading->email = $resData->Email;
+                $forexTrading->balance = $resData['balance'];
+                $forexTrading->equity = $resData['equity'];
+                $forexTrading->credit = $resData['credit'];
+//                $forexTrading->agent = $resData->Agent;
+//            $forexTrading->free_margin = $resData->MarginFree;
+//            $forexTrading->margin = $resData->Margin;
+//                $forexTrading->group = $resData->Group;
+
+                $forexTrading->save();
+            }
+        }
+    }
+}
+if (!function_exists('update_total_balance')) {
+    function update_total_balance($userID, $balance)
+    {
+        $user = User::where('id', $userID)->first();
+//        $forexTrading->account_name = $resData->Name;
+        $user->balance = $balance;
+        $user->save();
+    }
+}
+
 if (!function_exists('the_hash')) {
     /**
      * @param $data

@@ -80,8 +80,8 @@ class ForexApiService
 
     public function getUserByLogin($data)
     {
-        $endpoint = 'user/getByLogin';
-        return $this->get($endpoint, $data);
+        $endpoint = 'user/get';
+        return $this->getByBody($endpoint, $data);
     }
 
     public function getUserByEmail($data)
@@ -93,7 +93,7 @@ class ForexApiService
     public function getBalance($data)
     {
         $endpoint = 'useraccount/balance';
-        return $this->post($endpoint, $data);
+        return $this->get($endpoint, $data);
     }
 
     public function getUserBalanceByGroup($data)
@@ -112,6 +112,24 @@ class ForexApiService
     {
         $endpoint = 'useraccount/getBalanceReport';
         return $this->get($endpoint, $data);
+    }
+
+    protected function getByBody($endpoint, $params = [])
+    {
+        try {
+            $URL = $this->baseUrl . '/' . $endpoint;
+//            dd($URL,$params);
+            $body = json_encode($params);
+            $response = Http::withHeaders($this->getCommonHeaders())
+//                ->retry(3, 100)
+                ->withBody($body, 'application/json')->send('GET', $URL);
+//                ->get($URL, $params);
+//            dd($body,$response->object());
+
+            return $this->handleResponse($response);
+        } catch (RequestException $e) {
+            return $this->handleException($e);
+        }
     }
 
     protected function get($endpoint, $params = [])

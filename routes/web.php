@@ -241,11 +241,11 @@ Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers
 
 
 Route::get('user/agreements', function () {
-    return view('frontend.default.user.setting.agreements.index');
+    return view('frontend::user.setting.agreements.index');
 })->name('user.agreements');
 
 Route::get('user/margin-account', function () {
-    return view('frontend.default.user.setting.margin.index');
+    return view('frontend::user.setting.margin.index');
 })->name('user.margin-account');
 
 Route::get('get/account/{login}', function ($login) {
@@ -280,11 +280,11 @@ Route::get('user/fund/detail', function () {
 })->name('user.fund.detail');
 
 Route::get('user/downloads', function () {
-    return view('frontend.default.user.downloads');
+    return view('frontend::user.downloads');
 })->name('user.downloads');
 
 Route::get('user/economic_calendar', function () {
-    return view('frontend.default.user.economic_calendar');
+    return view('frontend::user.economic_calendar');
 })->name('user.economic_calendar');
 
 

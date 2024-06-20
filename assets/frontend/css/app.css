@@ -4803,6 +4803,9 @@ textarea.form-control.is-invalid{
 .w-3\/4 {
   width: 75%;
 }
+.w-11\/12	{
+  width: 91.666667%;
+}
 .w-\[48\%\]{
   width: 48%;
 }
@@ -4973,6 +4976,12 @@ textarea.form-control.is-invalid{
 }
 .max-w-md{
   max-width: 28rem;
+}
+.max-w-xs {
+  max-width: 20rem;
+}
+.max-w-lg {
+  max-width: 32rem;
 }
 .max-w-4xl{
   max-width: 56rem;
@@ -16407,6 +16416,14 @@ ul.custom-list ul li{
   display: block;
 }
 
+#trading-accounts .grid-view .list-view-dropdown-btn, #trading-accounts .list-view .grid-view-dropdown-btn {
+  display: none !important;
+}
+
+#trading-accounts .list-view .list-view-dropdown-btn, #trading-accounts .grid-view .grid-view-dropdown-btn {
+  display: inline-flex;
+}
+
 .progress-steps .single-step {
   background: rgba(0, 18, 25, 0.1);
   padding: 10px 15px;
@@ -17060,4 +17077,10 @@ ul.custom-list ul li{
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
   --tw-ring-color: rgb(71 85 105 / var(--tw-ring-opacity));
   --tw-ring-opacity: 0.9;
+}
+
+.clearfix::after {
+  display: block;
+  clear: both;
+  content: "";
 }

@@ -1,9 +1,9 @@
 @extends('backend.setting.index')
 @section('setting-title')
-    {{ __('Mail Settings') }}
+    {{ __('Forex API Settings') }}
 @endsection
 @section('title')
-    {{ __('Mail Settings') }}
+    {{ __('Forex API Settings') }}
 @endsection
 @section('setting-content')
 

@@ -225,6 +225,7 @@ Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialCon
 Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
     Route::get('site', 'siteSetting')->name('site');
     Route::get('mail', 'mailSetting')->name('mail');
+    Route::get('forex-api', 'forexApiSetting')->name('forex-api');
     Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
     Route::post('update', 'update')->name('update');
 

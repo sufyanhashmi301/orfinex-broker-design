@@ -47,7 +47,10 @@
                                             icon-name="bell-ring"></i>{{__('Notification Settings') }}</a>
                                 </li>
                             @endcan
-
+                                <li class="{{ isActive('admin.settings.forex-api','forex-api') ?? isActive('admin.settings.forex-api') }} ">
+                                    <a href="{{ route('admin.settings.forex-api','forex-api') }}"><i
+                                            icon-name="award"></i>{{__('Forex API') }}</a>
+                                </li>
 {{--                            @can('user-permissions')--}}
 {{--                                <li class="{{ isActive('admin.settings.user-permissions') ?? isActive('admin.settings.permissions') }} ">--}}
 {{--                                    <a href="{{ route('admin.settings.user-permissions') }}">--}}

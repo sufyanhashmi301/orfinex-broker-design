@@ -158,11 +158,11 @@ class DepositController extends GatewayController
         $forexAccount = ForexAccount::where('login', $targetId)->first();
         $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-           $isValid =  $this->isValidForexAccount($targetId);
+//           $isValid =  $this->isValidForexAccount($targetId);
 //           dd($isValid);
-        if(!$isValid){
-               return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
-           }
+//        if(!$isValid){
+//               return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
+//           }
 //        }
         $charge = 0;
         $finalAmount = (float)$amount + (float)$charge;

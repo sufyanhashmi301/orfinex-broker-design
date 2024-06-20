@@ -7,24 +7,32 @@ use GuzzleHttp\Exception\RequestException;
 
 class ForexApiService
 {
-    protected $baseUrl;
-    protected $apiKey;
+    protected $baseUrlReal;
+    protected $apiKeyReal;
 
     public function __construct()
     {
-        // $this->baseUrl = Setting::where('name', 'api_base_url')->value('val');
-        // $this->apiKey = Setting::where('name', 'api_key')->value('val');
-    //        $this->baseUrl = 'http://92.204.253.130:4001/api';
-    //        $this->apiKey = 'PVTfAIPjQZ4GganFp6bCI0ni7p1YSAxM';
-
-        $this->baseUrl = setting('forex_api_url','forex_api').'/api';
-        $this->apiKey = setting('forex_api_key','forex_api');
+        // $this->baseUrlReal = Setting::where('name', 'api_base_url')->value('val');
+        // $this->apiKeyReal = Setting::where('name', 'api_key')->value('val');
+    //        $this->baseUrlReal = 'http://92.204.253.130:4001/api';
+    //        $this->apiKeyReal = 'PVTfAIPjQZ4GganFp6bCI0ni7p1YSAxM';
+        $demoUrl = setting('mt5_api_url_demo','platform_api');
+        $demoKey = setting('mt5_api_key_demo','platform_api');
+        $this->baseUrlReal = setting('mt5_api_url_real','platform_api').'/api';
+        $this->apiKeyReal = setting('mt5_api_key_real','platform_api');
+        $this->baseUrlDemo = empty($demoUrl) ? setting('mt5_api_url_demo','platform_api') : setting('mt5_api_url_real','platform_api').'/api';
+        $this->apiKeyDemo = isset($demoKey) ? setting('mt5_api_key_demo','platform_api') : setting('mt5_api_key_real','platform_api');
     }
 
     public function createUser($data)
     {
         $endpoint = 'user/Create';
         return $this->post($endpoint, $data);
+    }
+    public function createUserDemo($data)
+    {
+        $endpoint = 'user/Create';
+        return $this->postDemo($endpoint, $data);
     }
 
     public function updateUser($data)
@@ -120,7 +128,7 @@ class ForexApiService
     protected function getByBody($endpoint, $params = [])
     {
         try {
-            $URL = $this->baseUrl . '/' . $endpoint;
+            $URL = $this->baseUrlReal . '/' . $endpoint;
 //            dd($URL,$params);
             $body = json_encode($params);
             $response = Http::withHeaders($this->getCommonHeaders())
@@ -138,7 +146,7 @@ class ForexApiService
     protected function get($endpoint, $params = [])
     {
         try {
-            $URL = $this->baseUrl . '/' . $endpoint;
+            $URL = $this->baseUrlReal . '/' . $endpoint;
             $response = Http::withHeaders($this->getCommonHeaders())
                 ->retry(3, 100)
                 ->get($URL, $params);
@@ -152,8 +160,23 @@ class ForexApiService
     protected function post($endpoint, $params = [])
     {
         try {
-            $URL = $this->baseUrl . '/' . $endpoint;
+            $URL = $this->baseUrlReal . '/' . $endpoint;
 //        dd($URL,$params);
+            $response = Http::withHeaders($this->getCommonHeaders())
+                ->retry(3, 100)
+                ->post($URL, $params);
+//            dd($response->json(),$params);
+
+            return $this->handleResponse($response);
+        } catch (RequestException $e) {
+            return $this->handleException($e);
+        }
+    }
+    protected function postDemo($endpoint, $params = [])
+    {
+        try {
+            $URL = $this->baseUrlDemo . '/' . $endpoint;
+        dd($URL,$params);
             $response = Http::withHeaders($this->getCommonHeaders())
                 ->retry(3, 100)
                 ->post($URL, $params);
@@ -168,7 +191,7 @@ class ForexApiService
     protected function getCommonHeaders()
     {
         return [
-            'SNC-X-API-KEY' => $this->apiKey,
+            'SNC-X-API-KEY' => $this->apiKeyReal,
         ];
     }
 

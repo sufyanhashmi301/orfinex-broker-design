@@ -67,6 +67,7 @@ class ForexAccountController extends GatewayController
         }
 
         $input = $request->all();
+//        dd($input);
 
         $user = Auth::user();
         $schema = ForexSchema::find($input['schema_id']);
@@ -100,8 +101,12 @@ class ForexAccountController extends GatewayController
             "masterPassword" => $password,
             "investorPassword" => 'SNNH@2024@bol'
         ];
-
-        $response = $this->forexApiService->createUser($data);
+//dd($request->group);
+        if($request->group == 'real_swap_free'  || $request->group == 'real_islamic'){
+            $response = $this->forexApiService->createUser($data);
+        }else{
+            $response = $this->forexApiService->createUserDemo($data);
+        }
         if ($response['success']) {
             $resResult = $response['result'];
             $mt5Login = $resResult['login'];
@@ -154,6 +159,7 @@ class ForexAccountController extends GatewayController
                 notify()->success('Successfully Created Forex Account', 'success');
                 return redirect()->route('user.forex-account-logs');
             }
+
 //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
 
         }

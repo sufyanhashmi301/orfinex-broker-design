@@ -406,7 +406,7 @@
                             @can('site-setting')
                                 <li class="{{ isActive('admin.settings.site') }}">
                                     <a href="{{route('admin.settings.site')}}"><i
-                                            icon-name="settings-2"></i>{{ __('Site Settings') }}</a>
+                                            icon-name="settings-2"></i>{{ __('Generals') }}</a>
                                 </li>
                             @endcan
                             @can('email-setting')
@@ -435,7 +435,10 @@
                                             icon-name="volume-2"></i>{{ __('Notification Tune') }}</a>
                                 </li>
                             @endcan
-
+                                <li class="{{ isActive('admin.settings.forex-api') }}">
+                                    <a href="{{ route('admin.settings.forex-api') }}"><i
+                                            icon-name="volume-2"></i>{{ __('Platform API') }}</a>
+                                </li>
                         </ul>
                     </li>
                 @endcanany

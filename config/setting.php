@@ -828,23 +828,39 @@ return [
             ],
         ],
     ],
-    'forex_api' => [
-        'title' => 'Forex API Settings',
+    'platform_api' => [
+        'title' => 'Platform API Settings',
         'elements' => [
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'forex_api_url', // unique name for field
-                'label' => 'Forex API url', // you know what label it is
+                'name' => 'mt5_api_url_real', // unique name for field
+                'label' => 'MT5 API url(real)', // you know what label it is
                 'rules' => 'required|min:5|max:50', // validation rule of laravel
                 'value' => 'http://11.222.333.444:1234', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'forex_api_key', // unique name for field
-                'label' => 'Forex API key', // you know what label it is
+                'name' => 'mt5_api_key_real', // unique name for field
+                'label' => 'Forex API key(real)', // you know what label it is
                 'rules' => 'required|min:5|max:1000', // validation rule of laravel
+                'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_url_demo', // unique name for field
+                'label' => 'MT5 API url(demo)', // you know what label it is
+                'rules' => 'sometimes|min:5|max:50', // validation rule of laravel
+                'value' => 'http://11.222.333.444:1234', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_key_demo', // unique name for field
+                'label' => 'MT5 API key(demo)', // you know what label it is
+                'rules' => 'sometimes|min:5|max:1000', // validation rule of laravel
                 'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
             ],
         ],

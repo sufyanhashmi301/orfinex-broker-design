@@ -86,10 +86,10 @@ class DepositController extends GatewayController
         $targetType = 'forex_deposit';
         $forexAccount = ForexAccount::where('login', $targetId)->first();
 //        $targetId = 124234234;
-        $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->isValidForexAccount($targetId);
-        }
+//        $clientIp = request()->ip();
+//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+//            $this->isValidForexAccount($targetId);
+//        }
 
         if (isset($forexAccount->schema->first_min_deposit) & $forexAccount->schema->first_min_deposit > 0) {
             if (!$forexAccount->first_min_deposit_paid) {

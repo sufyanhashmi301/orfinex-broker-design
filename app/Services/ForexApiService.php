@@ -9,11 +9,14 @@ class ForexApiService
 {
     protected $baseUrlReal;
     protected $apiKeyReal;
+    protected $baseUrlDemo;
+    protected $apiKeyDemo;
 
     public function __construct()
     {
         // $this->baseUrlReal = Setting::where('name', 'api_base_url')->value('val');
         // $this->apiKeyReal = Setting::where('name', 'api_key')->value('val');
+        // prime broker credentials
     //        $this->baseUrlReal = 'http://92.204.253.130:4001/api';
     //        $this->apiKeyReal = 'PVTfAIPjQZ4GganFp6bCI0ni7p1YSAxM';
         $demoUrl = setting('mt5_api_url_demo','platform_api');

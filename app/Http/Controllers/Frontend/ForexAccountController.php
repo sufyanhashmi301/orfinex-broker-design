@@ -206,6 +206,10 @@ class ForexAccountController extends GatewayController
 
     public function testForexAccount(Request $request)
     {
+        $data = [
+            'login' => 600952
+        ];
+        dd( $this->forexApiService->getUserByLogin($data));
         dd($this->getUserInfoApi(88876));
 //        $this->getPositionList(9996792);
 //        $this->getPositionListGroup(9996792);

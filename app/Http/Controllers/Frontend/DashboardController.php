@@ -19,10 +19,10 @@ class DashboardController extends Controller
 //        dd(getLocation(),'dashboar');
         $user = auth()->user();
 
-        $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            sync_forex_accounts(auth()->id());
-        }
+//        $clientIp = request()->ip();
+//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+//            sync_forex_accounts(auth()->id());
+//        }
 //        if(!$user->ref_id) {
 //            AgentReferralJob::dispatch($user);
 //        }

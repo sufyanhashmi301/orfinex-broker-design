@@ -31,7 +31,8 @@ class DepositController extends GatewayController
         $isStepTwo = '';
         $gateways = DepositMethod::where('status', 1)->get();
 
-        $clientIp = request()->ip();
+
+//        $clientIp = request()->ip();
 //        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
 //            $this->syncForexAccounts(auth()->id());
 //        }

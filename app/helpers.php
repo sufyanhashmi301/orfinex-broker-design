@@ -3,15 +3,12 @@
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
-use App\Helpers\NioHash;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
 use App\Models\User;
-use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
-
 
 if (!function_exists('isActive')) {
     function isActive($route, $parameter = null)
@@ -166,30 +163,21 @@ if (!function_exists('getIpAddress')) {
 if (!function_exists('getLocation')) {
     function getLocation()
     {
-        $location = [
-            'country_code' => 'AE',
-            'name' => 'United Arab Emirates',
-            'dial_code' => '+971',
-            'ip' => [],
-        ];
-
         $clientIp = request()->ip();
         $ip = $clientIp == in_array($clientIp, ['127.0.0.1', '::1']) ? '72.255.51.134' : $clientIp;
 
-        $locationApi = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
-        if ($locationApi) {
-            $currentCountry = collect(getCountries())->first(function ($value, $key) use ($locationApi) {
-                return $value['code'] == $locationApi['countryCode'];
-            });
+        $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
+        $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
+            return $value['code'] == $location['countryCode'];
+        });
 
-            $location = [
-                'country_code' => $currentCountry['code'],
-                'name' => $currentCountry['name'],
-                'dial_code' => $currentCountry['dial_code'],
-                'ip' => $location['query'] ?? [],
-            ];
-        }
+        $location = [
+            'country_code' => $currentCountry['code'],
+            'name' => $currentCountry['name'],
+            'dial_code' => $currentCountry['dial_code'],
+            'ip' => $location['query'] ?? [],
+        ];
 
         return new \Illuminate\Support\Fluent($location);
     }
@@ -542,24 +530,18 @@ if (!function_exists('add_child_agent')) {
                 ->where('account_type', 'real')
                 ->get();
 //        dd($forexAccounts,$this->user);
-//            $forexApiTrait = new class {
-//                use ForexApiTrait;
-//            };
-            $forexApiService = app(ForexApiService::class);
+            $forexApiTrait = new class {
+                use ForexApiTrait;
+            };
             foreach ($forexAccounts as $forexAccount) {
                 if ($pUser->ib_login) {
-                    $data = [
-                        'login' => $forexAccount->login,
-                        'agent' => $pUser->ib_login,
-                    ];
-                    $forexApiService->updateAgentAccount($data);
+                    $forexApiTrait->updateAgent($forexAccount->login, $pUser->ib_login);
                 }
             }
         }
     }
 }
-
-if (!function_exists('sync_forex_accounts')) {
+if (!function_exists('remove_child_agent')) {
     /**
      * @param $metaKey
      * @param null $default
@@ -568,101 +550,149 @@ if (!function_exists('sync_forex_accounts')) {
      * @version 1.0.0
      * @since 1.0
      */
-    function sync_forex_accounts($pUser)
+    function remove_child_agent($user)
     {
-        if (!isset($userID))
-            $userID = auth()->user()->id;
-
-        $realAccounts = ForexAccount::where('user_id', $userID)
-            ->where('status', ForexAccountStatus::Ongoing)
-//            ->where('login', 1003462)
+        $forexAccounts = ForexAccount::where('user_id', $user->id)
+            ->where('account_type', 'real')
             ->get();
-
-        $balance = 0;
-        $forexApiService = app(ForexApiService::class);
-        foreach ($realAccounts as $account) {
-//            dd($account);
-            $data = [
-                'login' => $account->login
-            ];
-            $getUserResponse = $forexApiService->getBalance($data);
-//            dd($getUserResponse);
-//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
-//            if (!empty($getUserResponse)) {
-//                dd($getUserResponse->object(),$getUserResponse->object()->Login);
-                if ($getUserResponse['success']) {
-
-                    update_user_account_by_api_response($getUserResponse['result']);
-//                    if ($account->account_type == 'real') {
-//                        $balance += $getUserResponse->object()->Balance;
-//                    }
-                }
-            }
-//        }
-//        dd($balance);
-//        update_total_balance($userID, $balance);
-    }
-}
-
-if (!function_exists('update_user_account_by_api_response')) {
-    function update_user_account_by_api_response($resData, $lastDeposit = false)
-    {
-//        dd($resData);
-//        $resData = $getUserResponse->object();
-//        dd($resData);
-        if (isset($resData['login'])) {
-            $forexTrading = ForexAccount::where('login', $resData['login'])->first();
-//        $forexTrading->account_name = $resData->Name;
-            if ($forexTrading) {
-//                $forexTrading->leverage = $resData['leverage'];
-//      $forexTrading->email = $resData->Email;
-                $forexTrading->balance = $resData['balance'];
-                $forexTrading->equity = $resData['equity'];
-                $forexTrading->credit = $resData['credit'];
-//                $forexTrading->agent = $resData->Agent;
-//            $forexTrading->free_margin = $resData->MarginFree;
-//            $forexTrading->margin = $resData->Margin;
-//                $forexTrading->group = $resData->Group;
-
-                $forexTrading->save();
-            }
+//        dd($forexAccounts,$this->user);
+        $forexApiTrait = new class {
+            use ForexApiTrait;
+        };
+        foreach ($forexAccounts as $forexAccount) {
+            $forexApiTrait->updateAgent($forexAccount->login, 0);
         }
-    }
-}
-if (!function_exists('update_total_balance')) {
-    function update_total_balance($userID, $balance)
-    {
-        $user = User::where('id', $userID)->first();
-//        $forexTrading->account_name = $resData->Name;
-        $user->balance = $balance;
-        $user->save();
-    }
-}
 
-if (!function_exists('the_hash')) {
+    }
+}
+if (!function_exists('get_mt5_account')) {
     /**
-     * @param $data
-     * @param $match
-     * @return string|boolean
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function the_hash($data, $match = null)
+    function get_mt5_account($login)
     {
-        return NioHash::of($data, $match);
+        return DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->first();
+
     }
 }
-
-if (!function_exists('get_hash')) {
+if (!function_exists('get_mt5_account_balance')) {
     /**
-     * @param $data
-     * @return string|boolean
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
      * @version 1.0.0
      * @since 1.0
      */
-    function get_hash($data)
+    function get_mt5_account_balance($login)
     {
-        return NioHash::toID($data);
+        $balance = 0.0;
+        $mt5Account = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->first();
+        if ($mt5Account) {
+            $balance = $mt5Account->Balance;
+        }
+        return $balance;
+
+    }
+}
+if (!function_exists('get_mt5_account_equity')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_mt5_account_equity($login)
+    {
+        $equity = 0.0;
+        $mt5Account = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->first();
+        if ($mt5Account) {
+            $equity = $mt5Account->Equity;
+        }
+        return $equity;
+
+    }
+}
+if (!function_exists('mt5_total_balance')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_balance($user_id)
+    {
+        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+
+        $totalBalance = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $forexAccounts)
+            ->sum('Balance');
+
+        return $totalBalance;
+
+    }
+}
+if (!function_exists('mt5_total_equity')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_equity($user_id)
+    {
+        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+
+        $totalEquity = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $forexAccounts)
+            ->sum('Equity');
+
+        return $totalEquity;
+
+    }
+}
+if (!function_exists('mt5_update_balance')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_update_balance($login, $balance)
+    {
+//        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+//            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->where('Login', $login)
+            ->update(['Balance' => $balance, 'Equity' => $balance]);
+
     }
 }
 

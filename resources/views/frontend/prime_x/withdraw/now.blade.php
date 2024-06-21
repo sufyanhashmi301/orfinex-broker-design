@@ -51,7 +51,7 @@
                                         </option>
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})
                                             </option>
                                         @endforeach
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
@@ -114,7 +114,7 @@
                                             <strong>{{ __('Withdraw Amount') }}</strong>
                                         </td>
                                         <td>
-                                            <span class="withdrawAmount"></span> 
+                                            <span class="withdrawAmount"></span>
                                             {{$currency}}
                                         </td>
                                     </tr>

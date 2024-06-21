@@ -176,7 +176,7 @@ class ForexApiService
     {
         try {
             $URL = $this->baseUrlDemo . '/' . $endpoint;
-        dd($URL,$params);
+//        dd($URL,$params);
             $response = Http::withHeaders($this->getCommonHeaders())
                 ->retry(3, 100)
                 ->post($URL, $params);

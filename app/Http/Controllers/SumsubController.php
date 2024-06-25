@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Plugin;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Log;
 use Sumsub\AppTokenUsageExample\SumsubClient;
 
 class SumsubController extends Controller
@@ -47,14 +47,14 @@ class SumsubController extends Controller
     public function UpdateKycStatus(Request $request)
     {
         Log::info('Webhook received:', $request->all());
-//        try {
-//            $user = \Auth::user();
-//            $user->update([
-//                'kyc' => 1,
-//            ]);
+        try {
+            $user = \Auth::user();
+            $user->update([
+                'kyc' => 1,
+            ]);
             return response()->json(['status' => 200, 'success' => 'Verification completed']);
-//        } catch (\Throwable $th) {
-//            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
-//        }
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+        }
     }
 }

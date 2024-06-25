@@ -44,14 +44,14 @@ class SumsubController extends Controller
     }
     public function UpdateKycStatus()
     {
-        try {
-            $user = \Auth::user();
-            $user->update([
-                'kyc' => 1,
-            ]);
+//        try {
+//            $user = \Auth::user();
+//            $user->update([
+//                'kyc' => 1,
+//            ]);
             return response()->json(['status' => 200, 'success' => 'Verification completed']);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
-        }
+//        } catch (\Throwable $th) {
+//            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+//        }
     }
 }

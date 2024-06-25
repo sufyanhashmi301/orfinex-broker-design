@@ -3,6 +3,7 @@
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Helpers\NioHash;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
@@ -778,6 +779,32 @@ if (!function_exists('mt5_update_balance')) {
             ->where('Login', $login)
             ->update(['Balance' => $balance, 'Equity' => $balance]);
 
+    }
+}
+if (!function_exists('the_hash')) {
+    /**
+     * @param $data
+     * @param $match
+     * @return string|boolean
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function the_hash($data, $match = null)
+    {
+        return NioHash::of($data, $match);
+    }
+}
+
+if (!function_exists('get_hash')) {
+    /**
+     * @param $data
+     * @return string|boolean
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_hash($data)
+    {
+        return NioHash::toID($data);
     }
 }
 

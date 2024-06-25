@@ -46,7 +46,7 @@ class SumsubController extends Controller
     }
     public function UpdateKycStatus(Request $request)
     {
-        Log::info('Webhook received:', $request->all());
+//        Log::info('Webhook received:', $request->all());
         try {
             $user = \Auth::user();
             $user->update([

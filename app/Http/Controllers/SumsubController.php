@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Plugin;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Sumsub\AppTokenUsageExample\SumsubClient;
 
 class SumsubController extends Controller
@@ -42,8 +44,9 @@ class SumsubController extends Controller
         }
         return view('frontend::user.kyc.advance.index', compact('sumsubstatus', 'currentTime', 'lastUpdatedTime'));
     }
-    public function UpdateKycStatus()
+    public function UpdateKycStatus(Request $request)
     {
+        Log::info('Webhook received:', $request->all());
 //        try {
 //            $user = \Auth::user();
 //            $user->update([

@@ -68,7 +68,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
     Route::get('kyc/basic', [KycController::class, 'basicKyc'])->name('kyc.basic');
     Route::get('kyc/advance', [SumsubController::class, 'advanceKyc'])->name('kyc.advance');
-    Route::post('kyc/advance', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
+    Route::post('kyc/advance/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
 
     Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('kyc.data');
     Route::post('kyc-submit', [KycController::class, 'submit'])->name('kyc.submit');

@@ -189,7 +189,7 @@ class ForexAccountController extends GatewayController
 
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            sync_forex_accounts(auth()->id());
+//            sync_forex_accounts(auth()->id());
         }
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance', 'desc')

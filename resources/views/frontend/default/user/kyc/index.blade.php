@@ -25,7 +25,7 @@
             <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
                 <img src="" alt="" class="ml-auto block">
             </div>
-        
+
             <header class="mb-6">
                 <h4 class="text-xl mb-5  text-slate-900 dark:text-slate-300  ">
                     Basic KYC
@@ -54,18 +54,18 @@
             <div class="overlay absolute right-0 top-0 w-full h-full z-[-1]">
                 <img src="" alt="" class="ml-auto block">
             </div>
-        
+
             <div class="text-sm font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-300 py-2 text-center absolute ltr:-right-[43px] rtl:-left-[43px] top-6 px-10 transform ltr:rotate-[45deg] rtl:-rotate-45">
                 Coming Soon
             </div>
-        
+
             <header class="mb-6">
                 <h4 class="text-xl mb-5  text-slate-100  ">
                     Advance KYC
                 </h4>
                 <div class="space-x-4 relative flex items-center mb-5 rtl:space-x-reverse  text-slate-100  ">
                     <span class="text-xs bg-warning-50 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
-                        Instant     
+                        Instant
                     </span>
                 </div>
                 <p class="text-sm text-white">
@@ -77,7 +77,7 @@
                     Elevate your access to major operations like External Transfers and Withdrawals with our Advanced KYC process.
                 </p>
                 <div>
-                    <a href="javascript:;" class="btn block-btn text-slate-100 border-slate-300 border ">
+                    <a href="{{route('user.kyc.advance')}}" class="btn block-btn text-slate-100 border-slate-300 border ">
                         Coming Soon
                     </a>
                 </div>

@@ -23,6 +23,7 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
+use App\Http\Controllers\SumsubController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 /*
@@ -35,6 +36,7 @@ use App\Traits\ForexApiTrait;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
 
@@ -65,6 +67,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     //kyc apply
     Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
     Route::get('kyc/basic', [KycController::class, 'basicKyc'])->name('kyc.basic');
+    Route::get('kyc/advance', [SumsubController::class, 'advanceKyc'])->name('kyc.advance');
+    Route::post('kyc/advance', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
+
     Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('kyc.data');
     Route::post('kyc-submit', [KycController::class, 'submit'])->name('kyc.submit');
 
@@ -106,7 +111,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
         Route::post('internal-now', 'sendMoneyInternalNow')->name('internal-now');
         Route::get('log', 'sendMoneyLog')->name('log');
-
     });
 
     //wallet exchange
@@ -123,7 +127,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
-
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');
@@ -147,9 +150,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
         Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
     });
-//    Route::get('referral/advertisement-material', function () {
-//        return view('frontend::referral.index');
-//    })->name('referral.advertisement-material');
+    //    Route::get('referral/advertisement-material', function () {
+    //        return view('frontend::referral.index');
+    //    })->name('referral.advertisement-material');
 
     //settings
     Route::group(['prefix' => 'settings', 'as' => 'setting.', 'controller' => SettingController::class], function () {
@@ -161,13 +164,10 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
         Route::post('info-update', 'infoUpdate')->name('info-update');
 
-        Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
-//            dd($request->all());
-//            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
+        Route::post('/2fa/verify', function () {
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
     });
-
 });
 
 //translate
@@ -249,7 +249,7 @@ Route::get('user/margin-account', function () {
 })->name('user.margin-account');
 
 Route::get('get/account/{login}', function ($login) {
-//    dd($login);
+    //    dd($login);
     // Your custom logic here
 
 
@@ -262,6 +262,7 @@ Route::get('user/deposit-methods', function () {
 Route::get('user/platform', function () {
     return view('frontend.default.terminal.index');
 })->name('user.platform');
+
 
 Route::get('user/fund-board', function () {
     return view('frontend.default.fund_board.index');
@@ -286,7 +287,3 @@ Route::get('user/downloads', function () {
 Route::get('user/economic_calendar', function () {
     return view('frontend::user.economic_calendar');
 })->name('user.economic_calendar');
-
-
-Route::post('/sumsub-test', [SumsubController::class, 'testSumsub'])->name('Sumsubtest');
-

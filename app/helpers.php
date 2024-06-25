@@ -7,6 +7,7 @@ use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
 use App\Models\User;
+use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
 

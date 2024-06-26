@@ -63,8 +63,11 @@
                             Elevate your access to major operations like External Transfers and Withdrawals with our Advanced KYC process.
                         </p>
                         <div>
-                            <a href="{{route('user.kyc.advance')}}" class="btn block-btn btn-light" disabled>
-                                Coming Soon
+{{--                            <a href="{{route('user.kyc.advance')}}" class="btn block-btn btn-light" disabled>--}}
+{{--                                Coming Soon--}}
+{{--                            </a>--}}
+                            <a href="{{route('user.kyc.advance')}}" class="btn block-btn btn-dark">
+                                Submit Now
                             </a>
                         </div>
                     </div>

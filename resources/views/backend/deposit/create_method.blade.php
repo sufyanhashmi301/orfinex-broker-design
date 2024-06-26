@@ -2,6 +2,9 @@
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+@endsection
 @section('deposit_content')
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -172,7 +175,23 @@
                                     </div>
                                 </div>
                             @endif
+                            <div class="col-xl-12">
+                                <div class="site-input-groups">
+                                    <label class="box-input-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this method to whole world):') }}</label>
+                                    <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
 
+                                        @foreach( getCountries() as $country)
+                                            <option  value="{{ $country['name'] }}">
+                                                {{ $country['name']  }}
+                                            </option>
+                                        @endforeach
+                                        <option  value="All" >
+                                            {{ __('All') }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                            </div>
                             <div class="col-xl-6">
                                 <div class="site-input-groups">
                                     <label class="box-input-label" for="">{{ __('Status:') }}</label>
@@ -210,6 +229,18 @@
     </div>
 @endsection
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+    <script>
+
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            // maxItemCount:7,
+            // searchResultLimit:7,
+            // renderChoiceLimit:7
+        });
+
+    </script>
     <script>
         (function ($) {
             var i = 0;

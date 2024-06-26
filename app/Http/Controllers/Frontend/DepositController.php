@@ -29,7 +29,11 @@ class DepositController extends GatewayController
 
         $isStepOne = 'current';
         $isStepTwo = '';
-        $gateways = DepositMethod::where('status', 1)->get();
+        $gateways = DepositMethod::where('status', 1)
+            ->where(function($query) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All');
+            })->get();
 
 
 //        $clientIp = request()->ip();

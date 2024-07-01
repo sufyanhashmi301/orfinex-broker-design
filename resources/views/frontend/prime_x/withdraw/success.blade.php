@@ -3,20 +3,20 @@
     {{ __('Withdraw Successful') }}
 @endsection
 @section('content')
-    <div class="card mb-6">
+    <div class="card hidden md:block mb-6">
         <div class="card-body p-3">
-            <div class="progress-steps md:flex justify-between items-center hidden">
+            <div class="progress-steps md:flex justify-between items-center gap-5">
                 <div class="single-step">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 mb-2">{{ __('Step - 1') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
                     </div>
                 </div>
                 <div class="single-step current">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 mb-2">{{ __('Step - 2') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
                     </div>
                 </div>

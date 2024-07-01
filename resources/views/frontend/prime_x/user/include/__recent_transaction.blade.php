@@ -27,7 +27,7 @@
                                         <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white">
+                                <tbody>
                                     {{-- @dd($recentTransactions) --}}
                                     @foreach($recentTransactions as $transaction )
                                     <tr>

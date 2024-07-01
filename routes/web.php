@@ -167,6 +167,11 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('/2fa/verify', function () {
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
+
+        Route::get('/communication', function () {
+            return view('frontend::user.setting.communication.index');
+        })->name('communication');
+
     });
 });
 

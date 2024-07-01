@@ -24,15 +24,15 @@
                             @endphp
                         @endforeach
                         <div class="input-area relative">
-                            <label for="exampleFormControlInput1" class="form-label">{{ __('Current Password') }}</label>
+                            <label for="" class="form-label">{{ __('Current Password') }}</label>
                             <input type="password" name="current_password" class="form-control !text-lg">
                         </div>
                         <div class="input-area relative">
-                            <label for="exampleFormControlInput1" class="form-label">{{ __('New Password') }}</label>
+                            <label for="" class="form-label">{{ __('New Password') }}</label>
                             <input type="password" name="new_password" class="form-control !text-lg">
                         </div>
                         <div class="input-area relative">
-                            <label for="exampleFormControlInput1" class="form-label">{{ __('Confirm Password') }}</label>
+                            <label for="" class="form-label">{{ __('Confirm Password') }}</label>
                             <input type="password" name="new_confirm_password" class="form-control !text-lg">
                         </div>
                         <div class="text-right">

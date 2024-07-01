@@ -78,21 +78,4 @@
 
     <!-- Recent Transactions -->
     @include('frontend::user.mobile_screen_include.dashboard.__transactions')
-
-    <div class="card mobile-ref-url mb-4">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Referral URL') }}</h4>
-        </div>
-        <div class="card-body p-2 py-4 all-feature-mobile">
-            <div class="relative mobile-referral-link-form">
-                <input type="text" class="form-control" value="{{ $referral->link }}" id="refLink" style="padding-right:55px"/>
-                <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 h-full bg-dark flex items-center justify-center" onclick="copyRef()">
-                    <span id="copy" class="px-2 dark:text-white">{{ __('Copy') }}</span>
-                </button>
-            </div>
-            <p class="referral-joined text-sm dark:text-white">
-                {{ $referral->relationships()->count() }} {{ __('peoples are joined by using this URL') }}
-            </p>
-        </div>
-    </div>
 </div>

@@ -12,9 +12,9 @@
     </div>
     <div class="grid grid-cols-12 gap-5">
         <div class="col-span-12">
-            <div class="card">
+            <div class="card hidden md:block">
                 <div class="card-body p-6">
-                    <div class="progress-steps md:flex justify-between items-center mb-7 hidden">
+                    <div class="progress-steps md:flex justify-between items-center mb-7">
                         <div class="single-step {{ $isStepOne }}">
                             <div class="progress_bar mb-5"></div>
                             <div class="">

@@ -11,19 +11,19 @@
         </div>
     </div>
     <div class="card mb-6">
-        <div class="card-body p-3">
-            <div class="progress-steps md:flex justify-between items-center hidden">
+        <div class="card-body hidden md:block p-3">
+            <div class="progress-steps md:flex justify-between items-center gap-5">
                 <div class="single-step current">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 mb-2">{{ __('Step - 1') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
                     </div>
                 </div>
                 <div class="single-step">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 mb-2">{{ __('Step - 2') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                                         </option>
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})
                                             </option>
                                         @endforeach
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
@@ -84,7 +84,7 @@
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
                                     <input type="text" name="amount" id="amount" oninput="this.value = validateDouble(this.value)" class="form-control !text-lg withdrawAmount" placeholder="Enter Amount" aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon1">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon1">
                                         {{ $currency }}
                                     </span>
                                 </div>
@@ -94,7 +94,7 @@
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
                                     <input type="text" oninput="this.value = validateDouble(this.value)" class="form-control !text-lg " id="converted-amount" placeholder="Enter Amount" aria-describedby="basic-addon2">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
                             </div>
@@ -113,8 +113,8 @@
                                         <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
                                             <strong>{{ __('Withdraw Amount') }}</strong>
                                         </td>
-                                        <td>
-                                            <span class="withdrawAmount"></span>
+                                        <td class="dark:text-slate-300">
+                                            <span class="withdrawAmount"></span> 
                                             {{$currency}}
                                         </td>
                                     </tr>

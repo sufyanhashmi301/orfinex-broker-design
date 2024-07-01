@@ -4278,6 +4278,9 @@ textarea.form-control.is-invalid{
 .mb-1{
   margin-bottom: 0.25rem;
 }
+.mt-auto{
+  margin-top: auto;
+}
 .ml-auto{
   margin-left: auto;
 }
@@ -13745,6 +13748,10 @@ ul.custom-list ul li{
   content: var(--tw-content);
   height: 1px;
 }
+.before\:h-3px:before {
+  content: var(--tw-content);
+  height: 3px;
+}
 .before\:h-4::before{
   content: var(--tw-content);
   height: 1rem;
@@ -13802,6 +13809,11 @@ ul.custom-list ul li{
   --tw-bg-opacity: 1;
   background-color: rgb(224 224 224/var(--tw-bg-opacity));
 }
+.before\:bg-primary:before {
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 208 0/var(--tw-bg-opacity));
+}
 .before\:mr-2:before {
   content: var(--tw-content);
   margin-right: 0.5rem;
@@ -13838,6 +13850,10 @@ ul.custom-list ul li{
   content: var(--tw-content);
   height: 1px;
 }
+.after\:h-3px:after {
+  content: var(--tw-content);
+  height: 3px;
+}
 .after\:h-5::after{
   content: var(--tw-content);
   height: 1.25rem;
@@ -13872,6 +13888,11 @@ ul.custom-list ul li{
   content: var(--tw-content);
   --tw-bg-opacity: 1;
   background-color: rgb(224 224 224/var(--tw-bg-opacity));
+}
+.after\:bg-primary:after {
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 208 0/var(--tw-bg-opacity));
 }
 .after\:transition-all::after{
   content: var(--tw-content);
@@ -15174,6 +15195,9 @@ ul.custom-list ul li{
 }
 .dark .dark\:block{
   display: block;
+}
+.dark .dark\:flex{
+  display: flex;
 }
 .dark .dark\:hidden{
   display: none;

@@ -10,6 +10,6 @@
 <a href="{{ route('user.referral') }}" class="{{ isActive('user.referral*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:gift"></iconify-icon>
 </a>
-<a href="{{ route('user.setting.show') }}" class="{{ isActive('user.setting*') }}">
+<a href="{{ route('user.setting.profile') }}" class="{{ isActive('user.setting*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:settings"></iconify-icon>
 </a>

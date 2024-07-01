@@ -1,4 +1,4 @@
-<div class="card border border-slate-100 dark:border-slate-700">
+<div class="card shadow-base">
     <div class="card-body p-6">
         <p class="font-normal text-sm text-slate-500 mb-1">{{ __('Security') }}</p>
         <h4 class="card-title mb-3">{{ __('2FA Security') }}</h4>

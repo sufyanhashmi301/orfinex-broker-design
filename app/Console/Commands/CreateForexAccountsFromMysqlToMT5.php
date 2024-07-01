@@ -42,7 +42,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 'Address' => $account->Address,
                 'ZipCode' => $account->ZipCode,
                 'Country' => $account->Country,
-                'Login' => 0,
+                'Login' => 920006,
                 'Agent' => $account->Agent,
                 'Comment' => $account->Comment,
                 'LeadCampaign' => $account->LeadCampaign,
@@ -59,7 +59,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
 
             $URL = config('forextrading.createUserUrl');
             $response = $this->sendApiPostRequest($URL, $data);
-//            dd($response->object());
+            dd($response->object());
 
             if ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 0) {
 //                $this->info("Account created for user: {$account->full_name}");

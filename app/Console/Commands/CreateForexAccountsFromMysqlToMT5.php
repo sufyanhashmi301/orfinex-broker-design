@@ -23,7 +23,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
         $accounts = DB::connection('mt5_db')
             ->table('mt5_users')
 //            ->where('Group', 'real\Classic\Swap1')
-            ->where('Login', '1063794')
+            ->where('Login', '9997218')
             ->get();
 
         foreach ($accounts as $account) {
@@ -59,17 +59,28 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
 
             $URL = config('forextrading.createUserUrl');
             $response = $this->sendApiPostRequest($URL, $data);
-            dd($response->object());
+//            dd($response->object());
 
             if ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 0) {
-                $this->info("Account created for user: {$account->full_name}");
+//                $this->info("Account created for user: {$account->full_name}");
+                $resData = $response->object();
+                $targetId = $resData->Login;
+                $comment = 'deposit/from/mysql';
+                $depositResponse = $this->forexDeposit($targetId, $account->Balance,$comment);
+                if($depositResponse){
+                    echo "Deposited successfully in login: {$targetId}"."\n";
+
+                } else {
+                    echo "Deposited failed in login: {$targetId}, amount: {$account->Balance}"."\n";
+
+                }
             } else {
                 $data['Login'] = '1' . $account->login;
                 $response = $this->sendApiPostRequest($URL, $data);
                 if ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 0) {
-                    $this->info("Account created with prefixed login for user: {$account->full_name}");
+                    echo "Prefixed,  Email: {$account->Email}, login: {$account->Login}"."\n";
                 } else {
-                    $this->error("Failed to create account for user: {$account->full_name}");
+                    echo "Failed to create account for user: {$account->Login}"."\n";
                 }
             }
         }

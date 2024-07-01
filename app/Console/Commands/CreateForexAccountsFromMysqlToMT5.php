@@ -23,26 +23,29 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
         $accounts = DB::connection('mt5_db')
             ->table('mt5_users')
 //            ->where('Group', 'real\Classic\Swap1')
-            ->where('Login', '9997218')
+//            ->where('Login', '9997218')
+            ->take(2)
+            ->orderBy('Login','desc')
             ->get();
 
         foreach ($accounts as $account) {
 //            dd($account);
             $data = [
+                'Login' => $account->Login,
+//                'Login' => 920006,
                 'Name' => $account->FirstName.' '.$account->LastName,
-                'Name' => 'test-sufyan',
+//                'Name' => 'test-sufyan',
                 'Leverage' => $account->Leverage,
-                'Group' => $account->Group,
-                'Group' => 'real\Classic\Swap1',
+//                'Group' => $account->Group,
+                'Group' => 'unofficial\1',
                 'Email' => $account->Email,
-                'Email' => 'sufyan@gmail.com',
+//                'Email' => 'sufyan@gmail.com',
                 'Phone' => $account->Phone,
                 'City' => $account->City,
                 'State' => $account->State,
                 'Address' => $account->Address,
                 'ZipCode' => $account->ZipCode,
                 'Country' => $account->Country,
-                'Login' => 920006,
                 'Agent' => $account->Agent,
                 'Comment' => $account->Comment,
                 'LeadCampaign' => $account->LeadCampaign,
@@ -65,26 +68,50 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
 //                $this->info("Account created for user: {$account->full_name}");
                 $resData = $response->object();
                 $targetId = $resData->Login;
-                $comment = 'deposit/from/mysql';
-                $depositResponse = $this->forexDeposit($targetId, $account->Balance,$comment);
-                if($depositResponse){
-                    echo "Deposited successfully in login: {$targetId}"."\n";
+                $amount = $account->Balance;
+                //deposit
+               $this->deposit($targetId,$amount);
 
-                } else {
-                    echo "Deposited failed in login: {$targetId}, amount: {$account->Balance}"."\n";
+                $credit = $account->Credit;
+                //credit
+                $this->credit($targetId,$credit);
 
-                }
             }
             elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3004)   {
 
-                $data['Login'] = 1 . 920006;
+                $data['Login'] = 1 . $account->Login;
                 $response = $this->sendApiPostRequest($URL, $data);
                 if ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 0) {
-                    echo "Prefixed,  Email: {$account->Email}, login: {$account->Login}"."\n";
+                    echo "Prefixed,  Email: {$account->Email}, login: {$data['Login']}"."\n";
                 } else {
-                    echo "Failed to create account for user: {$account->Login}"."\n";
+                    echo "Failed to create account for user: {$data['Login']}"."\n";
                 }
+            }else{
+                echo "Failed to create account for user: {$account->Login}"."\n";
+
             }
+        }
+    }
+
+    public function deposit($targetId,$amount){
+        $comment = 'deposit/from/mysql';
+        $depositResponse = $this->forexDeposit($targetId,$amount,$comment);
+        if($depositResponse){
+            echo "Deposited successfully in login: {$targetId}"."\n";
+
+        } else {
+            echo "Deposited failed in login: {$targetId}, amount: {$amount}"."\n";
+
+        }
+    }
+    public function credit($targetId,$credit){
+        $comment = 'credit/from/mysql';
+        $depositResponse = $this->dealerCreditUrl($targetId,$credit,$comment);
+        if($depositResponse){
+            echo "credited successfully in login: {$targetId}"."\n";
+        } else {
+            echo "credited failed in login: {$targetId}, credit: {$credit}"."\n";
+
         }
     }
 }

@@ -394,15 +394,15 @@
             url: "{{ route('user.forex.update.account') }}",
             type: 'POST', data: formData, processData: false, contentType: false,
             success: function (res) {
-                // console.log(res,'res')
+                console.log(res,'res')
                 if (res.success) {
                      tNotify('success', res.success);
                     // NioApp.Toast(res.success, 'success');
-                    // if (res.reload) {
-                    //     setTimeout(function () {
-                    //         location.reload();
-                    //     }, 900);
-                    // }
+                    if (res.reload) {
+                        setTimeout(function () {
+                            location.reload();
+                        }, 900);
+                    }
                 } else if (res.error) {
                     tNotify('warning', res.error);
                     // NioApp.Toast(res.error, 'warning');

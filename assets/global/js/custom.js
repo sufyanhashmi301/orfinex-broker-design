@@ -189,7 +189,7 @@ function checkPassword(password,type,button) {
     }
 
     // Check for at least one special character
-    if (specialCheck = /[!@#$%^&*(),?:{}|<>]/.test(password)) {
+    if (specialCheck = /[!@#$%^&*(),-.?":{}|<>]/.test(password)) {
         $('#special-check-'+type).css('color', 'green');
     }else{
         $('#special-check-'+type).css('color', '#ef476f');

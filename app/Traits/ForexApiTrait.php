@@ -328,7 +328,7 @@ trait ForexApiTrait
 //                ->retry(3, 100)->get($localURL, $dataArray);
 //        } else {
             try {
-                dd('ss');
+//                dd('ss');
                 return dd(Http::retry(3, 100)->post($URL, $dataArray));
             } catch (\GuzzleHttp\Exception\RequestException $exception) {
                 return $exception;

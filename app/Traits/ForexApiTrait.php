@@ -329,7 +329,7 @@ trait ForexApiTrait
 //        } else {
             try {
 //                dd('ss');
-                return dd(Http::retry(3, 100)->post($URL, $dataArray));
+                return Http::retry(3, 100)->post($URL, $dataArray);
             } catch (\GuzzleHttp\Exception\RequestException $exception) {
                 return $exception;
             }

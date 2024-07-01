@@ -318,20 +318,22 @@ trait ForexApiTrait
 
     public function sendApiPostRequest($URL, $dataArray)
     {
-        $clientIp = request()->ip();
-        if (in_array($clientIp, ['127.0.0.1', '::1'])) {
-            $dataArray['URL'] = $URL;
-            $localURL = 'https://brokerdemo.brokeret.com/api/post/forex';
-//            dd($localURL,$dataArray);
-            return Http::withoutVerifying()
-                ->retry(3, 100)->get($localURL, $dataArray);
-        } else {
+//        dd('ss');
+//        $clientIp = request()->ip();
+//        if (in_array($clientIp, ['127.0.0.1', '::1'])) {
+//            $dataArray['URL'] = $URL;
+//            $localURL = 'https://brokerdemo.brokeret.com/api/post/forex';
+////            dd($localURL,$dataArray);
+//            return Http::withoutVerifying()
+//                ->retry(3, 100)->get($localURL, $dataArray);
+//        } else {
             try {
-                return Http::retry(3, 100)->post($URL, $dataArray);
+                dd('ss');
+                return dd(Http::retry(3, 100)->post($URL, $dataArray));
             } catch (\GuzzleHttp\Exception\RequestException $exception) {
                 return $exception;
             }
-        }
+//        }
     }
 
     public function isValidForexAccount($login)

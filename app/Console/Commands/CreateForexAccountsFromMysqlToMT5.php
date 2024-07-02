@@ -98,7 +98,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 echo "Invalid parameters: {$data['Login']} Group: {$data['Group']}"."\n";
             }
             else{
-                echo "Failed to create account for user: {$data['Login']} due to {$response->json('ResponseCode')}". with grou "\n";
+                echo "Failed to create account for user: {$data['Login']} due to {$response->json('ResponseCode')}".  "\n";
             }
         }
     }

@@ -22,9 +22,9 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
     {
         $accounts = DB::connection('mt5_db')
             ->table('mt5_users')
-            ->where('Group', 'real\STD\SwapFree2')
+            ->where('Group', 'SolidEdge\OrfiDerivativesS1')
 //            ->where('Login', '9997218')
-//            ->take(1)
+            ->take(5)
 //            ->orderBy('Login','desc')
             ->get();
 
@@ -76,6 +76,11 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 //credit
                 $this->credit($targetId,$credit);
 
+                //update status
+                $this->update($account->Login);
+
+                echo "created successfully login: {$targetId}"."\n";
+
             }
 //            elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3004)   {
 //
@@ -97,7 +102,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
         $comment = 'deposit/from/mysql';
         $depositResponse = $this->forexDeposit($targetId,$amount,$comment);
         if($depositResponse){
-            echo "Deposited successfully in login: {$targetId}"."\n";
+//            echo "Deposited successfully in login: {$targetId}"."\n";
 
         } else {
             echo "Deposited failed in login: {$targetId}, amount: {$amount}"."\n";
@@ -108,10 +113,17 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
         $comment = 'credit/from/mysql';
         $depositResponse = $this->dealerCreditUrl($targetId,$credit,$comment);
         if($depositResponse){
-            echo "credited successfully in login: {$targetId}"."\n";
+//            echo "credited successfully in login: {$targetId}"."\n";
         } else {
             echo "credited failed in login: {$targetId}, credit: {$credit}"."\n";
 
         }
+    }
+
+    public function update($targetId){
+        $accounts = DB::connection('mt5_db')
+            ->table('mt5_users')
+            ->where('Login', $targetId)
+            ->update(['CertSerialNumber'=>1]);
     }
 }

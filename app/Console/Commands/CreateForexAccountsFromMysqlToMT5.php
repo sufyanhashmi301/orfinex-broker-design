@@ -22,10 +22,10 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
     {
         $accounts = DB::connection('mt5_db')
             ->table('mt5_users')
-//            ->where('Group', 'real\Classic\Swap1')
+            ->where('Group', 'real\STD\SwapFree2')
 //            ->where('Login', '9997218')
-            ->take(2)
-            ->orderBy('Login','desc')
+//            ->take(1)
+//            ->orderBy('Login','desc')
             ->get();
 
         foreach ($accounts as $account) {
@@ -37,7 +37,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
 //                'Name' => 'test-sufyan',
                 'Leverage' => $account->Leverage,
 //                'Group' => $account->Group,
-                'Group' => 'unofficial\1',
+                'Group' => 'Unofficial\1',
                 'Email' => $account->Email,
 //                'Email' => 'sufyan@gmail.com',
                 'Phone' => $account->Phone,

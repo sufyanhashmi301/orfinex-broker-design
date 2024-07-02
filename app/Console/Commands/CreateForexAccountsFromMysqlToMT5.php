@@ -59,10 +59,9 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 'InvestorPassword' => 'SNNH@2024@bol',
             ];
 //            dd($data);
-
             $URL = config('forextrading.createUserUrl');
             $response = $this->sendApiPostRequest($URL, $data);
-            dd($response->object());
+//            dd($response->object(),$data);
 
             if ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 0) {
 //                $this->info("Account created for user: {$account->full_name}");
@@ -88,7 +87,6 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 }
             }else{
                 echo "Failed to create account for user: {$account->Login}"."\n";
-
             }
         }
     }

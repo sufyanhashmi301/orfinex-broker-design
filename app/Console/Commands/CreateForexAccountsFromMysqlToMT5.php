@@ -88,12 +88,17 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
             }
             elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3004)   {
                     echo "already exist: {$data['Login']}"."\n";
+                $this->update($account->Login,'543');
             }
             elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3003)   {
                 echo "The login is reserved on another server: {$data['Login']}"."\n";
+                $this->update($account->Login,'987');
+            }
+            elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3)   {
+                echo "Invalid parameters: {$data['Login']} Group: {$data['Group']}"."\n";
             }
             else{
-                echo "Failed to create account for user: {$data['Login']} due to {$response->json('ResponseCode')}". "\n";
+                echo "Failed to create account for user: {$data['Login']} due to {$response->json('ResponseCode')}". with grou "\n";
             }
         }
     }

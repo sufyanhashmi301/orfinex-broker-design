@@ -22,11 +22,13 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
     {
         $accounts = DB::connection('mt5_db')
             ->table('mt5_users')
-            ->where('Group', 'SolidEdge\OrfiDerivativesS1')
-//            ->where('Login', '9997218')
-            ->take(5)
-//            ->orderBy('Login','desc')
+            ->where('Group', 'like', '%SolidEdge%')
+            ->where('CertSerialNumber', 0)
+            //->where('Login', '9997218')
+            //->take(1)
+            //->orderBy('Login','desc')
             ->get();
+
 
         foreach ($accounts as $account) {
 //            dd($account);
@@ -36,8 +38,8 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 'Name' => $account->FirstName.' '.$account->LastName,
 //                'Name' => 'test-sufyan',
                 'Leverage' => $account->Leverage,
-//                'Group' => $account->Group,
-                'Group' => 'Unofficial\1',
+                'Group' => $account->Group,
+//                'Group' => 'Unofficial\1',
                 'Email' => $account->Email,
 //                'Email' => 'sufyan@gmail.com',
                 'Phone' => $account->Phone,
@@ -58,7 +60,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 'MasterPassword' => 'SNNH@2024@bol',
                 'InvestorPassword' => 'SNNH@2024@bol',
             ];
-            $data['Login'] = 1 . $account->Login;
+            $data['Login'] = 8 . $account->Login;
 //            dd($data);
             $URL = config('forextrading.createUserUrl');
             $response = $this->sendApiPostRequest($URL, $data);

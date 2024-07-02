@@ -81,7 +81,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 $this->credit($targetId,$credit);
 
                 //update status
-                $this->update($account->Login);
+                $this->update($account->Login,$digit);
 
                 echo "created successfully login: {$targetId}"."\n";
 
@@ -120,10 +120,10 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
         }
     }
 
-    public function update($targetId){
+    public function update($targetId,$digit){
         $accounts = DB::connection('mt5_db')
             ->table('mt5_users')
             ->where('Login', $targetId)
-            ->update(['CertSerialNumber'=>1]);
+            ->update(['CertSerialNumber'=>$digit]);
     }
 }

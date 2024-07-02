@@ -60,7 +60,9 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 'MasterPassword' => 'SNNH@2024@bol',
                 'InvestorPassword' => 'SNNH@2024@bol',
             ];
-            $data['Login'] = 8 . $account->Login;
+
+            $digit = 8;
+            $data['Login'] = $digit . $account->Login;
 //            dd($data);
             $URL = config('forextrading.createUserUrl');
             $response = $this->sendApiPostRequest($URL, $data);
@@ -84,18 +86,14 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 echo "created successfully login: {$targetId}"."\n";
 
             }
-//            elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3004)   {
-//
-//                $data['Login'] = 1 . $account->Login;
-//                $response = $this->sendApiPostRequest($URL, $data);
-//                if ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 0) {
-//                    echo "Prefixed,  Email: {$account->Email}, login: {$data['Login']}"."\n";
-//                } else {
-//                    echo "Failed to create account for user: {$data['Login']}"."\n";
-//                }
-//            }
+            elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3004)   {
+                    echo "already exist: {$data['Login']}"."\n";
+            }
+            elseif ($response->status() == 200 && $response->successful() && $response->json('ResponseCode') == 3003)   {
+                echo "The login is reserved on another server: {$data['Login']}"."\n";
+            }
             else{
-                echo "Failed to create account for user: {$account->Login}"."\n";
+                echo "Failed to create account for user: {$data['Login']}"."\n";
             }
         }
     }

@@ -93,7 +93,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 echo "The login is reserved on another server: {$data['Login']}"."\n";
             }
             else{
-                echo "Failed to create account for user: {$data['Login']}"."\n";
+                echo "Failed to create account for user: {$data['Login']} due to {$response->json('ResponseCode')}". "\n";
             }
         }
     }

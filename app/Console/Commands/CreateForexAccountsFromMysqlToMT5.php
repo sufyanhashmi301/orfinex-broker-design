@@ -61,7 +61,7 @@ class CreateForexAccountsFromMysqlToMT5 extends Command
                 'InvestorPassword' => 'SNNH@2024@bol',
             ];
 
-            $digit = 88;
+            $digit = 888;
             $data['Login'] = $digit . $account->Login;
 //            dd($data);
             $URL = config('forextrading.createUserUrl');

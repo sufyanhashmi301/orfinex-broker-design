@@ -3,45 +3,39 @@
     {{ __('Dashboard') }}
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap flex-col md:flex-row items-start md:items-center mb-6">
-        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-            IB Dashboard
-        </h4>
-        <div>
-            <ul class="nav nav-tabs flex flex-wrap list-none border-b-0 pl-0">
-                <li class="nav-item">
-                    <a href="{{ route('user.referral') }}"
-                       class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 md:px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.referral') }}">
-                        IB Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('user.referral.network') }}"
-                       class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 md:px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.referral.network') }}">
-                        Network
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('user.referral.advertisement.material') }}"
-                       class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 md:px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.referral.advertisement.material') }}">
-                        Resources
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('user.referral.reports') }}"
-                       class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 md:px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.referral.reports') }}">
-                        Reports
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
+            <li class="nav-item">
+                <a href="{{ route('user.referral') }}"
+                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral') }}">
+                    IB Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('user.referral.network') }}"
+                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral.network') }}">
+                    Network
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('user.referral.advertisement.material') }}"
+                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral.advertisement.material') }}">
+                    Resources
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('user.referral.reports') }}"
+                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral.reports') }}">
+                    Reports
+                </a>
+            </li>
+        </ul>
     </div>
-
 
     @if(request()->routeIs('user.referral'))
         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)
-            @include('frontend::.referral.include.__dashboard')
-            @include('frontend::.referral.modal.__qr_code')
+            @include('frontend::referral.include.__dashboard')
+            @include('frontend::referral.modal.__qr_code')
         @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
             <div class="card">
                 <div class="card-body p-6">
@@ -51,7 +45,7 @@
                                 class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
                                 <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
                             </div>
-                            <h2 class="text-3xl my-5">Partner Request Pending</h2>
+                            <h2 class="text-3xl dark:text-white my-5">Partner Request Pending</h2>
                             <p class="text-sm mb-3 dark:text-white">
                                 Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
                             </p>
@@ -64,7 +58,7 @@
                                 <span>Read Our Reviews on Trustpilot</span>
                             </a>
                             <div class="mt-5">
-                                <p class="text-sm">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.</p>
+                                <p class="text-sm dark:text-slate-300">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.</p>
                             </div>
                         </div>
                     </div>
@@ -188,17 +182,17 @@
         @endif
     @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
-        @include('frontend::.referral.include.__advertisement_material')
+        @include('frontend::referral.include.__advertisement_material')
     @endif
     @if(request()->routeIs('user.referral.network'))
-        @include('frontend::.referral.include.__network')
+        @include('frontend::referral.include.__network')
     @endif
     @if(request()->routeIs('user.referral.reports'))
-        @include('frontend::.referral.include.__reports')
+        @include('frontend::referral.include.__reports')
     @endif
     {{--    @if(!isset(auth()->user()->ib_status))--}}
     {{-- IB account modal --}}
-    @include('frontend::.referral.modal.__ib_form')
+    @include('frontend::referral.modal.__ib_form')
     {{--    @endif--}}
 
 @endsection

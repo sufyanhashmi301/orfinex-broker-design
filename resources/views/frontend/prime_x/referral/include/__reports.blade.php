@@ -42,7 +42,7 @@
                         <div class="inline-block min-w-full align-middle">
                             <div class="overflow-hidden ">
                                 <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
-                                    <thead class=" bg-slate-200 dark:bg-slate-700">
+                                    <thead>
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Description') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
@@ -149,7 +149,7 @@
                             <div class="inline-block min-w-full align-middle">
                                 <div class="overflow-hidden ">
                                     <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700 data-table">
-                                        <thead class=" bg-slate-200 dark:bg-slate-700">
+                                        <thead>
                                             <tr>
                                                 <th scope="col" class="table-th">{{ __('Description') }}</th>
                                                 <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>

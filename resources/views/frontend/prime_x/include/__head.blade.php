@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/theme_base/prime_x/css/styles.css?var=1') }}"/>
     <!-- End : Theme CSS-->
     <script src="{{ asset('frontend/js/settings.js') }}" sync></script>
+    <script src="https://static.sumsub.com/idensic/static/sns-websdk-builder.js"></script>
     <style>
         {{ \App\Models\CustomCss::first()->css }}
     </style>

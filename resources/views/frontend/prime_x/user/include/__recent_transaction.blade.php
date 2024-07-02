@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-body p-6 pt-0">
             <!-- BEGIN: Company Table -->
-            @if(count($recentTransactions) == 0)    
+            @if(count($recentTransactions) == 0)
                 <div class="flex items-center justify-center flex-col gap-3">
                     <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
                     <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
@@ -27,14 +27,14 @@
                                         <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white">
+                                <tbody>
                                     {{-- @dd($recentTransactions) --}}
                                     @foreach($recentTransactions as $transaction )
                                     <tr>
                                         <td class="table-td">
                                             {{ ucfirst(str_replace('_',' ',$transaction->type->value )) }}
                                         </td>
-                                        <td class="table-td"></td>
+                                        <td class="table-td">{{ $transaction->target_id }}</td>
                                         <td class="table-td">
                                             <div class="flex items-center">
                                                 <div class="flex-none">
@@ -44,7 +44,7 @@
                                                 </div>
                                                 <div class="flex-1 text-start">
                                                     <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                        BinancePay
+                                                        {{$transaction->method}}
                                                     </h4>
                                                 </div>
                                             </div>
@@ -59,7 +59,7 @@
                                             @endif
                                         </td>
                                         <td class="table-td">
-                                            1.5%
+                                            {{$transaction->charge}}
                                         </td>
                                         <td class="table-td">
                                             <span class="{{ txn_type($transaction->type->value,['green-color','red-color']) }}">

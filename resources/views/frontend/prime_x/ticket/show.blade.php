@@ -44,8 +44,8 @@
             <div class="h-screen card">
                 <div class="h-full">
                     <header class="border-b border-slate-100 dark:border-slate-700">
-                        <div class="flex py-6 md:px-6 px-3 items-center">
-                            <div class="flex-1">
+                        <div class="flex flex-wrap items-center py-6 md:px-6 px-3 gap-5">
+                            <div class="md:flex-1">
                                 <h4 class="card-title flex items-center">
                                     {{ $ticket->title.' - '.$ticket->uuid }} 
                                     <span class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl ml-2">

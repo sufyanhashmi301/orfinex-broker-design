@@ -5,22 +5,22 @@
 @section('content')
 
         <div class="grid sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
-            <div class="bg-no-repeat bg-cover bg-center p-4 rounded-[6px] relative" style="background-image: url({{ asset('frontend/images/yellow-gradient.png') }});">
+            <div class="flex items-center justify-between flex-wrap md:nowrap gap-5 bg-no-repeat bg-cover bg-center p-4 rounded-[6px]" style="background-image: url({{ asset('frontend/images/yellow-gradient.png') }});">
                 <div class="">
                     <p class="text-base text-slate-600 text-opacity-80 mb-2">
                         You don't have an Active Account yet.
                     </p>
-                    <h4 class="text-lg font-medium text-slate-900">
+                    <p class="text-lg font-medium text-slate-900">
                         Unlock Exclusive Bonus to Kickstart Your Success.
-                    </h4>
+                    </p>
                 </div>
-                <div class="absolute top-1/2 -translate-y-1/2 ltr:right-6 rtl:left-6">
+                <div class="ltr:right-6 rtl:left-6">
                     <a href="" class="btn btn-sm btn-dark inline-flex items-center">
                         {{ __('Open New Account') }}
                     </a>
                 </div>
             </div>
-            <div class="bg-slate-900 p-4 rounded-[6px] relative">
+            <div class="bg-slate-900 dark:bg-slate-800 p-4 rounded-[6px] relative">
                 <div class="">
                     <h4 class="text-lg font-medium text-white mb-2">
                         Enjoy Exclusive Benefits & Boost Your Earnings!

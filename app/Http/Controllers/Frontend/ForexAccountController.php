@@ -189,7 +189,7 @@ class ForexAccountController extends GatewayController
 
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            sync_forex_accounts(auth()->id());
+//            sync_forex_accounts(auth()->id());
         }
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance', 'desc')
@@ -206,6 +206,10 @@ class ForexAccountController extends GatewayController
 
     public function testForexAccount(Request $request)
     {
+        $data = [
+            'login' => 600952
+        ];
+        dd( $this->forexApiService->getUserByLogin($data));
         dd($this->getUserInfoApi(88876));
 //        $this->getPositionList(9996792);
 //        $this->getPositionListGroup(9996792);

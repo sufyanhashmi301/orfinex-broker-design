@@ -70,7 +70,7 @@
                     </a>
                 </div>
                 <div class="single text-center py-2">
-                    <a href="{{ route('user.setting.show') }}">
+                    <a href="{{ route('user.setting.profile') }}">
                         <img src="{{ asset('frontend/materials/settings.png') }}" class="h-7 mx-auto" alt="">
                         <div class="text-sm dark:text-white">{{ __('Settings') }}</div>
                     </a>

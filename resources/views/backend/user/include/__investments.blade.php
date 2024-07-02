@@ -45,7 +45,7 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.forex-accounts-real',$user->id) }}",
+                ajax: "{{ route('admin.forex-accounts',['type'=>'real',$user->id]) }}",
                 columns: [
                     // {data: 'icon', name: 'icon'},
                     {data: 'schema', name: 'schema'},

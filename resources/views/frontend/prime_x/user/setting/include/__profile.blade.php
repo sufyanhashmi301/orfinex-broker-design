@@ -1,6 +1,6 @@
 <div class="card mb-10">
     <div class="card-body p-6">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-5">
             <div class="flex items-center">
                 <div class="flex-none">
                     <div class="h-[100px] w-[100px] rounded-full border-[2.5px] border-primary ltr:mr-3 rtl:ml-3">
@@ -9,7 +9,7 @@
                 </div>
                 <div class="flex-1 text-start">
                     <div class="text-left">
-                        <span class="text-xl text-slate-900">{{auth()->user()->full_name}}</span><br>
+                        <span class="text-xl text-slate-900 dark:text-white">{{auth()->user()->full_name}}</span><br>
                         <span class="flex items-center text-slate-400 text-sm font-normal">
                             {{ $user->rank->ranking }}
                             <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
@@ -19,7 +19,7 @@
             </div>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                 <div class="text-center bg-slate-50 dark:bg-slate-900 rounded py-3 px-6">
-                    <p class="text-xl text-slate-900 mb-2">
+                    <p class="text-xl text-slate-900 dark:text-white mb-2">
                         ${{auth()->user()->totalForexBalance()}}
                     </p>
                     <p class="text-base text-slate-600">
@@ -27,7 +27,7 @@
                     </p>
                 </div>
                 <div class="text-center bg-slate-50 dark:bg-slate-900 rounded py-3 px-6">
-                    <p class="text-xl text-slate-900 mb-2">
+                    <p class="text-xl text-slate-900 dark:text-white mb-2">
                         ${{auth()->user()->totalForexEquity()}}
                     </p>
                     <p class="text-base text-slate-600">
@@ -35,7 +35,7 @@
                     </p>
                 </div>
                 <div class="text-center bg-slate-50 dark:bg-slate-900 rounded py-3 px-6">
-                    <p class="text-xl text-slate-900 mb-2">
+                    <p class="text-xl text-slate-900 dark:text-white mb-2">
                         0
                     </p>
                     <p class="text-base text-slate-600">
@@ -115,10 +115,10 @@
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Joining Date') }}</label>
                         <input type="text" class="form-control !text-lg disabled" value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}" placeholder="Joining Date" disabled />
                     </div>
+                </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-dark" id="profile-update-save">{{ __('Save Changes') }}</button>
-                    </div>
+                <div class="text-right mt-4">
+                    <button type="submit" class="btn btn-dark" id="profile-update-save">{{ __('Save Changes') }}</button>
                 </div>
             </div>
         </form>

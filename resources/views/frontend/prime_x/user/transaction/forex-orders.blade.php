@@ -5,31 +5,9 @@
     {{ __('Forex Orders Log') }}
 @endsection
 @section('content')
-    <div class="mb-5">
-        <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
-                <a href="{{route('user.dashboard')}}">
-                    <iconify-icon icon="heroicons-outline:home"></iconify-icon>
-                    <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
-                </a>
-            </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
-                {{ __('History') }}
-                <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
-            </li>
-            <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
-                {{ __('Forex Orders Log') }}
-            </li>
-        </ul>
-    </div>
     <div class="space-y-5">
         <div class="card desktop-screen-show md:block hidden">
-            <header class=" card-header noborder">
-                <h4 class="card-title">
-                    {{ __('Forex Orders Log') }}
-                </h4>
-            </header>
-            <div class="card-body px-6 pb-6">
+            <div class="card-body p-6">
                 <div class="grid xl:grid-cols-2 grid-cols-1 gap-5 mb-10">
                     <div class="filter">
                         <form action="{{ route('user.forex.transactions') }}" method="get">

@@ -94,7 +94,12 @@ class WithdrawController extends Controller
      */
     public function create()
     {
-        $withdrawMethods = WithdrawMethod::where('status', true)->get();
+        $withdrawMethods = WithdrawMethod::where('status', true)
+            ->where(function($query) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All');
+            })->get();
+
 
         return view('frontend::withdraw.account.create', compact('withdrawMethods'));
     }
@@ -107,7 +112,10 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::all();
+        $withdrawMethods = WithdrawMethod::where(function($query) {
+            $query->whereJsonContains('country', auth()->user()->country)
+                ->orWhereJsonContains('country', 'All');
+        })->get();
         $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
         if($withdrawAccount){
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
@@ -313,6 +321,10 @@ class WithdrawController extends Controller
         $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
         if($withdrawResponse){
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+
+            //update Balance & Equity of mt5 DB with new updated balance
+            $balance = $this->getForexAccountBalance($targetId);
+            mt5_update_balance($targetId,$balance);
         }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
             return redirect()->back();

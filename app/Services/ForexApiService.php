@@ -9,11 +9,14 @@ class ForexApiService
 {
     protected $baseUrlReal;
     protected $apiKeyReal;
+    protected $baseUrlDemo;
+    protected $apiKeyDemo;
 
     public function __construct()
     {
         // $this->baseUrlReal = Setting::where('name', 'api_base_url')->value('val');
         // $this->apiKeyReal = Setting::where('name', 'api_key')->value('val');
+        // prime broker credentials
     //        $this->baseUrlReal = 'http://92.204.253.130:4001/api';
     //        $this->apiKeyReal = 'PVTfAIPjQZ4GganFp6bCI0ni7p1YSAxM';
         $demoUrl = setting('mt5_api_url_demo','platform_api');
@@ -129,9 +132,10 @@ class ForexApiService
     {
         try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
+
 //            dd($URL,$params);
             $body = json_encode($params);
-            $response = Http::withHeaders($this->getCommonHeaders())
+            $response = Http::withHeaders($this->getCommonHeadersReal())
 //                ->retry(3, 100)
                 ->withBody($body, 'application/json')->send('GET', $URL);
 //                ->get($URL, $params);
@@ -147,7 +151,7 @@ class ForexApiService
     {
         try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
-            $response = Http::withHeaders($this->getCommonHeaders())
+            $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)
                 ->get($URL, $params);
 
@@ -162,7 +166,7 @@ class ForexApiService
         try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
 //        dd($URL,$params);
-            $response = Http::withHeaders($this->getCommonHeaders())
+            $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)
                 ->post($URL, $params);
 //            dd($response->json(),$params);
@@ -177,7 +181,7 @@ class ForexApiService
         try {
             $URL = $this->baseUrlDemo . '/' . $endpoint;
 //        dd($URL,$params);
-            $response = Http::withHeaders($this->getCommonHeaders())
+            $response = Http::withHeaders($this->getCommonHeadersDemo())
                 ->retry(3, 100)
                 ->post($URL, $params);
 //            dd($response->json(),$params);
@@ -188,10 +192,16 @@ class ForexApiService
         }
     }
 
-    protected function getCommonHeaders()
+    protected function getCommonHeadersReal()
     {
         return [
             'SNC-X-API-KEY' => $this->apiKeyReal,
+        ];
+    }
+    protected function getCommonHeadersDemo()
+    {
+        return [
+            'SNC-X-API-KEY' => $this->apiKeyDemo,
         ];
     }
 

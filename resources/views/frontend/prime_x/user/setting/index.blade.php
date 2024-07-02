@@ -23,6 +23,11 @@
             </li>
             @endif
             <li class="nav-item">
+                <a href="{{ route('user.setting.communication') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.setting.communication') }}">
+                    Communication
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('user.agreements') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.agreements') }}">
                     Agreements
                 </a>
@@ -33,9 +38,6 @@
 
     <!-- Modal for Edit Phone -->
     @include('frontend::.user.setting.profile.modal.__edit_phone')
-    
-    <!-- Modal for Edit Email -->
-    @include('frontend::.user.setting.profile.modal.__edit_email')
     
     <!-- Modal for Edit Email -->
     @include('frontend::.user.setting.profile.modal.__edit_address')

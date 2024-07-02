@@ -168,6 +168,19 @@
             </a>
         </li>
 
+        <li>
+            <a href="javascript:;" id="themeMood" class="navItem">
+                <span class="dark:flex items-center hidden">
+                    <iconify-icon class="nav-icon" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    <span>Light Mode</span>
+                </span>
+                <span class="dark:hidden flex items-center">
+                    <iconify-icon class="nav-icon" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                    <span>Dark Mode</span>
+                </span>
+            </a>
+        </li>
+
         {{-- <li class="">
             <!-- Authentication -->
             <form method="POST" action="{{ route('logout') }}">

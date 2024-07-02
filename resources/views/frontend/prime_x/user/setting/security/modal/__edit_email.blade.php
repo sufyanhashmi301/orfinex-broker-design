@@ -12,7 +12,7 @@
                 </div>
                 <div class="p-8 pt-0 space-y-4">
                     <div class="text-center">
-                        <h3 class="text-xl font-medium dark:text-white capitalize mb-2">
+                        <h3 class="text-2xl font-medium dark:text-white capitalize mb-2">
                             {{ __('Update Email') }}
                         </h3>
                         <p class="dark:text-white">
@@ -22,7 +22,7 @@
                     <form action="{{route('user.setting.info-update')}}" method="post">
                         @csrf
                         <div class="input-area phone-input-wrapper my-7">
-                            <input type="text" name="email" class="form-control !text-lg" value="{{ $user->email }}">
+                            <input type="text" name="email" class="form-control form-control-lg" value="{{ $user->email }}">
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-2/3">

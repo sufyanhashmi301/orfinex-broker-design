@@ -9,7 +9,7 @@
                 <h4 class="text-xl text-slate-500 dark:text-slate-300 mb-3">
                     Internal Transfer
                 </h4>
-                <div class="space-x-4 relative flex items-center justify-between mb-5 rtl:space-x-reverse text-slate-900 dark:text-slate-300">
+                <div class="space-x-4 relative flex items-center justify-between mb-5 rtl:space-x-reverse text-slate-900 dark:text-white">
                     <span class="text-[32px] leading-10 font-medium">
                         Unlimited
                     </span>
@@ -28,7 +28,7 @@
                 <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
                     <div class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                         <span>For sending funds to</span>  
-                        <span class="text-slate-900">your accounts</span>
+                        <span class="text-slate-900 dark:text-slate-300">your accounts</span>
                     </div>
                 </div>
                 <div>
@@ -43,7 +43,7 @@
                 <h4 class="text-xl text-slate-500 dark:text-slate-300 mb-3">
                     External Transfer
                 </h4>
-                <div class="space-x-4 relative flex items-center justify-between mb-5 rtl:space-x-reverse text-slate-900 dark:text-slate-300">
+                <div class="space-x-4 relative flex items-center justify-between mb-5 rtl:space-x-reverse text-slate-900 dark:text-white">
                     <span class="text-[32px] leading-10 font-medium">
                         $500
                     </span>
@@ -62,7 +62,7 @@
                 <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
                     <div class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                         <span>For sending funds to</span>  
-                        <span class="text-slate-900">your accounts</span>
+                        <span class="text-slate-900 dark:text-slate-300">your accounts</span>
                     </div>
                 </div>
                 <div>

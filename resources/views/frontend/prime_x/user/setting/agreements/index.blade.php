@@ -22,7 +22,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('aml_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('aml_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -39,7 +39,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('client_agreement_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('client_agreement_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -56,7 +56,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('complaints_handling_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('complaints_handling_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -73,7 +73,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('cookies_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('cookies_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -90,7 +90,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('IB_partner_agreement_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('IB_partner_agreement_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -107,7 +107,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('order_execution_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('order_execution_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -124,7 +124,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('privacy_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('privacy_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -141,7 +141,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('risk_disclosure_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('risk_disclosure_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -158,7 +158,7 @@
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('US_clients_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm" target="_blank">
+                            <a href="{{setting('US_clients_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>

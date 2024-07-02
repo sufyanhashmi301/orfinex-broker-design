@@ -5,7 +5,7 @@
             <div class="icon h-20 w-20 bg-success-500 rounded-full flex flex-col items-center justify-center mx-auto">
                 <iconify-icon icon="heroicons:check-16-solid" class="text-white text-4xl"></iconify-icon>
             </div>
-            <h2 class="text-3xl my-5">{{$notify['title']}}</h2>
+            <h2 class="text-3xl my-5 dark:text-white">{{$notify['title']}}</h2>
             <p class="text-sm mb-3 dark:text-white">{{$notify['p']}}</p>
             <p class="text-sm mb-3 dark:text-white">{{ $notify['strong'] }}</p>
             <a href="{{ $notify['action'] }}" class="btn btn-dark inline-flex justify-center">
@@ -19,7 +19,7 @@
             </a>
             @endif
             <div class="mt-5">
-                <p class="text-sm">
+                <p class="text-sm dark:text-slate-300">
                     If you face any issue, please visit our
                     <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn-link">
                         Customer Support

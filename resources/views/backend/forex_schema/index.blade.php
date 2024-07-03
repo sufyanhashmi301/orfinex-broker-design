@@ -3,94 +3,84 @@
     {{ __('Manage Schema') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('All Account Type') }}</h2>
-                            @can('schema-create')
-                                <a href="{{route('admin.accountType.create')}}" class="title-btn"><i
-                                        icon-name="plus-circle"></i>{{ __('Add New') }}</a>
-                            @endcan
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header noborder">
+            <h4 class="card-title">{{ __('All Account Type') }}</h4>
+            @can('schema-create')
+                <a href="{{route('admin.accountType.create')}}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
+                    {{ __('Add New') }}
+                </a>
+            @endcan
         </div>
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Icon') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Priority') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Leverage') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Country') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Badge') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                @foreach($schemas as $schema)
+                                <tr>
+                                    <td class="table-td">
+                                        <img
+                                            class="h-7"
+                                            src="{{ asset($schema->icon) }}"
+                                            alt=""
+                                        />
+                                    </td>
+                                    <td class="table-td">
+                                        {{$schema->priority}}
+                                    </td>
+                                    <td class="table-td">
+                                        {{$schema->title}}
+                                    </td>
+                                    <td class="table-td">
+                                        {{$schema->leverage}}
+                                    </td>
+                                    <td class="table-td">
+                                        @if( null != $schema->country) {{ implode(', ', json_decode($schema->country,true)) }} @endif
+                                    </td>
+                                    <td class="table-td">
+                                        <div @class([
+                                        'badge bg-opacity-30 capitalize', // common classes
+                                        'bg-success-500 text-success-500' => $schema->badge,
+                                        'bg-warning-500 text-warning-500' => !$schema->badge
+                                        ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
+                                    </td>
+                                    <td class="table-td">
+                                        <div @class([
+                                        'badge bg-opacity-30 capitalize', // common classes
+                                        'bg-success-500 text-success-500' => $schema->status,
+                                        'bg-danger-500 text-danger-500' => !$schema->status
+                                        ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
+                                    </td>
+                                    <td class="table-td">
+                                        @can('schema-edit')
+                                            <a href="{{route('admin.accountType.edit',$schema->id)}}" class="action-btn">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </a>
+                                        @endcan
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="site-table table-responsive">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">{{ __('Icon') }}</th>
-                                        <th scope="col">{{ __('Priority') }}</th>
-                                        <th scope="col">{{ __('Title') }}</th>
-                                        <th scope="col">{{ __('Leverage') }}</th>
-                                        <th scope="col">{{ __('Country') }}</th>
-                                        <th scope="col">{{ __('Badge') }}</th>
-                                        <th scope="col">{{ __('Status') }}</th>
-
-                                        <th scope="col">{{ __('Action') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($schemas as $schema)
-                                        <tr>
-                                            <td>
-                                                <img
-                                                    class="avatar"
-                                                    src="{{ asset($schema->icon) }}"
-                                                    alt=""
-                                                />
-                                            </td>
-                                            <td><strong>{{$schema->priority}}</strong></td>
-                                            <td><strong>{{$schema->title}}</strong></td>
-                                            <td>
-                                                <strong>{{$schema->leverage}}</strong>
-                                            </td>
-                                            <td>
-                                               <strong>@if( null != $schema->country) {{ implode(', ', json_decode($schema->country,true)) }} @endif </strong>
-                                            </td>
-                                            <td>
-                                                <div @class([
-                                                'site-badge', // common classes
-                                                'success' => $schema->badge,
-                                                'pending' => !$schema->badge
-                                                ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
-                                            </td>
-                                            <td>
-                                                <div @class([
-                                                'site-badge', // common classes
-                                                'success' => $schema->status,
-                                                'danger' => !$schema->status
-                                                ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
-                                            </td>
-                                            <td>
-                                                @can('schema-edit')
-                                                    <a href="{{route('admin.accountType.edit',$schema->id)}}"
-                                                       class="round-icon-btn primary-btn">
-                                                        <i icon-name="edit-3"></i>
-                                                    </a>
-                                                @endcan
-
-                                            </td>
-                                    </tr>
-                            @endforeach
+                                    </td>
+                                </tr>
+                                @endforeach
                             </tbody>
-                            </table>
-                        </div>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
     </div>
 @endsection

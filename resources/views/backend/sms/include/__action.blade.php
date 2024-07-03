@@ -1,6 +1,4 @@
-<a href="{{ route('admin.template.sms.template-edit',$id) }}" class="round-icon-btn primary-btn" data-bs-toggle="tooltip"
-   title="Edit SMS Template" data-bs-original-title="Edit SMS Template"><i icon-name="edit-3"></i></a>
-<script>
-   'use strict';
-   lucide.createIcons();
-</script>
+<a href="{{ route('admin.template.sms.template-edit',$id) }}" class="action-btn" data-bs-toggle="tooltip"
+   title="Edit SMS Template" data-bs-original-title="Edit SMS Template">
+   <iconify-icon icon="lucide:edit-3"></iconify-icon>
+</a>

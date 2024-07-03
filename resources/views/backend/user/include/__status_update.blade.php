@@ -1,16 +1,16 @@
-<div class="site-card mb-0">
-    <div class="site-card-header">
-        <h3 class="title-small">{{ __('Account Informations') }}</h3>
+<div class="card mb-0">
+    <div class="card-header">
+        <h3 class="card-title">{{ __('Account Informations') }}</h3>
     </div>
-    <div class="site-card-body">
+    <div class="card-body p-5">
         <div class="row">
             <form action="{{route('admin.user.status-update',$user->id)}}" method="post">
                 @csrf
 
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('Account Status') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('Account Status') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="accSta1"
@@ -31,9 +31,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('Multi IB') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('Multi IB') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="is_multi_ib1"
@@ -54,9 +54,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('Email Verification') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('Email Verification') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="emaSta1"
@@ -77,9 +77,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('KYC Verification') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('KYC Verification') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="kyc1"
@@ -100,9 +100,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('2FA Verification') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('2FA Verification') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="2fa1"
@@ -123,9 +123,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('Deposit Status') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('Deposit Status') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="depo1"
@@ -146,9 +146,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('Withdraw Status') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('Withdraw Status') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="wid1"
@@ -169,9 +169,9 @@
                     </div>
                 </div>
                 <div class="col-xl-12">
-                    <div class="profile-card-single">
-                        <h5 class="heading">{{ __('Send Money Status') }}</h5>
-                        <div class="switch-field">
+                    <div class="input-area">
+                        <h5 class="form-label">{{ __('Send Money Status') }}</h5>
+                        <div class="switch-field flex mb-3 overflow-hidden">
                             <input
                                 type="radio"
                                 id="trans1"
@@ -191,8 +191,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12">
-                    <button type="submit" class="site-btn-sm primary-btn w-100 centered">
+                <div class="input-area">
+                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-full">
                         {{ __('Save Changes') }}
                     </button>
                 </div>

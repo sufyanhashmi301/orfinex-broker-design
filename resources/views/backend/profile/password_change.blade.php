@@ -3,56 +3,39 @@
     {{ __('Change Password') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Change Password') }}</h2>
-                        </div>
-                    </div>
-                </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('Change Password') }}</h4>
             </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-9 col-lg-9 col-md-8 col-sm-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <form method="post" action="{{ route('admin.password-update') }}">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                        <div class="site-input-groups">
-                                            <label for="" class="box-input-label">{{ __('Old Password:') }}</label>
-                                            <input type="password" name="current_password" class="box-input"
-                                                   required="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                        <div class="site-input-groups">
-                                            <label for="" class="box-input-label">{{ __('New Password:') }}</label>
-                                            <input type="password" name="new_password" class="box-input" required="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                        <div class="site-input-groups">
-                                            <label for="" class="box-input-label">{{ __('Confirm Password:') }}</label>
-                                            <input type="password" name="new_confirm_password" class="box-input"
-                                                   required="">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-12">
-                                        <button type="submit"
-                                                class="site-btn-sm primary-btn w-100 centered"  >{{ __('Change Password') }}</button>
-                                    </div>
-                                </div>
-                            </form>
-
+            <div class="card-body p-6">
+                <form method="post" action="{{ route('admin.password-update') }}">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="col-span-2">
+                            <div class="input-area relative">
+                                <label for="" class="form-label">{{ __('Old Password:') }}</label>
+                                <input type="password" name="current_password" class="form-control"
+                                    required="">
+                            </div>
+                        </div>
+                        <div class="input-area relative">
+                            <label for="" class="form-label">{{ __('New Password:') }}</label>
+                            <input type="password" name="new_password" class="form-control" required="">
+                        </div>
+                        <div class="input-area relative">
+                            <label for="" class="form-label">{{ __('Confirm Password:') }}</label>
+                            <input type="password" name="new_confirm_password" class="form-control"
+                                required="">
+                        </div>
+                        <div class="col-span-2 text-right">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                {{ __('Change Password') }}
+                            </button>
                         </div>
                     </div>
-                </div>
+                </form>
+    
             </div>
         </div>
     </div>

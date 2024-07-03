@@ -3,8 +3,6 @@
     {{ __('Manage Profit deduction') }}
 @endsection
 @section('style')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <style >
         .fc-title{
             color: #ffffff;
@@ -12,41 +10,20 @@
     </style>
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('All Account Type') }}</h2>
-{{--                            @can('schema-create')--}}
-{{--                                <a href="{{route('admin.accountType.create')}}" class="title-btn"><i--}}
-{{--                                        icon-name="plus-circle"></i>{{ __('Add New') }}</a>--}}
-{{--                            @endcan--}}
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('All Account Type') }}</h4>
+            {{-- @can('schema-create')--}}
+            {{-- <a href="{{route('admin.accountType.create')}}" class="btn btn-dark btn-sm inline-flex items-center justify-center">--}}
+            {{-- <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>{{ __('Add New') }}</a>--}}
+            {{-- @endcan--}}
         </div>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div id='calendar'></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="card-body p-6">
+            <div id='full-calander-active'></div>
         </div>
-
     </div>
 @endsection
 @section('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         $(document).ready(function () {
 
@@ -56,7 +33,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var calendar = $('#calendar').fullCalendar({
+            var calendar = $('#full-calander-active').fullCalendar({
                 editable: true,
                 validRange: function(nowDate) {
                     return {

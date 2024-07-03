@@ -6,26 +6,37 @@
     {{ __('Single Session') }}
 @endsection
 @section('security-content')
-    <div class="col-xl-8 col-lg-12 col-md-12 col-12">
-        <div class="site-card">
-            <div class="site-card-body">
+    <div class="lg:col-span-8 col-span-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">@yield('security-title')</h4>
+            </div>
+            <div class="card-body p-6">
                 <form action="" method="post">
-                    <div class="site-input-groups">
-                        <label for="" class="d-block mb-4">
+                    <div class="input-area">
+                        <label for="" class="form-label block mb-4">
                             Prevent user from being logged in more than once ?
-                            <span class="text-danger ml-1">*</span>
+                            <span class="text-danger-500 ml-1">*</span>
                         </label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="singleSession" id="singleSession1" value="yes" checked>
-                            <label class="form-check-label" for="singleSession1">
-                              Yes
-                            </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="singleSession" id="singleSession2" value="no">
-                            <label class="form-check-label" for="singleSession2">
-                              No
-                            </label>
+                        <div class="flex items-center space-x-7 flex-wrap">
+                            <div class="basicRadio">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" class="hidden" name="singleSession" value="yes" checked="checked">
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <span class="text-secondary-500 text-sm leading-6 capitalize">
+                                        Yes
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="basicRadio">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" class="hidden" name="singleSession" value="no">
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <span class="text-secondary-500 text-sm leading-6 capitalize">
+                                        No
+                                    </span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </form>

@@ -7,41 +7,49 @@
 @endsection
 
 @section('setting-content')
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-        <div class="site-card">
-            <div class="site-card-header d-flex">
-                <h3 class="title">{{ __('Notification Tune Settings') }}</h3>
-
+    <div class="col-span-12">
+        <div class="card">
+            <div class="card-header d-flex">
+                <h4 class="card-title">{{ __('Notification Tune Settings') }}</h4>
                 <div class="card-header-links">
-                    <a  href="{{ route('admin.settings.plugin','notification') }}" class="card-header-link new-referral" type="button" data-type="investment">
-                        <i icon-name="corner-down-left"></i>{{ __('Back') }}</a>
+                    <a  href="{{ route('admin.settings.plugin','notification') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center new-referral" type="button" data-type="investment">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                        {{ __('Back') }}
+                    </a>
                 </div>
             </div>
-            <div class="site-card-body">
+            <div class="card-body p-6 space-y-4">
                 @foreach($set_tunes as $set_tune)
-                <div class="single-gateway">
-                    <div class="gateway-name">
-                        <div class="gateway-icon">
-                            <img
-                                src="{{ asset($set_tune->icon) }}" alt=""/>
+                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                    <div class="gateway-name flex items-center gap-2">
+                        <div class="gateway-icon mr-4">
+                            <img class="h-7" src="{{ asset($set_tune->icon) }}" alt=""/>
                         </div>
                         <div class="gateway-title">
-                            <h4>{{ $set_tune->name }}</h4>
+                            <h4 class="text-sm">{{ $set_tune->name }}</h4>
                         </div>
                     </div>
-                    <div class="gateway-right">
+                    <div class="gateway-right flex items-center gap-2">
                         <div class="gateway-status m-0 me-2">
-                            <button type="button" value="{{ $set_tune->id }}" data-tune-preview="{{ asset($set_tune->tune) }}" class="site-btn-xs primary-btn audioPlay">
-                               <span class="play-{{$set_tune->id}} play"> <i class="play" icon-name="play"></i></span>
-                               <span class="stop-{{$set_tune->id}} hidden stop"> <i icon-name="pause"></i></span>
-                                <span class="tune-status-{{$set_tune->id}} status-text">{{ __('Play') }}</span>
+                            <button type="button" value="{{ $set_tune->id }}" data-tune-preview="{{ asset($set_tune->tune) }}" class="btn btn-dark btn-sm inline-flex justify-center audioPlay">
+                                <span class="flex items-center">
+                                    <span class="play-{{$set_tune->id}} play" style="line-height: 0;"> <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 play" icon="lucide:play"></iconify-icon></span>
+                                    <span class="stop-{{$set_tune->id}} hidden stop" style="line-height: 0;"> <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:pause"></iconify-icon></span>
+                                    <span class="tune-status-{{$set_tune->id}} status-text">{{ __('Play') }}</span>
+                                </span>
                             </button>
                         </div>
                         <div class="gateway-status m-0">
                             @if($set_tune->status == true)
-                                <a href="{{ route('admin.settings.notification.tune.status', $set_tune->id) }}" class="site-btn-xs green-btn"><i icon-name="check"></i>{{ __('Active in') }}</a>
+                                <a href="{{ route('admin.settings.notification.tune.status', $set_tune->id) }}" class="btn btn-success btn-sm inline-flex items-center justify-center">
+                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Active in') }}
+                                </a>
                             @else
-                                <a href="{{ route('admin.settings.notification.tune.status', $set_tune->id) }}" class="site-btn-xs red-btn"><i icon-name="x"></i>{{ __('Inactive') }}</a>
+                                <a href="{{ route('admin.settings.notification.tune.status', $set_tune->id) }}" class="btn btn-danger btn-sm inline-flex items-center justify-center">
+                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Inactive') }}
+                                </a>
                             @endif
                         </div>
 

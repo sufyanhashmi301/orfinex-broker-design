@@ -33,15 +33,15 @@
 
         function currencyShow(currencyType){
             if (currencyType === 'fiat'){
-                $('.currency-fiat').removeClass('d-none')
-                $('.currency-crypto').addClass('d-none')
+                $('.currency-fiat').removeClass('hidden')
+                $('.currency-crypto').addClass('hidden')
 
                 $('.site-currency-fiat').attr('name','site_currency');
                 $('.site-currency-crypto').attr('name','');
 
             }else {
-                $('.currency-crypto').removeClass('d-none')
-                $('.currency-fiat').addClass('d-none')
+                $('.currency-crypto').removeClass('hidden')
+                $('.currency-fiat').addClass('hidden')
 
                 $('.site-currency-crypto').attr('name','site_currency');
                 $('.site-currency-fiat').attr('name','');

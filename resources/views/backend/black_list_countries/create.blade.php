@@ -6,63 +6,39 @@
     <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div class="col-xl-8">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Add New Black List Country') }}</h2>
-                            <a href="{{ url()->previous() }}" class="title-btn"><i
-                                    icon-name="corner-down-left"></i>{{ __('Back') }}</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('Add New Black List Country') }}</h4>
+                <a href="{{ url()->previous() }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                    {{ __('Back') }}
+                </a>
             </div>
-        </div>
-
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-xl-8">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <form action="{{route('admin.blackListCountry.store')}}" method="post" enctype="multipart/form-data"
-                                  class="row">
-                                @csrf
-                                <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="row">
-                                        <div class="formGroup">
-                                            <label class="block capitalize form-label">{{ __('Select Country*') }}</label>
-                                            <div class="relative ">
-                                                <select name="name" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
-                                                    @foreach( getCountries() as $country)
-                                                        <option  value="{{ $country['name'] }}"
-                                                                class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
-                                                            {{ $country['name']  }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <div class="row">
-                                <div class="col-xl-12">
-                                    <button type="submit" class="site-btn-sm primary-btn w-100 ">
-                                        {{ __('Add New') }}
-                                    </button>
-                                </div>
-                                </div>
-                            </form>
+            <div class="card-body p-6">
+                <form action="{{route('admin.blackListCountry.store')}}" method="post" enctype="multipart/form-data" >
+                    @csrf
+                    <div class="space-y-5">
+                        <div class="formGroup">
+                            <label class="block capitalize form-label">{{ __('Select Country*') }}</label>
+                            <div class="relative">
+                                <select name="name" id="countrySelect" class="form-control py-2 h-[48px] w-full mt-2">
+                                    @foreach( getCountries() as $country)
+                                        <option  value="{{ $country['name'] }}"
+                                                class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
+                                            {{ $country['name']  }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                {{ __('Add New') }}
+                            </button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

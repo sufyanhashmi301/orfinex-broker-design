@@ -1,75 +1,87 @@
-<div class="header">
-    <div class="logo">
-        <a href="{{route('admin.dashboard')}}">
-            <img
-                class="logo-unfold"
-                src="{{asset(setting('site_logo','global'))}}"
-                alt="Logo"
-            />
-            <img
-                class="logo-fold"
-                src="{{asset(setting('site_logo','global'))}}"
-                alt="Logo"
-            />
-        </a>
-    </div>
-    <div class="nav-wrap">
-        <div class="nav-left">
-            <button class="sidebar-toggle"><i icon-name="list"></i></button>
-        </div>
-        <div class="nav-right">
-
-            <div class="single-nav-right admin-language-switch">
-                <select name="language" class="form-select"
-                        onchange="window.location.href=this.options[this.selectedIndex].value;">
-                    @foreach(\App\Models\Language::where('status',true)->get() as $lang)
-                        <option
-                            value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>{{$lang->name}}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="single-nav-right admin-notifications">
-                @php
-                    $notifications = App\Models\Notification::where('for','admin')->latest()->take(10)->get();
-                    $totalUnread = App\Models\Notification::where('for','admin')->where('read', 0)->count();
-                    $totalCount = App\Models\Notification::where('for','admin')->get()->count();
-                @endphp
-                @include('global.__notification_data',['notifications'=>$notifications,'totalUnread'=>$totalUnread,'totalCount'=>$totalCount])
-            </div>
-
-
-            <div class="single-nav-right">
-                <a href="{{ route('home') }}" target="_blank" class="item" data-bs-toggle="tooltip" title=""
-                   data-bs-placement="left" data-bs-original-title="Visit Landing Page">
-                    <i icon-name="globe"></i>
+<!-- BEGIN: Header -->
+<div class="z-[9] sticky top-0" id="app_header">
+    <div class="app-header z-[999] ltr:ml-[248px] rtl:mr-[248px] bg-white dark:bg-slate-800 shadow-sm dark:shadow-slate-700">
+        <div class="flex justify-between items-center h-full">
+            <div class="flex items-center md:space-x-4 space-x-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
+                <a href="{{route('home')}}" class="mobile-logo xl:hidden inline-block">
+                    <img src="{{ asset(setting('site_logo','global')) }}" class="logo-unfold h-10" alt="Logo"/>
+                    <img src="{{ asset(setting('site_logo','global')) }}" class="hidden logo-fold h-10" alt="Logo"/>
                 </a>
-            </div>
-            <div class="single-nav-right">
-                <button type="button" class="item" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i icon-name="user"></i>
+                <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
+                    <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a href="{{ route('admin.profile') }}" class="dropdown-item"><i
-                                icon-name="user"></i>{{ __('Profile') }}</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.password-change') }}" class="dropdown-item">
-                            <i icon-name="lock"></i>{{ __('Change Password') }}
-                        </a>
-                    </li>
-                    <li class="logout">
+            </div>
 
-                        <a href="{{ url('admin/logout') }}" class="dropdown-item" type="button"
-                           onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();">
-                            <i icon-name="log-out"></i> {{ __('Logout') }}
-                        </a>
-                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
+            <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0">
+                <div class="relative">
+                    <select name="language" class="form-control !py-1 min-w-max" onchange="window.location.href=this.options[this.selectedIndex].value;">
+                        @foreach(\App\Models\Language::where('status',true)->get() as $lang)
+                            <option value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>
+                                {{$lang->name}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <!-- BEGIN: Toggle Theme -->
+                <div>
+                    <button id="themeMood" class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] lg:bg-gray-500-f7 bg-slate-50 dark:bg-slate-900 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                        <iconify-icon class="text-slate-800 dark:text-white text-xl dark:block hidden" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                        <iconify-icon class="text-slate-800 dark:text-white text-xl dark:hidden block" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    </button>
+                </div>
+                <!-- END: TOggle Theme -->
+                <div class="relative md:block hidden admin-notifications">
+                    @php
+                        $notifications = App\Models\Notification::where('for','admin')->latest()->take(4)->get();
+                        $totalUnread = App\Models\Notification::where('for','admin')->where('read', 0)->count();
+                        $totalCount = App\Models\Notification::where('for','admin')->get()->count();
+                    @endphp
+                    @include('global.__notification_data',['notifications'=>$notifications,'totalUnread'=>$totalUnread,'totalCount'=>$totalCount])
+                </div>
+                {{-- <div>
+                    <a href="{{ route('home') }}" class="toolTip onLeft h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] lg:bg-gray-500-f7 bg-slate-50 dark:bg-slate-900 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" target="_blank" data-tippy-content="Visit Landing Page" data-tippy-theme="dark">
+                        <iconify-icon class="text-slate-800 dark:text-white text-xl" icon="lucide:globe"></iconify-icon>
+                    </a>
+                </div> --}}
+                <div class="md:block hidden w-full">
+                    <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 ltr:mr-[10px] rtl:ml-[10px]">
+                            <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
+                        </div>
+                        <span class="flex-none text-slate-600 dark:text-white text-sm font-normal items-center lg:flex hidden overflow-hidden text-ellipsis whitespace-nowrap">
+                            Admin
+                        </span>
+                        <svg class="w-[16px] h-[16px] dark:text-white hidden lg:inline-block text-base inline-block ml-[10px] rtl:mr-[10px]" aria-hidden="true" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu z-10 hidden bg-white divide-y divide-slate-100 shadow min-w-max dark:bg-slate-800 border dark:border-slate-700 !top-[23px] rounded-md overflow-hidden">
+                        <ul class="py-1 text-sm text-slate-800 dark:text-slate-200">
+                            <li>
+                                <a href="{{ route('admin.profile') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal">
+                                    <iconify-icon icon="lucide:user" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                    <span class="font-Inter">{{ __('Profile') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.password-change') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal">
+                                    <iconify-icon icon="lucide:lock" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                    <span class="font-Inter">{{ __('Change Password') }}</span>
+                                </a>
+                            </li>
+                            <li class="logout">
+                                <a href="{{ url('admin/logout') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal" type="button"
+                                onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();">
+                                    <iconify-icon icon="lucide:log-out" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                    <span class="font-Inter">{{ __('Logout') }}</span>
+                                </a>
+                                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

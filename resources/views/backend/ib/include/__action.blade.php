@@ -1,27 +1,27 @@
+<div class="flex space-x-3 rtl:space-x-reverse">
+    <!-- Update your __action Blade file -->
+    @if ($user->ibQuestionAnswers)
+        <button type="button" class="action-btn detail-btn" data-toggle="modal" data-target="#viewDataModal" data-user-id="{{ $user->id }}">
+            <iconify-icon icon="lucide:eye"></iconify-icon>
+        </button>
 
-<!-- Update your __action Blade file -->
-<!-- Update your __action Blade file -->
-@if ($user->ibQuestionAnswers)
-    <button type="button" class="btn btn-danger detail-btn" data-toggle="modal" data-target="#viewDataModal" data-user-id="{{ $user->id }}">
-        <i class="fas fa-eye"></i>
+    @else
+        <button type="button" class="toolTip onTop action-btn detail-btn" data-tippy-theme="dark" data-tippy-content="No IB Data Available" title="No IB Data Available">
+            <iconify-icon icon="lucide:eye-off"></iconify-icon>
+        </button>
+    @endif
+
+
+
+    @if($user->ib_status !=='approved')
+    <button class="toolTip onTop action-btn approve-btn" data-tippy-theme="dark" data-tippy-content="Edit" title="Edit">
+        <iconify-icon icon="lucide:edit-3"></iconify-icon>
     </button>
 
-@else
-    <button type="button" class="btn btn-danger detail-btn" data-toggle="tooltip" data-placement="top" title="No IB Data Available">
-        <i class="fas fa-eye-slash"></i>
+
+    <button type="button" class="toolTip onTop action-btn reject-btn" data-tippy-theme="dark" data-tippy-content="Reject" title="Reject">
+        <iconify-icon icon="mdi:multiply"></iconify-icon>
     </button>
-@endif
-
-
-
-@if($user->ib_status !=='approved')
-<button class="btn btn-primary approve-btn" data-toggle="tooltip" data-placement="top" title="Edit">
-    <i class="fas fa-edit"></i>
-</button>
-
-
-<button type="button" class="btn btn-danger reject-btn" data-toggle="tooltip" data-placement="top" title="Reject">
-    <i class="fas fa-times"></i>
-</button>
-@endif
+    @endif
+</div>
 

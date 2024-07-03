@@ -3,48 +3,42 @@
     {{ __('All Notifications') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('All Notifications') }}</h2>
-                            <a href="{{ route('admin.read-notification', 0) }}" class="title-btn"><i icon-name="check"></i> Mark all read</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('All Notifications') }}</h4>
+            <a href="{{ route('admin.read-notification', 0) }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                {{ __(' Mark all read') }}
+            </a>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="notification-list">
-                                @foreach($notifications as $notification)
-                                    <div @class(['single-list', 'read' => $notification->read])>
-                                        <div class="cont">
-                                            <div class="icon"><i icon-name="{{ $notification->icon }}"></i></div>
-                                            <div class="contents">
-                                                {{ $notification->notice }}
-                                                <div class="time">{{ $notification->created_at->diffForHumans() }}</div>
-                                            </div>
-                                        </div>
-                                        <div class="link">
-                                            <a href="{{ route('admin.read-notification', $notification->id) }}"
-                                               class="site-btn-xs red-btn"><i
-                                                    icon-name="external-link"></i>{{ __('Explore') }}</a>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            {{ $notifications->links() }}
+        <div class="card-body p-6">
+            <ul class="list-item space-y-3 h-full overflow-x-auto">
+                @foreach($notifications as $notification)
+                    <li class="flex items-center space-x-3 rtl:space-x-reverse border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0" @class(['single-list', 'read' => $notification->read])>
+                        <div>
+                            <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
+                                <iconify-icon icon="lucide:{{ $notification->icon }}"></iconify-icon>
+                            </div> 
                         </div>
-                    </div>
-                </div>
-            </div>
+                        <div class="text-start overflow-hidden text-ellipsis whitespace-nowrap max-w-[63%]">
+                            {{ $notification->notice }}
+                            <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                {{ $notification->created_at->diffForHumans() }}
+                            </div>
+                        </div>
+                        <div class="flex-1 ltr:text-right rtl:text-left">
+                            <a href="{{ route('admin.read-notification', $notification->id) }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                                <span class="flex items-center">
+                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:external-link"></iconify-icon>
+                                    {{ __('Explore') }}
+                                </span>
+                            </a>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+
+            {{ $notifications->links() }}
         </div>
     </div>
 @endsection

@@ -5,22 +5,30 @@
 @section('theme-content')
 
     @foreach($themes as $theme)
-        <div class="col-xl-4 col-lg-4 col-md-4 col-12">
-            <div class="site-card">
-                <div class="site-card-header">
-                    <h3 class="title">{{ ucwords( str_replace('_', ' ',$theme->name) ) }} Theme</h3>
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ ucwords( str_replace('_', ' ',$theme->name) ) }} Theme</h4>
                 </div>
-                <div class="site-card-body">
-                    <div class="theme-img">
+                <div class="card-body p-6">
+                    <div class="theme-img relative overflow-hidden">
                         @if($theme->status)
-                            <div class="activated">{{ __('Activated') }}</div>
+                            <div class="text-sm font-medium bg-slate-900 dark:bg-slate-900 text-white py-2 text-center absolute ltr:-right-[43px] rtl:-left-[43px] top-6 px-10 transform ltr:rotate-[45deg] rtl:-rotate-45">
+                                {{ __('Activated') }}
+                            </div>
                         @endif
                         <img class="w-100" src="{{ asset('backend/materials/theme/'.$theme->name . '.jpg') }}" alt="">
                     </div>
                     @if($theme->status)
-                        <a href="#" class="site-btn w-100 centered mt-4 disabled"><i icon-name="circle-slash-2"></i>{{ __('Activated Theme') }}</a>
+                        <a href="javascript:;" class="btn btn-dark w-full inline-flex items-center justify-center mt-4 disabled">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:circle-slash-2"></iconify-icon>
+                            {{ __('Activated Theme') }}
+                        </a>
                     @else
-                        <a href="{{ route('admin.theme.status-update',['id' => $theme->id]) }}" class="site-btn black-btn w-100 centered mt-4"><i icon-name="check"></i>{{ __('Active Now') }}</a>
+                        <a href="{{ route('admin.theme.status-update',['id' => $theme->id]) }}" class="btn btn-dark w-full inline-flex items-center justify-center mt-4">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Active Now') }}
+                        </a>
                     @endif
 
                 </div>

@@ -3,115 +3,92 @@
     {{ __('Create Role') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Update Role') }}</h2>
-                            <a href="{{ url()->previous() }}" class="title-btn"><i
-                                    icon-name="corner-down-left"></i>{{ __('Back') }}</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Update Role') }}</h4>
+            <a href="{{ url()->previous() }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                {{ __('Back') }}
+            </a>
         </div>
+        <div class="card-body p-6">
+            <form action="{{route('admin.roles.update',$role->id)}}" method="post" class="space-y-4">
+                @method('PUT')
+                @csrf
+                <div class="input-area">
+                    <label for="" class="form-label">{{ __('Role Name') }}</label>
+                    <input type="text" class="form-control" required="" name="name"
+                           value="{{$role->name}}"/>
+                </div>
+                <div class="card border">
+                    <div class="card-header noborder">
+                        <h3 class="card-title mb-0">{{ __('All Permissions') }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="role-cat-items">
+                            <div class="accordion">
+                                @foreach($permissions as $category => $permission)
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="row">
-                                <form action="{{route('admin.roles.update',$role->id)}}" method="post">
-                                    @method('PUT')
-                                    @csrf
-                                    <div class="col-xl-12">
-                                        <div class="site-input-groups">
-                                            <label for="" class="box-input-label">{{ __('Role Name') }}</label>
-                                            <input type="text" class="box-input" required="" name="name"
-                                                   value="{{$role->name}}"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-12">
-                                        <div class="site-card">
-                                            <div class="site-card-header">
-                                                <h3 class="title mb-0">{{ __('All Permissions') }}</h3>
-                                            </div>
-                                            <div class="site-card-body">
-                                                <div class="row">
-                                                    <div class="col-xl-12">
-                                                        <div class="role-cat-items">
-                                                            <div class="accordion">
-                                                                @foreach($permissions as $category => $permission)
+                                    @php
+                                        $checked = !empty(array_intersect($rolePermissions, $permission->pluck('id')->toArray()));
+                                    @endphp
 
-                                                                    @php
-                                                                        $checked = !empty(array_intersect($rolePermissions, $permission->pluck('id')->toArray()));
-                                                                    @endphp
-
-                                                                    <div class="accordion-item">
-                                                                        <h2 class="accordion-header" id="headingOne">
-                                                                            <button
-                                                                                class="accordion-button @if(!$checked) collapsed @endif"
-                                                                                type="button" data-bs-toggle="collapse"
-                                                                                data-bs-target="#{{ str_replace(' ','',$category) }}"
-                                                                                aria-expanded="true"
-                                                                                aria-controls="{{$category}}">
-                                                                                <span class="icon"><i
-                                                                                        icon-name="check"></i></span>{{$category}}
-                                                                            </button>
-                                                                        </h2>
-                                                                        <div id="{{str_replace(' ','',$category)}}"
-                                                                             class="accordion-collapse collapse @if($checked) show @endif"
-                                                                             aria-labelledby="headingOne">
-                                                                            <div class="accordion-body">
-                                                                                <div class="row">
-                                                                                    @foreach($permission as $raw)
-                                                                                        <div
-                                                                                            class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                                                                                            <div
-                                                                                                class="form-check form-switch role-permission-switch">
-                                                                                                <label
-                                                                                                    class="switch-label"
-                                                                                                    for="{{$raw->name}}">{{ ucwords(str_replace('-', ' ', $raw->name)) }}</label>
-                                                                                                <input
-                                                                                                    class="form-check-input big"
-                                                                                                    type="checkbox"
-                                                                                                    role="switch"
-                                                                                                    id="{{$raw->name}}"
-                                                                                                    name="permission[]"
-                                                                                                    value="{{$raw->id}}"
-                                                                                                    @if(in_array($raw->id, $rolePermissions)) checked @endif
-                                                                                                />
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    @endforeach
-
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-
-                                                            </div>
-                                                        </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header text-lg" id="headingOne">
+                                            <button
+                                                class="accordion-button @if(!$checked) collapsed @endif flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-x-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                                                type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#{{ str_replace(' ','',$category) }}"
+                                                aria-expanded="true"
+                                                aria-controls="{{$category}}">
+                                                <span class="flex items-center">
+                                                    <span class="icon h-5 w-5 rounded-full bg-slate-100 flex items-center justify-center ltr:mr-2 rtl:ml-2">
+                                                        <iconify-icon class="text-sm" icon="lucide:check"></iconify-icon>
+                                                    </span>
+                                                    {{$category}}
+                                                </span>
+                                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+                                                </svg>
+                                            </button>
+                                        </h2>
+                                        <div id="{{str_replace(' ','',$category)}}"
+                                             class="accordion-collapse collapse @if($checked) show @endif p-5 p-5 border border-b-0 border-x-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900"
+                                             aria-labelledby="headingOne">
+                                            <div class="accordion-body">
+                                                <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+                                                    @foreach($permission as $raw)
+                                                    <div class="flex items-center justify-between p-5 border border-slate-100 dark:border-slate-700">
+                                                        <label class="switch-label text-sm" for="{{$raw->name}}">
+                                                            {{ ucwords(str_replace('-', ' ', $raw->name)) }}
+                                                        </label>
+                                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                            <input type="checkbox" class="sr-only peer" id="{{$raw->name}}"
+                                                            name="permission[]"
+                                                            value="{{$raw->id}}"
+                                                            @if(in_array($raw->id, $rolePermissions)) checked @endif>
+                                                            <span class="w-9 h-5 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3.5px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                        </label>
                                                     </div>
-                                                    <div class="col-xl-12">
-                                                        <button class="site-btn primary-btn" type="submit"><i
-                                                                icon-name="check"></i>{{ __('Save Changes') }}</button>
-                                                    </div>
+                                                    @endforeach
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                @endforeach
 
                             </div>
                         </div>
+                        <div class="text-right p-5">
+                            <button class="btn btn-dark inline-flex items-center justify-center" type="submit">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Save Changes') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 @endsection

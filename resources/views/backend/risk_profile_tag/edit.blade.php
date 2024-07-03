@@ -3,80 +3,57 @@
     {{ __('Add New Risk Profile Tag') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div class="col-xl-8">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Edit Risk Profile Tag Form') }}</h2>
-                            <a href="{{ route('admin.risk-profile-tag.index') }}" class="title-btn"><i
-                                    icon-name="corner-down-left"></i>{{ __('Back') }}</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('Edit Risk Profile Tag Form') }}</h4>
+                <a href="{{ route('admin.risk-profile-tag.index') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                    {{ __('Back') }}
+                </a>
             </div>
-        </div>
-
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-xl-8 col-lg-12 col-md-12 col-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <form action="{{ route('admin.risk-profile-tag.update',$riskProfileTag->id) }}" method="post" class="row">
-                                @method('PUT')
-                                @csrf
-
-                                <div class="col-xl-12">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Name:') }}</label>
-                                        <input type="text" name="name" value="{{ old('name',$riskProfileTag->name) }}"
-                                               class="box-input" placeholder="Risk Profile Tag Type Name" required/>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-12">
-                                    <div class="site-input-groups">
-                                        <label for="" class="box-input-label">{{ __('Details(Optional)') }}</label>
-                                        <textarea name="desc" class="form-textarea mb-0" placeholder="Details">{{ old('name',$riskProfileTag->name) }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-xl-12">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                            <div class="site-input-groups">
-                                                <label class="box-input-label" for="">{{ __('Status:') }}</label>
-                                                <div class="switch-field">
-                                                    <input
-                                                        type="radio"
-                                                        id="active-status"
-                                                        name="status"
-                                                        @if($riskProfileTag->status) checked @endif
-                                                        value="1"
-                                                    />
-                                                    <label for="active-status">{{ __('Active') }}</label>
-                                                    <input
-                                                        type="radio"
-                                                        id="deactivate-status"
-                                                        name="status"
-                                                        @if(!$riskProfileTag->status) checked @endif
-                                                        value="0"
-                                                    />
-                                                    <label for="deactivate-status">{{ __('Deactivate') }}</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-12">
-                                    <button type="submit" class="site-btn primary-btn w-100">
-                                        {{ __('Save Changes') }}
-                                    </button>
-                                </div>
-                            </form>
+            <div class="card-body p-6">
+                <form action="{{ route('admin.risk-profile-tag.update',$riskProfileTag->id) }}" method="post" class="space-y-4">
+                    @method('PUT')
+                    @csrf
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Name:') }}</label>
+                        <input type="text" name="name" value="{{ old('name',$riskProfileTag->name) }}"
+                               class="form-control" placeholder="Risk Profile Tag Type Name" required/>
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Details(Optional)') }}</label>
+                        <textarea name="desc" class="form-control mb-0" rows="6" placeholder="Details">{{ old('name',$riskProfileTag->name) }}</textarea>
+                    </div>
+                    <div class="max-w-xs">
+                        <div class="input-area">
+                            <label class="form-label" for="">{{ __('Status:') }}</label>
+                            <div class="switch-field flex mb-3 overflow-hidden">
+                                <input
+                                    type="radio"
+                                    id="active-status"
+                                    name="status"
+                                    @if($riskProfileTag->status) checked @endif
+                                    value="1"
+                                />
+                                <label for="active-status">{{ __('Active') }}</label>
+                                <input
+                                    type="radio"
+                                    id="deactivate-status"
+                                    name="status"
+                                    @if(!$riskProfileTag->status) checked @endif
+                                    value="0"
+                                />
+                                <label for="deactivate-status">{{ __('Deactivate') }}</label>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="input-area text-right">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            {{ __('Save Changes') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

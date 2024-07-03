@@ -1,19 +1,21 @@
-<div class="col-xl-6 col-lg-12 col-md-12 col-12">
-    <div class="site-card">
-        <div class="site-card-header">
-            <h3 class="title">{{ __('Permission Settings') }}</h3>
+<div class="col-span-6">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Permission Settings') }}</h4>
         </div>
-        <div class="site-card-body">
+        <div class="card-body p-6">
             @include('backend.setting.site_setting.include.form.__open_action')
 
             @foreach($fields['elements'] as $key => $field)
-                <div class="site-input-groups row">
-                    <div class="col-sm-4 col-label pt-0">{{ __($field['label']) }}</div>
+                <div class="input-area grid grid-cols-12 gap-5 mb-5">
+                    <div class="lg:col-span-4 col-span-12 form-label pt-0">
+                        {{ __($field['label']) }}
+                    </div>
 
-                    <div class="col-sm-8">
+                    <div class="lg:col-span-8 col-span-12">
                         <div class="form-switch ps-0">
                             <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
-                            <div class="switch-field same-type m-0">
+                            <div class="switch-field flex overflow-hidden same-type m-0">
                                 <input
                                     type="radio"
                                     id="active-{{$key}}"

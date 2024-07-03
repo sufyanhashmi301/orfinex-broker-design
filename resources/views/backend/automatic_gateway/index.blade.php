@@ -3,81 +3,78 @@
     {{ __('Automatic Payment Gateway') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Automatic Payment Gateway') }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Automatic Payment Gateway') }}</h4>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-table table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>{{ __('Logo') }}</th>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Supported Currency') }}</th>
-                                <th>{{ __('Withdraw Available') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Manage') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($gateways as $gateway)
+        <div class="card-body p-6 pt-0">
+            <div class="overflow-x-auto -mx-6">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead class="bg-slate-200 dark:bg-slate-700">
                                 <tr>
-                                    <td>
-                                        <img height="25" src="{{  asset($gateway->logo) }}" alt="">
+                                    <th scope="col" class="table-th">{{ __('Logo') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Name') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Supported Currency') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Withdraw Available') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Manage') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                @foreach($gateways as $gateway)
+                                <tr>
+                                    <td class="table-td">
+                                        <img class="h-7" src="{{  asset($gateway->logo) }}" alt="">
                                     </td>
-                                    <td>{{ $gateway->name }}</td>
-                                    <td> {{ count(json_decode($gateway->supported_currencies,true)) }}</td>
-                                    <td>
+                                    <td class="table-td">{{ $gateway->name }}</td>
+                                    <td class="table-td"> 
+                                        {{ count(json_decode($gateway->supported_currencies,true)) }}
+                                    </td>
+                                    <td class="table-td">
                                         @if($gateway->is_withdraw != 0)
-                                            <div class="site-badge success"> {{ __('Yes') }}</div>
+                                            <div class="badge bg-success-500 text-white capitalize"> 
+                                                {{ __('Yes') }}
+                                            </div>
                                         @else
-                                            <div class="site-badge pending">  {{ __('No') }}</div>
+                                            <div class="badge bg-danger-500 text-white capitalize">  
+                                                {{ __('No') }}
+                                            </div>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="table-td">
                                         @if($gateway->status == 1)
-                                            <div class="site-badge success"> {{ __('Activated') }}</div>
+                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize"> 
+                                                {{ __('Activated') }}
+                                            </div>
                                         @else
-                                            <div class="site-badge pending">  {{ __('Deactivated') }}</div>
+                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">  
+                                                {{ __('Deactivated') }}
+                                            </div>
                                         @endif
                                     </td>
 
-                                    <td>
+                                    <td class="table-td">
                                         <button
-                                            class="round-icon-btn primary-btn"
+                                            class="action-btn"
                                             type="button"
                                             data-bs-toggle="modal"
                                             data-bs-target="#manage-{{$gateway->id}}"
                                         >
-                                            <i icon-name="settings-2"></i>
+                                            <iconify-icon icon="lucide:settings-2"></iconify-icon>
                                         </button>
                                     </td>
                                 </tr>
-
-
                                 <!--  Manage Modal -->
                                 @include('backend.automatic_gateway.include.__manage')
                                 <!-- Manage Modal End-->
 
-                            @endforeach
+                                @endforeach
                             </tbody>
-
                         </table>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

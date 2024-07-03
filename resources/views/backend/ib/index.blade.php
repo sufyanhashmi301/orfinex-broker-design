@@ -3,123 +3,109 @@
     {{ __('IB') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('IB Forms') }}</h2>
-                            <a href="{{ route('admin.ib-form.create') }}" class="title-btn"><i
-                                    icon-name="plus-circle"></i>{{ __('Add New') }}</a>
-                        </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('IB Forms') }}</h4>
+            <a href="{{ route('admin.ib-form.create') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
+                {{ __('Add New') }}
+            </a>
+        </div>
+        <div class="card-body p-6 pt-0">
+            <div class="overflow-x-auto -mx-6">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead class="bg-slate-200 dark:bg-slate-700">
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Verification Name') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($questions as $question)
+                                <tr>
+                                    <td class="table-td">
+                                        <strong>{{ $question->name }}</strong>
+                                    </td>
+                                    <td class="table-td">
+                                        @if( $question->status)
+                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                                {{ __('Active') }}
+                                            </div>
+                                        @else
+                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">
+                                                {{ __('Disabled') }}
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="table-td">
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            <a href="{{ route('admin.ib-form.edit',$question->id) }}"
+                                                class="action-btn">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </a>
+                                            <button type="button" data-id="{{ $question->id }}"
+                                                    data-name="{{ $question->name }}"
+                                                    class="action-btn deleteKyc">
+                                                <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="site-table table-responsive">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">{{ __('Verification Name') }}</th>
-                                        <th scope="col">{{ __('Status') }}</th>
-                                        <th scope="col">{{ __('Action') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($questions as $question)
-                                        <tr>
-                                            <td>
-                                                <strong>{{ $question->name }}</strong>
-                                            </td>
-                                            <td>
-                                                @if( $question->status)
-                                                    <div class="site-badge success">{{ __('Active') }}</div>
-                                                @else
-                                                    <div class="site-badge pending">{{ __('Disabled') }}</div>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('admin.ib-form.edit',$question->id) }}"
-                                                   class="round-icon-btn primary-btn">
-                                                    <i icon-name="edit-3"></i>
-                                                </a>
-                                                <button type="button" data-id="{{ $question->id }}"
-                                                        data-name="{{ $question->name }}"
-                                                        class="round-icon-btn red-btn deleteKyc">
-                                                    <i icon-name="trash-2"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Modal for Delete deleteKycType -->
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+        id="deleteKyc"
+        tabindex="-1"
+        aria-labelledby="deleteKyc"
+        aria-hidden="true"
+    >
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-6 py-8 text-center space-y-5">
+                <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                    <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal for Delete deleteKycType -->
-        <div
-            class="modal fade"
-            id="deleteKyc"
-            tabindex="-1"
-            aria-labelledby="deleteKycTypeModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-md modal-dialog-centered">
-                <div class="modal-content site-table-modal">
-                    <div class="modal-body popup-body">
-                        <button
-                            type="button"
+                <div class="title">
+                    <h4 class="text-xl font-medium dark:text-white capitalize">
+                        {{ __('Are you sure?') }}
+                    </h4>
+                </div>
+                <p>
+                    {{ __('You want to Delete') }} 
+                    <strong class="name"></strong> {{ __('IB Verification Type?') }}
+                </p>
+                <form method="post" id="kycEditForm">
+                    @method('DELETE')
+                    @csrf
+                    <div class="action-btns">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __(' Confirm') }}
+                        </button>
+                        <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button"
                             class="btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
-                        <div class="popup-body-text centered">
-                            <form method="post" id="kycEditForm">
-                                @method('DELETE')
-                                @csrf
-                                <div class="info-icon">
-                                    <i icon-name="alert-triangle"></i>
-                                </div>
-                                <div class="title">
-                                    <h4>{{ __('Are you sure?') }}</h4>
-                                </div>
-                                <p>
-                                    {{ __('You want to Delete') }} <strong
-                                        class="name"></strong> {{ __('IB Verification Type?') }}
-                                </p>
-                                <div class="action-btns">
-                                    <button type="submit" class="site-btn-sm primary-btn me-2">
-                                        <i icon-name="check"></i>
-                                        {{ __(' Confirm') }}
-                                    </button>
-                                    <a href="" class="site-btn-sm red-btn" type="button"
-                                       class="btn-close"
-                                       data-bs-dismiss="modal"
-                                       aria-label="Close">
-                                        <i icon-name="x"></i>
-                                        {{ __('Cancel') }}
-                                    </a>
-                                </div>
-                            </form>
-
-                        </div>
+                            aria-label="Close">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Cancel') }}
+                        </a>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-        <!-- Modal for Delete deleteKycType-->
     </div>
+    <!-- Modal for Delete deleteKycType-->
 @endsection
 @section('script')
     <script>

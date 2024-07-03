@@ -1,144 +1,157 @@
-<div
-    class="modal fade"
-    id="editRanking"
-    tabindex="-1"
-    aria-labelledby="editRankingModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content site-table-modal">
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editRanking" tabindex="-1" aria-labelledby="editRanking" aria-hidden="true">
+    <div class="modal-dialog relative max-w-3xl pointer-events-none">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <form id="rankingEditForm" method="post" enctype="multipart/form-data">
-                    @method('PUT')
-                    @csrf
-                    <div class="popup-body-text">
-                        <h3 class="title mb-4">{{ __('Edit Ranking') }}</h3>
-                        <div class="site-input-groups">
-                            <label class="box-input-label" for="">{{ __('Ranking Icon:') }}</label>
-                            <div class="wrap-custom-file">
-                                <input type="file" name="icon" id="image6" accept=".gif, .jpg, .png"/>
-                                <label for="image6" id="image-old">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt=""/>
-                                    <span>{{ __('Update Icon') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="site-input-groups row mb-0">
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Ranking:') }}</label>
-                                    <input type="text" name="ranking" class="box-input mb-0 ranking" required=""/>
+                <div class="flex items-center justify-between p-5">
+                    <h3 class="text-xl font-medium dark:text-white capitalize">
+                        {{ __('Edit Ranking') }}
+                    </h3>
+                    <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center
+                                dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10
+                                    11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <div class="p-6 pt-0">
+                    <form id="rankingEditForm" method="post" enctype="multipart/form-data">
+                        @method('PUT')
+                        @csrf
+                        <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+                            <div class="col-span-2">
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Ranking Icon:') }}</label>
+                                    <div class="wrap-custom-file">
+                                        <input type="file" name="icon" id="image6" accept=".gif, .jpg, .png"/>
+                                        <label for="image6" id="image-old">
+                                            <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt=""/>
+                                            <span>{{ __('Update Icon') }}</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Ranking Name:') }}</label>
-                                    <input type="text" name="ranking_name" class="box-input mb-0 ranking-name" required=""/>
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Ranking:') }}</label>
+                                    <input type="text" name="ranking" class="form-control mb-0 ranking" required=""/>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="site-input-groups row mb-0">
-                            <div class="col-xl-6">
-                               <div class="site-input-groups">
-                            <label for="" class="box-input-label">{{ __('Minimum Deposit:') }}</label>
-                            <div class="input-group joint-input">
-                                <input type="text" class="form-control minimum-deposit" name="minimum_deposit" oninput="this.value = validateDouble(this.value)">
-                                <span class="input-group-text">{{ setting('site_currency','global') }}</span>
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Ranking Name:') }}</label>
+                                    <input type="text" name="ranking_name" class="form-control mb-0 ranking-name" required=""/>
+                                </div>
                             </div>
-                        </div>
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Minimum Deposit:') }}</label>
+                                    <div class="joint-input relative">
+                                        <input type="text" class="form-control minimum-deposit" name="minimum_deposit" oninput="this.value = validateDouble(this.value)">
+                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                            {{ setting('site_currency','global') }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                            <label for="" class="box-input-label">{{ __('Minimum Invest:') }}</label>
-                            <div class="input-group joint-input">
-                                <input type="text" class="form-control minimum-invest" name="minimum_invest" oninput="this.value = validateDouble(this.value)">
-                                <span class="input-group-text">{{ setting('site_currency','global') }}</span>
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Minimum Invest:') }}</label>
+                                    <div class="joint-input relative">
+                                        <input type="text" class="form-control minimum-invest" name="minimum_invest" oninput="this.value = validateDouble(this.value)">
+                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                            {{ setting('site_currency','global') }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                            </div>
-                        </div>
-
-                        <div class="site-input-groups row mb-0">
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Minimum Referral:') }}</label>
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Minimum Referral:') }}</label>
                                     <input type="text" name="minimum_referral" value="{{ old('minimum_referral') }}" oninput="this.value = validateDouble(this.value)"
-                                           class="box-input minimum-referral mb-0 " placeholder="Minimum Referral" required=""/>
+                                        class="form-control minimum-referral mb-0 " placeholder="Minimum Referral" required=""/>
                                 </div>
                             </div>
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Minimum Referral Deposit:') }}</label>
-                                    <div class="input-group joint-input">
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Minimum Referral Deposit:') }}</label>
+                                    <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-referral-deposit" name="minimum_referral_deposit" oninput="this.value = validateDouble(this.value)">
-                                        <span class="input-group-text">{{ setting('site_currency','global') }}</span>
+                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                            {{ setting('site_currency','global') }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="site-input-groups row mb-0">
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Minimum Referral Invest:') }}</label>
-                                    <div class="input-group joint-input">
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Minimum Referral Invest:') }}</label>
+                                    <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-referral-invest" name="minimum_referral_invest" oninput="this.value = validateDouble(this.value)">
-                                        <span class="input-group-text">{{ setting('site_currency','global') }}</span>
+                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                            {{ setting('site_currency','global') }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-6">
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Minimum Earning:') }}</label>
-                                    <div class="input-group joint-input">
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Minimum Earning:') }}</label>
+                                    <div class="joint-input relative">
                                         <input type="text" class="form-control minimum-earnings" name="minimum_earnings" oninput="this.value = validateDouble(this.value)">
-                                        <span class="input-group-text">{{ setting('site_currency','global') }}</span>
+                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                            {{ setting('site_currency','global') }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="site-input-groups">
-                            <label for="" class="box-input-label">{{ __('Bonus:') }}</label>
-                            <div class="input-group joint-input">
-                                <input type="text" class="form-control bonus" name="bonus" oninput="this.value = validateDouble(this.value)">
-                                <span class="input-group-text">{{ setting('site_currency','global') }}</span>
+                            <div class="col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Bonus:') }}</label>
+                                    <div class="joint-input relative">
+                                        <input type="text" class="form-control bonus" name="bonus" oninput="this.value = validateDouble(this.value)">
+                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                            {{ setting('site_currency','global') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-2">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Description:') }}</label>
+                                    <textarea name="description" class="form-control description" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <div class="md:col-span-1 col-span-2">
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Status:') }}</label>
+                                    <div class="switch-field flex overflow-hidden">
+                                        <input type="radio" id="activeStatus" name="status" value="1">
+                                        <label for="activeStatus">{{ __('Active') }}</label>
+                                        <input type="radio" id="disableStatus" name="status" value="0">
+                                        <label for="disableStatus">{{ __('Disabled') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 action-btns text-right">
+                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Save Changes') }}
+                                </button>
+                                <a
+                                    href="#"
+                                    class="btn btn-danger inline-flex items-center justify-center"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                >
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Close') }}
+                                </a>
                             </div>
                         </div>
-
-                        <div class="site-input-groups mb-0">
-                            <label for="" class="box-input-label">{{ __('Description:') }}</label>
-                            <textarea name="description" class="form-textarea description"></textarea>
-                        </div>
-                        <div class="site-input-groups mb-0">
-                            <label class="box-input-label" for="">{{ __('Status:') }}</label>
-                            <div class="switch-field">
-                                <input type="radio" id="activeStatus" name="status" value="1">
-                                <label for="activeStatus">{{ __('Active') }}</label>
-                                <input type="radio" id="disableStatus" name="status" value="0">
-                                <label for="disableStatus">{{ __('Disabled') }}</label>
-                            </div>
-                        </div>
-
-                        <div class="action-btns">
-                            <button type="submit" class="site-btn-sm primary-btn me-2">
-                                <i icon-name="check"></i>
-                                {{ __('Save Changes') }}
-                            </button>
-                            <a
-                                href="#"
-                                class="site-btn-sm red-btn"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            >
-                                <i icon-name="x"></i>
-                                {{ __('Close') }}
-                            </a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -3,80 +3,69 @@
     {{ __('Manage Schema') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('All IB Account Type') }}</h2>
-                            @can('schema-create')
-                                <a href="{{route('admin.ibAccountType.create')}}" class="title-btn"><i
-                                        icon-name="plus-circle"></i>{{ __('Add New') }}</a>
-                            @endcan
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header noborder">
+            <h4 class="card-title">{{ __('All IB Account Type') }}</h4>
+            @can('schema-create')
+                <a href="{{route('admin.ibAccountType.create')}}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
+                    {{ __('Add New') }}
+                </a>
+            @endcan
         </div>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="site-table table-responsive">
-                                <table class="table">
-                                    <thead>
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Group') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Badge') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                @foreach($schemas as $schema)
                                     <tr>
-                                        <th scope="col">{{ __('Title') }}</th>
-                                        <th scope="col">{{ __('Group') }}</th>
-                                        <th scope="col">{{ __('Badge') }}</th>
-                                        <th scope="col">{{ __('Status') }}</th>
-                                        <th scope="col">{{ __('Action') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($schemas as $schema)
-                                        <tr>
-                                            <td><strong>{{$schema->title}}</strong></td>
-                                            <td>
-                                                <strong>{{$schema->group}}</strong>
-                                            </td>
+                                        <td class="table-td">
+                                            {{$schema->title}}
+                                        </td>
+                                        <td class="table-td">
+                                            {{$schema->group}}
+                                        </td>
 
-                                            <td>
-                                                <div @class([
-                                                'site-badge', // common classes
-                                                'success' => $schema->badge,
-                                                'pending' => !$schema->badge
-                                                ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
-                                            </td>
-                                            <td>
-                                                <div @class([
-                                                'site-badge', // common classes
-                                                'success' => $schema->status,
-                                                'danger' => !$schema->status
-                                                ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
-                                            </td>
-                                            <td>
-                                                @can('schema-edit')
-                                                    <a href="{{route('admin.ibAccountType.edit',$schema->id)}}"
-                                                       class="round-icon-btn primary-btn">
-                                                        <i icon-name="edit-3"></i>
-                                                    </a>
-                                                @endcan
+                                        <td class="table-td">
+                                            <div @class([
+                                            'badge bg-opacity-30 capitalize', // common classes
+                                            'bg-success-500 text-success-500' => $schema->badge,
+                                            'bg-warning-500 text-warning-500' => !$schema->badge
+                                            ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
+                                        </td>
+                                        <td class="table-td">
+                                            <div @class([
+                                            'badge bg-opacity-30 capitalize', // common classes
+                                            'bg-success-500 text-success-500' => $schema->status,
+                                            'bg-danger-500 text-danger-500' => !$schema->status
+                                            ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
+                                        </td>
+                                        <td class="table-td">
+                                            @can('schema-edit')
+                                                <a href="{{route('admin.ibAccountType.edit',$schema->id)}}" class="action-btn">
+                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                </a>
+                                            @endcan
 
-                                            </td>
+                                        </td>
                                     </tr>
-                            @endforeach
+                                @endforeach
                             </tbody>
-                            </table>
-                        </div>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
     </div>
 @endsection

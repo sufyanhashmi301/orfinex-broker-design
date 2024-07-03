@@ -12,50 +12,42 @@
     $fields = config('setting.platform_links');
     //   dd($fields);
     ?>
-    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
-        <div class="site-card">
-            <div class="site-card-header">
-                <h3 class="title">{{ __($fields['title']) }}</h3>
-            </div>
-            <div class="site-card-body">
-                @include('backend.setting.site_setting.include.form.__open_action')
-                    <div class="site-input-groups row gy-3">
-                        @foreach($fields['elements']  as $key => $field)
-                            @if($field['type'] == 'checkbox')
-                                <div class="col-sm-3">
-                                    <div class="form-switch ps-0">
-                                        <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
-                                        <div class="switch-field same-type m-0">
-                                            <input
-                                                type="radio"
-                                                id="{{$field['name'], $key}}"
-                                                name="{{$field['name']}}"
-                                                value="1"
-                                                @if(oldSetting($field['name'],$section)) checked @endif
-                                            />
-                                            <label for="{{$field['name'], $key}}">{{ __('Enable') }}</label>
-                                            <input
-                                                type="radio"
-                                                id="disable-{{$field['name'], $key}}"
-                                                name="{{$field['name']}}"
-                                                value="0"
-                                                @if(!oldSetting($field['name'],$section)) checked @endif
-                                            />
-                                            <label for="disable-{{$field['name'], $key}}">{{ __('Disabled') }}</label>
-                                        </div>
-
-                                    </div>
+    <div class="card">
+        <div class="card-body p-6">
+            @include('backend.setting.site_setting.include.form.__open_action')
+                <div class="grid grid-cols-1 md:grid-cols-2 items-end gap-5">
+                    @foreach($fields['elements']  as $key => $field)
+                    <div class="input-area relative">
+                        @if($field['type'] == 'checkbox')
+                            <div class="">
+                                <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
+                                <div class="switch-field flex overflow-hidden same-type m-0">
+                                    <input
+                                        type="radio"
+                                        id="{{$field['name'], $key}}"
+                                        name="{{$field['name']}}"
+                                        value="1"
+                                        @if(oldSetting($field['name'],$section)) checked @endif
+                                    />
+                                    <label for="{{$field['name'], $key}}">{{ __('Enable') }}</label>
+                                    <input
+                                        type="radio"
+                                        id="disable-{{$field['name'], $key}}"
+                                        name="{{$field['name']}}"
+                                        value="0"
+                                        @if(!oldSetting($field['name'],$section)) checked @endif
+                                    />
+                                    <label for="disable-{{$field['name'], $key}}">{{ __('Disabled') }}</label>
                                 </div>
-                            @else
-                                <div class="col-sm-3 col-label">{{ __($field['label']) }}</div>
-                                <div class="col-sm-6">
-                                    <input type="{{$field['type']}}" name="{{ $field['name'] }}" class="box-input @if($errors->has($field['name'])) has-error @endif" placeholder="URL" value="{{oldSetting($field['name'],$section)}}" >
-                                </div>
-                            @endif
-                        @endforeach
+                            </div>
+                        @else
+                            <label for="" class="form-label">{{ __($field['label']) }}</label>
+                            <input type="{{$field['type']}}" name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" placeholder="URL" value="{{oldSetting($field['name'],$section)}}" >
+                        @endif
                     </div>
-                @include('backend.setting.site_setting.include.form.__close_action')
-            </div>
+                    @endforeach
+                </div>
+            @include('backend.setting.site_setting.include.form.__close_action')
         </div>
     </div>
 @endsection

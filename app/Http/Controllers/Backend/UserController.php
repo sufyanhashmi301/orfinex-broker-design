@@ -82,7 +82,7 @@ class UserController extends Controller
                 ->make(true);
         }
 
-        return view('backend.user.index');
+        return view('backend.user.all');
     }
 
     /**

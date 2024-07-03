@@ -3,43 +3,31 @@
     {{ __('Application Details') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Application Details') }}</h2>
-                        </div>
-                    </div>
-                </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('Application Details') }}</h4>
             </div>
-        </div>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="site-table table-responsive mb-0">
-                                <table class="table mb-0">
-                                    <tbody>
-                                    @foreach($applicationInfo as $key => $value)
-                                        <tr>
-                                            <td>
-                                                <strong>{{  $key }}</strong>
-                                            </td>
-                                            <td><strong class="site-badge primary">{{ $value }}</strong></td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+            <div class="card-body p-6">
+                <ul class="divide-y divide-slate-100 dark:divide-slate-700">
+                    @foreach($applicationInfo as $key => $value)
+                        <li class="block py-[8px]">
+                            <div class="flex space-x-2 rtl:space-x-reverse">
+                                <div class="flex-1 flex space-x-2 rtl:space-x-reverse">
+                                    <span class="block text-slate-600 text-sm dark:text-slate-300">
+                                        {{  $key }}
+                                    </span>
+                                </div>
+                                <div class="flex-none">
+                                    <span class="badge bg-slate-900 text-white capitalize">
+                                        {{ $value }}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         </div>
     </div>
 @endsection
-

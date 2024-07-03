@@ -1,26 +1,27 @@
-<div class="col-xl-6 col-lg-12 col-md-12 col-12">
-    <div class="site-card">
-        <div class="site-card-header">
-            <h3 class="title">{{ __($fields['title']) }}</h3>
+<div class="col-span-6">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __($fields['title']) }}</h4>
         </div>
-        <div class="site-card-body">
+        <div class="card-body p-6">
 
-            <p class="paragraph mb-4"><i icon-name="alert-triangle"></i><strong>Warning:</strong> Once you <strong>Enable</strong>
+            <p class="paragraph text-xs mb-4"><iconify-icon class="mr-1" icon="lucide:alert-triangle"></iconify-icon><strong>Warning:</strong> Once you <strong>Enable</strong>
                 the <strong>Maintenance Mode</strong> then you need to remember the <strong>Secret Key</strong> to turn
                 back the website.</p>
 
             @include('backend.setting.site_setting.include.form.__open_action')
             @foreach($fields['elements'] as $key => $field)
                 @if($field['type'] == 'checkbox')
-                    <div class="site-input-groups row">
-                        <div class="col-sm-4 col-label pt-0">{{ __($field['label']) }}
-                            <i icon-name="info" data-bs-toggle="tooltip" title=""
-                            data-bs-original-title="Do not enable it unless you want the site need to be under Maintenance"></i>
+                    <div class="input-area grid grid-cols-12 gap-5 mb-5">
+                        <div class="lg:col-span-4 col-span-12 form-label pt-0">
+                            {{ __($field['label']) }}
+                            <iconify-icon class="toolTip onTop" icon="lucide:info" data-tippy-theme="dark" title=""
+                            data-tippy-content="Do not enable it unless you want the site need to be under Maintenance"></iconify-icon>
                         </div>
-                        <div class="col-sm-8">
+                        <div class="lg:col-span-8 col-span-12">
                             <div class="form-switch ps-0">
                                 <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
-                                <div class="switch-field same-type m-0">
+                                <div class="switch-field flex overflow-hidden same-type m-0">
                                     <input
                                         type="radio"
                                         id="{{$field['name'], $key}}"
@@ -43,25 +44,26 @@
                         </div>
                     </div>
                 @elseif($field['type'] == 'textarea')
-                    <div class="site-input-groups row">
-                        <div class="col-sm-4 col-label">{{ __($field['label']) }}</div>
-                        <div class="col-sm-8">
-                            <textarea name="{{ $field['name'] }}"
-                                      class="form-textarea  @if($errors->has($field['name'])) has-error @endif">{{oldSetting($field['name'],$section)}}</textarea>
+                    <div class="input-area grid grid-cols-12 gap-5 mb-5">
+                        <div class="lg:col-span-4 col-span-12 form-label pt-0">{{ __($field['label']) }}</div>
+                        <div class="lg:col-span-8 col-span-12">
+                            <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
+                                {{oldSetting($field['name'],$section)}}
+                            </textarea>
                         </div>
                     </div>
 
                 @else
-                    <div class="site-input-groups row">
-                        <div class="col-sm-4 col-label">{{ __($field['label']) }}
+                    <div class="input-area grid grid-cols-12 gap-5 mb-5">
+                        <div class="lg:col-span-4 col-span-12 form-label pt-0">{{ __($field['label']) }}
                             @if($field['name'] == 'secret_key')
-                                <i icon-name="info" data-bs-toggle="tooltip" title=""
-                                   data-bs-original-title="Remember the Secret Key. Use domain/secret-key to trun back the website live"></i>
+                                <iconify-icon class="toolTip onTop" icon="lucide:info" data-tippy-theme="dark" title=""
+                                   data-tippy-content="Remember the Secret Key. Use domain/secret-key to trun back the website live"></iconify-icon>
                             @endif
                         </div>
-                        <div class="col-sm-8">
+                        <div class="lg:col-span-8 col-span-12">
                             <input type="{{$field['type']}}" name="{{ $field['name'] }}"
-                                   class="box-input @if($errors->has($field['name'])) has-error @endif"
+                                   class="form-control @if($errors->has($field['name'])) has-error @endif"
                                    placeholder="Label" value="{{oldSetting($field['name'],$section)}}" required="">
                         </div>
                     </div>

@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Models\WithdrawAccount;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
+use App\Rules\ForexLoginBelongsToUser;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -23,6 +24,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Session;
 use Txn;
 use Validator;
@@ -94,12 +96,7 @@ class WithdrawController extends Controller
      */
     public function create()
     {
-        $withdrawMethods = WithdrawMethod::where('status', true)
-            ->where(function($query) {
-                $query->whereJsonContains('country', auth()->user()->country)
-                    ->orWhereJsonContains('country', 'All');
-            })->get();
-
+        $withdrawMethods = WithdrawMethod::where('status', true)->get();
 
         return view('frontend::withdraw.account.create', compact('withdrawMethods'));
     }
@@ -112,10 +109,7 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::where(function($query) {
-            $query->whereJsonContains('country', auth()->user()->country)
-                ->orWhereJsonContains('country', 'All');
-        })->get();
+        $withdrawMethods = WithdrawMethod::all();
         $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
         if($withdrawAccount){
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
@@ -236,10 +230,8 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
 
-
 //        notify()->error(__('Withdrawals are currently disabled for a short period. We apologize for any inconvenience and will be back soon'), 'Error');
 //        return redirect()->back();
-
         if (!setting('user_withdraw', 'permission') || !\Auth::user()->withdraw_status) {
             abort('403', __('Withdraw Disable Now'));
         }
@@ -254,12 +246,13 @@ class WithdrawController extends Controller
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
-            'target_id' => 'required',
-            'withdraw_account' => 'required',
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
+            'withdraw_account' => ['required'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
         ],[
-            'target_id.required'=> __('Kindly select the forex account to withdraw')
+            'target_id.required'=> __('Kindly select the forex account to withdraw'),
+//            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
         ]);
 
         if ($validator->fails()) {
@@ -321,10 +314,6 @@ class WithdrawController extends Controller
         $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
         if($withdrawResponse){
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
-
-            //update Balance & Equity of mt5 DB with new updated balance
-            $balance = $this->getForexAccountBalance($targetId);
-            mt5_update_balance($targetId,$balance);
         }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
             return redirect()->back();
@@ -355,7 +344,7 @@ class WithdrawController extends Controller
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
         ];
-
+        $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
         $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id);
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);

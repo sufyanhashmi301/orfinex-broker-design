@@ -8,11 +8,15 @@ use App\Enums\TxnType;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
 use App\Models\Transaction;
+use App\Rules\ForexLoginBelongsToUser;
+use App\Rules\ForexLoginBelongsToUserForDemo;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Carbon\Carbon;
+
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Txn;
 use Validator;
 
@@ -31,10 +35,10 @@ class DepositController extends GatewayController
         $isStepTwo = '';
         $gateways = DepositMethod::where('status', 1)->get();
 
-//        $clientIp = request()->ip();
-//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        $clientIp = request()->ip();
+        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
+            $this->syncForexAccounts(auth()->id());
+        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -55,11 +59,13 @@ class DepositController extends GatewayController
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => 'required',
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [
-            'target_id.required' => __('Kindly select Forex Account for deposit')
+            'target_id.required' => __('Kindly select Forex Account for deposit'),
+            'target_id.exists' => 'The selected forex account does not exist or is not of type real.',
+
         ]);
 
         if ($validator->fails()) {
@@ -102,6 +108,7 @@ class DepositController extends GatewayController
             }
         }
 //        dd('ss');
+
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;
         $payAmount = $finalAmount * $gatewayInfo->rate;
@@ -125,7 +132,20 @@ class DepositController extends GatewayController
 //        $targetId = '1063794';
 //        $targetType = 'forex_deposit';
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Deposit With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+        if($gatewayInfo->type == 'manual'){
+            $shortcodes = [
+                '[[full_name]]' => $txnInfo->user->full_name,
+                '[[txn]]' => $txnInfo->tnx,
+                '[[gateway_name]]' => $txnInfo->method,
+                '[[deposit_amount]]' => $txnInfo->amount,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[message]]' => $txnInfo->approval_cause,
+                '[[status]]' =>  'Pending',
+            ];
+            $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
 
+        }
         return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 
     }
@@ -134,12 +154,15 @@ class DepositController extends GatewayController
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');
         }
-
         $request->validate([
-            'target_id' => 'required|integer',
+            'target_id' => ['required','integer', new ForexLoginBelongsToUserForDemo,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'demo');
+                })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/','numeric','min:1','max:100000'],
         ], [
-            'target_id.required' => __('Kindly select Forex Account for deposit')
+            'target_id.required' => __('Kindly select Forex Account for deposit'),
+            'target_id.exists' => 'The selected forex account does not exist or is not of type demo.',
         ]);
 
         $input = $request->all();
@@ -154,7 +177,7 @@ class DepositController extends GatewayController
 //        dd($input);
         $targetId = $input['target_id'];
         $targetType = 'forex_deposit_demo';
-        $forexAccount = ForexAccount::where('login', $targetId)->first();
+
         $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
            $isValid =  $this->isValidForexAccount($targetId);

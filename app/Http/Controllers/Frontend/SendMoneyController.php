@@ -61,10 +61,7 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
             'receiver_account' => ['required','integer', 'different:target_id',
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'real');
@@ -242,10 +239,7 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
             'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser,
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'real');

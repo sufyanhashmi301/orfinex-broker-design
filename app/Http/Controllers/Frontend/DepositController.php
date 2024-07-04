@@ -9,6 +9,7 @@ use App\Models\DepositMethod;
 use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
+use App\Rules\ForexLoginBelongsToUserForDemo;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -58,10 +59,7 @@ class DepositController extends GatewayController
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [
@@ -144,7 +142,7 @@ class DepositController extends GatewayController
             abort('403', 'Deposit Disable Now');
         }
         $request->validate([
-            'target_id' => ['required','integer', new ForexLoginBelongsToUser,
+            'target_id' => ['required','integer', new ForexLoginBelongsToUserForDemo,
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'demo');
                 })],
@@ -166,7 +164,7 @@ class DepositController extends GatewayController
 //        dd($input);
         $targetId = $input['target_id'];
         $targetType = 'forex_deposit_demo';
-   
+
         $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
            $isValid =  $this->isValidForexAccount($targetId);

@@ -14,6 +14,7 @@ use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Session;
 use Txn;
 use Validator;
@@ -59,8 +60,11 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required', 'different:receiver_account'],
-            'receiver_account' => ['required', 'different:target_id'],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
+            'receiver_account' => ['required','integer', 'different:target_id',
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
             'target_id.required' => __('Kindly select the sender account to transfer'),
@@ -224,8 +228,11 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required', 'different:receiver_account'],
-            'receiver_account' => ['required', 'different:target_id'],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
+            'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser,
+                Rule::exists('forex_accounts', 'login')->where(function ($query) {
+                    $query->where('account_type', 'real');
+                })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
             'target_id.required' => __('Kindly select the account from to transfer'),

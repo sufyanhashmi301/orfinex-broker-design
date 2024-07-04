@@ -17,6 +17,7 @@ use App\Models\Schema;
 use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
+use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -252,7 +253,7 @@ class ForexAccountController extends GatewayController
     {
 //        dd($request->all());
         $request->validate([
-            'login' => ['required', 'integer', new ForexLoginBelongsToUser],
+            'login' => ['required','integer', new ForexLoginBelongsToUserGeneral],
             'leverage' => 'sometimes|nullable|numeric|gt:0',
 //            'password' => 'sometimes|nullable|'.Password::min(8)->mixedCase(),
             'main_password' => ['sometimes',

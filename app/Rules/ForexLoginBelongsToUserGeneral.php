@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
-class ForexLoginBelongsToUser implements Rule
+class ForexLoginBelongsToUserGeneral implements Rule
 {
     protected $loginValue;
 
@@ -36,14 +36,8 @@ class ForexLoginBelongsToUser implements Rule
         // Check if a forex account with the given login exists and belongs to the authenticated user
         $forexAccount = ForexAccount::where('login', $value)
             ->where('user_id', $user->id)
-            ->where('account_type', 'real')
             ->exists();
-        $ibAndMIB = User::where('id', $user->id)
-                     ->where(function ($query) use ($value) {
-                        $query->where('ib_login', $value)
-                            ->orWhere('multi_ib_login', $value);
-                        })->exists();
-        if ($forexAccount || $ibAndMIB) {
+        if ($forexAccount) {
             $status = true;
         }
 

@@ -210,7 +210,8 @@ class ForexAccountController extends GatewayController
         $data = [
             'login' => 600952
         ];
-        dd( $this->forexApiService->getUserByLogin($data));
+        $response = $this->forexApiService->getBalance($data);
+        dd($response);
         dd($this->getUserInfoApi(88876));
 //        $this->getPositionList(9996792);
 //        $this->getPositionListGroup(9996792);

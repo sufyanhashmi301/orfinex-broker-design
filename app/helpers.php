@@ -118,6 +118,31 @@ if (!function_exists('getCountries')) {
         return $filteredCountries;
     }
 }
+if (!function_exists('getCountryCode')) {
+
+    function getCountryCode($countryName)
+    {
+        // Path to the JSON file
+        $filePath = resource_path('json/CountryCodes.json');
+
+        // Read the file contents
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $jsonContents = file_get_contents($filePath);
+        $countries = json_decode($jsonContents, true);
+
+        // Iterate through the array and find the country code
+        foreach ($countries as $country) {
+            if (strcasecmp($country['name'], $countryName) == 0) {
+                return $country['code'];
+            }
+        }
+
+        return null; // Return null if the country is not found
+    }
+}
 
 if (!function_exists('getJsonData')) {
 

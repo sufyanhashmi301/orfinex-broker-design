@@ -40,10 +40,10 @@ class DepositController extends GatewayController
         $isStepTwo = '';
         $gateways = DepositMethod::where('status', 1)->get();
 
-        $clientIp = request()->ip();
-        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-            $this->syncForexAccounts(auth()->id());
-        }
+//        $clientIp = request()->ip();
+//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
+//            $this->syncForexAccounts(auth()->id());
+//        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -190,11 +190,15 @@ class DepositController extends GatewayController
 
         $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-           $isValid =  $this->isValidForexAccount($targetId);
 //           dd($isValid);
-        if(!$isValid){
-               return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
-           }
+        $response = $this->forexApiService->getUserByLogin([
+            'login' => $targetId
+        ]);
+        if(!$response['success']){
+            return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
+
+        }
+
 //        }
         $charge = 0;
         $finalAmount = (float)$amount + (float)$charge;

@@ -293,11 +293,16 @@ function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 
         $referrer->profit_balance += $amount;
         $referrer->save();
 
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = new ForexApiService();
         $comment = 'referral-bonus' . '/' . substr($transaction->tnx, -7);
-        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
+        $data = [
+            'login' => $user->multi_ib_login,
+            'Amount' => $amount,
+            'type' => 1,//deposit
+            'TransactionComments' => $comment
+        ];
+        $forexApiService->balanceOperation($data);
+//        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
         creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
@@ -328,9 +333,16 @@ function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = 
 
             $referrer->multi_ib_balance += $amount;
             $referrer->save();
-
+            $forexApiService = new ForexApiService();
             $comment = 'MIB' . '/' . $IBTransaction->client_no . '/' . $IBTransaction->trade_id;
-            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
+            $data = [
+                'login' => $user->multi_ib_login,
+                'Amount' => $amount,
+                'type' => 1,//deposit
+                'TransactionComments' => $comment
+            ];
+            $forexApiService->balanceOperation($data);
+//            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
         }
         creditMultiIbBonus($IBTransaction, $referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }

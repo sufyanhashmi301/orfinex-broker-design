@@ -10,11 +10,11 @@ use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Rules\ForexLoginBelongsToUserForDemo;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Txn;
@@ -23,7 +23,12 @@ use Validator;
 class DepositController extends GatewayController
 {
     use ImageUpload, NotifyTrait, ForexApiTrait;
+    protected $forexApiService;
 
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
     public function deposit()
     {
 
@@ -94,7 +99,13 @@ class DepositController extends GatewayController
 //        $targetId = 124234234;
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->isValidForexAccount($targetId);
+            $response = $this->forexApiService->getUserByLogin([
+                'login' => $targetId
+            ]);
+            if(!$response['success']){
+                notify()->error(__('Sorry,Your deposited account is Not valid!'), 'Error');
+                return redirect()->back();
+            }
         }
 
         if (isset($forexAccount->schema->first_min_deposit) & $forexAccount->schema->first_min_deposit > 0) {
@@ -108,7 +119,6 @@ class DepositController extends GatewayController
             }
         }
 //        dd('ss');
-
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;
         $payAmount = $finalAmount * $gatewayInfo->rate;
@@ -193,9 +203,14 @@ class DepositController extends GatewayController
 
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, 'USD', $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
         $comment = 'demo/deposit/'.substr($txnInfo->tnx, -7);
-
-        $depositResponse = $this->forexDeposit($targetId, $finalAmount,$comment);
-        if($depositResponse){
+        $data = [
+            'login' => $targetId,
+            'Amount' => $finalAmount,
+            'type' => 1,//deposit
+            'TransactionComments' => $comment
+        ];
+        $depositResponse = $this->forexApiService->balanceOperationDemo($data);
+        if ($depositResponse['success']) {
             Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, 'System');
             return response()->json(['success' => __('Successfully Deposited.'), 'reload' => true]);
         } else {

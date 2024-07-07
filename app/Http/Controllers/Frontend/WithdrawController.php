@@ -12,6 +12,7 @@ use App\Models\WithdrawAccount;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
 use App\Rules\ForexLoginBelongsToUser;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -32,7 +33,12 @@ use Validator;
 class WithdrawController extends Controller
 {
     use ImageUpload, NotifyTrait, Payment, ForexApiTrait;
+    protected $forexApiService;
 
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -293,8 +299,9 @@ class WithdrawController extends Controller
 
         $targetId = $input['target_id'];
 
-        $balance = $this->getForexAccountBalance($targetId);
-
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $targetId
+        ]);
         if ($totalAmount->compareTo($balance) > 0) {
             notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
             return redirect()->back();
@@ -311,8 +318,15 @@ class WithdrawController extends Controller
 
 
         $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -7);
-        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
-        if($withdrawResponse){
+        $data = [
+            'login' => $targetId,
+            'Amount' => $totalAmount,
+            'type' => 2,//withdraw
+            'TransactionComments' => $comment
+        ];
+        $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
+        if($withdrawResponse['success']){
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
         }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');

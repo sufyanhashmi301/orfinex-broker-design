@@ -5,6 +5,7 @@ namespace Payment\Transaction;
 class BaseTxn
 {
     protected float $amount;
+
     protected float $final_amount;
 
     protected string $currency;
@@ -13,9 +14,18 @@ class BaseTxn
 
     protected string $siteName;
 
+    protected string $firstName;
+
+    protected string $lastName;
+
     protected string $userName;
 
     protected string $userEmail;
+
+    protected string $userCountryCode;
+
+    protected string $userCity;
+    protected string $userAddress;
 
     protected string $userPhone;
 
@@ -27,8 +37,13 @@ class BaseTxn
         $this->currency = $txnInfo->pay_currency;
         $this->txn = $txnInfo->tnx;
         $this->siteName = setting('site_title', 'global');
+        $this->firstName = $txnInfo->user->first_name;
+        $this->lastName = $txnInfo->user->last_name;
         $this->userName = $txnInfo->user->full_name;
         $this->userEmail = $txnInfo->user->email;
+        $this->userCountryCode = getCountryCode($txnInfo->user->country) ? getCountryCode($txnInfo->user->country):'AE';
+        $this->userCity = $txnInfo->user->city;
+        $this->userAddress = $txnInfo->user->address;
         $this->userPhone = $txnInfo->user->phone;
         $this->userId = $txnInfo->user->id;
     }

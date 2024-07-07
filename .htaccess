@@ -2,16 +2,26 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
-	<Files .env>
-       Order allow,deny
-       Deny from all
-    </Files>
-   
-    <Files laravel.log>
-       Order allow,deny
-       Deny from all
+
+    <Files .env>
+       <IfModule !mod_authz_core.c>
+           Order allow,deny
+           Deny from all
+       </IfModule>
+       <IfModule mod_authz_core.c>
+           Require all denied
+       </IfModule>
     </Files>
 
+    <Files laravel.log>
+       <IfModule !mod_authz_core.c>
+           Order allow,deny
+           Deny from all
+       </IfModule>
+       <IfModule mod_authz_core.c>
+           Require all denied
+       </IfModule>
+    </Files>
 
     RewriteEngine On
 

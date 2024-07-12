@@ -14,6 +14,7 @@ use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
+use Brick\Math\BigDecimal;
 use DataTables;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -309,10 +310,31 @@ class WithdrawController extends Controller
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
         $user = User::find($transaction->user_id);
-
+//dd($input);
         if (isset($input['approve'])) {
+            $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $transaction->target_id
+        ]);
+            $totalAmount = BigDecimal::of($transaction->amount);
+        if ($totalAmount->compareTo($balance) > 0) {
+            notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+            return redirect()->back();
+        }
+            $comment = $transaction->method.'/'.substr($transaction->tnx, -7);
+        $data = [
+            'login' => $transaction->target_id,
+            'Amount' => $totalAmount,
+            'type' => 2,//withdraw
+            'TransactionComments' => $comment
+        ];
+        $withdrawResponse = $this->forexApiService->balanceOperation($data);
+        if($withdrawResponse['success']) {
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
             notify()->success('Approve successfully');
+        }else{
+            notify()->error(__('Something went wrong! Please try again!'), 'Error');
+            return redirect()->back();
+        }
         } elseif (isset($input['reject'])) {
 
             if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
@@ -323,7 +345,7 @@ class WithdrawController extends Controller
                     'type' => 1,//deposit
                     'TransactionComments' => $comment
                 ];
-                $this->forexApiService->balanceOperation($data);
+//                $this->forexApiService->balanceOperation($data);
 //                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
             } else {
                 $user->increment('balance', $transaction->final_amount);

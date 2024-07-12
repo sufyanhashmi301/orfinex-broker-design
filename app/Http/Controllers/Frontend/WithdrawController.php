@@ -299,13 +299,13 @@ class WithdrawController extends Controller
 
         $targetId = $input['target_id'];
 
-//        $balance = $this->forexApiService->getValidatedBalance([
-//            'login' => $targetId
-//        ]);
-//        if ($totalAmount->compareTo($balance) > 0) {
-//            notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
-//            return redirect()->back();
-//        }
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $targetId
+        ]);
+        if ($totalAmount->compareTo($balance) > 0) {
+            notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+            return redirect()->back();
+        }
         $totalAmount = $totalAmount->toFloat();
         $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate)  ;
 

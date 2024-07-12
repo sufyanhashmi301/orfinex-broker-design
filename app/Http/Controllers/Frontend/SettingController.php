@@ -65,8 +65,7 @@ class SettingController extends Controller
 
         notify()->success('Your Profile Updated successfully');
 
-        return redirect()->route('user.setting.show');
-
+        return redirect()->back();
     }
     public function infoUpdate(Request $request)
     {

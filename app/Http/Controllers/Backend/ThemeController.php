@@ -11,11 +11,7 @@ use ZipArchive;
 
 class ThemeController extends Controller
 {
-    public function globalSettings()
-    {
-        $themes = Theme::where('type', 'site')->get();
-        return view('backend.theme.global', compact('themes'));
-    }
+
 
 
     public function siteTheme()

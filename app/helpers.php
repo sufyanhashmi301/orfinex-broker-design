@@ -117,6 +117,31 @@ if (!function_exists('getCountries')) {
         return $filteredCountries;
     }
 }
+if (!function_exists('getCountryCode')) {
+
+    function getCountryCode($countryName)
+    {
+        // Path to the JSON file
+        $filePath = resource_path('json/CountryCodes.json');
+
+        // Read the file contents
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $jsonContents = file_get_contents($filePath);
+        $countries = json_decode($jsonContents, true);
+
+        // Iterate through the array and find the country code
+        foreach ($countries as $country) {
+            if (strcasecmp($country['name'], $countryName) == 0) {
+                return $country['code'];
+            }
+        }
+
+        return null; // Return null if the country is not found
+    }
+}
 
 if (!function_exists('getJsonData')) {
 
@@ -166,20 +191,20 @@ if (!function_exists('getLocation')) {
     {
         $clientIp = request()->ip();
         $ip = $clientIp == in_array($clientIp, ['127.0.0.1', '::1']) ? '72.255.51.134' : $clientIp;
-
+//        $ip = '72.255.51.134';
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['code'] == $location['countryCode'];
         });
-
+//dd($location,$currentCountry);
         $location = [
-            'country_code' => $currentCountry['code'],
-            'name' => $currentCountry['name'],
-            'dial_code' => $currentCountry['dial_code'],
+            'country_code' => $currentCountry['code'] ?? '00',
+            'name' => $currentCountry['name'] ?? 'Not found',
+            'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
             'ip' => $location['query'] ?? [],
         ];
-
+//dd( new \Illuminate\Support\Fluent($location));
         return new \Illuminate\Support\Fluent($location);
     }
 }
@@ -267,11 +292,16 @@ function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 
         $referrer->profit_balance += $amount;
         $referrer->save();
 
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = new ForexApiService();
         $comment = 'referral-bonus' . '/' . substr($transaction->tnx, -7);
-        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
+        $data = [
+            'login' => $user->multi_ib_login,
+            'Amount' => $amount,
+            'type' => 1,//deposit
+            'TransactionComments' => $comment
+        ];
+        $forexApiService->balanceOperation($data);
+//        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
         creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
 }
@@ -302,9 +332,16 @@ function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = 
 
             $referrer->multi_ib_balance += $amount;
             $referrer->save();
-
+            $forexApiService = new ForexApiService();
             $comment = 'MIB' . '/' . $IBTransaction->client_no . '/' . $IBTransaction->trade_id;
-            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
+            $data = [
+                'login' => $user->multi_ib_login,
+                'Amount' => $amount,
+                'type' => 1,//deposit
+                'TransactionComments' => $comment
+            ];
+            $forexApiService->balanceOperation($data);
+//            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
         }
         creditMultiIbBonus($IBTransaction, $referrer, $type, $mainAmount, $level, $depth + 1, $user);
     }
@@ -542,7 +579,91 @@ if (!function_exists('add_child_agent')) {
         }
     }
 }
-if (!function_exists('remove_child_agent')) {
+
+
+
+if (!function_exists('sync_forex_accounts')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function sync_forex_accounts($pUser)
+    {
+        if (!isset($userID))
+            $userID = auth()->user()->id;
+
+        $realAccounts = ForexAccount::where('user_id', $userID)
+            ->where('status', ForexAccountStatus::Ongoing)
+//            ->where('login', 1003462)
+            ->get();
+
+        $balance = 0;
+        $forexApiService = app(ForexApiService::class);
+        foreach ($realAccounts as $account) {
+//            dd($account);
+            $data = [
+                'login' => $account->login
+            ];
+            $getUserResponse = $forexApiService->getBalance($data);
+//            dd($getUserResponse);
+//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
+//            if (!empty($getUserResponse)) {
+//                dd($getUserResponse->object(),$getUserResponse->object()->Login);
+                if ($getUserResponse['success']) {
+
+                    update_user_account_by_api_response($getUserResponse['result']);
+//                    if ($account->account_type == 'real') {
+//                        $balance += $getUserResponse->object()->Balance;
+//                    }
+                }
+            }
+//        }
+//        dd($balance);
+//        update_total_balance($userID, $balance);
+    }
+}
+
+if (!function_exists('update_user_account_by_api_response')) {
+    function update_user_account_by_api_response($resData, $lastDeposit = false)
+    {
+//        dd($resData);
+//        $resData = $getUserResponse->object();
+//        dd($resData);
+        if (isset($resData['login'])) {
+            $forexTrading = ForexAccount::where('login', $resData['login'])->first();
+//        $forexTrading->account_name = $resData->Name;
+            if ($forexTrading) {
+//                $forexTrading->leverage = $resData['leverage'];
+//      $forexTrading->email = $resData->Email;
+                $forexTrading->balance = $resData['balance'];
+                $forexTrading->equity = $resData['equity'];
+                $forexTrading->credit = $resData['credit'];
+//                $forexTrading->agent = $resData->Agent;
+//            $forexTrading->free_margin = $resData->MarginFree;
+//            $forexTrading->margin = $resData->Margin;
+//                $forexTrading->group = $resData->Group;
+
+                $forexTrading->save();
+            }
+        }
+    }
+}
+if (!function_exists('update_total_balance')) {
+    function update_total_balance($userID, $balance)
+    {
+        $user = User::where('id', $userID)->first();
+//        $forexTrading->account_name = $resData->Name;
+        $user->balance = $balance;
+        $user->save();
+    }
+}
+
+    if (!function_exists('remove_child_agent')) {
+
     /**
      * @param $metaKey
      * @param null $default

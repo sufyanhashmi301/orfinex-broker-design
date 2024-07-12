@@ -11,6 +11,7 @@ use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -30,13 +31,13 @@ use Txn;
 class UserController extends Controller
 {
     use NotifyTrait, ForexApiTrait;
-
+    protected $forexApiService;
     /**
      * Display a listing of the resource.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ForexApiService $forexApiService)
     {
         $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['edit']]);
@@ -46,6 +47,7 @@ class UserController extends Controller
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
         $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
         $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
+        $this->forexApiService = $forexApiService;
     }
 
     /**
@@ -226,6 +228,7 @@ class UserController extends Controller
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
             'transfer_status' => 'required',
+            'account_limit' => 'required|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -243,6 +246,7 @@ class UserController extends Controller
             'withdraw_status' => $input['withdraw_status'],
             'transfer_status' => $input['transfer_status'],
             'email_verified_at' => $input['email_verified'] == 1 ? now() : null,
+            'account_limit' => $input['account_limit'],
         ];
 
         $user = User::find($id);
@@ -335,7 +339,6 @@ class UserController extends Controller
         $targetType = $request->input('target_type');
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
@@ -350,7 +353,13 @@ class UserController extends Controller
 
             if ($type == 'add') {
                 if ($targetType == 'forex') {
-                    $this->ForexDeposit($targetId, $amount, $comment);
+                    $data = [
+                        'login' => $targetId,
+                        'Amount' => $amount,
+                        'type' => 1,//deposit
+                        'TransactionComments' => $comment
+                    ];
+                     $this->forexApiService->balanceOperation($data);
                 }
                 Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
 
@@ -359,13 +368,23 @@ class UserController extends Controller
 
             } elseif ($type == 'subtract') {
                 if ($targetType == 'forex') {
-                    $balance = $this->getForexAccountBalance($targetId);
+                    $balance = $this->forexApiService->getValidatedBalance([
+                        'login' => $targetId
+                    ]);
+//                    $balance = $this->getForexAccountBalance($targetId);
                     if (BigDecimal::of($amount)->compareTo($balance) > 0) {
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
                     }
-                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-                    if(!$withdrawResponse){
+                    $data = [
+                        'login' => $targetId,
+                        'Amount' => $amount,
+                        'type' => 2,//withdraw
+                        'TransactionComments' => $comment
+                    ];
+                    $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
+                    if(!$withdrawResponse['success']){
                         return redirect()->back();
                     }
                 }

@@ -18,12 +18,6 @@
                 <div class="col-xl-12">
                     <div class="site-tab-bars">
                         <ul>
-                            <li class="{{ isActive('admin.theme.global') }}">
-                                <a href="{{ route('admin.theme.global') }}">
-                                    <i icon-name="globe"></i>
-                                    {{ __('Global Settings') }}
-                                </a>
-                            </li>
                             <li class="{{ isActive('admin.theme.site') }}">
                                 <a href="{{ route('admin.theme.site') }}">
                                     <i icon-name="roller-coaster"></i>

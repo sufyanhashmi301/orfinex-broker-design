@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\ForexAccountStatus;
-use App\Enums\TxnType;
 use App\Enums\TxnStatus;
+use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -23,6 +24,12 @@ use Validator;
 class SendMoneyController extends Controller
 {
     use ForexApiTrait,NotifyTrait;
+    protected $forexApiService;
+
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
     public function sendMoney(Request $request)
     {
 //        $clientIp = request()->ip();
@@ -61,21 +68,15 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
             'receiver_account' => ['required','integer', 'different:target_id',
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'real');
                 })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
-            'target_id.required' => __('Kindly select the sender account to transfer.'),
-            'receiver_account.required' => __('Kindly select the receiver account to transfer.'),            'target_id.exists' => 'The selected forex account does not exist or is not of type real.',
-            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
-            'receiver_account.exists' => 'The selected account to(receiver) does not exist or is not of type real.',
-
+            'target_id.required' => __('Kindly select the sender account to transfer'),
+            'receiver_account.required' => __('Kindly select the receiver account to transfer')
         ]);
 
         if ($validator->fails()) {
@@ -115,11 +116,18 @@ class SendMoneyController extends Controller
         }
         $toUser = $toUserForexAccount->user;
 
-        if (! $toUser) {
+        if (!$toUser) {
             notify()->error(__('Receiver User Not Found'), 'Error');
             return redirect()->back();
         }
-        $this->isValidForexAccount($receiverAccount);
+        $response = $this->forexApiService->getUserByLogin([
+            'login' => $receiverAccount
+        ]);
+        if(!$response['success']){
+            notify()->error(__('Sorry,Your receiver account is Not valid!'), 'Error');
+            return redirect()->back();
+        }
+//        $this->isValidForexAccount($receiverAccount);
 
         $amount = (float) $input['amount'];
         $min = setting('min_send', 'fee');
@@ -141,8 +149,9 @@ class SendMoneyController extends Controller
         }
 
         $totalAmount = $amount + $charge;
-
-        $balance = $this->getForexAccountBalance($targetId);
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $targetId
+        ]);
 //        dd($balance);
         if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
             notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
@@ -152,8 +161,15 @@ class SendMoneyController extends Controller
         //withdraw balance
         $targetType = 'forex_withdraw';
         $comment = 'ext/transfer/to/'.$receiverAccount;
-        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
-        if(!$withdrawResponse){
+        $data = [
+            'login' => $targetId,
+            'Amount' => $totalAmount,
+            'type' => 2,//withdraw
+            'TransactionComments' => $comment
+        ];
+        $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
+        if(!$withdrawResponse['success']){
             return redirect()->back();
         }
 
@@ -163,15 +179,26 @@ class SendMoneyController extends Controller
 
 //        $toUser->increment('balance', $amount);
         $comment =  "ext/transfer/from/".$targetId;
-        $this->ForexDeposit($receiverAccount,$amount,$comment);
+        $data = [
+            'login' => $receiverAccount,
+            'Amount' => $amount,
+            'type' => 1,//deposit
+            'TransactionComments' => $comment
+        ];
+        $this->forexApiService->balanceOperation($data);
+//        $this->ForexDeposit($receiverAccount,$amount,$comment);
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
             TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id,  'User', [], $input['note'], $receiverAccount, 'forex_deposit');
 
         //update Balance & Equity of mt5 DB with new updated balance
-        $balance = $this->getForexAccountBalance($targetId);
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $targetId
+        ]);
         mt5_update_balance($targetId,$balance);
-        $balance = $this->getForexAccountBalance($receiverAccount);
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $receiverAccount
+        ]);
         mt5_update_balance($receiverAccount,$balance);
 
         notify()->success('Successfully Send Money', 'success');
@@ -235,10 +262,7 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
             'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser,
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'real');
@@ -246,10 +270,7 @@ class SendMoneyController extends Controller
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
         ],[
             'target_id.required' => __('Kindly select the account from to transfer'),
-            'receiver_account.required' => __('Kindly select the receiver account to transfer'),
-            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
-            'receiver_account.exists' => 'The selected account to(receiver) does not exist or is not of type real.',
-
+            'receiver_account.required' => __('Kindly select the receiver account to transfer')
         ]);
         $targetType = $request->input('target_type');
 
@@ -284,7 +305,15 @@ class SendMoneyController extends Controller
             notify()->error(__('Receiver User Not Found'), 'Error');
             return redirect()->back();
         }
-        $this->isValidForexAccount($receiverAccount);
+//        $receiverAccount='2212';
+        $response = $this->forexApiService->getUserByLogin([
+            'login' => $receiverAccount
+        ]);
+//        dd($receiverAccount,$response);
+        if(!$response['success']){
+            notify()->error(__('Sorry,Your receiver account is Not valid!'), 'Error');
+            return redirect()->back();
+        }
 
         $min = setting('internal_min_send', 'fee');
         $max = setting('internal_max_send', 'fee');
@@ -306,7 +335,10 @@ class SendMoneyController extends Controller
         $user = auth()->user();
         $totalAmount = $amount + $charge;
         if($targetType == 'forex') {
-            $balance = $this->getForexAccountBalance($targetId);
+            $balance = $this->forexApiService->getValidatedBalance([
+                'login' => $targetId
+            ]);
+//            dd($balance);
         }elseif($targetType == 'wallet'){
             $balance = BigDecimal::of($user->profit_balance);
         }
@@ -319,8 +351,15 @@ class SendMoneyController extends Controller
             //withdraw balance
             $targetType = 'forex_withdraw';
             $comment = 'int/transfer/to/' . $receiverAccount;
-            $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount, $comment);
-            if(!$withdrawResponse){
+            $data = [
+                'login' => $targetId,
+                'Amount' => $totalAmount,
+                'type' => 2,//withdraw
+                'TransactionComments' => $comment
+            ];
+            $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//            $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount, $comment);
+            if(!$withdrawResponse['success']){
                 return redirect()->back();
             }
         }elseif($targetType == 'wallet'){
@@ -333,15 +372,26 @@ class SendMoneyController extends Controller
 
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;
-        $this->ForexDeposit($receiverAccount,$amount,$comment);
+        $data = [
+            'login' => $receiverAccount,
+            'Amount' => $amount,
+            'type' => 1,//deposit
+            'TransactionComments' => $comment
+        ];
+        $this->forexApiService->balanceOperation($data);
+//        $this->ForexDeposit($receiverAccount,$amount,$comment);
 
         $receiveDescription = 'Transfer Money From '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
 
         //update Balance & Equity of mt5 DB with new updated balance
-        $balance = $this->getForexAccountBalance($targetId);
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $targetId
+        ]);
         mt5_update_balance($targetId,$balance);
-        $balance = $this->getForexAccountBalance($receiverAccount);
+        $balance = $this->forexApiService->getValidatedBalance([
+            'login' => $receiverAccount
+        ]);
         mt5_update_balance($receiverAccount,$balance);
         notify()->success('Successfully Send Money', 'success');
 

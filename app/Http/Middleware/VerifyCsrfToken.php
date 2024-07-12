@@ -14,6 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '*gateway/coingate/callback',
         '*ipn*',
-        'kyc/advance/status',
+        '*kyc/advance/status',
     ];
 }

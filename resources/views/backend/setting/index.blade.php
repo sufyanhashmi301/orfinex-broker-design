@@ -21,33 +21,36 @@
                             @can('site-setting')
                                 <li class="{{ isActive('admin.settings.site') }}">
                                     <a href="{{ route('admin.settings.site') }}"><i
-                                            icon-name="settings"></i>{{ __('Site Settings') }}</a>
+                                            icon-name="settings"></i>{{ __('Generals') }}</a>
                                 </li>
                             @endcan
 
-{{--                            @can('email-setting')--}}
-{{--                                <li class="{{ isActive('admin.settings.mail') }}">--}}
-{{--                                    <a href="{{ route('admin.settings.mail') }}"><i--}}
-{{--                                            icon-name="mail"></i>{{ __('Email Settings') }}</a>--}}
-{{--                                </li>--}}
-{{--                            @endcan--}}
+                            @can('email-setting')
+                                <li class="{{ isActive('admin.settings.mail') }}">
+                                    <a href="{{ route('admin.settings.mail') }}"><i
+                                            icon-name="mail"></i>{{ __('Email') }}</a>
+                                </li>
+                            @endcan
 
                             @can('plugin-setting')
 
                                 <li class="{{ isActive('admin.settings.plugin','system') }} ">
                                     <a href="{{ route('admin.settings.plugin','system') }}"><i
-                                            icon-name="award"></i>{{__('Plugin Settings') }}</a>
+                                            icon-name="award"></i>{{__('Plugin') }}</a>
                                 </li>
                                 <li class="{{ isActive('admin.settings.plugin','sms') }} ">
                                     <a href="{{ route('admin.settings.plugin','sms') }}"><i
-                                            icon-name="message-circle"></i>{{__('SMS Settings') }}</a>
+                                            icon-name="message-circle"></i>{{__('SMS') }}</a>
                                 </li>
                                 <li class="{{ isActive('admin.settings.plugin','notification') ?? isActive('admin.settings.notification.tune') }} ">
                                     <a href="{{ route('admin.settings.plugin','notification') }}"><i
-                                            icon-name="bell-ring"></i>{{__('Notification Settings') }}</a>
+                                            icon-name="bell-ring"></i>{{__('Notification') }}</a>
                                 </li>
                             @endcan
-
+                                <li class="{{ isActive('admin.settings.forex-api','forex-api') ?? isActive('admin.settings.forex-api') }} ">
+                                    <a href="{{ route('admin.settings.forex-api','forex-api') }}"><i
+                                            icon-name="award"></i>{{__('Platform API') }}</a>
+                                </li>
 {{--                            @can('user-permissions')--}}
 {{--                                <li class="{{ isActive('admin.settings.user-permissions') ?? isActive('admin.settings.permissions') }} ">--}}
 {{--                                    <a href="{{ route('admin.settings.user-permissions') }}">--}}

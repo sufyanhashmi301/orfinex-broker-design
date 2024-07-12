@@ -614,6 +614,75 @@ return [
                 'value' => 1, // default value if you want
             ],
 
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_follower_access', // unique name for field
+                'label' => 'Copy Trading Follower Access(iframe)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_follower_access_show', // unique name for field
+                'label' => 'Copy Trading Follower Access(iframe)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_provider_access', // unique name for field
+                'label' => 'Copy Trading Provider Access(iframe)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_provider_access_show', // unique name for field
+                'label' => 'Copy Trading Provider Access(iframe)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings', // unique name for field
+                'label' => 'Copy Trading Rating(iframe)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings_show', // unique name for field
+                'label' => 'Copy Trading Rating(iframe)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings_js', // unique name for field
+                'label' => 'Copy Trading Rating(Js)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings_js_show', // unique name for field
+                'label' => 'Copy Trading Rating(Js)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+
         ],
 
 
@@ -825,6 +894,43 @@ return [
                 'label' => 'Mail Secure', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'ssl', // default value if you want
+            ],
+        ],
+    ],
+    'platform_api' => [
+        'title' => 'Platform API Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_url_real', // unique name for field
+                'label' => 'MT5 API url(real)', // you know what label it is
+                'rules' => 'required|min:5|max:50', // validation rule of laravel
+                'value' => 'http://11.222.333.444:1234', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_key_real', // unique name for field
+                'label' => 'Forex API key(real)', // you know what label it is
+                'rules' => 'required|min:5|max:1000', // validation rule of laravel
+                'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_url_demo', // unique name for field
+                'label' => 'MT5 API url(demo)', // you know what label it is
+                'rules' => 'sometimes|min:5|max:50', // validation rule of laravel
+                'value' => 'http://11.222.333.444:1234', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_key_demo', // unique name for field
+                'label' => 'MT5 API key(demo)', // you know what label it is
+                'rules' => 'sometimes|min:5|max:1000', // validation rule of laravel
+                'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
             ],
         ],
     ],

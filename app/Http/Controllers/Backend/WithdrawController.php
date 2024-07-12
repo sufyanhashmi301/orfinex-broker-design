@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -34,12 +35,16 @@ class WithdrawController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    protected $forexApiService;
+
+    public function __construct(ForexApiService $forexApiService)
     {
         $this->middleware('permission:withdraw-method-manage', ['only' => ['methods', 'methodCreate', 'methodStore', 'methodEdit', 'methodUpdate']]);
         $this->middleware('permission:withdraw-list|withdraw-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:withdraw-action', ['only' => ['withdrawAction', 'actionNow']]);
         $this->middleware('permission:withdraw-schedule', ['only' => ['schedule', 'scheduleUpdate']]);
+        $this->forexApiService = $forexApiService;
+
     }
 
     /**
@@ -132,6 +137,7 @@ class WithdrawController extends Controller
             'min_withdraw' => $input['min_withdraw'],
             'max_withdraw' => $input['max_withdraw'],
             'status' => $input['status'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
             'fields' => json_encode($fields ?? $input['fields']),
         ];
 
@@ -200,6 +206,7 @@ class WithdrawController extends Controller
             'min_withdraw' => $input['min_withdraw'],
             'max_withdraw' => $input['max_withdraw'],
             'status' => $input['status'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
             'fields' => isset($input['fields']) ? json_encode($input['fields']) : $withdrawMethod->fields,
         ];
 
@@ -310,7 +317,14 @@ class WithdrawController extends Controller
 
             if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
                 $comment =  "wd/reject/".substr($transaction->tnx, -7);
-                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+                $data = [
+                    'login' => $transaction->target_id,
+                    'Amount' => $transaction->final_amount,
+                    'type' => 1,//deposit
+                    'TransactionComments' => $comment
+                ];
+                $this->forexApiService->balanceOperation($data);
+//                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
             } else {
                 $user->increment('balance', $transaction->final_amount);
             }

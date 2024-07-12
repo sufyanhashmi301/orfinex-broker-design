@@ -7,6 +7,7 @@ use App\Enums\TxnType;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -76,7 +77,15 @@ class Txn
 //            dd($transaction);
             if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
                 $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
-                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+                $data = [
+                    'login' => $transaction->target_id,
+                    'Amount' => $transaction->final_amount,
+                    'type' => 1,//deposit
+                    'TransactionComments' => $comment
+                ];
+                $forexApiService = new ForexApiService();
+                $forexApiService->balanceOperation($data);
+//                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
                 first_min_deposit($transaction->target_id);
             } else {
                 $amount = $transaction->amount;

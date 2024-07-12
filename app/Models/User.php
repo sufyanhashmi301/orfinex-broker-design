@@ -19,8 +19,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasTickets;
 
-    protected $primaryKey = 'id'; // Ensure that the primary key is set to 'id'
-
     /**
      * The attributes that are mass assignable.
      *
@@ -52,7 +50,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'kyc',
         'kyc_credential',
         'kyc_token',
-        'applicant_id',
         'kyc_created_at',
         'risk_profile_tags',
         'google2fa_secret',
@@ -168,12 +165,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             ->where('status', ForexAccountStatus::Ongoing);
 
     }
-    public function demoTradingAccounts()
-    {
-        return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing);
-
-    }
 
 
     public function totalRoiProfit()
@@ -206,14 +197,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return round($sum, 2);
     }
-    public function totalIBWithdraw()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::IB);
-        })->sum('amount');
 
-        return round($sum, 2);
-    }
     public function totalInvestment()
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {

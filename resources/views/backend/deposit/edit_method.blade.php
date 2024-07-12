@@ -2,6 +2,9 @@
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+@endsection
 @section('deposit_content')
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -245,6 +248,21 @@
                                     </div>
                                 </div>
                             @endif
+                            <div class="col-xl-12">
+                                <div class="site-input-groups">
+                                    <label class="box-input-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this method to whole world):') }}</label>
+                                    <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                        @foreach( getCountries() as $country)
+                                            <option value="{{$country['name']}}"  @selected( null != $method->country && in_array($country['name'],json_decode($method->country,true)))>{{$country['name']}}</option>
+                                        @endforeach
+                                        <option  value="All" @selected( null != $method->country && in_array('All',json_decode($method->country,true)))>
+                                            {{ __('All') }}
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                            </div>
 
                             <div class="col-xl-6">
                                 <div class="site-input-groups">
@@ -284,8 +302,23 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+
+
     <script>
-        'use strict';
+
+        (function ($) {
+            'use strict';
+
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+                removeItemButton: true,
+                // maxItemCount:7,
+                // searchResultLimit:7,
+                // renderChoiceLimit:20
+            });
+
+        })(jQuery)
+        // 'use strict';
 
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
@@ -356,4 +389,5 @@
         }
 
     </script>
+
 @endsection

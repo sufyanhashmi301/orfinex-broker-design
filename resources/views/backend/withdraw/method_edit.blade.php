@@ -2,6 +2,9 @@
 @section('title')
     {{ __('Edit Withdraw Method') }}
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+@endsection
 @section('withdraw_content')
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -180,7 +183,21 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-12">
+                                <div class="site-input-groups">
+                                    <label class="box-input-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
+                                    <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                        @foreach( getCountries() as $country)
+                                            <option value="{{$country['name']}}"  @selected( null != $withdrawMethod->country && in_array($country['name'],json_decode($withdrawMethod->country,true)))>{{$country['name']}}</option>
+                                        @endforeach
+                                        <option  value="All" @selected( null != $withdrawMethod->country && in_array('All',json_decode($withdrawMethod->country,true)))>
+                                            {{ __('All') }}
+                                        </option>
 
+                                    </select>
+                                </div>
+
+                            </div>
                             @if($type == 'manual')
                                 <div class="col-xl-12">
                                     <a href="javascript:void(0)" id="generate" class="site-btn-xs primary-btn mb-3">Add
@@ -260,6 +277,18 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+    <script>
+
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            // maxItemCount:7,
+            // searchResultLimit:7,
+            // renderChoiceLimit:7
+        });
+
+    </script>
     <script>
         $("#currency").on('change', function () {
             $('#currency-selected').text(this.value);

@@ -88,10 +88,10 @@
                 <i icon-name="droplet"></i>
             </div>
             <div class="content">
-                <h4>{{ $currencySymbol }}<span class="count">{{ round($data['total_investment'],2) }}</span></h4>
-                <p>{{ __('Total Investment') }}</p>
+                <h4><span class="count">{{ 0 }}</span></h4>
+                <p>{{ __('Total KYC') }}</p>
             </div>
-            <a class="link" href="{{ route('admin.investments') }}"><i icon-name="external-link"></i></a>
+            <a class="link" href="javascript:void(0);"><i icon-name="external-link"></i></a>
         </div>
     </div>
 

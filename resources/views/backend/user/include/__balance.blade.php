@@ -49,7 +49,7 @@
                                 @foreach($realForexAccounts as $forexAccount)
                                     <option value="{{$forexAccount->login}}" data-type="forex">
                                         {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
-                                        ({{ $forexAccount->equity }} {{$forexAccount->currency}})
+                                        ({{ get_mt5_account_equity($forexAccount->login) }} {{$forexAccount->currency}})
                                     </option>
                                 @endforeach
                                 @if($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))

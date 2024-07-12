@@ -58,7 +58,10 @@ class MigrateWithoudForexAccounts extends Command
             ->get();
 
         foreach ($forexAccounts as $oldForexAccount) {
-            $balance = $this->getForexAccountBalance($oldForexAccount->login);
+            $balance = $this->forexApiService->getValidatedBalance([
+                'login' => $oldForexAccount->login
+            ]);
+//            $balance = $this->getForexAccountBalance($oldForexAccount->login);
 
             if ($balance->isGreaterThan(1)) {
 //                echo 'Login : '.$oldForexAccount->login;

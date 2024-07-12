@@ -36,7 +36,7 @@ class MigrateOldData extends Command
 //
 ////        echo $readableDateTime;
 ////        dd($readableDateTime);
-        dd(Hash::make('axYs42ie!uixq.r@d'));
+        dd(Hash::make('12345678'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();

@@ -38,6 +38,7 @@ class ResetData extends Command
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('risk_profile_tags_users')->truncate();
+        DB::table('admin')->truncate();
         DB::table('users')->truncate();
         DB::table('admin_login_activities')->truncate();
         DB::table('login_activities')->truncate();
@@ -60,8 +61,8 @@ class ResetData extends Command
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
-            'first_name' => 'user_f',
-            'last_name' => 'user_l',
+            'first_name' => 'user',
+            'last_name' => 'banexcapital',
             'username' =>  'user' . rand(10000, 99999),
             'country' => 'United Arab Emirates',
             'phone' =>  '+971',
@@ -72,6 +73,7 @@ class ResetData extends Command
         $user = User::create($dataUser);
 
         $superAdmin = Admin::create([
+            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
             'name' => 'Super Admin',
             'email' => 'admin@banexcapital.com',
             'password' => Hash::make(12345678),

@@ -37,6 +37,7 @@ class ForexSchemaController extends Controller
      */
     public function index()
     {
+        
         $schemas = ForexSchema::orderBy('priority','asc')->get();
 
         return view('backend.forex_schema.index', compact('schemas'));
@@ -184,6 +185,19 @@ class ForexSchemaController extends Controller
         $schema->update($finalData);
 
         notify()->success('schema Update successfully');
+
+        return redirect()->route('admin.accountType.index');
+    }
+    public function destroy($id)
+    {
+        $schema = ForexSchema::findOrFail($id);
+        if ($schema->forexAccounts()->exists()) {
+            notify()->error('Cannot delete schema because there are Forex accounts associated with it.');
+            return redirect()->route('admin.accountType.index');
+        }
+        $schema->delete();
+
+        notify()->success('schema deleted successfully');
 
         return redirect()->route('admin.accountType.index');
     }

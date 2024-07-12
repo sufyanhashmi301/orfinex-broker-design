@@ -150,4 +150,14 @@ class IBSchemaController extends Controller
 
         return redirect()->route('admin.ibAccountType.index');
     }
+    public function destroy($id)
+    {
+        $ibSchema = IbSchema::findOrFail($id);
+        
+        $ibSchema->delete();
+
+        notify()->success('schema deleted successfully');
+
+        return redirect()->route('admin.ibAccountType.index');
+    }
 }

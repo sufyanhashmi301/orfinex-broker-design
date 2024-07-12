@@ -107,7 +107,9 @@ Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::cla
 
 //===============================  Role Management ==================================
 Route::resource('roles', RoleController::class)->except('show', 'destroy');
+Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
 Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
+Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
 Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
 Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
 Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
@@ -118,7 +120,9 @@ Route::post('/2fa/verify', function () {
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
 Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
+Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
 Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
 //===============================  Profit Deduction Management ==================================

@@ -72,4 +72,9 @@ class ForexSchema extends Model
 		'commission',
 		'priority'
 	];
+
+	public function forexAccounts()
+	{
+		return $this->hasMany(ForexAccount::class);
+	}
 }

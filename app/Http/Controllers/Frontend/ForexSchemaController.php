@@ -12,6 +12,7 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
+        
 //        $this->sendApiPostRequest('url','data');
 //        $this->getUserApi(554944);
         $schemas = ForexSchema::where('status', true) ->where(function($query) {

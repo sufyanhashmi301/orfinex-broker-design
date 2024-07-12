@@ -225,4 +225,17 @@ class StaffController extends Controller
             return redirect()->back();
         }
     }
+    public function destroy($id)
+    {
+        $staff = Admin::find($id);
+        if ($staff->getRoleNames()->first() === 'Super-Admin') {
+            notify()->warning('Super admin not deleteble');
+            return redirect()->back();
+        }
+        $staff->delete();
+
+        notify()->success('staff deleted successfully');
+
+        return redirect()->back();
+    }
 }

@@ -312,7 +312,7 @@ class WithdrawController extends Controller
         $user = User::find($transaction->user_id);
 //dd($input);
         if (isset($input['approve'])) {
-            if (!setting('withdraw_deduction', 'features')) {//on approval from admin
+            if (setting('withdraw_deduction', 'features')) {//on approval from admin
                 Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
                 notify()->success('Approve successfully');
             }else{ //on request

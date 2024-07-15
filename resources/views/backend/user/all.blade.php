@@ -2,43 +2,58 @@
 @section('title')
     {{ __('All Customers') }}
 @endsection
-@section('customers-content')
-    <div class="card">
-        <form id="filter-form" method="POST" action="{{ route('admin.user.export') }}">
-            @csrf
-            <div class="row mb-3">
-                <div class="col-md-2">
-                    <input type="text" name="global_search" id="global_search" class="form-control" placeholder="Search by Name, Username, Email">
+@section('filters')
+    <form id="filter-form" method="POST" action="{{ route('admin.user.export') }}">
+        @csrf
+        <div class="flex justify-between flex-wrap items-center">
+            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-9" placeholder="Search by Name, Username, Email">
                 </div>
-                <div class="col-md-2">
-                    <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="phone" id="phone" class="form-control h-9" placeholder="Phone">
                 </div>
-                <div class="col-md-2">
-                    <input type="text" name="country" id="country" class="form-control" placeholder="Country">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="country" id="country" class="form-control h-9" placeholder="Country">
                 </div>
-                <div class="col-md-2">
-                    <select name="status" id="status" class="form-control">
+                <div class="flex-1 input-area relative">
+                    <select name="status" id="status" class="form-control h-9">
                         <option value="">{{ __('Select Status') }}</option>
                         <option value="1">{{ __('Active') }}</option>
                         <option value="0">{{ __('Inactive') }}</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <input type="date" name="created_at" id="created_at" class="form-control" placeholder="Created At">
+                <div class="flex-1 input-area relative">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-9" placeholder="Created At">
                 </div>
-                <div class="col-md-2">
-                    <input type="text" name="tag" id="tag" class="form-control" placeholder="Tag">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <button type="button" id="filter" class="btn btn-primary">{{ __('Filter') }}</button>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-success">{{ __('Export') }}</button>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="tag" id="tag" class="form-control h-9" placeholder="Tag">
                 </div>
             </div>
-        </form>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="input-area relative">
+                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+@endsection
+@section('customers-content')
+    <div class="card">
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
@@ -72,6 +87,8 @@
         @include('backend.user.include.__mail_send')
     @endcan
     <!-- Modal for Send Email-->
+
+    @include('backend.user.include.__configure_modal')
 @endsection
 
 @section('script')

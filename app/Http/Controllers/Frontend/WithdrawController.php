@@ -316,21 +316,25 @@ class WithdrawController extends Controller
             'Withdraw With ' . $withdrawAccount->method_name, $type,
             TxnStatus::None, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
 
-
-        $comment = $withdrawMethod->name.'/'.substr($txnInfo->tnx, -7);
-        $data = [
-            'login' => $targetId,
-            'Amount' => $totalAmount,
-            'type' => 2,//withdraw
-            'TransactionComments' => $comment
-        ];
-        $withdrawResponse = $this->forexApiService->balanceOperation($data);
-//        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
-        if($withdrawResponse['success']){
+//
+//        dd(setting('withdraw_deduction', 'features'));
+        if(!setting('withdraw_deduction', 'features')) {
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
         }else{
-            Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
-            return redirect()->back();
+            $comment = $withdrawMethod->name . '/' . substr($txnInfo->tnx, -7);
+            $data = [
+                'login' => $targetId,
+                'Amount' => $totalAmount,
+                'type' => 2,//withdraw
+                'TransactionComments' => $comment
+            ];
+            $withdrawResponse = $this->forexApiService->balanceOperation($data);
+            if ($withdrawResponse['success']) {
+                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+            } else {
+                Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
+                return redirect()->back();
+            }
         }
 
 //        dd($withdrawMethod->type);

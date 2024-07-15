@@ -1,5 +1,5 @@
-
-<div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
+<div id="bodyOverlay"
+     class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{route('home')}}" class="items-center md:flex hidden">
         <img src="{{ asset(setting('site_logo','global')) }}" class="h-10" alt="Logo"/>
@@ -8,7 +8,8 @@
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
-                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt=""
+                         class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">
@@ -24,14 +25,16 @@
     <!-- Sidebar Type Button -->
     <div id="sidebar_type" class="cursor-pointer text-slate-900 dark:text-white text-lg">
         <span class="sidebarDotIcon extend-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
-            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150 ring-2 ring-inset ring-offset-4 ring-black-900 dark:ring-slate-400 bg-slate-900 dark:bg-slate-400 dark:ring-offset-slate-700"></div>
+            <div
+                class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150 ring-2 ring-inset ring-offset-4 ring-black-900 dark:ring-slate-400 bg-slate-900 dark:bg-slate-400 dark:ring-offset-slate-700"></div>
         </span>
         <span class="sidebarDotIcon collapsed-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
-            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150"></div>
+            <div
+                class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150"></div>
         </span>
     </div>
     <button class="sidebarCloseIcon text-2xl">
-      <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
+        <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
     </button>
 
     <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
@@ -40,14 +43,18 @@
         </a>
         <form method="POST" action="{{ route('logout') }}" id="logout-form">
             @csrf
-            <a href="{{ url('logout') }}" onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();" class="inline-flex btn btn-dark btn-sm">
+            <a href="{{ url('logout') }}"
+               onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();"
+               class="inline-flex btn btn-dark btn-sm">
                 {{ __('Logout') }}
             </a>
         </form>
     </div>
 </div>
-<div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+<div id="nav_shadow"
+     class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
+<div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50"
+     id="sidebar_menus">
     <ul class="sidebar-menu">
         <li>
             <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
@@ -77,7 +84,8 @@
         </li>
 
         <li>
-            <a href="{{ route('user.deposit.amount') }}" class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
+            <a href="{{ route('user.deposit.amount') }}"
+               class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
                     <span>{{ __('Deposit') }}</span>
@@ -95,13 +103,15 @@
         </li>
 
         <li>
-            <a href="{{ route('user.withdraw.view') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+            <a href="{{ route('user.withdraw.view') }}"
+               class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
                     <span>{{ __('Withdraw') }}</span>
                 </span>
             </a>
         </li>
+        @if(setting('copy_trading', 'features'))
         <li class="">
             <a href="javascript:void(0);" class="navItem">
               <span class="flex items-center">
@@ -128,13 +138,14 @@
                 </li>
             </ul>
         </li>
+        @endif
         <li class="">
             <a href="javascript:void(0);" class="navItem">
               <span class="flex items-center">
                 <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
                 <span>{{ __('History') }}</span>
               </span>
-              <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
             <ul class="sidebar-submenu">
                 <li>
@@ -196,11 +207,13 @@
         <li>
             <a href="javascript:;" id="themeMood" class="navItem">
                 <span class="dark:flex items-center hidden">
-                    <iconify-icon class="nav-icon" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    <iconify-icon class="nav-icon" id="sunIcon"
+                                  icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
                     <span>Light Mode</span>
                 </span>
                 <span class="dark:hidden flex items-center">
-                    <iconify-icon class="nav-icon" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                    <iconify-icon class="nav-icon" id="moonIcon"
+                                  icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
                     <span>Dark Mode</span>
                 </span>
             </a>

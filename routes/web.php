@@ -294,6 +294,7 @@ Route::get('user/economic_calendar', function () {
 })->name('user.economic_calendar');
 
 Route::get('user/provider_access', function () {
+
     return view('frontend.default.copy_trading.provider_access');
 })->name('user.provider_access')->middleware('secure_header');;
 

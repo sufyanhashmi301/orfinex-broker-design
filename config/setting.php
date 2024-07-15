@@ -317,6 +317,7 @@ return [
             ],
         ],
     ],
+
     'document_links' => [
         'title' => 'Document Links',
         'elements' => [
@@ -477,6 +478,7 @@ return [
         ],
 
     ],
+
     'platform_links' => [
         'title' => 'Platform Links',
         'elements' => [
@@ -688,7 +690,6 @@ return [
 
     ],
 
-
     'fee' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
@@ -825,7 +826,28 @@ return [
             ],
         ],
     ],
+    'features' => [
+        'title' => 'Features Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_deduction', // unique name for field
+                'label' => 'Withdraw Deduction', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading', // unique name for field
+                'label' => 'Copy Trading', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
 
+    ],
     'mail' => [
         'title' => 'Mail Settings',
         'elements' => [

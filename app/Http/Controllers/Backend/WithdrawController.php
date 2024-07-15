@@ -14,6 +14,7 @@ use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
+use Brick\Math\BigDecimal;
 use DataTables;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -110,7 +111,7 @@ class WithdrawController extends Controller
         if ($input['type'] == 'auto') {
 
             $withdrawGateways = Gateway::find($input['gateway_id']);
-            $withdrawFields = explode(',',$withdrawGateways->is_withdraw);
+            $withdrawFields = explode(',', $withdrawGateways->is_withdraw);
 
             $fields = array_map(function ($field) {
                 return [
@@ -142,7 +143,7 @@ class WithdrawController extends Controller
         ];
 
         $withdrawMethod = WithdrawMethod::create($data);
-        notify()->success($withdrawMethod->name.' '.__('Withdraw Method Created'));
+        notify()->success($withdrawMethod->name . ' ' . __('Withdraw Method Created'));
 
         return redirect()->route('admin.withdraw.method.list', $input['type']);
     }
@@ -216,7 +217,7 @@ class WithdrawController extends Controller
         }
 
         $withdrawMethod->update($data);
-        notify()->success($withdrawMethod->name.' '.__('Withdraw Method Updated'));
+        notify()->success($withdrawMethod->name . ' ' . __('Withdraw Method Updated'));
 
         return redirect()->route('admin.withdraw.method.list', $withdrawMethod->type);
     }
@@ -241,7 +242,7 @@ class WithdrawController extends Controller
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('amount', 'backend.transaction.include.__txn_amount')
                 ->editColumn('charge', function ($request) {
-                    return $request->charge.' '.setting('site_currency', 'global');
+                    return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.withdraw.include.__action')
@@ -278,7 +279,7 @@ class WithdrawController extends Controller
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('amount', 'backend.transaction.include.__txn_amount')
                 ->editColumn('charge', function ($request) {
-                    return $request->charge.' '.setting('site_currency', 'global');
+                    return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->rawColumns(['status', 'type', 'amount', 'username'])
@@ -309,74 +310,104 @@ class WithdrawController extends Controller
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
         $user = User::find($transaction->user_id);
-
+//dd($input);
         if (isset($input['approve'])) {
-            Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-            notify()->success('Approve successfully');
-        } elseif (isset($input['reject'])) {
-
-            if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
-                $comment =  "wd/reject/".substr($transaction->tnx, -7);
+            if (setting('withdraw_deduction', 'features')) {//on approval from admin
+                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                notify()->success('Approve successfully');
+            }else{ //on request
+                $balance = $this->forexApiService->getValidatedBalance([
+                    'login' => $transaction->target_id
+                ]);
+                $totalAmount = BigDecimal::of($transaction->amount);
+                if ($totalAmount->compareTo($balance) > 0) {
+                    notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+                    return redirect()->back();
+                }
+                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
                 $data = [
                     'login' => $transaction->target_id,
-                    'Amount' => $transaction->final_amount,
-                    'type' => 1,//deposit
+                    'Amount' => $totalAmount,
+                    'type' => 2,//withdraw
                     'TransactionComments' => $comment
                 ];
-                $this->forexApiService->balanceOperation($data);
-//                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
-            } else {
-                $user->increment('balance', $transaction->final_amount);
+                $withdrawResponse = $this->forexApiService->balanceOperation($data);
+                if ($withdrawResponse['success']) {
+                    Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                    notify()->success('Approve successfully');
+                } else {
+                    notify()->error(__('Something went wrong! Please try again!'), 'Error');
+                    return redirect()->back();
+                }
+            }
+            } elseif (isset($input['reject'])) {
+//            dd(!setting('withdraw_deduction', 'features'));
+            if (setting('withdraw_deduction', 'features')) {
+                if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
+                    $comment = "wd/reject/" . substr($transaction->tnx, -7);
+                    $data = [
+                        'login' => $transaction->target_id,
+                        'Amount' => $transaction->final_amount,
+                        'type' => 1,//deposit
+                        'TransactionComments' => $comment
+                    ];
+                    $this->forexApiService->balanceOperation($data);
+                } else {
+                    $user->increment('balance', $transaction->final_amount);
+                }
             }
 
-            Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+                Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+            if (setting('withdraw_deduction', 'features')) {
+                $newTransaction = $transaction->replicate();
+                $newTransaction->type = TxnType::Refund;
+                $newTransaction->status = TxnStatus::Success;
+                $newTransaction['method'] = 'system';
+                $newTransaction->tnx = 'TRX' . strtoupper(Str::random(10));
+                $newTransaction->save();
+            }
+                notify()->success('Reject successfully');
+            }
 
-            $newTransaction = $transaction->replicate();
-            $newTransaction->type = TxnType::Refund;
-            $newTransaction->status = TxnStatus::Success;
-            $newTransaction['method'] = 'system';
-            $newTransaction->tnx = 'TRX'.strtoupper(Str::random(10));
-            $newTransaction->save();
-            notify()->success('Reject successfully');
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[txn]]' => $transaction->tnx,
+                '[[method_name]]' => $transaction->method,
+                '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[message]]' => $transaction->approval_cause,
+                '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
+            ];
+
+            $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
+            $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
+            $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
+
+            return redirect()->back();
         }
 
-        $shortcodes = [
-            '[[full_name]]' => $user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[method_name]]' => $transaction->method,
-            '[[withdraw_amount]]' => $transaction->amount.setting('site_currency', 'global'),
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
+        public
+        function schedule()
+        {
+            $schedules = WithdrawalSchedule::all();
 
-        $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
-        $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
-        $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
-
-        return redirect()->back();
-    }
-
-    public function schedule()
-    {
-        $schedules = WithdrawalSchedule::all();
-
-        return view('backend.withdraw.schedule', compact('schedules'));
-    }
-
-    public function scheduleUpdate(Request $request)
-    {
-
-        $updateSchedules = $request->except('_token');
-        foreach ($updateSchedules as $name => $status) {
-            WithdrawalSchedule::where('name', $name)->update([
-                'status' => $status,
-            ]);
+            return view('backend.withdraw.schedule', compact('schedules'));
         }
 
-        notify()->success('Withdrawal Schedule Update successfully');
+        public
+        function scheduleUpdate(Request $request)
+        {
 
-        return redirect()->back();
+            $updateSchedules = $request->except('_token');
+            foreach ($updateSchedules as $name => $status) {
+                WithdrawalSchedule::where('name', $name)->update([
+                    'status' => $status,
+                ]);
+            }
+
+            notify()->success('Withdrawal Schedule Update successfully');
+
+            return redirect()->back();
+        }
     }
-}

@@ -192,20 +192,20 @@ if (!function_exists('getLocation')) {
     {
         $clientIp = request()->ip();
         $ip = $clientIp == in_array($clientIp, ['127.0.0.1', '::1']) ? '72.255.51.134' : $clientIp;
-
+//        $ip = '72.255.51.134';
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['code'] == $location['countryCode'];
         });
-
+//dd($location,$currentCountry);
         $location = [
-            'country_code' => $currentCountry['code'],
-            'name' => $currentCountry['name'],
-            'dial_code' => $currentCountry['dial_code'],
+            'country_code' => $currentCountry['code'] ?? '00',
+            'name' => $currentCountry['name'] ?? 'Not found',
+            'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
             'ip' => $location['query'] ?? [],
         ];
-
+//dd( new \Illuminate\Support\Fluent($location));
         return new \Illuminate\Support\Fluent($location);
     }
 }

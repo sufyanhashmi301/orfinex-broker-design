@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('global/css/rt-plugins.css') }}">
     <link rel="stylesheet" href="{{ asset('global/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ asset('global/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend/css/style.css') }}">
     @yield('style')
 
     <title>{{ setting('site_title', 'global') }} - @yield('title')</title>

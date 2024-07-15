@@ -52,7 +52,9 @@
         @endif
     @endcanany
 
-    @include('backend.include.__data_card')
+    <div class="space-y-5 mb-5">
+        @include('backend.include.__data_card')
+    </div>
 
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-8 col-span-12">

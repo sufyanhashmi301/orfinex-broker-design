@@ -2,12 +2,16 @@
 @section('title')
     {{ __('Edit Withdraw Method') }}
 @endsection
+@section('page-title')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+    </div>
+@endsection
 @section('withdraw_content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title"> @yield('title')</h4>
-            </div>
             <div class="card-body p-6">
                 <form action="{{ route('admin.withdraw.method.update',$withdrawMethod->id) }}" class="row"
                       method="post" enctype="multipart/form-data">
@@ -100,8 +104,8 @@
                                     <input type="text" class="form-control"
                                         oninput="this.value = validateDouble(this.value)" name="charge"
                                         value="{{ $withdrawMethod->charge }}"/>
-                                    <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700">
-                                        <select name="charge_type" class="form-control w-100 border-none !ring-offset-0 ring-0 focus:outline-0">
+                                    <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
+                                        <select name="charge_type" class="w-full h-full outline-none">
                                             <option value="percentage"
                                                     @if( $withdrawMethod->charge_type == 'percentage') selected @endif>{{ __('%') }}</option>
                                             <option value="fixed"
@@ -145,8 +149,8 @@
                                     <label class="form-label" for="">{{ __('Processing Time:') }}</label>
                                     <div class="relative">
                                         <input type="text" name="required_time" value="{{ $withdrawMethod->required_time }}" class="form-control mb-0"/>
-                                        <div class="prcntcurr absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full">
-                                            <select name="required_time_format" class="form-control w-100">
+                                        <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
+                                            <select name="required_time_format" class="w-full h-full outline-none">
                                                 @foreach(['minute' => 'Minutes','hour' => 'Hours','day' => 'Days' ] as $key => $value)
                                                     <option
                                                         @if( $withdrawMethod->required_time_format == $key) selected

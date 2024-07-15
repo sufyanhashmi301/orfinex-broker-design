@@ -3,12 +3,14 @@
     {{ __('Language Keywords') }}
 @endsection
 @section('content')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Language Keywords') }}
+        </h4>
+    </div>
     <div class="card">
-        <div class="card-header noborder">
-            <h3 class="card-title">{{ __('Language Keywords') }}</h3>
-        </div>
-        <div class="card-body px-6 pb-6">
-            <div class=" mb-6 mt-3">
+        <div class="card-body p-6">
+            <div class="mb-6 mt-3">
                 <form action="{{ route('admin.language-keyword', ['language' => $language]) }}" method="get">
                     <div class="table-filter flex justify-between flex-wrap items-center">
                         <div class="filter inline-flex ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">

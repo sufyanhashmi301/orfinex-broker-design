@@ -1,55 +1,80 @@
-@extends('backend.layouts.app')
+@extends('backend.layouts.dual-sidebar')
 @section('title')
     {{ __('setting') }}
 @endsection
+@section('submenu')
+    <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
+        <li>
+            <a href="{{ route('admin.settings.company') }}" class="navItem {{ isActive('admin.settings.company') }}">
+                {{ __('Company') }}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
+                {{ __('Site Settings') }}
+            </a>
+        </li>
+        @canany(['role-list','role-create','role-edit'])
+            <li class="nav-item">
+                <a href="{{route('admin.roles.index')}}" class="navItem {{ isActive('admin.roles*') }}">
+                    {{__('Roles & Permissions') }}
+                </a>
+            </li>
+        @endcanany
+        <li>
+            <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme.site') }}">
+                {{ __('Theme')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.security.all-sections') }}" class="navItem">
+                {{ __('Security')}}
+            </a>
+        </li>
+        <li class="">
+            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem">
+                {{ __('Notification') }}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.settings.currency') }}" class="navItem {{ isActive('admin.settings.currency') }}">
+                {{ __('Currency')}}
+            </a>
+        </li>
+        <li>
+            <a href="" class="navItem">
+                {{ __('Social Logins')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{route('admin.links.document-links')}}" class="navItem {{isActive('admin.links.document-links')}}">
+                {{ __('Doc & Links')}}
+            </a>
+        </li>
+        <li>
+            <a href="" class="navItem">
+                {{ __('Multi-Factor Auth')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.settings.transfers') }}" class="navItem {{ isActive('admin.settings.transfers') }}">
+                {{ __('Transfers')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.settings.gdpr') }}" class="navItem {{ isActive('admin.settings.gdpr') }}">
+                {{ __('GDPR')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.settings.site-maintenance') }}" class="navItem {{ isActive('admin.settings.site-maintenance') }}">
+                {{ __('Maintenance')}}
+            </a>
+        </li>
+    </ul>
+@endsection
 @section('content')
-    <div class="card p-4 mb-5">
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
-            @can('site-setting')
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.site') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.site') }}">
-                        {{ __('Site Settings') }}
-                    </a>
-                </li>
-            @endcan
-
-            @can('email-setting')
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.mail') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.mail') }}">
-                        {{ __('Email Settings') }}
-                    </a>
-                </li>
-            @endcan
-
-            @can('plugin-setting')
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.plugin','system') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.plugin','system') }}">
-                        {{__('Plugin Settings') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.plugin','sms') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.plugin','sms') }}">
-                        {{__('SMS Settings') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings.plugin','notification') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.plugin','notification') ?? isActive('admin.settings.notification.tune') }}">
-                        {{__('Notification Settings') }}
-                    </a>
-                </li>
-            @endcan
-
-{{--                            @can('user-permissions')--}}
-{{--                                <li class="nav-item">--}}
-{{--                                    <a href="{{ route('admin.settings.user-permissions') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.user-permissions') ?? isActive('admin.settings.permissions') }} ">--}}
-{{--                                        {{__('User Permissions') }}--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                            @endcan--}}
-        </ul>
-    </div>
-    <div class="grid grid-cols-12 gap-5">
-        @yield('setting-content')
-    </div>
+<div class="transition-all duration-150 ltr:ml-[200px] rtl:mr-[200px] p-6">
+    @yield('setting-content')
+</div>
 @endsection

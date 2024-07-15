@@ -3,16 +3,18 @@
     {{ __('Automatic Payment Gateway') }}
 @endsection
 @section('content')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Automatic Payment Gateway') }}
+        </h4>
+    </div>
     <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Automatic Payment Gateway') }}</h4>
-        </div>
-        <div class="card-body p-6 pt-0">
+        <div class="card-body p-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="bg-slate-200 dark:bg-slate-700">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Logo') }}</th>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>

@@ -1,11 +1,11 @@
-@extends('backend.user.app')
+@extends('backend.setting.index')
 @section('title')
     {{ __('Links Setting') }}
 @endsection
-@section('content')
+@section('setting-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-            @yield('links-title')
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
         </h4>
     </div>
     <div class="card p-4 mb-5">

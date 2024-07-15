@@ -1,25 +1,25 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('Plugin Settings') }}
-@endsection
 @section('title')
     {{ __('Plugin Settings') }}
 @endsection
 @section('setting-content')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ $title }}
+        </h4>
+        @if($isLink)
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <a href="{{ route('admin.settings.notification.tune') }}" class="inline-flex items-center justify-center text-success-500 new-referral" type="button" data-type="investment">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:volume-1"></iconify-icon>
+                    {{ __('Set Tune') }}
+                </a>
+            </div>
+        @endif
+    </div>
+    @include('backend.setting.plugin.include.__menu')
+    
     <div class="col-span-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">{{ $title }}</h4>
-                @if($isLink)
-                    <div class="card-header-links">
-                        <a href="{{ route('admin.settings.notification.tune') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center new-referral"
-                           type="button" data-type="investment">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:volume-1"></iconify-icon>
-                            {{ __('Set Tune') }}
-                        </a>
-                    </div>
-                @endif
-            </div>
             <div class="card-body p-6 space-y-4">
                 <p class="paragraph text-xs">
                     <iconify-icon class="text-sm mr-2 text-warning-500" icon="lucide:info"></iconify-icon>{{ __('You can') }}

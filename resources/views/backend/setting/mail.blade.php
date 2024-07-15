@@ -1,160 +1,123 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('Mail Settings') }}
-@endsection
 @section('title')
     {{ __('Mail Settings') }}
 @endsection
 @section('setting-content')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a data-bs-toggle="modal" data-bs-target="#mailConnection" href="javascript:void(0);" class="inline-flex items-center justify-center text-success-500"> 
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:mail-check"></iconify-icon> 
+                {{ __('Connection Check') }}
+            </a>
+        </div>
+    </div>
+    @include('backend.setting.plugin.include.__menu')
 
-    <div class="xl:col-span-8 md:col-span-12 col-span-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('Mail Settings') }}</h4>
-                <div class="card-header-links">
-                    <a data-bs-toggle="modal" data-bs-target="#mailConnection" href="javascript:void(0);" class="btn btn-dark btn-sm inline-flex items-center justify-center"> 
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:mail-check"></iconify-icon> 
-                        {{ __('Connection Check') }}
-                    </a>
-                </div>
-            </div>
-            <div class="card-body p-6">
-                <form action="{{ route('admin.settings.update') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="section" value="mail">
-                    <div class="grid grid-cols-12 gap-5">
-                        <div class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Mail Setting') }}
-                        </div>
-                        <div class="md:col-span-9 col-span-12">
-                            <div class="grid grid-cols-12 gap-5 mb-5">
-                                <div class="md:col-span-6 col-span-12">
-                                    <div class="input-area">
-                                        <label for=""
-                                               class="form-label form-label">{{ __('Email From Name') }}</label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            name="email_from_name"
-                                            value="{{ setting('email_from_name','mail') }}"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div class="md:col-span-6 col-span-12">
-                                    <div class="input-area">
-                                        <label for=""
-                                               class="form-label form-label">{{ __('Email From Address') }}</label>
-                                        <input
-                                            type="email"
-                                            class="form-control"
-                                            name="email_from_address"
-                                            value="{{ setting('email_from_address','mail') }}"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:col-span-3 col-span-12 form-label pt-0">
-                            {{ __('Mailing Driver') }}
-                        </div>
-
-                        <div class="md:col-span-9 col-span-12">
-                            <div class="input-area">
-                                <div class="form-check flex items-center">
-                                    <input
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="mailing_driver"
-                                        id="smtp"
-                                        value="smtp"
-                                        checked=""
-                                    />
-                                    <label class="form-check-label form-label !mb-0 ml-2" for="smtp">
-                                        {{ __('SMTP') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Configuration') }}
-                        </div>
-                        <div class="md:col-span-9 col-span-12">
-                            <div class="grid grid-cols-12 gap-5 mb-5">
-                                <div class="md:col-span-6 col-span-12">
-                                    <div class="input-area">
-                                        <label for="" class="form-label">{{ __('Mail Username') }}</label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            name="mail_username"
-                                            value="{{ setting('mail_username','mail') }}"
-                                            required=""
-                                        />
-                                    </div>
-                                </div>
-                                <div class="md:col-span-6 col-span-12">
-                                    <div class="input-area">
-                                        <label for="" class="form-label">{{ __('Mail Password') }}</label>
-                                        <input
-                                            type="password"
-                                            class="form-control"
-                                            name="mail_password"
-                                            value="{{   !config('app.demo') ? setting('mail_password','mail') : 'demo-mode' }}"
-                                            required=""
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-12 gap-5 mb-5">
-                                <div class="md:col-span-6 col-span-12">
-                                    <div class="input-area">
-                                        <label for="" class="form-label">{{ __('SMTP Host') }}</label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            name="mail_host"
-                                            value="{{ setting('mail_host','mail') }}"
-                                            required=""
-                                        />
-                                    </div>
-                                </div>
-                                <div class="md:col-span-3 col-span-12">
-                                    <div class="input-area">
-                                        <label for="" class="form-label">{{ __('SMTP Port') }}</label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            name="mail_port"
-                                            value="{{ setting('mail_port','mail') }}"
-                                            required=""
-                                        />
-                                    </div>
-                                </div>
-                                <div class="md:col-span-3 col-span-12">
-                                    <div class="input-area">
-                                        <label for="" class="form-label">{{ __('SMTP Secure') }}</label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            name="mail_secure"
-                                            value="{{ setting('mail_secure','mail') }}"
-                                            required=""
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-span-12 text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                                {{ __(' Save Changes') }}
-                            </button>
+    <div class="card">
+        <div class="card-body p-6">
+            <form action="{{ route('admin.settings.update') }}" method="post">
+                @csrf
+                <input type="hidden" name="section" value="mail">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="input-area">
+                        <label for=""
+                               class="form-label form-label">{{ __('Email From Name') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="email_from_name"
+                            value="{{ setting('email_from_name','mail') }}"
+                            required
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for=""
+                               class="form-label form-label">{{ __('Email From Address') }}</label>
+                        <input
+                            type="email"
+                            class="form-control"
+                            name="email_from_address"
+                            value="{{ setting('email_from_address','mail') }}"
+                            required
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Mail Driver') }}</label>
+                        <div class="form-check flex items-center">
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="mailing_driver"
+                                id="smtp"
+                                value="smtp"
+                                checked=""
+                            />
+                            <label class="form-check-label form-label !mb-0 ml-2" for="smtp">
+                                {{ __('SMTP') }}
+                            </label>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Mail Username') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="mail_username"
+                            value="{{ setting('mail_username','mail') }}"
+                            required=""
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Mail Password') }}</label>
+                        <input
+                            type="password"
+                            class="form-control"
+                            name="mail_password"
+                            value="{{   !config('app.demo') ? setting('mail_password','mail') : 'demo-mode' }}"
+                            required=""
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('SMTP Host') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="mail_host"
+                            value="{{ setting('mail_host','mail') }}"
+                            required=""
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('SMTP Port') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="mail_port"
+                            value="{{ setting('mail_port','mail') }}"
+                            required=""
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('SMTP Secure') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="mail_secure"
+                            value="{{ setting('mail_secure','mail') }}"
+                            required=""
+                        />
+                    </div>
+
+                    <div class="col-span-2 text-right">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            {{ __(' Save Changes') }}
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 

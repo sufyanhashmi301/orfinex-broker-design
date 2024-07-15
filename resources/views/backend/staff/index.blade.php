@@ -3,22 +3,26 @@
     {{ __('Manage Staff') }}
 @endsection
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('Manage Staffs') }}</h4>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Manage Staffs') }}
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('staff-create')
-                <a href="" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#staffModal">
-                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
+                <a href="" class="inline-flex items-center justify-center text-success-600" type="button" data-bs-toggle="modal" data-bs-target="#staffModal">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New Staff') }}
                 </a>
             @endcan
         </div>
+    </div>
+    <div class="card">
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="bg-slate-200 dark:bg-slate-700">
+                            <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>

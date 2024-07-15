@@ -2,17 +2,23 @@
 @section('title')
     {{ __(ucwords($type).' Deposit Method') }}
 @endsection
-@section('deposit_content')
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title"> @yield('title')</h2>
+@section('page-title')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @isset($button)
-                <a href="{{$button['route']}}" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button">
+                <a href="{{$button['route']}}" class="inline-flex items-center justify-center text-success-600" type="button">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:{{$button['icon']}}"></iconify-icon>
                     {{$button['name']}}
                 </a>
             @endisset
         </div>
+    </div>
+@endsection
+@section('deposit_content')
+    <div class="card">
         <div class="card-body p-6 space-y-4">
             <p class="paragraph text-xs">
                 {{ __(' All the ') }}

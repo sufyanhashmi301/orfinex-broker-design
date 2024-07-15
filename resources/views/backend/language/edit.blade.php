@@ -4,16 +4,18 @@
 @endsection
 @section('content')
     <div class="max-w-5xl mx-auto">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('Edit  language') }}</h4>
-                <div class="card-header-links">
-                    <a href="{{ route('admin.language.index') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
-                       {{ __('Back') }}
-                    </a>
-                </div>
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                {{ __('Edit  language') }}
+            </h4>
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <a href="{{ route('admin.language.index') }}" class="inline-flex items-center justify-center text-success-600">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                    {{ __('Back') }}
+                </a>
             </div>
+        </div>
+        <div class="card">
             <div class="card-body p-6">
                 <form action="{{ route('admin.language.update',$language->id) }}" method="post" class="space-y-5">
                     @method('PUT')

@@ -112,16 +112,6 @@
 
         {{-- *************************************************************  Staff Management *********************************************************--}}
         @canany(['role-list','role-create','role-edit','staff-list','staff-create','staff-edit'])
-            @canany(['role-list','role-create','role-edit'])
-                <li>
-                    <a href="{{route('admin.roles.index')}}" class="navItem {{ isActive('admin.roles*') }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:contact"></iconify-icon>
-                            <span>{{ __('Manage Roles') }}</span>
-                        </span>
-                    </a>
-                </li>
-            @endcanany
             @canany(['staff-list','staff-create','staff-edit'])
                 <li>
                     <a href="{{route('admin.staff.index')}}" class="navItem {{ isActive('admin.staff*') }}">
@@ -211,30 +201,6 @@
 
         {{-- *************************************************************  Advertisement Management *********************************************************--}}
         @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
-            <li class="{{ isActive(['admin.advertisement_material*']) }}">
-                <a href="javascript:void(0);" class="navItem">
-                    <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="lucide:layers"></iconify-icon>
-                        <span>{{ __('Resources') }}</span>
-                    </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                </a>
-                <ul class="sidebar-submenu">
-                    @can('advertisement-material-edit')
-                        <li>
-                            <a href="{{route('admin.advertisement_material.index')}}" class="{{ isActive('admin.advertisement_material*') }}">
-                                {{ __('IB Resources') }}
-                            </a>
-                        </li>
-                    @endcan
-                    <li>
-                        <a href="{{route('admin.links.document-links')}}" class="{{ isActive('admin.links.document-links') }}">
-                            {{ __('Links') }}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
 
             @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
                 <li class="{{ isActive(['admin.referral*']) }}">
@@ -299,6 +265,13 @@
                             <li>
                                 <a href="{{ route('admin.ib-form.index') }}" class="{{ isActive('admin.ib-form*') }}">
                                     {{ __('IB Form') }}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('advertisement-material-edit')
+                            <li>
+                                <a href="{{route('admin.advertisement_material.index')}}" class="{{ isActive('admin.advertisement_material*') }}">
+                                    {{ __('IB Resources') }}
                                 </a>
                             </li>
                         @endcan
@@ -454,55 +427,13 @@
         {{-- ************************************************************* Site  Settings *********************************************************--}}
         @canany(['site-setting','email-setting','plugin-setting','page-manage'])
             @canany(['site-setting','email-setting','plugin-setting'])
-                <li class="{{ isActive(['admin.settings*']) }}">
-                    <a href="javascript:void(0);" class="navItem">
+                <li class="">
+                    <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive(['admin.settings*']) }}">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
                             <span>{{ __('Settings') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>    
+                        </span>  
                     </a>
-                    <ul class="sidebar-submenu">
-                        @can('site-setting')
-                            <li>
-                                <a href="{{route('admin.settings.site')}}" class="{{ isActive('admin.settings.site') }}">
-                                    {{ __('Site Settings') }}
-                                </a>
-                            </li>
-                        @endcan
-                        @can('email-setting')
-                            <li>
-                                <a href="{{ route('admin.settings.mail') }}" class="{{ isActive('admin.settings.mail') }}">
-                                    {{ __('Email Settings') }}
-                                </a>
-                            </li>
-                        @endcan
-                        @can('plugin-setting')
-                            <li>
-                                <a href="{{ route('admin.settings.plugin','system') }}" class="{{ isActive('admin.settings.plugin','system') }}">
-                                    {{ __('Plugin Settings') }}
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ route('admin.settings.plugin','sms') }}" class="{{ isActive('admin.settings.plugin','sms') }}">
-                                    {{ __('SMS Settings') }}
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ route('admin.settings.plugin','notification') }}" class="{{ isActive('admin.settings.plugin','notification') }}">
-                                    {{ __('Push Notification') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.settings.notification.tune') }}" class="{{ isActive('admin.settings.notification.tune') }}">
-                                    {{ __('Notification Tune') }}
-                                </a>
-                            </li>
-                        @endcan
-
-                    </ul>
                 </li>
             @endcanany
 
@@ -514,45 +445,6 @@
                             <span>{{ __('Language') }}</span>
                         </span>
                     </a>
-                </li>
-            @endcan
-        @endcanany
-        
-        {{-- ************************************************************* Site  Essentials ********************************************************* --}}
-        @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
-            @can('landing-page-manage')
-                <li class="{{ isActive(['admin.theme*']) }}">
-                    <a href="javascript:void(0);" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:palette"></iconify-icon>
-                            <span>{{ __('Theme') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
-                    <ul class="sidebar-submenu">
-                        <li>
-                            <a href="{{ route('admin.theme.global') }}" class="{{ isActive('admin.theme.global') }}">
-                                {{ __('Site Global Settings') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.theme.site') }}" class="{{ isActive('admin.theme.site') }}">
-                                {{ __('Site Theme') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.theme.dynamic-landing') }}" class="{{ isActive('admin.theme.dynamic-landing') }}">
-                                {{ __('Dynamic Landing Theme') }}
-                            </a>
-                        </li>
-                        @can('page-manage')
-                        <li>
-                            <a href="{{ route('admin.page.setting') }}" class="{{ isActive('admin.page.setting') }}">
-                                {{ __('Page') }}
-                            </a>
-                        </li>
-                        @endcan
-                    </ul>
                 </li>
             @endcan
         @endcanany
@@ -579,11 +471,7 @@
                     </a>
                 </li>
 
-                <li class="">
-                    <a href="{{ route('admin.template.notification.index') }}" class="{{ isActive('admin.template.notification.index') }}">
-                        {{ __('Notification') }}
-                    </a>
-                </li>
+                
             </ul>
         </li>
         @endcan
@@ -624,21 +512,28 @@
         @endcan --}}
 
         <li class="">
-            <a href="{{ route('admin.clear-cache') }}" class="navItem {{ isActive('admin.clear-cache') }}">
+            <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:trash-2"></iconify-icon>
-                    <span>{{ __('Clear Cache') }}</span>
+                    <iconify-icon class="nav-icon" icon="lucide:power"></iconify-icon>
+                    <span>{{ __('System') }}</span>
                 </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
-        </li>
-        <li class="">
-            <a href="{{ route('admin.application-info') }}" class="navItem {{ isActive('admin.application-info') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:indent"></iconify-icon>
-                    <span>{{ __('Application Details') }}</span>
-                    <span class="badge yellow-color">2.4</span>
-                </span>
-            </a>
+            <ul class="sidebar-submenu">
+                <li class="">
+                    <a href="{{ route('admin.clear-cache') }}" class="{{ isActive('admin.clear-cache') }}">
+                        {{ __('Clear Cache') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('admin.application-info') }}" class="{{ isActive('admin.application-info') }}">
+                        <span class="flex items-center">
+                            <span>{{ __('Application Details') }}</span>
+                            <span class="badge yellow-color">2.4</span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
         </li>
     </ul>
 </div>

@@ -266,6 +266,12 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
         Route::get('tune/status/{id}', 'status')->name('tune.status');
     });
 
+    Route::get('company', 'companySetting')->name('company');
+    Route::get('currency', 'currencySetting')->name('currency');
+    Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
+    Route::get('transfers', 'transfers')->name('transfers');
+    Route::get('gdpr', 'gdpr')->name('gdpr');
+
 });
 
 //===============================  Security Settings ==================================

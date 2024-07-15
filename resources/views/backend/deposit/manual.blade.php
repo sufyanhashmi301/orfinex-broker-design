@@ -2,11 +2,15 @@
 @section('title')
     {{ __('Pending Manual Deposit') }}
 @endsection
+@section('page-title')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+    </div>
+@endsection
 @section('deposit_content')
     <div class="card">
-        <div class="card-header noborder">
-            <h4 class="card-title"> @yield('title')</h4>
-        </div>
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class="col-span-8  hidden"></span>

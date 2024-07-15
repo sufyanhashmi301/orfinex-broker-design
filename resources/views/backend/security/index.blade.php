@@ -1,43 +1,41 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.index')
 @section('title')
     {{ __('Security Setting') }}
 @endsection
-@section('content')
+@section('setting-content')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+    </div>
     <div class="card p-4 mb-5">
-        <ul class="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none border-b-0 pl-0 menu-open">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
             <li class="nav-item">
-                <a href="{{ route('admin.security.all-sections') }}" class="nav-link w-full flex items-center font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('admin.security.all-sections') }}">
-                    <iconify-icon class="mr-1" icon="lucide:layout-list"></iconify-icon>
+                <a href="{{ route('admin.security.all-sections') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.security.all-sections') }}">
                     {{ __('All Sections') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.security.blocklist-ip') }}" class="nav-link w-full flex items-center font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('admin.security.blocklist-ip') }}">
-                    <iconify-icon class="mr-1" icon="lucide:screen-share-off"></iconify-icon>
+                <a href="{{ route('admin.security.blocklist-ip') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.security.blocklist-ip') }}">
                     {{ __('Blocklist IP') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.security.single-session') }}" class="nav-link w-full flex items-center font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('admin.security.single-session') }}">
-                    <iconify-icon class="mr-1" icon="lucide:clock"></iconify-icon>
+                <a href="{{ route('admin.security.single-session') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.security.single-session') }}">
                     {{ __('Single Session') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.security.blocklist-email') }}" class="nav-link w-full flex items-center font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('admin.security.blocklist-email') }}">
-                    <iconify-icon class="mr-1" icon="lucide:mail-x"></iconify-icon>
+                <a href="{{ route('admin.security.blocklist-email') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.security.blocklist-email') }}">
                     {{ __('Blocklist Email') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.security.login-expiry') }}" class="nav-link w-full flex items-center font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('admin.security.login-expiry') }}">
-                    <iconify-icon class="mr-1" icon="lucide:alarm-clock-off"></iconify-icon>
+                <a href="{{ route('admin.security.login-expiry') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.security.login-expiry') }}">
                     {{ __('Login Expiry') }}
                 </a>
             </li>
         </ul>
     </div>
-    <div class="grid grid-cols-12 gap-5">
-        @yield('security-content')
-    </div>
+    @yield('security-content')
 @endsection

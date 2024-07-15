@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'global' => [
-        'title' => 'Global Settings',
+    'theme' => [
+        'title' => 'Theme Settings',
 
         'elements' => [
             [
@@ -45,70 +45,13 @@ return [
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_admin_prefix', // unique name for field
-                'label' => 'Site Admin Prefix', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'admin', // default value if you want
-            ],
-            [
-                'type' => 'switch', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_currency_type', // unique name for field
-                'label' => 'Site Currency Type', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'fiat', // default value if you want
-            ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_currency', // unique name for field
-                'label' => 'Site Currency', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'USD', // default value if you want
-            ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_timezone', // unique name for field
-                'label' => 'Site Timezone', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'UTC', // default value if you want
-            ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_referral', // unique name for field
-                'label' => 'Site Referral Type', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'level', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'currency_symbol', // unique name for field
-                'label' => 'Currency Symbol', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '$', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'integer', // data type, string, int, boolean
-                'name' => 'referral_code_limit', // unique name for field
-                'label' => 'Referral Code Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '6', // default value if you want
-            ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'home_redirect', // unique name for field
-                'label' => 'Home Redirect', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '/', // default value if you want
-            ],
+        ],
+    ],
+
+    'common_settings' => [
+        'title' => 'Common Settings',
+
+        'elements' => [
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -132,6 +75,117 @@ return [
                 'label' => 'Support Email', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'support@tdevs.co', // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'company_website', // unique name for field
+                'label' => 'Company Website', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'https://company.com', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'company_phone', // unique name for field
+                'label' => 'Company Phone', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '123456789', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'registered_address', // unique name for field
+                'label' => 'Registered Address', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'United State', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'registered_number', // unique name for field
+                'label' => 'Registered Number', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '123456789', // default value if you want
+            ],
+        ],
+
+    ],
+
+    'currency_setting' => [
+        'title' => 'Currency Settings',
+
+        'elements' => [
+            [
+                'type' => 'switch', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_currency_type', // unique name for field
+                'label' => 'Site Currency Type', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'fiat', // default value if you want
+            ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_currency', // unique name for field
+                'label' => 'Site Currency', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'USD', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'currency_symbol', // unique name for field
+                'label' => 'Currency Symbol', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '$', // default value if you want
+            ],
+        ],
+    ],
+
+    'global' => [
+        'title' => 'Site Settings',
+
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_admin_prefix', // unique name for field
+                'label' => 'Site Admin Prefix', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'admin', // default value if you want
+            ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_timezone', // unique name for field
+                'label' => 'Site Timezone', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'UTC', // default value if you want
+            ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_referral', // unique name for field
+                'label' => 'Site Referral Type', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'level', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'integer', // data type, string, int, boolean
+                'name' => 'referral_code_limit', // unique name for field
+                'label' => 'Referral Code Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '6', // default value if you want
+            ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'home_redirect', // unique name for field
+                'label' => 'Home Redirect', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '/', // default value if you want
             ],
         ],
     ],

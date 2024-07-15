@@ -1,102 +1,110 @@
-@extends('backend.theme.index')
-@section('theme-title')
-    {{ __('Global Settings') }}
+@extends('backend.setting.index')
+@section('title')
+    {{ __('Theme Settings') }}
 @endsection
-@section('theme-content')
-    <div class="lg:col-span-8 col-span-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('Global Settings') }}</h4>
-            </div>
-            <div class="card-body p-6">
-                <form action="" class="space-y-5">
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <label for="" class="lg:col-span-4 md:col-span-3 col-span-12 form-label flex items-center">
-                            {{ __('App Title') }}
-                            <iconify-icon class="toolTip onTop text-base ml-1" icon="lucide:info" data-tippy-content="Site Title will show on Breadcrumb" data-tippy-theme="dark"></iconify-icon>
-                        </label>
-                        <div class="lg:col-span-8 md:col-span-9 col-span-12">
-                            <input type="text" name="title" class="form-control" placeholder="App title">
-                        </div>
-                    </div>
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <div class="lg:col-span-4 md:col-span-3 col-span-12 form-label">
-                            {{ __('Site Logo (Dark)') }}
-                        </div>
-                        <div class="lg:col-span-8 md:col-span-9 col-span-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_logo" id="site_logo" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_logo" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
+@section('setting-content')
+    <?php
+        $section = 'theme';
+        $fields = config('setting.theme');
+        //   dd($fields);
+    ?>
+
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Theme Settings') }}
+        </h4>
+    </div>
+    <div class="card">
+        <div class="card-body p-6">
+            <div class="space-y-5">
+                <div class="input-area">
+                    <label for="" class="form-label">
+                        {{ __('App Name') }}
+                    </label>
+                    <input type="text" name="title" class="form-control" placeholder="App title">
+                </div>
+                <div>
+                    <label for="" class="form-label">
+                        {{ __('Site Theme') }}
+                    </label>
+                    <div class="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+                        @foreach($themes as $theme)
+                        <div class="card h-full">
+                            <div class="card-body rounded-md bg-white dark:bg-slate-800 shadow-base overflow-hidden">
+                                <div class="h-fit group">
+                                    <div class="relative overflow-hidden">
+                                        <div class="bg-slate-50 dark:bg-slate-900 p-4">
+                                            <img src="{{ asset('backend/materials/theme/'.$theme->name . '.jpg') }}" alt="image" class="block w-full h-[350px] object-cover rounded-t-md">
+                                        </div>
+                                        <div class="absolute h-full w-full bg-black/20 flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                            @if($theme->status)
+                                                <a href="javascript:;" class="btn btn-dark inline-flex items-center justify-center mt-4 disabled">
+                                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:circle-slash-2"></iconify-icon>
+                                                    {{ __('Activated Theme') }}
+                                                </a>
+                                            @else
+                                                <a href="{{ route('admin.theme.status-update',['id' => $theme->id]) }}" class="btn btn-dark inline-flex items-center justify-center mt-4">
+                                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                                    {{ __('Active Now') }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="items-center p-5">
+                                    <div class="success-radio">
+                                        <label class="flex items-center cursor-pointer">
+                                            <input 
+                                                type="radio" 
+                                                class="hidden" 
+                                                name="theme" 
+                                                value="{{ ucwords( str_replace('_', ' ',$theme->name) ) }} Theme" 
+                                                @if($theme->status) checked @endif
+                                                disabled="disabled"
+                                            >
+                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                            <span class="text-success-500 text-sm leading-6 capitalize">
+                                                {{ ucwords( str_replace('_', ' ',$theme->name) ) }} Theme
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <div class="lg:col-span-4 md:col-span-3 col-span-12 form-label">
-                            {{ __('Site Logo (Light)') }}
-                        </div>
-                        <div class="lg:col-span-8 md:col-span-9 col-span-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_logo_light" id="site_logo_light" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_logo_light" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
+                </div>
+                @include('backend.setting.site_setting.include.form.__open_action')
+                    <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+                        @foreach( $fields['elements'] as $key => $field)
+                            @if($field['type'] == 'file')
+                                <div class="input-area">
+                                    <label class="form-label">
+                                        {{ __($field['label']) }}
+                                    </label>
+                                    <div class="wrap-custom-file {{ $errors->has($field['name']) ? 'has-error' : '' }}">
+                                        <input
+                                            type="{{$field['type']}}"
+                                            name="{{$field['name']}}"
+                                            id="{{$field['name']}}"
+                                            value="{{ oldSetting($field['name'],$section) }}"
+                                            accept=".jpeg, .jpg, .png"
+                                        />
+                                        <label for="{{ __($field['name']) }}" class="file-ok"
+                                            style="background-image: url( {{asset(oldSetting($field['name'],$section)) }} )">
+                                            <img
+                                                class="upload-icon"
+                                                src="{{ asset('global/materials/upload.svg') }}"
+                                                alt=""
+                                            />
+                                            <span>{{ __('upload') .' '.__($field['label'])}} </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <div class="lg:col-span-4 md:col-span-3 col-span-12 form-label">
-                            {{ __('Site Favicon') }}
-                        </div>
-                        <div class="lg:col-span-8 md:col-span-9 col-span-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_favicon" id="site_favicon" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_favicon" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <div class="lg:col-span-4 md:col-span-3 col-span-12 form-label">
-                            {{ __('Admin Login Cover') }}
-                        </div>
-                        <div class="lg:col-span-8 md:col-span-9 col-span-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="admin_login_cover" id="admin_login_cover" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="admin_login_cover" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <div class="lg:col-span-4 md:col-span-3 col-span-12 form-label">
-                            {{ __('Site Link Thumbnail') }}
-                        </div>
-                        <div class="lg:col-span-8 md:col-span-9 col-span-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_link_thumbnail" id="site_link_thumbnail" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_link_thumbnail" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                            Save Changes
-                        </button>
-                    </div>
-                </form>
+                @include('backend.setting.site_setting.include.form.__close_action')
             </div>
         </div>
     </div>

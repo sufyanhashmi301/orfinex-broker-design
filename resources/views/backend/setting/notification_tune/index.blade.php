@@ -1,23 +1,22 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('Push Notification Settings') }}
-@endsection
 @section('title')
     {{ __('Notification Settings') }}
 @endsection
 
 @section('setting-content')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Notification Tune Settings') }}
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a  href="{{ route('admin.settings.plugin','notification') }}" class="inline-flex items-center justify-center text-success-500 new-referral" type="button" data-type="investment">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                {{ __('Back') }}
+            </a>
+        </div>
+    </div>
     <div class="col-span-12">
         <div class="card">
-            <div class="card-header d-flex">
-                <h4 class="card-title">{{ __('Notification Tune Settings') }}</h4>
-                <div class="card-header-links">
-                    <a  href="{{ route('admin.settings.plugin','notification') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center new-referral" type="button" data-type="investment">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
-                        {{ __('Back') }}
-                    </a>
-                </div>
-            </div>
             <div class="card-body p-6 space-y-4">
                 @foreach($set_tunes as $set_tune)
                 <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">

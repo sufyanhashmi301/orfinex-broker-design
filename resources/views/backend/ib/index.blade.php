@@ -3,20 +3,27 @@
     {{ __('IB') }}
 @endsection
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h4 class="card-title">{{ __('IB Forms') }}</h4>
-            <a href="{{ route('admin.ib-form.create') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('IB Forms') }}
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a href="{{ route('admin.ib-form.create') }}" class="inline-flex items-center justify-center text-success-600">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
         </div>
-        <div class="card-body p-6 pt-0">
+    </div>
+
+    @include('backend.ib.include.__menu')
+
+    <div class="card">
+        <div class="card-body px-6 pb-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="bg-slate-200 dark:bg-slate-700">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Verification Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>

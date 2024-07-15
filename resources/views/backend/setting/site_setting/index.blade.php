@@ -1,17 +1,15 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('Site Settings') }}
-@endsection
 @section('title')
     {{ __('Site Settings') }}
 @endsection
 @section('setting-content')
+    <div class="space-y-5">
+        @foreach(config('setting') as $section => $fields)
 
-    @foreach(config('setting') as $section => $fields)
+            @includeIf('backend.setting.site_setting.include.__'. $section)
 
-        @includeIf('backend.setting.site_setting.include.__'. $section)
-
-    @endforeach
+        @endforeach
+    </div>
 @endsection
 @push('single-script')
     <script>

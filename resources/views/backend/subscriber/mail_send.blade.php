@@ -4,10 +4,12 @@
 @endsection
 @section('content')
     <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                {{ __('Send Email to All Subscriber') }}
+            </h4>
+        </div>
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">{{ __('Send Email to All Subscriber') }}</h4>
-            </div>
             <div class="card-body p-6">
                 <form action="{{ route('admin.mail.send.subscriber.now') }}" method="post" class="space-y-5">
                     @csrf

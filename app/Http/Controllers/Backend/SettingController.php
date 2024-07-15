@@ -72,7 +72,7 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-
+        // dd($request->all());
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
         $data = $this->validate($request, $rules);
@@ -112,5 +112,30 @@ class SettingController extends Controller
     {
         return view('backend.server_settings.server.index');
     }
+
+    public static function companySetting()
+    {
+        return view('backend.setting.site_setting.company');
+    }
+    
+    public static function currencySetting()
+    {
+        return view('backend.setting.site_setting.currency');
+    }
+    
+    public static function siteMaintenance()
+    {
+        return view('backend.setting.site_setting.site_maintenance');
+    }
+        
+    public static function transfers()
+    {
+        return view('backend.setting.site_setting.transfers');
+    }
+        
+    public static function gdpr()
+    {
+        return view('backend.setting.site_setting.gdpr');
+    }  
 
 }

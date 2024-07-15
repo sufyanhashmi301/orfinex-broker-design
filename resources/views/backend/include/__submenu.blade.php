@@ -9,16 +9,5 @@
             </div>
         </div>
     </div>
-    <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
-        <li>
-            <a href="" class="navItem {{ isActive(['admin.user*','admin.notification*']) }}">
-                {{ __('Customers') }}
-            </a>
-        </li>
-        <li>
-            <a href="" class="navItem">
-                {{ __('Compliance & KYC')}}
-            </a>
-        </li>
-    </ul>
+    @yield('submenu')
 </div>

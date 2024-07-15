@@ -1,7 +1,4 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('User Permissions') }}
-@endsection
 @section('title')
     {{ __('User Permissions') }}
 @endsection

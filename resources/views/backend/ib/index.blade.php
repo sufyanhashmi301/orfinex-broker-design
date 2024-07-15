@@ -69,7 +69,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Modal for Delete deleteKycType -->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
         id="deleteKyc"
@@ -116,7 +116,7 @@
 @endsection
 @section('script')
     <script>
-        $('.deleteKyc').on('click',function (e) {
+        $('.deleteKyc').on('click', function (e) {
             "use strict";
             e.preventDefault();
             var id = $(this).data('id');

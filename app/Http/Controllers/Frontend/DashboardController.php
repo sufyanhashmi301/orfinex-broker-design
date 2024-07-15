@@ -16,11 +16,13 @@ class DashboardController extends Controller
     use ForexApiTrait;
     public function dashboard(Request $request)
     {
-//        dd(getLocation());
+//        dd(getLocation(),'dashboar');
         $user = auth()->user();
+
+
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->syncForexAccounts(auth()->id());
+//            sync_forex_accounts(auth()->id());
         }
 //        if(!$user->ref_id) {
 //            AgentReferralJob::dispatch($user);
@@ -47,10 +49,9 @@ class DashboardController extends Controller
             'investment_bonus' => $user->totalInvestBonus(),
             'rank_achieved' => $user->rankAchieved(),
             'total_ticket' => $user->ticket->count(),
-            'total_forex_balance' => $user->totalForexBalance(),
-            'total_forex_equity' => $user->totalForexEquity(),
+            'total_forex_balance' => mt5_total_balance($user->id),
+            'total_forex_equity' => mt5_total_equity($user->id),
         ];
-
         $referral = $user->getReferrals()->first();
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')

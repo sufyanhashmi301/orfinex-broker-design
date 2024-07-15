@@ -12,9 +12,13 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
+        
 //        $this->sendApiPostRequest('url','data');
 //        $this->getUserApi(554944);
-        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
+        $schemas = ForexSchema::where('status', true) ->where(function($query) {
+            $query->whereJsonContains('country', auth()->user()->country)
+                ->orWhereJsonContains('country', 'All');
+        })->orderBy('priority','asc')->get();
 
         return view('frontend::forex_schema.index', compact('schemas'));
     }

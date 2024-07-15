@@ -45,18 +45,18 @@
                     <div class="input-area">
                         <select class="form-control w-100" name="target_id" id="tradingAccount">
                             <option value="">Select Account</option>
-                            @foreach($realForexAccounts as $forexAccount)
-                                <option value="{{$forexAccount->login}}" data-type="forex">
-                                    {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
-                                    ({{ $forexAccount->equity }} {{$forexAccount->currency}})
-                                </option>
-                            @endforeach
-                            @if($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))
-                                <option value="{{ $user->ib_login }}" data-type="forex"
-                                        data-type="forex">{{ $user->ib_login }}
-                                    - {{ __('IB') }} ({{ $user->ib_balance }} {{$currency}})
-                                </option>
-                            @endif
+                                @foreach($realForexAccounts as $forexAccount)
+                                    <option value="{{$forexAccount->login}}" data-type="forex">
+                                        {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
+                                        ({{ get_mt5_account_equity($forexAccount->login) }} {{$forexAccount->currency}})
+                                    </option>
+                                @endforeach
+                                @if($user->ib_status == \App\Enums\IBStatus::APPROVED && isset($user->ib_login))
+                                    <option value="{{ $user->ib_login }}" data-type="forex"
+                                            data-type="forex">{{ $user->ib_login }}
+                                        - {{ __('IB') }} ({{ $user->ib_balance }} {{$currency}})
+                                    </option>
+                                @endif
                         </select>
 
                     </div>

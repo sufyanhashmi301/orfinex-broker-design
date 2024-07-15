@@ -12,16 +12,16 @@
     @endif
 
 
+    @can('ib-action')
+        @if($user->ib_status !=='approved')
+            <button class="toolTip onTop action-btn approve-btn" data-tippy-theme="dark" data-tippy-content="Edit" title="Edit">
+                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+            </button>
 
-    @if($user->ib_status !=='approved')
-    <button class="toolTip onTop action-btn approve-btn" data-tippy-theme="dark" data-tippy-content="Edit" title="Edit">
-        <iconify-icon icon="lucide:edit-3"></iconify-icon>
-    </button>
 
-
-    <button type="button" class="toolTip onTop action-btn reject-btn" data-tippy-theme="dark" data-tippy-content="Reject" title="Reject">
-        <iconify-icon icon="mdi:multiply"></iconify-icon>
-    </button>
-    @endif
+            <button type="button" class="toolTip onTop action-btn reject-btn" data-tippy-theme="dark" data-tippy-content="Reject" title="Reject">
+                <iconify-icon icon="mdi:multiply"></iconify-icon>
+            </button>
+        @endif
+    @endcan
 </div>
-

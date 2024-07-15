@@ -105,6 +105,7 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
@@ -173,6 +174,7 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
@@ -301,25 +303,16 @@ class DepositController extends Controller
                 }
                 $transaction->save();
                 $transaction = $transaction->fresh();
-                if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
-                    $this->firstMinDepositUpdate($transaction->target_id);
-                } else {
-                    $transaction->user->increment('balance', $transaction->amount);
+//                dd($transaction);
+//                if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
+//                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+////                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
+////                    $this->firstMinDepositUpdate($transaction->target_id);
+//                } else {
+//                    $transaction->user->increment('balance', $transaction->amount);
+//                }
+
                 }
-
-
-                //level referral
-                if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-                    if(!isset($transaction->user->multi_ib_login)) {
-                        createMultiIBAccount($transaction->user);
-                    }
-                    $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-                    creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
-                }
-            }
-
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
 
@@ -353,13 +346,5 @@ class DepositController extends Controller
         return redirect()->back();
     }
 
-    public function FirstMinDepositUpdate($login)
-    {
-        $forexAccount = ForexAccount::where('login', $login)->first();
-        if (!$forexAccount) {
-            return false;
-        }
-        $forexAccount->update(['first_min_deposit_paid'=>1]);
-    }
 }
 

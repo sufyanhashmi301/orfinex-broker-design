@@ -20,7 +20,7 @@
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Profit') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Profit') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -73,7 +73,7 @@
                     {"class": "table-td", data: 'username', name: 'username'},
                     {"class": "table-td", data: 'email', name: 'email'},
                     {"class": "table-td", data: 'balance', name: 'balance'},
-                    {"class": "table-td", data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
+                    // {"class": "table-td", data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
                     {"class": "table-td", data: 'kyc', name: 'kyc'},
                     {"class": "table-td", data: 'status', name: 'status'},
                     {"class": "table-td", data: 'action', name: 'action', orderable: false, searchable: false},

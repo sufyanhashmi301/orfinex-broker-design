@@ -185,6 +185,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-span-12">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this method to whole world):') }}</label>
+                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
+                                    @foreach( getCountries() as $country)
+                                        <option  value="{{ $country['name'] }}">
+                                            {{ $country['name']  }}
+                                        </option>
+                                    @endforeach
+                                    <option  value="All" >
+                                        {{ __('All') }}
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
                         @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center mb-3">
@@ -208,6 +224,18 @@
     </div>
 @endsection
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+    <script>
+
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            // maxItemCount:7,
+            // searchResultLimit:7,
+            // renderChoiceLimit:7
+        });
+
+    </script>
     <script>
         $(document).ready(function (e) {
             "use strict";

@@ -26,7 +26,12 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Country:') }}</label>
-                        <input type="text" class="form-control" value="{{$user->country}}" disabled>
+                        {{-- <input type="text" class="form-control" value="{{$user->country}}" disabled> --}}
+                        <select  class="select2 form-control w-full mt-2 py-2" name="country" placeholder="Countries" >
+                            @foreach( getCountries() as $country)
+                                <option value="{{$country['name']}}"  @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Phone:') }}</label>
@@ -67,6 +72,11 @@
                         <input type="text" class="form-control"
                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}"
                                required="" disabled>
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Comment/Tag line:') }}</label>
+                        <textarea type="text"  name="comment" class="form-control"
+                        > {{ $user->comment }}</textarea>
                     </div>
 
                     <div class="input-area text-right lg:col-span-3">

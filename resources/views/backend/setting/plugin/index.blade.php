@@ -90,7 +90,6 @@
                 $('#editPlugin').modal('show');
 
             })
-
         })
     </script>
 

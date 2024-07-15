@@ -68,7 +68,7 @@
                             </div>
                             <div class="flex">
                                 <span class="flex-none space-x-2 text-base text-secondary-500 flex rtl:space-x-reverse">
-                                    <a href="{{ route('user.withdraw.account.edit',$account->id) }}" class="action-btn">
+                                    <a href="{{ route('user.withdraw.account.edit',the_hash($account->id)) }}" class="action-btn">
                                         <iconify-icon icon="heroicons-outline:pencil-alt"></iconify-icon>
                                     </a>
                                 </span>

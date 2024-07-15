@@ -71,6 +71,11 @@
                 {{ __('Maintenance')}}
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.settings.forex-api') }}" class="navItem {{ isActive('admin.settings.forex-api') }}">
+                {{ __('Platform API') }}
+            </a>
+        </li>
     </ul>
 @endsection
 @section('content')

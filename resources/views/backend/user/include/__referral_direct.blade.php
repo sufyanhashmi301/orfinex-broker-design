@@ -9,12 +9,14 @@
             <h4 class="card-title">
                 {{ __('Direct referrals of :name',['name'=>$user->full_name]) }}    
             </h4>
-            <span data-bs-toggle="modal" data-bs-target="#addReferralModal">
-                <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                    {{ __('Add Referral') }}
-                </a>
-            </span>
+            @can('user-direct-referral-create')
+                <span data-bs-toggle="modal" data-bs-target="#addReferralModal">
+                    <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                        {{ __('Add Referral') }}
+                    </a>
+                </span>
+            @endcan
         </div>
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

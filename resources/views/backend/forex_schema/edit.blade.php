@@ -170,7 +170,6 @@
                                     oninput="this.value = validateDouble(this.value)"
                                     class="form-control"
                                     placeholder="Min deposit"
-
                                 />
                             </div>
                         </div>
@@ -188,6 +187,21 @@
                                 />
                             </div>
                         </div>
+                        
+                        <div class="lg:col-span-1 col-span-2">
+                            <div class="site-input-groups">
+                                <label class="box-input-label" for="">{{ __('Account Creation Limit:') }}</label>
+                                <input
+                                    type="text"
+                                    name="account_limit"
+                                    value="{{$schema->account_limit}}"
+                                    oninput="this.value = validateDouble(this.value)"
+                                    class="box-input"
+                                    placeholder="Account Limit"
+
+                                />
+                            </div>
+                        </div>
                         <div class="col-span-2">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
@@ -201,7 +215,6 @@
 
                                 </select>
                             </div>
-
                         </div>
                         <div class="col-span-2">
                             <div class="input-area fw-normal">
@@ -260,7 +273,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="lg:col-span-1 col-span-2">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Internal Transfer:') }}</label>

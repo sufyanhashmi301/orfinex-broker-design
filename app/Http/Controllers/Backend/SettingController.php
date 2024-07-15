@@ -45,6 +45,10 @@ class SettingController extends Controller
     {
         return view('backend.setting.mail');
     }
+    public static function forexApiSetting()
+    {
+        return view('backend.setting.forex-api');
+    }
 
     public static function mailConnectionTest(Request $request)
     {
@@ -75,6 +79,7 @@ class SettingController extends Controller
         // dd($request->all());
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
+//        dd($request->all(),$rules);
         $data = $this->validate($request, $rules);
 
         try {

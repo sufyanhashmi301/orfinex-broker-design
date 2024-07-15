@@ -52,9 +52,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+//Route::group(['middleware' => [ '2fa']], function () {
+Route::middleware(['2fa_admin','set.session.lifetime:admin'])->group(function () {
 //Admin Dashboard
-Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+
 
 //===============================  Customer Management ==================================
 Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
@@ -69,6 +71,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserControlle
     Route::post('mail-send', 'mailSend')->name('mail-send');
     Route::get('transaction/{id}', 'transaction')->name('transaction');
     Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
+    Route::post('export', 'export')->name('export');
 });
 
 Route::resource('kyc-form', KycController::class);
@@ -105,13 +108,23 @@ Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::cla
 
 //===============================  Role Management ==================================
 Route::resource('roles', RoleController::class)->except('show', 'destroy');
+Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
 Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
-
+Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
+Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
+Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
+Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
+Route::post('/2fa/verify', function () {
+//            dd(route('admin.dashboard'));
+    return redirect(route('admin.dashboard'));
+})->name('2fa.verify');
 //===============================  Plans Management ==================================
 Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
 Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-Route::resource('blackListCountry', BlackListCountryController::class)->except('show'  );
+Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
+Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
 //===============================  Profit Deduction Management ==================================
 Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
@@ -120,8 +133,7 @@ Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'
 //===============================  Transactions ==================================
 Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
 Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
-Route::get('forex-accounts/real/{id?}', [InvestmentController::class, 'forexAccountsReal'])->name('forex-accounts-real');
-Route::get('forex-accounts/demo/id?}', [InvestmentController::class, 'forexAccountsDemo'])->name('forex-accounts-demo');
+Route::get('forex-accounts/{type?}/{id?}', [InvestmentController::class, 'forexAccounts'])->name('forex-accounts');
 Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================
@@ -195,7 +207,6 @@ Route::resource('ranking', RankingController::class)->only('index', 'store', 'up
 
 Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
-    Route::get('global', 'globalSettings')->name('global');
     Route::get('site', 'siteTheme')->name('site');
     Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
@@ -206,41 +217,6 @@ Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeContro
     Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
 });
 
-Route::group(['prefix' => 'navigation', 'as' => 'navigation.', 'controller' => NavigationController::class], function () {
-    Route::get('menu', 'index')->name('menu');
-    Route::post('menu-add', 'store')->name('menu.add');
-    Route::get('menu-edit/{id}', 'edit')->name('menu.edit');
-    Route::post('menu-update', 'update')->name('menu.update');
-    Route::post('menu-delete', 'delete')->name('menu.delete');
-    Route::get('menu-delete/{id}/{type}', 'typeDelete')->name('menu.type.delete');
-    Route::post('menu-position-update', 'positionUpdate')->name('position.update');
-
-    Route::get('header', 'header')->name('header');
-    Route::get('footer', 'footer')->name('footer');
-
-    Route::get('translate/{id}', 'translate')->name('translate');
-    Route::post('translate', 'translateNow')->name('translate.now');
-});
-Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
-    Route::get('create', 'create')->name('create');
-    Route::post('store', 'store')->name('store')->withoutMiddleware('XSS');
-    Route::get('edit/{name}', 'edit')->name('edit');
-    Route::post('update', 'update')->name('update')->withoutMiddleware('XSS');
-    Route::post('delete/now', 'deleteNow')->name('delete.now');
-
-    Route::get('section/{section}', 'landingSection')->name('section.section');
-    Route::post('section/update', 'landingSectionUpdate')->name('section.section.update');
-    Route::post('content-store', 'contentStore')->name('content-store');
-    Route::get('content-edit/{id}', 'contentEdit')->name('content-edit');
-    Route::post('content-update', 'contentUpdate')->name('content-update');
-    Route::post('content-delete', 'contentDelete')->name('content-delete');
-
-    Route::resource('blog', BlogController::class)->except('show')->withoutMiddleware('XSS');
-
-    Route::get('settings', 'pageSetting')->name('setting');
-    Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
-});
-Route::get('footer-content', [PageController::class, 'footerContent'])->name('footer-content');
 
 Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
     Route::post('store', 'store')->name('store');
@@ -253,6 +229,7 @@ Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialCon
 Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
     Route::get('site', 'siteSetting')->name('site');
     Route::get('mail', 'mailSetting')->name('mail');
+    Route::get('forex-api', 'forexApiSetting')->name('forex-api');
     Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
     Route::post('update', 'update')->name('update');
 
@@ -343,7 +320,6 @@ Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('
 Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
 Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
 Route::get('/ib-resources', function () {
     return view('backend.ib.resources.index');
@@ -370,3 +346,7 @@ Route::get('/bonus', function () {
 Route::get('/bonus/create', function () {
     return view('backend.bonus.create');
 });
+});
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');

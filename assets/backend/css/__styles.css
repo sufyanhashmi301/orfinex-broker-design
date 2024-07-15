@@ -332,13 +332,21 @@ img {
   /* background: #5e3fc9; */
   background: rgb(15, 23, 42);
 }
-
+.danger-btn {
+  color: #ffffff;
+  /* background: #5e3fc9; */
+  background: #ef476f;
+}
 .primary-btn:hover {
   /* background: #3c1fa1; */
   background: rgb(8, 13, 24);
   color: #ffffff;
 }
-
+.danger-btn:hover {
+  /* background: #3c1fa1; */
+  background: #ef476f;
+  color: #ffffff;
+}
 .blue-btn {
   background: #101935;
   color: #ffffff;

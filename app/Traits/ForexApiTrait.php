@@ -278,9 +278,14 @@ trait ForexApiTrait
             $dataArray['URL'] = $URL;
 //            $dataArray['Login'] = 88868;
             $localURL = 'https://brokerdemo.brokeret.com/api/get/forex';
+
 //            dd($localURL,$dataArray);
-            $response = Http::retry(3, 100)->get($localURL, $dataArray);
+            $response = Http::withoutVerifying()
+                ->retry(3, 100)
+                ->get($localURL, $dataArray);
+//            dd($response->object());
             return $response;
+
         } else {
             try {
                 return Http::retry(3, 100)->get($URL, $dataArray);
@@ -292,19 +297,22 @@ trait ForexApiTrait
 
     public function sendApiPostRequest($URL, $dataArray)
     {
-        $clientIp = request()->ip();
-        if (in_array($clientIp, ['127.0.0.1', '::1'])) {
-            $dataArray['URL'] = $URL;
-            $localURL = 'https://brokerdemo.brokeret.com/api/post/forex';
-//            dd($localURL,$dataArray);
-            return Http::retry(3, 100)->get($localURL, $dataArray);
-        } else {
+//        dd('ss');
+//        $clientIp = request()->ip();
+//        if (in_array($clientIp, ['127.0.0.1', '::1'])) {
+//            $dataArray['URL'] = $URL;
+//            $localURL = 'https://brokerdemo.brokeret.com/api/post/forex';
+////            dd($localURL,$dataArray);
+//            return Http::withoutVerifying()
+//                ->retry(3, 100)->get($localURL, $dataArray);
+//        } else {
             try {
+//                dd('ss');
                 return Http::retry(3, 100)->post($URL, $dataArray);
             } catch (\GuzzleHttp\Exception\RequestException $exception) {
                 return $exception;
             }
-        }
+//        }
     }
 
     public function isValidForexAccount($login)
@@ -313,21 +321,21 @@ trait ForexApiTrait
 
         $dataArray = array(
             'Login' => $login,
-
         );
 
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
-        if ($response->status() == 200) {
-            if (isset($response->object()->Login)) {
-                return true;
-            } else {
-                $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
-                notify()->error($message, 'Error');
-            }
+        if ($response->status() != 200) {
+            $message = __('The forex account :login is not exist in MT5! Please choose valid account', ['login' => $login]);
+            notify()->error($message, 'Error');
+            return false;
         }
-        throw ValidationException::withMessages([
-            'invalid' => __('Some thing wrong! Please reload the page and try again!')
-        ]);
+        if (!isset($response->object()->Login)) {
+            return false;
+        }
+        if ($response->object()->Login == 0) {
+            return false;
+        }
+        return true;
     }
 
 //
@@ -335,19 +343,18 @@ trait ForexApiTrait
     {
 //        dd($login);
         $getUserResponse = $this->getUserApi($login);
-//        dd($getUserResponse->object());
-        if ($getUserResponse->status() == 200) {
+//        dd($getUserResponse);
+        if ($getUserResponse) {
             if (isset($getUserResponse->object()->Login)) {
                 return BigDecimal::of($getUserResponse->object()->MarginFree)->minus($getUserResponse->object()->Credit);
             } else {
                 throw ValidationException::withMessages([
                     'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])
                 ]);
+                return BigDecimal::of(0);
             }
         }
-        throw ValidationException::withMessages([
-            'invalid' => __('Some thing wrong! Please reload the page and try again!')
-        ]);
+        return BigDecimal::of(0);
     }
 
     public function forexWithdraw($login, $amount, $comment)
@@ -364,7 +371,7 @@ trait ForexApiTrait
         ];
 //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiPostRequest($withdrawUrl, $dataArray);
-//        dd($withdrawResponse->object());
+//        dd($withdrawResponse->object(),$amount);
         if ($withdrawResponse->status() == 200 && $withdrawResponse->object() == 10009) {
             return true;
         } else {
@@ -399,18 +406,19 @@ trait ForexApiTrait
         $url = config('forextrading.dealerCreditUrl');
 
         $dataArray = [
-            'Login' => 6735,
-            'Amount' => 1,
-            'Comment' => 'credit balance',
+            'Login' => $login,
+            'Amount' => $amount,
+            'Comment' => $comment,
 
         ];
         $response = $this->sendApiPostRequest($url, $dataArray);
-        dd($response->object());
+//        dd($response->object());
         if ($response->status() == 200 && $response->object() == 10009) {
             return true;
         } else {
             $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
             notify()->error($message, 'Error');
+            return false;
         }
     }
 //
@@ -549,6 +557,7 @@ trait ForexApiTrait
 
         $realAccounts = ForexAccount::where('user_id', $userID)
             ->where('status', ForexAccountStatus::Ongoing)
+            ->where('login', 1003462)
             ->get();
 
         $balance = 0;

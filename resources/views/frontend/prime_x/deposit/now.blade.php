@@ -70,7 +70,7 @@
                                             <strong>{{ __('Amount') }}</strong>
                                         </td>
                                         <td class="dark:text-slate-300">
-                                            <span class="amount"></span> 
+                                            <span class="amount"></span>
                                             <span class="currency"></span>
                                         </td>
                                     </tr>

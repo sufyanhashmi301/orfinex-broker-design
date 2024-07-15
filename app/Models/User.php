@@ -40,19 +40,18 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'city',
         'zip_code',
         'address',
+        'comment',
         'balance',
         'profit_balance',
         'status',
         'ib_login',
         'ib_balance',
         'ib_status',
-        'multi_ib_login',
-        'multi_ib_balance',
         'is_multi_ib',
-        'multi_ib_calc_at',
-
         'kyc',
         'kyc_credential',
+        'kyc_token',
+        'kyc_created_at',
         'risk_profile_tags',
         'google2fa_secret',
         'two_fa',
@@ -89,7 +88,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'two_fa' => 'boolean',
     ];
-
     public function riskProfileTags()
     {
         return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tags_users');
@@ -110,12 +108,26 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     public function getKycTypeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_type_of_name'] ?? '';
+        if (isset($this->attributes['kyc_credential']) && !empty($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
+
+        return '';
     }
 
     public function getKycTimeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_time_of_time'] ?? '';
+        if (isset($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
+
+        return '';
     }
 
     public function getTotalProfitAttribute(): string
@@ -196,14 +208,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Deposit)
                 ->orWhere('type', TxnType::ManualDeposit);
-        })->sum('amount');
-
-        return round($sum, 2);
-    }
-    public function totalIBWithdraw()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::IB);
         })->sum('amount');
 
         return round($sum, 2);

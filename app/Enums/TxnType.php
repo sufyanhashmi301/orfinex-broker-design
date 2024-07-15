@@ -8,6 +8,7 @@ enum TxnType: string
 {
     case Deposit = 'deposit';
     case ForexDeposit = 'forex_deposit';
+    case DemoDeposit = 'demo_deposit';
     case Subtract = 'subtract';
     case ManualDeposit = 'manual_deposit';
     case SendMoney = 'send_money';

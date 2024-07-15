@@ -125,4 +125,17 @@ class RoleController extends Controller
 
         return redirect()->back();
     }
+    public function destroy($id)
+    {
+        $role = Role::findOrFail($id);
+        if ($role->users()->exists()) {
+            notify()->error('Cannot delete role because there are users associated with it.');
+            return redirect()->back();
+        }
+        $role->delete();
+
+        notify()->success('role deleted successfully');
+
+        return redirect()->back();
+    }
 }

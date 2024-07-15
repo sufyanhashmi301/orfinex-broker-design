@@ -34,7 +34,6 @@
                 </span>
             </div>
         </div>
-
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
@@ -62,7 +61,7 @@
                                         {{ $user->ib_login }}
                                     </td>
                                     <td class="table-td">
-                                        {{ $user->ib_balance }}
+                                        {{ get_mt5_account_equity($user->ib_login) }}
                                     </td>
                                     <td class="table-td">
                                         {{ ucfirst($user->ib_status)}}
@@ -76,7 +75,7 @@
                                         {{ $user->multi_ib_login }}
                                     </td>
                                     <td class="table-td">
-                                        {{ $user->multi_ib_balance }}
+                                        {{  get_mt5_account_equity($user->multi_ib_login)  }}
                                     </td>
                                     <td class="table-td">
                                         @if(isset($user->multi_ib_login ))

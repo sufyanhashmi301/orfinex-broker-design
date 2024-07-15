@@ -184,12 +184,12 @@
                     </a>
                     <ul class="sidebar-submenu">
                         <li>
-                            <a href="{{route('admin.forex-accounts-real')}}" class="{{ isActive('admin.forex-accounts-real') }}">
+                            <a href="{{route('admin.forex-accounts',['type'=>'real'])}}" class="{{ isActive('admin.forex-accounts',['type'=>'real']) }}">
                                 {{ __('Live Accounts') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.forex-accounts-real')}}" class="{{ isActive('admin.forex-accounts-real') }}">
+                            <a href="{{route('admin.forex-accounts',['type'=>'demo'])}}" class="{{ isActive('admin.forex-accounts',['type'=>'demo']) }}">
                                 {{ __('Demo Accounts') }}
                             </a>
                         </li>

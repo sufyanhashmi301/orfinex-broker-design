@@ -72,6 +72,7 @@ class ForexSchemaController extends Controller
             'is_ib_partner' => 'required',
             'is_internal_transfer' => 'required',
             'is_external_transfer' => 'required',
+            'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer|unique:forex_schemas,priority',
         ]);
 
@@ -90,6 +91,7 @@ class ForexSchemaController extends Controller
             'spread' => $input['spread'],
             'leverage' => $input['leverage'],
             'first_min_deposit' => $input['first_min_deposit'],
+            'account_limit' => $input['account_limit'],
             'real_swap_free' => $input['real_swap_free'],
             'real_islamic' => $input['real_islamic'],
             'demo_swap_free' => $input['demo_swap_free'],
@@ -145,6 +147,7 @@ class ForexSchemaController extends Controller
             'is_ib_partner' => 'required',
             'is_internal_transfer' => 'required',
             'is_external_transfer' => 'required',
+            'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer|unique:forex_schemas,priority,' . $id,
 
         ]);
@@ -165,6 +168,7 @@ class ForexSchemaController extends Controller
             'commission' => $input['commission'],
             'leverage' => $input['leverage'],
             'first_min_deposit' => !empty($input['first_min_deposit']) ? $input['first_min_deposit'] : null,
+            'account_limit' => $input['account_limit'],
             'real_swap_free' => $input['real_swap_free'],
             'real_islamic' => $input['real_islamic'],
             'demo_swap_free' => $input['demo_swap_free'],

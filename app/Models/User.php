@@ -40,6 +40,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'city',
         'zip_code',
         'address',
+        'comment',
         'balance',
         'profit_balance',
         'status',
@@ -107,12 +108,26 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     public function getKycTypeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_type_of_name'] ?? '';
+        if (isset($this->attributes['kyc_credential']) && !empty($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
+
+        return '';
     }
 
     public function getKycTimeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_time_of_time'] ?? '';
+        if (isset($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
+
+        return '';
     }
 
     public function getTotalProfitAttribute(): string

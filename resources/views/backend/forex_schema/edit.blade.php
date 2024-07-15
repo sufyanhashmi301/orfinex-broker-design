@@ -120,6 +120,20 @@
                                 </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('First Min Deposit:') }}</label>
+                                        <input
+                                            type="text"
+                                            name="first_min_deposit"
+                                            value="{{$schema->first_min_deposit}}"
+                                            oninput="this.value = validateDouble(this.value)"
+                                            class="box-input"
+                                            placeholder="Min deposit"
+
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 ">
+                                    <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Demo (Swap):') }}</label>
                                         <input
                                             type="text"
@@ -170,20 +184,7 @@
                                         />
                                     </div>
                                 </div>
-                                <div class="col-xl-6 ">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('First Min Deposit:') }}</label>
-                                        <input
-                                            type="text"
-                                            name="first_min_deposit"
-                                            value="{{$schema->first_min_deposit}}"
-                                            oninput="this.value = validateDouble(this.value)"
-                                            class="box-input"
-                                            placeholder="Min deposit"
 
-                                        />
-                                    </div>
-                                </div>
                                 <div class="col-xl-6 ">
                                     <div class="site-input-groups">
                                         <label class="box-input-label" for="">{{ __('Priority:') }}</label>
@@ -194,6 +195,20 @@
                                             oninput="this.value = validateDouble(this.value)"
                                             class="box-input"
                                             placeholder="Priority e.g 1,2,3.."
+
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 ">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Account Creation Limit:') }}</label>
+                                        <input
+                                            type="text"
+                                            name="account_limit"
+                                            value="{{$schema->account_limit}}"
+                                            oninput="this.value = validateDouble(this.value)"
+                                            class="box-input"
+                                            placeholder="Account Limit"
 
                                         />
                                     </div>

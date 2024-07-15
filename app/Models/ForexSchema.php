@@ -57,6 +57,7 @@ class ForexSchema extends Model
 		'badge',
 		'leverage',
 		'first_min_deposit',
+        'account_limit',
 		'real_swap_free',
 		'real_islamic',
 		'demo_swap_free',

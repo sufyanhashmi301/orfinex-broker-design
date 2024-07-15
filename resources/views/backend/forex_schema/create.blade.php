@@ -188,6 +188,19 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="col-xl-6 ">
+                                    <div class="site-input-groups">
+                                        <label class="box-input-label" for="">{{ __('Account Creation Limit:') }}</label>
+                                        <input
+                                            type="text"
+                                            name="account_limit"
+                                            oninput="this.value = validateDouble(this.value)"
+                                            class="box-input"
+                                            placeholder="Account Limit"
+
+                                        />
+                                    </div>
+                                </div>
 
                                 <div class="col-xl-12">
                                     <div class="site-input-groups">

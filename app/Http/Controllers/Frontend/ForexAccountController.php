@@ -66,13 +66,21 @@ class ForexAccountController extends GatewayController
 
             return redirect()->back();
         }
-
         $input = $request->all();
-//        dd($input);
-
         $user = Auth::user();
         $schema = ForexSchema::find($input['schema_id']);
-
+        if($request->group == 'real_swap_free'  || $request->group == 'real_islamic'){
+            $accountType = 'real';
+        }else{
+            $accountType = 'demo';
+        }
+//        dd(ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count(),$accountType,$schema->account_limit);
+        if (ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count() >= $schema->account_limit) {
+            $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.',['title'=> $schema->title]);
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
+//        dd('s');
         $group = $schema[$request->group];
 
         $server = config('forextrading.server');
@@ -103,7 +111,7 @@ class ForexAccountController extends GatewayController
             "investorPassword" => 'SNNH@2024@bol'
         ];
 //dd($request->group);
-        if($request->group == 'real_swap_free'  || $request->group == 'real_islamic'){
+        if($accountType == 'real'){
             $response = $this->forexApiService->createUser($data);
         }else{
             $response = $this->forexApiService->createUserDemo($data);

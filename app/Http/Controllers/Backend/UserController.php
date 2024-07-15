@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\ForexAccount;
@@ -26,6 +27,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Txn;
 
 class UserController extends Controller
@@ -57,10 +59,34 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
+            $data = User::query();
 
-            $data = User::latest();
+            // Apply filters
+            if ($request->has('global_search') && $request->global_search) {
+                $search = $request->global_search;
+                $data->where(function($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+            if ($request->has('phone') && $request->phone) {
+                $data->where('phone', 'like', "%" . $request->phone . "%");
+            }
+            if ($request->has('country') && $request->country) {
+                $data->where('country', 'like', "%" . $request->country . "%");
+            }
+            if ($request->has('status') && $request->status !== '') {
+                $data->where('status', $request->status);
+            }
+            if ($request->has('created_at') && $request->created_at) {
+                $data->whereDate('created_at', $request->created_at);
+            }
+            if ($request->has('tag') && $request->tag) {
+                $data->where('comment', 'like', "%" . $request->tag . "%");
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -74,15 +100,17 @@ class UserController extends Controller
                 ->editColumn('username', function ($request) {
                     return safe($request->username);
                 })
-//                ->editColumn('total_profit', function ($request) {
-//                    return $request->total_profit . ' ' . setting('site_currency');
-//                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'balance','status', 'action'])
+                ->rawColumns(['avatar', 'kyc', 'balance', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.index');
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new UsersExport($request), 'users.xlsx');
     }
 
     /**
@@ -277,11 +305,14 @@ class UserController extends Controller
     public function update($id, Request $request)
     {
         $input = $request->all();
+//        dd($input);
 
         $validator = Validator::make($input, [
             'first_name' => 'required',
             'last_name' => 'required',
+//            'phone' => 'required',
             'username' => 'required|unique:users,username,' . $id,
+            'email' => 'required|string|max:255|email|unique:users,email,' . $id,
         ]);
 
         if ($validator->fails()) {

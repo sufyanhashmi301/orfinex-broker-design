@@ -34,13 +34,18 @@
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
                                     <div class="site-input-groups">
                                         <label for="" class="box-input-label">{{ __('Country:') }}</label>
-                                        <input type="text" class="box-input" value="{{$user->country}}" disabled>
+{{--                                        <input type="text" class="box-input" value="{{$user->country}}" >--}}
+                                        <select  class="site-nice-select w-100" name="country" placeholder="Countries" >
+                                            @foreach( getCountries() as $country)
+                                                <option value="{{$country['name']}}"  @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
                                     <div class="site-input-groups">
                                         <label for="" class="box-input-label">{{ __('Phone:') }}</label>
-                                        <input type="text" class="box-input" value="{{ safe($user->phone) }}" disabled>
+                                        <input type="text" class="box-input" name="phone" value="{{ safe($user->phone) }}" >
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
@@ -53,7 +58,7 @@
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
                                     <div class="site-input-groups">
                                         <label for="" class="box-input-label">{{ __('Email:') }}</label>
-                                        <input type="email" class="box-input" value="{{ safe($user->email) }}" disabled>
+                                        <input type="email" class="box-input" name="email" value="{{ safe($user->email) }}" >
                                     </div>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
@@ -93,6 +98,13 @@
                                         <input type="text" class="box-input"
                                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}"
                                                required="" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                    <div class="site-input-groups">
+                                        <label for="" class="box-input-label">{{ __('Comment/Tag line:') }}</label>
+                                        <textarea type="text"  name="comment" class="box-input"
+                                        > {{ $user->comment }}</textarea>
                                     </div>
                                 </div>
 

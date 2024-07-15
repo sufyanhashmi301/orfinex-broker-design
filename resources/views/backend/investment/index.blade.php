@@ -140,7 +140,7 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.forex-accounts-real') }}",
+                ajax: "{{ route('admin.forex-accounts',['type'=>'real']) }}",
                 columns: [
                     {"class": "table-td", data: 'login', name: 'login'},
                     {"class": "table-td", data: 'username', name: 'username'},

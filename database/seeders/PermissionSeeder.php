@@ -32,15 +32,18 @@ class PermissionSeeder extends Seeder
             ['category' => 'Role Management', 'name' => 'role-list'],
             ['category' => 'Role Management', 'name' => 'role-create'],
             ['category' => 'Role Management', 'name' => 'role-edit'],
+            ['category' => 'Role Management', 'name' => 'role-delete'],
 
             ['category' => 'Staff Management', 'name' => 'staff-list'],
             ['category' => 'Staff Management', 'name' => 'staff-create'],
             ['category' => 'Staff Management', 'name' => 'staff-edit'],
+            ['category' => 'Staff Management', 'name' => 'staff-delete'],
 
             ['category' => 'Plan Management', 'name' => 'schedule-manage'],
             ['category' => 'Plan Management', 'name' => 'schema-list'],
             ['category' => 'Plan Management', 'name' => 'schema-create'],
             ['category' => 'Plan Management', 'name' => 'schema-edit'],
+            ['category' => 'Plan Management', 'name' => 'schema-delete'],
 
             ['category' => 'Transaction Management', 'name' => 'transaction-list'],
             ['category' => 'Transaction Management', 'name' => 'investment-list'],

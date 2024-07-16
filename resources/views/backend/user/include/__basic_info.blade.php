@@ -73,7 +73,7 @@
                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}"
                                required="" disabled>
                     </div>
-                    <div class="input-area">
+                    <div class="input-area lg:col-span-3">
                         <label for="" class="form-label">{{ __('Comment/Tag line:') }}</label>
                         <textarea type="text"  name="comment" class="form-control"
                         > {{ $user->comment }}</textarea>

@@ -15,36 +15,36 @@
             <div class="card-body p-6">
                 <form action="{{ route('admin.withdraw.schedule.update') }}" method="post">
                     @csrf
-                    <div class="grid grid-cols-12 items-center gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         @foreach($schedules as $schedule)
-                            <div class="col-span-4 form-label pt-0">{{ $schedule->name }}</div>
-                            <div class="col-span-8">
-                                <div class="form-switch ps-0">
-                                    <div class="switch-field flex mb-3 overflow-hidden">
-                                        <input
-                                            type="radio"
-                                            id="active-{{$schedule->id}}"
-                                            name="{{$schedule->name}}"
-                                            value="1"
-                                            @if($schedule->status) checked @endif
-                                        />
-                                        <label for="active-{{$schedule->id}}">{{ __('Enable') }}</label>
-                                        <input
-                                            type="radio"
-                                            id="disable-{{$schedule->id}}"
-                                            name="{{$schedule->name}}"
-                                            value="0"
-                                            @if(!$schedule->status) checked @endif
-                                        />
-                                        <label for="disable-{{$schedule->id}}">{{ __('Disabled') }}</label>
-                                    </div>
+                            <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
+                                <label class="form-label !mb-0">
+                                    {{ $schedule->name }}
+                                </label>
+                                <div class="form-switch ps-0 leading-[0]">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="hidden" 
+                                        value="0" 
+                                        name="{{$schedule->name}}"
+                                    >
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            name="{{$schedule->name}}" 
+                                            value="1" 
+                                            @if($schedule->status) checked @endif 
+                                            class="sr-only peer"
+                                        >
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </div>
                         @endforeach
 
                     </div>
 
-                    <div class="text-right mt-5">
+                    <div class="mt-10">
                         <button
                             type="submit"
                             class="btn btn-dark inline-flex items-center justify-center">

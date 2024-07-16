@@ -1,6 +1,6 @@
 <div class="grid grid-cols-12 gap-5 mb-5">
     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-        <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative flex items-center"
+        <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative flex items-center h-full"
              style="background-image: url({{ asset('frontend/images/all-img/widget-bg-3.png') }})">
             <div class="flex-1">
                 <h4 class="text-xl font-medium text-white mb-1">
@@ -20,58 +20,52 @@
         </div>
     </div>
     <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
-        <div class="p-4 card">
-            <div class="grid md:grid-cols-3 col-span-1 gap-4">
-                <!-- BEGIN: Group Chart2 -->
-                <div class="py-[18px] px-4 rounded-[6px] bg-[#E5F9FF] dark:bg-slate-900	 ">
-                    <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                        <div class="flex-none">
-                            <div id="wline1"></div>
-                        </div>
-                        <div class="flex-1">
+        <div class="card overflow-hidden">
+            <div class="card-body py-1">
+                <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
+                    <div class="bg-white dark:bg-slate-800">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Balance
+                                {{ __('Balance') }}
                             </div>
-                            <div class="text-slate-900 dark:text-white text-lg font-medium">
+                            <div class="text-sm text-success-500">
+                                {{ __('+452%') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
                                 {{$dataCount['total_forex_balance']}}
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="py-[18px] px-4 rounded-[6px] bg-[#FFEDE5] dark:bg-slate-900	 ">
-                    <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                        <div class="flex-none">
-                            <div id="wline2"></div>
-                        </div>
-                        <div class="flex-1">
+                    <div class="bg-white dark:bg-slate-800">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Equity
+                                {{ __('Equity') }}
                             </div>
-                            <div class="text-slate-900 dark:text-white text-lg font-medium">
+                            <div class="text-sm text-success-500">
+                                {{ __('+452%') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
                                 {{$dataCount['total_forex_equity']}}
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="py-[18px] px-4 rounded-[6px] bg-[#EAE5FF] dark:bg-slate-900	 ">
-                    <div class="flex items-center space-x-6 rtl:space-x-reverse">
-                        <div class="flex-none">
-                            <div id="wline3"></div>
-                        </div>
-                        <div class="flex-1">
+                    <div class="bg-white dark:bg-slate-800">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                Success Points
+                                {{ __('Success Points') }}
                             </div>
-                            <div class="text-slate-900 dark:text-white text-lg font-medium">
+                            <div class="text-sm text-success-500">
+                                {{ __('+452%') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
                                 0
                             </div>
                         </div>
                     </div>
+                    <!-- END: Group Chart2 -->
                 </div>
-
-                <!-- END: Group Chart2 -->
             </div>
         </div>
     </div>

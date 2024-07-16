@@ -9,5 +9,7 @@
             </div>
         </div>
     </div>
-    @yield('submenu')
+    <div class="sidebar-subMenus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_subMenus">
+        @yield('submenu')
+    </div>
 </div>

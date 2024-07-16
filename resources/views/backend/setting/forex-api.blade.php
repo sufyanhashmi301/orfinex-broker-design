@@ -51,6 +51,7 @@
                                     id="demoServerToggle"
                                     name="demo_server_enable"
                                     value="1"
+                                    @if(setting('demo_server_enable')) checked @endif
                                     class="sr-only peer"
                                 >
                                 <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
@@ -58,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="hidden" id="demo_server_form">
+                <div class="@if(!setting('demo_server_enable')) hidden @endif" id="demo_server_form">
                     <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('MT5 Server APi URL - Demo') }}</label>

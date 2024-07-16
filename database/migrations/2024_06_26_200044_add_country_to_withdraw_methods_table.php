@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('withdraw_methods', function (Blueprint $table) {
-            $table->text('country')->default(json_encode(['All']))->after('fields');
+            $table->text('country')->after('fields');
 
         });
     }

@@ -46,10 +46,10 @@
                         <div class="form-switch ps-0" style="line-height: 0">
                             <input class="form-check-input" type="hidden" value="0" name="gdpr_status">
                             <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input 
-                                    type="checkbox" 
+                                <input
+                                    type="checkbox"
                                     id="demoServerToggle"
-                                    name="demo_server_toggle" 
+                                    name="demo_server_enable"
                                     value="1"
                                     class="sr-only peer"
                                 >

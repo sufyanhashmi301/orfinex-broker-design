@@ -32,7 +32,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem {{ isActive('admin.settings.plugin') }}">
+            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem {{ isActive('admin.settings.plugin') }} {{ isActive('admin.settings.mail') }}">
                 {{ __('Notification') }}
             </a>
         </li>

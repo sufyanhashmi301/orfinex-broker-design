@@ -1,0 +1,24 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class KYCLevelSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('kyclevels')->insert([
+            ['name' => 'Level 1', 'status' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Level 2', 'status' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Level 3', 'status' => true, 'created_at' => now(), 'updated_at' => now()],
+        ]);
+    }
+}

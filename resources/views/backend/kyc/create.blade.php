@@ -20,6 +20,16 @@
                 <form action="{{ route('admin.kyc-form.store') }}" method="post" class="space-y-4">
                     @csrf
                     <div class="input-area">
+                        <label class="form-label" for="">{{ __('KYC Level:') }}</label>
+                        <select name="kyc_level_id" class="form-control" required>
+                            <option value="">Select</option>
+                            @foreach($levels as $level)
+                            <option value="{{$level->id}}">{{$level->name}}</option>
+                            @endforeach
+                        </select>
+                       
+                    </div>
+                    <div class="input-area">
                         <label class="form-label" for="">{{ __('Name:') }}</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                placeholder="KYC Type Name" required/>

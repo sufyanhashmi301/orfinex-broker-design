@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
+use App\Models\Kyclevel;
 use App\Models\User;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -55,6 +56,7 @@ class KycController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
+            'kyc_level_id' => 'required',
             'name' => 'required|unique:kycs,name',
             'status' => 'required',
             'fields' => 'required',
@@ -65,6 +67,7 @@ class KycController extends Controller
             return redirect()->back();
         }
         $data = [
+            'kyc_level_id' => $input['kyc_level_id'],
             'name' => $input['name'],
             'status' => $input['status'],
             'fields' => json_encode($input['fields']),
@@ -83,7 +86,8 @@ class KycController extends Controller
      */
     public function create()
     {
-        return view('backend.kyc.create');
+        $levels = Kyclevel::orderBy('id','desc')->get();
+        return view('backend.kyc.create',get_defined_vars());
     }
 
     /**

@@ -1009,6 +1009,15 @@ return [
                 'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
             ],
             [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'demo_server_enable', // unique name for field
+                'label' => 'Demo Server Enable', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'mt5_api_url_demo', // unique name for field

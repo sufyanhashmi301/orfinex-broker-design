@@ -44,7 +44,7 @@
                             {{ __('Demo Server (If Separate)') }}
                         </label>
                         <div class="form-switch ps-0" style="line-height: 0">
-                            <input class="form-check-input" type="hidden" value="0" name="gdpr_status">
+                            <input class="form-check-input" type="hidden" value="0" name="demo_server_enable" >
                             <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
                                 <input
                                     type="checkbox"

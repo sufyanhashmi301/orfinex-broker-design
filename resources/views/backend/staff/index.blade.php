@@ -105,6 +105,9 @@
 
     <!-- Delete Confirmation Modal -->
     @include('backend.staff.include.__delete')
+
+
+
 @endsection
 
 @section('script')

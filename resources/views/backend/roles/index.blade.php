@@ -69,6 +69,7 @@
     <!-- Delete Confirmation Modal -->
     @include('backend.roles.include.__delete')
 
+
 @endsection
 @section('script')
     <script>

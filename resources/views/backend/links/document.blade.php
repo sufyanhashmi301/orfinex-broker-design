@@ -26,6 +26,17 @@
                                 <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                             </label>
                         </span>
+                    @elseif($field['type'] == 'url')
+                        <input 
+                            type="{{$field['type']}}" 
+                            name="{{ $field['name'] }}"
+                            class="form-control !pl-22 {{ $errors->has($field['name']) ? 'has-error' : '' }}" 
+                            value="{{oldSetting($field['name'],$section)}}"
+                            placeholder="URL"
+                        />
+                        <span class="absolute left-0 top-1/2 px-3 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center">
+                            https://
+                        </span>
                     @else
                         <input type="{{$field['type']}}" name="{{ $field['name'] }}" class="form-control !pr-24 @if($errors->has($field['name'])) has-error @endif" placeholder="URL" value="{{oldSetting($field['name'],$section)}}">
                     @endif

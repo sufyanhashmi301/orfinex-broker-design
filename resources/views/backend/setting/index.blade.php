@@ -27,15 +27,22 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.security.all-sections') }}" class="navItem">
+            <a href="{{ route('admin.security.all-sections') }}" class="navItem {{ isActive('admin.security*') }}">
                 {{ __('Security')}}
             </a>
         </li>
-        <li class="">
-            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem">
+        <li>
+            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem {{ isActive('admin.settings.plugin') }}">
                 {{ __('Notification') }}
             </a>
         </li>
+        @can('language-setting')
+            <li>
+                <a href="{{ route('admin.language.index') }}" class="navItem {{ isActive('admin.language*') }}">
+                    {{ __('Language') }}
+                </a>
+            </li>
+        @endcan
         <li>
             <a href="{{ route('admin.settings.currency') }}" class="navItem {{ isActive('admin.settings.currency') }}">
                 {{ __('Currency')}}
@@ -47,8 +54,13 @@
             </a>
         </li>
         <li>
-            <a href="{{route('admin.links.document-links')}}" class="navItem {{isActive('admin.links.document-links')}}">
+            <a href="{{route('admin.links.document-links')}}" class="navItem {{ isActive('admin.links*') }}">
                 {{ __('Doc & Links')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{route('admin.settings.slack')}}" class="navItem {{isActive('admin.settings.slack')}}">
+                {{ __('Collab Tools')}}
             </a>
         </li>
         <li>

@@ -141,6 +141,11 @@ class SettingController extends Controller
     public static function gdpr()
     {
         return view('backend.setting.site_setting.gdpr');
+    }
+            
+    public static function slackSetting()
+    {
+        return view('backend.setting.collab_tools.slack');
     }  
 
 }

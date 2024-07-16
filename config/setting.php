@@ -6,10 +6,18 @@ return [
 
         'elements' => [
             [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_title', // unique name for field
+                'label' => 'Site Title', // you know what label it is
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => 'CRM', // default value if you want
+            ],
+            [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_logo', // unique name for field
-                'label' => 'Site Logo (Dark)', // you know what label it is
+                'label' => 'Site Logo (Dark) <iconify-icon class="ml-1" icon="lucide:info" title="Recommended Size 160 x 40"></iconify-icon>', // you know what label it is
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -107,6 +115,14 @@ return [
                 'label' => 'Registered Number', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '123456789', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copyright_text', // unique name for field
+                'label' => 'Copyright Text', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'All rights reserved @tdevs 2022', // default value if you want
             ],
         ],
 

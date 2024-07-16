@@ -17,12 +17,6 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="space-y-5">
-                <div class="input-area">
-                    <label for="" class="form-label">
-                        {{ __('App Name') }}
-                    </label>
-                    <input type="text" name="title" class="form-control" placeholder="App title">
-                </div>
                 <div>
                     <label for="" class="form-label">
                         {{ __('Site Theme') }}
@@ -80,7 +74,9 @@
                             @if($field['type'] == 'file')
                                 <div class="input-area">
                                     <label class="form-label">
-                                        {{ __($field['label']) }}
+                                        <div class="flex items-center">
+                                            {!! __($field['label']) !!}
+                                        </div>
                                     </label>
                                     <div class="wrap-custom-file {{ $errors->has($field['name']) ? 'has-error' : '' }}">
                                         <input
@@ -97,8 +93,26 @@
                                                 src="{{ asset('global/materials/upload.svg') }}"
                                                 alt=""
                                             />
-                                            <span>{{ __('upload') .' '.__($field['label'])}} </span>
+                                            <span>
+                                                <div class="flex items-center">
+                                                    Upload {!! __($field['label']) !!}
+                                                </div>
+                                            </span>
                                         </label>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="md:col-span-3 col-span-1">
+                                    <div class="input-area">
+                                        <label for="" class="form-label">
+                                            {{ __($field['label']) }}
+                                        </label>
+                                        <input
+                                            type="{{$field['type']}}"
+                                            name="{{$field['name']}}"
+                                            class=" form-control {{ $errors->has($field['name']) ? 'has-error' : '' }}"
+                                            value="{{ oldSetting($field['name'],$section) }}"
+                                        />
                                     </div>
                                 </div>
                             @endif

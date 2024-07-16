@@ -11,7 +11,7 @@
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
 <div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
-    <ul class="sidebar-menu">
+    <ul class="sidebar-menu flex flex-column">
         <li>
             <a href="{{route('admin.dashboard')}}" class="navItem {{ isActive('admin.dashboard') }}">
                 <span class="flex items-center">
@@ -421,33 +421,6 @@
             @endcan
 
         @endcanany
-
-
-
-        {{-- ************************************************************* Site  Settings *********************************************************--}}
-        @canany(['site-setting','email-setting','plugin-setting','page-manage'])
-            @canany(['site-setting','email-setting','plugin-setting'])
-                <li class="">
-                    <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive(['admin.settings*']) }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
-                            <span>{{ __('Settings') }}</span>
-                        </span>  
-                    </a>
-                </li>
-            @endcanany
-
-            @can('language-setting')
-                <li class="">
-                    <a href="{{ route('admin.language.index') }}" class="navItem {{ isActive('admin.language*') }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:languages"></iconify-icon>
-                            <span>{{ __('Language') }}</span>
-                        </span>
-                    </a>
-                </li>
-            @endcan
-        @endcanany
         
         @can('email-template')
         <li class="{{ isActive(['admin.theme*']) }}">
@@ -535,6 +508,20 @@
                 </li>
             </ul>
         </li>
+
+        {{-- ************************************************************* Site  Settings *********************************************************--}}
+        @canany(['site-setting','email-setting','plugin-setting','page-manage'])
+            @canany(['site-setting','email-setting','plugin-setting'])
+                <li class="mt-auto">
+                    <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive(['admin.settings*']) }}">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
+                            <span>{{ __('Settings') }}</span>
+                        </span>  
+                    </a>
+                </li>
+            @endcanany
+        @endcanany
     </ul>
 </div>
 

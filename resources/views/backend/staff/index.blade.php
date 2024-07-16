@@ -17,12 +17,12 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-body p-6 pt-0">
+        <div class="card-body p-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
@@ -56,27 +56,29 @@
 
                                     </td>
                                     <td class="table-td">
-                                        @if($staff->getRoleNames()->first() === 'Super-Admin')
-                                            <button class="toolTip onTop action-btn" type="button"
-                                                data-tippy-theme="tooltip"
-                                                data-tippy-content="Not Editable">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </button>
-                                        @else
-                                            @can('staff-edit')
-                                                <button class="toolTip onTop action-btn"
-                                                    data-id="{{$staff->id}}" type="button" id="edit"
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @if($staff->getRoleNames()->first() === 'Super-Admin')
+                                                <button class="toolTip onTop action-btn" type="button"
                                                     data-tippy-theme="tooltip"
-                                                    data-tippy-content="Edit Staff">
+                                                    data-tippy-content="Not Editable">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </button>
-                                            @endcan
-                                            @can('staff-delete')
-                                                <button type="button" class="action-btn delete-schema-btn" data-id="{{ $staff->id }}">
-                                                    <iconify-icon icon="lucide:trash"></iconify-icon>
-                                                </button>
-                                            @endcan
-                                        @endif
+                                            @else
+                                                @can('staff-edit')
+                                                    <button class="toolTip onTop action-btn"
+                                                        data-id="{{$staff->id}}" type="button" id="edit"
+                                                        data-tippy-theme="tooltip"
+                                                        data-tippy-content="Edit Staff">
+                                                        <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                    </button>
+                                                @endcan
+                                                @can('staff-delete')
+                                                    <button type="button" class="action-btn delete-schema-btn" data-id="{{ $staff->id }}">
+                                                        <iconify-icon icon="lucide:trash"></iconify-icon>
+                                                    </button>
+                                                @endcan
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -102,20 +104,31 @@
 
     
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmationModalLabel">{{ __('Are you sure?') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>{{ __('Please type "delete" to confirm.') }}</p>
-                    <input type="text" id="deleteConfirmationInput" class="form-control" placeholder="delete">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" id="confirmDeleteButton" class="btn btn-danger">{{ __('Delete') }}</button>
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal" aria-hidden="true">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding
+            rounded-md outline-none text-current">
+                <div class="p-6 space-y-4">
+                    <div class="text-center">
+                        <iconify-icon icon="heroicons:question-mark-circle-16-solid" class="display-1 mb-3"></iconify-icon>
+                        <h3 class="mb-0">{{ __('Are you sure?') }}</h3>
+                        <p class="lead my-3">
+                            {{ __('Please type "delete" to confirm.') }}
+                        </p>
+                        <div class="input-area">
+                            <input type="text" id="deleteConfirmationInput" class="form-control" placeholder="delete">
+                        </div>
+                        <div class="action-btns mt-5">
+                            <button type="button" id="confirmDeleteButton" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Delete') }}
+                            </button>
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

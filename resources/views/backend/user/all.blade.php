@@ -74,11 +74,15 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
         </div>
     </div>
@@ -97,22 +101,26 @@
         (function ($) {
             "use strict";
 
-            var table = $('#dataTable').DataTable({
+            var table = $('#dataTable')
+            .on('processing.dt', function (e, settings, processing) {
+                $('#processingIndicator').css('display', processing ? 'block' : 'none');
+            }).DataTable({
                 dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
                 paging: true,
                 ordering: true,
+                processing: true,
                 info: false,
                 lengthChange: true,
                 lengthMenu: [10, 25, 50, 100],
                 language: {
-                lengthMenu: "Show _MENU_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    lengthMenu: "Show _MENU_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:",
+                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
                 },
-                search: "Search:"
-                },
-                processing: true,
                 serverSide: true,
                 searching: false, // Disable default search box
                 ajax: {

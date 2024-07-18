@@ -63,20 +63,24 @@ Route::middleware(['2fa_admin','set.session.lifetime:admin'])->group(function ()
 
 
 //===============================  Customer Management ==================================
-        Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
-        Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
-            Route::get('active', 'activeUser')->name('active');
-            Route::get('disabled', 'disabled')->name('disabled');
-            Route::get('login/{id}', 'userLogin')->name('login');
-            Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
-            Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
-            Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
-            Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
-            Route::post('mail-send', 'mailSend')->name('mail-send');
-            Route::get('transaction/{id}', 'transaction')->name('transaction');
-            Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
-            Route::post('export', 'export')->name('export');
-        });
+
+Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
+Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
+    Route::get('active', 'activeUser')->name('active');
+    Route::get('disabled', 'disabled')->name('disabled');
+    Route::get('withBalance', 'withBalance')->name('with_balance');
+    Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
+    Route::get('login/{id}', 'userLogin')->name('login');
+    Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
+    Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
+    Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
+    Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
+    Route::post('mail-send', 'mailSend')->name('mail-send');
+    Route::get('transaction/{id}', 'transaction')->name('transaction');
+    Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
+    Route::post('export', 'export')->name('export');
+});
+
 
         Route::resource('kyc-form', KycController::class);
         Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {

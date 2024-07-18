@@ -92,18 +92,20 @@ class UserController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
+
                 ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
+                // ->editColumn('email', function ($request) {
+                //     return safe($request->email);
+                // })
+                // ->editColumn('username', function ($request) {
+                //     return safe($request->username);
+                // })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'balance', 'status', 'action'])
+                ->rawColumns(['avatar', 'username','kyc', 'balance', 'status', 'action'])
                 ->make(true);
         }
 

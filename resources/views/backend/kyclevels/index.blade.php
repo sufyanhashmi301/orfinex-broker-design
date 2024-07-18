@@ -11,12 +11,12 @@
     </div>
     @include('backend.kyc.include.__menu')
     <div class="card">
-        <div class="card-body p-6 pt-0">
+        <div class="card-body p-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __(' Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -42,14 +42,12 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
-                                        <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:edit-3"></iconify-icon>
-                                            Edit Settings
+                                        <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn">
+                                            <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                         </a>
                                            
-                                        <button type="button" data-id="{{ $kyc->id }}" data-name="{{ $kyc->name }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                                        <button type="button" data-id="{{ $kyc->id }}" data-name="{{ $kyc->name }}" class="toolTip onTop action-btn">
                                             <iconify-icon icon="lucide:trash-2"></iconify-icon>
-                                            Delete
                                         </button>
                                         </div>
                                     </td>

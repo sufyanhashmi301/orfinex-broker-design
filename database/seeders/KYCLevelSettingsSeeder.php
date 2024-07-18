@@ -24,7 +24,10 @@ class KYCLevelSettingsSeeder extends Seeder
         $kycForms = Kyc::whereIn('kyc_level_id', $kycLevels)->get();
     
         // Retrieve the KYC level ID for 'Level 2'
-        $kycLevelId = Kyclevel::where('name', 'Level 2')->value('id');
+        $kycLevelIdLevel2 = Kyclevel::where('name', 'Level 2')->value('id');
+    
+        // Retrieve the KYC level ID for 'Level 1'
+        $kycLevelIdLevel1 = Kyclevel::where('name', 'Level 1')->value('id');
     
         foreach ($kycForms as $form) {
             // Use updateOrCreate to add or update the KYC level setting for the current form
@@ -45,7 +48,7 @@ class KYCLevelSettingsSeeder extends Seeder
             if ($form->kyc_level_id == 2) {
                 Kyclevelsetting::updateOrCreate(
                     [
-                        'kyc_level_id' => $kycLevelId,
+                        'kyc_level_id' => $kycLevelIdLevel2,
                         'title' => 'samsub',
                     ],
                     [
@@ -57,6 +60,22 @@ class KYCLevelSettingsSeeder extends Seeder
                 );
             }
         }
-    }
 
+        // Add default values for Level 1
+        $defaultValuesLevel1 = ['Email', 'Phone'];
+        foreach ($defaultValuesLevel1 as $defaultValue) {
+            Kyclevelsetting::updateOrCreate(
+                [
+                    'kyc_level_id' => $kycLevelIdLevel1,
+                    'title' => $defaultValue,
+                ],
+                [
+                    'unique_code' => strtolower($defaultValue),
+                    'status' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+    }
 }

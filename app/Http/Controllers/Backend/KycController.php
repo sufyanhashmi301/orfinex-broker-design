@@ -56,7 +56,7 @@ class KycController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'kyc_level_id' => 'required',
+            
             'name' => 'required|unique:kycs,name',
             'status' => 'required',
             'fields' => 'required',
@@ -66,8 +66,9 @@ class KycController extends Controller
 
             return redirect()->back();
         }
+        $kycLevel = Kyclevel::where('name','Level 2')->first();
         $data = [
-            'kyc_level_id' => $input['kyc_level_id'],
+            'kyc_level_id' => $kycLevel->id,
             'name' => $input['name'],
             'status' => $input['status'],
             'fields' => json_encode($input['fields']),

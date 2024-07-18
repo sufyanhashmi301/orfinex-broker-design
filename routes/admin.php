@@ -91,11 +91,11 @@ Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'cont
 
 });
 Route::resource('kyclevels', KYCLevelsController::class);
-// Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
-//     Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
-//     Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
+    Route::post('kyclevel/update/{id}', 'kycLevelUpdate')->name('update');
+    //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
-// });
+});
 Route::resource('ib-form', IBController::class);
 Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
     Route::get('pending', 'IbPendingList')->name('pending.list');

@@ -137,49 +137,36 @@ class KYCLevelsController extends Controller
     /**
      * @return RedirectResponse
      */
-    public function tagsUpdate($id,Request $request)
+    public function kycLevelUpdate(Request $request, $id)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-//            'user_id' => 'required|exists:risk_profile_tags,id',
-//            'user_id' => 'required|exists:users,id',
-            'risk_profile_tag_id' => [
-                'required',
-//                'exists:risk_profile_tags,id',
-                Rule::unique('risk_profile_tags_users')
-                    ->where('user_id', $id)
-                    ->where('risk_profile_tag_id', $request->input('risk_profile_tag_id')),
-            ],
+        //dd($request->all());
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'settings' => 'array', // Ensures 'permissions' is an array
+            'settings.*' => 'integer|exists:kyclevelsettings,id', // Ensures each permission is a valid kyclevelsetting ID
         ]);
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-            return redirect()->back();
+        // Update the Kyclevel
+        $kycLevel = Kyclevel::findOrFail($id);
+        $kycLevel->name = $request->name;
+        $kycLevel->save();
+
+        // Get all KycLevelSetting IDs that belong to this KycLevel
+        $kycLevelSettingIds = Kyclevelsetting::where('kyc_level_id', $id)->pluck('id')->toArray();
+
+        // Determine which settings are checked
+        $checkedSettings = $request->permissions ?? []; // Default to an empty array if no permissions are set
+
+        // Update the status of each KycLevelSetting
+        foreach ($kycLevelSettingIds as $settingId) {
+            $setting = Kyclevelsetting::find($settingId);
+            $setting->status = in_array($settingId, $checkedSettings);
+            $setting->save();
         }
-//        dd($input);
-        $user = User::find($id);
-        $user->riskProfileTags()->attach($request->input('risk_profile_tag_id'));
-        // $user->riskProfileTags()->sync($selectedTags);
-//        dd($input,$user,json_encode($input['risk_profile_tags'])    );
-//        $user->update([
-//            'risk_profile_tags' => isset($input['risk_profile_tags'])? json_encode($input['risk_profile_tags']):[],
-//        ]);
+        notify()->success(__('KYC level settings updated Successfully'));
 
-//        $shortcodes = [
-//            '[[full_name]]' => $user->full_name,
-//            '[[email]]' => $user->email,
-//            '[[site_title]]' => setting('site_title', 'global'),
-//            '[[site_url]]' => route('home'),
-//            '[[message]]' => $input['message'],
-//            '[[status]]' => $input['status'],
-//        ];
-//        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
-//        $this->smsNotify('kyc_action', $shortcodes, $user->phone);
-//        $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
-
-        notify()->success(__('Risk Profile Tag Update Successfully'));
-
-        return redirect()->back();
+        return redirect()->back()->with('success', __('KYC level settings updated successfully.'));
     }
     public function tagDelete($id,Request $request)
     {

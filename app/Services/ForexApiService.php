@@ -14,17 +14,20 @@ class ForexApiService
 
     public function __construct()
     {
-        // $this->baseUrlReal = Setting::where('name', 'api_base_url')->value('val');
-        // $this->apiKeyReal = Setting::where('name', 'api_key')->value('val');
-        // prime broker credentials
-        //        $this->baseUrlReal = 'http://92.204.253.130:4001/api';
-        //        $this->apiKeyReal = 'PVTfAIPjQZ4GganFp6bCI0ni7p1YSAxM';
-        $demoUrl = setting('mt5_api_url_demo', 'platform_api');
-        $demoKey = setting('mt5_api_key_demo', 'platform_api');
         $this->baseUrlReal = setting('mt5_api_url_real', 'platform_api') . '/api';
         $this->apiKeyReal = setting('mt5_api_key_real', 'platform_api');
-        $this->baseUrlDemo = empty($demoUrl) ? setting('mt5_api_url_demo', 'platform_api') : setting('mt5_api_url_real', 'platform_api') . '/api';
-        $this->apiKeyDemo = isset($demoKey) ? setting('mt5_api_key_demo', 'platform_api') : setting('mt5_api_key_real', 'platform_api');
+
+        $demoServerEnabled = setting('demo_server_enable', 'platform_api');
+        $demoUrl = setting('mt5_api_url_demo', 'platform_api');
+        $demoKey = setting('mt5_api_key_demo', 'platform_api');
+
+        if ($demoServerEnabled && $demoUrl) {
+            $this->baseUrlDemo = $demoUrl;
+            $this->apiKeyDemo = $demoKey;
+        } else {
+            $this->baseUrlDemo = $this->baseUrlReal;
+            $this->apiKeyDemo = $this->apiKeyReal;
+        }
     }
 
     public function createUser($data)
@@ -35,6 +38,7 @@ class ForexApiService
 
     public function createUserDemo($data)
     {
+
         $endpoint = 'user/Create';
         return $this->postDemo($endpoint, $data);
     }

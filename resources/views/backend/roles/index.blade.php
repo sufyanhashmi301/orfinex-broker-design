@@ -65,22 +65,24 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Delete Confirmation Modal -->
     @include('backend.roles.include.__delete')
+
+
 @endsection
 @section('script')
     <script>
         $(document).ready(function () {
             let deleteSchemaId = null;
-    
+
             // Event listener for delete buttons
             $('.delete-schema-btn').on('click', function (e) {
                 e.preventDefault();
                 deleteSchemaId = $(this).data('id');
                 $('#deleteConfirmationModal').modal('show');
             });
-    
+
             // Event listener for the confirm delete button in the modal
             $('#confirmDeleteButton').on('click', function () {
                 const input = $('#deleteConfirmationInput').val();
@@ -90,7 +92,7 @@
                         'method': 'POST',
                         'action': '{{ route('admin.role.delete', ':id') }}'.replace(':id', deleteSchemaId)
                     });
-    
+
                     // Add the CSRF token and method fields
                     const csrfToken = $('meta[name="csrf-token"]').attr('content');
                     form.append($('<input>', {
@@ -98,13 +100,13 @@
                         'name': '_token',
                         'value': csrfToken
                     }));
-    
+
                     form.append($('<input>', {
                         'type': 'hidden',
                         'name': '_method',
                         'value': 'DELETE'
                     }));
-    
+
                     $('body').append(form);
                     form.submit();
                 } else {
@@ -113,4 +115,4 @@
             });
         });
     </script>
-@endsection    
+@endsection

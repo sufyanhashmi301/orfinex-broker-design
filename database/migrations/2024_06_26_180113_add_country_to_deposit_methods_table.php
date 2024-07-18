@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('deposit_methods', function (Blueprint $table) {
-            $table->text('country')->default(json_encode(['All']))->after('payment_details');
+            $table->text('country')->after('payment_details');
 
         });
     }

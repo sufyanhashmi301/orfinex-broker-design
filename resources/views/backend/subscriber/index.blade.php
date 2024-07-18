@@ -37,6 +37,10 @@
                     </div>
                 </div>
             </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
 @endsection
@@ -45,7 +49,10 @@
         (function ($) {
             "use strict";
 
-            var table = $('#dataTable').DataTable({
+            var table = $('#dataTable')
+            .on('processing.dt', function (e, settings, processing) {
+                $('#processingIndicator').css('display', processing ? 'block' : 'none');
+            }).DataTable({
                 dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
                 paging: true,
                 ordering: true,

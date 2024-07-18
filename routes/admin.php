@@ -255,6 +255,8 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
     Route::get('transfers', 'transfers')->name('transfers');
     Route::get('gdpr', 'gdpr')->name('gdpr');
 
+    Route::get('slack', 'slackSetting')->name('slack');
+
 });
 
 //===============================  Security Settings ==================================

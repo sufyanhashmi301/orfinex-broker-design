@@ -15,6 +15,21 @@
                 </a>
             @endcan
         </div>
+
+
+        <!-- Modal for Add New Staff -->
+        @can('staff-create')
+            @include('backend.staff.modal.__new_staff')
+        @endcan
+        <!-- Modal for Add New Staff-->
+
+        <!-- Modal for Edit Staff -->
+        @can('staff-edit')
+            @include('backend.staff.modal.__edit_staff')
+        @endcan
+        <!-- Modal for Edit Staff-->
+
+
     </div>
     <div class="card">
         <div class="card-body p-6 pt-0">
@@ -56,16 +71,27 @@
 
                                     </td>
                                     <td class="table-td">
+
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            <a href="{{route('admin.staff.security',$staff->id)}}"
+                                                 class="toolTip onTop action-btn"
+                                                        data-id="{{$staff->id}}" type="button" id="edit1"
+                                                        data-tippy-theme="tooltip"
+                                                        data-tippy-content="2FA Security"
+                                                >
+                                                    <iconify-icon icon="mdi:security"></iconify-icon>
+{{--                                                </button><button class="round-icon-btn primary-btn"--}}
+{{--                                                                                                           data-id="{{$staff->id}}" type="button"--}}
+{{--                                                                                                           data-bs-toggle="tooltip" title=""--}}
+{{--                                                                                                           data-bs-placement="top"--}}
+{{--                                                                                                           data-bs-original-title="2FA Security">--}}
+{{--                                                    <i icon-name="edit-3"></i>--}}
+{{--                                                </button>--}}
+                                            </a>
+
                                         @if($staff->getRoleNames()->first() === 'Super-Admin')
-                                            <button class="toolTip onTop action-btn" type="button"
-                                                data-tippy-theme="tooltip"
-                                                data-tippy-content="Not Editable">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </button>
-                                        @else
-                                            @can('staff-edit')
-                                                <button class="toolTip onTop action-btn"
-                                                    data-id="{{$staff->id}}" type="button" id="edit"
+                                                <button class="toolTip onTop action-btn" type="button"
+
                                                     data-tippy-theme="tooltip"
                                                     data-tippy-content="Edit Staff">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
@@ -100,7 +126,7 @@
     @endcan
     <!-- Modal for Edit Staff-->
 
-    
+
     <!-- Delete Confirmation Modal -->
     @include('backend.staff.include.__delete')
 
@@ -108,7 +134,6 @@
 
 @section('script')
     <script>
-
         $('body').on('click', '#edit', function (event) {
             "use strict";
             event.preventDefault();
@@ -122,7 +147,6 @@
 
             })
         })
-
     </script>
     <script>
     $(document).ready(function () {
@@ -158,7 +182,6 @@
                     'name': '_method',
                     'value': 'DELETE'
                 }));
-
                 $('body').append(form);
                 form.submit();
             } else {

@@ -64,6 +64,8 @@ Route::resource('user', UserController::class)->only('index', 'edit', 'update', 
 Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
     Route::get('active', 'activeUser')->name('active');
     Route::get('disabled', 'disabled')->name('disabled');
+    Route::get('withBalance', 'withBalance')->name('with_balance');
+    Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
     Route::get('login/{id}', 'userLogin')->name('login');
     Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
     Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');

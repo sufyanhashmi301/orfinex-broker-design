@@ -16,20 +16,8 @@
                 <div class="flex-1 input-area relative">
                     <input type="text" name="country" id="country" class="form-control h-9" placeholder="Country">
                 </div>
-                <div class="flex-1 input-area relative">
-                    <select name="status" id="status" class="form-control h-9">
-                        <option value="">{{ __('Select Status') }}</option>
-                        <option value="1">{{ __('Active') }}</option>
-                        <option value="0">{{ __('Inactive') }}</option>
-                    </select>
-                </div>
-                <div class="flex-1 input-area relative">
-                    <select name="balanceStatus" id="balanceStatus" class="form-control h-9">
-                        <option value="">{{ __('Select') }}</option>
-                        <option value="1">{{ __('With Balance') }}</option>
-                        <option value="0">{{ __('Without Balance') }}</option>
-                    </select>
-                </div>
+               
+               
                 <div class="flex-1 input-area relative">
                     <input type="date" name="created_at" id="created_at" class="form-control h-9" placeholder="Created At">
                 </div>

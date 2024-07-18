@@ -25,6 +25,16 @@
                     {{ __('Disabled Customers') }}
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.user.with_balance') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.user.with_balance') }}">
+                    {{ __('With Balance') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.user.without_balance') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.user.without_balance') }}">
+                    {{ __('Without Balance') }}
+                </a>
+            </li>
         </ul>
         
         @yield('filters')

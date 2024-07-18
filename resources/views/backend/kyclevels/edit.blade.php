@@ -64,7 +64,7 @@
                                     <div class="flex items-center space-x-7 flex-wrap mb-5">
                                         @if($uniqueCode == 'manual')
                                             <div class="form-label !w-auto !mb-0">
-                                                {{ __('Unique Code: ') . $uniqueCode }}
+                                                {{  $uniqueCode }}
                                             </div>
                                             <div class="form-switch ps-0">
                                                 <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
@@ -84,7 +84,7 @@
                                             </a>
                                         @else
                                             <div class="form-label !w-auto !mb-0">
-                                                {{ __('Unique Code: ') . $uniqueCode }}
+                                                {{  $uniqueCode }}
                                             </div>
                                             <div class="form-switch ps-0">
                                                 <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
@@ -227,13 +227,10 @@
 @endsection
 @section('script')
 <script>
-     $('.editPlugin').on('click', function (e) {
-            
-                $('#editPlugin').modal('show');
+    $(document).ready(function () {
+        // Initially hide the samsub-settings section
+        $('.samsub-settings').addClass('hidden');
 
-        
-        })
-    document.addEventListener('DOMContentLoaded', function () {
         // Add event listener for radio buttons
         const radioButtons = document.querySelectorAll('input[name="level2_setting"]');
         radioButtons.forEach((radio) => {
@@ -245,12 +242,16 @@
                     samsubCheckboxes.forEach((checkbox) => {
                         checkbox.checked = false;
                     });
+                    $('.samsub-settings').addClass('hidden');
+                    $('.manual-settings').removeClass('hidden');
                 } else if (uniqueCode === 'samsub') {
                     // Uncheck all manual checkboxes
                     const manualCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="manual"]');
                     manualCheckboxes.forEach((checkbox) => {
                         checkbox.checked = false;
                     });
+                    $('.manual-settings').addClass('hidden');
+                    $('.samsub-settings').removeClass('hidden');
                 }
             });
         });
@@ -284,67 +285,54 @@
                 }
             });
         });
-    });
 
-    $(document).ready(function (e) {
+        // Plugin modal handling
+        $('.editPlugin').on('click', function () {
+            $('#editPlugin').modal('show');
+        });
+
+        // Field option generation
         var i = 0;
-        "use strict";
-
         $("#generate").on('click', function () {
             ++i;
             var form = `<div class="option-remove-row grid grid-cols-12 gap-5">
                 <div class="xl:col-span-4 col-span-12">
                     <div class="input-area">
-                    <input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
+                        <input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
                     </div>
                 </div>
-
                 <div class="xl:col-span-4 col-span-12">
                     <div class="input-area">
-                    <select name="fields[` + i + `][type]" class="form-control w-full mb-3">
-                        <option value="text">Input Text</option>
-                        <option value="textarea">Textarea</option>
-                        <option value="file">File upload</option>
-                    </select>
+                        <select name="fields[` + i + `][type]" class="form-control w-full mb-3">
+                            <option value="text">Input Text</option>
+                            <option value="textarea">Textarea</option>
+                            <option value="file">File upload</option>
+                        </select>
                     </div>
                 </div>
                 <div class="xl:col-span-3 col-span-12">
                     <div class="input-area">
-                    <select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
-                        <option value="required">Required</option>
-                        <option value="nullable">Optional</option>
-                    </select>
+                        <select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
+                            <option value="required">Required</option>
+                            <option value="nullable">Optional</option>
+                        </select>
                     </div>
                 </div>
-
                 <div class="col-span-1">
                     <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-                    </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
+                        </svg>
                     </button>
                 </div>
-                </div>`;
-            $('.addOptions').append(form)
+            </div>`;
+            $('.addOptions').append(form);
         });
 
         $(document).on('click', '.delete_desc', function () {
             $(this).closest('.option-remove-row').remove();
         });
     });
-
-    $(document).ready(function() {
-        $('input[name="level2_setting"]').change(function() {
-            var value = $(this).val();
-            if (value == 'manual') {
-                $('.samsub-settings').addClass('hidden');
-                $('.manual-settings').removeClass('hidden');
-            } else if (value == 'samsub') {
-                $('.manual-settings').addClass('hidden');
-                $('.samsub-settings').removeClass('hidden');
-            }
-        });
-    });
-
 </script>
+
 @endsection

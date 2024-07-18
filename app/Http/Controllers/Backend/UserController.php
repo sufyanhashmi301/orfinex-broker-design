@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Exports\UsersExport;
@@ -26,6 +27,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Txn;
@@ -165,9 +167,6 @@ class UserController extends Controller
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
                 })
-//                ->editColumn('total_profit', function ($request) {
-//                    return $request->total_profit . ' ' . setting('site_currency');
-//                })
                 ->addColumn('action', 'backend.user.include.__action')
                 ->rawColumns(['avatar', 'kyc', 'status', 'action'])
                 ->make(true);
@@ -175,7 +174,61 @@ class UserController extends Controller
 
         return view('backend.user.disabled_user');
     }
+    public function withBalance(Request $request)
+    {
+        if ($request->ajax()) {
+            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+            $forexAccountIds = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $realForexAccounts)
+            ->where('Balance', '>',0)
+            ->pluck('Login');
+            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+            $data = User::whereIn('id', $userIds)->latest();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->editColumn('status', 'backend.user.include.__status')
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('email', function ($request) {
+                    return safe($request->email);
+                })
+                ->addColumn('action', 'backend.user.include.__action')
+                ->rawColumns(['avatar', 'kyc', 'status','balance', 'action'])
+                ->make(true);
+        }
 
+        return view('backend.user.with_balance');
+    }
+    public function withOutBalance(Request $request)
+    {
+        if ($request->ajax()) {
+            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+            $forexAccountIds = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $realForexAccounts)
+            ->where('Balance', '>',0)
+            ->pluck('Login');
+
+        $userIds = ForexAccount::whereNotIn('login', $forexAccountIds)->pluck('user_id');
+        $data = User::whereIn('id', $userIds)->latest();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->editColumn('status', 'backend.user.include.__status')
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('email', function ($request) {
+                    return safe($request->email);
+                })
+                ->addColumn('action', 'backend.user.include.__action')
+                ->rawColumns(['avatar', 'kyc', 'status','balance', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.user.without_balance');
+    }
     /**
      * Show the form for editing the specified resource.
      *

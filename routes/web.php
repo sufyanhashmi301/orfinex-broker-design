@@ -164,7 +164,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
         Route::post('info-update', 'infoUpdate')->name('info-update');
 
-        Route::post('/2fa/verify', function () {
+        Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
+//            dd($request->all());
+//            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
 

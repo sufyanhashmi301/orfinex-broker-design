@@ -23,10 +23,7 @@
                     <label for="name" class="form-label">{{ __('Name') }}</label>
                     <input type="text" class="form-control" required="" name="name" value="{{ $kycLevel->name }}"/>
                 </div>
-                <h2 class="font-medium text-lg rtl:text-right text-gray-500 dark:text-gray-400">
-                    {{ __('All Settings') }}
-                </h2>
-                <div class="role-cat-items">
+                <div class="role-cat-items space-y-5">
                     @php
                         // Group settings by kyclevel and unique_code
                         $groupedSettings = $kycLevelSettings->groupBy(['kyclevel.name', 'unique_code']);
@@ -36,117 +33,137 @@
                             $isExpanded = $kyclevelName == 'Level 2' && $settingsByCode->has('manual'); // Expand the "manual" section by default
                         @endphp
                         @if($kyclevelName == 'Level 1')
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                @foreach($settingsByCode->flatten() as $setting)
-                                    <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
-                                        <label class="form-label !mb-0">
-                                            {{ ucwords(str_replace('-', ' ', $setting->title)) }}
-                                        </label>
-                                        <div class="form-switch ps-0 leading-[0]">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                <input 
-                                                    type="checkbox"
-                                                    id="{{ $setting->title }}"
-                                                    name="permissions[]" 
-                                                    value="{{ $setting->id }}" 
-                                                    @if($setting->status) checked @endif
-                                                    class="sr-only peer"
-                                                >
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
+                            @foreach($settingsByCode->flatten() as $setting)
+                                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                    <div class="gateway-name flex items-center gap-2">
+                                        <div class="gateway-icon mr-1">
+                                            <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
+                                        </div>
+                                        <div class="gateway-title">
+                                            <h4 class="text-base">
+                                                {{ ucwords(str_replace('-', ' ', $setting->title)) }}
+                                            </h4>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-                        @else
-                            @foreach($settingsByCode as $uniqueCode => $settings)
-                                <div class="mb-5">
-                                    <div class="flex items-center space-x-7 flex-wrap mb-5">
-                                        @if($uniqueCode == 'manual')
-                                            <div class="form-label !w-auto !mb-0">
-                                                {{ __('Unique Code: ') . $uniqueCode }}
-                                            </div>
-                                            <div class="form-switch ps-0">
-                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input 
-                                                        type="radio" 
-                                                        name="level2_setting" 
-                                                        value="{{ $uniqueCode }}" 
-                                                        class="sr-only peer" 
-                                                        @if($uniqueCode == 'manual') checked @endif
-                                                    >
-                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                            <a type="button" class="btn btn-sm btn-dark inline-flex items-center !ml-auto editPlugin" data-id="manualForm">
-                                                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                                                {{ __('Add New') }}
+                                    <div class="gateway-right flex items-center gap-2">
+                                        <div class="gateway-status">
+                                            @if($setting->status)
+                                                <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                                    {{ __('Active') }}
+                                                </div>
+                                            @else
+                                                <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                                    {{ __('Deactivated') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="gateway-edit">
+                                            <a type="button" class="action-btn cursor-pointer editPlugin" data-id="1">
+                                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
                                             </a>
-                                        @else
-                                            <div class="form-label !w-auto !mb-0">
-                                                {{ __('Unique Code: ') . $uniqueCode }}
-                                            </div>
-                                            <div class="form-switch ps-0">
-                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input 
-                                                        type="radio" 
-                                                        name="level2_setting" 
-                                                        value="{{ $uniqueCode }}" 
-                                                        class="sr-only peer" 
-                                                        @if($uniqueCode == 'manual') checked @endif
-                                                    >
-                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div class="settings-wrapper @if($uniqueCode == 'manual') manual-settings @else samsub-settings @endif">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                            @foreach($settings as $setting)
-                                                @if($uniqueCode == 'manual')
-                                                    <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
-                                                        <label class="form-label !mb-0">
-                                                            {{ ucwords(str_replace('-', ' ', $setting->title)) }}
-                                                        </label>
-                                                        <div class="form-switch ps-0 leading-[0]">
-                                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                                <input 
-                                                                    type="checkbox"
-                                                                    id="{{ $setting->title }}"
-                                                                    name="permissions[]" 
-                                                                    value="{{ $setting->id }}"
-                                                                    data-unique-code="{{ $uniqueCode }}"
-                                                                    @if($setting->status) checked @endif
-                                                                    class="sr-only peer"
-                                                                >
-                                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="md:col-span-2">
-                                                        <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
-                                                            <div class="gateway-name flex items-center gap-2">
-                                                                <div class="gateway-icon mr-4">
-                                                                    <img class="h-7" src="{{ asset('global/plugin/tawk.png') }}" alt="">
-                                                                </div>
-                                                                <div class="gateway-title">
-                                                                    <h4 class="text-sm">Tawk Chat</h4>
-                                                                    <p class="text-xs">Free Instant Messaging system</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="gateway-right flex items-center gap-2">
-                                                                <div class="gateway-edit">
-                                                                    <a type="button" class="action-btn cursor-pointer editPlugin">
-                                                                        <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            @endforeach
                                         </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="input-area">
+                                <label for="" class="form-label">
+                                    {{ __('KYC Method') }}
+                                </label>
+                                <div class="flex items-center space-x-7 flex-wrap">
+                                    <div class="success-radio">
+                                        <label class="flex items-center cursor-pointer">
+                                            <input 
+                                                type="radio"
+                                                class="hidden"
+                                                name="level2_setting"
+                                                value="manual"
+                                                checked
+                                            >
+                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                            <span class="text-success-500 text-sm leading-6 capitalize">
+                                                {{ __('Manual') }}
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="success-radio">
+                                        <label class="flex items-center cursor-pointer">
+                                            <input 
+                                                type="radio"
+                                                class="hidden" 
+                                                name="level2_setting" 
+                                                value="automatic"
+                                            >
+                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                            <span class="text-success-500 text-sm leading-6 capitalize">
+                                                {{ __('Automatic') }}
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            @foreach($settingsByCode as $uniqueCode => $settings)
+                                <div class="settings-wrapper @if($uniqueCode == 'manual') manual-settings @else automatic-settings @endif">
+                                    <div class="space-y-5">
+                                        @foreach($settings as $setting)
+                                            @if($uniqueCode == 'manual')
+                                                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                                    <div class="gateway-name flex items-center gap-2">
+                                                        <div class="gateway-icon mr-1">
+                                                            <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
+                                                        </div>
+                                                        <div class="gateway-title">
+                                                            <h4 class="text-base">
+                                                                {{ ucwords(str_replace('-', ' ', $setting->title)) }}
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="gateway-right flex items-center gap-2">
+                                                        <div class="gateway-status">
+                                                            @if($setting->status)
+                                                                <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                                                    {{ __('Active') }}
+                                                                </div>
+                                                            @else
+                                                                <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                                                    {{ __('Deactivated') }}
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="gateway-edit">
+                                                            <a type="button" class="action-btn cursor-pointer editPlugin" data-id="1">
+                                                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                                    <div class="gateway-name flex items-center gap-2">
+                                                        <div class="gateway-icon mr-1">
+                                                            <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
+                                                        </div>
+                                                        <div class="gateway-title">
+                                                            <h4 class="text-base">
+                                                                {{ __('samsub') }}
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="gateway-right flex items-center gap-2">
+                                                        <div class="gateway-status">
+                                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                                                {{ __('Active') }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="gateway-edit">
+                                                            <a type="button" class="action-btn cursor-pointer editPlugin" data-id="1">
+                                                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </div>
                             @endforeach
@@ -337,11 +354,11 @@
         $('input[name="level2_setting"]').change(function() {
             var value = $(this).val();
             if (value == 'manual') {
-                $('.samsub-settings').addClass('hidden');
+                $('.automatic-settings').addClass('hidden');
                 $('.manual-settings').removeClass('hidden');
-            } else if (value == 'samsub') {
+            } else if (value == 'automatic') {
                 $('.manual-settings').addClass('hidden');
-                $('.samsub-settings').removeClass('hidden');
+                $('.automatic-settings').removeClass('hidden');
             }
         });
     });

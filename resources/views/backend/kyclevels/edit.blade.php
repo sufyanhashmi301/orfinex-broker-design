@@ -45,6 +45,7 @@
                                             </h4>
                                         </div>
                                     </div>
+<<<<<<< HEAD
                                     <div class="gateway-right flex items-center gap-2">
                                         <div class="gateway-status">
                                             @if($setting->status)
@@ -61,6 +62,98 @@
                                             <a type="button" class="action-btn cursor-pointer editPlugin" data-id="1">
                                                 <iconify-icon icon="lucide:settings-2"></iconify-icon>
                                             </a>
+=======
+                                @endforeach
+                            </div>
+                        @else
+                            @foreach($settingsByCode as $uniqueCode => $settings)
+                                <div class="mb-5">
+                                    <div class="flex items-center space-x-7 flex-wrap mb-5">
+                                        @if($uniqueCode == 'manual')
+                                            <div class="form-label !w-auto !mb-0">
+                                                {{  $uniqueCode }}
+                                            </div>
+                                            <div class="form-switch ps-0">
+                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                    <input 
+                                                        type="radio" 
+                                                        name="level2_setting" 
+                                                        value="{{ $uniqueCode }}" 
+                                                        class="sr-only peer" 
+                                                        @if($uniqueCode == 'manual') checked @endif
+                                                    >
+                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                </label>
+                                            </div>
+                                            <a type="button" class="btn btn-sm btn-dark inline-flex items-center !ml-auto editPlugin" data-id="manualForm">
+                                                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                                                {{ __('Add New') }}
+                                            </a>
+                                        @else
+                                            <div class="form-label !w-auto !mb-0">
+                                                {{  $uniqueCode }}
+                                            </div>
+                                            <div class="form-switch ps-0">
+                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                    <input 
+                                                        type="radio" 
+                                                        name="level2_setting" 
+                                                        value="{{ $uniqueCode }}" 
+                                                        class="sr-only peer" 
+                                                        @if($uniqueCode == 'manual') checked @endif
+                                                    >
+                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                </label>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="settings-wrapper @if($uniqueCode == 'manual') manual-settings @else samsub-settings @endif">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                            @foreach($settings as $setting)
+                                                @if($uniqueCode == 'manual')
+                                                    <div class="input-area flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded px-3 py-2">
+                                                        <label class="form-label !mb-0">
+                                                            {{ ucwords(str_replace('-', ' ', $setting->title)) }}
+                                                        </label>
+                                                        <div class="form-switch ps-0 leading-[0]">
+                                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                                <input 
+                                                                    type="checkbox"
+                                                                    id="{{ $setting->title }}"
+                                                                    name="permissions[]" 
+                                                                    value="{{ $setting->id }}"
+                                                                    data-unique-code="{{ $uniqueCode }}"
+                                                                    @if($setting->status) checked @endif
+                                                                    class="sr-only peer"
+                                                                >
+                                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="md:col-span-2">
+                                                        <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                                            <div class="gateway-name flex items-center gap-2">
+                                                                <div class="gateway-icon mr-4">
+                                                                    <img class="h-7" src="{{ asset('global/plugin/tawk.png') }}" alt="">
+                                                                </div>
+                                                                <div class="gateway-title">
+                                                                    <h4 class="text-sm">Tawk Chat</h4>
+                                                                    <p class="text-xs">Free Instant Messaging system</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="gateway-right flex items-center gap-2">
+                                                                <div class="gateway-edit">
+                                                                    <a type="button" class="action-btn cursor-pointer editPlugin">
+                                                                        <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+>>>>>>> 53360a974dc45e5a04c9a51edd348ea33d2e03e0
                                         </div>
                                     </div>
                                 </div>
@@ -244,13 +337,10 @@
 @endsection
 @section('script')
 <script>
-     $('.editPlugin').on('click', function (e) {
-            
-                $('#editPlugin').modal('show');
+    $(document).ready(function () {
+        // Initially hide the samsub-settings section
+        $('.samsub-settings').addClass('hidden');
 
-        
-        })
-    document.addEventListener('DOMContentLoaded', function () {
         // Add event listener for radio buttons
         const radioButtons = document.querySelectorAll('input[name="level2_setting"]');
         radioButtons.forEach((radio) => {
@@ -262,12 +352,16 @@
                     samsubCheckboxes.forEach((checkbox) => {
                         checkbox.checked = false;
                     });
+                    $('.samsub-settings').addClass('hidden');
+                    $('.manual-settings').removeClass('hidden');
                 } else if (uniqueCode === 'samsub') {
                     // Uncheck all manual checkboxes
                     const manualCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="manual"]');
                     manualCheckboxes.forEach((checkbox) => {
                         checkbox.checked = false;
                     });
+                    $('.manual-settings').addClass('hidden');
+                    $('.samsub-settings').removeClass('hidden');
                 }
             });
         });
@@ -301,54 +395,55 @@
                 }
             });
         });
-    });
 
-    $(document).ready(function (e) {
+        // Plugin modal handling
+        $('.editPlugin').on('click', function () {
+            $('#editPlugin').modal('show');
+        });
+
+        // Field option generation
         var i = 0;
-        "use strict";
-
         $("#generate").on('click', function () {
             ++i;
             var form = `<div class="option-remove-row grid grid-cols-12 gap-5">
                 <div class="xl:col-span-4 col-span-12">
                     <div class="input-area">
-                    <input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
+                        <input name="fields[` + i + `][name]" class="form-control" type="text" value="" required placeholder="Field Name">
                     </div>
                 </div>
-
                 <div class="xl:col-span-4 col-span-12">
                     <div class="input-area">
-                    <select name="fields[` + i + `][type]" class="form-control w-full mb-3">
-                        <option value="text">Input Text</option>
-                        <option value="textarea">Textarea</option>
-                        <option value="file">File upload</option>
-                    </select>
+                        <select name="fields[` + i + `][type]" class="form-control w-full mb-3">
+                            <option value="text">Input Text</option>
+                            <option value="textarea">Textarea</option>
+                            <option value="file">File upload</option>
+                        </select>
                     </div>
                 </div>
                 <div class="xl:col-span-3 col-span-12">
                     <div class="input-area">
-                    <select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
-                        <option value="required">Required</option>
-                        <option value="nullable">Optional</option>
-                    </select>
+                        <select name="fields[` + i + `][validation]" class="form-control w-full mb-3">
+                            <option value="required">Required</option>
+                            <option value="nullable">Optional</option>
+                        </select>
                     </div>
                 </div>
-
                 <div class="col-span-1">
                     <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-                    </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
+                        </svg>
                     </button>
                 </div>
-                </div>`;
-            $('.addOptions').append(form)
+            </div>`;
+            $('.addOptions').append(form);
         });
 
         $(document).on('click', '.delete_desc', function () {
             $(this).closest('.option-remove-row').remove();
         });
     });
+<<<<<<< HEAD
 
     $(document).ready(function() {
         $('input[name="level2_setting"]').change(function() {
@@ -363,5 +458,8 @@
         });
     });
 
+=======
+>>>>>>> 53360a974dc45e5a04c9a51edd348ea33d2e03e0
 </script>
+
 @endsection

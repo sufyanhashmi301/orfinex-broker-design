@@ -79,7 +79,10 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserControlle
 
 Route::resource('kyc-form', KycController::class);
 Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
+    Route::get('editlevel2/{id}', 'editKycLevel2')->name('editKycLevel2');
+    Route::post('updatelevel2kyc/{id}', 'updateLevel2Kyc')->name('updateLevel2Kyc');
     Route::get('pending', 'KycPending')->name('pending');
+    Route::post('storelevel3', 'storeLevel3')->name('storeLevel3');
     Route::get('rejected', 'KycRejected')->name('rejected');
     Route::get('action/{id}', 'depositAction')->name('action');
     Route::post('action-now', 'actionNow')->name('action.now');
@@ -94,7 +97,7 @@ Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'cont
 });
 Route::resource('kyclevels', KYCLevelsController::class);
 Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
-    Route::post('kyclevel/update/{id}', 'kycLevelUpdate')->name('update');
+    Route::post('kyclevel/update/{id}', 'kycLevel1Update')->name('update');
     //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
 });

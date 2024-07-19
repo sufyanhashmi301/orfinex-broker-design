@@ -13,4 +13,8 @@ class Kyclevel extends Model
     {
         return $this->hasMany(Kyclevelsetting::class);
     }
+    public function kyc()
+    {
+        return $this->hasMany(Kyc::class);
+    }
 }

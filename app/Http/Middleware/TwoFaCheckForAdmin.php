@@ -47,7 +47,7 @@ class TwoFaCheckForAdmin
 //dd(Auth::guard('admin')->check());
 //        dd(Auth::guard('admin')->check());
 //        if(Auth::guard('admin')->check()){
-        dd(redirect()->route('admin.staff.2fa.pin'));
+//        dd(redirect()->route('admin.staff.2fa.pin'));
         return  redirect()->route('admin.staff.2fa.pin');
 //        }
 //        return $authenticator->makeRequestOneTimePasswordResponse();

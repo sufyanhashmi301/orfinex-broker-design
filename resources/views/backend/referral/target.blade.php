@@ -6,7 +6,7 @@
     <div class="max-w-5xl mx-auto">
         <div class="space-y-6">
             <div class="flex flex-wrap justify-between items-center mb-4">
-                <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
                     {{ __('Set Referral Target') }}
                 </h4>
             </div>

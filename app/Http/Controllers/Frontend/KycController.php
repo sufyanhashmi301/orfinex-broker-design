@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
+use App\Models\Kyclevel;
+use App\Models\Kyclevelsetting;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
@@ -17,7 +19,9 @@ class KycController extends Controller
 
     public function kyc()
     {
-        return view('frontend::user.kyc.index');
+        $kycSettings =Kyclevelsetting::with('kyclevel')->get();
+        
+        return view('frontend::user.kyc.index',get_defined_vars());
     }
 
     public function basicKyc()

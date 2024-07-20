@@ -4293,6 +4293,9 @@ textarea.form-control.is-invalid{
 .ml-auto{
   margin-left: auto;
 }
+.\!ml-auto{
+  margin-left: auto !important;
+}
 .mt-7{
   margin-top: 1.75rem;
 }
@@ -6890,6 +6893,12 @@ textarea.form-control.is-invalid{
 }
 .\!pr-12{
   padding-right: 3rem !important;
+}
+.\!pl-20{
+  padding-left: 5rem !important;
+}
+.\!pl-22{
+  padding-left: 5.5rem !important;
 }
 .\!pr-32{
   padding-right: 8rem !important;

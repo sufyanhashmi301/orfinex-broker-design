@@ -19,6 +19,7 @@
             <div class="card-body p-6">
                 <form action="{{ route('admin.kyc-form.store') }}" method="post" class="space-y-4">
                     @csrf
+                   
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Name:') }}</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control"

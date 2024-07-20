@@ -162,33 +162,11 @@
                                 </div>
                             </div>
                         @endif
+                        
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
-                                <div class="switch-field flex overflow-hidden same-type">
-                                    <input
-                                        type="radio"
-                                        id="radio-five"
-                                        name="status"
-                                        value="1"
-                                        checked
-                                    />
-                                    <label for="radio-five">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="radio-six"
-                                        name="status"
-                                        value="0"
-        
-                                    />
-                                    <label for="radio-six">{{ __('Deactivate') }}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this method to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method (select "All" if you have to show this method to whole world):') }}</label>
+                                <select id="multiSelect" class="select2 form-control w-full mt-2 py-2" name="country[]" placeholder="Manage Country" multiple>
                                     @foreach( getCountries() as $country)
                                         <option  value="{{ $country['name'] }}">
                                             {{ $country['name']  }}
@@ -200,6 +178,28 @@
                                 </select>
                             </div>
 
+                        </div>
+                        <div class="xl:col-span-6 col-span-12">
+                            <div class="input-area flex items-center justify-between">
+                                <label class="form-label" for="">{{ __('Status:') }}</label>
+                                <div class="form-switch ps-0">
+                                    <input 
+                                        class="form-check-input"
+                                        type="hidden" 
+                                        value="0" 
+                                        name="status"
+                                    />
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            name="status" 
+                                            value="1"
+                                            class="sr-only peer" 
+                                        />
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         @if($type == 'manual')
                             <div class="col-span-12">

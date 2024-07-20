@@ -53,7 +53,7 @@ class   InvestmentController extends Controller
                 ->addColumn('credit', 'backend.investment.include.__credit_mt5')
                 ->addColumn('schema', 'backend.investment.include.__invest_schema')
                 ->addColumn('status', 'backend.investment.include.__status')
-                ->addColumn('action', '')
+                ->addColumn('action', 'backend.investment.include.__action')
                 ->rawColumns(['ib_number', 'schema', 'username','balance','equity','credit', 'status','action'])
                 ->make(true);
         }

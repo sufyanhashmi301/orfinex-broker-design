@@ -39,6 +39,7 @@ use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
+use App\Http\Controllers\Backend\KYCLevelsController;
 use App\Http\Controllers\Backend\SecurityController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,350 +53,284 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::group(['middleware' => [ '2fa']], function () {
 
-//Route::middleware(['2fa_admin','set.session.lifetime:admin'])->group(function () {
+Route::middleware(['2fa_admin'])->group(function () {
+    // Admin Dashboard
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
-    Route::middleware(['2fa_admin'])->group(function () {
-//Admin Dashboard
-        Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    // Customer Management
+    Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
+    Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
+        Route::get('active', 'activeUser')->name('active');
+        Route::get('disabled', 'disabled')->name('disabled');
+        Route::get('withBalance', 'withBalance')->name('with_balance');
+        Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
+        Route::get('login/{id}', 'userLogin')->name('login');
+        Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
+        Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
+        Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
+        Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
+        Route::post('mail-send', 'mailSend')->name('mail-send');
+        Route::get('transaction/{id}', 'transaction')->name('transaction');
+        Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
+        Route::post('export', 'export')->name('export');
+    });
 
+    // KYC Management
+    Route::resource('kyc-form', KycController::class);
+    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
+        Route::get('pending', 'KycPending')->name('pending');
+        Route::get('rejected', 'KycRejected')->name('rejected');
+        Route::get('action/{id}', 'depositAction')->name('action');
+        Route::post('action-now', 'actionNow')->name('action.now');
+        Route::get('all', 'kycAll')->name('all');
+    });
 
-//===============================  Customer Management ==================================
-        Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
-        Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
-            Route::get('active', 'activeUser')->name('active');
-            Route::get('disabled', 'disabled')->name('disabled');
-            Route::get('login/{id}', 'userLogin')->name('login');
-            Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
-            Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
-            Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
-            Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
-            Route::post('mail-send', 'mailSend')->name('mail-send');
-            Route::get('transaction/{id}', 'transaction')->name('transaction');
-            Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
-            Route::post('export', 'export')->name('export');
+    // Risk Profile Tag Management
+    Route::resource('risk-profile-tag', RiskProfileTagController::class);
+    Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
+        Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
+        Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+    });
+
+    // KYC Levels Management
+    Route::resource('kyclevels', KYCLevelsController::class);
+    Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
+        Route::post('kyclevel/update/{id}', 'kycLevelUpdate')->name('update');
+    });
+
+    // IB Management
+    Route::resource('ib-form', IBController::class);
+    Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
+        Route::get('pending', 'IbPendingList')->name('pending.list');
+        Route::get('approved', 'IbApprovedList')->name('approved.list');
+        Route::get('rejected', 'IbRejectedList')->name('rejected.list');
+        Route::get('all', 'ibAllList')->name('all.list');
+        Route::get('answer/view/{user}', 'answerView')->name('answer.view');
+        Route::post('approve', 'approveIbMember')->name('approve');
+        Route::post('update', 'updateIbMember')->name('update');
+        Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
+        Route::post('multi/update', 'updateMIbMember')->name('multi.update');
+        Route::post('reject', 'rejectIbMember')->name('reject');
+        Route::post('save/form', 'saveForm')->name('save.form');
+    });
+
+    // Role Management
+    Route::resource('roles', RoleController::class)->except('show', 'destroy');
+    Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
+    Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
+    Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
+    Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
+    Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
+    Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
+    Route::post('/2fa/verify', function () {
+        return redirect(route('admin.dashboard'));
+    })->name('2fa.verify');
+
+    // Plans Management
+    Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
+    Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+    Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
+    Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
+    Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
+    Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
+
+    // Profit Deduction Management
+    Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
+    Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
+
+    // Transactions
+    Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
+    Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
+    Route::get('forex-accounts/{type?}/{id?}', [InvestmentController::class, 'forexAccounts'])->name('forex-accounts');
+    Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
+
+    // Essentials
+    Route::group(['prefix' => 'gateway', 'as' => 'gateway.', 'controller' => GatewayController::class], function () {
+        Route::get('/automatic', 'automatic')->name('automatic');
+        Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
+        Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
+    });
+    Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
+        // Deposit Method
+        Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
+            Route::get('list/{type}', 'methodList')->name('list');
+            Route::get('create/{type}', 'createMethod')->name('create');
+            Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
+            Route::get('edit/{type}', 'methodEdit')->name('edit');
+            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
         });
-
-        Route::resource('kyc-form', KycController::class);
-        Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-            Route::get('pending', 'KycPending')->name('pending');
-            Route::get('rejected', 'KycRejected')->name('rejected');
-            Route::get('action/{id}', 'depositAction')->name('action');
-            Route::post('action-now', 'actionNow')->name('action.now');
-            Route::get('all', 'kycAll')->name('all');
-
+        Route::get('manual-pending', 'pending')->name('manual.pending');
+        Route::get('history', 'history')->name('history');
+        Route::get('action/{id}', 'depositAction')->name('action');
+        Route::post('action-now', 'actionNow')->name('action.now');
+    });
+    Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
+        // Withdraw Method
+        Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
+            Route::get('list/{type}', 'methods')->name('list');
+            Route::get('create/{type}', 'methodCreate')->name('create');
+            Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
+            Route::get('edit/{type}', 'methodEdit')->name('edit');
+            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
         });
-        Route::resource('risk-profile-tag', RiskProfileTagController::class);
-        Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
-            Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
-            Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+        Route::get('schedule', 'schedule')->name('schedule');
+        Route::post('schedule-update', 'scheduleUpdate')->name('schedule.update');
+        Route::get('history', 'history')->name('history');
+        Route::get('pending', 'pending')->name('pending');
+        Route::get('action/{id}', 'withdrawAction')->name('action');
+        Route::post('action-now', 'actionNow')->name('action.now');
+    });
+    Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
+        Route::get('index', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::post('update', 'update')->name('update');
+        Route::post('delete', 'delete')->name('delete');
+        Route::get('direct/list/{id}', 'directList')->name('direct.list');
+        Route::post('direct/add', 'addDirectReferral')->name('direct.add');
+        Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
+        Route::get('target', 'target')->name('target');
+        Route::post('target-store', 'targetStore')->name('target-store');
+        Route::post('target-update', 'targetUpdate')->name('target-update');
+        Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
+        Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
+    });
 
+    // Advertisement Material
+    Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
+
+    // Ranking Management
+    Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
+
+    // Site Essentials
+    Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
+        Route::get('site', 'siteTheme')->name('site');
+        Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
+        Route::get('status-update', 'statusUpdate')->name('status-update');
+        Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
+        Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
+        Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
+    });
+
+    Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
+        Route::post('store', 'store')->name('store');
+        Route::post('update', 'update')->name('update');
+        Route::post('delete', 'delete')->name('delete');
+        Route::post('position-update', 'positionUpdate')->name('position.update');
+    });
+
+    // Settings
+    Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
+        Route::get('site', 'siteSetting')->name('site');
+        Route::get('mail', 'mailSetting')->name('mail');
+        Route::get('forex-api', 'forexApiSetting')->name('forex-api');
+        Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
+        Route::post('update', 'update')->name('update');
+        Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
+        Route::get('plugin-data/{id}', [PluginController::class, 'pluginData'])->name('plugin.data');
+        Route::post('plugin-update/{id}', [PluginController::class, 'update'])->name('plugin.update');
+        Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
+            Route::get('tune', 'setTune')->name('tune');
+            Route::get('tune/status/{id}', 'status')->name('tune.status');
         });
-        Route::resource('kyclevels', KYCLevelsController::class);
-        Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
-            Route::post('kyclevel/update/{id}', 'kycLevelUpdate')->name('update');
-            //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+        Route::get('company', 'companySetting')->name('company');
+        Route::get('currency', 'currencySetting')->name('currency');
+        Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
+        Route::get('transfers', 'transfers')->name('transfers');
+        Route::get('gdpr', 'gdpr')->name('gdpr');
+        Route::get('slack', 'slackSetting')->name('slack');
+    });
 
+    // Security Settings
+    Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
+        Route::get('all-sections', 'allSections')->name('all-sections');
+        Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
+        Route::get('single-session', 'singleSession')->name('single-session');
+        Route::get('blocklist-email', 'blocklistEmail')->name('blocklist-email');
+        Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
+    });
+
+    // Notification Management
+    Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
+    Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
+    Route::get('notification-read/{id}', [NotificationController::class, 'readNotification'])->name('read-notification');
+
+    // Language Management
+    Route::resource('language', LanguageController::class);
+    Route::get('language-keyword/{language}', [LanguageController::class, 'languageKeyword'])->name('language-keyword');
+    Route::post('language-keyword-update', [LanguageController::class, 'keywordUpdate'])->name('language-keyword-update');
+    Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
+
+    // Email Template Management
+    Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
+    Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
+
+    // Template Management
+    Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
+        Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
+            Route::get('/', 'template')->name('index');
+            Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
+            Route::post('template-update', 'update_template')->name('template-update');
         });
-        Route::resource('ib-form', IBController::class);
-        Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
-            Route::get('pending', 'IbPendingList')->name('pending.list');
-            Route::get('approved', 'IbApprovedList')->name('approved.list');
-            Route::get('rejected', 'IbRejectedList')->name('rejected.list');
-            Route::get('all', 'ibAllList')->name('all.list');
-            Route::get('answer/view/{user}', 'answerView')->name('answer.view');
-            Route::post('approve', 'approveIbMember')->name('approve');
-            Route::post('update', 'updateIbMember')->name('update');
-            Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
-            Route::post('multi/update', 'updateMIbMember')->name('multi.update');
-            Route::post('reject', 'rejectIbMember')->name('reject');
-            Route::post('save/form', 'saveForm')->name('save.form');
-
-
-        });
-
-//===============================  Role Management ==================================
-
-        Route::resource('roles', RoleController::class)->except('show', 'destroy');
-        Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
-        Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
-
-        Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
-        Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
-        Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
-        Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
-        Route::post('/2fa/verify', function () {
-//            dd(route('admin.dashboard'));
-            return redirect(route('admin.dashboard'));
-        })->name('2fa.verify');
-//===============================  Plans Management ==================================
-        Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
-        Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
-        Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
-        Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-
-        Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
-
-        Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
-
-
-//===============================  Plans Management ==================================
-Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
-Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
-Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
-
-//===============================  Profit Deduction Management ==================================
-        Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
-        Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
-
-//===============================  Transactions ==================================
-        Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
-        Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
-        Route::get('forex-accounts/{type?}/{id?}', [InvestmentController::class, 'forexAccounts'])->name('forex-accounts');
-        Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
-
-//===============================  Essentials ==================================
-
-        Route::group(['prefix' => 'gateway', 'as' => 'gateway.', 'controller' => GatewayController::class], function () {
-            Route::get('/automatic', 'automatic')->name('automatic');
-            Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
-            Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
-        });
-        Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
-            //=============================== deposit Method ================================
-            Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-                Route::get('list/{type}', 'methodList')->name('list');
-                Route::get('create/{type}', 'createMethod')->name('create');
-                Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-                Route::get('edit/{type}', 'methodEdit')->name('edit');
-                Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
-            });
-            //=============================== end deposit Method ================================
-
-            Route::get('manual-pending', 'pending')->name('manual.pending');
-            Route::get('history', 'history')->name('history');
-            Route::get('action/{id}', 'depositAction')->name('action');
-            Route::post('action-now', 'actionNow')->name('action.now');
-        });
-        Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-            //=============================== withdraw Method ================================
-
-            Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-                Route::get('list/{type}', 'methods')->name('list');
-                Route::get('create/{type}', 'methodCreate')->name('create');
-                Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-                Route::get('edit/{type}', 'methodEdit')->name('edit');
-                Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
-            });
-
-            //Schedule
-            Route::get('schedule', 'schedule')->name('schedule');
-            Route::post('schedule-update', 'scheduleUpdate')->name('schedule.update');
-
-            Route::get('history', 'history')->name('history');
-            Route::get('pending', 'pending')->name('pending');
-
-            Route::get('action/{id}', 'withdrawAction')->name('action');
-            Route::post('action-now', 'actionNow')->name('action.now');
-
-        });
-        Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
-            Route::get('index', 'index')->name('index');
-            Route::post('store', 'store')->name('store');
-            Route::post('update', 'update')->name('update');
-            Route::post('delete', 'delete')->name('delete');
-
-            Route::get('direct/list/{id}', 'directList')->name('direct.list');
-            Route::post('direct/add', 'addDirectReferral')->name('direct.add');
-            Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
-            Route::get('target', 'target')->name('target');
-            Route::post('target-store', 'targetStore')->name('target-store');
-            Route::post('target-update', 'targetUpdate')->name('target-update');
-
-            //level referral
-            Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
-            Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
-        });
-//===============================  Advertisement Material ==================================
-        Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
-
-        Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
-
-//===============================  Site Essentials ==================================
-
-        Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
-
-            Route::get('site', 'siteTheme')->name('site');
-            Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
-
-            Route::get('status-update', 'statusUpdate')->name('status-update');
-
-            Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
-            Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
-            Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
-        });
-
-
-        Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
-            Route::post('store', 'store')->name('store');
-            Route::post('update', 'update')->name('update');
-            Route::post('delete', 'delete')->name('delete');
-            Route::post('position-update', 'positionUpdate')->name('position.update');
-        });
-
-//===============================  site Settings ==================================
-        Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
-            Route::get('site', 'siteSetting')->name('site');
-            Route::get('mail', 'mailSetting')->name('mail');
-            Route::get('forex-api', 'forexApiSetting')->name('forex-api');
-            Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
-            Route::post('update', 'update')->name('update');
-
-            Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
-            Route::get('plugin-data/{id}', [PluginController::class, 'pluginData'])->name('plugin.data');
-            Route::post('plugin-update/{id}', [PluginController::class, 'update'])->name('plugin.update');
-
-            //notification tune
-            Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
-                Route::get('tune', 'setTune')->name('tune');
-                Route::get('tune/status/{id}', 'status')->name('tune.status');
-            });
-
-            Route::get('company', 'companySetting')->name('company');
-            Route::get('currency', 'currencySetting')->name('currency');
-            Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
-            Route::get('transfers', 'transfers')->name('transfers');
-            Route::get('gdpr', 'gdpr')->name('gdpr');
-
-            Route::get('slack', 'slackSetting')->name('slack');
-
-        });
-
-
-//===============================  Security Settings ==================================
-        Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
-            Route::get('all-sections', 'allSections')->name('all-sections');
-            Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
-            Route::get('single-session', 'singleSession')->name('single-session');
-            Route::get('blocklist-email', 'blocklistEmail')->name('blocklist-email');
-            Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
-        });
-
-// show all notifications
-        Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
-        Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
-        Route::get('notification-read/{id}', [NotificationController::class, 'readNotification'])->name('read-notification');
-
-        Route::resource('language', LanguageController::class);
-        Route::get('language-keyword/{language}', [LanguageController::class, 'languageKeyword'])->name('language-keyword');
-        Route::post('language-keyword-update', [LanguageController::class, 'keywordUpdate'])->name('language-keyword-update');
-        Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
-
-        Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
-        Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
-        Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
-
-        Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
-            Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
-                Route::get('/', 'template')->name('index');
-                Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
-                Route::post('template-update', 'update_template')->name('template-update');
-
-            });
-
-            Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
-                Route::get('/', 'template')->name('index');
-                Route::get('template-edit/{id}', 'editTemplate')->name('template-edit');
-                Route::post('template-update', 'updateTemplate')->name('template-update');
-            });
-        });
-
-//===============================  Links Settings ==================================
-        Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
-            Route::get('document-links', 'documentLinks')->name('document-links');
-            Route::get('platform-links', 'platformLinks')->name('platform-links');
-        });
-
-//===============================  Others ==================================
-        Route::group(['controller' => AppController::class], function () {
-            Route::get('subscribers', 'subscribers')->name('subscriber');
-            Route::get('mail-send-subscriber', 'mailSendSubscriber')->name('mail.send.subscriber');
-            Route::post('mail-send-subscriber-now', 'mailSendSubscriberNow')->name('mail.send.subscriber.now');
-        });
-        Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
-            Route::get('index/{id?}', 'index')->name('index');
-            Route::post('reply', 'reply')->name('reply');
-            Route::get('show/{uuid}', 'show')->name('show');
-            Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
-        });
-        Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
-        Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
-
-//admin self manage
-        Route::get('profile', [AppController::class, 'profile'])->name('profile');
-        Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
-
-        Route::get('password-change', [AppController::class, 'passwordChange'])->name('password-change');
-        Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('password-update');
-
-        Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
-        Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
-
-
-        Route::get('/ib-resources', function () {
-            return view('backend.ib.resources.index');
-        });
-
-        Route::get('ib-resources/new', function () {
-            return view('backend.ib.resources.create');
-        });
-
-        Route::get('/loyalty-points', function () {
-            return view('backend.loyalty_points.create');
-        });
-        Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
-        Route::post('import', [ImportController::class, 'import'])->name('import');
-
-        Route::get('/reports', function () {
-            return view('backend.reports.index');
-        });
-
-        Route::get('/bonus', function () {
-            return view('backend.bonus.index');
-        });
-
-        Route::get('/bonus/create', function () {
-            return view('backend.bonus.create');
+        Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
+            Route::get('/', 'template')->name('index');
+            Route::get('template-edit/{id}', 'editTemplate')->name('template-edit');
+            Route::post('template-update', 'updateTemplate')->name('template-update');
         });
     });
 
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
-    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+    // Links Settings
+    Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
+        Route::get('document-links', 'documentLinks')->name('document-links');
+        Route::get('platform-links', 'platformLinks')->name('platform-links');
+    });
 
+    // Miscellaneous
+    Route::group(['controller' => AppController::class], function () {
+        Route::get('subscribers', 'subscribers')->name('subscriber');
+        Route::get('mail-send-subscriber', 'mailSendSubscriber')->name('mail.send.subscriber');
+        Route::post('mail-send-subscriber-now', 'mailSendSubscriberNow')->name('mail.send.subscriber.now');
+    });
+    Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
+        Route::get('index/{id?}', 'index')->name('index');
+        Route::post('reply', 'reply')->name('reply');
+        Route::get('show/{uuid}', 'show')->name('show');
+        Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
+    });
+    Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
+    Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
 
-Route::get('ib-resources/new', function () {
-    return view('backend.ib.resources.create');
+    // Admin Self Management
+    Route::get('profile', [AppController::class, 'profile'])->name('profile');
+    Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
+    Route::get('password-change', [AppController::class, 'passwordChange'])->name('password-change');
+    Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('password-update');
+    Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
+    Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
+
+    // View Routes
+    Route::get('/ib-resources', function () {
+        return view('backend.ib.resources.index');
+    });
+    Route::get('ib-resources/new', function () {
+        return view('backend.ib.resources.create');
+    });
+    Route::get('/loyalty-points', function () {
+        return view('backend.loyalty_points.create');
+    });
+    Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
+    Route::post('import', [ImportController::class, 'import'])->name('import');
+    Route::get('/reports', function () {
+        return view('backend.reports.index');
+    });
+    Route::get('/bonus', function () {
+        return view('backend.bonus.index');
+    });
+    Route::get('/bonus/create', function () {
+        return view('backend.bonus.create');
+    });
 });
 
-Route::get('/loyalty-points', function () {
-    return view('backend.loyalty_points.create');
-});
-Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
-Route::post('import', [ImportController::class, 'import'])->name('import');
-
-Route::get('/reports', function () {
-    return view('backend.reports.index');
-});
-
-Route::get('/bonus', function () {
-    return view('backend.bonus.index');
-});
-
-Route::get('/bonus/create', function () {
-    return view('backend.bonus.create');
-});
-//});
-
-
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');

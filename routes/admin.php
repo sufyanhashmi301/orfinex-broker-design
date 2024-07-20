@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['2fa_admin'])->group(function () {
+//Route::middleware(['2fa_admin'])->group(function () {
     // Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -330,7 +330,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/bonus/create', function () {
         return view('backend.bonus.create');
     });
-});
+//});
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');

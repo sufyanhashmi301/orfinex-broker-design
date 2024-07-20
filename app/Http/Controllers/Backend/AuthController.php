@@ -61,8 +61,8 @@ class AuthController extends Controller
             $request->session()->regenerate();
             AdminLoginActivity::add();
 //            smilify('success', 'Successfully login your account 🔥 !');
-
-            return redirect()->intended('admin');
+            return redirect()->route('admin.dashboard');
+//            return redirect()->intended('admin');
         }
 
         notify()->warning('The provided credentials do not match our records.. ⚡️');

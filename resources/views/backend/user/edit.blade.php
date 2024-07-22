@@ -2,9 +2,6 @@
 @section('title')
     {{ __('Customer Details') }}
 @endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
-@endsection
 @section('content')
 <div class="page-content">
     <div class="transition-all duration-150 container-fluid" id="page_layout">
@@ -138,7 +135,7 @@
                         </div>
                         <div class="lg:col-span-9 col-span-12">
                             <div class="site-tab-bars card p-3 mb-5">
-                                <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-3 menu-open" id="pills-tab" role="tablist">
+                                <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 gap-3 menu-open" id="pills-tab" role="tablist">
                                     @canany(['customer-basic-manage','customer-change-password'])
                                         <li class="nav-item" role="presentation">
                                             <a
@@ -365,7 +362,7 @@
 
 @endsection
 @section('script')
-    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+    {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
 
     <script>
         function confirmDelete(tagId,tagName) {
@@ -373,12 +370,6 @@
             $('#risk_profile_tag_name').text(tagName)
             $('#deleteTagModal').modal('show');
         }
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:7
-        });
         $(document).ready(function() {
 
             function reloadPage() {

@@ -95,3 +95,8 @@
     @yield('setting-content')
 </div>
 @endsection
+@section('script')
+    <script>
+        new SimpleBar($("#sidebar_subMenus, #scrollModal")[0]);
+    </script>
+@endsection

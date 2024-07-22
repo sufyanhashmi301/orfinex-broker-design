@@ -187,16 +187,16 @@
                                 />
                             </div>
                         </div>
-                        
+
                         <div class="lg:col-span-1 col-span-2">
-                            <div class="site-input-groups">
-                                <label class="box-input-label" for="">{{ __('Account Creation Limit:') }}</label>
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
                                 <input
                                     type="text"
                                     name="account_limit"
                                     value="{{$schema->account_limit}}"
                                     oninput="this.value = validateDouble(this.value)"
-                                    class="box-input"
+                                    class="form-control"
                                     placeholder="Account Limit"
 
                                 />
@@ -204,14 +204,17 @@
                         </div>
                         <div class="col-span-2">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
                                     @foreach( getCountries() as $country)
                                         <option value="{{$country['name']}}"  @selected( null != $schema->country && in_array($country['name'],json_decode($schema->country,true)))>{{$country['name']}}</option>
                                     @endforeach
                                         <option  value="All" @selected( null != $schema->country && in_array('All',json_decode($schema->country,true)))>
                                             {{ __('All') }}
                                         </option>
+                                        @foreach( getRiskProfileTag() as $tag)
+                                            <option value="{{$tag->name}}"  @selected( null != $tag->name && in_array($tag->name,json_decode($schema->country,true)))>{{$tag->name}}  {{__('(tag)')}}</option>
+                                        @endforeach
 
                                 </select>
                             </div>
@@ -375,6 +378,7 @@
                                 {{ __('Update Schema') }}
                             </button>
                         </div>
+
                     </div>
                 </form>
             </div>

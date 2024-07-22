@@ -31,7 +31,7 @@
                                     <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Country') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Country/Tags') }}</th>
                                     <th scope="col" class="table-th">{{ __('Badge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -74,16 +74,18 @@
                                         ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
                                     </td>
                                     <td class="table-td">
-                                        @can('schema-edit')
-                                            <a href="{{route('admin.accountType.edit',$schema->id)}}" class="action-btn">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </a>
-                                        @endcan
-                                        @can('schema-delete')
-                                            <a href="#" class="action-btn delete-schema-btn" data-id="{{ $schema->id }}">
-                                                <iconify-icon icon="lucide:trash"></iconify-icon>
-                                            </a>
-                                        @endcan
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @can('schema-edit')
+                                                <a href="{{route('admin.accountType.edit',$schema->id)}}" class="action-btn">
+                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                </a>
+                                            @endcan
+                                            @can('schema-delete')
+                                                <a href="#" class="action-btn delete-schema-btn" data-id="{{ $schema->id }}">
+                                                    <iconify-icon icon="lucide:trash"></iconify-icon>
+                                                </a>
+                                            @endcan
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

@@ -3,83 +3,66 @@
     {{ __('2FA Security') }}
 @endsection
 @section('auth-content')
-    <div class="loginwrapper bg-cover bg-no-repeat bg-center"
-         style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
-        <div class="lg-inner-column">
-            <div class="left-columns lg:w-1/2 lg:block hidden">
-                <div class="logo-box-3">
-                    <a href="{{ route('home')}}" class="">
-                        <img src="{{ asset(setting('site_logo','global')) }}" alt="">
-                    </a>
-                </div>
+    <div class="max-w-sm w-full space-y-10">
+        <div class="text-center">
+            <a href="{{ route('home')}}" class="inline-block">
+                <img src="{{asset(setting('site_logo','global') )}}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
+            </a>
+            <div class="mt-5">
+                <p class="text-slate-500 dark:text-slate-400 mb-2">
+                    {{ __('Please enter the') }}
+                    <strong>{{ __('OTP') }}</strong> {{ __('generated on your Authenticator App.') }}
+                </p>
+                <p class="text-slate-500 dark:text-slate-400">
+                    {{ __('Ensure you submit the current one because it refreshes every 30 seconds.') }}
+                </p>
             </div>
-            <div class="lg:w-1/2 w-full flex flex-col items-center justify-center">
-                <div class="auth-box-3">
-                    <div class="mobile-logo text-center mb-6 lg:hidden block">
-                        <a href="{{ route('home')}}">
-                            <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="mb-10 dark_logo">
-                        </a>
-                    </div>
-                    <div class="text-center 2xl:mb-10 mb-5">
-                        <h4 class="font-medium">👋 {{ __('Welcome Back Admin!') }}</h4>
-                        <div class="text-slate-500 dark:text-slate-400 text-base">
-                            {{ __('Sign in to continue with') }} {{ setting('site_title','global') }} {{ __('Admin Panel') }}
+        </div>
+        <div class="space-y-5">
+            @if ($errors->any())
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    @foreach($errors->all() as $error)
+                        <strong>You Entered {{$error}}</strong>
+                    @endforeach
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            <div class="site-auth-form">
+                <form method="POST" action="{{ route('admin.2fa.verify') }}" class="space-y-5">
+                    @csrf
+                    <div class="single-field">
+
+                        <label class="form-label" for="password">{{ __('One Time Password') }}</label>
+                        <div class="password">
+                            <input
+                                class="form-control"
+                                type="password"
+                                id="one_time_password"
+                                name="one_time_password"
+                                placeholder="Enter your Pin"
+                                required
+                            />
                         </div>
                     </div>
-                    @if ($errors->any())
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            @foreach($errors->all() as $error)
-                                <strong>You Entered {{$error}}</strong>
-                            @endforeach
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="site-auth-form">
-                        <form method="POST" action="{{ route('admin.2fa.verify') }}">
-                            @csrf
-
-                            <div class="single-field">
-                                <p>{{ __('Please enter the') }}
-                                    <strong>{{ __('OTP') }}</strong> {{ __('generated on your Authenticator App.') }}
-                                    <br> {{ __('Ensure you submit the current one because it refreshes every 30 seconds.') }}
-                                </p>
-
-                                <label class="box-label" for="password">{{ __('One Time Password') }}</label>
-                                <div class="password">
-                                    <input
-                                        class="form-control"
-                                        type="password"
-                                        id="one_time_password"
-                                        name="one_time_password"
-                                        placeholder="Enter your Pin"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <br>
-                            <button type="submit" class="btn btn-dark block w-full text-center">
-                                {{ __('Authenticate Now') }}
-                            </button>
-                        </form>
-                        <br>
-                        <br>
-
+                    <button type="submit" class="btn btn-dark block w-full text-center">
+                        {{ __('Authenticate Now') }}
+                    </button>
+                </form>
+                <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+                    <div class="absolute inline-block bg-white dark:bg-slate-800 dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                        {{ __('Or continue with') }}
                     </div>
+                </div>
+                <div class="mt-6">
+                    <form method="POST" action="{{ route('admin.logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-light inline-flex items-center justify-center w-full">
+                            {{ __('Log Out') }}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="site-auth-form">
-        <form method="POST" action="{{ route('admin.logout') }}">
-            @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                {{ __('Log Out') }}
-            </button>
-        </form>
-        </div>
-
     </div>
 
 @endsection
-
-

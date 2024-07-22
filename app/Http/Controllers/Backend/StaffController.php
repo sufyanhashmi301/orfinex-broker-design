@@ -141,6 +141,8 @@ class StaffController extends Controller
         return redirect()->route('admin.staff.index');
     }
 
+
+
     protected function invalidateUserSession($user)
     {
         // Path to the session files
@@ -159,6 +161,8 @@ class StaffController extends Controller
             }
         }
     }
+
+
     public function security()
     {
         return view('backend.staff.security.index');
@@ -225,6 +229,8 @@ class StaffController extends Controller
             return redirect()->back();
         }
     }
+
+
     public function destroy($id)
     {
         $staff = Admin::find($id);
@@ -238,4 +244,6 @@ class StaffController extends Controller
 
         return redirect()->back();
     }
+
+
 }

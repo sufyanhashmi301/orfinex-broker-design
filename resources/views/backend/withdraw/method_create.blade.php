@@ -2,12 +2,17 @@
 @section('title')
     {{ __('New Withdraw Method') }}
 @endsection
+
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
     </div>
+@endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+
 @endsection
 @section('withdraw_content')
     <div class="max-w-5xl mx-auto">
@@ -38,7 +43,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         @if($type == 'auto')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
@@ -60,12 +65,12 @@
                                     <label class="form-label"
                                         for="">{{ __('Gateway Supported Currency:') }}</label>
                                     <select name="currency" class="form-control w-100" id="currency">
-        
+
                                     </select>
                                 </div>
                             </div>
                         @endif
-        
+
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Name:') }}</label>
@@ -76,8 +81,8 @@
                                 />
                             </div>
                         </div>
-        
-        
+
+
                         @if($type == 'manual')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
@@ -91,14 +96,14 @@
                                 </div>
                             </div>
                         @endif
-        
+
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area row">
                                 <div class="col-xl-12">
                                     <label class="form-label" for="">{{ __('Convention Rate:') }}</label>
                                     <div class="joint-input relative">
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                            {{'1 '.' '.$currency. ' ='}} 
+                                            {{'1 '.' '.$currency. ' ='}}
                                         </span>
                                         <input type="text" class="form-control" name="rate"/>
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected"></span>
@@ -106,8 +111,8 @@
                                 </div>
                             </div>
                         </div>
-        
-        
+
+
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area position-relative">
                                 <label class="form-label" for="">{{ __('Charges:') }}</label>
@@ -144,7 +149,7 @@
                                 </div>
                             </div>
                         </div>
-        
+
                         @if($type == 'manual')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
@@ -162,11 +167,10 @@
                                 </div>
                             </div>
                         @endif
-                        
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method (select "All" if you have to show this method to whole world):') }}</label>
-                                <select id="multiSelect" class="select2 form-control w-full mt-2 py-2" name="country[]" placeholder="Manage Country" multiple>
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
                                     @foreach( getCountries() as $country)
                                         <option  value="{{ $country['name'] }}">
                                             {{ $country['name']  }}
@@ -179,39 +183,57 @@
                             </div>
 
                         </div>
+{{--                        <div class="xl:col-span-6 col-span-12">--}}
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method (select "All" if you have to show this method to whole world):') }}</label>--}}
+{{--                                <select id="multiSelect" class="select2 form-control w-full mt-2 py-2" name="country[]" placeholder="Manage Country" multiple>--}}
+{{--                                    @foreach( getCountries() as $country)--}}
+{{--                                        <option  value="{{ $country['name'] }}">--}}
+{{--                                            {{ $country['name']  }}--}}
+{{--                                        </option>--}}
+{{--                                    @endforeach--}}
+{{--                                    <option  value="All" >--}}
+{{--                                        {{ __('All') }}--}}
+{{--                                    </option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+
+{{--                        </div>--}}
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area flex items-center justify-between">
                                 <label class="form-label" for="">{{ __('Status:') }}</label>
                                 <div class="form-switch ps-0">
-                                    <input 
+                                    <input
                                         class="form-check-input"
-                                        type="hidden" 
-                                        value="0" 
+                                        type="hidden"
+                                        value="0"
                                         name="status"
                                     />
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                        <input 
-                                            type="checkbox" 
-                                            name="status" 
+                                        <input
+                                            type="checkbox"
+                                            name="status"
                                             value="1"
-                                            class="sr-only peer" 
+                                            class="sr-only peer"
                                         />
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
                             </div>
+
                         </div>
                         @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center mb-3">
                                     {{ __('Add Field option') }}
                                 </a>
+
                             </div>
                             <div class="addOptions col-span-12">
-        
+
                             </div>
                         @endif
-        
+
                         <div class="col-span-12 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}

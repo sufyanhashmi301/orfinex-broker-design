@@ -9,6 +9,10 @@
         </h4>
     </div>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+
+@endsection
 @section('withdraw_content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
@@ -86,7 +90,7 @@
                                     <label class="form-label" for="">{{ __('Convention Rate:') }}</label>
                                     <div class="joint-input relative">
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                            {{'1 '.' '. setting('site_currency','global') . ' ='}} 
+                                            {{'1 '.' '. setting('site_currency','global') . ' ='}}
                                         </span>
                                         <input type="text" name="rate" class="form-control"
                                             value="{{ $withdrawMethod->rate }}"/>
@@ -162,6 +166,25 @@
                                 </div>
                             </div>
                         @endif
+                        <div class="col-span-12">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                    @foreach(getCountries() as $country)
+                                        <option value="{{ $country['name'] }}"
+                                                @if(!is_null($withdrawMethod->country) && in_array($country['name'], is_array($withdrawMethod->country) ? $withdrawMethod->country : json_decode($withdrawMethod->country, true)))
+                                                selected
+                                            @endif
+                                        >{{ $country['name'] }}</option>
+                                    @endforeach
+                                    <option value="All"
+                                            @if(!is_null($withdrawMethod->country) && in_array('All', is_array($withdrawMethod->country) ? $withdrawMethod->country : json_decode($withdrawMethod->country, true)))
+                                            selected
+                                        @endif
+                                    >{{ __('All') }}</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Status:') }}</label>
@@ -184,25 +207,10 @@
                                     <label for="radio-six">{{ __('Deactivate') }}</label>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
-                                    @foreach( getCountries() as $country)
-                                        <option value="{{$country['name']}}"  @selected( null != $withdrawMethod->country && in_array($country['name'],json_decode($withdrawMethod->country,true)))>{{$country['name']}}</option>
-                                    @endforeach
-                                    <option  value="All" @selected( null != $withdrawMethod->country && in_array('All',json_decode($withdrawMethod->country,true)))>
-                                        {{ __('All') }}
-                                    </option>
-
-                                </select>
-                            </div>
 
                         </div>
 
-                        @if($type == 'manual')
+                    @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center mb-3">
                                     Add Field option
@@ -281,7 +289,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-xl-8">
-                
+
             </div>
         </div>
     </div>

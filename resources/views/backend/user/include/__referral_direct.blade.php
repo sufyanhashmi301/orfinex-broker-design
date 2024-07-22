@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">
-                {{ __('Direct referrals of :name',['name'=>$user->full_name]) }}    
+                {{ __('Direct referrals of :name',['name'=>$user->full_name]) }}
             </h4>
             @can('user-direct-referral-create')
                 <span data-bs-toggle="modal" data-bs-target="#addReferralModal">

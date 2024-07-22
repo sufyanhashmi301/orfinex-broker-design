@@ -2,27 +2,46 @@
 @section('title')
     {{ __('All Customers') }}
 @endsection
+@php
+    $riskProfileTags = getRiskProfileTag();
+@endphp
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.user.export') }}">
         @csrf
         <div class="flex justify-between flex-wrap items-center">
             <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="global_search" id="global_search" class="form-control h-9" placeholder="Search by Name, Username, Email">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="phone" id="phone" class="form-control h-9" placeholder="Phone">
+                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="country" id="country" class="form-control h-9" placeholder="Country">
+                    <select name="country" id="country" class="select2 form-control h-full w-full">
+                        <option value="" selected>
+                            {{ __('country') }}
+                        </option>
+                        @foreach( getCountries() as $country)
+                            <option value="{{ $country['name'] }}">
+                                {{ $country['name']  }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-               
-               
                 <div class="flex-1 input-area relative">
-                    <input type="date" name="created_at" id="created_at" class="form-control h-9" placeholder="Created At">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="tag" id="tag" class="form-control h-9" placeholder="Tag">
+                    <select name="tag" id="tag" class="select2 form-control w-full h-full">
+                        <option value="" selected>
+                            {{ __('tags') }}
+                        </option>
+                        @foreach($riskProfileTags as $tag)
+                            <option value="{{ $tag->name }}">
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -55,13 +74,16 @@
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="dataTable">
                             <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Equity') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Credit') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Country') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Profit') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -69,7 +91,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                
+
                             </tbody>
                         </table>
                     </div>
@@ -134,6 +156,9 @@
                     {"class": "table-td", data: 'username', name: 'username'},
                     {"class": "table-td", data: 'email', name: 'email'},
                     {"class": "table-td", data: 'balance', name: 'balance'},
+                    {"class": "table-td", data: 'equity', name: 'equity'},
+                    {"class": "table-td", data: 'credit', name: 'credit'},
+                    {"class": "table-td", data: 'country', name: 'country'},
                     // {"class": "table-td", data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
                     {"class": "table-td", data: 'kyc', name: 'kyc'},
                     {"class": "table-td", data: 'status', name: 'status'},

@@ -1,44 +1,48 @@
-<div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 place-content-center mb-5">
-    <div class="card">
-        <div class="card-body p-6">
-            <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                Balance
+<div class="card overflow-hidden mb-5">
+    <div class="card-body py-1">
+        <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
+            <div class="bg-white dark:bg-slate-800">
+                <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                        {{ __('Balance') }}
+                    </div>
+                    <div class="text-sm text-success-500">
+                        {{ __('+452%') }}
+                    </div>
+                    <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                        {{$dataCount['total_forex_balance']}}
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center text-slate-900 dark:text-white text-2xl font-medium">
-                $<span>{{$dataCount['total_forex_balance']}}</span>
-                <span class="text-sm text-success-500 ml-1">+452%</span>
+
+            <div class="bg-white dark:bg-slate-800">
+                <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                        {{ __('Equity') }}
+                    </div>
+                    <div class="text-sm text-success-500">
+                        {{ __('+452%') }}
+                    </div>
+                    <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                        {{$dataCount['total_forex_equity']}}
+                    </div>
+                </div>
             </div>
-            <div class="">
-                <div id="balance-chart" class="w-full"></div>
+
+            <div class="bg-white dark:bg-slate-800">
+                <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                        {{ __('Success Points') }}
+                    </div>
+                    <div class="text-sm text-success-500">
+                        {{ __('+452%') }}
+                    </div>
+                    <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                        0
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body p-6">
-            <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                Equity
-            </div>
-            <div class="text-slate-900 dark:text-white text-2xl font-medium">
-                $<span>{{$dataCount['total_forex_equity']}}</span>
-                <span class="text-sm text-success-500 ml-1">+452%</span>
-            </div>
-            <div class="">
-                <div id="equity-chart"></div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body p-6">
-            <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                Rewards
-            </div>
-            <div class="text-slate-900 dark:text-white text-2xl font-medium">
-                <span>0</span>
-                <span class="text-sm text-success-500 ml-1">+452%</span>
-            </div>
-            <div class="">
-                <div id="success-points"></div>
-            </div>
+            <!-- END: Group Chart2 -->
         </div>
     </div>
 </div>

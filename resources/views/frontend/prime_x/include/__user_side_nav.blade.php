@@ -2,7 +2,8 @@
      class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{route('home')}}" class="items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo','global')) }}" class="h-10" alt="Logo"/>
+        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
+        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
     </a>
     <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">

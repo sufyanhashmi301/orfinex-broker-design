@@ -3,7 +3,27 @@
     {{ __('Not Found') }}
 @endsection
 @section('content')
-    <img src="/assets/global/materials/404.svg" class="unusual-page-img" alt="">
-    <p class="description">{{ __('NOT FOUND') }}</p>
-    <a href="{{route('home')}}" class="back-to-home-btn">{{ __('Back to Home') }}</a>
+    <div class="">
+        <a href="{{route('admin.dashboard')}}" class="items-center">
+            <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo max-w-xs" alt="Logo"/>
+            <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo max-w-xs" alt="Logo"/>
+        </a>
+    </div>
+    <div class="w-full my-8">
+        <div class="notfound">
+            <h3>
+                {{ __('NOT FOUND') }}
+            </h3>
+            <h1>
+                <span>4</span>
+                <span>0</span>
+                <span>4</span>
+            </h1>
+        </div>
+    </div>
+    <div class="max-w-[300px] mx-auto w-full">
+        <a href="{{route('home')}}" class="btn btn-dark dark:bg-slate-800 block text-center">
+            {{ __('Back to Home') }}
+        </a>
+    </div>
 @endsection

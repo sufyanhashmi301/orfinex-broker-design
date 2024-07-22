@@ -21,7 +21,7 @@
                         </div>
                         <div>
                             <p class="dark:text-white">
-                                {{ __('Information for logging in to Primex.') }}
+                                {{ __('Information for logging in to :site.', ['site' => setting('site_title', 'global')]) }}
                             </p>
                             <p class="dark:text-white">
                                 {{ __('Change your password whenever you think it might have been compromised.') }}

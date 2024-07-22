@@ -1,11 +1,7 @@
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title">{{ __('2FA Security') }}</h4>
-    </div>
     <div class="card-body p-6">
-
+        <h4 class="card-title mb-3">{{ __('2FA Security') }}</h4>
         @if( null != $user->google2fa_secret)
-
             <div class="progress-steps-form">
                 <p class="dark:text-white">{{ __('Two Factor Authentication (2FA) Strengthens Access Security By Requiring Two Methods (also Referred To As Factors) To Verify Your Identity. Two Factor Authentication Protects Against Phishing, Social Engineering And Password Brute Force Attacks And Secures Your Logins From Attackers Exploiting Weak Or Stolen Credentials.') }}</p>
                 <p class="dark:text-white">{{ __('Scane the QR code with you Google Authenticator App') }}</p>
@@ -38,7 +34,7 @@
                     <div class="input-area">
                         <input type="password" name="one_time_password" class="form-control !text-lg">
                     </div>
-                    <div class="buttons mt-4">
+                    <div class="buttons mt-10">
                         @if($user->two_fa)
                             <button type="submit" class="btn btn-dark" value="disable" name="status">{{ __('Disable 2FA') }}
                                 <i class="anticon anticon-double-right"></i>

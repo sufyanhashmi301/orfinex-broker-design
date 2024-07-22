@@ -8,6 +8,7 @@ use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
 use App\Models\User;
+use App\Models\RiskProfileTag;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
 
@@ -841,6 +842,12 @@ if (!function_exists('get_hash')) {
     function get_hash($data)
     {
         return NioHash::toID($data);
+    }
+}
+
+if (!function_exists('getRiskProfileTag')) {
+    function getRiskProfileTag() {
+        return RiskProfileTag::where('status', 1)->get();
     }
 }
 

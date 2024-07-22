@@ -2,27 +2,40 @@
 @section('title')
     {{ __('All Customers') }}
 @endsection
+@php
+    $riskProfileTags = getRiskProfileTag();
+@endphp
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.user.export') }}">
         @csrf
         <div class="flex justify-between flex-wrap items-center">
             <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="global_search" id="global_search" class="form-control h-9" placeholder="Search by Name, Username, Email">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="phone" id="phone" class="form-control h-9" placeholder="Phone">
+                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="country" id="country" class="form-control h-9" placeholder="Country">
+                    <select name="country" id="country" class="select2 form-control h-full w-full">
+                        @foreach( getCountries() as $country)
+                            <option value="{{ $country['name'] }}">
+                                {{ $country['name']  }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-               
-               
                 <div class="flex-1 input-area relative">
-                    <input type="date" name="created_at" id="created_at" class="form-control h-9" placeholder="Created At">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="tag" id="tag" class="form-control h-9" placeholder="Tag">
+                    <select name="tag" id="tag" class="select2 form-control w-full h-full">
+                        @foreach($riskProfileTags as $tag)
+                            <option value="{{ $tag->name }}">
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -55,7 +68,7 @@
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="dataTable">
                             <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>

@@ -1,8 +1,8 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{route('admin.dashboard')}}" class="items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo','global')) }}" class="logo-unfold h-10" alt="Logo"/>
-        <img src="{{ asset(setting('site_logo','global')) }}" class="hidden logo-fold h-10" alt="Logo"/>
+        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
+        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
     </a>
     <!-- Sidebar Type Button -->
     <button class="sidebarCloseIcon text-2xl">
@@ -288,16 +288,6 @@
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:cast"></iconify-icon>
                             <span>{{ __('Transactions') }}</span>
-                        </span>
-                    </a>
-                </li>
-            @endcan
-            @can('profit-list')
-                <li class="">
-                    <a href="{{route('admin.all-profits')}}" class="navItem {{ isActive('admin.all-profits') }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:credit-card"></iconify-icon>
-                            <span>{{ __('User Profits') }}</span>
                         </span>
                     </a>
                 </li>

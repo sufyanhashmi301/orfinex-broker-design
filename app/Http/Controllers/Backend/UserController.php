@@ -311,7 +311,7 @@ class UserController extends Controller
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
             'transfer_status' => 'required',
-            'account_limit' => 'required|integer|min:1|max:100',
+            'account_limit' => 'nullable|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -319,7 +319,9 @@ class UserController extends Controller
 
             return redirect()->back();
         }
-
+        if (empty($input['account_limit'])) {
+            $input['account_limit'] = 1;
+        }
         $data = [
             'status' => $input['status'],
             'is_multi_ib' => $input['is_multi_ib'],

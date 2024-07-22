@@ -31,7 +31,7 @@
                                     <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Country') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Country/Tags') }}</th>
                                     <th scope="col" class="table-th">{{ __('Badge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>

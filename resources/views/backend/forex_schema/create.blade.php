@@ -187,13 +187,13 @@
                                     oninput="this.value = validateDouble(this.value)"
                                     class="form-control"
                                     placeholder="Account Limit"
-                        
+
                                 />
                             </div>
                         </div>
                         <div class="col-span-2">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
                                 <select name="country[]" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
                                     @foreach( getCountries() as $country)
                                         <option  value="{{ $country['name'] }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
@@ -203,6 +203,11 @@
                                         <option  value="All" >
                                             {{ __('All') }}
                                         </option>
+                                        @foreach( getRiskProfileTag() as $tag)
+                                            <option  value="{{ $tag->name }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                {{  $tag->name  }} {{__('(tag)')}}
+                                            </option>
+                                        @endforeach
                                 </select>
                             </div>
 

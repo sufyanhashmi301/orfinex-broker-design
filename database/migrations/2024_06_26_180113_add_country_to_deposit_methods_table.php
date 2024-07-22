@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::table('deposit_methods', function (Blueprint $table) {
             $table->text('country')->after('payment_details');
 
+
         });
     }
 

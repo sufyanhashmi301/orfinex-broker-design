@@ -2,13 +2,18 @@
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+@endsection
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
     </div>
+
 @endsection
+
 @section('deposit_content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
@@ -39,7 +44,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         @if($type == 'auto')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
@@ -69,7 +74,7 @@
                                 </div>
                             </div>
                         @endif
-    
+
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Name:') }}</label>
@@ -123,7 +128,7 @@
                                     <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
                                     <div class="joint-input relative">
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                            {{'1 '.' '.setting('site_currency', 'global'). ' ='}} 
+                                            {{'1 '.' '.setting('site_currency', 'global'). ' ='}}
                                         </span>
                                         <input type="text" name="rate" class="form-control" value="{{$method->rate}}"/>
                                         <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency-selected">
@@ -160,7 +165,7 @@
                                         {{ setting('site_currency', 'global') }}
                                     </span>
                                 </div>
-    
+
                             </div>
                         </div>
                         <div class="xl:col-span-6 col-span-12">
@@ -174,14 +179,29 @@
                                 </div>
                             </div>
                         </div>
-    
-                        @if($type == 'manual')
+                        <div class="col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                    @php
+                                        $countries = getCountries();
+                                        $selectedCountries = is_string($method->country) ? json_decode($method->country, true) : (array) $method->country;
+                                    @endphp
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country['name'] }}" @selected(in_array($country['name'], $selectedCountries))>{{ $country['name'] }}</option>
+                                    @endforeach
+                                    <option value="All" @selected(in_array('All', $selectedCountries))>{{ __('All') }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                                 {{ __('Add Field option') }}
                             </a>
                             </div>
-    
+
                             <div class="addOptions col-span-12">
                                 @foreach(json_decode($method->field_options,true) as $key => $value)
                                 <div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
@@ -226,6 +246,8 @@
                                         </div>
                                     </div>
 
+
+
                                     <div class="xl:col-span-1 md:col-span-6 col-span-12">
                                         <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -236,7 +258,7 @@
                                 </div>
                                 @endforeach
                             </div>
-    
+
                             <div class="col-span-12">
                                 <div class="input-area fw-normal">
                                     <label for="" class="form-label">{{ __('Payment Details:') }}</label>
@@ -247,7 +269,7 @@
                                 </div>
                             </div>
                         @endif
-    
+
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Status:') }}</label>
@@ -271,7 +293,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <div class="col-span-12 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}
@@ -285,8 +307,23 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+
+
     <script>
-        'use strict';
+
+        (function ($) {
+            'use strict';
+
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+                removeItemButton: true,
+                // maxItemCount:7,
+                // searchResultLimit:7,
+                // renderChoiceLimit:20
+            });
+
+        })(jQuery)
+        // 'use strict';
 
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
@@ -357,4 +394,5 @@
         }
 
     </script>
+
 @endsection

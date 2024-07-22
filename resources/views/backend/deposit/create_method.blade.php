@@ -2,12 +2,16 @@
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
+
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
     </div>
+@endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
 @endsection
 @section('deposit_content')
     <div class="max-w-5xl mx-auto">
@@ -118,7 +122,7 @@
                                 <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
                                 <div class="joint-input relative">
                                     <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                        {{'1 '.' '.$currency. ' ='}} 
+                                        {{'1 '.' '.$currency. ' ='}}
                                     </span>
                                     <input type="text" class="form-control" name="rate"/>
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected"></span>
@@ -163,7 +167,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
+                                    @foreach( getCountries() as $country)
+                                        <option  value="{{ $country['name'] }}">
+                                            {{ $country['name']  }}
+                                        </option>
+                                    @endforeach
+                                    <option  value="All" >
+                                        {{ __('All') }}
+                                    </option>
+                                </select>
+                            </div>
 
+                        </div>
                         @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex">
@@ -218,6 +237,18 @@
     </div>
 @endsection
 @section('script')
+    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+    <script>
+
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            // maxItemCount:7,
+            // searchResultLimit:7,
+            // renderChoiceLimit:7
+        });
+
+    </script>
     <script>
         (function ($) {
             var i = 0;

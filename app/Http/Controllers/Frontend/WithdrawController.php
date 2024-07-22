@@ -102,7 +102,12 @@ class WithdrawController extends Controller
      */
     public function create()
     {
-        $withdrawMethods = WithdrawMethod::where('status', true)->get();
+        $withdrawMethods = WithdrawMethod::where('status', true)
+            ->where(function($query) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All');
+            })->get();
+
 
         return view('frontend::withdraw.account.create', compact('withdrawMethods'));
     }
@@ -115,7 +120,10 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::all();
+        $withdrawMethods = WithdrawMethod::where(function($query) {
+            $query->whereJsonContains('country', auth()->user()->country)
+                ->orWhereJsonContains('country', 'All');
+        })->get();
         $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
         if($withdrawAccount){
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));

@@ -187,7 +187,7 @@
                                 />
                             </div>
                         </div>
-                        
+
                         <div class="lg:col-span-1 col-span-2">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Account Creation Limit:') }}</label>
@@ -375,6 +375,7 @@
                                 {{ __('Update Schema') }}
                             </button>
                         </div>
+
                     </div>
                 </form>
             </div>

@@ -9,6 +9,10 @@
         </h4>
     </div>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
+
+@endsection
 @section('withdraw_content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
@@ -86,7 +90,7 @@
                                     <label class="form-label" for="">{{ __('Convention Rate:') }}</label>
                                     <div class="joint-input relative">
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                            {{'1 '.' '. setting('site_currency','global') . ' ='}} 
+                                            {{'1 '.' '. setting('site_currency','global') . ' ='}}
                                         </span>
                                         <input type="text" name="rate" class="form-control"
                                             value="{{ $withdrawMethod->rate }}"/>
@@ -184,11 +188,12 @@
                                     <label for="radio-six">{{ __('Deactivate') }}</label>
                                 </div>
                             </div>
+
                         </div>
 
                         <div class="col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
                                 <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
                                     @foreach( getCountries() as $country)
                                         <option value="{{$country['name']}}"  @selected( null != $withdrawMethod->country && in_array($country['name'],json_decode($withdrawMethod->country,true)))>{{$country['name']}}</option>
@@ -281,7 +286,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-xl-8">
-                
+
             </div>
         </div>
     </div>

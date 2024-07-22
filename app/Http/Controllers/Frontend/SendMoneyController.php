@@ -249,7 +249,7 @@ class SendMoneyController extends Controller
         $isStepOne = 'current';
         $isStepTwo = '';
 
-        return view('frontend.default.send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
+        return view('frontend::send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
 //        return view('frontend::send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
     }
     public function sendMoneyInternalNow(Request $request)

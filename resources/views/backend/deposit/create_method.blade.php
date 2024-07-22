@@ -2,16 +2,12 @@
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
-
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
     </div>
-@endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
 @endsection
 @section('deposit_content')
     <div class="max-w-5xl mx-auto">
@@ -22,7 +18,7 @@
                     <div class="grid gird-cols-12 gap-5">
                         <input type="hidden" name="type" value="{{ $type }}">
                         <div class="col-span-12">
-                            <div class="input-area">
+                            <div class="input-area max-w-xs">
                                 <label class="form-label" for="">{{ __('Add Method Logo:') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
@@ -135,8 +131,8 @@
                                 <label class="form-label" for="">{{ __('Charges:') }}</label>
                                 <div class="relative">
                                     <input type="text" class="form-control" oninput="this.value = validateDouble(this.value)" name="charge"/>
-                                    <div class="prcntcurr absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm">
-                                        <select name="charge_type" class="form-control w-100">
+                                    <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
+                                        <select name="charge_type" class="w-full h-full outline-none">
                                             <option value="percentage">{{ __('%') }}</option>
                                             <option value="fixed">{{ $currencySymbol }}</option>
                                         </select>
@@ -167,10 +163,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-span-2">
+                        <div class="col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
+                                <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country" multiple>
                                     @foreach( getCountries() as $country)
                                         <option  value="{{ $country['name'] }}">
                                             {{ $country['name']  }}
@@ -237,18 +233,6 @@
     </div>
 @endsection
 @section('script')
-    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
-    <script>
-
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:7
-        });
-
-    </script>
     <script>
         (function ($) {
             var i = 0;

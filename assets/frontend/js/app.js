@@ -315,7 +315,6 @@
 
   // Simple Bar
   new SimpleBar($("#sidebar_menus, #scrollModal")[0]);
-  new SimpleBar($("#sidebar_subMenus, #scrollModal")[0]);
 
   // Basic Carousel
   $(".basic-carousel").owlCarousel({

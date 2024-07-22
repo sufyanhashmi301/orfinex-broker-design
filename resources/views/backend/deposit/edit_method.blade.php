@@ -2,9 +2,6 @@
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
-@endsection
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -123,30 +120,28 @@
                             </div>
                         </div>
                         <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area row">
-                                <div class="col-xl-12">
-                                    <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
-                                    <div class="joint-input relative">
-                                        <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                            {{'1 '.' '.setting('site_currency', 'global'). ' ='}}
-                                        </span>
-                                        <input type="text" name="rate" class="form-control" value="{{$method->rate}}"/>
-                                        <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency-selected">
-                                            {{  is_custom_rate($method->gateway?->gateway_code) ?? $method->currency }}
-                                        </span>
-                                    </div>
+                            <div class="input-area relative">
+                                <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
+                                <div class="joint-input relative">
+                                    <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
+                                        {{'1 '.' '.setting('site_currency', 'global'). ' ='}}
+                                    </span>
+                                    <input type="text" name="rate" class="form-control !pl-12" value="{{$method->rate}}"/>
+                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency-selected">
+                                        {{  is_custom_rate($method->gateway?->gateway_code) ?? $method->currency }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area position-relative">
+                            <div class="input-area relative">
                                 <label class="form-label" for="">{{ __('Charges:') }}</label>
                                 <div class="relative">
                                     <input type="text" class="form-control"
                                         oninput="this.value = validateDouble(this.value)" name="charge"
                                         value="{{ $method->charge }}"/>
-                                    <div class="prcntcurr absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm">
-                                        <select name="charge_type" class="form-control w-100">
+                                    <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
+                                        <select name="charge_type" class="w-full h-full outline-none">
                                             <option value="percentage"
                                                     @if($method->charge_type == 'percentage') selected @endif>{{ __('%') }}</option>
                                             <option value="fixed"
@@ -179,10 +174,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-span-2">
+                        <div class="col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
                                     @php
                                         $countries = getCountries();
                                         $selectedCountries = is_string($method->country) ? json_decode($method->country, true) : (array) $method->country;
@@ -307,23 +302,7 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
-
-
     <script>
-
-        (function ($) {
-            'use strict';
-
-            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-                removeItemButton: true,
-                // maxItemCount:7,
-                // searchResultLimit:7,
-                // renderChoiceLimit:20
-            });
-
-        })(jQuery)
-        // 'use strict';
 
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 

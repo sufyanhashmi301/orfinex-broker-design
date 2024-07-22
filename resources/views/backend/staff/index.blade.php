@@ -144,7 +144,6 @@
 
 @section('script')
     <script>
-
         $('body').on('click', '#edit', function (event) {
             "use strict";
             event.preventDefault();
@@ -158,7 +157,6 @@
 
             })
         })
-
     </script>
     <script>
     $(document).ready(function () {
@@ -194,7 +192,6 @@
                     'name': '_method',
                     'value': 'DELETE'
                 }));
-
                 $('body').append(form);
                 form.submit();
             } else {

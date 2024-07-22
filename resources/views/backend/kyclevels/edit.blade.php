@@ -26,7 +26,7 @@
                 </div>
                 <div class="role-cat-items space-y-5">
                     @if($kycLevel->slug=='level-2')
-                        <a data-bs-toggle="modal" data-bs-target="#addKycLevel2Formmodal" class="inline-flex items-center justify-center text-success-500 adds-new-form">
+                        <a data-bs-toggle="modal" data-bs-target="#addKycLevel2Formmodal" class="inline-flex items-center justify-center text-success-500 adds-new-form" id="addNewLevel2Button">
                             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
                             Add New
                         </a>
@@ -241,58 +241,24 @@
         const radioButtons = document.querySelectorAll('input[name="level2_setting"]');
         radioButtons.forEach((radio) => {
             radio.addEventListener('change', function () {
+                
                 const uniqueCode = this.value;
-                if (uniqueCode === 'manual') {
-                    const samsubCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="samsub"]');
-                    samsubCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = false;
-                    });
+                
+                if (uniqueCode == 'manual') {
+                  
                     $('.samsub-settings').addClass('hidden');
                     $('.manual-settings').removeClass('hidden');
-                    $('#addNewButton').removeClass('hidden');
-                } else if (uniqueCode === 'samsub') {
-                    const manualCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="manual"]');
-                    manualCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = false;
-                    });
+                    $('#addNewLevel2Button').removeClass('hidden');
+                } else if (uniqueCode == 'automatic') {
+                   
+                   
                     $('.manual-settings').addClass('hidden');
                     $('.samsub-settings').removeClass('hidden');
-                    $('#addNewButton').addClass('hidden');
+                    $('#addNewLevel2Button').addClass('hidden');
                 }
             });
         });
 
-        // Add event listener for manual checkboxes to deselect samsub when manual is selected
-        const manualCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="manual"]');
-        manualCheckboxes.forEach((checkbox) => {
-            checkbox.addEventListener('change', function () {
-                const isChecked = this.checked;
-                if (isChecked) {
-                    // Uncheck samsub checkboxes
-                    const samsubCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="samsub"]');
-                    samsubCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = false;
-                    });
-                }
-            });
-        });
-
-        // Add event listener for samsub checkboxes to deselect manual when samsub is selected
-        const samsubCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="samsub"]');
-        samsubCheckboxes.forEach((checkbox) => {
-            checkbox.addEventListener('change', function () {
-                const isChecked = this.checked;
-                if (isChecked) {
-                    // Uncheck manual checkboxes
-                    const manualCheckboxes = document.querySelectorAll('input[name="permissions[]"][data-unique-code="manual"]');
-                    manualCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = false;
-                    });
-                }
-            });
-        });
-
-        
             $('.editLevel1').on('click', function () {
                 var recordId = $(this).data('id');
                 var currentStatus = $(this).data('status');

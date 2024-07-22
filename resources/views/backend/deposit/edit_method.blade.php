@@ -18,8 +18,8 @@
                 <form action="{{ route('admin.deposit.method.update',$method->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
-                    <div class="grid gird-cols-12 gap-5">
-                        <div class="col-span-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
+                        <div class="md:col-span-2">
                             <div class="input-area max-w-xs">
                                 <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
                                 <div class="wrap-custom-file">
@@ -43,161 +43,138 @@
                         </div>
 
                         @if($type == 'auto')
-                            <div class="xl:col-span-6 col-span-12">
-                                <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Automatic Gateway:') }}</label>
-                                    <select name="gateway_id"
-                                            class="form-control w-100"
-                                            id="gateway-select">
-                                        @foreach($gateways as $gateway)
-                                            <option data-currencies="{{ $gateway->supported_currencies }}"
-                                                    data-gatewayCode="{{ $gateway->gateway_code }}"
-                                                    value="{{$gateway->id}}" @selected($method->gateway_id == $gateway->id)> {{$gateway->name}}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="xl:col-span-6 col-span-12">
-                                <div class="input-area">
-                                    <label class="form-label"
-                                        for="">{{ __('Gateway Supported Currency:') }}</label>
-                                    <select name="currency" class="form-control w-100" id="currency">
-                                        @foreach(json_decode($supported_currencies) as $currency)
-                                            <option
-                                                value="{{ $currency }}" @selected($currency == $method->currency )>{{ $currency }} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Name:') }}</label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    name="name"
-                                    value="{{ $method->name }}"
-                                />
-                            </div>
-                        </div>
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Code Name') }}</label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    disabled
-                                    value="{{ $method->gateway_code }}"
-                                />
-                            </div>
-                        </div>
-                        @if($type == 'manual')
-                            <div class="xl:col-span-6 col-span-12">
-                                <div class="input-area">
-                                    <label class="form-label" for="">{{ __('Currency:') }}</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        name="currency"
-                                        value="{{$method->currency}}"
-                                        id="currency"
-                                    />
-                                </div>
-                            </div>
-                        @endif
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Currency Symbol:') }}</label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    value="{{ $method->currency_symbol}}"
-                                    name="currency_symbol"
-                                />
-                            </div>
-                        </div>
-                        <div class="xl:col-span-6 col-span-12">
                             <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
-                                <div class="joint-input relative">
-                                    <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                        {{'1 '.' '.setting('site_currency', 'global'). ' ='}}
-                                    </span>
-                                    <input type="text" name="rate" class="form-control !pl-12" value="{{$method->rate}}"/>
-                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency-selected">
-                                        {{  is_custom_rate($method->gateway?->gateway_code) ?? $method->currency }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area relative">
-                                <label class="form-label" for="">{{ __('Charges:') }}</label>
-                                <div class="relative">
-                                    <input type="text" class="form-control"
-                                        oninput="this.value = validateDouble(this.value)" name="charge"
-                                        value="{{ $method->charge }}"/>
-                                    <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
-                                        <select name="charge_type" class="w-full h-full outline-none">
-                                            <option value="percentage"
-                                                    @if($method->charge_type == 'percentage') selected @endif>{{ __('%') }}</option>
-                                            <option value="fixed"
-                                                    @if($method->charge_type == 'fixed') selected @endif>{{ $currencySymbol }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
-                                <div class="joint-input relative">
-                                    <input type="text" name="minimum_deposit" class="form-control" value="{{ $method->minimum_deposit }}"/>
-                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
-                                        {{ setting('site_currency', 'global') }}
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
-                                <div class="joint-input relative">
-                                    <input type="text" name="maximum_deposit" class="form-control" value="{{ $method->maximum_deposit }}"/>
-                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
-                                        {{setting('site_currency', 'global')}}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
-                                    @php
-                                        $countries = getCountries();
-                                        $selectedCountries = is_string($method->country) ? json_decode($method->country, true) : (array) $method->country;
-                                    @endphp
-                                    @foreach($countries as $country)
-                                        <option value="{{ $country['name'] }}" @selected(in_array($country['name'], $selectedCountries))>{{ $country['name'] }}</option>
+                                <label class="form-label" for="">{{ __('Automatic Gateway:') }}</label>
+                                <select name="gateway_id"
+                                        class="form-control w-100"
+                                        id="gateway-select">
+                                    @foreach($gateways as $gateway)
+                                        <option data-currencies="{{ $gateway->supported_currencies }}"
+                                                data-gatewayCode="{{ $gateway->gateway_code }}"
+                                                value="{{$gateway->id}}" @selected($method->gateway_id == $gateway->id)> {{$gateway->name}}
+                                        </option>
                                     @endforeach
-                                    <option value="All" @selected(in_array('All', $selectedCountries))>{{ __('All') }}</option>
                                 </select>
                             </div>
+                            <div class="input-area relative">
+                                <label class="form-label"
+                                    for="">{{ __('Gateway Supported Currency:') }}</label>
+                                <select name="currency" class="form-control w-100" id="currency">
+                                    @foreach(json_decode($supported_currencies) as $currency)
+                                        <option
+                                            value="{{ $currency }}" @selected($currency == $method->currency )>{{ $currency }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Name:') }}</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="name"
+                                value="{{ $method->name }}"
+                            />
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Code Name') }}</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                disabled
+                                value="{{ $method->gateway_code }}"
+                            />
+                        </div>
+                        @if($type == 'manual')
+                            <div class="input-area relative">
+                                <label class="form-label" for="">{{ __('Currency:') }}</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="currency"
+                                    value="{{$method->currency}}"
+                                    id="currency"
+                                />
+                            </div>
+                        @endif
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Currency Symbol:') }}</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="{{ $method->currency_symbol}}"
+                                name="currency_symbol"
+                            />
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
+                            <div class="joint-input relative">
+                                <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
+                                    {{'1 '.' '.setting('site_currency', 'global'). ' ='}}
+                                </span>
+                                <input type="text" name="rate" class="form-control !pl-16.5" value="{{$method->rate}}"/>
+                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency-selected">
+                                    {{  is_custom_rate($method->gateway?->gateway_code) ?? $method->currency }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Charges:') }}</label>
+                            <div class="relative">
+                                <input type="text" class="form-control"
+                                    oninput="this.value = validateDouble(this.value)" name="charge"
+                                    value="{{ $method->charge }}"/>
+                                <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
+                                    <select name="charge_type" class="w-full h-full outline-none">
+                                        <option value="percentage"
+                                                @if($method->charge_type == 'percentage') selected @endif>{{ __('%') }}</option>
+                                        <option value="fixed"
+                                                @if($method->charge_type == 'fixed') selected @endif>{{ $currencySymbol }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
+                            <div class="joint-input relative">
+                                <input type="text" name="minimum_deposit" class="form-control" value="{{ $method->minimum_deposit }}"/>
+                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                    {{ setting('site_currency', 'global') }}
+                                </span>
+                            </div>
+
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
+                            <div class="joint-input relative">
+                                <input type="text" name="maximum_deposit" class="form-control" value="{{ $method->maximum_deposit }}"/>
+                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                    {{setting('site_currency', 'global')}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 input-area relative">
+                            <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
+                            <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
+                                @php
+                                    $countries = getCountries();
+                                    $selectedCountries = is_string($method->country) ? json_decode($method->country, true) : (array) $method->country;
+                                @endphp
+                                @foreach($countries as $country)
+                                    <option value="{{ $country['name'] }}" @selected(in_array($country['name'], $selectedCountries))>{{ $country['name'] }}</option>
+                                @endforeach
+                                <option value="All" @selected(in_array('All', $selectedCountries))>{{ __('All') }}</option>
+                            </select>
                         </div>
 
                     @if($type == 'manual')
-                            <div class="col-span-12">
+                            <div class="col-span-2">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                                 {{ __('Add Field option') }}
                             </a>
                             </div>
 
-                            <div class="addOptions col-span-12">
+                            <div class="addOptions col-span-2">
                                 @foreach(json_decode($method->field_options,true) as $key => $value)
                                 <div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
                                     <div class="xl:col-span-4 md:col-span-6 col-span-12">
@@ -240,9 +217,6 @@
                                             </select>
                                         </div>
                                     </div>
-
-
-
                                     <div class="xl:col-span-1 md:col-span-6 col-span-12">
                                         <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -254,42 +228,38 @@
                                 @endforeach
                             </div>
 
-                            <div class="col-span-12">
-                                <div class="input-area fw-normal">
-                                    <label for="" class="form-label">{{ __('Payment Details:') }}</label>
-                                    <div class="site-editor">
-                                    <textarea class="summernote"
-                                            name="payment_details">{!! $method->payment_details !!}</textarea>
-                                    </div>
+                            <div class="input-area fw-normal relative">
+                                <label for="" class="form-label">{{ __('Payment Details:') }}</label>
+                                <div class="site-editor">
+                                <textarea class="summernote"
+                                        name="payment_details">{!! $method->payment_details !!}</textarea>
                                 </div>
                             </div>
                         @endif
 
-                        <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
-                                <div class="switch-field flex mb-3 overflow-hidden same-type">
-                                    <input
-                                        type="radio"
-                                        id="radio-five"
-                                        name="status"
-                                        value="1"
-                                        @if($method->status) checked @endif
-                                    />
-                                    <label for="radio-five">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="radio-six"
-                                        name="status"
-                                        value="0"
-                                        @if(!$method->status) checked @endif
-                                    />
-                                    <label for="radio-six">{{ __('Deactivate') }}</label>
-                                </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Status:') }}</label>
+                            <div class="switch-field flex mb-3 overflow-hidden same-type">
+                                <input
+                                    type="radio"
+                                    id="radio-five"
+                                    name="status"
+                                    value="1"
+                                    @if($method->status) checked @endif
+                                />
+                                <label for="radio-five">{{ __('Active') }}</label>
+                                <input
+                                    type="radio"
+                                    id="radio-six"
+                                    name="status"
+                                    value="0"
+                                    @if(!$method->status) checked @endif
+                                />
+                                <label for="radio-six">{{ __('Deactivate') }}</label>
                             </div>
                         </div>
 
-                        <div class="col-span-12 text-right">
+                        <div class="md:col-span-2 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}
                             </button>

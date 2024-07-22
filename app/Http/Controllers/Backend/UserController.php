@@ -368,6 +368,7 @@ class UserController extends Controller
 //            'phone' => 'required',
             'username' => 'required|unique:users,username,' . $id,
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
+            'date_of_birth' => 'nullable|date_format:Y-m-d',
         ]);
 
         if ($validator->fails()) {
@@ -375,7 +376,9 @@ class UserController extends Controller
 
             return redirect()->back();
         }
-
+        if (empty($input['date_of_birth'])) {
+            $input['date_of_birth'] = null;
+        }
         User::find($id)->update($input);
         notify()->success('User Info Updated Successfully', 'success');
 

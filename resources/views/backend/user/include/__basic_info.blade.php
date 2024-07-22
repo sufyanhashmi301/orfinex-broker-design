@@ -35,7 +35,7 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Phone:') }}</label>
-                        <input type="text" class="form-control" value="{{ safe($user->phone) }}" disabled>
+                        <input type="text" name="phone" class="form-control" value="{{ safe($user->phone) }}" >
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Username:') }}</label>
@@ -44,16 +44,27 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Email:') }}</label>
-                        <input type="email" class="form-control" value="{{ safe($user->email) }}" disabled>
+                        <input type="email" name="email" class="form-control" value="{{ safe($user->email) }}" >
                     </div>
-                    <div class="input-area">
-                        <label for="" class="form-label">{{ __('Gender:') }}</label>
-                        <input type="text" class="form-control" value="{{$user->gender}}" required=""
-                               disabled>
+                    <div class="input-group select2-lg">
+                        <select name="gender" id="kycTypeSelect" class="select2 form-control !text-lg w-full mt-2 py-2" required>
+                            @foreach(['male','female','other'] as $gender)
+                                <option @if($user->gender == $gender) selected @endif value="{{$gender}}">{{$gender}}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="input-area">
-                        <label for="" class="form-label">{{ __('Date of Birth:') }}</label>
-                        <input type="text" class="form-control" value="{{$user->date_of_birth}}" disabled>
+{{--                    <div class="input-area">--}}
+{{--                        <label for="" class="form-label">{{ __('Gender:') }}</label>--}}
+{{--                        <input type="text" class="form-control" value="{{$user->gender}}" required=""--}}
+{{--                               >--}}
+{{--                    </div>--}}
+{{--                    <div class="input-area">--}}
+{{--                        <label for="" class="form-label">{{ __('Date of Birth:') }}</label>--}}
+{{--                        <input type="text"  name="date_of_birth" class="form-control" value="{{$user->date_of_birth}}" >--}}
+{{--                    </div>--}}
+                    <div class="input-area relative">
+                        <label for="exampleFormControlInput1" class="form-label">{{ __('Date of Birth') }}</label>
+                        <input type="date" name="date_of_birth" class="form-control !text-lg" value="{{ $user->date_of_birth }}" placeholder="Date of Birth"/>
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('City:') }}</label>
@@ -74,7 +85,7 @@
                                required="" disabled>
                     </div>
                     <div class="input-area lg:col-span-3">
-                        <label for="" class="form-label">{{ __('Comment/Tag line:') }}</label>
+                        <label for="" class="form-label">{{ __('Comment:') }}</label>
                         <textarea type="text"  name="comment" class="form-control"
                         > {{ $user->comment }}</textarea>
                     </div>

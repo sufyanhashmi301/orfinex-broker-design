@@ -166,6 +166,25 @@
                                 </div>
                             </div>
                         @endif
+                        <div class="col-span-12">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
+                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                    @foreach(getCountries() as $country)
+                                        <option value="{{ $country['name'] }}"
+                                                @if(!is_null($withdrawMethod->country) && in_array($country['name'], is_array($withdrawMethod->country) ? $withdrawMethod->country : json_decode($withdrawMethod->country, true)))
+                                                selected
+                                            @endif
+                                        >{{ $country['name'] }}</option>
+                                    @endforeach
+                                    <option value="All"
+                                            @if(!is_null($withdrawMethod->country) && in_array('All', is_array($withdrawMethod->country) ? $withdrawMethod->country : json_decode($withdrawMethod->country, true)))
+                                            selected
+                                        @endif
+                                    >{{ __('All') }}</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Status:') }}</label>
@@ -191,23 +210,7 @@
 
                         </div>
 
-                        <div class="col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
-                                    @foreach( getCountries() as $country)
-                                        <option value="{{$country['name']}}"  @selected( null != $withdrawMethod->country && in_array($country['name'],json_decode($withdrawMethod->country,true)))>{{$country['name']}}</option>
-                                    @endforeach
-                                    <option  value="All" @selected( null != $withdrawMethod->country && in_array('All',json_decode($withdrawMethod->country,true)))>
-                                        {{ __('All') }}
-                                    </option>
-
-                                </select>
-                            </div>
-
-                        </div>
-
-                        @if($type == 'manual')
+                    @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center mb-3">
                                     Add Field option

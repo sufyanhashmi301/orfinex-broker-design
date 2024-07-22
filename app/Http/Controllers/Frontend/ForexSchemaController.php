@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schema;
+use App\Models\User;
 use App\Traits\ForexApiTrait;
 
 class ForexSchemaController extends Controller
@@ -12,13 +13,25 @@ class ForexSchemaController extends Controller
     use ForexApiTrait;
     public function index()
     {
-        
+
 //        $this->sendApiPostRequest('url','data');
 //        $this->getUserApi(554944);
-        $schemas = ForexSchema::where('status', true) ->where(function($query) {
-            $query->whereJsonContains('country', auth()->user()->country)
-                ->orWhereJsonContains('country', 'All');
-        })->orderBy('priority','asc')->get();
+
+        $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
+
+        $schemas = ForexSchema::where('status', true)
+            ->where(function($query) use ($tagNames) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All')
+                    ->orWhere(function($subQuery) use ($tagNames) {
+                        foreach ($tagNames as $tagName) {
+                            $subQuery->orWhereJsonContains('country', $tagName);
+                        }
+                    });
+            })
+            ->orderBy('priority', 'asc')
+            ->get();
+//        dd($schemas);
 
         return view('frontend::forex_schema.index', compact('schemas'));
     }

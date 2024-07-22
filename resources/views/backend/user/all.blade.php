@@ -18,6 +18,9 @@
                 </div>
                 <div class="flex-1 input-area relative">
                     <select name="country" id="country" class="select2 form-control h-full w-full">
+                        <option value="" selected>
+                            {{ __('country') }}
+                        </option>
                         @foreach( getCountries() as $country)
                             <option value="{{ $country['name'] }}">
                                 {{ $country['name']  }}
@@ -30,6 +33,9 @@
                 </div>
                 <div class="flex-1 input-area relative">
                     <select name="tag" id="tag" class="select2 form-control w-full h-full">
+                        <option value="" selected>
+                            {{ __('tags') }}
+                        </option>
                         @foreach($riskProfileTags as $tag)
                             <option value="{{ $tag->name }}">
                                 {{ $tag->name }}
@@ -82,7 +88,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                
+
                             </tbody>
                         </table>
                     </div>

@@ -1,204 +1,4 @@
-@extends('backend.layouts.app')
-@section('title')
-{{ __('Update KYC Level') }}
-@endsection
-@section('content')
-<div class="max-w-5xl mx-auto">
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('Update KYC Level') }}
-        </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="inline-flex items-center justify-center text-success-500">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
-                {{ __('Back') }}
-            </a>
-        </div>
-    </div>
-    
-    <div class="card">
-        <div class="card-body p-6">
-            <form action="{{ route('admin.kyclevels.update', $kycLevel->id) }}" method="post" class="space-y-4">
-                @csrf
-                <div class="input-area">
-                    <label for="name" class="form-label">{{ __('Name') }}</label>
-                    <input type="text" class="form-control" required="" name="name" value="{{ $kycLevel->name }}"/>
-                </div>
-                <div class="role-cat-items space-y-5">
-                    @if($kycLevel->slug=='level-2')
-                        <a data-bs-toggle="modal" data-bs-target="#addKycLevel2Formmodal" class="inline-flex items-center justify-center text-success-500 adds-new-form">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
-                            Add New
-                        </a>
-                    @endif
-                    @if($kycLevel->slug=='level-3')
-                        <a data-bs-toggle="modal" data-bs-target="#addKycLevel3Formmodal" class="inline-flex items-center justify-center text-success-500 adds-new-form">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
-                            Add New
-                        </a>
-                    @endif
-                    @php
-                        // Group settings by kyclevel and unique_code
-                        $groupedSettings = $kycLevelSettings->groupBy(['kyclevel.slug', 'unique_code']);
-                    @endphp
-                    @foreach($groupedSettings as $kyclevelName => $settingsByCode)
-                   
-                        @php
-                        
-                            $isExpanded = $kyclevelName == 'level-2' && $settingsByCode->has('manual'); // Expand the "manual" section by default
-                        @endphp
-                       
-                        @if($kyclevelName == 'level-1')
-                            @foreach($settingsByCode->flatten() as $setting)
-                            
-                                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
-                                    <div class="gateway-name flex items-center gap-2">
-                                        <div class="gateway-icon mr-1">
-                                            <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
-                                        </div>
-                                        <div class="gateway-title">
-                                            <h4 class="text-base">
-                                                {{ ucwords(str_replace('-', ' ', $setting->title)) }}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div class="gateway-right flex items-center gap-2">
-                                        <div class="gateway-status">
-                                            @if($setting->status)
-                                                <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                                    {{ __('Active') }}
-                                                </div>
-                                            @else
-                                                <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
-                                                    {{ __('Deactivated') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="gateway-edit">
-                                            <a type="button" class="action-btn cursor-pointer editLevel1" data-id="{{ $setting->id }}" data-status="{{ $setting->status }}">
-                                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @else
-                        
-                            @if($kyclevelName == 'level-2')
-                            
-                                <div class="input-area">
-                                    <label for="" class="form-label">
-                                        {{ __('KYC Method') }}
-                                    </label>
-                                    <div class="flex items-center space-x-7 flex-wrap">
-                                        <div class="success-radio">
-                                            <label class="flex items-center cursor-pointer">
-                                                <input 
-                                                    type="radio"
-                                                    class="hidden"
-                                                    name="level2_setting"
-                                                    value="manual"
-                                                    checked
-                                                >
-                                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                <span class="text-success-500 text-sm leading-6 capitalize">
-                                                    {{ __('Manual') }}
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="success-radio">
-                                            <label class="flex items-center cursor-pointer">
-                                                <input 
-                                                    type="radio"
-                                                    class="hidden" 
-                                                    name="level2_setting" 
-                                                    value="automatic"
-                                                   
-                                                >
-                                                <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                <span class="text-success-500 text-sm leading-6 capitalize">
-                                                    {{ __('Automatic') }}
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            @endif
-                            @foreach($settingsByCode as $uniqueCode => $settings)
-                            
-                                <div class="settings-wrapper @if($uniqueCode == 'manual') manual-settings @else automatic-settings @endif">
-                                    <div class="space-y-5">
-                                        @foreach($settings as $setting)
-                                      
-                                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
-                                                <div class="gateway-name flex items-center gap-2">
-                                                    <div class="gateway-icon mr-1">
-                                                        <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
-                                                    </div>
-                                                    <div class="gateway-title">
-                                                        <h4 class="text-base">
-                                                            {{ ucwords(str_replace('-', ' ', $setting->title)) }}
-                                                        </h4>
-                                                    </div>
-                                                </div>
-                                                <div class="gateway-right flex items-center gap-2">
-                                                    <div class="gateway-status">
-                                                        @if($setting->status)
-                                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                                                {{ __('Active') }}
-                                                            </div>
-                                                        @else
-                                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
-                                                                {{ __('Deactivated') }}
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    
-                                                    <div class="gateway-edit">
-                                                    @if($uniqueCode == 'manual')
-                                                    
-                                                        <a type="button" class="action-btn cursor-pointer editLevel2" data-id="{{$setting->id}}" data-route="{{ route('admin.kyc.editKycLevel2', $setting->kyc_id) }}">
-                                                            <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                                                        </a>
-                                                        @else
-                                                        <a type="button" class="action-btn cursor-pointer editLevel2auto" data-id="{{$setting->id}}" >
-                                                            <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                                                        </a>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
-                        @endif
-                        @php
-                            $isExpanded = false; 
-                        @endphp
-                    @endforeach
-                </div>
-                <div class="">
-                    <button class="btn btn-dark inline-flex items-center justify-center mt-10" type="submit">
-                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                        {{ __('Save Changes') }}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@include('backend.kyclevels.include.__editlevel1')
-@include('backend.kyclevels.include.__editlevel2manual')
-@include('backend.kyclevels.include.__editlevel2auto')
-@include('backend.kyclevels.include.__addlevel2manual')
-@include('backend.kyclevels.include.__addlevel3manual')
-@endsection
 
-@section('script')
-<script>
-    
     $(document).ready(function () {
         var i1 = 0;
         $(".generateCreate").on('click', function () {
@@ -296,7 +96,7 @@
             $('.editLevel1').on('click', function () {
                 var recordId = $(this).data('id');
                 var currentStatus = $(this).data('status');
-                var actionUrl = "{{ route('admin.kyclevels.level1status.update', ':id') }}".replace(':id', recordId);
+                var actionUrl = "{{ route('admin.kyclevels.update', ':id') }}".replace(':id', recordId);
                 $('#editStatusForm').attr('action', actionUrl);
                 if (currentStatus === 1) {
                     $('#active-status').prop('checked', true);
@@ -376,7 +176,7 @@
     $(document).ready(function () {
         $('.editLevel2').on('click', function () {
             const button = $(this);
-            const route = button.data('route');
+            const route = button.data('route'); // Get the route URL from data attribute
             
             // Perform AJAX request
             $.ajax({
@@ -487,20 +287,15 @@
                 }
             });
         });
-        $('.editLevel2auto').on('click', function () {
-            $('#editLevel2auto').modal('show');
-            
-            
-        });
+    
         $(document).on('submit', '#editKycForm', function (e) {
+            console.log('currentKycId', currentKycId);
             e.preventDefault();
-            const $submitBtn = $('#submitBtn');
-            $submitBtn.prop('disabled', true);
-            $submitBtn.find('.btn-loader').show();
-            $submitBtn.find('.btn-text').hide();
             const formData = new FormData(this);
             const updateUrlTemplate = "{{ route('admin.kyc.updateLevel2Kyc',':id') }}";
             const updateUrl = updateUrlTemplate.replace(':id', currentKycId); 
+           
+            console.log('updateUrl', updateUrl);
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -519,42 +314,10 @@
                 },
                 error: function (xhr) {
                     console.error('Error updating KYC form:', xhr);
-                },
-                complete: function() {
-            // Hide loader and enable button regardless of the outcome
-            $submitBtn.prop('disabled', false);
-            $submitBtn.find('.btn-loader').hide();
-            $submitBtn.find('.btn-text').show();
-        }
+                }
             });
         });
     });
     
 });
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const manualRadio = document.querySelector('input[name="level2_setting"][value="manual"]');
-        const automaticRadio = document.querySelector('input[name="level2_setting"][value="automatic"]');
-        const manualSettings = document.querySelector('.manual-settings');
-        const automaticSettings = document.querySelector('.automatic-settings');
-        
-        function toggleSettings() {
-            if (manualRadio.checked) {
-                manualSettings.style.display = 'block';
-                automaticSettings.style.display = 'none';
-            } else {
-                manualSettings.style.display = 'none';
-                automaticSettings.style.display = 'block';
-            }
-        }
-
-        // Initial toggle based on the default checked radio button
-        toggleSettings();
-
-        // Add event listeners to radio buttons
-        manualRadio.addEventListener('change', toggleSettings);
-        automaticRadio.addEventListener('change', toggleSettings);
-    });
-</script>
-@endsection

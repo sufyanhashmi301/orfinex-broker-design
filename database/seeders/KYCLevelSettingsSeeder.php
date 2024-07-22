@@ -17,10 +17,10 @@ class KYCLevelSettingsSeeder extends Seeder
     public function run()
     {
         // Retrieve the KYC level ID for 'Level 2'
-        $kycLevelIdLevel2 = Kyclevel::where('name', 'Level 2')->value('id');
+        $kycLevelIdLevel2 = Kyclevel::where('slug', 'level-2')->value('id');
 
         // Retrieve the KYC level ID for 'Level 1'
-        $kycLevelIdLevel1 = Kyclevel::where('name', 'Level 1')->value('id');
+        $kycLevelIdLevel1 = Kyclevel::where('slug', 'level-1')->value('id');
 
         // Add default KYC records for Level 1
         $defaultValuesLevel1 = [

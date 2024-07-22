@@ -102,6 +102,11 @@
                         </li>
                     @endcan
                     <li>
+                        <a href="{{ route('admin.kyclevels.index') }}" class="{{ isActive('admin.kyclevels*') }}">
+                            {{ __('KYC Levels') }}
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.risk-profile-tag.index') }}" class="{{ isActive('admin.risk-profile-tag*') }}">
                             {{ __('Risk Profile Tag Form') }}
                         </a>

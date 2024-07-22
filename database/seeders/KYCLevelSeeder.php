@@ -16,9 +16,9 @@ class KYCLevelSeeder extends Seeder
     public function run()
     {
         DB::table('kyclevels')->insert([
-            ['name' => 'Level 1', 'status' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Level 2', 'status' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Level 3', 'status' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Level 1', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>'level-1'],
+            ['name' => 'Level 2', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>'level-2'],
+            ['name' => 'Level 3', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>'level-3'],
         ]);
     }
 }

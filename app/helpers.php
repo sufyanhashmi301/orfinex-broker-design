@@ -798,6 +798,29 @@ if (!function_exists('mt5_total_equity')) {
 
     }
 }
+if (!function_exists('mt5_total_credit')) {
+    /**
+     * @param $metaKey
+     * @param null $default
+     * @param null $user
+     * @return array|mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_credit($user_id)
+    {
+        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
+            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+
+        $totalEquity = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $forexAccounts)
+            ->sum('Credit');
+
+        return $totalEquity;
+
+    }
+}
 if (!function_exists('mt5_update_balance')) {
     /**
      * @param $metaKey

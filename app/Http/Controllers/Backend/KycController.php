@@ -6,6 +6,7 @@ use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
 use App\Models\Kyclevel;
+use App\Models\Kyclevelsetting;
 use App\Models\User;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -75,11 +76,51 @@ class KycController extends Controller
         ];
 
         $kyc = Kyc::create($data);
+        $kycSettings = new Kyclevelsetting();
+        $kycSettings->title = $input['name'];
+        $kycSettings->unique_code = 'manual';
+        $kycSettings->kyc_level_id = $kycLevel->id;
+        $kycSettings->kyc_id = $kyc->id;
+        $kycSettings->status = true;
+        $kycSettings->save();
         notify()->success($kyc->name.' '.__(' KYC Created'));
 
         return redirect()->route('admin.kyc-form.index');
     }
+    public function storeLevel3(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            
+            'name' => 'required|unique:kycs,name',
+            'status' => 'required',
+            'fields' => 'required',
+        ]);
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
 
+            return redirect()->back();
+        }
+        $kycLevel = Kyclevel::where('name','Level 3')->first();
+        $data = [
+            'kyc_level_id' => $kycLevel->id,
+            'name' => $input['name'],
+            'status' => $input['status'],
+            'fields' => json_encode($input['fields']),
+        ];
+
+        $kyc = Kyc::create($data);
+        $kycSettings = new Kyclevelsetting();
+        $kycSettings->title = $input['name'];
+        $kycSettings->unique_code = 'manual';
+        $kycSettings->kyc_level_id = $kycLevel->id;
+        $kycSettings->kyc_id = $kyc->id;
+        $kycSettings->status = true;
+        $kycSettings->save();
+        notify()->success($kyc->name.' '.__(' KYC Created'));
+
+        return redirect()->back();
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -112,7 +153,14 @@ class KycController extends Controller
 
         return view('backend.kyc.edit', compact('kyc'));
     }
-
+    public function editKycLevel2($id)
+    {
+        $kyc = Kyc::find($id);
+        if (!$kyc) {
+            return response()->json(['error' => 'KYC record not found'], 404);
+        }
+        return response()->json(['kyc' => $kyc]);
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -230,6 +278,7 @@ class KycController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
 
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -239,6 +288,7 @@ class KycController extends Controller
         ]);
 
         if ($validator->fails()) {
+           
             notify()->error($validator->errors()->first(), 'Error');
 
             return redirect()->back();
@@ -253,10 +303,38 @@ class KycController extends Controller
         $kyc = Kyc::find($id);
         $kyc->update($data);
         notify()->success($kyc->name.' '.__(' KYC Updated'));
-
+        
         return redirect()->route('admin.kyc-form.index');
     }
+    public function updateLevel2Kyc(Request $request, $id)
+    {
+        
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'name' => 'required|unique:kycs,name,'.$id,
+            'status' => 'required',
+            'fields' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+            return redirect()->back();
+        }
+
+        $data = [
+            'name' => $input['name'],
+            'status' => $input['status'],
+            'fields' => json_encode($input['fields']),
+        ];
+
+        $kyc = Kyc::find($id);
+        $kyc->update($data);
+        $kycSettings = Kyclevelsetting::where('kyc_id',$id)->first();
+        $kycSettings->title = $input['name'];
+        $kycSettings->update();
+        notify()->success($kyc->name.' '.__(' KYC Updated'));
+        return redirect()->back();
+    }
     /**
      * @return Application|Factory|View|JsonResponse
      *

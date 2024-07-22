@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Kyc;
 use App\Models\Kyclevel;
 use App\Models\Kyclevelsetting;
 use App\Models\RiskProfileTag;
@@ -137,35 +138,15 @@ class KYCLevelsController extends Controller
     /**
      * @return RedirectResponse
      */
-    public function kycLevelUpdate(Request $request, $id)
+    public function kycLevel1Update(Request $request, $id)
     {
-        //dd($request->all());
-        // Validate the request
-        $request->validate([
-            'name' => 'required|string|max:50',
-            'settings' => 'array', // Ensures 'permissions' is an array
-            'settings.*' => 'integer|exists:kyclevelsettings,id', // Ensures each permission is a valid kyclevelsetting ID
-        ]);
-
-        // Update the Kyclevel
-        $kycLevel = Kyclevel::findOrFail($id);
-        $kycLevel->name = $request->name;
-        $kycLevel->save();
-
-        // Get all KycLevelSetting IDs that belong to this KycLevel
-        $kycLevelSettingIds = Kyclevelsetting::where('kyc_level_id', $id)->pluck('id')->toArray();
-
-        // Determine which settings are checked
-        $checkedSettings = $request->permissions ?? []; // Default to an empty array if no permissions are set
-
-        // Update the status of each KycLevelSetting
-        foreach ($kycLevelSettingIds as $settingId) {
-            $setting = Kyclevelsetting::find($settingId);
-            $setting->status = in_array($settingId, $checkedSettings);
-            $setting->save();
-        }
+        $kycLevelSetting = Kyclevelsetting::findOrFail($id);
+        $kycLevelSetting->status = $request->status;
+        $kycLevelSetting->update();
+        $kyc = Kyc::whereId($kycLevelSetting->kyc_id)->first();
+        $kyc->status = $request->status;
+        $kyc->update();
         notify()->success(__('KYC level settings updated Successfully'));
-
         return redirect()->back()->with('success', __('KYC level settings updated successfully.'));
     }
     public function tagDelete($id,Request $request)

@@ -191,6 +191,32 @@
                                 />
                             </div>
                         </div>
+                        <div class="lg:col-span-1 col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Range Start(Min 6 digits):') }}</label>
+                                <input
+                                    type="text"
+                                    name="start_range"
+                                    oninput="this.value = validateDouble(this.value)"
+                                    class="form-control"
+                                    placeholder="Start Range"
+
+                                />
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Range End(Min 6 digits):') }}</label>
+                                <input
+                                    type="text"
+                                    name="end_range"
+                                    oninput="this.value = validateDouble(this.value)"
+                                    class="form-control"
+                                    placeholder="End Range"
+
+                                />
+                            </div>
+                        </div>
                         <div class="col-span-2">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>

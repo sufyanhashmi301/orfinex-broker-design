@@ -80,14 +80,25 @@ class ForexAccountController extends GatewayController
             notify()->error($message, 'Error');
             return redirect()->back();
         }
-//        dd('s');
+        $login = 0;
+        $forexAccount = ForexAccount::where('forex_schema_id',$schema->id)->orderBY('login','desc')->first();
+        if($forexAccount) {
+            if($forexAccount->login >= $schema->end_range){
+                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
+                notify()->error($message, 'Error');
+                return redirect()->back();
+            }
+            $login = $forexAccount->login++;
+        }else{
+            $login = $schema->start_range;
+        }
         $group = $schema[$request->group];
 
         $server = config('forextrading.server');
         $password = $request->main_password;
 
         $data = [
-            "login" => 0,
+            "login" => $login,
             "group" => $group,
             "firstName" => auth()->user()->first_name,
             "middleName" => "",

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schedule;
+use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -37,7 +38,7 @@ class ForexSchemaController extends Controller
      */
     public function index()
     {
-        
+
         $schemas = ForexSchema::orderBy('priority','asc')->get();
 
         return view('backend.forex_schema.index', compact('schemas'));
@@ -74,6 +75,8 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => 'required',
             'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer|unique:forex_schemas,priority',
+            'start_range' => ['required', new MinDigits(6)],
+            'end_range' => ['required', new MinDigits(6)],
         ]);
 
         if ($validator->fails()) {
@@ -105,6 +108,8 @@ class ForexSchemaController extends Controller
             'is_bonus' => $input['is_bonus'],
             'status' => $input['status'],
             'priority' => $input['priority'],
+            'start_range' => $input['start_range'],
+            'end_range' => $input['end_range'],
             'icon' => self::imageUploadTrait($input['icon']),
         ];
 //        dd($finalData);
@@ -149,6 +154,8 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => 'required',
             'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer|unique:forex_schemas,priority,' . $id,
+            'start_range' => ['required', new MinDigits(6)],
+            'end_range' => ['required', new MinDigits(6)],
 
         ]);
 
@@ -182,6 +189,8 @@ class ForexSchemaController extends Controller
             'is_bonus' => $input['is_bonus'],
             'status' => $input['status'],
             'priority' => $input['priority'],
+            'start_range' => $input['start_range'],
+            'end_range' => $input['end_range'],
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
         ];
 //        dd($finalData);

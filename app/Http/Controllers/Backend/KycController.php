@@ -217,7 +217,8 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('kyc', KYCStatus::Pending->value)->latest('updated_at');
+            $data = User::where('kyc', KYCStatus::Pending->value)
+            ->latest('updated_at');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -278,15 +279,17 @@ class KycController extends Controller
      */
     public function actionNow(Request $request)
     {
+       
         $input = $request->all();
         $user = User::find($input['id']);
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
         $user->update([
-            'kyc' => $input['status'],
+             'kyc' => $input['status'],
             'kyc_credential' => $kycCredential,
+            'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
         ]);
-
+        
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[email]]' => $user->email,

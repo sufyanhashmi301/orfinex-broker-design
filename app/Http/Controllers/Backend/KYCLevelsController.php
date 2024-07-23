@@ -143,6 +143,7 @@ class KYCLevelsController extends Controller
        
         $kycLevel  = Kyclevel::findOrFail($id);
         $kycLevel->name = $request->name;
+        $kycLevel->status = $request->status;
         $kycLevel->update();
         if($request->level2_setting=="manual"){
             Kyc::where('kyc_level_id',$id)->update(['status'=>1]);

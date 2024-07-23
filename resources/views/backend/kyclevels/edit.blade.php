@@ -179,6 +179,29 @@
                         @endphp
                     @endforeach
                 </div>
+                <div class="max-w-xs">
+                        <div class="input-area">
+                            <label class="form-label" for="">{{ __('Status:') }}</label>
+                            <div class="switch-field flex mb-3 overflow-hidden">
+                                <input
+                                    type="radio"
+                                    id="active-status-2"
+                                    name="status"
+                                    @if($kycLevel->status==1) ? checked : ''@endif
+                                    value="1"
+                                />
+                                <label for="active-status-2">{{ __('Active') }}</label>
+                                <input
+                                    type="radio"
+                                    id="deactivate-status-2"
+                                    name="status"
+                                    value="0"
+                                    @if($kycLevel->status==0) ? checked : ''@endif
+                                />
+                                <label for="deactivate-status-2">{{ __('Deactivate') }}</label>
+                            </div>
+                        </div>
+                    </div>
                 <div class="">
                     <button class="btn btn-dark inline-flex items-center justify-center mt-10" type="submit">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

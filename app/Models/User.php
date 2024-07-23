@@ -60,6 +60,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'transfer_status',
         'ref_id',
         'password',
+        'is_level_1_completed',
+        'is_level_2_completed',
+        'is_level_3_completed',
     ];
 
     protected $appends = [

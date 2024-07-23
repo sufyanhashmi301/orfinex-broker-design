@@ -11,10 +11,10 @@ class Kyclevel extends Model
 
     public function kyclevelsettings()
     {
-        return $this->hasMany(Kyclevelsetting::class);
+        return $this->hasMany(Kyclevelsetting::class,'kyc_level_id');
     }
     public function kyc()
     {
-        return $this->hasMany(Kyc::class);
+        return $this->hasMany(Kyc::class,'kyc_level_id');
     }
 }

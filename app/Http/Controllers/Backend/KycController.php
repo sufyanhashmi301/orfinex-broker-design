@@ -17,6 +17,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class KycController extends Controller
@@ -233,6 +234,29 @@ class KycController extends Controller
 
         return view('backend.kyc.pending');
     }
+    public function KycLevel3Pending (Request $request)
+    {
+        
+        if ($request->ajax()) {
+            $data = User::where('is_level_3_completed', 0)
+            ->where('kyc_credential_level3','!=',NULL)
+            ->latest('updated_at');
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('time', 'backend.kyc.include.__time')
+                ->addColumn('user', 'backend.kyc.include.__user')
+                ->addColumn('type', function($row) {
+                    return $row->kyc_type_level3;
+                })
+                ->addColumn('status', 'backend.kyc.include.__status')
+                ->addColumn('action', 'backend.kyc.include.__action')
+                ->rawColumns(['time', 'user', 'type', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.kyc.level3.pending');
+    }
 
     /**
      * @return Application|Factory|View|JsonResponse
@@ -273,7 +297,17 @@ class KycController extends Controller
 
         return view('backend.kyc.include.__kyc_data', compact('kycCredential', 'id', 'kycStatus'))->render();
     }
+    public function depositActionLevel3($id)
+    {
+        $user = User::find($id);
+        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        unset($kycCredential['kyc_type_of_name']);
+        unset($kycCredential['kyc_time_of_time']);
 
+        $kycStatus = $user->kyc;
+
+        return view('backend.kyc.include.__kyc_data_level3', compact('kycCredential', 'id', 'kycStatus'))->render();
+    }
     /**
      * @return RedirectResponse
      */
@@ -282,12 +316,54 @@ class KycController extends Controller
        
         $input = $request->all();
         $user = User::find($input['id']);
+        $kycLevel3Status = Kyclevel::where('slug','level-3')->first();
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
+        if($kycLevel3Status->status==1){
+            $user->update([
+                
+               'kyc_credential' => $kycCredential,
+               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
+           ]);
+        }else{
+            $user->update([
+                'kyc' => $input['status'],
+               'kyc_credential' => $kycCredential,
+               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
+           ]);
+        }
+        
+        
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[kyc_type]]' => $kycCredential['kyc_type_of_name'],
+            '[[message]]' => $input['message'],
+            '[[status]]' => $input['status'],
+        ];
+        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
+        $this->smsNotify('kyc_action', $shortcodes, $user->phone);
+        $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
+
+        notify()->success(__('KYC Update Successfully'));
+
+        return redirect()->route('admin.kyc.all');
+    }
+    public function actionLevel3Now(Request $request)
+    {
+       
+        $input = $request->all();
+        
+        $user = User::find($input['id']);
+        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
         $user->update([
-             'kyc' => $input['status'],
-            'kyc_credential' => $kycCredential,
-            'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
+            'kyc' => $input['status'],
+            'kyc_credential_level3' => $kycCredential,
+            'is_level_3_completed' => $input['status'] == 1 ? 1 : 0,
+            'kyc_level3' => $input['status'],
         ]);
         
         $shortcodes = [
@@ -307,7 +383,6 @@ class KycController extends Controller
 
         return redirect()->route('admin.kyc.all');
     }
-
     /**
      * Update the specified resource in storage.
      *

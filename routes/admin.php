@@ -82,11 +82,14 @@ Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::
     Route::get('editlevel2/{id}', 'editKycLevel2')->name('editKycLevel2');
     Route::post('updatelevel2kyc/{id}', 'updateLevel2Kyc')->name('updateLevel2Kyc');
     Route::get('pending', 'KycPending')->name('pending');
+    Route::get('pending/level3', 'KycLevel3Pending')->name('level3.pending');
     Route::post('storelevel2', 'storeLevel2')->name('storeLevel2');
     Route::post('storelevel3', 'storeLevel3')->name('storeLevel3');
     Route::get('rejected', 'KycRejected')->name('rejected');
     Route::get('action/{id}', 'depositAction')->name('action');
+    Route::get('level3/action/{id}', 'depositActionLevel3')->name('level3.action');
     Route::post('action-now', 'actionNow')->name('action.now');
+    Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
     Route::get('all', 'kycAll')->name('all');
 
 });

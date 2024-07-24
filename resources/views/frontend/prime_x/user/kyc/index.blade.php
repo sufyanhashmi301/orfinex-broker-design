@@ -20,14 +20,14 @@
                     @if($kycLevel->status == 1)
                         <li class="w-[4.5rem] flex-auto">
                         <div class="flex items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-3px after:w-full after:flex-1 
-                            @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->kyc == 1))
+                            @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1)|| ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
                                 after:bg-primary 
                             @else 
                                 after:bg-[#e0e0e0] 
                             @endif 
                             after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
                                 <div>
-                                    @if($kycLevel->slug == 'level-1' && $user->email_verified_at != null || $kycLevel->slug == 'level-2' && $user->kyc == 1)
+                                    @if($kycLevel->slug == 'level-1' && $user->email_verified_at != null || $kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1 || $kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
@@ -211,14 +211,7 @@
                         You will need to provide proof of your place of residence
                     </p>
                     <h4 class="text-2xl text-slate-500 dark:text-white">3 - Verify residential address</h4>
-                    <div class="input-area w-full">
-                        <div class="relative">
-                            <input type="text" class="form-control form-control-lg !pr-9" placeholder="Add profile information">
-                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                <iconify-icon icon="lucide:folder-open"></iconify-icon>
-                            </span>
-                        </div>
-                    </div>
+                   
                     <div>
                         <p class="text-slate-900 dark:text-white mb-2">Privileges and Benefit</p>
                         <ul class="space-y-2 mb-10">
@@ -252,10 +245,15 @@
                             </li>
                         </ul>
                     </div>
-                    @if($user->is_level_2_completed==1)
-                    <a href="{{ route('user.kyc.level3') }}" class="btn btn-dark block-btn mt-auto">Go to Level 3 Submission</a>
+
+                    @if($user->is_level_3_completed == 1)
+                        <a href="#" class="btn btn-primary block-btn mt-auto">Completed</a>
+                    @elseif($kycLevel->slug == 'level-2' && $kycLevel->status == 1 && $user->is_level_2_completed == 0)
+                        <a href="#" class="btn btn-light block-btn mt-auto">Complete step 2 to continue</a>
+                    @elseif($user->is_level_2_completed == 1 && $user->is_level_3_completed == 0)
+                        <a href="{{ route('user.kyc.level3') }}" class="btn btn-dark block-btn mt-auto">Go to Level 3 Submission</a>
                     @else
-                    <a href="#" class="btn btn-light block-btn mt-auto">Complete step 2 to continue</a>
+                        <a href="#" class="btn btn-light block-btn mt-auto">Complete step 2 to continue</a>
                     @endif
                 </div>
                 @endif

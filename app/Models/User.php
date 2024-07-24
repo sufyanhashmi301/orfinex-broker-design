@@ -63,6 +63,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'is_level_1_completed',
         'is_level_2_completed',
         'is_level_3_completed',
+        'kyc_credential_level3',
+        'kyc_level3'
     ];
 
     protected $appends = [
@@ -120,7 +122,17 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return '';
     }
+    public function getKycTypeLevel3Attribute(): string
+    {
+        if (isset($this->attributes['kyc_credential_level3']) && !empty($this->attributes['kyc_credential_level3'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
 
+        return '';
+    }
     public function getKycTimeAttribute(): string
     {
         if (isset($this->attributes['kyc_credential'])) {
@@ -132,7 +144,17 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return '';
     }
+    public function getKycTimeLevel3Attribute(): string
+    {
+        if (isset($this->attributes['kyc_credential_level3'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
 
+        return '';
+    }
     public function getTotalProfitAttribute(): string
     {
         return $this->totalProfit();

@@ -168,9 +168,10 @@ class KycController extends Controller
 
         $kyc = Kyc::find($input['kyc_id']);
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
+       
         $user = \Auth::user();
-        if ($user->kyc_credential) {
-            foreach (json_decode($user->kyc_credential, true) as $key => $value) {
+        if ($user->kyc_credential_level3) {
+            foreach (json_decode($user->kyc_credential_level3, true) as $key => $value) {
                 self::delete($value);
             }
         }

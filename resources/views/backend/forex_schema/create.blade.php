@@ -91,7 +91,7 @@
                             type="text"
                             name="title"
                             class="form-control"
-                            placeholder="Forex Account Title"
+                            placeholder="Account Title"
                             required
                         />
                     </div>
@@ -124,7 +124,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Account Limit"
-    
+
                         />
                     </div>
                     <div class="input-area">
@@ -135,7 +135,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Start Range"
-    
+
                         />
                     </div>
                     <div class="input-area">
@@ -146,7 +146,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="End Range"
-    
+
                         />
                     </div>
                 </div>
@@ -195,7 +195,7 @@
                             name="first_min_deposit"
                             class="form-control"
                             placeholder="Min deposit"
-    
+
                         />
                     </div>
                 </div>
@@ -223,7 +223,7 @@
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             name=""
                                             value="1"
@@ -272,7 +272,7 @@
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#demo-islamic-group">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             name=""
                                             value="1"
@@ -332,16 +332,16 @@
                                         {{ __('Withdraw') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="hidden" 
-                                            value="0" 
+                                        <input
+                                            class="form-check-input"
+                                            type="hidden"
+                                            value="0"
                                             name="is_withdraw"
                                         >
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="is_withdraw" 
+                                            <input
+                                                type="checkbox"
+                                                name="is_withdraw"
                                                 value="1"
                                                 class="sr-only peer"
                                             >
@@ -356,16 +356,16 @@
                                         {{ __('Internal Transfer') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="hidden" 
-                                            value="0" 
+                                        <input
+                                            class="form-check-input"
+                                            type="hidden"
+                                            value="0"
                                             name="is_internal_transfer"
                                         >
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="is_internal_transfer" 
+                                            <input
+                                                type="checkbox"
+                                                name="is_internal_transfer"
                                                 value="1"
                                                 class="sr-only peer"
                                             >
@@ -380,16 +380,16 @@
                                         {{ __('External Transfer') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="hidden" 
-                                            value="0" 
+                                        <input
+                                            class="form-check-input"
+                                            type="hidden"
+                                            value="0"
                                             name="is_external_transfer"
                                         >
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="is_external_transfer" 
+                                            <input
+                                                type="checkbox"
+                                                name="is_external_transfer"
                                                 value="1"
                                                 class="sr-only peer"
                                             >

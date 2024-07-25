@@ -205,7 +205,7 @@ class ForexSchemaController extends Controller
     {
         $schema = ForexSchema::findOrFail($id);
         if ($schema->forexAccounts()->exists()) {
-            notify()->error('Cannot delete schema because there are Forex accounts associated with it.');
+            notify()->error('Cannot delete schema because there are accounts associated with it.');
             return redirect()->route('admin.accountType.index');
         }
         $schema->delete();

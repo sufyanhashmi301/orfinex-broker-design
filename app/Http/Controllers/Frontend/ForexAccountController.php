@@ -176,7 +176,7 @@ class ForexAccountController extends GatewayController
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 
-                notify()->success('Successfully Created Forex Account', 'success');
+                notify()->success('Successfully Created Account', 'success');
                 return redirect()->route('user.forex-account-logs');
             }
 

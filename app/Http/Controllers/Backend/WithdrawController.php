@@ -321,7 +321,7 @@ class WithdrawController extends Controller
                 ]);
                 $totalAmount = BigDecimal::of($transaction->amount);
                 if ($totalAmount->compareTo($balance) > 0) {
-                    notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+                    notify()->error(__('Insufficient Balance in Your Account'), 'Error');
                     return redirect()->back();
                 }
                 $comment = $transaction->method . '/' . substr($transaction->tnx, -7);

@@ -52,7 +52,7 @@
                             name="title"
                             value="{{$schema->title}}"
                             class="box-input"
-                            placeholder="Forex Account Title"
+                            placeholder="Account Title"
                             required
                         />
                     </div>

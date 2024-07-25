@@ -325,7 +325,7 @@ trait ForexApiTrait
 
         $response = $this->sendApiRequest($getUserUrl, $dataArray);
         if ($response->status() != 200) {
-            $message = __('The forex account :login is not exist in MT5! Please choose valid account', ['login' => $login]);
+            $message = __('The account :login is not exist in MT5! Please choose valid account', ['login' => $login]);
             notify()->error($message, 'Error');
             return false;
         }
@@ -349,7 +349,7 @@ trait ForexApiTrait
                 return BigDecimal::of($getUserResponse->object()->MarginFree)->minus($getUserResponse->object()->Credit);
             } else {
                 throw ValidationException::withMessages([
-                    'invalid' => __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login])
+                    'invalid' => __('The account :login is not exist in MT5!.please choose valid account', ['login' => $login])
                 ]);
                 return BigDecimal::of(0);
             }
@@ -396,7 +396,7 @@ trait ForexApiTrait
         if ($response->status() == 200 && $response->object() == 10009) {
             return true;
         } else {
-            $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
+            $message = __('The account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
             notify()->error($message, 'Error');
         }
     }
@@ -416,7 +416,7 @@ trait ForexApiTrait
         if ($response->status() == 200 && $response->object() == 10009) {
             return true;
         } else {
-            $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
+            $message = __('The account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
             notify()->error($message, 'Error');
             return false;
         }

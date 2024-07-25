@@ -162,7 +162,7 @@
                 </li>
                 <li>
                     <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
-                        {{ __('Forex History') }}
+                        {{ __('Accounts History') }}
                     </a>
                 </li>
             </ul>

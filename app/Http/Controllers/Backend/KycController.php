@@ -240,16 +240,20 @@ class KycController extends Controller
         if ($request->ajax()) {
             $data = User::where('is_level_3_completed', 0)
             ->where('kyc_credential_level3','!=',NULL)
+            ->where('kyc_level3', KYCStatus::Pending->value)
             ->latest('updated_at');
+            //->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('time', 'backend.kyc.include.__time')
+                ->addColumn('time', function($row) {
+                    return $row->kyc_time_level3;
+                })
                 ->addColumn('user', 'backend.kyc.include.__user')
                 ->addColumn('type', function($row) {
                     return $row->kyc_type_level3;
                 })
-                ->addColumn('status', 'backend.kyc.include.__status')
+                ->addColumn('status', 'backend.kyc.include.__statuslevel3')
                 ->addColumn('action', 'backend.kyc.include.__action')
                 ->rawColumns(['time', 'user', 'type', 'status', 'action'])
                 ->make(true);
@@ -304,7 +308,7 @@ class KycController extends Controller
         unset($kycCredential['kyc_type_of_name']);
         unset($kycCredential['kyc_time_of_time']);
 
-        $kycStatus = $user->kyc;
+        $kycStatus = $user->kyc_level3;
 
         return view('backend.kyc.include.__kyc_data_level3', compact('kycCredential', 'id', 'kycStatus'))->render();
     }

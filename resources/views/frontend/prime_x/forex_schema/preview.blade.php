@@ -23,12 +23,12 @@
             {{ __('Risk-Free Account: Trade using virtual money') }}
         </p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
-        <div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 mb-5">
+        <div class="h-full">
             <h4 class="text-xl text-slate-900 mb-3">
                 {{ __('Account Options') }}
             </h4>
-            <div class="card h-full">
+            <div class="card h-auto">
                 <div class="card-body p-6">
                     <form class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post" enctype="multipart/form-data">
                         @csrf
@@ -123,11 +123,11 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div class="h-full">
             <h4 class="text-xl text-slate-900 mb-3">
                 {{ __('Account Specifications and Features') }}
             </h4>
-            <div class="card h-full">
+            <div class="card h-auto">
                 <div class="card-header noborder">
                     <h3 class="card-title">
                         {{ __('Standard') }}
@@ -153,6 +153,14 @@
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+            <iconify-icon class="text-xl flex-0" icon="lucide:info"></iconify-icon>
+            <p class="flex-1 font-Inter">
+                Comprehensive details on our instruments and trading conditions can be found on the <a href="" class="text-warning-600">Customer Contract</a> page.
+            </p>
         </div>
     </div>
 @endsection

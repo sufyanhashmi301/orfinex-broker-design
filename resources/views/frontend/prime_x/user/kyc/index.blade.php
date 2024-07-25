@@ -197,6 +197,9 @@
                         </div>
                         @if($user->is_level_2_completed==1)
                         <a href="#" class="btn btn-dark btn-primary block-btn mt-auto">Completed</a>
+                        @elseif($user->kyc_credential != null)
+                        <a href="#" class="btn btn-light block-btn mt-auto">Pending</a>
+                        
                         @else
                         <a href="{{ route('user.kyc.basic') }}" class="btn btn-dark block-btn mt-auto">Go to Manual Submission</a>
                         @endif
@@ -250,10 +253,12 @@
                         <a href="#" class="btn btn-primary block-btn mt-auto">Completed</a>
                     @elseif($kycLevel->slug == 'level-2' && $kycLevel->status == 1 && $user->is_level_2_completed == 0)
                         <a href="#" class="btn btn-light block-btn mt-auto">Complete step 2 to continue</a>
-                    @elseif($user->is_level_2_completed == 1 && $user->is_level_3_completed == 0)
+                    @elseif($user->is_level_2_completed == 1 && $user->is_level_3_completed == 0 && $user->kyc_credential_level3 == null)
                         <a href="{{ route('user.kyc.level3') }}" class="btn btn-dark block-btn mt-auto">Go to Level 3 Submission</a>
+                    @elseif($user->kyc_credential_level3 != null)
+                    <a href="#" class="btn btn-light block-btn mt-auto">Pending</a>
                     @else
-                        <a href="#" class="btn btn-light block-btn mt-auto">Complete step 2 to continue</a>
+                    <a href="{{ route('user.kyc.level3') }}" class="btn btn-dark block-btn mt-auto">Go to Level 3 Submission</a>
                     @endif
                 </div>
                 @endif

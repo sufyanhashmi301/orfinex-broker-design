@@ -106,6 +106,13 @@ class KycController extends Controller
 
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
         $user = \Auth::user();
+        $checkLevel1= Kyclevel::where('slug','level-1')->first();
+        if($checkLevel1->status==1){
+            if($user->email_verified_at == null){
+                notify()->error('kindly complete the level 1 first');
+                return redirect()->back();
+            }
+        }
         if ($user->kyc_credential) {
             foreach (json_decode($user->kyc_credential, true) as $key => $value) {
                 self::delete($value);
@@ -168,8 +175,21 @@ class KycController extends Controller
 
         $kyc = Kyc::find($input['kyc_id']);
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
-       
         $user = \Auth::user();
+        $checkLevel1= Kyclevel::where('slug','level-1')->first();
+        if($checkLevel1->status==1){
+            if($user->email_verified_at == null){
+                notify()->error('kindly complete the level 1 first');
+                return redirect()->back();
+            }
+        }
+        $checkLevel2= Kyclevel::where('slug','level-2')->first();
+        if($checkLevel2->status==1){
+            if($user->is_level_2_completed == 0){
+                notify()->error('kindly complete the level 2 first');
+                return redirect()->back();
+            }
+        }
         if ($user->kyc_credential_level3) {
             foreach (json_decode($user->kyc_credential_level3, true) as $key => $value) {
                 self::delete($value);

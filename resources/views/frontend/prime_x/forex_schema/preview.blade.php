@@ -3,6 +3,26 @@
     {{ __('Schema Preview') }}
 @endsection
 @section('content')
+    <div class="card p-6 mb-5 space-y-3">
+        <h3 class="card-title">
+            {{ __('Choose Account Type') }}
+        </h3>
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4">
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active">
+                    Real
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                    Demo
+                </a>
+            </li>
+        </ul>
+        <p class="card-text">
+            {{ __('Risk-Free Account: Trade using virtual money') }}
+        </p>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
         <div>
             <h4 class="text-xl text-slate-900 mb-3">
@@ -121,6 +141,14 @@
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>No Commission</span>
+                        </li>
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                            <span>Leverage</span>
+                            <span>100</span>
+                        </li>
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                            <span>Initial Deposit Limit</span>
+                            <span>1000</span>
                         </li>
                     </ul>
                 </div>

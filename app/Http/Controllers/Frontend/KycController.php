@@ -7,11 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Kyc;
 use App\Models\Kyclevel;
 use App\Models\Kyclevelsetting;
+use App\Models\Userkyc;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Sumsub\AppTokenUsageExample\SumsubClient;
 use Validator;
+
 
 class KycController extends Controller
 {
@@ -19,16 +23,26 @@ class KycController extends Controller
 
     public function kyc()
     {
-        $kycSettings =Kyclevelsetting::with('kyclevel')->get();
-        
+        $kycSettings =kyclevel::with('kyc')->get();
+        $level2Settings = DB::table('kyclevelsettings')
+        ->where('kyc_level_id', 2)
+        ->whereIn('unique_code', ['manual', 'samsub'])
+        ->get();
+        $userKyc = Userkyc::where('user_id',Auth::id())->get();
         return view('frontend::user.kyc.index',get_defined_vars());
     }
 
     public function basicKyc()
     {
-        $kycs = Kyc::where('status', true)->get();
+        $kycs = Kyc::where('status', true)->where('kyc_level_id',2)->get();
 
         return view('frontend::user.kyc.basic.index', compact('kycs'));
+    }
+    public function kycLevel3()
+    {
+        $kycs = Kyc::where('status', true)->where('kyc_level_id',3)->get();
+
+        return view('frontend::user.kyc.basic.level3', compact('kycs'));
     }
     public function advanceKyc()
     {
@@ -91,21 +105,14 @@ class KycController extends Controller
         $kyc = Kyc::find($input['kyc_id']);
 
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
-
         $user = \Auth::user();
-
         if ($user->kyc_credential) {
             foreach (json_decode($user->kyc_credential, true) as $key => $value) {
                 self::delete($value);
             }
         }
-        //        $kycCredential1[] = json_decode('{"Front Side":{},"Back Side":{},"kyc_type_of_name":"National ID Card","kyc_time_of_time":"2024-01-04T22:51:47.025821Z"}');
-        //        dd($kycCredential['Front Page']);
-        //        dd($kycCredential1);
         foreach ($kycCredential as $key => $value) {
-            //dd($key,$value);
             if (is_file($value)) {
-                //                dd(self::kycImageUploadTrait($value));
                 $path = self::kycImageUploadTrait($value);
                 if (isset($path) && !empty($path)) {
                     $kycCredential[$key] = $path;
@@ -115,15 +122,21 @@ class KycController extends Controller
                 }
             }
         }
-        ////        dd($kycCredential['Front Page']);
-        //        if(isset($kycCredential['Front Page'])){
-        //
-        //        }
-        //        dd($kycCredential);
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),
             'kyc' => KYCStatus::Pending,
+        ]);
+        $kycSettingsId = Kyclevelsetting::where('kyc_id',$input['kyc_id'])->first();
+        DB::table('userkycs')->insert([
+            'user_id' => $user->id,
+            'kyclevel_id' => $kyc->kyc_level_id, 
+            'kyclevelsetting_id' => $kycSettingsId->id, 
+            'kyc_credential' => json_encode($kycCredential),
+            'kyc' => KYCStatus::Pending,
+            'is_level_2_completed'=>1,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
@@ -136,9 +149,70 @@ class KycController extends Controller
 
         $this->mailNotify(setting('site_email', 'global'), 'kyc_request', $shortcodes);
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
-
         notify()->success(__(' KYC Updated'));
+        return redirect()->route('user.kyc');
+    }
+    public function submitLevel3(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'kyc_id' => 'required',
+            'kyc_credential' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+
+        $kyc = Kyc::find($input['kyc_id']);
+        $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
+       
+        $user = \Auth::user();
+        if ($user->kyc_credential_level3) {
+            foreach (json_decode($user->kyc_credential_level3, true) as $key => $value) {
+                self::delete($value);
+            }
+        }
+        foreach ($kycCredential as $key => $value) {
+            if (is_file($value)) {
+                $path = self::kycImageUploadTrait($value);
+                if (isset($path) && !empty($path)) {
+                    $kycCredential[$key] = $path;
+                } else {
+                    notify()->error('kindly Set the ' . $key, 'Error');
+                    return redirect()->back();
+                }
+            }
+        }
+        $user->update([
+            'kyc_credential_level3' => json_encode($kycCredential),
+            'kyc_level3' => KYCStatus::Pending,
+        ]);
+        $kycSettingsId = Kyclevelsetting::where('kyc_id',$input['kyc_id'])->first();
+        DB::table('userkycs')->insert([
+            'user_id' => $user->id,
+            'kyclevel_id' => $kyc->kyc_level_id, 
+            'kyclevelsetting_id' => $kycSettingsId->id, 
+            'kyc_credential' => json_encode($kycCredential),
+            'kyc' => KYCStatus::Pending,
+            'is_level_2_completed'=>1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[kyc_type]]' => $kyc->name,
+            '[[status]]' => 'Pending',
+        ];
+
+        $this->mailNotify(setting('site_email', 'global'), 'kyc_request', $shortcodes);
+        $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
+        notify()->success(__(' KYC Updated'));
         return redirect()->route('user.kyc');
     }
 }

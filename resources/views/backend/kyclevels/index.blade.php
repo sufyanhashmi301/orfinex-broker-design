@@ -46,9 +46,7 @@
                                             <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                         </a>
                                            
-                                        <button type="button" data-id="{{ $kyc->id }}" data-name="{{ $kyc->name }}" class="toolTip onTop action-btn">
-                                            <iconify-icon icon="lucide:trash-2"></iconify-icon>
-                                        </button>
+                                       
                                         </div>
                                     </td>
                                 </tr>

@@ -28,16 +28,17 @@
                                 <div class="input-area">
                                     <label class="form-label" for="status">{{ __('Status:') }}</label>
                                     <div class="switch-field flex mb-3 overflow-hidden">
-                                        <input type="radio" id="active-status1" name="status" value="1"/>
-                                        <label for="active-status">{{ __('Active') }}</label>
-                                        <input type="radio" id="deactivate-status1" name="status" value="0"/>
-                                        <label for="deactivate-status">{{ __('Deactivate') }}</label>
+                                        <input type="radio" id="active-status-1" name="status" value="1"/>
+                                        <label for="active-status-1">{{ __('Active') }}</label>
+                                        <input type="radio" id="deactivate-status-1" name="status" value="0"/>
+                                        <label for="deactivate-status-1">{{ __('Deactivate') }}</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-area text-right">
-                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                                    {{ __('Save Changes') }}
+                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="submitBtn">
+                                <span class="btn-text"> {{ __('Save Changes') }}</span>
+                                    <span class="btn-loader" style="display: none;">Loading...</span>
                                 </button>
                             </div>
                         </form>

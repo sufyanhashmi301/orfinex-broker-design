@@ -27,12 +27,17 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.settings.mail') }}" class="navItem {{ isActive('admin.settings.mail') }}">
+                {{ __('Email') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.security.all-sections') }}" class="navItem {{ isActive('admin.security*') }}">
                 {{ __('Security')}}
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem {{ isActive('admin.settings.plugin') }} {{ isActive('admin.settings.mail') }}">
+            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem {{ isActive('admin.settings.plugin') }}">
                 {{ __('Notification') }}
             </a>
         </li>

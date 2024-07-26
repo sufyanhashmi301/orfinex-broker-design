@@ -265,7 +265,7 @@ class WithdrawController extends Controller
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
         ],[
-            'target_id.required'=> __('Kindly select the forex account to withdraw'),
+            'target_id.required'=> __('Kindly select the account to withdraw'),
 //            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
         ]);
 
@@ -311,7 +311,7 @@ class WithdrawController extends Controller
             'login' => $targetId
         ]);
         if ($totalAmount->compareTo($balance) > 0) {
-            notify()->error(__('Insufficient Balance Your Forex Account'), 'Error');
+            notify()->error(__('Insufficient Balance Your Account'), 'Error');
             return redirect()->back();
         }
         $totalAmount = $totalAmount->toFloat();

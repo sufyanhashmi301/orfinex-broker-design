@@ -6,7 +6,7 @@
 >
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title">{{ __('Forex Account') }}</h4>
+            <h4 class="card-title">{{ __('Account') }}</h4>
         </div>
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

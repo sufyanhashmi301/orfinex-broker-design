@@ -2,7 +2,7 @@
 
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Forex Orders Log') }}
+    {{ __('Accounts Orders Log') }}
 @endsection
 @section('content')
     <div class="space-y-5">
@@ -123,7 +123,7 @@
         <!-- Transactions -->
         <div class="card all-feature-mobile mobile-transactions mb-3">
             <div class="card-header">
-                <h4 class="card-title">{{ __('Forex Orders Log') }}</h4>
+                <h4 class="card-title">{{ __('Accounts Orders Log') }}</h4>
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
                 <div class="filter mb-3">

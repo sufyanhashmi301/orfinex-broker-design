@@ -3,110 +3,170 @@
     {{ __('Schema Preview') }}
 @endsection
 @section('content')
-    <div class="card mx-auto max-w-2xl">
-        <div class="card-body p-6">
-            <form class="space-y-4" action="{{route('user.forex-account-create-now')}}" method="post" enctype="multipart/form-data">
-                @csrf
-                <div class="md:flex md:items-center">
-                    <div class="md:w-1/3">
-                        <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Account Type:') }}
-                        </label>
-                    </div>
-                    <div class="md:w-2/3">
-                        <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-schema" name="schema_id" required>
-                            @foreach($schemas as $plan)
-                                <option value="{{$plan->id}}"
-                                        @if($plan->id == $schema->id ) selected @endif>{{$plan->title}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+    <div class="card p-6 mb-5 space-y-3">
+        <h3 class="card-title">
+            {{ __('Choose Account Type') }}
+        </h3>
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4">
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active">
+                    Real
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                    Demo
+                </a>
+            </li>
+        </ul>
+        <p class="card-text">
+            {{ __('Risk-Free Account: Trade using virtual money') }}
+        </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 mb-5">
+        <div class="h-full">
+            <h4 class="text-xl text-slate-900 mb-3">
+                {{ __('Account Options') }}
+            </h4>
+            <div class="card h-auto">
+                <div class="card-body p-6">
+                    <form class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                {{ __('Select Account Type:') }}
+                            </label>
+                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-schema" name="schema_id" required>
+                                @foreach($schemas as $plan)
+                                    <option value="{{$plan->id}}"
+                                            @if($plan->id == $schema->id ) selected @endif>{{$plan->title}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <div class="flex items-center space-x-5 flex-wrap">
+                                <div class="form-switch ps-0" style="line-height:0;">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
+                                        <input type="checkbox" name="" value="1" class="sr-only peer">
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
+                                </div>
+                                <label class="form-label pt-0 !mb-0" style="width:auto">
+                                    {{ __('Request Swap-Free Option (Islamic Account)') }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                {{ __('Select Group:') }}
+                            </label>
+                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-group" name="group" required>
+                                @if($schema->real_swap_free)
+                                    <option value="real_swap_free">{{__('Real (Swap)')}}</option>
+                                @endif
+                                @if($schema->real_islamic)
+                                    <option value="real_islamic">{{__('Real (Islamic)')}}</option>
+                                @endif
+                                @if($schema->demo_swap_free)
+                                    <option value="demo_swap_free">{{__('Demo (Swap)')}}</option>
+                                @endif
+                                @if($schema->demo_islamic)
+                                    <option value="demo_islamic">{{__('Demo (Islamic)')}}</option>
+                                @endif
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                {{ __('Select Leverage:') }}
+                            </label>
+                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-leverage" name="leverage" required>
+                                @foreach(explode(',', $schema->leverage) as $leverage)
+                                    <option value="{{$leverage}}">{{$leverage}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                {{ __('Account Nickname:') }}
+                            </label>
+                            <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Nickname" aria-label="Nickname" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">
+                                {{ __('Main Password:') }}
+                            </label>
+                            <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Main Password" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
+                            <ul>
+                                <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
+                                    Use from 8 to 15 characters
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="letters-check-main">
+                                    Use both uppercase and lowercase letters
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="number-check-main">
+                                    At least one number
+                                </li>
+                                <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
+                                    At least one special character(!@#$%^&*(),-.?":{}|<>)
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account" disabled>
+                                {{ __('Create Account') }}
+                            </button>
+                            <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-outline-dark">
+                                {{ __('Cancel') }}
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                <div class="md:flex md:items-center">
-                    <div class="md:w-1/3">
-                        <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Group:') }}
-                        </label>
-                    </div>
-                    <div class="md:w-2/3">
-                        <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-group" name="group" required>
-                            @if($schema->real_swap_free)
-                                <option value="real_swap_free">{{__('Real (Swap)')}}</option>
-                            @endif
-                            @if($schema->real_islamic)
-                                <option value="real_islamic">{{__('Real (Islamic)')}}</option>
-                            @endif
-                            @if($schema->demo_swap_free)
-                                <option value="demo_swap_free">{{__('Demo (Swap)')}}</option>
-                            @endif
-                            @if($schema->demo_islamic)
-                                <option value="demo_islamic">{{__('Demo (Islamic)')}}</option>
-                            @endif
-                        </select>
-                    </div>
+            </div>
+        </div>
+        <div class="h-full">
+            <h4 class="text-xl text-slate-900 mb-3">
+                {{ __('Account Specifications and Features') }}
+            </h4>
+            <div class="card h-auto">
+                <div class="card-header noborder">
+                    <h3 class="card-title">
+                        {{ __('Standard') }}
+                    </h3>
                 </div>
-                <div class="md:flex md:items-center">
-                    <div class="md:w-1/3">
-                        <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Select Leverage:') }}
-                        </label>
-                    </div>
-                    <div class="md:w-2/3">
-                        <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-leverage" name="leverage" required>
-                            @foreach(explode(',', $schema->leverage) as $leverage)
-                                <option value="{{$leverage}}">{{$leverage}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="card-body p-6 pt-0">
+                    <ul class="space-y-5">
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                            <span>Spread from</span>
+                            <span>0.2</span>
+                        </li>
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                            <span>No Commission</span>
+                        </li>
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                            <span>Leverage</span>
+                            <span>100</span>
+                        </li>
+                        <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+                            <span>Initial Deposit Limit</span>
+                            <span>1000</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="md:flex md:items-center">
-                    <div class="md:w-1/3">
-                        <label class="block text-gray-500 mb-1 md:mb-0" for="">
-                            {{ __('Account Nickname:') }}
-                        </label>
-                    </div>
-                    <div class="md:w-2/3">
-                        <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Nickname" aria-label="Nickname" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
-                    </div>
-                </div>
-                <div class="md:flex">
-                    <div class="md:w-1/3">
-                        <label class="block text-gray-500 mb-1 md:mb-0 md:mt-3" for="">
-                            {{ __('Main Password:') }}
-                        </label>
-                    </div>
-                    <div class="md:w-2/3">
-                        <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Main Password" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
-                        <ul>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
-                                Use from 8 to 15 characters
-                            </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="letters-check-main">
-                                Use both uppercase and lowercase letters
-                            </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="number-check-main">
-                                At least one number
-                            </li>
-                            <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
-                                At least one special character(!@#$%^&*(),-.?":{}|<>)
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="text-right mt-4">
-                    <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account" disabled>
-                        {{ __('Create Account') }}
-                    </button>
-                    <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-outline-dark">
-                        {{ __('Cancel') }}
-                    </a>
-                </div>
-            </form>
+            </div>
+        </div>
+    </div>
+    <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+            <iconify-icon class="text-xl flex-0" icon="lucide:info"></iconify-icon>
+            <p class="flex-1 font-Inter">
+                Comprehensive details on our instruments and trading conditions can be found on the <a href="" class="text-warning-600">Customer Contract</a> page.
+            </p>
         </div>
     </div>
 @endsection
 @section('script')
     <script>
+
         $("#select-schema").on('change', function (e) {
             "use strict";
             e.preventDefault();

@@ -43,7 +43,7 @@ class SettingController extends Controller
      */
     public static function mailSetting()
     {
-        return view('backend.setting.mail');
+        return view('backend.setting.email_setting.mail');
     }
     public static function forexApiSetting()
     {
@@ -79,14 +79,24 @@ class SettingController extends Controller
 //         dd($request->all());
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
-//        dd($request->all(),$rules);
+    //    dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
+
+        $colorsKeys = ['primary_color', 'secondary_color'];
 
         try {
             $validSettings = array_keys($rules);
             foreach ($data as $key => $val) {
+                // dd($data, $key, $val, $validSettings);
 
                 if (in_array($key, $validSettings)) {
+
+                    if (in_array($key, $colorsKeys)) {
+
+                        $val = hexToRgb($val);
+
+                    }
+
                     if ($request->hasFile($key)) {
                         $oldImage = Setting::get($key, $section);
 

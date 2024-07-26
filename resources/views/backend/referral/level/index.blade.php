@@ -30,21 +30,23 @@
                             <form action="{{ route('admin.referral.level-status') }}" method="post" id="deposit-status">
                                 @csrf
                                 <input type="hidden" name="type" value="deposit_level">
-                                <div class="switch-field flex overflow-hidden m-0">
-                                    <input
-                                        type="radio"
-                                        id="deposit-1"
+                                <div class="form-switch ps-0" style="line-height: 0;">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="hidden" 
+                                        value="0" 
                                         name="status"
-                                        @checked(setting('deposit_level'))
                                     />
-                                    <label for="deposit-1" class="deposit-status toggle-switch">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="deposit-0"
-                                        name="status"
-                                        @checked(!setting('deposit_level'))
-                                    />
-                                    <label for="deposit-0" class="deposit-status toggle-switch">{{ __('DeActive') }}</label>
+                                    <label class="deposit-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
+                                        <input 
+                                            type="checkbox" 
+                                            name="status" 
+                                            value="1" 
+                                            class="sr-only peer"
+                                            @checked(setting('deposit_level'))
+                                        />
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </form>
                         </div>
@@ -109,21 +111,23 @@
                             <form action="{{ route('admin.referral.level-status') }}" method="post" id="MultiIB-status">
                                 @csrf
                                 <input type="hidden" name="type" value="multi_ib_level">
-                                <div class="switch-field flex overflow-hidden m-0">
-                                    <input
-                                        type="radio"
-                                        id="MultiIB-1"
+                                <div class="form-switch ps-0" style="line-height: 0;">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="hidden" 
+                                        value="0" 
                                         name="status"
-                                        @checked(setting('multi_ib_level','global',1))
                                     />
-                                    <label for="MultiIB-1" class="MultiIB-status toggle-switch">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="MultiIB-0"
-                                        name="status"
-                                        @checked(!setting('multi_ib_level','global',0))
-                                    />
-                                    <label for="MultiIB-0" class="MultiIB-status toggle-switch">{{ __('DeActive') }}</label>
+                                    <label class="MultiIB-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
+                                        <input 
+                                            type="checkbox" 
+                                            name="status" 
+                                            value="1" 
+                                            class="sr-only peer"
+                                            @checked(setting('multi_ib_level','global',1))
+                                        />
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </form>
                         </div>
@@ -184,21 +188,23 @@
                             <form action="{{ route('admin.referral.level-status') }}" method="post" id="profit-status">
                                 @csrf
                                 <input type="hidden" name="type" value="profit_level">
-                                <div class="switch-field flex overflow-hidden m-0">
-                                    <input
-                                        type="radio"
-                                        id="profit-1"
+                                <div class="form-switch ps-0" style="line-height: 0;">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="hidden" 
+                                        value="0" 
                                         name="status"
-                                        @checked(setting('profit_level'))
                                     />
-                                    <label for="profit-1" class="profit-status toggle-switch">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="profit-0"
-                                        name="status"
-                                        @checked(!setting('profit_level'))
-                                    />
-                                    <label for="profit-0" class="profit-status toggle-switch">{{ __('DeActive') }}</label>
+                                    <label class="profit-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
+                                        <input 
+                                            type="checkbox" 
+                                            name="status" 
+                                            value="1" 
+                                            class="sr-only peer"
+                                            @checked(setting('profit_level'))
+                                        />
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </form>
                         </div>
@@ -328,6 +334,7 @@
         $(".toggle-switch").click(function (message) {
             let className = $(this).attr('class');
             var idNames = className.split(' ')[0]; // Split the class names into an array
+            // alert(idNames);
             $("#"+idNames).submit();
         });
 

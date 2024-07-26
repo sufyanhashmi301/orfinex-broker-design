@@ -75,7 +75,7 @@
                                     {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                 </div>
                                 <div class="text-sm text-slate-600 font-light dark:text-slate-300">
-                                    {{ __('Total Forex Balance') }}
+                                    {{ __('Total Balance') }}
                                 </div>
                             </div>
                             <!-- end single -->
@@ -84,7 +84,7 @@
                                     {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
                                 </div>
                                 <div class="text-sm text-slate-600 font-light dark:text-slate-300">
-                                    {{ __('Total Forex Equity') }}
+                                    {{ __('Total Equity') }}
                                 </div>
                             </div>
                             <!-- end single -->
@@ -166,7 +166,7 @@
                                                 aria-controls="pills-transfer"
                                                 aria-selected="true"
                                             >
-                                                {{ __('Forex Accounts') }}
+                                                {{ __('Accounts') }}
                                             </a>
                                         </li>
                                     @endcan
@@ -408,7 +408,7 @@
                 });
             });
 
-            //forex account type selection
+            //account type selection
             $('#tradingAccount').on('change', function () {
                 var selectedOption = $(this).find('option:selected');
                 var selectedAccountType = selectedOption.data('type');

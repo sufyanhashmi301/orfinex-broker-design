@@ -87,7 +87,7 @@ class MigrateOldData extends Command
                 echo "Email not exist of Login: " . $oldUser->login . "\n";
             }
         }
-        $this->info('Data migration completed successfully with Total Forex Accounts ' . session('forex-count'));
+        $this->info('Data migration completed successfully with Total Accounts ' . session('forex-count'));
 
     }
 

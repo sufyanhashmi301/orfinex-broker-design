@@ -27,7 +27,7 @@
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Country:') }}</label>
                         {{-- <input type="text" class="form-control" value="{{$user->country}}" disabled> --}}
-                        <select class="select2 form-control w-full mt-2 py-2" name="country" placeholder="Countries" >
+                        <select class="select2 form-control w-full" name="country" placeholder="Countries" >
                             @foreach( getCountries() as $country)
                                 <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
                             @endforeach
@@ -48,7 +48,7 @@
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Gender:') }}</label>
-                        <select name="gender" id="kycTypeSelect" class="select2 form-control !text-lg w-full mt-2 py-2" required>
+                        <select name="gender" id="kycTypeSelect" class="select2 form-control w-full" required>
                             @foreach(['male','female','other'] as $gender)
                                 <option @if($user->gender == $gender) selected @endif value="{{$gender}}">{{$gender}}</option>
                             @endforeach

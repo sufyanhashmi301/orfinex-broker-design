@@ -72,8 +72,8 @@ class DepositController extends GatewayController
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [
-            'target_id.required' => __('Kindly select Forex Account for deposit'),
-            'target_id.exists' => 'The selected forex account does not exist or is not of type real.',
+            'target_id.required' => __('Kindly select Account for deposit'),
+            'target_id.exists' => 'The selected account does not exist or is not of type real.',
 
         ]);
 
@@ -175,8 +175,8 @@ class DepositController extends GatewayController
                 })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/','numeric','min:1','max:100000'],
         ], [
-            'target_id.required' => __('Kindly select Forex Account for deposit'),
-            'target_id.exists' => 'The selected forex account does not exist or is not of type demo.',
+            'target_id.required' => __('Kindly select Account for deposit'),
+            'target_id.exists' => 'The selected account does not exist or is not of type demo.',
         ]);
 
         $input = $request->all();

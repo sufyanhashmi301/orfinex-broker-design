@@ -177,7 +177,7 @@
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:contact-2"></iconify-icon>
-                            <span>{{ __('Forex Accounts') }}</span>
+                            <span>{{ __('Accounts') }}</span>
                         </span>
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
@@ -315,7 +315,7 @@
                             <iconify-icon class="nav-icon" icon="lucide:arrow-down-circle"></iconify-icon>
                             <span>{{ __('Deposits') }}</span>
                         </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>    
+                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
                     <ul class="sidebar-submenu">
                         @can('automatic-gateway-manage')
@@ -357,7 +357,7 @@
                             <iconify-icon class="nav-icon" icon="lucide:landmark"></iconify-icon>
                             <span>{{ __('Withdraw') }}</span>
                         </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>    
+                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
                     <ul class="sidebar-submenu">
                         @can('withdraw-method-manage')
@@ -410,7 +410,7 @@
             @endcan
 
         @endcanany
-        
+
         @can('email-template')
         <li class="{{ isActive(['admin.theme*']) }}">
             <a href="javascript:void(0);" class="navItem">
@@ -433,7 +433,7 @@
                     </a>
                 </li>
 
-                
+
             </ul>
         </li>
         @endcan
@@ -506,7 +506,7 @@
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
                             <span>{{ __('Settings') }}</span>
-                        </span>  
+                        </span>
                     </a>
                 </li>
             @endcanany

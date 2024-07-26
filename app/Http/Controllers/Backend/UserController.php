@@ -95,19 +95,14 @@ class UserController extends Controller
 
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                // ->editColumn('email', function ($request) {
-                //     return safe($request->email);
-                // })
-                // ->editColumn('username', function ($request) {
-                //     return safe($request->username);
-                // })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username','kyc', 'balance','equity','credit', 'status', 'action'])
+                ->rawColumns(['avatar', 'username','email','kyc', 'balance','equity','credit', 'status', 'action'])
                 ->make(true);
         }
 
@@ -133,21 +128,15 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('username', 'backend.user.include.__user')
+                ->editColumn('email', 'backend.user.include.__email')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-
-//                ->editColumn('total_profit', function ($request) {
-//                    return $request->total_profit . ' ' . setting('site_currency');
-//                })
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'balance','equity','credit','status', 'action'])
+                ->rawColumns(['avatar','username','email', 'kyc', 'balance','equity','credit','status', 'action'])
                 ->make(true);
         }
 
@@ -167,17 +156,15 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc','balance','equity','credit', 'status', 'action'])
+                ->rawColumns(['avatar','username','email', 'kyc','balance','equity','credit', 'status', 'action'])
                 ->make(true);
         }
 
@@ -197,17 +184,15 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
                 ->make(true);
         }
 
@@ -228,17 +213,15 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
                 ->make(true);
         }
 

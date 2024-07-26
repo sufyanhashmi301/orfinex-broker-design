@@ -50,7 +50,7 @@
                                 <div class="input-area relative">
                                     <label for="" class="form-label">{{ __('Email:') }}</label>
                                     <input type="email" class="form-control" name="email"
-                                           value="{{ Auth::user()->email }}" required="" readonly >
+                                           value="{{ Auth::user()->email }}" required="" @if(Auth::user()->id == 1) readonly @endif>
                                 </div>
                                 <div class="input-area relative">
                                     <label for="" class="form-label">{{ __('Phone:') }}</label>

@@ -32,7 +32,7 @@
                                     name="title"
                                     value="{{$schema->title}}"
                                     class="form-control"
-                                    placeholder="Forex Account Title"
+                                    placeholder="Account Title"
                                     required
                                 />
                             </div>

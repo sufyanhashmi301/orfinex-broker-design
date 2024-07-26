@@ -31,13 +31,7 @@
                 </a>
             </li>
         @endcanany
-        @can('kyc-form-manage')
-            <li class="nav-item">
-                <a href="{{ route('admin.kyc-form.index') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.kyc-form*') }}">
-                    {{ __('KYC Form') }}
-                </a>
-            </li>
-        @endcan
+
         <li class="nav-item">
             <a href="{{ route('admin.risk-profile-tag.index') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.risk-profile-tag*') }}">
                 {{ __('Risk Profile Tag Form') }}

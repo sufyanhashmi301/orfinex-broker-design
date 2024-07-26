@@ -31,7 +31,16 @@ class KYCLevelSettingsSeeder extends Seeder
                 '1' => ['name' => 'Phone Number', 'type' => 'text', 'validation' => 'required']
             ])],
         ];
-
+        $defaultValuesLevel2 = [
+            ['name' => 'Passport', 'fields' => json_encode([
+                '1' => ['name' => 'Passport front side', 'type' => 'file', 'validation' => 'required'],
+                '2' => ['name' => 'Passport back side', 'type' => 'file', 'validation' => 'required']
+            ])],
+            ['name' => 'ID card', 'fields' => json_encode([
+                '1' => ['name' => 'ID card front side', 'type' => 'file', 'validation' => 'required'],
+                '2' => ['name' => 'ID card back side', 'type' => 'file', 'validation' => 'required']
+            ])],
+        ];
         foreach ($defaultValuesLevel1 as $defaultValue) {
             $kyc = Kyc::updateOrCreate(
                 [
@@ -61,6 +70,36 @@ class KYCLevelSettingsSeeder extends Seeder
                 ]
             );
         }
+        foreach ($defaultValuesLevel2 as $defaultValueLevel2) {
+            $kycLevel2 = Kyc::updateOrCreate(
+                [
+                    'kyc_level_id' => $kycLevelIdLevel2,
+                    'name' => $defaultValueLevel2['name'],
+                ],
+                [
+                    'status' => true,
+                    'fields' => $defaultValueLevel2['fields'],
+                    
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+
+            Kyclevelsetting::updateOrCreate(
+                [
+                    'kyc_level_id' => $kycLevelIdLevel2,
+                    'title' => $defaultValueLevel2['name'],
+                ],
+                [
+                    'unique_code' => 'manual',
+                    'status' => true,
+                    'kyc_id' => $kycLevel2->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+        
 
         $kycLevels = Kyclevel::pluck('id')->toArray();
         Kyclevelsetting::updateOrCreate(
@@ -70,12 +109,12 @@ class KYCLevelSettingsSeeder extends Seeder
             ],
             [
                 'unique_code' => 'samsub',
-                'status' => true,
+                'status' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
         );
             
        
-    }
+}
 }

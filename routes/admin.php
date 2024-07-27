@@ -102,7 +102,7 @@ Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'cont
 });
 Route::resource('kyclevels', KYCLevelsController::class);
 Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
-    Route::post('kyclevel/update/{id}', 'kycLevel1Update')->name('update');
+    Route::post('kyclevel/updatelevel/{id}', 'kycLevel1Update')->name('level1.update');
     Route::post('kyclevelstatus/update/{id}', 'kycLevel1StatusUpdate')->name('level1status.update');
     //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 

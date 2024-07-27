@@ -94,13 +94,7 @@
                             </a>
                         </li>
                     @endcanany
-                    @can('kyc-form-manage')
-                        <li>
-                            <a href="{{ route('admin.kyc-form.index') }}" class="{{ isActive('admin.kyc-form*') }}">
-                                {{ __('KYC Form') }}
-                            </a>
-                        </li>
-                    @endcan
+
                     <li>
                         <a href="{{ route('admin.kyclevels.index') }}" class="{{ isActive('admin.kyclevels*') }}">
                             {{ __('KYC Levels') }}

@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('kyclevelsettings', function (Blueprint $table) {
-            $table->foreignId('kyc_id')->nullable()->constrained('kycs');
+        Schema::create('kyclevels', function (Blueprint $table) {
+            $table->id();
+            $table->string('name',50);
+            $table->string('slug')->unique();
+            $table->boolean('status')->default(false);
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('kyclevelsettings', function (Blueprint $table) {
-            $table->dropColumn('kyc_id');
-        });
+        Schema::dropIfExists('kyclevels');
     }
 };

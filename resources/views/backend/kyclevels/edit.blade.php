@@ -18,7 +18,7 @@
     
     <div class="card">
         <div class="card-body p-6">
-            <form action="{{ route('admin.kyclevels.update', $kycLevel->id) }}" method="post" class="space-y-4">
+            <form action="{{ route('admin.kyclevels.level1.update', $kycLevel->id) }}" method="post" class="space-y-4">
                 @csrf
                 <div class="input-area">
                     <label for="name" class="form-label">{{ __('Name') }}</label>

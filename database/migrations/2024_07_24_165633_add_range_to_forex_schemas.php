@@ -31,6 +31,7 @@ return new class extends Migration
         Schema::table('forex_schemas', function (Blueprint $table) {
             $table->dropColumn('start_range');
             $table->dropColumn('end_range');
+            $table->dropColumn('tag');
 
         });
     }

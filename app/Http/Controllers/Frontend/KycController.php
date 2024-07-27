@@ -24,7 +24,7 @@ class KycController extends Controller
     public function kyc()
     {
         $kycSettings =kyclevel::with('kyc')->get();
-        $level2Settings = DB::table('kyclevelsettings')
+        $level2Settings = DB::table('kyc_level_settings')
         ->where('kyc_level_id', 2)
         ->whereIn('unique_code', ['manual', 'samsub'])
         ->get();
@@ -135,7 +135,7 @@ class KycController extends Controller
             'kyc' => KYCStatus::Pending,
         ]);
         $kycSettingsId = Kyclevelsetting::where('kyc_id',$input['kyc_id'])->first();
-        DB::table('userkycs')->insert([
+        DB::table('user_kycs')->insert([
             'user_id' => $user->id,
             'kyclevel_id' => $kyc->kyc_level_id, 
             'kyclevelsetting_id' => $kycSettingsId->id, 
@@ -211,7 +211,7 @@ class KycController extends Controller
             'kyc_level3' => KYCStatus::Pending,
         ]);
         $kycSettingsId = Kyclevelsetting::where('kyc_id',$input['kyc_id'])->first();
-        DB::table('userkycs')->insert([
+        DB::table('user_kycs')->insert([
             'user_id' => $user->id,
             'kyclevel_id' => $kyc->kyc_level_id, 
             'kyclevelsetting_id' => $kycSettingsId->id, 

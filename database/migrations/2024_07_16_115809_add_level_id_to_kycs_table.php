@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('kycs', function (Blueprint $table) {
-            $table->foreignId('kyc_level_id')->nullable()->constrained('kyclevels');
+            $table->foreignId('kyc_level_id')->after('id')->nullable()->constrained('kyc_levels');
         });
     }
 

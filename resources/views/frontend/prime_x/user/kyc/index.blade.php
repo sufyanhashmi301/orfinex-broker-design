@@ -14,73 +14,75 @@
             </div>
             <div class="max-w-5xl mx-auto mb-6">
                 <ul class="relative w-full m-0 flex list-none justify-between overflow-hidden p-0 transition-[height] duration-200 ease-in-out">
-                    <!--First item-->
-                    @php
-                        $activeKycLevels = $kycSettings->where('status', 1);
-                        $activeCount = $activeKycLevels->count();
-                    @endphp
-                @if($activeCount == 3)
-                    @foreach($kycSettings as $kycLevel)
-                        @if($kycLevel->status == 1)
-                            <li class="w-[4.5rem] flex-auto">
-                            <div class="flex items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-3px after:w-full after:flex-1 
-                                @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1)|| ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
-                                    after:bg-primary 
-                                @else 
-                                    after:bg-[#e0e0e0] 
-                                @endif 
-                                after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
-                                    <div>
-                                        @if($kycLevel->slug == 'level-1' && $user->email_verified_at != null || $kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1 || $kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1)
-                                            <svg width="28" height="27" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
-                                            </svg>
-                                        @else
-                                            <svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
-                                                <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000" stroke-width="4"/>
-                                                <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
-                                            </svg>
-                                        @endif
+                   @if(isset($kycSettings))
+                        @php
+                            $activeKycLevels = $kycSettings->where('status', 1);
+                            $activeCount = $activeKycLevels->count();
+                        @endphp
+                        @if($activeCount == 3)
+                            @foreach($kycSettings as $kycLevel)
+                                @if($kycLevel->status == 1)
+                                    <li class="w-[4.5rem] flex-auto">
+                                    <div class="flex items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-3px after:w-full after:flex-1 
+                                        @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1)|| ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
+                                            after:bg-primary 
+                                        @else 
+                                            after:bg-[#e0e0e0] 
+                                        @endif 
+                                        after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                                            <div>
+                                                @if($kycLevel->slug == 'level-1' && $user->email_verified_at != null || $kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1 || $kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1)
+                                                    <svg width="28" height="27" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
+                                                    </svg>
+                                                @else
+                                                    <svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
+                                                        <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000" stroke-width="4"/>
+                                                        <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                                    </svg>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endif
+                            @endforeach
+                        @else
+                            @foreach($activeKycLevels as $index => $kycLevel)
+                                <li class="w-[4.5rem] flex-auto">
+                                    <div class="flex items-center pl-2 leading-[1.3rem] no-underline 
+                                        @if($index < $activeCount - 1) after:ml-2 after:h-3px @endif 
+                                        after:w-full after:flex-1 
+                                        @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1) || ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
+                                            after:bg-primary 
+                                        @else 
+                                            after:bg-[#e0e0e0] 
+                                        @endif 
+                                        after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                                        <div>
+                                            @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1) || ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
+                                                <svg width="28" height="27" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
+                                                </svg>
+                                            @else
+                                                <svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
+                                                    <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000" stroke-width="4"/>
+                                                    <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                                </svg>
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
+                            @endforeach
                         @endif
-                    @endforeach
-                    @else
-                    @foreach($activeKycLevels as $index => $kycLevel)
-                        <li class="w-[4.5rem] flex-auto">
-                            <div class="flex items-center pl-2 leading-[1.3rem] no-underline 
-                                @if($index < $activeCount - 1) after:ml-2 after:h-3px @endif 
-                                after:w-full after:flex-1 
-                                @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1) || ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
-                                    after:bg-primary 
-                                @else 
-                                    after:bg-[#e0e0e0] 
-                                @endif 
-                                after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
-                                <div>
-                                    @if(($kycLevel->slug == 'level-1' && $user->email_verified_at != null) || ($kycLevel->slug == 'level-2' && $user->is_level_2_completed == 1) || ($kycLevel->slug == 'level-3' && $user->is_level_3_completed == 1))
-                                        <svg width="28" height="27" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z" fill="white"/>
-                                        </svg>
-                                    @else
-                                        <svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
-                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000" stroke-width="4"/>
-                                            <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
-                                        </svg>
-                                    @endif
-                                </div>
-                            </div>
-                        </li>
-                    @endforeach
-                    @endif
+                        @endif
                 </ul>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            @if(isset($kycSettings))
             @foreach($kycSettings as $kycLevel)
                 @if($kycLevel->slug == 'level-1' && $kycLevel->status==1 )
                     @php
@@ -240,6 +242,8 @@
                 @endif
             @endif
         @endforeach
+        @endif
+        @if(isset($kycLevel))
         @if($kycLevel->slug == 'level-3' && $kycLevel->status==1)    
                 <div class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
                     <span class="badge bg-primary text-slate-900 capitalize">Semi-Automated</span>
@@ -294,6 +298,7 @@
                     <a href="{{ route('user.kyc.level3') }}" class="btn btn-dark block-btn mt-auto">Go to Level 3 Submission</a>
                     @endif
                 </div>
+                @endif
                 @endif
             </div>
         </div>

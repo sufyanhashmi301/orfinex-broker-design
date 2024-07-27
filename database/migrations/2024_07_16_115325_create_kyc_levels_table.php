@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kyclevels', function (Blueprint $table) {
+        Schema::create('kyc_levels', function (Blueprint $table) {
             $table->id();
             $table->string('name',50);
             $table->string('slug')->unique();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kyclevels');
+        Schema::dropIfExists('kyc_levels');
     }
 };

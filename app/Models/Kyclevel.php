@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kyclevel extends Model
 {
     use HasFactory;
-
+    protected $table='kyc_levels';
     public function kyclevelsettings()
     {
         return $this->hasMany(Kyclevelsetting::class,'kyc_level_id');

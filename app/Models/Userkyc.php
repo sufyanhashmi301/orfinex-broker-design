@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Userkyc extends Model
 {
     use HasFactory;
+    protected $table='user_kycs';
     protected $guarded =[];
 }

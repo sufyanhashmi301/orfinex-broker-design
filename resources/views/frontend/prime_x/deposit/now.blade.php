@@ -1,6 +1,6 @@
 @extends('frontend::deposit.index')
 @section('deposit_content')
-    <div class="progress-steps-form">
+    <div class="progress-steps-form mb-6">
         <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
@@ -9,8 +9,8 @@
                         {{ __('Enter your deposit details.') }}
                     </h4>
                     <div class="card">
-                        <div class="card-body p-6">
-                            <div class="input-area relative mb-5">
+                        <div class="card-body p-6 space-y-5">
+                            <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>
                                 <div class="input-group select2-lg">
                                     <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
@@ -118,6 +118,24 @@
                 </div>
             </div>
         </form>
+    </div>
+    
+    <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+        <div class="accordion-item">
+            <h2 class="accordion-header text-lg" id="flush-headingStaySafeOnline">
+                <button class="flex items-center w-full accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-staySafeOnline" aria-expanded="false" aria-controls="flush-staySafeOnline">
+                    <iconify-icon class="text-xl mr-2" icon="lucide:info"></iconify-icon>
+                    {{ __('Stay safe online') }}
+                    <iconify-icon class="chevron-icon transition-transform duration-200 ease-in-out ml-auto" icon="lucide:chevron-down"></iconify-icon>
+                </button>
+            </h2>
+            <div id="flush-staySafeOnline" class="accordion-collapse collapse" aria-labelledby="flush-headingStaySafeOnline" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body p-3 pb-0">
+                    {{ __('Protect your security by never sharing your personal or credit card information over the phone, by email, or chat.') }}
+                    <a href="" class="text-warning-600">Learn more</a>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')

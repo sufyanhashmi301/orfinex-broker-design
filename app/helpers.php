@@ -874,3 +874,32 @@ if (!function_exists('getRiskProfileTag')) {
     }
 }
 
+if(!function_exists('hexToRgb')) {
+    function hexToRgb($hex) {
+        // Remove the hash at the start if it's there
+        $hex = ltrim($hex, '#');
+
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+
+        // Check if the length is valid (6 characters)
+        if (strlen($hex) !== 6) {
+            return response()->json(['error' => 'Invalid hexadecimal color'], 400);
+        }
+
+        // Convert hex to RGB
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        return $rgb = [
+            'r' => $r,
+            'g' => $g,
+            'b' => $b
+        ];
+        
+    }
+}
+

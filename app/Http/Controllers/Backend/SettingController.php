@@ -45,9 +45,15 @@ class SettingController extends Controller
     {
         return view('backend.setting.email_setting.mail');
     }
+
     public static function forexApiSetting()
     {
         return view('backend.setting.forex-api');
+    }
+
+    public static function platformApiSetting()
+    {
+        return view('backend.setting.platform_api.metatrader');
     }
 
     public static function mailConnectionTest(Request $request)

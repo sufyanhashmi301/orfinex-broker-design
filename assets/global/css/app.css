@@ -5495,6 +5495,9 @@ textarea.form-control.is-invalid{
 .justify-items-end{
   justify-items: end;
 }
+.gap-px {
+  gap: 1px;
+}
 .gap-6{
   gap: 1.5rem;
 }
@@ -16345,6 +16348,9 @@ ul.custom-list ul li{
   .xl\:col-span-8{
     grid-column: span 8 / span 8;
   }
+  .xl\:col-span-9{
+    grid-column: span 9 / span 9;
+  }
   .xl\:col-span-4{
     grid-column: span 4 / span 4;
   }
@@ -17284,4 +17290,9 @@ ul.custom-list ul li{
   100% {
     transform: rotate(360deg);
   }
+}
+
+.accordion-button.collapsed .chevron-icon {
+  --tw-rotate: -180deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }

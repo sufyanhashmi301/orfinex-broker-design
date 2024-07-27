@@ -41,6 +41,7 @@ use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\KYCLevelsController;
 use App\Http\Controllers\Backend\SecurityController;
+use App\Http\Controllers\Backend\CountryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -267,6 +268,8 @@ Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => Setti
 
     Route::get('slack', 'slackSetting')->name('slack');
 
+    Route::get('platform-api', 'platformApiSetting')->name('platform-api');
+
 });
 
 //===============================  Security Settings ==================================
@@ -369,3 +372,5 @@ Route::get('/bonus/create', function () {
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
 Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+
+Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');

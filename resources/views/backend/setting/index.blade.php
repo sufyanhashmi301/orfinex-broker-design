@@ -32,6 +32,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.settings.platform-api') }}" class="navItem {{ isActive('admin.settings.platform-api') }}">
+                {{ __('Platform API') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.security.all-sections') }}" class="navItem {{ isActive('admin.security*') }}">
                 {{ __('Security')}}
             </a>

@@ -6,9 +6,6 @@
 >
     @can('customer-basic-manage')
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">{{ __('Basic Info') }}</h3>
-        </div>
         <div class="card-body p-5">
             <form action="{{route('admin.user.update',$user->id)}}" method="post">
                 @method('PUT')

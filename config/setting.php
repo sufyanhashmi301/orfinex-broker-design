@@ -53,6 +53,38 @@ return [
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_color', // unique name for field
+                'label' => 'Primary Color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'secondary_color', // unique name for field
+                'label' => 'Secondary Color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'sidebar_active_menu_bg', // unique name for field
+                'label' => 'Sidebar active menu bg', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'sidebar_active_menu_color', // unique name for field
+                'label' => 'Sidebar active menu Color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
         ],
     ],
 
@@ -1086,14 +1118,6 @@ return [
                 'value' => 1, // default value if you want
             ],
             [
-                'type' => 'textarea', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'gdpr_text', // unique name for field
-                'label' => 'GDPR Text', // you know what label it is
-                'rules' => 'required|max:500', // validation rule of laravel
-                'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
-            ],
-            [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'gdpr_button_label', // unique name for field
@@ -1108,6 +1132,14 @@ return [
                 'label' => 'Button URL', // you know what label it is
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => '/privacy-policy', // default value if you want
+            ],
+            [
+                'type' => 'textarea', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'gdpr_text', // unique name for field
+                'label' => 'GDPR Text', // you know what label it is
+                'rules' => 'required|max:500', // validation rule of laravel
+                'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
             ],
         ],
     ],

@@ -17,6 +17,13 @@
     <link rel="stylesheet" href="{{ asset('global/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ asset('global/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/css/style.css') }}">
+    
+    <style>
+        .sidebar-menu .navItem.active, .dark .sidebar-menu .navItem.active {
+            background-color: {{ setting('primary_color', 'global') }};
+            color: {{ setting('sidebar_active_menu_color', 'global') }};
+        }
+    </style>
     @yield('style')
 
     <title>{{ setting('site_title', 'global') }} - @yield('title')</title>

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::table('forex_schemas', function (Blueprint $table) {
             $table->bigInteger('start_range')->nullable()->after('is_bonus');
             $table->bigInteger('end_range')->nullable()->after('start_range');
+            $table->text('tag')->nullable()->after('country');
 
         });
     }

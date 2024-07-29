@@ -59,8 +59,10 @@ class ForexSchema extends Model
 		'first_min_deposit',
         'account_limit',
 		'real_swap_free',
+		'is_real_islamic',
 		'real_islamic',
 		'demo_swap_free',
+		'is_demo_islamic',
 		'demo_islamic',
 		'is_withdraw',
 		'is_ib_partner',
@@ -71,6 +73,7 @@ class ForexSchema extends Model
 		'end_range',
 		'status',
 		'country',
+		'tags',
 		'spread',
 		'commission',
 		'priority'

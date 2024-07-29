@@ -27,7 +27,7 @@
                                         @include('frontend::user.include.__kyc_info')
                                     </div>
                                     <div class="md:hidden block">
-                                        @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')
+{{--                                        @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}
                                     </div>
                                 @endif
                                 <!--Page Content-->
@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
         <!-- Show in 575px in Mobile Screen -->

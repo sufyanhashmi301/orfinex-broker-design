@@ -7,14 +7,14 @@
         <h3 class="card-title">
             {{ __('Choose Account Type') }}
         </h3>
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="account-type-tabs">
             <li class="nav-item">
-                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active" data-type="real" id="real-tab">
                     Real
                 </a>
             </li>
             <li class="nav-item">
-                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300" data-type="demo" id="demo-tab">
                     Demo
                 </a>
             </li>
@@ -32,6 +32,7 @@
                 <div class="card-body p-6">
                     <form class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="account_type" id="account-type" value="real">
                         <div class="input-area">
                             <label class="form-label" for="">
                                 {{ __('Select Account Type:') }}
@@ -39,7 +40,11 @@
                             <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-schema" name="schema_id" required>
                                 @foreach($schemas as $plan)
                                     <option value="{{$plan->id}}"
-                                            @if($plan->id == $schema->id ) selected @endif>{{$plan->title}}</option>
+                                            @if($plan->id == $schema->id ) selected @endif
+                                            data-is-real-islamic="{{$plan->is_real_islamic}}"
+                                            data-is-demo-islamic="{{$plan->is_demo_islamic}}">
+                                        {{$plan->title}}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,7 +52,7 @@
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                        <input type="checkbox" name="" value="1" class="sr-only peer">
+                                        <input type="checkbox" name="is_islamic" value="1" class="sr-only peer"  id="islamic-checkbox">
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
@@ -55,25 +60,6 @@
                                     {{ __('Request Swap-Free Option (Islamic Account)') }}
                                 </label>
                             </div>
-                        </div>
-                        <div class="input-area">
-                            <label class="form-label" for="">
-                                {{ __('Select Group:') }}
-                            </label>
-                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-group" name="group" required>
-                                @if($schema->real_swap_free)
-                                    <option value="real_swap_free">{{__('Real (Swap)')}}</option>
-                                @endif
-                                @if($schema->real_islamic)
-                                    <option value="real_islamic">{{__('Real (Islamic)')}}</option>
-                                @endif
-                                @if($schema->demo_swap_free)
-                                    <option value="demo_swap_free">{{__('Demo (Swap)')}}</option>
-                                @endif
-                                @if($schema->demo_islamic)
-                                    <option value="demo_islamic">{{__('Demo (Islamic)')}}</option>
-                                @endif
-                            </select>
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">
@@ -144,11 +130,11 @@
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>Leverage</span>
-                            <span>100</span>
+                            <span></span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>Initial Deposit Limit</span>
-                            <span>1000</span>
+                            <span id="">1000</span>
                         </li>
                     </ul>
                 </div>
@@ -166,103 +152,117 @@
 @endsection
 @section('script')
     <script>
-
-        $("#select-schema").on('change', function (e) {
-            "use strict";
-            e.preventDefault();
-            var id = $(this).val();
-
-            var invest_amount = $("#enter-amount");
-            invest_amount.val('');
-            invest_amount.attr('readonly', false);
-
-            var url = '{{ route("user.schema.select", ":id") }}';
-            url = url.replace(':id', id);
-
-            $.ajax({
-                url: url, success: function (result) {
-                    $('#first-min-amount').text(result.first_min_deposit);
-                    $('#select-leverage').html(result.leverage);
-                    $('#select-group').html(result.group);
-                    // $('#return-interest').html(result.return_interest);
-                    // $('#number-period').html(result.number_period);
-                    // $('#capital_back').html(result.capital_back);
-
-                    // if (result.invest_amount > 0) {
-                    //     invest_amount.val(result.invest_amount);
-                    //     invest_amount.attr('readonly', true);
-                    // }
-
+        $(document).ready(function () {
+            // Function to update the disabled state of the Islamic account checkbox
+            function updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic) {
+                var isIslamic = false;
+                if (accountType === 'real') {
+                    isIslamic = isRealIslamic == 1;
+                } else if (accountType === 'demo') {
+                    isIslamic = isDemoIslamic == 1;
                 }
-            });
-        });
-
-
-        $("#selectWallet").on('change', function (e) {
-            "use strict";
-            $('.gatewaySelect').empty();
-            $('.manual-row').empty();
-            var wallet = $(this).val();
-            if (wallet === 'gateway') {
-                $.get('{{ route('gateway.list') }}', function (data) {
-                    $('.gatewaySelect').append(data)
-                    $('select').niceSelect();
-
-                });
+                $('#islamic-checkbox').prop('disabled', !isIslamic);
             }
 
-        })
-        // $("#create-forex-account").on('click', function (e) {
-        //     e.preventDefault();
-        //     var password = $("#enter-main-password").val();
-        //    var isValid =  checkPassword(password);
-        //    if(isValid){
-        //        $(this).submit();
-        //    }
-        // })
-        $('body').on('change', '#gatewaySelect', function (e) {
-            "use strict"
-            e.preventDefault();
+            // Handle account type tab click
+            $('#account-type-tabs .nav-link').on('click', function () {
+                $('#account-type-tabs .nav-link').removeClass('active');
+                $(this).addClass('active');
+                var accountType = $(this).data('type');
+                $('#account-type').val(accountType);
 
-            $('.manual-row').empty();
+                // Reset the checkbox to unchecked
+                $('#islamic-checkbox').prop('checked', false);
 
-            var code = $(this).val()
-
-            var url = '{{ route("user.deposit.gateway",":code") }}';
-            url = url.replace(':code', code);
-            $.get(url, function (data) {
-
-                if (data.credentials !== undefined) {
-
-                    console.log(data.credentials);
-
-                    $('.manual-row').append(data.credentials)
-                    imagePreview()
-                }
-
+                // Update the disabled state of the Islamic account checkbox
+                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
+                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
+                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
             });
 
-            $('#amount').on('keyup', function (e) {
+            // Handle schema change
+            $("#select-schema").on('change', function (e) {
+                "use strict";
+                e.preventDefault();
+                var id = $(this).val();
+
+                var invest_amount = $("#enter-amount");
+                invest_amount.val('');
+                invest_amount.attr('readonly', false);
+
+                var url = '{{ route("user.schema.select", ":id") }}';
+                url = url.replace(':id', id);
+
+                $.ajax({
+                    url: url,
+                    success: function (result) {
+                        $('#first-min-amount').text(result.first_min_deposit);
+                        $('#select-leverage').html(result.leverage);
+                        $('#select-group').html(result.group);
+
+                        // Update the data attributes for the selected schema
+                        $('#select-schema').data('is-real-islamic', result.is_real_islamic);
+                        $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
+
+                        // Reset the checkbox to unchecked and update its state based on the selected account type
+                        $('#islamic-checkbox').prop('checked', false);
+                        updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
+                    }
+                });
+            });
+
+            // Initial update of the checkbox state based on initial schema and account type
+            var initialAccountType = $('#account-type').val();
+            var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
+            var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
+            updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
+
+            $("#selectWallet").on('change', function (e) {
+                "use strict";
+                $('.gatewaySelect').empty();
+                $('.manual-row').empty();
+                var wallet = $(this).val();
+                if (wallet === 'gateway') {
+                    $.get('{{ route('gateway.list') }}', function (data) {
+                        $('.gatewaySelect').append(data)
+                        $('select').niceSelect();
+                    });
+                }
+            });
+
+            $('body').on('change', '#gatewaySelect', function (e) {
                 "use strict"
-                var amount = $(this).val()
-                $('.amount').text((Number(amount)))
-                $('.currency').text(currency)
-                var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
-                $('.charge2').text(charge + ' ' + currency)
+                e.preventDefault();
 
-                $('.total').text((Number(amount) + Number(charge)) + ' ' + currency)
-            })
+                $('.manual-row').empty();
 
+                var code = $(this).val();
 
+                var url = '{{ route("user.deposit.gateway",":code") }}';
+                url = url.replace(':code', code);
+                $.get(url, function (data) {
+                    if (data.credentials !== undefined) {
+                        console.log(data.credentials);
+                        $('.manual-row').append(data.credentials)
+                        imagePreview();
+                    }
+                });
+
+                $('#amount').on('keyup', function (e) {
+                    "use strict";
+                    var amount = $(this).val();
+                    $('.amount').text((Number(amount)));
+                    $('.currency').text(currency);
+                    var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge;
+                    $('.charge2').text(charge + ' ' + currency);
+                    $('.total').text((Number(amount) + Number(charge)) + ' ' + currency);
+                });
+            });
+
+            $('#enter-main-password').on('input', function () {
+                var password = $(this).val();
+                checkPassword(password, 'main', 'create-forex-account');
+            });
         });
-
-
-        $('#enter-main-password').on('input', function () {
-            var password = $(this).val();
-            checkPassword(password,'main','create-forex-account');
-
-        });
-
-
     </script>
 @endsection

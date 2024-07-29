@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('kycs', function (Blueprint $table) {
-            $table->foreignId('kyc_level_id')->after('id')->nullable()->constrained('kyc_levels');
+            $table->foreignId('kyc_level_id')
+                ->after('id')->nullable()->constrained('kyc_levels');
         });
     }
 
@@ -26,6 +27,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('kycs', function (Blueprint $table) {
+            $table->dropForeign(['kyc_level_id']);
             $table->dropColumn('kyc_level_id');
         });
     }

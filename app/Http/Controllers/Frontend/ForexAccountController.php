@@ -44,20 +44,41 @@ class ForexAccountController extends GatewayController
     public function forexAccountCreateNow(Request $request)
     {
 
+//        dd($request->all());
         $validator = Validator::make($request->all(), [
             'schema_id' => 'required',
             'main_password' => ['required',
                 'min:8',     // Minimum length requirement
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
             ],
-            'group' => 'required',
+            'account_type' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!in_array($value, ['real', 'demo'])) {
+                        $fail('The ' . $attribute . ' must be either real or demo.');
+                    }
+                },
+            ],
+            'is_islamic' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $schema = ForexSchema::find($request->schema_id);
+                    if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
+                        $fail('The selected schema does not support Islamic account for Real account type.');
+                    }
+                    if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
+                        $fail('The selected schema does not support Islamic account for Demo account type.');
+                    }
+
+                },
+            ],
+//            'group' => 'required',
             'leverage' => 'required',
             'account_name' => 'required',
         ], [
             'main_password.required' => __('The main password field is required.'),
             'main_password.min' => __('The main password must be at least 8 characters long.'),
             'main_password.regex' => __('The main password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'),
-
+            'account_type.required' => 'The account type is required.',
             'leverage.not_regex' => __('Kindly select a valid leverage.'),
         ]);
 
@@ -69,11 +90,7 @@ class ForexAccountController extends GatewayController
         $input = $request->all();
         $user = Auth::user();
         $schema = ForexSchema::find($input['schema_id']);
-        if($request->group == 'real_swap_free'  || $request->group == 'real_islamic'){
-            $accountType = 'real';
-        }else{
-            $accountType = 'demo';
-        }
+        $accountType = $request->account_type ;
 //        dd(ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count(),$accountType,$schema->account_limit);
         if (ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count() >= $schema->account_limit) {
             $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.',['title'=> $schema->title]);
@@ -92,7 +109,12 @@ class ForexAccountController extends GatewayController
         }else{
             $login = $schema->start_range;
         }
-        $group = $schema[$request->group];
+        $group = '';
+        if ($request->account_type === 'real') {
+            $group = $request->is_islamic ? $schema->real_islamic : $schema->real_swap_free;
+        } elseif ($request->account_type === 'demo') {
+            $group = $request->is_islamic ? $schema->demo_islamic : $schema->demo_swap_free;
+        }
 
         $server = config('forextrading.server');
         $password = $request->main_password;
@@ -121,7 +143,6 @@ class ForexAccountController extends GatewayController
             "masterPassword" => $password,
             "investorPassword" => 'SNNH@2024@bol'
         ];
-//dd($request->group);
         if($accountType == 'real'){
             $response = $this->forexApiService->createUser($data);
         }else{

@@ -28,7 +28,7 @@
                                     name="icon"
                                     id="schema-icon"
                                     accept=".gif, .jpg, .png"
-                                    required
+
                                 />
                                 <label for="schema-icon" class="file-ok" style="background-image: url({{ asset($schema->icon) }})">
                                     <img
@@ -47,7 +47,7 @@
                 <div class="card h-full">
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
+                            <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
                             <select name="country[]" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
                                 @foreach( getCountries() as $country)
                                     <option value="{{$country['name']}}"  @selected( null != $schema->country && in_array($country['name'],json_decode($schema->country,true)))>{{$country['name']}}</option>
@@ -61,10 +61,11 @@
                             <label class="form-label" for="">{{ __('Choose the tags where you would like this account type to be shown:') }}</label>
                             <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
                                 @foreach( getRiskProfileTag() as $tag)
-                                    <option value="{{$tag->name}}"  @selected( null != $tag->name && in_array($tag->name,json_decode($schema->country,true)))>{{$tag->name}}  {{__('(tag)')}}</option>
+                                    <option value="{{$tag->name}}"  @selected( null != $tag->name && in_array($tag->name, json_decode($schema->tags ?? '[]', true)))>{{$tag->name}} </option>
                                 @endforeach
                             </select>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -232,12 +233,12 @@
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                        <input 
+                                        <input
                                             type="checkbox"
-                                            name=""
+                                            name="is_real_islamic"
                                             value="1"
                                             class="sr-only peer"
-                                            @if(!$schema->real_islamic == null) checked @endif
+                                            @if($schema->is_real_islamic) checked @endif
                                         >
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
@@ -247,7 +248,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div id="live-islamic-group" class="@if($schema->real_islamic == null) hidden @endif">
+                        <div id="live-islamic-group" class="@if(!$schema->is_real_islamic) hidden @endif">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
                                 <input
@@ -284,12 +285,12 @@
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#demo-islamic-group">
-                                        <input 
+                                        <input
                                             type="checkbox"
-                                            name=""
+                                            name="is_demo_islamic"
                                             value="1"
                                             class="sr-only peer"
-                                            @if(!$schema->demo_islamic == null) checked @endif
+                                            @if($schema->is_demo_islamic) checked @endif
                                         >
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
@@ -299,7 +300,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div id="demo-islamic-group" class="@if($schema->demo_islamic == null) hidden @endif">
+                        <div id="demo-islamic-group" class="@if(!$schema->is_demo_islamic) hidden @endif">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
                                 <input
@@ -316,6 +317,7 @@
                 </div>
             </div>
         </div>
+
 
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('More Details') }}
@@ -334,9 +336,8 @@
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                         <div class="input-area">
                             <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
-                                <option value="">{{ __('Status') }}</option>
-                                <option value="1">{{ __('Active') }}</option>
-                                <option value="0">{{ __('Deactivate') }}</option>
+                                <option value="1" @if($schema->status == 1) selected @endif>{{ __('Active') }}</option>
+                                <option value="0" @if($schema->status == 0) selected @endif>{{ __('Deactivate') }}</option>
                             </select>
                         </div>
                     </div>
@@ -348,16 +349,16 @@
                                         {{ __('Withdraw') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="hidden" 
-                                            value="0" 
+                                        <input
+                                            class="form-check-input"
+                                            type="hidden"
+                                            value="0"
                                             name="is_withdraw"
                                         >
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="is_withdraw" 
+                                            <input
+                                                type="checkbox"
+                                                name="is_withdraw"
                                                 value="1"
                                                 class="sr-only peer"
                                                 @checked($schema->is_withdraw)
@@ -373,16 +374,16 @@
                                         {{ __('Internal Transfer') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="hidden" 
-                                            value="0" 
+                                        <input
+                                            class="form-check-input"
+                                            type="hidden"
+                                            value="0"
                                             name="is_internal_transfer"
                                         >
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="is_internal_transfer" 
+                                            <input
+                                                type="checkbox"
+                                                name="is_internal_transfer"
                                                 value="1"
                                                 class="sr-only peer"
                                                 @checked($schema->is_internal_transfer)
@@ -398,16 +399,16 @@
                                         {{ __('External Transfer') }}
                                     </label>
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="hidden" 
-                                            value="0" 
+                                        <input
+                                            class="form-check-input"
+                                            type="hidden"
+                                            value="0"
                                             name="is_external_transfer"
                                         >
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                name="is_external_transfer" 
+                                            <input
+                                                type="checkbox"
+                                                name="is_external_transfer"
                                                 value="1"
                                                 class="sr-only peer"
                                                 @checked($schema->is_external_transfer)

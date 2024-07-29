@@ -64,9 +64,11 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
     Route::post('/password-store', [UserController::class, 'newPassword'])->name('new.password');
 
+    Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+
     //kyc apply
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+//        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
         Route::get('kyc/basic', [KycController::class, 'basicKyc'])->name('basic');
         Route::get('kyc/level3', [KycController::class, 'kycLevel3'])->name('level3');
         Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('data');

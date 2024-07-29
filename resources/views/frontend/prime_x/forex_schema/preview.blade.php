@@ -42,7 +42,9 @@
                                     <option value="{{$plan->id}}"
                                             @if($plan->id == $schema->id ) selected @endif
                                             data-is-real-islamic="{{$plan->is_real_islamic}}"
-                                            data-is-demo-islamic="{{$plan->is_demo_islamic}}">
+                                            data-is-demo-islamic="{{$plan->is_demo_islamic}}"
+                                            data-first-min-deposit="{{$plan->first_min_deposit}}"
+                                            data-leverage="{{$plan->leverage}}">
                                         {{$plan->title}}
                                     </option>
                                 @endforeach
@@ -52,7 +54,7 @@
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                        <input type="checkbox" name="is_islamic" value="1" class="sr-only peer"  id="islamic-checkbox">
+                                        <input type="checkbox" name="is_islamic" value="1" class="sr-only peer" id="islamic-checkbox">
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
@@ -98,7 +100,7 @@
                             </ul>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account" disabled>
+                            <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account">
                                 {{ __('Create Account') }}
                             </button>
                             <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-outline-dark">
@@ -130,11 +132,11 @@
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>Leverage</span>
-                            <span></span>
+                            <span id="display-leverage">{{ explode(',', $schema->leverage)[0] }}</span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>Initial Deposit Limit</span>
-                            <span id="">1000</span>
+                            <span id="initial-deposit">{{ $schema->first_min_deposit }}</span>
                         </li>
                     </ul>
                 </div>
@@ -153,7 +155,6 @@
 @section('script')
     <script>
         $(document).ready(function () {
-            // Function to update the disabled state of the Islamic account checkbox
             function updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic) {
                 var isIslamic = false;
                 if (accountType === 'real') {
@@ -164,32 +165,37 @@
                 $('#islamic-checkbox').prop('disabled', !isIslamic);
             }
 
-            // Handle account type tab click
+            function updateLeverageAndDeposit(result) {
+                $('#select-leverage').html(result.leverage);
+                $('#initial-deposit').text(result.first_min_deposit);
+                $('#display-leverage').text(result.leverage.split(',')[0]);
+            }
+
             $('#account-type-tabs .nav-link').on('click', function () {
                 $('#account-type-tabs .nav-link').removeClass('active');
                 $(this).addClass('active');
                 var accountType = $(this).data('type');
                 $('#account-type').val(accountType);
 
-                // Reset the checkbox to unchecked
                 $('#islamic-checkbox').prop('checked', false);
 
-                // Update the disabled state of the Islamic account checkbox
                 var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
                 var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
                 updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
             });
 
-            // Handle schema change
+            $("#islamic-checkbox").on('change', function () {
+                var isIslamic = $(this).is(':checked');
+                var accountType = $('#account-type').val();
+                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
+                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
+                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
+            });
+
             $("#select-schema").on('change', function (e) {
                 "use strict";
                 e.preventDefault();
                 var id = $(this).val();
-
-                var invest_amount = $("#enter-amount");
-                invest_amount.val('');
-                invest_amount.attr('readonly', false);
-
                 var url = '{{ route("user.schema.select", ":id") }}';
                 url = url.replace(':id', id);
 
@@ -197,25 +203,24 @@
                     url: url,
                     success: function (result) {
                         $('#first-min-amount').text(result.first_min_deposit);
-                        $('#select-leverage').html(result.leverage);
-                        $('#select-group').html(result.group);
+                        updateLeverageAndDeposit(result);
 
-                        // Update the data attributes for the selected schema
                         $('#select-schema').data('is-real-islamic', result.is_real_islamic);
                         $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
 
-                        // Reset the checkbox to unchecked and update its state based on the selected account type
                         $('#islamic-checkbox').prop('checked', false);
                         updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
                     }
                 });
             });
 
-            // Initial update of the checkbox state based on initial schema and account type
             var initialAccountType = $('#account-type').val();
             var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
             var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
             updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
+
+            $('#initial-deposit').text($('#select-schema').find('option:selected').data('first-min-deposit'));
+            $('#display-leverage').text($('#select-leverage option:selected').val());
 
             $("#selectWallet").on('change', function (e) {
                 "use strict";
@@ -224,26 +229,23 @@
                 var wallet = $(this).val();
                 if (wallet === 'gateway') {
                     $.get('{{ route('gateway.list') }}', function (data) {
-                        $('.gatewaySelect').append(data)
+                        $('.gatewaySelect').append(data);
                         $('select').niceSelect();
                     });
                 }
             });
 
             $('body').on('change', '#gatewaySelect', function (e) {
-                "use strict"
+                "use strict";
                 e.preventDefault();
-
                 $('.manual-row').empty();
-
                 var code = $(this).val();
-
-                var url = '{{ route("user.deposit.gateway",":code") }}';
+                var url = '{{ route("user.deposit.gateway", ":code") }}';
                 url = url.replace(':code', code);
                 $.get(url, function (data) {
                     if (data.credentials !== undefined) {
                         console.log(data.credentials);
-                        $('.manual-row').append(data.credentials)
+                        $('.manual-row').append(data.credentials);
                         imagePreview();
                     }
                 });
@@ -251,11 +253,11 @@
                 $('#amount').on('keyup', function (e) {
                     "use strict";
                     var amount = $(this).val();
-                    $('.amount').text((Number(amount)));
+                    $('.amount').text(Number(amount));
                     $('.currency').text(currency);
                     var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge;
                     $('.charge2').text(charge + ' ' + currency);
-                    $('.total').text((Number(amount) + Number(charge)) + ' ' + currency);
+                    $('.total').text(Number(amount) + Number(charge) + ' ' + currency);
                 });
             });
 

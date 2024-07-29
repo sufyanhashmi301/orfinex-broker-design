@@ -17,8 +17,8 @@ return new class extends Migration
             $table->bigInteger('start_range')->nullable()->after('is_bonus');
             $table->bigInteger('end_range')->nullable()->after('start_range');
             $table->text('tags')->nullable()->after('country');
-            $table->text('is_real_islamic')->default(0)->after('real_swap_free');
-            $table->text('is_demo_islamic')->default(0)->after('demo_swap_free');
+            $table->boolean('is_real_islamic')->default(0)->after('real_swap_free');
+            $table->boolean('is_demo_islamic')->default(0)->after('demo_swap_free');
 
         });
     }

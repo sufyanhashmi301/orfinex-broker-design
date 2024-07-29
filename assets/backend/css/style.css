@@ -69,5 +69,9 @@
 }
 
 .\!pl-16\.5	{
-    padding-left: 4.5rem; 
+    padding-left: 4.5rem;
+}
+
+.btn {
+    min-width: 130px;
 }

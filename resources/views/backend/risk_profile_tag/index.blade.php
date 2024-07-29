@@ -1,8 +1,8 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.index')
 @section('title')
     {{ __('Risk Profile Tag') }}
 @endsection
-@section('content')
+@section('setting-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Risk Profile Tag Forms') }}
@@ -15,15 +15,13 @@
         </div>
     </div>
 
-    @include('backend.kyc.include.__menu')
-
     <div class="card">
-        <div class="card-body p-6 pt-0">
+        <div class="card-body p-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Tag Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -81,7 +79,7 @@
                         </h4>
                     </div>
                     <p>
-                        {{ __('You want to Delete') }} 
+                        {{ __('You want to Delete') }}
                         <strong class="name"></strong> {{ __('Risk Profile Tag?') }}
                     </p>
                     <form method="post" id="riskProfileTagEditForm">

@@ -100,11 +100,6 @@
                             {{ __('KYC Levels') }}
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.risk-profile-tag.index') }}" class="{{ isActive('admin.risk-profile-tag*') }}">
-                            {{ __('Risk Profile Tag Form') }}
-                        </a>
-                    </li>
                 </ul>
             </li>
         @endcanany

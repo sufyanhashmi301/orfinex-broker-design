@@ -1,24 +1,16 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.country.index')
 @section('title')
-    {{ __('Manage Schema') }}
+    {{ __('Blacklist Countries') }}
 @endsection
-@section('content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('All Black List Countries') }}
-        </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            @can('schema-create')
-                <a href="{{route('admin.blackListCountry.create')}}" class="inline-flex items-center justify-center text-success-600">
-                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                    {{ __('Add New') }}
-                </a>
-            @endcan
-        </div>
-    </div>
-
-    @include('backend.forex_schema.include.__menu')
-
+@section('title-btn')
+    @can('schema-create')
+        <a href="{{route('admin.blackListCountry.create')}}" class="inline-flex items-center justify-center text-success-600">
+            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+            {{ __('Add New') }}
+        </a>
+    @endcan
+@endsection
+@section('country-content')
     <div class="card">
         <div class="card-body px-6 pb-6 pt-3">
             <div class="overflow-x-auto -mx-6">

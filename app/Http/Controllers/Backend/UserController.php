@@ -606,4 +606,9 @@ class UserController extends Controller
 
         return redirect()->route('user.dashboard');
     }
+
+    public function createCustomer()
+    {
+        return view('backend.user.create');
+    }
 }

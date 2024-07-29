@@ -76,6 +76,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('transaction/{id}', 'transaction')->name('transaction');
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export', 'export')->name('export');
+        Route::get('create', 'createCustomer')->name('create');
     });
 
     Route::resource('kyc-form', KycController::class);

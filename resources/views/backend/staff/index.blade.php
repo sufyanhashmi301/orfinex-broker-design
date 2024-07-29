@@ -40,8 +40,8 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Role') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -52,12 +52,10 @@
                                     <td class="table-td">
                                         <strong>{{$staff->name}}</strong>
                                     </td>
-                                    <td class="table-td">{{ $staff->email }}</td>
                                     <td class="table-td">
-                                        <strong class="bg-slate-900 text-white capitalize rounded-full py-1 px-3">
-                                            {{ $staff->getRoleNames()->first() }}
-                                        </strong>
+                                        {{ $staff->getRoleNames()->first() }}
                                     </td>
+                                    <td class="table-td">{{ $staff->email }}</td>
                                     <td class="table-td">
                                         @if($staff->status)
                                             <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">

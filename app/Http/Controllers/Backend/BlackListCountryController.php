@@ -40,7 +40,7 @@ class BlackListCountryController extends Controller
     {
         $countries = BlackListCountry::orderBy('name','asc')->get();
 
-        return view('backend.black_list_countries.index', compact('countries'));
+        return view('backend.setting.country.black-list', compact('countries'));
     }
 
     /**
@@ -50,7 +50,7 @@ class BlackListCountryController extends Controller
      */
     public function create()
     {
-        return view('backend.black_list_countries.create');
+        return view('backend.setting.country.create');
     }
 
     /**
@@ -95,7 +95,7 @@ class BlackListCountryController extends Controller
     public function edit($id)
     {
         $schema = BlackListCountry::find($id);
-        return view('backend.black_list_countries.edit', compact('schema'));
+        return view('backend.setting.country.edit', compact('schema'));
     }
 
     /**

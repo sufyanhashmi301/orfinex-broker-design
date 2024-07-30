@@ -88,7 +88,7 @@ class SettingController extends Controller
 //        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
 
-        $colorsKeys = ['primary_color'];
+        $colorsKeys = ['primary_color', 'secondary_color', 'active_menu_bg', 'active_menu_color'];
 
         try {
             $validSettings = array_keys($rules);

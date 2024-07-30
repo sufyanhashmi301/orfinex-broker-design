@@ -84,6 +84,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.customer-groups.index') }}" class="navItem {{ isActive('admin.customer-groups.index') }}">
+                {{ __('Customer Groups') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.settings.gdpr') }}" class="navItem {{ isActive('admin.settings.gdpr') }}">
                 {{ __('GDPR')}}
             </a>
@@ -98,6 +103,7 @@
                 {{ __('Platform API') }}
             </a>
         </li>
+       
     </ul>
 @endsection
 @section('content')

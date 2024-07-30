@@ -87,7 +87,25 @@
                         <textarea type="text"  name="comment" class="form-control"
                         > {{ $user->comment }}</textarea>
                     </div>
-
+                    @if($user->notes)
+                    <div class="input-area relative lg:col-span-3">
+                        <label for="" class="form-label">{{ __('Notes:') }}</label>
+                        <textarea type="text"  name="notes" class="form-control"
+                        > {{ $user->notes }}</textarea>
+                    </div>
+                    
+                    @endif
+                    <div class="input-area relative">
+                        <label for="" class="form-label">{{ __('Assign Group:') }}</label>
+                        <select name="group_id" class="form-control">
+                            <option value="">Select</option>
+                            @foreach($customerGroups as $group)
+                                <option value="{{ $group->id }}" {{ $user->customerGroups->pluck('id')->contains($group->id) ? 'selected' : '' }}>
+                                    {{ $group->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="input-area relative text-right lg:col-span-3">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}

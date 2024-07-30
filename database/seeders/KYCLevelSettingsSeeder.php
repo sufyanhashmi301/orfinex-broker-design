@@ -6,6 +6,7 @@ use App\Models\Kyc;
 use App\Models\Kyclevel;
 use App\Models\Kyclevelsetting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class KYCLevelSettingsSeeder extends Seeder
 {
@@ -16,6 +17,10 @@ class KYCLevelSettingsSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('kycs')->truncate();
+        DB::table('kyc_level_settings')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         // Retrieve the KYC level ID for 'Level 2'
         $kycLevelIdLevel2 = Kyclevel::where('slug', 'level-2')->value('id');
 

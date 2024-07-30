@@ -64,7 +64,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'is_level_2_completed',
         'is_level_3_completed',
         'kyc_credential_level3',
-        'kyc_level3'
+        'kyc_level3',
+        'notes',
     ];
 
     protected $appends = [
@@ -331,5 +332,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             get: fn ($value) => $value != null ? decrypt($value) : $value,
             set: fn ($value) => encrypt($value),
         );
+    }
+    public function customerGroups()
+    {
+        return $this->belongsToMany(CustomerGroup::class,'customer_group_has_customers');
     }
 }

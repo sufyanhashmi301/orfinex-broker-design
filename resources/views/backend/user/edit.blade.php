@@ -5,14 +5,14 @@
 @section('content')
     <div class="space-y-5 profile-page">
         <div class="grid grid-cols-12 gap-6">
-            <div class="lg:col-span-4 col-span-12">
+            <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                 <!-- User Status Update -->
             @can('all-type-status')
                 @include('backend.user.include.__status_update')
             @endcan
             <!-- User Status Update End-->
             </div>
-            <div class="lg:col-span-8 col-span-12">
+            <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
                 <div class="card overflow-hidden mb-5">
                     <div class="card-body py-1">
                         <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">

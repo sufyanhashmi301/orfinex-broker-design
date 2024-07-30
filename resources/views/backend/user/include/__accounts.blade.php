@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">{{ __('Account') }}</h4>
-            <a href="javascript:;" class="btn btn-dark btn-sm inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
+            <a href="javascript:;" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addForexAccount">
                 {{ __('Add New') }}
             </a>
         </div>

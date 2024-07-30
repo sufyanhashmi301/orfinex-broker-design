@@ -8,6 +8,7 @@ use App\Enums\TxnType;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
+use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
 use App\Models\LevelReferral;
@@ -238,41 +239,13 @@ class UserController extends Controller
     {
 
         $user = User::find($id);
-//        if(!$user->ref_id) {
-//            AgentReferralJob::dispatch($user);
-//        }
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-//        $clientIp = request()->ip();
-//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-//            $this->syncForexAccounts($id);
-//            if ($user->ib_login) {
-//                $getUserResponse = $this->getUserApi($user->ib_login);
-//                if ($getUserResponse) {
-//                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                        $balance = $getUserResponse->object()->Balance;
-//                        $user->update(['ib_balance' => $balance]);
-//                        $user = User::find($id);
-//                    }
-//                }
-//            }
-//            if ($user->multi_ib_login) {
-//                $getUserResponse = $this->getUserApi($user->multi_ib_login);
-//                if ($getUserResponse) {
-//                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                        $balance = $getUserResponse->object()->Balance;
-//                        $user->update(['multi_ib_balance' => $balance]);
-//                        $user = User::find($id);
-//                    }
-//                }
-//            }
-//
-//        }
-
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance', 'desc')
             ->get();
         $tags = RiskProfileTag::where('status', true)
             ->get();
+        $customerGroups = CustomerGroup::where('status',1)->get();
         $users = User::where(function ($query) use ($id,$user) {
             $query->where(function ($subquery) use ($id,$user) {
                 $subquery->whereNull('ref_id')
@@ -283,7 +256,6 @@ class UserController extends Controller
         })
             ->get();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-
         $schemas = ForexSchema::where('status', true)
             ->where(function($query) use ($tagNames) {
                 $query->whereJsonContains('country', auth()->user()->country)
@@ -296,7 +268,8 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users', 'schemas'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups', 'schemas'));
+
     }
 
     public function destroy($id)
@@ -371,9 +344,8 @@ class UserController extends Controller
      */
     public function update($id, Request $request)
     {
-        $input = $request->all();
-//        dd($input);
 
+        $input = $request->all();
         $validator = Validator::make($input, [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -381,6 +353,7 @@ class UserController extends Controller
             'username' => 'required|unique:users,username,' . $id,
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
             'date_of_birth' => 'nullable|date_format:Y-m-d',
+            'group_id' => 'nullable|exists:customer_groups,id'
         ]);
 
         if ($validator->fails()) {
@@ -392,6 +365,12 @@ class UserController extends Controller
             $input['date_of_birth'] = null;
         }
         User::find($id)->update($input);
+        $user = User::find($id);
+        if (isset($input['group_id'])) {
+            $user->customerGroups()->sync($input['group_id']);
+        } else {
+            $user->customerGroups()->sync([]);
+        }
         notify()->success('User Info Updated Successfully', 'success');
 
         return redirect()->back();
@@ -621,8 +600,18 @@ class UserController extends Controller
         return redirect()->route('user.dashboard');
     }
 
+
     public function createCustomer()
     {
         return view('backend.user.create');
     }
+     public function createNote(Request $request,$id)
+     {
+         $user = User::find($id);
+         $user->update(['notes' => $request->notes]);
+         notify()->success('Note added successfully');
+
+         return redirect()->back();
+     }
+
 }

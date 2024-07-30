@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\DepositController;
@@ -302,12 +303,13 @@ Route::get('user/economic_calendar', function () {
 Route::get('user/provider_access', function () {
 
     return view('frontend.default.copy_trading.provider_access');
-})->name('user.provider_access')->middleware('secure_header');;
+})->name('user.provider_access')->middleware('secure_header');
 
 Route::get('user/follower_access', function () {
     return view('frontend.default.copy_trading.follower_access');
-})->name('user.follower_access')->middleware('secure_header');;
+})->name('user.follower_access')->middleware('secure_header');
 
 Route::get('user/ratings', function () {
     return view('frontend.default.copy_trading.ratings');
-})->name('user.ratings')->middleware('secure_header');;
+})->name('user.ratings')->middleware('secure_header');
+

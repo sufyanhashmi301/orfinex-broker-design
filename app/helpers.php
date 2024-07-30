@@ -894,11 +894,11 @@ if(!function_exists('hexToRgb')) {
         $g = hexdec(substr($hex, 2, 2));
         $b = hexdec(substr($hex, 4, 2));
 
-        return $rgb = [
+        return json_encode([
             'r' => $r,
             'g' => $g,
             'b' => $b
-        ];
+        ]);
 
     }
 }

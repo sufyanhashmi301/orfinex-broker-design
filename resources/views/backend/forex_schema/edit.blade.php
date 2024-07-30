@@ -49,12 +49,13 @@
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Select countries where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
                             <select name="country[]" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
-                                @foreach( getCountries() as $country)
-                                    <option value="{{$country['name']}}"  @selected( null != $schema->country && in_array($country['name'],json_decode($schema->country,true)))>{{$country['name']}}</option>
-                                @endforeach
                                 <option  value="All" @selected( null != $schema->country && in_array('All',json_decode($schema->country,true)))>
                                     {{ __('All') }}
                                 </option>
+                                @foreach( getCountries() as $country)
+                                    <option value="{{$country['name']}}"  @selected( null != $schema->country && in_array($country['name'],json_decode($schema->country,true)))>{{$country['name']}}</option>
+                                @endforeach
+
                             </select>
                         </div>
                         <div class="input-area">
@@ -257,7 +258,6 @@
                                     value="{{$schema->real_islamic}}"
                                     class="form-control"
                                     placeholder="Platform Group (Islamic)"
-                                    required
                                 />
                             </div>
                         </div>
@@ -309,7 +309,6 @@
                                     value="{{$schema->demo_islamic}}"
                                     class="form-control"
                                     placeholder="Platform Group (Islamic)"
-                                    required
                                 />
                             </div>
                         </div>

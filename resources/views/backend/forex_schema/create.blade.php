@@ -27,7 +27,6 @@
                                     name="icon"
                                     id="schema-icon"
                                     accept=".gif, .jpg, .png"
-                                    required
                                 />
                                 <label for="schema-icon">
                                     <img
@@ -48,14 +47,15 @@
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
                             <select name="country[]" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
+                                <option  value="All" >
+                                    {{ __('All') }}
+                                </option>
                                 @foreach( getCountries() as $country)
                                     <option  value="{{ $country['name'] }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
                                         {{ $country['name']  }}
                                     </option>
                                 @endforeach
-                                <option  value="All" >
-                                    {{ __('All') }}
-                                </option>
+
                             </select>
                         </div>
                         <div class="input-area">
@@ -63,7 +63,7 @@
                             <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
                                 @foreach( getRiskProfileTag() as $tag)
                                     <option  value="{{ $tag->name }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                        {{  $tag->name  }} {{__('(tag)')}}
+                                        {{  $tag->name  }}
                                     </option>
                                 @endforeach
                             </select>
@@ -225,7 +225,7 @@
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
                                         <input
                                             type="checkbox"
-                                            name=""
+                                            name="is_real_islamic"
                                             value="1"
                                             class="sr-only peer"
                                         >
@@ -245,7 +245,7 @@
                                     name="real_islamic"
                                     class="form-control"
                                     placeholder="Platform Group (Islamic)"
-                                    required
+
                                 />
                             </div>
                         </div>
@@ -274,7 +274,7 @@
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#demo-islamic-group">
                                         <input
                                             type="checkbox"
-                                            name=""
+                                            name="is_demo_islamic"
                                             value="1"
                                             class="sr-only peer"
                                         >
@@ -294,7 +294,6 @@
                                     name="demo_islamic"
                                     class="form-control"
                                     placeholder="Platform Group (Islamic)"
-                                    required
                                 />
                             </div>
                         </div>
@@ -318,7 +317,6 @@
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                         <div class="input-area">
                             <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
-                                <option value="">{{ __('Status') }}</option>
                                 <option value="1">{{ __('Active') }}</option>
                                 <option value="0">{{ __('Deactivate') }}</option>
                             </select>

@@ -12,7 +12,7 @@ use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
 use App\Http\Controllers\Backend\IBSchemaController;
 use App\Http\Controllers\Backend\ImportController;
-use App\Http\Controllers\Backend\InvestmentController;
+use App\Http\Controllers\Backend\AccountsController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\LevelReferralController;
@@ -150,8 +150,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
-    Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
-    Route::get('forex-accounts/{type?}/{id?}', [InvestmentController::class, 'forexAccounts'])->name('forex-accounts');
+    Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
+    Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
+    Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================

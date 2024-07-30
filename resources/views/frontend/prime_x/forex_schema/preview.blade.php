@@ -10,12 +10,12 @@
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="account-type-tabs">
             <li class="nav-item">
                 <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active" data-type="real" id="real-tab">
-                    Real
+                    {{ __('Real') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300" data-type="demo" id="demo-tab">
-                    Demo
+                    {{ __('Demo') }}
                 </a>
             </li>
         </ul>
@@ -77,25 +77,25 @@
                             <label class="form-label" for="">
                                 {{ __('Account Nickname:') }}
                             </label>
-                            <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Nickname" aria-label="Nickname" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
+                            <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="{{ __('Nickname') }}" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">
                                 {{ __('Main Password:') }}
                             </label>
-                            <input type="text" class="form-control py-2 h-[48px]" placeholder="Enter Main Password" aria-label="Main Password" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
+                            <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Main Password') }}" aria-label="{{ __('Main Password') }}" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
                             <ul>
                                 <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
-                                    Use from 8 to 15 characters
+                                    {{ __('Use from 8 to 15 characters') }}
                                 </li>
                                 <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="letters-check-main">
-                                    Use both uppercase and lowercase letters
+                                    {{ __('Use both uppercase and lowercase letters') }}
                                 </li>
                                 <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="number-check-main">
-                                    At least one number
+                                    {{ __('At least one number') }}
                                 </li>
                                 <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
-                                    At least one special character(!@#$%^&*(),-.?":{}|<>)
+                                    {{ __('At least one special character(!@#$%^&*(),-.?":{}|<>)') }}
                                 </li>
                             </ul>
                         </div>
@@ -124,18 +124,19 @@
                 <div class="card-body p-6 pt-0">
                     <ul class="space-y-5">
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
-                            <span>Spread from</span>
-                            <span>0.2</span>
+                            <span>{{ __('Spread from') }}</span>
+                            <span id="display-spread">{{ $schema->spread }}</span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
-                            <span>No Commission</span>
+                            <span>{{ __('Commission') }}</span>
+                            <span id="display-commission">{{$schema->commission == 0 ? __('No Commission') : $schema->commission}}</span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
-                            <span>Leverage</span>
+                            <span>{{ __('Leverage') }}</span>
                             <span id="display-leverage">{{ explode(',', $schema->leverage)[0] }}</span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
-                            <span>Initial Deposit Limit</span>
+                            <span>{{ __('Initial Deposit Limit') }}</span>
                             <span id="initial-deposit">{{ $schema->first_min_deposit }}</span>
                         </li>
                     </ul>
@@ -147,7 +148,7 @@
         <div class="flex items-center space-x-3 rtl:space-x-reverse">
             <iconify-icon class="text-xl flex-0" icon="lucide:info"></iconify-icon>
             <p class="flex-1 font-Inter">
-                Comprehensive details on our instruments and trading conditions can be found on the <a href="" class="text-warning-600">Customer Contract</a> page.
+                {{ __('Comprehensive details on our instruments and trading conditions can be found on the') }} <a href="" class="text-warning-600">{{ __('Customer Contract') }}</a> {{ __('page.') }}
             </p>
         </div>
     </div>
@@ -166,9 +167,11 @@
             }
 
             function updateLeverageAndDeposit(result) {
+                $('#display-commission').text(result.commission);
+                $('#display-spread').text(result.spread);
                 $('#select-leverage').html(result.leverage);
+                $('#display-leverage').text(result.display_leverage);
                 $('#initial-deposit').text(result.first_min_deposit);
-                $('#display-leverage').text(result.leverage.split(',')[0]);
             }
 
             $('#account-type-tabs .nav-link').on('click', function () {
@@ -219,8 +222,10 @@
             var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
             updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
 
-            $('#initial-deposit').text($('#select-schema').find('option:selected').data('first-min-deposit'));
-            $('#display-leverage').text($('#select-leverage option:selected').val());
+            $("#select-leverage").on('change', function () {
+                var selectedLeverage = $(this).val();
+                $('#display-leverage').text(selectedLeverage); // Update the display-leverage with the selected value
+            });
 
             $("#selectWallet").on('change', function (e) {
                 "use strict";

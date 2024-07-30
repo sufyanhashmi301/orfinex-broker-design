@@ -791,7 +791,32 @@ return [
 
 
     ],
-
+    'internal' => [
+        'title' => 'Internal Transfers Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_send', // unique name for field
+                'label' => 'External Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
+    ],
+    'external' => [
+        'title' => 'External Transfers Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_send', // unique name for field
+                'label' => 'External Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
+    ],
     'fee' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [

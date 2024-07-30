@@ -899,7 +899,7 @@ if(!function_exists('hexToRgb')) {
             'g' => $g,
             'b' => $b
         ];
-        
+
     }
 }
 

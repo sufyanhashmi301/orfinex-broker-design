@@ -72,16 +72,16 @@ return [
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'sidebar_active_menu_bg', // unique name for field
-                'label' => 'Sidebar active menu bg', // you know what label it is
+                'name' => 'active_menu_bg', // unique name for field
+                'label' => 'Active menu bg', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#0f172a', // default value if you want
             ],
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'sidebar_active_menu_color', // unique name for field
-                'label' => 'Sidebar active menu Color', // you know what label it is
+                'name' => 'active_menu_color', // unique name for field
+                'label' => 'Active menu text Color', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#0f172a', // default value if you want
             ],

@@ -85,10 +85,10 @@ class SettingController extends Controller
 //         dd($request->all());
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
-    //    dd($request->all(),$rules, $section);
+//        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
 
-        $colorsKeys = ['primary_color', 'secondary_color'];
+        $colorsKeys = ['primary_color'];
 
         try {
             $validSettings = array_keys($rules);
@@ -108,6 +108,7 @@ class SettingController extends Controller
 
                         $val = self::imageUploadTrait($val, $oldImage);
                     }
+
                     Setting::add($key, $val, Setting::getDataType($key, $section));
                 }
             }

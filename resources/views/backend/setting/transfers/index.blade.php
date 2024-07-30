@@ -4,9 +4,12 @@
 @endsection
 @section('setting-content')
     <?php
-        $section = 'fee';
-        $fields = config('setting.fee');
-        //   dd($fields);
+
+        $type = request()->query('type');
+        $section = $type;
+
+        $fields = config("setting.$section");
+
     ?>
 
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -14,6 +17,21 @@
             {{ __($fields['title']) }}
         </h4>
     </div>
+    <div class="card p-4 mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+            <li class="nav-item">
+                <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.transfers', ['type' => 'internal']) }}">
+                    {{ __('Internal Transfers') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.settings.transfers', ['type' => 'external']) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.transfers', ['type' => 'external']) }}">
+                    {{ __('External Transfers') }}
+                </a>
+            </li>
+        </ul>
+    </div>
+
     <div class="card">
         <div class="card-body p-6">
             @include('backend.setting.site_setting.include.form.__open_action')
@@ -56,7 +74,7 @@
                             <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
                                 <select name="send_charge_type" class="w-full h-full outline-none" id="">
                                     @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
-                                        <option @if( oldSetting('send_charge_type','global') == $key) selected @endif value="{{ $key }}"> 
+                                        <option @if( oldSetting('send_charge_type','global') == $key) selected @endif value="{{ $key }}">
                                             {{ $value }}
                                         </option>
                                     @endforeach
@@ -99,7 +117,7 @@
                             <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
                                 <select name="internal_send_charge_type" class="w-full h-full outline-none" id="">
                                     @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
-                                        <option @if( oldSetting('internal_send_charge_type','global') == $key) selected @endif value="{{ $key }}"> 
+                                        <option @if( oldSetting('internal_send_charge_type','global') == $key) selected @endif value="{{ $key }}">
                                             {{ $value }}
                                         </option>
                                     @endforeach
@@ -119,7 +137,7 @@
                             <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
                                 <select name="wallet_exchange_charge_type" class="w-full h-full outline-none" id="">
                                     @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
-                                        <option @selected( oldSetting('wallet_exchange_charge_type','global') == $key) value="{{ $key }}"> 
+                                        <option @selected( oldSetting('wallet_exchange_charge_type','global') == $key) value="{{ $key }}">
                                             {{ $value }}
                                         </option>
                                     @endforeach

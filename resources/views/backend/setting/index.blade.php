@@ -84,7 +84,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.transfers') }}" class="navItem {{ isActive('admin.settings.transfers') }}">
+            <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="navItem {{ isActive('admin.settings.transfers*') }}">
                 {{ __('Transfers')}}
             </a>
         </li>

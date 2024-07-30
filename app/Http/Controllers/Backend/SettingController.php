@@ -148,9 +148,10 @@ class SettingController extends Controller
         return view('backend.setting.site_setting.site_maintenance');
     }
 
-    public static function transfers()
+    public function transfers(Request $request)
     {
-        return view('backend.setting.site_setting.transfers');
+        $type = $request->query('type');
+        return view('backend.setting.transfers.index', compact('type'));
     }
 
     public static function gdpr()

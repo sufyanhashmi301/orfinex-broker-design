@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Department;
+use App\Models\Designation;
 use Arr;
 use DB;
 use Hash;
@@ -86,11 +88,13 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
+        
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
         $staff->getRoleNames()->first();
-
-        return view('backend.staff.include.__edit_form', compact('staff', 'roles'))->render();
+        $departments = Department::with('children')->whereNull('parent_id')->get();
+        $designations = Designation::with('children')->whereNull('parent_id')->get(); 
+        return view('backend.staff.include.__edit_form', compact('staff', 'roles','departments','designations'))->render();
     }
 
     /**
@@ -107,6 +111,8 @@ class StaffController extends Controller
             'password' => 'same:confirm-password',
             'role' => ['required', Rule::notIn('Super-Admin')],
             'status' => 'boolean',
+            'department' => 'nullable|exists:departments,id',
+            'designation' => 'nullable|exists:designations,id',
         ]);
 
         if ($validator->fails()) {
@@ -136,7 +142,13 @@ class StaffController extends Controller
         DB::table('model_has_roles')->where('model_id', $id)->delete();
 
         $staff->assignRole($request->input('role'));
-
+        if($request->input('department')){
+            $staff->departments()->sync([$request->input('department')]);
+        }
+        if($request->input('designation')){
+            $staff->designations()->sync([$request->input('designation')]);
+        }
+       
         notify()->success('Staff updated successfully');
         return redirect()->route('admin.staff.index');
     }

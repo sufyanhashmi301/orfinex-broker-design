@@ -29,7 +29,7 @@
                         <select name="parent_id" class="form-control">
                             <option value="">This is Parent</option>
                             @foreach($designations as $des)
-                            <option value="{{$des->id}}" {{ $designation->parent_id == $des->id ? 'selected' : '' }}>{{$dept->name}}</option>
+                            <option value="{{$des->id}}" {{ $designation->parent_id == $des->id ? 'selected' : '' }}>{{$des->name}}</option>
                             @endforeach
                         </select>
                     </div>

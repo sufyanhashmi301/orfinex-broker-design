@@ -64,7 +64,39 @@
 
         </select>
     </div>
+    <div class="input-area">
+        <label class="form-label" for="department">{{ __('Select Department:') }}</label>
+        <select name="department" class="form-control w-100" id="department">
+        <option value="">Select</option>
+            @foreach($departments as $department)
+                <option value="{{ $department->id }}" @selected($staff->departments->contains($department->id))>
+                    {{ $department->name }}
+                </option>
+                @foreach($department->children as $child)
+                    <option value="{{ $child->id }}" @selected($staff->departments->contains($child->id))>
+                        -- {{ $child->name }}
+                    </option>
+                @endforeach
+            @endforeach
+        </select>
+    </div>
 
+    <div class="input-area">
+        <label class="form-label" for="designation">{{ __('Select Designation:') }}</label>
+        <select name="designation" class="form-control w-100" id="designation">
+            <option value="">Select</option>
+            @foreach($designations as $designation)
+                <option value="{{ $designation->id }}" @selected($staff->designations->contains($designation->id))>
+                    {{ $designation->name }}
+                </option>
+                @foreach($designation->children as $child)
+                    <option value="{{ $child->id }}" @selected($staff->designations->contains($child->id))>
+                        -- {{ $child->name }}
+                    </option>
+                @endforeach
+            @endforeach
+        </select>
+    </div>
     <div class="action-btns text-right">
         <button type="submit" href="" class="btn btn-dark inline-flex items-center justify-center mr-2">
             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

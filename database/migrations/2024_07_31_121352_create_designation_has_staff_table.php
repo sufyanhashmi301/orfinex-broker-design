@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('designations', function (Blueprint $table) {
+        Schema::create('designation_has_staff', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->boolean('status')->default(true);
-            $table->foreign('parent_id')->references('id')->on('designations');
+            $table->foreignId('staff_id')->constrained('admins')->on('admins');
+            $table->foreignId('designation_id')->constrained('designations');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('designations');
+        Schema::dropIfExists('designation_has_staff');
     }
 };

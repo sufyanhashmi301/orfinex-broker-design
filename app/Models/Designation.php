@@ -19,4 +19,24 @@ class Designation extends Model
     {
         return $this->hasMany(Designation::class, 'parent_id');
     }
+    public function allDescendants()
+    {
+        return $this->children()->with('allDescendants');
+    }
+
+    public function descendants()
+    {
+        $descendants = collect();
+        $children = $this->allDescendants()->get();
+
+        foreach ($children as $child) {
+            $descendants->push($child);
+            $descendants = $descendants->merge($child->descendants());
+        }
+        return $descendants;
+    }
+    public function staff()
+    {
+        return $this->belongsToMany(Admin::class, 'designation_has_staff', 'designation_id', 'staff_id');
+    }
 }

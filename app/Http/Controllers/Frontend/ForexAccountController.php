@@ -122,18 +122,18 @@ class ForexAccountController extends GatewayController
         $data = [
             "login" => $login,
             "group" => $group,
-            "firstName" => auth()->user()->first_name,
+            "firstName" => $user->first_name,
             "middleName" => "",
-            "lastName" => auth()->user()->last_name,
+            "lastName" => $user->last_name,
             "leverage" => $request->leverage,
             "rights" => "USER_RIGHT_ALL",
-            "country" => auth()->user()->country,
-            "city" => auth()->user()->city,
+            "country" => $user->country,
+            "city" => $user->city,
             "state" => "",
-            "zipCode" => auth()->user()->zip_code,
-            "address" => auth()->user()->address,
-            "phone" => auth()->user()->phone,
-            "email" => auth()->user()->email,
+            "zipCode" => $user->zip_code,
+            "address" => $user->address,
+            "phone" => $user->phone,
+            "email" => $user->email,
             "agent" => 0,
             "account" => "",
             "company" => env('APP_NAME', 'Company'),
@@ -143,6 +143,7 @@ class ForexAccountController extends GatewayController
             "masterPassword" => $password,
             "investorPassword" => 'SNNH@2024@bol'
         ];
+//        dd($data,$accountType);
         if($accountType == 'real'){
             $response = $this->forexApiService->createUser($data);
         }else{
@@ -158,14 +159,14 @@ class ForexAccountController extends GatewayController
                 $accountData['forex_schema_id'] = $schema->id;
                 $accountData['login'] = $mt5Login;
                 $accountData['account_name'] = $request->account_name;
-                $accountData['account_type'] = implode('_', array_slice(explode('_', $request->group), 0, 1));
-                $accountData['user_id'] = auth()->user()->id;
+                $accountData['account_type'] = $accountType;
+                $accountData['user_id'] = $user->id;
                 $accountData['currency'] = setting('site_currency', 'global');
                 $accountData['group'] = $data['group'];
                 $accountData['leverage'] = $data['leverage'];
                 $accountData['status'] = ForexAccountStatus::Ongoing;
                 $accountData['server'] = $server;
-                $accountData['created_by'] = auth()->user()->id;
+                $accountData['created_by'] = $user->id;
                 $accountData['first_min_deposit_paid'] = 0;
                 $accountData['trading_platform'] = config('forextrading.tradingPlatform');
                 $forexTrading = ForexAccount::create($accountData);
@@ -235,6 +236,7 @@ class ForexAccountController extends GatewayController
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance', 'desc')
             ->get();
+//        dd($realForexAccounts);
         $demoForexAccounts = ForexAccount::demoActiveAccount()
             ->orderBy('balance', 'desc')
             ->get();

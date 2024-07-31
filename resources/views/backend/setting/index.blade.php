@@ -22,6 +22,11 @@
             </li>
         @endcanany
         <li>
+            <a href="{{ route('admin.risk-profile-tag.index') }}" class="navItem {{ isActive('admin.risk-profile-tag*') }}">
+                {{ __('Risk Profile Tag Form') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme.site') }}">
                 {{ __('Theme')}}
             </a>
@@ -79,7 +84,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.transfers') }}" class="navItem {{ isActive('admin.settings.transfers') }}">
+            <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="navItem {{ isActive('admin.settings.transfers*') }}">
                 {{ __('Transfers')}}
             </a>
         </li>

@@ -25,7 +25,7 @@ class ForexSchemaController extends Controller
                     ->orWhereJsonContains('country', 'All')
                     ->orWhere(function($subQuery) use ($tagNames) {
                         foreach ($tagNames as $tagName) {
-                            $subQuery->orWhereJsonContains('country', $tagName);
+                            $subQuery->orWhereJsonContains('tags', $tagName);
                         }
                     });
             })
@@ -38,8 +38,20 @@ class ForexSchemaController extends Controller
 
     public function schemaPreview($id)
     {
-
-        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
+        $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
+        $schemas = ForexSchema::where('status', true)
+            ->where(function($query) use ($tagNames) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All')
+                    ->orWhere(function($subQuery) use ($tagNames) {
+                        foreach ($tagNames as $tagName) {
+                            $subQuery->orWhereJsonContains('tags', $tagName);
+                        }
+                    });
+            })
+            ->orderBy('priority', 'asc')
+            ->get();
+//        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
         $schema = ForexSchema::find($id);
 
         return view('frontend::forex_schema.preview', compact('schema', 'schemas'));
@@ -57,7 +69,10 @@ class ForexSchemaController extends Controller
 
         return [
             'leverage' => $leveragedropdown,
+            'display_leverage' => explode(',', $schema->leverage)[0],
             'first_min_deposit' => !empty($schema->first_min_deposit) ? $schema->first_min_deposit : 0,
+            'spread' => !empty($schema->spread) ? $schema->spread : 0,
+            'commission' => $schema->commission == 0 ? 'No Commission' : $schema->commission,
             'is_real_islamic' => $schema->is_real_islamic,
             'is_demo_islamic' => $schema->is_demo_islamic,
         ];

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
+use App\Models\ForexSchema;
 use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
@@ -254,8 +255,21 @@ class UserController extends Controller
                 ->where('id', '<>', $user->ref_id);
         })
             ->get();
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+        $schemas = ForexSchema::where('status', true)
+            ->where(function($query) use ($tagNames) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All')
+                    ->orWhere(function($subQuery) use ($tagNames) {
+                        foreach ($tagNames as $tagName) {
+                            $subQuery->orWhereJsonContains('tags', $tagName);
+                        }
+                    });
+            })
+            ->orderBy('priority', 'asc')
+            ->get();
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups', 'schemas'));
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups'));
     }
 
     public function destroy($id)
@@ -330,7 +344,7 @@ class UserController extends Controller
      */
     public function update($id, Request $request)
     {
-        
+
         $input = $request->all();
         $validator = Validator::make($input, [
             'first_name' => 'required',
@@ -585,13 +599,19 @@ class UserController extends Controller
 
         return redirect()->route('user.dashboard');
     }
-    public function createNote(Request $request,$id)
-    {
-        $user = User::find($id);
-        $user->update(['notes'=>$request->notes]);
-        notify()->success('Note added successfully');
 
-        return redirect()->back();
-        
+
+    public function createCustomer()
+    {
+        return view('backend.user.create');
     }
+     public function createNote(Request $request,$id)
+     {
+         $user = User::find($id);
+         $user->update(['notes' => $request->notes]);
+         notify()->success('Note added successfully');
+
+         return redirect()->back();
+     }
+
 }

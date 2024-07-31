@@ -106,7 +106,7 @@ class RiskProfileTagController extends Controller
     {
         $riskProfileTag = RiskProfileTag::find($id);
 
-        return view('backend.risk_profile_tag.edit', compact('riskProfileTag'));
+        return view('backend.risk_profile_tag.include.__edit_form', compact('riskProfileTag'));
     }
 
     /**

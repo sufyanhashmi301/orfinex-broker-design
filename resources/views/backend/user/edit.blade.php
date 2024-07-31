@@ -7,10 +7,10 @@
         <div class="grid grid-cols-12 gap-6">
             <div class="lg:col-span-4 col-span-12">
                 <!-- User Status Update -->
-                @can('all-type-status')
-                    @include('backend.user.include.__status_update')
-                @endcan
-                <!-- User Status Update End-->
+            @can('all-type-status')
+                @include('backend.user.include.__status_update')
+            @endcan
+            <!-- User Status Update End-->
             </div>
             <div class="lg:col-span-8 col-span-12">
                 <div class="card overflow-hidden mb-5">
@@ -291,46 +291,46 @@
 
                 <div class="tab-content" id="pills-tabContent">
                     <!-- basic Info -->
-                    @canany(['customer-basic-manage','customer-change-password'])
-                        @include('backend.user.include.__basic_info')
-                    @endcanany
+                @canany(['customer-basic-manage','customer-change-password'])
+                    @include('backend.user.include.__basic_info')
+                @endcanany
 
-                    <!-- investments -->
-                    @can('investment-list')
-                        @include('backend.user.include.__investments')
-                    @endcan
+                <!-- investments -->
+                @can('investment-list')
+                    @include('backend.user.include.__accounts')
+                @endcan
 
-                    <!-- IB -->
-                    @can('IB-List')
-                        @include('backend.user.include.__ib_info')
-                        @include('backend.user.include.__ib_add')
-                        @include('backend.user.include.__ib_update')
-                        @include('backend.user.include.__mib_add')
-                        @include('backend.user.include.__mib_update')
-                    @endcan
+                <!-- IB -->
+                @can('IB-List')
+                    @include('backend.user.include.__ib_info')
+                    @include('backend.user.include.__ib_add')
+                    @include('backend.user.include.__ib_update')
+                    @include('backend.user.include.__mib_add')
+                    @include('backend.user.include.__mib_update')
+                @endcan
 
-                    <!-- earnings -->
-                    @can('profit-list')
-                        @include('backend.user.include.__earnings')
-                    @endcan
+                <!-- earnings -->
+                @can('profit-list')
+                    @include('backend.user.include.__earnings')
+                @endcan
 
-                    <!-- transaction -->
-                    @can('transaction-list')
-                        @include('backend.user.include.__transactions')
-                    @endcan
+                <!-- transaction -->
+                @can('transaction-list')
+                    @include('backend.user.include.__transactions')
+                @endcan
 
-                    <!-- Referral Tree -->
-                    @if(setting('site_referral','global') == 'level')
-                        @include('backend.user.include.__referral_direct')
-                        @include('backend.user.include.__referral_add')
+                <!-- Referral Tree -->
+                @if(setting('site_referral','global') == 'level')
+                    @include('backend.user.include.__referral_direct')
+                    @include('backend.user.include.__referral_add')
 
-                    @endif
-                    <!-- Referral Tree -->
-                    @if(setting('site_referral','global') == 'level')
-                        @include('backend.user.include.__referral_tree')
-                    @endif
+                @endif
+                <!-- Referral Tree -->
+                @if(setting('site_referral','global') == 'level')
+                    @include('backend.user.include.__referral_tree')
+                @endif
 
-                    <!-- ticket -->
+                <!-- ticket -->
                     @canany(['support-ticket-list','support-ticket-action'])
                         @include('backend.user.include.__ticket')
                     @endcan
@@ -370,6 +370,7 @@
     @include('backend.user.include.__delete_direct_referral')
     {{--    @endcan--}}
     <!-- Modal for add referral-->
+
 
 @endsection
 @section('script')
@@ -441,5 +442,123 @@
 
         });
 
+    </script>
+    <script>
+        $(document).ready(function () {
+            function updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic) {
+                var isIslamic = false;
+                if (accountType === 'real') {
+                    isIslamic = isRealIslamic == 1;
+                } else if (accountType === 'demo') {
+                    isIslamic = isDemoIslamic == 1;
+                }
+                $('#islamic-checkbox').prop('disabled', !isIslamic);
+            }
+
+            function updateLeverageAndDeposit(result) {
+                $('#display-commission').text(result.commission);
+                $('#display-spread').text(result.spread);
+                $('#select-leverage').html(result.leverage);
+                $('#display-leverage').text(result.display_leverage);
+                $('#initial-deposit').text(result.first_min_deposit);
+            }
+
+            $('#account-type-tabs .nav-link').on('click', function () {
+                $('#account-type-tabs .nav-link').removeClass('active');
+                $(this).addClass('active');
+                var accountType = $(this).data('type');
+                $('#account-type').val(accountType);
+
+                $('#islamic-checkbox').prop('checked', false);
+
+                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
+                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
+                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
+            });
+
+            $("#islamic-checkbox").on('change', function () {
+                var isIslamic = $(this).is(':checked');
+                var accountType = $('#account-type').val();
+                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
+                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
+                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
+            });
+
+            $("#select-schema").on('change', function (e) {
+                "use strict";
+                e.preventDefault();
+                var id = $(this).val();
+                var url = '{{ route("user.schema.select", ":id") }}';
+                url = url.replace(':id', id);
+
+                $.ajax({
+                    url: url,
+                    success: function (result) {
+                        $('#first-min-amount').text(result.first_min_deposit);
+                        updateLeverageAndDeposit(result);
+
+                        $('#select-schema').data('is-real-islamic', result.is_real_islamic);
+                        $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
+
+                        $('#islamic-checkbox').prop('checked', false);
+                        updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
+                    }
+                });
+            });
+
+            var initialAccountType = $('#account-type').val();
+            var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
+            var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
+            updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
+
+            $("#select-leverage").on('change', function () {
+                var selectedLeverage = $(this).val();
+                $('#display-leverage').text(selectedLeverage); // Update the display-leverage with the selected value
+            });
+
+            $("#selectWallet").on('change', function (e) {
+                "use strict";
+                $('.gatewaySelect').empty();
+                $('.manual-row').empty();
+                var wallet = $(this).val();
+                if (wallet === 'gateway') {
+                    $.get('{{ route('gateway.list') }}', function (data) {
+                        $('.gatewaySelect').append(data);
+                        $('select').niceSelect();
+                    });
+                }
+            });
+
+            $('body').on('change', '#gatewaySelect', function (e) {
+                "use strict";
+                e.preventDefault();
+                $('.manual-row').empty();
+                var code = $(this).val();
+                var url = '{{ route("user.deposit.gateway", ":code") }}';
+                url = url.replace(':code', code);
+                $.get(url, function (data) {
+                    if (data.credentials !== undefined) {
+                        console.log(data.credentials);
+                        $('.manual-row').append(data.credentials);
+                        imagePreview();
+                    }
+                });
+
+                $('#amount').on('keyup', function (e) {
+                    "use strict";
+                    var amount = $(this).val();
+                    $('.amount').text(Number(amount));
+                    $('.currency').text(currency);
+                    var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge;
+                    $('.charge2').text(charge + ' ' + currency);
+                    $('.total').text(Number(amount) + Number(charge) + ' ' + currency);
+                });
+            });
+
+            $('#enter-main-password').on('input', function () {
+                var password = $(this).val();
+                checkPassword(password, 'main', 'create-forex-account');
+            });
+        });
     </script>
 @endsection

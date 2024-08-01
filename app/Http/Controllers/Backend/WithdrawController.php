@@ -138,7 +138,7 @@ class WithdrawController extends Controller
             'min_withdraw' => $input['min_withdraw'],
             'max_withdraw' => $input['max_withdraw'],
             'status' => $input['status'],
-            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'fields' => json_encode($fields ?? $input['fields']),
         ];
 
@@ -207,7 +207,7 @@ class WithdrawController extends Controller
             'min_withdraw' => $input['min_withdraw'],
             'max_withdraw' => $input['max_withdraw'],
             'status' => $input['status'],
-            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'fields' => isset($input['fields']) ? json_encode($input['fields']) : $withdrawMethod->fields,
         ];
 

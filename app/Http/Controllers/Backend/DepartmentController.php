@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateDepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
 use Illuminate\Http\Request;
+use DataTables;
 
 class DepartmentController extends Controller
 {
@@ -18,23 +19,35 @@ class DepartmentController extends Controller
         $this->departmentService = $departmentService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $departments = Department::all();
-        return view('backend.departments.index', compact('departments'));
+        if ($request->ajax()) {
+            $data = Department::latest('updated_at');
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', 'backend.departments.include.__name')
+                ->addColumn('status', 'backend.departments.include.__status')
+                ->addColumn('action', 'backend.departments.include.__action')
+                ->rawColumns(['name','status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.departments.index');
+       
     }
 
     public function create()
     {
-        $departments = Department::all();
-        return view('backend.departments.create', compact('departments'));
+        $departments = Department::where('parent_id',null)->get();
+        return response()->json(['departments'=>$departments]);
+        
     }
 
     public function store(StoreDepartmentRequest $request)
     {
         $data = $request->validated();
         $data['parent_id'] = $data['parent_id'] !="" ?$data['parent_id'] : null;
-      
         $this->departmentService->create($data);
         notify()->success(__('Department created successfully.'));
         return redirect()->route('admin.departments.index');
@@ -50,15 +63,18 @@ class DepartmentController extends Controller
     {
         $descendants = $department->descendants()->pluck('id');
         $departments = Department::where('id', '!=', $department->id)
+        ->where('parent_id',null)
             ->whereNotIn('id', $descendants)
             ->get();
-        return view('backend.departments.edit', compact('department', 'departments'));
+            return view('backend.departments.include.__edit_form', compact('departments', 'department'))->render();
+       
     }
 
     public function update(UpdateDepartmentRequest $request, Department $department)
     { 
         $data = $request->validated();
-        if ($department->children()->exists() && !is_null($data['parent_id'])) {
+      
+        if ($department->children()->exists() && $data['parent_id'] !== "") {
             notify()->error(__('Cannot reassign this department as it has child records.'));
             return redirect()->back();
         }

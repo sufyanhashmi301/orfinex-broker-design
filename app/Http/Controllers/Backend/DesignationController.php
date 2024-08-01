@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDesignationRequest;
 use App\Http\Requests\UpdateDesignationRequest;
 use App\Models\Designation;
+use DataTables;
 use App\Services\DesignationService;
 use Illuminate\Http\Request;
 
@@ -18,16 +19,30 @@ class DesignationController extends Controller
         $this->designationService = $designationService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $designations = Designation::all();
-        return view('backend.designations.index', compact('designations'));
+        if ($request->ajax()) {
+            $data = Designation::latest('updated_at');
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', 'backend.designations.include.__name')
+                ->addColumn('status', 'backend.designations.include.__status')
+                ->addColumn('action', 'backend.designations.include.__action')
+                ->rawColumns(['name','status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.designations.index');
+        // $designations = Designation::all();
+        // return view('backend.designations.index', compact('designations'));
     }
 
     public function create()
     {
         $designations = Designation::where('parent_id',null)->get();
-        return view('backend.designations.create', compact('designations'));
+        return response()->json(['designations'=>$designations]);
+        
     }
 
     public function store(StoreDesignationRequest $request)
@@ -51,10 +66,11 @@ class DesignationController extends Controller
     {
         $descendants = $designation->descendants()->pluck('id');
         $designations = Designation::where('id', '!=', $designation->id)
+        ->where('parent_id',null)
             ->whereNotIn('id', $descendants)
             ->get();
-        
-        return view('backend.designations.edit', compact('designation', 'designations'));
+            return view('backend.designations.include.__edit_form', compact('designation', 'designations'))->render();
+
     }
 
     public function update(UpdateDesignationRequest $request, Designation $designation)

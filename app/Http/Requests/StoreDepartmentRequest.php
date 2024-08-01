@@ -24,11 +24,12 @@ class StoreDepartmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:departments,name',
             'department_email' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:departments,id',
             'hide_from_client'=>'nullable',
             
         ];
     }
+    
 }

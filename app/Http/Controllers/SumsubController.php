@@ -28,7 +28,7 @@ class SumsubController extends Controller
             try {
 //            dd($sumsubscredentials->app_token);
                 $testObject = new SumsubClient($sumsubscredentials->app_token, $sumsubscredentials->app_secret_id);
-                dd($testObject);
+//                dd($testObject);
                 $applicantId = $testObject->createApplicant($externalUserId, $levelName);
 //                dd($applicantId);
                 $test = $testObject->getApplicantStatus($applicantId);

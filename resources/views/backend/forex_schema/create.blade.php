@@ -253,7 +253,7 @@
                                 {{ __('Trading Server (Live) ') }}
                             </label>
                             <select name="" class="select2 form-control w-full">
-                                <option value="OrfinexPrime-MT5">{{ __('OrfinexPrime-MT5') }}</option>
+                                <option value="Banex Capital">{{ __('Banex Capital') }}</option>
                             </select>
                         </div>
                     </div>
@@ -310,7 +310,7 @@
                                 {{ __('Trading Server (Live) ') }}
                             </label>
                             <select name="" class="select2 form-control w-full">
-                                <option value="OrfinexPrime-MT5">{{ __('OrfinexPrime-MT5') }}</option>
+                                <option value="Banex Capital">{{ __('Banex Capital') }}</option>
                             </select>
                         </div>
                     </div>

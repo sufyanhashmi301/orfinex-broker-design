@@ -36,13 +36,13 @@ class DepositMethod extends Model
 
         return asset($this->logo);
     }
-    public function getCountryAttribute($value)
-    {
-        return $value ? json_decode($value, true) : ['All'];
-    }
+//    public function getCountryAttribute($value)
+//    {
+//        return $value ? json_decode($value, true) : ['All'];
+//    }
 
-    public function setCountryAttribute($value)
-    {
-        $this->attributes['country'] = json_encode($value);
-    }
+//    public function setCountryAttribute($value)
+//    {
+//        $this->attributes['country'] = json_encode($value);
+//    }
 }

@@ -105,11 +105,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
-            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
+//        dd($data);
 
         $depositMethod = DepositMethod::create($data);
         notify()->success($depositMethod->name . ' ' . __(' Method Created'));
@@ -174,12 +175,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
-            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-
+//dd($data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);

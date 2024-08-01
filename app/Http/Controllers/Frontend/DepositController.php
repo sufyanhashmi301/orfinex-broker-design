@@ -44,6 +44,8 @@ class DepositController extends GatewayController
                     ->orWhereJsonContains('country', 'All');
             })->get();
 
+//        dd($gateways);
+
 //        $clientIp = request()->ip();
 //        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
 //            $this->syncForexAccounts(auth()->id());

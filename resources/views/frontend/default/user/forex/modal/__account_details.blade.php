@@ -24,7 +24,7 @@
                         <li class="flex items-center py-3">
                             <span class="font-medium dark:text-white">Server :</span>
                             <span class="ml-auto dark:text-white">
-                                <span id="account-info-server">OrfinexPrime-MT5</span>
+                                <span id="account-info-server">Banex Capital</span>
                             </span>
                         </li>
                         <li class="flex items-center py-3">

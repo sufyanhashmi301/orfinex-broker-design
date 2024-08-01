@@ -10,7 +10,7 @@
             </h4>
             <div class="flex space-x-4 justify-end items-center rtl:space-x-reverse">
                 @can('target-manage')
-                    <a href="{{ route('admin.referral.target') }}" class="btn inline-flex justify-center btn-dark">
+                    <a href="{{ route('admin.referral.target') }}" class="btn btn-primary inline-flex items-center justify-center">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
                             <span>{{ __('Set Targets') }}</span>
@@ -172,7 +172,7 @@
         @include('backend.referral.include.__delete_referral')
     @endcan
     <!-- Modal for Delete Level End-->
-    
+
 @endsection
 @section('script')
     <script>

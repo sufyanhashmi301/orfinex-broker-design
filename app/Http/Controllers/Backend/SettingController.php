@@ -88,20 +88,12 @@ class SettingController extends Controller
 //        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
 
-        $colorsKeys = ['primary_color', 'secondary_color', 'active_menu_bg', 'active_menu_color'];
-
         try {
             $validSettings = array_keys($rules);
             foreach ($data as $key => $val) {
                 // dd($data, $key, $val, $validSettings);
 
                 if (in_array($key, $validSettings)) {
-
-                    if (in_array($key, $colorsKeys)) {
-
-                        $val = hexToRgb($val);
-
-                    }
 
                     if ($request->hasFile($key)) {
                         $oldImage = Setting::get($key, $section);

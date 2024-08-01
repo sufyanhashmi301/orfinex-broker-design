@@ -4,30 +4,33 @@
 @endsection
 @section('content')
 
-        <div class="grid sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
-            <div class="flex items-center justify-between flex-wrap md:nowrap gap-5 bg-no-repeat bg-cover bg-center p-4 rounded-[6px]" style="background-image: url({{ asset('frontend/images/yellow-gradient.png') }});">
+        <div class="grid grid-cols-1 gap-5 mb-5">
+{{--            <div class="flex items-center justify-between flex-wrap md:nowrap gap-5 bg-no-repeat bg-cover bg-center p-4 rounded-[6px]" style="background-image: url({{ asset('frontend/images/yellow-gradient.png') }});">--}}
+{{--                <div class="">--}}
+{{--                    <p class="text-base text-slate-600 text-opacity-80 mb-2">--}}
+{{--                        You don't have an Active Account yet.--}}
+{{--                    </p>--}}
+{{--                    <p class="text-lg font-medium text-slate-900">--}}
+{{--                        Unlock Exclusive Bonus to Kickstart Your Success.--}}
+{{--                    </p>--}}
+{{--                </div>--}}
+{{--                <div class="ltr:right-6 rtl:left-6">--}}
+{{--                    <a href="" class="btn btn-sm btn-dark inline-flex items-center">--}}
+{{--                        {{ __('Open New Account') }}--}}
+{{--                    </a>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+            <div class="flex flex-wrap items-center justify-between md:nowrap bg-slate-900 dark:bg-slate-800 px-4 py-5 rounded-[6px] relative gap-5">
                 <div class="">
-                    <p class="text-base text-slate-600 text-opacity-80 mb-2">
-                        You don't have an Active Account yet.
+                    <p class="text-base text-white text-opacity-80 mb-2">
+                        {{ __("You don't have an Active Account yet.") }}
                     </p>
-                    <p class="text-lg font-medium text-slate-900">
-                        Unlock Exclusive Bonus to Kickstart Your Success.
-                    </p>
-                </div>
-                <div class="ltr:right-6 rtl:left-6">
-                    <a href="" class="btn btn-sm btn-dark inline-flex items-center">
-                        {{ __('Open New Account') }}
-                    </a>
-                </div>
-            </div>
-            <div class="bg-slate-900 dark:bg-slate-800 p-4 rounded-[6px] relative">
-                <div class="">
-                    <h4 class="text-lg font-medium text-white mb-2">
-                        Enjoy Exclusive Benefits & Boost Your Earnings!
+                    <h4 class="text-lg font-medium text-white">
+                        {{ __('Unlock Exclusive Bonus to Kickstart Your Success.') }}
                     </h4>
-                    <a href="" class="flex items-center text-slate-100">
-                        <span>Become IB Partner Now</span>
-                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                </div>
+                    <a href="{{route('user.schema')}}" class="btn btn-light btn-sm inline-flex items-center justify-center">
+                        {{ __('Open New Account') }}
                     </a>
                 </div>
             </div>

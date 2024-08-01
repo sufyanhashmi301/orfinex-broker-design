@@ -874,32 +874,32 @@ if (!function_exists('getRiskProfileTag')) {
     }
 }
 
-if(!function_exists('hexToRgb')) {
-    function hexToRgb($hex) {
-        // Remove the hash at the start if it's there
-        $hex = ltrim($hex, '#');
+if (!function_exists('hexToRgb')) {
+    function hexToRgb($hexColor)
+    {
+        // Remove the '#' character if it's there
+        $hexColor = ltrim($hexColor, '#');
 
-        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-        if (strlen($hex) === 3) {
-            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        // Expand shorthand hex colors (e.g., #FFF to #FFFFFF)
+        if (strlen($hexColor) === 3) {
+            $hexColor = $hexColor[0] . $hexColor[0] . $hexColor[1] . $hexColor[1] . $hexColor[2] . $hexColor[2];
         }
 
-        // Check if the length is valid (6 characters)
-        if (strlen($hex) !== 6) {
-            return response()->json(['error' => 'Invalid hexadecimal color'], 400);
-        }
+        // Convert the hex color to RGB
+        $r = hexdec(substr($hexColor, 0, 2));
+        $g = hexdec(substr($hexColor, 2, 2));
+        $b = hexdec(substr($hexColor, 4, 2));
 
-        // Convert hex to RGB
-        $r = hexdec(substr($hex, 0, 2));
-        $g = hexdec(substr($hex, 2, 2));
-        $b = hexdec(substr($hex, 4, 2));
+        return [$r, $g, $b];
+    }
+}
 
-        return json_encode([
-            'r' => $r,
-            'g' => $g,
-            'b' => $b
-        ]);
-
+if (!function_exists('getColorFromSettings')) {
+    function getColorFromSettings($key, $default = '000000')
+    {
+        // Assuming you have a function `setting()` that retrieves settings from the database
+        $hexColor = setting($key, 'global', $default);
+        return hexToRgb($hexColor);
     }
 }
 

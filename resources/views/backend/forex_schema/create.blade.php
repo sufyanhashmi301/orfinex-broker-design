@@ -8,7 +8,7 @@
             {{ __('Add New Account Type') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="inline-flex items-center justify-center text-success-600">
+            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -219,7 +219,7 @@
                                 required
                             />
                         </div>
-                        <div class="input-area">
+                        <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
@@ -245,9 +245,16 @@
                                     name="real_islamic"
                                     class="form-control"
                                     placeholder="Platform Group (Islamic)"
-
                                 />
                             </div>
+                        </div>
+                        <div class="input-area relative">
+                            <label for="" class="form-label">
+                                {{ __('Trading Server (Live) ') }}
+                            </label>
+                            <select name="" class="select2 form-control w-full">
+                                <option value="OrfinexPrime-MT5">{{ __('OrfinexPrime-MT5') }}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -268,7 +275,7 @@
                                 required
                             />
                         </div>
-                        <div class="input-area">
+                        <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#demo-islamic-group">
@@ -296,6 +303,15 @@
                                     placeholder="Platform Group (Islamic)"
                                 />
                             </div>
+                        </div>
+
+                        <div class="input-area relative">
+                            <label for="" class="form-label">
+                                {{ __('Trading Server (Live) ') }}
+                            </label>
+                            <select name="" class="select2 form-control w-full">
+                                <option value="OrfinexPrime-MT5">{{ __('OrfinexPrime-MT5') }}</option>
+                            </select>
                         </div>
                     </div>
                 </div>

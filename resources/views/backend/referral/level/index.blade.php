@@ -10,7 +10,7 @@
             </h4>
             <div class="flex space-x-4 justify-end items-center rtl:space-x-reverse">
                 @can('referral-create')
-                    <button class="btn inline-flex justify-center btn-dark new-referral" type="button">
+                    <button class="btn btn-primary inline-flex justify-center new-referral" type="button">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
                             <span>{{ __('Add New') }}</span>
@@ -31,17 +31,17 @@
                                 @csrf
                                 <input type="hidden" name="type" value="deposit_level">
                                 <div class="form-switch ps-0" style="line-height: 0;">
-                                    <input 
-                                        class="form-check-input" 
-                                        type="hidden" 
-                                        value="0" 
+                                    <input
+                                        class="form-check-input"
+                                        type="hidden"
+                                        value="0"
                                         name="status"
                                     />
                                     <label class="deposit-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
-                                        <input 
-                                            type="checkbox" 
-                                            name="status" 
-                                            value="1" 
+                                        <input
+                                            type="checkbox"
+                                            name="status"
+                                            value="1"
                                             class="sr-only peer"
                                             @checked(setting('deposit_level'))
                                         />
@@ -112,17 +112,17 @@
                                 @csrf
                                 <input type="hidden" name="type" value="multi_ib_level">
                                 <div class="form-switch ps-0" style="line-height: 0;">
-                                    <input 
-                                        class="form-check-input" 
-                                        type="hidden" 
-                                        value="0" 
+                                    <input
+                                        class="form-check-input"
+                                        type="hidden"
+                                        value="0"
                                         name="status"
                                     />
                                     <label class="MultiIB-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
-                                        <input 
-                                            type="checkbox" 
-                                            name="status" 
-                                            value="1" 
+                                        <input
+                                            type="checkbox"
+                                            name="status"
+                                            value="1"
                                             class="sr-only peer"
                                             @checked(setting('multi_ib_level','global',1))
                                         />
@@ -189,17 +189,17 @@
                                 @csrf
                                 <input type="hidden" name="type" value="profit_level">
                                 <div class="form-switch ps-0" style="line-height: 0;">
-                                    <input 
-                                        class="form-check-input" 
-                                        type="hidden" 
-                                        value="0" 
+                                    <input
+                                        class="form-check-input"
+                                        type="hidden"
+                                        value="0"
                                         name="status"
                                     />
                                     <label class="profit-status relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-switch">
-                                        <input 
-                                            type="checkbox" 
-                                            name="status" 
-                                            value="1" 
+                                        <input
+                                            type="checkbox"
+                                            name="status"
+                                            value="1"
                                             class="sr-only peer"
                                             @checked(setting('profit_level'))
                                         />
@@ -255,7 +255,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <!-- Modal for Add New Level -->
     @can('referral-create')

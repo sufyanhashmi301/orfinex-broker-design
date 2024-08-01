@@ -8,7 +8,7 @@
             {{ __('IB Forms') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.ib-form.create') }}" class="inline-flex items-center justify-center text-success-600">
+            <a href="{{ route('admin.ib-form.create') }}" class="btn btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
@@ -69,7 +69,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Modal for Delete deleteKycType -->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
         id="deleteKyc"
@@ -89,7 +89,7 @@
                     </h4>
                 </div>
                 <p>
-                    {{ __('You want to Delete') }} 
+                    {{ __('You want to Delete') }}
                     <strong class="name"></strong> {{ __('IB Verification Type?') }}
                 </p>
                 <form method="post" id="kycEditForm">

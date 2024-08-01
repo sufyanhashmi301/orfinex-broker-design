@@ -111,7 +111,7 @@
                                 </span>
                             </div>
                         </li>
-                    
+
                         <!--Second item-->
                         <li class="w-[4.5rem] flex-auto">
                             <div class="flex cursor-pointer items-center leading-[1.3rem] no-underline before:mr-2 before:h-px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] after:ml-2 after:h-px after:w-full after:flex-1 after:bg-[#e0e0e0] after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
@@ -123,7 +123,7 @@
                                 </span>
                             </div>
                         </li>
-                    
+
                         <!--Third item-->
                         <li class="w-[4.5rem] flex-auto">
                             <div class="flex cursor-pointer items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
@@ -576,7 +576,7 @@
                             <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1 cursor-pointer font-normal" for="">Server</label>
                             <div class="fromGroup">
                                 <div class="relative">
-                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="text" value="OrfinexPrime-MT5" id="copyServer" readonly>
+                                    <input class="form-control !py-1 !pr-9 !bg-transparent p-0 text-slate-900 dark:text-white text-sm placeholder:text-slate-400 h-auto" type="text" value="Banex Capital" id="copyServer" readonly>
                                     <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServer">
                                         <iconify-icon icon="lucide:copy"></iconify-icon>
                                     </button>
@@ -630,11 +630,11 @@
                 $('.copy-button').on('click', function() {
                     var targetId = $(this).data('target');
                     var copyText = $('#' + targetId);
-                    
+
                     copyText.select();
                     document.execCommand('copy');
                 });
-                
+
             });
 
     </script>

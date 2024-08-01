@@ -149,7 +149,7 @@
             var id = $(this).data('id');
 
             $.get('staff/' + id + '/edit', function (data) {
-
+               
                 $('#editModal').modal('show');
                 $('#edit-staff-body').append(data);
 

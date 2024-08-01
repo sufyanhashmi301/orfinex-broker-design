@@ -48,13 +48,20 @@ class DepartmentController extends Controller
 
     public function edit(Department $department)
     {
-        $departments = Department::where('id', '!=', $department->id)->get();
+        $descendants = $department->descendants()->pluck('id');
+        $departments = Department::where('id', '!=', $department->id)
+            ->whereNotIn('id', $descendants)
+            ->get();
         return view('backend.departments.edit', compact('department', 'departments'));
     }
 
     public function update(UpdateDepartmentRequest $request, Department $department)
     { 
         $data = $request->validated();
+        if ($department->children()->exists() && !is_null($data['parent_id'])) {
+            notify()->error(__('Cannot reassign this department as it has child records.'));
+            return redirect()->back();
+        }
         $data['parent_id'] = $data['parent_id'] != "" ?$data['parent_id']: null;  // Set to null if empty
         $this->departmentService->update($department, $data);
         notify()->success(__('Department updated successfully.'));
@@ -64,6 +71,14 @@ class DepartmentController extends Controller
 
     public function destroy(Department $department)
     {
+        if ($department->staff()->count() > 0) {
+            notify()->error(__('This department cannot be deleted because staff is linked to it.'));
+            return redirect()->route('admin.departments.index');
+        }
+        if ($department->children()->count() > 0) {
+            notify()->error(__('This department cannot be deleted because child departments exist.'));
+            return redirect()->route('admin.departments.index');
+        }
         $this->departmentService->delete($department);
         notify()->success(__('Department deleted successfully.'));
         return redirect()->route('admin.departments.index');

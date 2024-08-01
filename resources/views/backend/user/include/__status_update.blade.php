@@ -26,6 +26,18 @@
                 </span>
                 {{ carbonInstance($user->created_at)->toDayDateTimeString() }}
             </div>
+            <div class="text-sm font-light text-slate-600 dark:text-slate-400 my-5">
+                <span class="font-medium">
+                    {{ __('Customer Group: ') }}
+                </span>
+                @if($user->customerGroups->isNotEmpty())
+        @foreach($user->customerGroups as $group)
+            <span>{{ $group->name }}</span>
+        @endforeach
+    @else
+        <span>{{ 'N/A' }}</span>
+    @endif
+            </div>
         </div>
         <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
             @can('customer-mail-send')

@@ -19,4 +19,25 @@ class Department extends Model
     {
         return $this->hasMany(Department::class, 'parent_id');
     }
+    public function allDescendants()
+    {
+        return $this->children()->with('allDescendants');
+    }
+
+    public function descendants()
+    {
+        $descendants = collect();
+        $children = $this->allDescendants()->get();
+
+        foreach ($children as $child) {
+            $descendants->push($child);
+            $descendants = $descendants->merge($child->descendants());
+        }
+
+        return $descendants;
+    }
+    public function staff()
+    {
+        return $this->belongsToMany(Admin::class, 'department_has_staff', 'department_id', 'staff_id');
+    }
 }

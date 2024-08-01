@@ -24,7 +24,7 @@ class StoreDesignationRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:designations,name',
             'parent_id' => 'nullable|exists:designations,id',
         ];
     }

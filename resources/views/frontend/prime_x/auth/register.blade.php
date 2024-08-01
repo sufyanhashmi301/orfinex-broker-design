@@ -185,8 +185,8 @@
                           >
                           <span class="text-slate-500 dark:text-slate-400 text-xs leading-6 capitalize">
                             {{ __('I agree with') }}
-                            <a href="{{url('/privacy-policy')}}">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
-                            <a href="{{url('/terms-and-conditions')}}">{{ __('Terms & Condition') }}</a>
+                            <a href="{{ setting('privacy_policy_link', 'global') }}" class="btn-link" target="_blank">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
+                            <a href="{{ setting('client_agreement_link', 'global') }}" class="btn-link" target="_blank">{{ __('Client Agreement') }}</a>
                           </span>
                         </label>
                       </div>

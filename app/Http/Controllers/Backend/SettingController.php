@@ -128,7 +128,12 @@ class SettingController extends Controller
 
     public static function companySetting()
     {
-        return view('backend.setting.site_setting.company');
+        return view('backend.setting.company.company');
+    }
+
+    public static function miscSetting()
+    {
+        return view('backend.setting.company.misc');
     }
 
     public static function currencySetting()

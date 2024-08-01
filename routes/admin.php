@@ -277,6 +277,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('slack', 'slackSetting')->name('slack');
 
         Route::get('platform-api', 'platformApiSetting')->name('platform-api');
+        Route::get('misc', 'miscSetting')->name('misc');
 
     });
 

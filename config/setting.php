@@ -83,13 +83,13 @@ return [
                 'name' => 'active_menu_color', // unique name for field
                 'label' => 'Active menu text Color', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => '#0f172a', // default value if you want
+                'value' => '#ffffff', // default value if you want
             ],
         ],
     ],
 
     'common_settings' => [
-        'title' => 'Common Settings',
+        'title' => 'Company Settings',
 
         'elements' => [
             [
@@ -98,7 +98,7 @@ return [
                 'name' => 'site_title', // unique name for field
                 'label' => 'Site Title', // you know what label it is
                 'rules' => 'required|min:2|max:50', // validation rule of laravel
-                'value' => 'Hyiprio', // default value if you want
+                'value' => 'Brokeret', // default value if you want
             ],
             [
                 'type' => 'email', // input fields type

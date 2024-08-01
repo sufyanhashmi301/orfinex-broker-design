@@ -27,15 +27,15 @@
                             </label>
                         </span>
                     @elseif($field['type'] == 'url')
-                        <input 
-                            type="{{$field['type']}}" 
+                        <input
+                            type="{{$field['type']}}"
                             name="{{ $field['name'] }}"
-                            class="form-control !pl-22 {{ $errors->has($field['name']) ? 'has-error' : '' }}" 
+                            class="form-control !pl-16.5 {{ $errors->has($field['name']) ? 'has-error' : '' }}"
                             value="{{oldSetting($field['name'],$section)}}"
                             placeholder="URL"
                         />
                         <span class="absolute left-0 top-1/2 px-3 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center">
-                            https://
+                            {{ __('URL') }}
                         </span>
                     @else
                         <input type="{{$field['type']}}" name="{{ $field['name'] }}" class="form-control !pr-24 @if($errors->has($field['name'])) has-error @endif" placeholder="URL" value="{{oldSetting($field['name'],$section)}}">

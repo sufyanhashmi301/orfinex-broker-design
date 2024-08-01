@@ -393,22 +393,7 @@
             @endcan
 
         @endcanany
-        <li class="">
-            <a href="{{ route('admin.departments.index') }}" class="navItem {{ isActive('admin.departments*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:medal"></iconify-icon>
-                    <span>{{ __('Manage Departments') }}</span>
-                </span>
-            </a>
-        </li>
-        <li class="">
-            <a href="{{ route('admin.designations.index') }}" class="navItem {{ isActive('admin.designations*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:medal"></iconify-icon>
-                    <span>{{ __('Manage Designations') }}</span>
-                </span>
-            </a>
-        </li>
+
         @can('email-template')
         <li class="{{ isActive(['admin.theme*']) }}">
             <a href="javascript:void(0);" class="navItem">

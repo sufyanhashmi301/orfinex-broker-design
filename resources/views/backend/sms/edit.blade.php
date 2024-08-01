@@ -9,7 +9,7 @@
                 {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ route('admin.template.sms.index') }}" class="inline-flex items-center justify-center text-success-600">
+                <a href="{{ route('admin.template.sms.index') }}" class="btn btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                     {{ __('Back') }}
                 </a>
@@ -23,7 +23,7 @@
                     <input type="hidden" name="id" value="{{ $template->id }}">
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Message Body') }}
-                            <iconify-icon 
+                            <iconify-icon
                                 class="toolTip onTop"
                                 icon="lucide:info"
                                 data-tippy-theme="dark"
@@ -48,7 +48,7 @@
                             {{ __('Template Status') }}
                             <iconify-icon
                                 class="toolTip onTop"
-                                icon="lucide:info" 
+                                icon="lucide:info"
                                 data-tippy-theme="dark" title=""
                                 data-tippy-content="Template Status">
                             </iconify-icon>

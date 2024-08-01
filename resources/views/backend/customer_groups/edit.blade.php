@@ -8,7 +8,7 @@
             {{ __('Edit Group') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="inline-flex items-center justify-center text-success-500">
+            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -18,7 +18,7 @@
     <div class="card">
         <div class="card-body p-6">
             <form action="{{route('admin.customer-groups.update',$customerGroup->id)}}" method="post" class="space-y-4">
-            @method('PUT')    
+            @method('PUT')
             @csrf
                 <div class="input-area">
                     <label for="" class="form-label">{{ __('Group Name') }}</label>
@@ -31,7 +31,7 @@
                             type="radio"
                             id="active-status-2"
                             name="status"
-                            
+
                             value="1"
                             @if($customerGroup->status==1) ? checked : '' @endif
                         />
@@ -42,8 +42,8 @@
                             name="status"
                             @if($customerGroup->status==0) ? checked : '' @endif
                             value="0"
-                           
-                           
+
+
                         />
                         <label for="deactivate-status-2">{{ __('Deactivate') }}</label>
                     </div>

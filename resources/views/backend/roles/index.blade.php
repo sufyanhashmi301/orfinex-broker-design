@@ -9,7 +9,7 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('role-create')
-                <a href="{{route('admin.roles.create')}}" class="inline-flex items-center justify-center text-success-600">
+                <a href="{{route('admin.roles.create')}}" class="btn btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New Role') }}
                 </a>

@@ -8,20 +8,20 @@
             {{ __('Departments') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center justify-center text-success-500">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
+            <a href="{{ route('admin.departments.create') }}" class="btn btn-primary inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-body p-6 pt-0">
+        <div class="card-body p-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Department Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>

@@ -8,7 +8,7 @@
             {{ __('Risk Profile Tag Forms') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="javascript:;" class="inline-flex items-center justify-center text-success-500" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
+            <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>

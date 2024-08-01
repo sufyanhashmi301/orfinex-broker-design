@@ -50,11 +50,6 @@
                         </li>
 
                     @endcanany
-                    <li>
-                        <a href="{{ route('admin.notification.all') }}" class="{{ isActive('admin.notification.all') }}">
-                            {{ __('Notifications') }}
-                        </a>
-                    </li>
                     @can('customer-mail-send')
                         <li>
                             <a href="{{ route('admin.user.mail-send.all') }}" class="{{ isActive('admin.user.mail-send.all') }}">
@@ -146,13 +141,6 @@
                         <li>
                             <a href="{{route('admin.ibAccountType.index')}}" class="{{ isActive('admin.ibAccountType*') }}">
                                 {{ __('IB Account Type') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('black-list-countries')
-                        <li>
-                            <a href="{{route('admin.blackListCountry.index')}}" class="{{ isActive('admin.blackListCountry*') }}">
-                                {{ __('Black List Countries') }}
                             </a>
                         </li>
                     @endcan

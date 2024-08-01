@@ -9,7 +9,7 @@
         </h4>
         @if($isLink)
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ route('admin.settings.notification.tune') }}" class="inline-flex items-center justify-center text-success-500 new-referral" type="button" data-type="investment">
+                <a href="{{ route('admin.settings.notification.tune') }}" class="btn btn-primary inline-flex items-center justify-center new-referral" type="button" data-type="investment">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:volume-1"></iconify-icon>
                     {{ __('Set Tune') }}
                 </a>
@@ -17,7 +17,7 @@
         @endif
     </div>
     @include('backend.setting.plugin.include.__menu')
-    
+
     <div class="col-span-12">
         <div class="card">
             <div class="card-body p-6 space-y-4">

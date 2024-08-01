@@ -9,7 +9,7 @@
                 {{ __('Add New Department') }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ route('admin.departments.index') }}" class="inline-flex items-center justify-center text-success-500">
+                <a href="{{ route('admin.departments.index') }}" class="btn btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                     {{ __('Back') }}
                 </a>
@@ -41,7 +41,7 @@
                     <input type="checkbox" name="hide_from_client" value="1" {{ old('hide_from_client', 1) == 1 ? 'checked' : '' }}>
                         <label class="form-label" for="">{{ __('Hide From Client:') }}</label>
                     </div>
-                    
+
 
                     <div class="input-area text-right">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

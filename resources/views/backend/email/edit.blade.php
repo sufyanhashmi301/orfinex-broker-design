@@ -4,16 +4,18 @@
 @endsection
 @section('content')
     <div class="max-w-5xl mx-auto">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title"> {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}</h4>
-                <div class="card-header-links">
-                    <a href="{{ route('admin.email-template') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
-                        {{ __('Back') }}
-                    </a>
-                </div>
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}
+            </h4>
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <a href="{{ route('admin.email-template') }}" class="btn btn-primary inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                    {{ __('Back') }}
+                </a>
             </div>
+        </div>
+        <div class="card">
             <div class="card-body p-6">
                 <form action="{{ route('admin.email-template-update') }}" method="post" enctype="multipart/form-data" class="space-y-5">
                     @csrf
@@ -177,7 +179,7 @@
                         <div class="md:col-span-3 col-span-12"></div>
                         <div class="md:col-span-9 col-span-12">
                             <textarea name="bottom_body" class="form-control" cols="30" rows="8">
-                                {{ br2nl($template->bottom_body) }}   
+                                {{ br2nl($template->bottom_body) }}
                             </textarea>
                             <p class="paragraph text-sm mb-0 mt-2">
                                 <iconify-icon icon="lucide:alert-triangle"></iconify-icon>
@@ -186,7 +188,7 @@
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label">
                             {{ __('Note') }}
@@ -205,7 +207,7 @@
                             <textarea name="footer_body" class="form-control" cols="30" rows="8"></textarea>
                         </div>
                     </div>
-                    
+
                     <div class="input-area grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label">
                             {{ __('Company About') }}

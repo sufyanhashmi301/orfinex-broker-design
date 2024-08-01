@@ -7,21 +7,21 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ 'Customer Groups'  }}
         </h4>
-        <a href="{{route('admin.customer-groups.create')}}" class="inline-flex items-center justify-center text-success-600">
+        <a href="{{route('admin.customer-groups.create')}}" class="btn btn-primary inline-flex items-center justify-center">
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
             Add New Group
         </a>
-        
+
     </div>
     <div class="card">
-        <div class="card-body p-6">
+        <div class="card-body p-6 pt-3">
         <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                     <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Group Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-                
+
         </div>
     </div>
 @include('backend.customer_groups.include.__delete')

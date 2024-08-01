@@ -94,7 +94,8 @@
                 {{ 'Currency Settings' }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="" class="btn btn-dark inline-flex items-center justify-center text-success-600">
+                <a href="" class="btn btn-primary inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     Add Currency
                 </a>
             </div>
@@ -112,12 +113,12 @@
                                     <div class="flex items-center space-x-7 flex-wrap">
                                         <div class="success-radio">
                                             <label class="flex items-center cursor-pointer">
-                                                <input 
-                                                    type="radio" 
+                                                <input
+                                                    type="radio"
                                                     id="active1-{{$key}}"
-                                                    class="hidden site-currency-type" 
-                                                    name="{{$field['name']}}" 
-                                                    value="fiat" 
+                                                    class="hidden site-currency-type"
+                                                    name="{{$field['name']}}"
+                                                    value="fiat"
                                                     @checked(oldSetting($field['name'],$section) == 'fiat')
                                                 >
                                                 <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
@@ -128,12 +129,12 @@
                                         </div>
                                         <div class="success-radio">
                                             <label class="flex items-center cursor-pointer">
-                                                <input 
-                                                    type="radio" 
+                                                <input
+                                                    type="radio"
                                                     id="disable0-{{$key}}"
-                                                    class="hidden site-currency-type" 
-                                                    name="{{$field['name']}}" 
-                                                    value="crypto" 
+                                                    class="hidden site-currency-type"
+                                                    name="{{$field['name']}}"
+                                                    value="crypto"
                                                     @checked(oldSetting($field['name'],$section) == 'crypto')
                                                 >
                                                 <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>

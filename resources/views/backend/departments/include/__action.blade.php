@@ -1,9 +1,8 @@
-
-<a href="{{ route('admin.departments.edit',$id) }}" data-id="{{ $id }}" class="action-btn editDepartment">
+<div class="flex space-x-3 rtl:space-x-reverse">
+    <a href="{{ route('admin.departments.edit',$id) }}" data-id="{{ $id }}" class="action-btn editDepartment">
       <iconify-icon icon="lucide:edit-3"></iconify-icon>
-  </a>
-  <button type="button" data-id="{{ $id }}"  class="action-btn deleteDepartment">
+    </a>
+    <button type="button" data-id="{{ $id }}"  class="action-btn deleteDepartment">
       <iconify-icon icon="lucide:trash-2"></iconify-icon>
-  </button>
-
-
+    </button>
+</div>

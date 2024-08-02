@@ -188,35 +188,6 @@
                             </p>
                         </div>
                     </div>
-
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <label for="" class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Note') }}
-                            <iconify-icon class="toolTip onTop text-base" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the Note here"></iconify-icon>
-                        </label>
-                        <div class="md:col-span-9 col-span-12">
-                            <textarea name="footer_body" class="form-control" cols="30" rows="8"></textarea>
-                        </div>
-                    </div>
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <label for="" class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Warning Content') }}
-                            <iconify-icon class="toolTip onTop text-base" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the Warning Messages here"></iconify-icon>
-                        </label>
-                        <div class="md:col-span-9 col-span-12">
-                            <textarea name="footer_body" class="form-control" cols="30" rows="8"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="input-area grid grid-cols-12 gap-5">
-                        <label for="" class="md:col-span-3 col-span-12 form-label">
-                            {{ __('Company About') }}
-                            <iconify-icon class="toolTip onTop text-base" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the Company About here"></iconify-icon>
-                        </label>
-                        <div class="md:col-span-9 col-span-12">
-                            <textarea name="footer_body" class="form-control" cols="30" rows="8"></textarea>
-                        </div>
-                    </div>
                     <div class="grid grid-cols-12 gap-5">
                         <label for="" class="md:col-span-3 col-span-12 form-label pt-0">
                             {{ __('Template Status') }}

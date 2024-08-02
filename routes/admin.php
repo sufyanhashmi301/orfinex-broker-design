@@ -397,5 +397,5 @@ Route::get('settings/platform-api/db-synchronization', function () {
 Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
 Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
 Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);

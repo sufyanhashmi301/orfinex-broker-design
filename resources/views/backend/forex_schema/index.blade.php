@@ -150,6 +150,7 @@
                 alert('You must type "delete" to confirm.');
             }
         });
+       
     });
 </script>
 @endsection

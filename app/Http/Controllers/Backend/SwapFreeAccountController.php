@@ -27,9 +27,16 @@ class SwapFreeAccountController extends Controller
     public function store(StoreSwapFreeAccountRequest $request)
     {
         $account = $this->swapFreeAccountService->create($request);
-        return response()->json($account, 201);
+        notify()->success(__('Swap free account created successfully.'));
+        return redirect()->route('admin.accountType.view',$request->account_type_id);
+        
     }
-
+    public function edit(SwapFreeAccount $swapFreeAccount)
+    {
+    
+         return view('backend.forex_schema.include.__editSwapFreeForm', compact('swapFreeAccount'))->render();
+       
+    }
     public function show(SwapFreeAccount $swapFreeAccount)
     {
         return response()->json($swapFreeAccount);
@@ -38,12 +45,14 @@ class SwapFreeAccountController extends Controller
     public function update(StoreSwapFreeAccountRequest $request, SwapFreeAccount $swapFreeAccount)
     {
         $account = $this->swapFreeAccountService->update($request, $swapFreeAccount);
-        return response()->json($account);
+        notify()->success(__('Swap free account updated successfully.'));
+        return redirect()->route('admin.accountType.view',$request->account_type_id);
     }
 
     public function destroy(SwapFreeAccount $swapFreeAccount)
     {
         $this->swapFreeAccountService->delete($swapFreeAccount);
-        return response()->json(null, 204);
+        notify()->success(__('Swap free account deleted successfully.'));
+        return redirect()->route('admin.accountType.view',$swapFreeAccount->account_type_id);
     }
 }

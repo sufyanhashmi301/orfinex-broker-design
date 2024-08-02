@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schedule;
+use App\Models\SwapBasedAccount;
+use App\Models\SwapFreeAccount;
 use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
@@ -56,7 +58,9 @@ class ForexSchemaController extends Controller
     public function view($id)
     {
         $schema = ForexSchema::find($id);
-        return view('backend.forex_schema.view',compact('schema'));
+        $swapBasedAccounts = SwapBasedAccount::where('account_type_id',$id)->orderBy('level_order')->get();
+        $swapFreeAccounts = SwapFreeAccount::where('account_type_id',$id)->orderBy('level_order')->get();
+        return view('backend.forex_schema.view',compact('schema','swapBasedAccounts','swapFreeAccounts'));
     }
     /**
      * Store a newly created resource in storage.

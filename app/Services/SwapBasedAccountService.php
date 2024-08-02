@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\StoreSwapBasedAccountRequest;
 use App\Models\SwapBasedAccount;
+use Illuminate\Support\Facades\DB;
 
 class SwapBasedAccountService
 {
@@ -14,12 +15,25 @@ class SwapBasedAccountService
 
     public function update(StoreSwapBasedAccountRequest $request, SwapBasedAccount $swapBasedAccount)
     {
-        $swapBasedAccount->update($request->validated());
-        return $swapBasedAccount;
+        return DB::transaction(function () use ($request, $swapBasedAccount) {
+            $newLevelOrder = $request->input('level_order');
+            if ($swapBasedAccount->level_order != $newLevelOrder) {
+                SwapBasedAccount::where('level_order', $newLevelOrder)
+                    ->update(['level_order' => DB::raw('level_order + 1')]);
+            }
+            $swapBasedAccount->update($request->validated());
+            return $swapBasedAccount;
+        });
     }
 
     public function delete(SwapBasedAccount $swapBasedAccount)
     {
-        $swapBasedAccount->delete();
+        return DB::transaction(function () use ($swapBasedAccount) {
+            $deletedOrder = $swapBasedAccount->level_order;
+            $swapBasedAccount->delete();
+            SwapBasedAccount::where('level_order', '>', $deletedOrder)
+                ->decrement('level_order');
+        });
+       
     }
 }

@@ -25,24 +25,35 @@ class SwapBasedAccountController extends Controller
 
     public function store(StoreSwapBasedAccountRequest $request)
     {
+        
         $account = $this->swapBasedAccountService->create($request);
-        return response()->json($account, 201);
+        notify()->success(__('Swap based account created successfully.'));
+        return redirect()->route('admin.accountType.view',$request->account_type_id);
+        
     }
-
-    public function show(SwapBasedAccount $swapFreeAccount)
+    public function edit(SwapBasedAccount $swapBasedAccount)
     {
-        return response()->json($swapFreeAccount);
+    
+         return view('backend.forex_schema.include.__editSwapBasForm', compact('swapBasedAccount'))->render();
+       
+    }
+    public function show(SwapBasedAccount $swapBasedAccount)
+    {
+        return response()->json($swapBasedAccount);
     }
 
     public function update(StoreSwapBasedAccountRequest $request, SwapBasedAccount $swapBasedAccount)
     {
         $account = $this->swapBasedAccountService->update($request, $swapBasedAccount);
-        return response()->json($account);
+        notify()->success(__('Swap based account updated successfully.'));
+        return redirect()->route('admin.accountType.view',$request->account_type_id);
+       
     }
 
     public function destroy(SwapBasedAccount $swapBasedAccount)
     {
         $this->swapBasedAccountService->delete($swapBasedAccount);
-        return response()->json(null, 204);
+        notify()->success(__('Swap based account deleted successfully.'));
+        return redirect()->route('admin.accountType.view',$swapBasedAccount->account_type_id);
     }
 }

@@ -47,7 +47,6 @@
     <script>
         (function ($) {
             "use strict";
-
             var table = $('#designations-dataTable')
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');

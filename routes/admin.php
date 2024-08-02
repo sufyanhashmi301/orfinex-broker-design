@@ -45,6 +45,8 @@ use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\DesignationController;
+use App\Http\Controllers\Backend\SwapBasedAccountController;
+use App\Http\Controllers\Backend\SwapFreeAccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -391,9 +393,8 @@ Route::get('settings/platform-api/cTrader', function () {
 Route::get('settings/platform-api/db-synchronization', function () {
     return view('backend.setting.platform_api.db-synchronization');
 });
-Route::resource('customer-groups', CustomerGroupController::class)->only('index','create', 'edit', 'update', 'destroy');
-Route::post('customer-groups/store', [CustomerGroupController::class,'store'])->name('customer-groups.store');
-Route::resource('departments', DepartmentController::class)->only('index','create', 'edit', 'update', 'destroy');
-Route::post('departments/store', [DepartmentController::class,'store'])->name('departments.store');
-Route::resource('designations', DesignationController::class)->only('index','create', 'edit', 'update', 'destroy');
-Route::post('designations/store', [DesignationController::class,'store'])->name('designations.store');
+Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
+Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only('index','create','store', 'edit', 'update', 'destroy');

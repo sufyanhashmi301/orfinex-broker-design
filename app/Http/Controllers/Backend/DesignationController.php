@@ -34,8 +34,7 @@ class DesignationController extends Controller
         }
 
         return view('backend.designations.index');
-        // $designations = Designation::all();
-        // return view('backend.designations.index', compact('designations'));
+        
     }
 
     public function create()
@@ -48,9 +47,7 @@ class DesignationController extends Controller
     public function store(StoreDesignationRequest $request)
     {
         $data = $request->validated();
-       
         $data['parent_id'] = $data['parent_id'] !="" ?$data['parent_id'] : null;
-      
         $this->designationService->create($data);
         notify()->success(__('Designation created successfully.'));
         return redirect()->route('admin.designations.index');

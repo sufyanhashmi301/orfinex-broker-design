@@ -380,6 +380,15 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('/bonus/create', function () {
         return view('backend.bonus.create');
     });
+
+    Route::get('/all-symbol-groups', function () {
+        return view('backend.symbol_groups.all');
+    });
+
+    Route::get('/symbol-groups', function () {
+        return view('backend.symbol_groups.metatrader5');
+    });
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 

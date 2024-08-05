@@ -10,5 +10,5 @@
     </style>
 @endsection
 @section('content')
-    <iframe src="https://copytrader.mbfx.co/portal/registration/subscription" class="w-full h-screen" frameborder="0"></iframe>
+    <iframe src="http://209.209.42.14:8080/portal/registration/subscription" class="w-full h-screen" frameborder="0"></iframe>
 @endsection

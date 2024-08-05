@@ -85,3 +85,6 @@
 .min-w-fit {
     min-width: fit-content;
 }
+.select2-dropdown {
+    z-index: 1061;
+}

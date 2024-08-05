@@ -13,14 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('swap_free_accounts', function (Blueprint $table) {
+        Schema::create('symbol_group_has_symbols', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_type_id')->constrained('forex_accounts');
-            $table->string('title');
-            $table->integer('level_order')->unique();
-            $table->string('group_tag');
-            $table->text('description')->nullable();
-            $table->boolean('status')->default(0);
+            $table->foreignId('symbol_id')->constrained('symbols');
+            $table->foreignId('symbol_group_id')->constrained('symbol_groups');
+            $table->string('symbol_name');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('swap_free_accounts');
+        Schema::dropIfExists('symbol_group_has_symbols');
     }
 };

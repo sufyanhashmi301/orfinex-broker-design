@@ -14,28 +14,15 @@ class SwapFreeAccountService
         return SwapFreeAccount::create($request->validated());
     }
 
-    public function update(StoreSwapFreeAccountRequest $request, SwapFreeAccount $swapFreeAccount)
+    public function update(SwapFreeAccount $swapFreeAccount, array $data)
     {
-        return DB::transaction(function () use ($request, $swapFreeAccount) {
-            $newLevelOrder = $request->input('level_order');
-            if ($swapFreeAccount->level_order != $newLevelOrder) {
-                SwapFreeAccount::where('level_order', $newLevelOrder)
-                    ->update(['level_order' => DB::raw('level_order + 1')]);
-            }
-            $swapFreeAccount->update($request->validated());
-            return $swapFreeAccount;
-        });
-       
+        $swapFreeAccount->update($data);
+        return $swapFreeAccount;
     }
 
     public function delete(SwapFreeAccount $swapFreeAccount)
     {
-        return DB::transaction(function () use ($swapFreeAccount) {
-            $deletedOrder = $swapFreeAccount->level_order;
-            $swapFreeAccount->delete();
-            SwapFreeAccount::where('level_order', '>', $deletedOrder)
-                ->decrement('level_order');
-        });
+       return $swapFreeAccount->delete();
       
     }
 }

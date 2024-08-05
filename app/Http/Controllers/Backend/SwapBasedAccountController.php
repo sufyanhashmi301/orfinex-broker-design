@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSwapBasedAccountRequest;
+use App\Http\Requests\UpdateSwapBasedAccountRequest;
 use App\Models\SwapBasedAccount;
 use App\Services\SwapBasedAccountService;
 use Illuminate\Http\Request;
@@ -25,7 +26,11 @@ class SwapBasedAccountController extends Controller
 
     public function store(StoreSwapBasedAccountRequest $request)
     {
-        
+        $checkLevelExist = SwapBasedAccount::where('level_order',$request->level_order)->first();
+        if($checkLevelExist){
+            notify()->error(__('Level already taken.'));
+            return redirect()->route('admin.accountType.view',$request->account_type_id);
+        }
         $account = $this->swapBasedAccountService->create($request);
         notify()->success(__('Swap based account created successfully.'));
         return redirect()->route('admin.accountType.view',$request->account_type_id);
@@ -42,9 +47,14 @@ class SwapBasedAccountController extends Controller
         return response()->json($swapBasedAccount);
     }
 
-    public function update(StoreSwapBasedAccountRequest $request, SwapBasedAccount $swapBasedAccount)
+    public function update(UpdateSwapBasedAccountRequest $request, SwapBasedAccount $swapBasedAccount)
     {
-        $account = $this->swapBasedAccountService->update($request, $swapBasedAccount);
+        $checkLevelExist = SwapBasedAccount::where('level_order',$request->level_order)->first();
+        if($checkLevelExist){
+            notify()->error(__('Level already taken.'));
+            return redirect()->route('admin.accountType.view',$request->account_type_id);
+        }
+        $this->swapBasedAccountService->update($swapBasedAccount, $request->validated());
         notify()->success(__('Swap based account updated successfully.'));
         return redirect()->route('admin.accountType.view',$request->account_type_id);
        

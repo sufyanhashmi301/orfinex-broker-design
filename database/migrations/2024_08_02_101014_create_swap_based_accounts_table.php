@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('account_type_id')->constrained('forex_accounts');
             $table->string('title');
-            $table->integer('level_order');
+            $table->integer('level_order')->unique();
             $table->string('group_tag');
             $table->text('description')->nullable();
             $table->boolean('status')->default(0);

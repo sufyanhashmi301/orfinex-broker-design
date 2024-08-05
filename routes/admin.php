@@ -47,6 +47,8 @@ use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\DesignationController;
 use App\Http\Controllers\Backend\SwapBasedAccountController;
 use App\Http\Controllers\Backend\SwapFreeAccountController;
+use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\SymbolGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -381,9 +383,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.bonus.create');
     });
 
-    Route::get('/all-symbol-groups', function () {
-        return view('backend.symbol_groups.all');
-    });
+   
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');
@@ -408,3 +408,6 @@ Route::resource('departments', DepartmentController::class)->only('index','creat
 Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
 Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
 Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
+Route::post('symbols/store', [SymbolController::class,'store']);

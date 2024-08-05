@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="p-6 pt-3">
-                    <form action="{{route('admin.symbol-groups.store')}}" method="post" id="modalForm">
+                    <form action="" method="post" id="modalForm">
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area relative">
@@ -37,8 +37,10 @@
                                 <label for="" class="form-label">
                                     {{ __('Select Symbols') }}
                                 </label>
-                                <select name="symbols[]" class="select2 form-control w-full" multiple="multiple">
-                                    
+                                <select name="symbols" class="select2 form-control w-full" multiple="multiple">
+                                    <option value="URDUSD">{{ __('URDUSD') }}</option>
+                                    <option value="GBPUSD">{{ __('GBPUSD') }}</option>
+                                    <option value="USDJPY">{{ __('USDJPY') }}</option>
                                 </select>
                             </div>
                         </div>

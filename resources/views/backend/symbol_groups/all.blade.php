@@ -3,11 +3,11 @@
     {{ __('All Symbol Groups') }}
 @endsection
 @section('title-btns')
-    <a href="" class="btn btn-white inline-flex items-center justify-center">
+    <a href="{{route('admin.symbols.index')}}" class="btn btn-white inline-flex items-center justify-center">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
-        {{ __('Back') }}
+        {{ __('View All Symbols') }}
     </a>
-    <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#symbolGroupModal">
+    <a href="" class="btn btn-primary inline-flex items-center justify-center addSymbolGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Symbol Group') }}
     </a>
@@ -18,17 +18,17 @@
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                    <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbol-groups-dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Symbol ID') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Symbol') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Path') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Description') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Contact Size') }}</th>
+                                    <th scope="col" class="table-th">{{ __('ID') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Symbol Group') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Symbols') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Create Time') }}</th>
+                                    
                                     <th scope="col" class="table-th">
                                         <div class="flex items-center">
-                                            <span>{{ __('Status') }}</span>
+                                            <span>{{ __('Action') }}</span>
                                             <span class="toolTip onTop leading-none" data-tippy-content="primary tooltip!" data-tippy-theme="dark">
                                                 <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:info"></iconify-icon>
                                             </span>
@@ -36,88 +36,134 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="table-td">
-                                        {{ __('429') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('AUDCAD') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('Classic: Market\Forex\ADUCAD') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('Australian Dollar - Canadian DollarAustralian Dollar - Canadian Dollar') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('100000') }}
-                                    </td>
-                                    <td class="table-td">
-                                        <div class="form-switch ps-0" style="line-height:0;">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox">
-                                                <input type="checkbox" name="" value="1" class="sr-only peer" checked>
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="table-td">
-                                        {{ __('429') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('AUDCAD') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('Classic: Market\Forex\ADUCAD') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('Australian Dollar - Canadian DollarAustralian Dollar - Canadian Dollar') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('100000') }}
-                                    </td>
-                                    <td class="table-td">
-                                        <div class="form-switch ps-0" style="line-height:0;">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox">
-                                                <input type="checkbox" name="" value="1" class="sr-only peer" checked>
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="table-td">
-                                        {{ __('429') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('AUDCAD') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('Classic: Market\Forex\ADUCAD') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('Australian Dollar - Canadian DollarAustralian Dollar - Canadian Dollar') }}
-                                    </td>
-                                    <td class="table-td">
-                                        {{ __('100000') }}
-                                    </td>
-                                    <td class="table-td">
-                                        <div class="form-switch ps-0" style="line-height:0;">
-                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox">
-                                                <input type="checkbox" name="" value="1" class="sr-only peer" checked>
-                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+@include('backend.symbol_groups.modal.__edit');
+@include('backend.symbol_groups.modal.__delete');
 @endsection
+@section('script')
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+         $(document).ready(function() {
+            $('#symbols').select2();
+         });
+       (function ($) {
+            "use strict";
+            var table = $('#symbol-groups-dataTable')
+            .on('processing.dt', function (e, settings, processing) {
+                $('#processingIndicator').css('display', processing ? 'block' : 'none');
+            }).DataTable({
+                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
+                paging: true,
+                ordering: true,
+                info: false,
+                searching: true,
+                lengthChange: true,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                lengthMenu: "Show _MENU_ entries",
+                paginate: {
+                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                },
+                search: "Search:"
+                },
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                searching: false,
+                ajax: "{{ route('admin.symbol-groups.index') }}",
+                columns: [
+                    {"class": "table-td", data: 'id', name: 'ID',orderable : false},
+                    {"class": "table-td", data: 'symbol_group', name: 'Symbol Group',orderable : false},
+                    {"class": "table-td", data: 'symbols', name: 'symbols',orderable : false},
+                    {
+                        "class": "table-td",
+                        data: 'created_at',
+                        name: 'created_at',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            // Format the date and time as "15 May 2024 9:30 AM"
+                            var date = new Date(data);
+                            var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+                            var timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+
+                            var dateString = date.toLocaleDateString('en-GB', dateOptions);
+                            var timeString = date.toLocaleTimeString('en-GB', timeOptions);
+
+                            return `${dateString} ${timeString}`;
+                        }
+                    },
+                    {"class": "table-td", data: 'action', name: 'action',orderable : false},
+                ]
+            });
+        })(jQuery);
+        $('.addSymbolGroup').on('click', function(e) {
+            e.preventDefault()
+            $.ajax({
+                url: '{{ route("admin.symbol-groups.create") }}',
+                method: 'GET',
+                success: function(response) {
+                    
+                    var symbols_data = response.symbols;
+                    var select = $('select[name="symbols[]"]');
+                
+                    select.empty(); // Clear any existing options
+
+                    // Populate the dropdown
+                    $.each(symbols_data, function(index, symbol) {
+                        console.log(index);
+                        select.append(new Option(symbol, index));
+                    });
+
+                    
+                    $('#symbolGroupModal').modal('show');
+                }
+            });
+        });
+        $(document).on('click', '.editSymbolGroup', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            $.ajax({
+                url: '{{ route("admin.symbol-groups.edit", ":id") }}'.replace(':id', id),
+                method: 'GET',
+                success: function(response) {
+                    console.log(response);
+                    $('#groupName').val(response.symbolGroup.symbol_group);
+                    var symbolsSelect = $('#symbols');
+                    symbolsSelect.empty();
+                    $.each(response.allSymbols, function(index, symbol) {
+                        var selected = response.symbolGroup.symbols.some(function(s) {
+                            return s.id === symbol.id;
+                        }) ? 'selected' : '';
+                        symbolsSelect.append('<option value="' + symbol.id + '" ' + selected + '>' + symbol.symbol + '</option>');
+                    });
+                    $('#editSymbolGroupModal').modal('show');
+                    $('#editSymbolGroupForm').attr('action', '{{ route("admin.symbol-groups.update", ":id") }}'.replace(':id', id),);
+                }
+            });
+        });
+        $(document).on('click', '.deleteSymbolGroup', function(event) {
+
+            "use strict";
+            event.preventDefault();
+            var id = $(this).data('id');
+           
+            var url = '{{ route("admin.symbol-groups.destroy", ":id") }}';
+            url = url.replace(':id', id);
+            $('#symbolGroupDeleteForm').attr('action', url)
+            $('#deleteSymbolGroup').modal('show');
+        })
+
+    </script>
+@endsection
+

@@ -1,6 +1,7 @@
 @php
     // Determine if the switch should be checked initially
-    $checked = in_array($Symbol, $existingSymbols) ? 'checked' : '';
+    $checkRecord = \App\Models\Symbol::where('symbol',$Symbol)->first();
+    $checked = in_array($Symbol, $existingSymbols) && $checkRecord->status==1 ? 'checked' : '';
 @endphp
 
 <div class="form-switch ps-0" style="line-height:0;">

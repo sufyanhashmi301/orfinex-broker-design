@@ -14,7 +14,7 @@ class StoreSymbolGroupRequest extends FormRequest
     public function rules()
     {
         return [
-           'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'symbols' => 'required|array',
             'symbols.*' => 'exists:symbols,id'
            

@@ -45,6 +45,7 @@ class SymbolController extends Controller
 
     public function store(Request $request)
     {
+        
         $symbolId = $request->id;
         
         $result = $this->symbolService->createSymbolFromMt5($symbolId);
@@ -52,7 +53,7 @@ class SymbolController extends Controller
         if ($result['success']) {
             return response()->json(['success' => true]);
         } else {
-            return response()->json(['success' => false, 'message' => $result['message']]);
+            return response()->json(['success' => false]);
         }
 
     }

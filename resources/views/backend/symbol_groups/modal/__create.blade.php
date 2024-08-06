@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="p-6 pt-3">
-                    <form action="{{route('admin.symbol-groups.store')}}" method="post" id="modalForm">
+                    <form action="" method="post" id="modalForm">
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area relative">
@@ -30,8 +30,9 @@
                                     name="name"
                                     class="form-control mb-0"
                                     placeholder="New York"
-                                    required
+                                    
                                 />
+                                <div class="invalid-feedback" id="name-error" style="display: none;"></div>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">
@@ -40,6 +41,7 @@
                                 <select name="symbols[]" class="select2 form-control w-full" multiple="multiple">
                                     
                                 </select>
+                                <div class="invalid-feedback" id="symbols-error" style="display: none;"></div>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">

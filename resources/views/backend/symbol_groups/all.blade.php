@@ -56,6 +56,42 @@
          $(document).ready(function() {
             $('#symbols').select2();
          });
+         $(document).ready(function () {
+            $('#modalForm').on('submit', function (e) {
+                e.preventDefault();
+                let formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("admin.symbol-groups.store") }}', // Adjust the route to your store function
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.reload();
+                        }
+                    },
+                    error: function (xhr) {
+                        let errors = xhr.responseJSON.errors;
+                        if (errors) {
+                            displayErrors(errors);
+                        }
+                    }
+                });
+            });
+
+            function displayErrors(errors) {
+                $('.invalid-feedback').hide(); // Hide all previous error messages
+                $('.is-invalid').removeClass('is-invalid'); // Remove is-invalid class from inputs
+
+                for (let field in errors) {
+                    let input = $('[name="' + field + '[]"]');
+                    if (!input.length) {
+                        input = $('[name="' + field + '"]');
+                    }
+                    input.addClass('is-invalid');
+                    $('#'+field+'-error').text(errors[field][0]).show();
+                }
+            }
+        });
        (function ($) {
             "use strict";
             var table = $('#symbol-groups-dataTable')

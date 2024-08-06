@@ -43,9 +43,13 @@ class SymbolGroupController extends Controller
     }
     public function store(StoreSymbolGroupRequest $request)
     {
-        $this->symbolGroupService->createSymbolGroupWithSymbols($request->name, $request->symbols);
-        notify()->success(__('Symbol Group updated successfully.'));
-        return redirect()->route('admin.symbol-groups.index');
+        try {
+            $this->symbolGroupService->createSymbolGroupWithSymbols($request->name, $request->symbols);
+            notify()->success(__('Symbol Group updated successfully.'));
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
    
     public function edit($id)

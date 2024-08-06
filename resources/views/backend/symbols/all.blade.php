@@ -86,33 +86,26 @@
                 ]
             });
         })(jQuery);
-        function insertRecord(dataId, previousState) {
-    "use strict";
-    event.preventDefault();
+        function insertRecord(dataId) {
+            "use strict";
+            event.preventDefault();
+            var checkbox = $('input[data-id="' + dataId + '"]');
+            var newState = checkbox.is(':checked');
+            $.post('symbols/store', { 
+                "_token": "{{ csrf_token() }}",
+                "id": dataId 
 
-    // Get the checkbox element
-    var checkbox = $('input[data-id="' + dataId + '"]');
-    var newState = checkbox.is(':checked');
+            }, function(response) {
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    window.location.reload();
+                }
+            }).fail(function(error) {
+                console.error('Error:', error);
+            });
 
-    // Check if the switch has changed from off to on
-    if (newState && !previousState) {
-        $.post('symbols/store', { 
-            "_token": "{{ csrf_token() }}",
-            "id": dataId 
-        }, function(response) {
-            if (response.success) {
-                alert("Symbol enabled successfully");
-            } else {
-                alert(response.message);
-            }
-        }).fail(function(error) {
-            console.error('Error:', error);
-        });
-    }
-
-    // Update the data attribute with the new state
-    checkbox.data('previous-state', newState);
-}
+        }
         
     </script>
 @endsection

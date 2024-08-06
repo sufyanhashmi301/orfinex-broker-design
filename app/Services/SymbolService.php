@@ -23,9 +23,16 @@ class SymbolService
         }
 
         $existingSymbol = Symbol::where('symbol', $data->Symbol)->first();
-        
         if ($existingSymbol) {
-            return ['success' => false, 'message' => 'Symbol already exists'];
+            if($existingSymbol->status==1){
+                $existingSymbol->status =0;
+            }else{
+                $existingSymbol->status =1;
+            }
+            $existingSymbol->update();
+            
+            notify()->success(__('Status Changed successfully'));
+            return ['success'=>false];
         }
 
         $symbol = new Symbol();
@@ -36,7 +43,7 @@ class SymbolService
         $symbol->contract_size = $data->ContractSize;
         $symbol->status = 1;
         $symbol->save();
-
+        notify()->success(__('Symbol enabled successfully'));
         return ['success' => true];
     }
 }

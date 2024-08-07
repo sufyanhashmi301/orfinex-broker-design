@@ -1,15 +1,12 @@
-@extends('backend.symbol_groups.index')
+@extends('backend.rebate_rules.index')
 @section('title')
-    {{ __('All Symbol Groups') }}
+    {{ __('All Rebate Rules') }}
 @endsection
 @section('title-btns')
-    <a href="{{route('admin.symbols.index')}}" class="btn btn-white inline-flex items-center justify-center">
-        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
-        {{ __('View All Symbols') }}
-    </a>
-    <a href="" class="btn btn-primary inline-flex items-center justify-center addSymbolGroup" type="button" >
+
+    <a href="" class="btn btn-primary inline-flex items-center justify-center addRebateGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-        {{ __('Add Symbol Group') }}
+        {{ __('Add Rebate Rules') }}
     </a>
 @endsection
 @section('symbol-groups-content')
@@ -18,14 +15,15 @@
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                    <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbol-groups-dataTable">
+                    <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="rebate-rules-dataTable">
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('ID') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Symbol Group') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Symbols') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Create Time') }}</th>
-                                    
+                                    <th scope="col" class="table-th">{{ __('Rebate Name') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Symbol Groups') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Total Rebate') }}</th>
+                                    <!-- <th scope="col" class="table-th">{{ __('Accounts') }}</th> -->
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">
                                         <div class="flex items-center">
                                             <span>{{ __('Action') }}</span>
@@ -46,8 +44,9 @@
             </div>
         </div>
     </div>
-@include('backend.symbol_groups.modal.__edit');
-@include('backend.symbol_groups.modal.__delete');
+    @include('backend.rebate_rules.modal.__create')
+    @include('backend.rebate_rules.modal.__edit')
+    @include('backend.rebate_rules.modal.__delete')
 @endsection
 @section('script')
 
@@ -60,9 +59,10 @@
             $('#modalForm').on('submit', function (e) {
                 e.preventDefault();
                 let formData = $(this).serialize();
+                console.log('formData',formData);
                 $.ajax({
                     type: 'POST',
-                    url: '{{ route("admin.symbol-groups.store") }}', // Adjust the route to your store function
+                    url: '{{ route("admin.rebate-rules.store") }}', // Adjust the route to your store function
                     data: formData,
                     success: function (response) {
                         if (response.success) {
@@ -94,7 +94,7 @@
         });
        (function ($) {
             "use strict";
-            var table = $('#symbol-groups-dataTable')
+            var table = $('#rebate-rules-dataTable')
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
@@ -117,87 +117,75 @@
                 serverSide: true,
                 autoWidth: false,
                 searching: false,
-                ajax: "{{ route('admin.symbol-groups.index') }}",
+                ajax: "{{ route('admin.rebate-rules.index') }}",
                 columns: [
                     {"class": "table-td", data: 'id', name: 'ID',orderable : false},
-                    {"class": "table-td", data: 'symbol_group', name: 'Symbol Group',orderable : false},
-                    {"class": "table-td", data: 'symbols', name: 'symbols',orderable : false},
-                    {
-                        "class": "table-td",
-                        data: 'created_at',
-                        name: 'created_at',
-                        orderable: false,
-                        render: function (data, type, row) {
-                            // Format the date and time as "15 May 2024 9:30 AM"
-                            var date = new Date(data);
-                            var dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-                            var timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
-
-                            var dateString = date.toLocaleDateString('en-GB', dateOptions);
-                            var timeString = date.toLocaleTimeString('en-GB', timeOptions);
-
-                            return `${dateString} ${timeString}`;
-                        }
-                    },
+                    {"class": "table-td", data: 'title', name: 'Rebate Name',orderable : false},
+                    {"class": "table-td", data: 'groups', name: 'Symbol Groups',orderable : false},
+                    {"class": "table-td", data: 'rebate_amount', name: 'Total Rebate',orderable : false},
+                    {"class": "table-td", data: 'status', name: 'Status',orderable : false},
                     {"class": "table-td", data: 'action', name: 'action',orderable : false},
                 ]
             });
         })(jQuery);
-        $('.addSymbolGroup').on('click', function(e) {
+        $('.addRebateGroup').on('click', function(e) {
             e.preventDefault()
             $.ajax({
-                url: '{{ route("admin.symbol-groups.create") }}',
+                url: '{{ route("admin.rebate-rules.create") }}',
                 method: 'GET',
                 success: function(response) {
                     
-                    var symbols_data = response.symbols;
-                    var select = $('select[name="symbols[]"]');
-                
-                    select.empty(); // Clear any existing options
-
-                    // Populate the dropdown
+                    var symbols_data = response.symbolGroups;
+                    var select = $('select[name="symbol_groups[]"]');
+                    select.empty(); 
                     $.each(symbols_data, function(index, symbol) {
-                        console.log(index);
                         select.append(new Option(symbol, index));
                     });
+                    $('#addRebateRuleModal').modal('show');
+                }
+            });
+        });
+        $(document).on('click', '.editRebateRule', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+        url: '{{ route("admin.rebate-rules.edit", ":id") }}'.replace(':id', id),
+        method: 'GET',
+        success: function(response) {
+            console.log(response);
+            $('#title').val(response.rebateRule.title);
+            var symbolGroupsSelect = $('#symbol_groups');
+            symbolGroupsSelect.empty();
+            $.each(response.allSymbolGroups, function(index, symbol) {
+                var selected = response.rebateRule.groups.some(function(s) {
+                    return s.id === symbol.id;
+                }) ? 'selected' : '';
+                symbolGroupsSelect.append('<option value="' + symbol.id + '" ' + selected + '>' + symbol.symbol_group + '</option>');
+            });
+            $('select[name="rule_type_id"]').val(response.rebateRule.rule_type_id);
+            $('#rebate_amount').val(response.rebateRule.rebate_amount);
+            $('#per_lot').val(response.rebateRule.per_lot);
+            $('select[name="status"]').val(response.rebateRule.status);
 
-                    
-                    $('#symbolGroupModal').modal('show');
-                }
-            });
-        });
-        $(document).on('click', '.editSymbolGroup', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            $.ajax({
-                url: '{{ route("admin.symbol-groups.edit", ":id") }}'.replace(':id', id),
-                method: 'GET',
-                success: function(response) {
-                    console.log(response);
-                    $('#groupName').val(response.symbolGroup.symbol_group);
-                    var symbolsSelect = $('#symbols');
-                    symbolsSelect.empty();
-                    $.each(response.allSymbols, function(index, symbol) {
-                        var selected = response.symbolGroup.symbols.some(function(s) {
-                            return s.id === symbol.id;
-                        }) ? 'selected' : '';
-                        symbolsSelect.append('<option value="' + symbol.id + '" ' + selected + '>' + symbol.symbol + '</option>');
-                    });
-                    $('#editSymbolGroupModal').modal('show');
-                    $('#editSymbolGroupForm').attr('action', '{{ route("admin.symbol-groups.update", ":id") }}'.replace(':id', id),);
-                }
-            });
-        });
-        $(document).on('click', '.deleteSymbolGroup', function(event) {
+            $('#editSymbolGroupModal').modal('show');
+            $('#editRebateRuleForm').attr('action', '{{ route("admin.rebate-rules.update", ":id") }}'.replace(':id', id));
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+});
+
+        $(document).on('click', '.deleteRebateRule', function(event) {
 
             "use strict";
             event.preventDefault();
             var id = $(this).data('id');
            
-            var url = '{{ route("admin.symbol-groups.destroy", ":id") }}';
+            var url = '{{ route("admin.rebate-rules.destroy", ":id") }}';
             url = url.replace(':id', id);
-            $('#symbolGroupDeleteForm').attr('action', url)
-            $('#deleteSymbolGroup').modal('show');
+            $('#rebateRuleDeleteForm').attr('action', url)
+            $('#deleteRebateRule').modal('show');
         })
 
     </script>

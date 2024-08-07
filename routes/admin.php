@@ -45,8 +45,11 @@ use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\DesignationController;
+use App\Http\Controllers\Backend\RebateRuleController;
 use App\Http\Controllers\Backend\SwapBasedAccountController;
 use App\Http\Controllers\Backend\SwapFreeAccountController;
+use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\SymbolGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -381,9 +384,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.bonus.create');
     });
 
-    Route::get('/all-symbol-groups', function () {
-        return view('backend.symbol_groups.all');
-    });
+   
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');
@@ -406,5 +407,9 @@ Route::get('settings/platform-api/db-synchronization', function () {
 Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
 Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
 Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
+Route::post('symbols/store', [SymbolController::class,'store']);
+Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);

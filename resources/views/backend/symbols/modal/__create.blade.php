@@ -30,20 +30,19 @@
                                     name="name"
                                     class="form-control mb-0"
                                     placeholder="New York"
-                                    
+                                    required
                                 />
-                                <div class="invalid-feedback" id="name-error" style="display: none;"></div>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">
                                     {{ __('Select Symbols') }}
                                 </label>
-                                <select name="symbol_groups[]" class="select2 form-control w-full" multiple="multiple">
-                                    
+                                <select name="symbols" class="select2 form-control w-full" multiple="multiple">
+                                    <option value="URDUSD">{{ __('URDUSD') }}</option>
+                                    <option value="GBPUSD">{{ __('GBPUSD') }}</option>
+                                    <option value="USDJPY">{{ __('USDJPY') }}</option>
                                 </select>
-                                <div class="invalid-feedback" id="symbols-error" style="display: none;"></div>
                             </div>
-                           
                         </div>
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">

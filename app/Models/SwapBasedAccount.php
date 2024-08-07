@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SwapBasedAccount extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'account_type_id', 'title', 'level_order', 'group_tag', 'description', 'status'
+    ];
 }

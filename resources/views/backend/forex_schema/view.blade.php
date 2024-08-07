@@ -10,7 +10,7 @@
                     <h6 class="text-xl text-slate-900 dark:text-slate-300 mb-5">
                         {{ __('Account name') }}
                         <span class="text-sm text-slate-500 dark:text-slate-300 ml-2">
-                            {{ __('Standard Account') }}
+                        {{$schema->title}}
                         </span>
                     </h6>
                     <div class="input-area relative mt-auto">
@@ -36,7 +36,7 @@
                             {{ __('Trading Server (Live) ') }}
                         </label>
                         <select name="" class="select2 form-control w-full">
-                            <option value="severname">{{ __('ServerName') }}</option>
+                            <option value="Banex Capital">{{ __('Banex Capital') }}</option>
                         </select>
                     </div>
                     <div class="input-area !mb-7">
@@ -82,7 +82,7 @@
                     {{ __('Swap Based Accounts') }}
                 </h4>
                 <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addLevelModal">
+                    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addSwapBasedLevelModal">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Level') }}
                     </a>
@@ -104,32 +104,40 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($swapBasedAccounts as $swapBasedAccount)
                                         <tr>
                                             <td class="table-td">
-                                                {{ __('1') }}
+                                                {{$loop->iteration}}
                                             </td>
                                             <td class="table-td">
-                                                {{ __('Level 1') }}
+                                                {{ $swapBasedAccount->title }}
                                             </td>
                                             <td class="table-td">
-                                                {{ __('1') }}
+                                                {{ $swapBasedAccount->level_order}}
                                             </td>
                                             <td class="table-td">
+                                                @if($swapBasedAccount->status==1)
                                                 <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                                    {{ __('Enable') }}
+                                                    {{ __('Enabled') }}
                                                 </div>
+                                                @else
+                                                <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                                    {{ __('Disabled') }}
+                                                </div>
+                                                @endif
                                             </td>
                                             <td class="table-td">
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
-                                                    <a href="javascript:;" class="action-btn">
+                                                    <a href="{{ route('admin.swap-based-accounts.edit',$swapBasedAccount->id) }}" data-id="{{ $swapBasedAccount->id }}" class="action-btn editSwapBased">
                                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                     </a>
-                                                    <button class="action-btn" type="button">
+                                                    <button class="action-btn deleteSwapBased" type="button" data-id="{{ $swapBasedAccount->id }}">
                                                         <iconify-icon icon="lucide:trash"></iconify-icon>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -144,7 +152,7 @@
                     {{ __('Swap Free Accounts') }}
                 </h4>
                 <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addLevelModal">
+                    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addSwapFreeLevelModal">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Level') }}
                     </a>
@@ -166,32 +174,40 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    @foreach($swapFreeAccounts as $swapfreeAccount)
                                     <tr>
                                         <td class="table-td">
-                                            {{ __('1') }}
+                                            {{ $loop->iteration}}
                                         </td>
                                         <td class="table-td">
-                                            {{ __('Level 1') }}
+                                            {{ $swapfreeAccount->title }}
                                         </td>
                                         <td class="table-td">
-                                            {{ __('1') }}
+                                            {{ $swapfreeAccount->level_order }}
                                         </td>
                                         <td class="table-td">
+                                            @if($swapfreeAccount->status==1)
                                             <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                                {{ __('Enable') }}
+                                                {{ __('Enabled') }}
                                             </div>
+                                            @else
+                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                                {{ __('Disabled') }}
+                                            </div>
+                                            @endif
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="javascript:;" class="action-btn">
+                                                <a href="{{ route('admin.swap-free-accounts.edit',$swapfreeAccount->id) }}" data-id="{{ $swapfreeAccount->id }}" class="action-btn editSwapFree">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </a>
-                                                <button class="action-btn" type="button">
+                                                <button class="action-btn deleteSwapFree" type="button"  data-id="{{ $swapfreeAccount->id }}">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -203,8 +219,12 @@
     </div>
 
     {{-- Modal for Add Level --}}
-    @include('backend.forex_schema.modal.__create')
-
+    @include('backend.forex_schema.modal.__create_swap_based')
+    @include('backend.forex_schema.modal.__create_swap_free')
+    @include('backend.forex_schema.modal.__editSwapBased')
+    @include('backend.forex_schema.modal.__deleteSwapBased')
+    @include('backend.forex_schema.modal.__editSwapFree')
+    @include('backend.forex_schema.modal.__deleteSwapFree')
 @endsection
 @section('script')
     <script>
@@ -213,6 +233,56 @@
                 var target = $(this).data('target');
                 $(target).toggleClass('hidden');
             });
+            $('body').on('click', '.editSwapBased', function (event) {
+                "use strict";
+                event.preventDefault();
+                $('#edit-swap-based-body').empty();
+                var id = $(this).data('id');
+                var url = '{{ route("admin.swap-based-accounts.edit", ":id") }}';
+                url = url.replace(':id', id);
+                $.get(url, function (data) {
+                    $('#editSwapBasedModal').modal('show');
+                    $('#edit-swap-based-body').append(data);
+                });
+            })
+            $('body').on('click', '.deleteSwapBased', function (event) {
+
+                "use strict";
+                event.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+
+                var url = '{{ route("admin.swap-based-accounts.destroy", ":id") }}';
+                url = url.replace(':id', id);
+                $('#swapBasedDeleteForm').attr('action', url)
+
+                $('.name').html(name);
+                $('#deleteSwapBased').modal('show');
+            })
+            $('body').on('click', '.editSwapFree', function (event) {
+                "use strict";
+                event.preventDefault();
+                $('#edit-swap-free-body').empty();
+                var id = $(this).data('id');
+                var url = '{{ route("admin.swap-free-accounts.edit", ":id") }}';
+                url = url.replace(':id', id);
+                $.get(url, function (data) {
+                    $('#editSwapFreeModal').modal('show');
+                    $('#edit-swap-free-body').append(data);
+                });
+            })
+            $('body').on('click', '.deleteSwapFree', function (event) {
+
+                "use strict";
+                event.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+
+                var url = '{{ route("admin.swap-free-accounts.destroy", ":id") }}';
+                url = url.replace(':id', id);
+                $('#swapFreeDeleteForm').attr('action', url)
+                $('#deleteSwapFree').modal('show');
+            })
         });
     </script>
 @endsection

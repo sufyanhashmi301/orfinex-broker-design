@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\StoreSwapFreeAccountRequest;
 use App\Models\SwapFreeAccount;
 use App\Models\SwapFreeAccounts;
+use Illuminate\Support\Facades\DB;
 
 class SwapFreeAccountService
 {
@@ -13,14 +14,15 @@ class SwapFreeAccountService
         return SwapFreeAccount::create($request->validated());
     }
 
-    public function update(StoreSwapFreeAccountRequest $request, SwapFreeAccount $swapFreeAccount)
+    public function update(SwapFreeAccount $swapFreeAccount, array $data)
     {
-        $swapFreeAccount->update($request->validated());
+        $swapFreeAccount->update($data);
         return $swapFreeAccount;
     }
 
     public function delete(SwapFreeAccount $swapFreeAccount)
     {
-        $swapFreeAccount->delete();
+       return $swapFreeAccount->delete();
+      
     }
 }

@@ -109,9 +109,9 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
     });
     Route::resource('kyclevels', KYCLevelsController::class);
-    Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
-        Route::post('kyclevel/updatelevel/{id}', 'kycLevel1Update')->name('level1.update');
-        Route::post('kyclevelstatus/update/{id}', 'kycLevel1StatusUpdate')->name('level1status.update');
+    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KYCLevelsController::class], function () {
+        Route::post('level/update/{id}', 'kycLevelUpdate')->name('level.update');
+        Route::post('subLevel/update/{id}', 'kycSubLevelUpdate')->name('subLevel.update');
         //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
     });

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Kyc;
 use App\Models\Kyclevel;
 use App\Models\Kyclevelsetting;
+use App\Models\KycSubLevel;
+use App\Models\Plugin;
 use App\Models\RiskProfileTag;
 use App\Models\User;
 use App\Models\UserRiskProfileTag;
@@ -48,7 +50,7 @@ class KYCLevelsController extends Controller
     public function index(Request $request)
     {
         $kycLevels = Kyclevel::all();
-        return view('backend.kyclevels.index', compact('kycLevels'));
+        return view('backend.kyc_levels.index', compact('kycLevels'));
     }
 
     /**
@@ -108,12 +110,17 @@ class KYCLevelsController extends Controller
     public function edit($id)
     {
         $kycLevel = Kyclevel::find($id);
-        $kycLevelSettings = Kyclevelsetting::with('kyclevel')->where('kyc_level_id', $id)
+        $kycSubLevels = KycSubLevel::with('kycs')
+            ->where('kyc_level_id', $id)
+//            ->where('status', true)
             ->get();
+//        if($kycLevel=='level-2' && $kycSubLevels['name'] == 'Automatic')
+        $level2Show = true;
+        $manulKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+        $sumsub = Plugin::findOrFail(8);
+        return view('backend.kyc_levels.edit', get_defined_vars());
 
-        return view('backend.kyclevels.edit', get_defined_vars());
 
-        
     }
 
     /**
@@ -138,33 +145,29 @@ class KYCLevelsController extends Controller
     /**
      * @return RedirectResponse
      */
-    public function kycLevel1Update(Request $request, $id)
+    public function kycLevelUpdate(Request $request, $id)
     {
-       
-        $kycLevel  = Kyclevel::findOrFail($id);
+        $kycLevel  = KycLevel::findOrFail($id);
         $kycLevel->name = $request->name;
         $kycLevel->status = $request->status;
         $kycLevel->update();
-        if($request->level2_setting=="manual"){
-            Kyc::where('kyc_level_id',$id)->update(['status'=>1]);
-            Kyclevelsetting::where('kyc_level_id',$id)->where('unique_code','manual')->update(['status'=>1]);
-            Kyclevelsetting::where('kyc_level_id',$id)->where('unique_code','samsub')->update(['status'=>0]);
-        }
-        if($request->level2_setting=="automatic"){
-            Kyclevelsetting::where('kyc_level_id',$id)->where('unique_code','manual')->update(['status'=>0]);
-            Kyclevelsetting::where('kyc_level_id',$id)->where('unique_code','samsub')->update(['status'=>1]);
+
+//        dd($request->all());
+        if($request->level2_setting==\App\Enums\KycType::MANUAL){
+            KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>1]);
+            KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>0]);  }
+        if($request->level2_setting==\App\Enums\KycType::AUTOMATIC){
+            KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>0]);
+            KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>1]);
         }
         notify()->success(__('KYC level settings updated Successfully'));
         return redirect()->back()->with('success', __('KYC level settings updated successfully.'));
     }
-    public function kycLevel1StatusUpdate(Request $request,$id){
-     
-        $kycLevelSettings = Kyclevelsetting::findOrFail($id);
-        $kycLevelSettings->status=$request->status;
+    public function kycSubLevelUpdate(Request $request,$id){
+
+        $kycLevelSettings = KycSubLevel::findOrFail($id);
+        $kycLevelSettings->status = $request->status;
         $kycLevelSettings->update();
-        $kyc = Kyc::whereId($kycLevelSettings->kyc_id)->first();
-        $kyc->status = $request->status;
-        $kyc->update();
         notify()->success(__('KYC level settings updated Successfully'));
         return redirect()->back()->with('success', __('KYC level settings updated successfully.'));
     }

@@ -25,6 +25,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
+//        dd('ss');
         $this->middleware('guest:admin')->except('logout');
 //        $this->middleware('google2fa')->only('admin.login-view', 'enable2fa', 'disable2fa', 'verify2fa');
 
@@ -35,6 +36,7 @@ class AuthController extends Controller
      */
     public function loginView()
     {
+
         $googleReCaptcha = plugin_active('Google reCaptcha');
         return view('backend.auth.login',compact('googleReCaptcha'));
     }

@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->integer('account_limit')->default(1)->after('first_min_deposit');
+        Schema::create('kyc_sub_levels', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('kyc_level_id')->constrained();
+            $table->text('name')->nullable();
+            $table->text('description')->nullable();
+            $table->tinyInteger('status')->default(true);
+            $table->timestamps();
         });
     }
 
@@ -25,9 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->dropColumn('account_limit');
-
-        });
+        Schema::dropIfExists('kyc_sub_levels');
     }
 };

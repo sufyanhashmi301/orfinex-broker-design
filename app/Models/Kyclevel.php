@@ -1,20 +1,49 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class Kyclevel extends Model
+/**
+ * Class KycLevel
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property bool $status
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property Collection|Kyc[] $kycs
+ *
+ * @package App\Models
+ */
+class KycLevel extends Model
 {
-    use HasFactory;
-    protected $table='kyc_levels';
-    public function kyclevelsettings()
+	protected $table = 'kyc_levels';
+
+	protected $casts = [
+		'status' => 'bool'
+	];
+
+	protected $fillable = [
+		'name',
+		'slug',
+		'status'
+	];
+
+	public function kyc_sub_levels()
+	{
+		return $this->hasMany(KycSubLevel::class);
+	}
+    public function kycs()
     {
-        return $this->hasMany(Kyclevelsetting::class,'kyc_level_id');
-    }
-    public function kyc()
-    {
-        return $this->hasMany(Kyc::class,'kyc_level_id');
+        return $this->hasMany(Kyc::class);
     }
 }

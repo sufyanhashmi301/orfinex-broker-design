@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kyc_level_settings', function (Blueprint $table) {
+        Schema::create('kyc_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kyc_level_id')->constrained('kyc_levels');
-            $table->foreignId('kyc_id')->nullable()->constrained('kycs');
-            $table->string('title');
-            $table->string('unique_code');
-            $table->text('description')->nullable();
-            $table->boolean('status')->default(false);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('kyc_id')->constrained()->onDelete('cascade');
+            $table->text('kyc_credentials')->nullable(); // JSON storage for KYC credentials
+            $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kyc_level_settings');
+        Schema::dropIfExists('kyc_user');
     }
 };

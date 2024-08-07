@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('country')->after('fields');
 
         });
+        DB::table('withdraw_methods')->update(['country' => json_encode(["All"])]);
+
     }
 
     /**

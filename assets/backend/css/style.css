@@ -88,3 +88,7 @@
 .select2-dropdown {
     z-index: 1061;
 }
+
+.\!inline-flex {
+    display: inline-flex !important;
+}

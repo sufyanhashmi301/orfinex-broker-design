@@ -4,7 +4,6 @@
 @endsection
 @section('title-btns')
     <a href="{{route('admin.symbols.index')}}" class="btn btn-white inline-flex items-center justify-center">
-        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
         {{ __('View All Symbols') }}
     </a>
     <a href="" class="btn btn-primary inline-flex items-center justify-center addSymbolGroup" type="button" >
@@ -14,18 +13,20 @@
 @endsection
 @section('symbol-groups-content')
     <div class="card">
-        <div class="card-body p-6 pt-3">
-            <div class="overflow-x-auto -mx-6">
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class=" col-span-8  hidden"></span>
+                <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                    <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbol-groups-dataTable">
-                            <thead>
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbol-groups-dataTable">
+                            <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol Group') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbols') }}</th>
                                     <th scope="col" class="table-th">{{ __('Create Time') }}</th>
-                                    
+
                                     <th scope="col" class="table-th">
                                         <div class="flex items-center">
                                             <span>{{ __('Action') }}</span>
@@ -39,15 +40,20 @@
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
 
                             </tbody>
-                            
+
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-@include('backend.symbol_groups.modal.__edit');
-@include('backend.symbol_groups.modal.__delete');
+
+    {{--Modal for edit symbol group--}}
+    @include('backend.symbol_groups.modal.__edit')
+
+    {{--Modal for delete symbol group--}}
+    @include('backend.symbol_groups.modal.__delete')
+
 @endsection
 @section('script')
 
@@ -102,7 +108,7 @@
                 paging: true,
                 ordering: true,
                 info: false,
-                searching: true,
+                searching: false,
                 lengthChange: true,
                 lengthMenu: [10, 25, 50, 100],
                 language: {
@@ -116,7 +122,6 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                searching: false,
                 ajax: "{{ route('admin.symbol-groups.index') }}",
                 columns: [
                     {"class": "table-td", data: 'id', name: 'ID',orderable : false},
@@ -149,10 +154,10 @@
                 url: '{{ route("admin.symbol-groups.create") }}',
                 method: 'GET',
                 success: function(response) {
-                    
+
                     var symbols_data = response.symbols;
                     var select = $('select[name="symbols[]"]');
-                
+
                     select.empty(); // Clear any existing options
 
                     // Populate the dropdown
@@ -161,7 +166,7 @@
                         select.append(new Option(symbol, index));
                     });
 
-                    
+
                     $('#symbolGroupModal').modal('show');
                 }
             });
@@ -193,7 +198,7 @@
             "use strict";
             event.preventDefault();
             var id = $(this).data('id');
-           
+
             var url = '{{ route("admin.symbol-groups.destroy", ":id") }}';
             url = url.replace(':id', id);
             $('#symbolGroupDeleteForm').attr('action', url)

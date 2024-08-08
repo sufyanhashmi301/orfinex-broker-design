@@ -23,14 +23,17 @@ class SymbolGroupController extends Controller
     {
         if ($request->ajax()) {
             $data = SymbolGroup::with('symbols')->latest('updated_at')->get();
-    
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('symbols', function($row) {
-                    return $row->symbols->pluck('symbol')->implode(', ');
+                    // Ensure the 'symbols' variable is passed correctly
+                    return view('backend.symbol_groups.include.__symbols', [
+                        'symbols' => $row->symbols->pluck('symbol')
+                    ])->render();
                 })
                 ->addColumn('action', 'backend.symbol_groups.include.__action')
-                ->rawColumns(['action'])
+                ->rawColumns(['symbols', 'action'])
                 ->make(true);
         }
         return view('backend.symbol_groups.all');
@@ -51,12 +54,12 @@ class SymbolGroupController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-   
+
     public function edit($id)
     {
         $symbolGroup = SymbolGroup::with('symbols')->find($id);
         $allSymbols = Symbol::all();
-    
+
         return response()->json([
             'symbolGroup' => $symbolGroup,
             'allSymbols' => $allSymbols
@@ -72,7 +75,7 @@ class SymbolGroupController extends Controller
         notify()->success(__('Symbol Group updated successfully.'));
         return redirect()->route('admin.symbol-groups.index');
     }
-   
+
 
     public function destroy(SymbolGroup $symbolGroup)
     {

@@ -35,9 +35,9 @@ class TelegramController extends Controller
                     $responseText = "Account Details:\n";
                     $responseText .= "Balance: {$account->Balance}\n";
                     $responseText .= "Credit: {$account->Credit}\n";
-                    $responseText .= "Equity: {$account->Equity}";
-                    $responseText .= "Used Margin: {$account->Margin}";
-                    $responseText .= "Free Margin: {$account->MarginFree}";
+                    $responseText .= "Equity: {$account->Equity}\n";
+                    $responseText .= "Used Margin: {$account->Margin}\n";
+                    $responseText .= "Free Margin: {$account->MarginFree}\n";
                     $responseText .= "Floating: {$account->Floating}";
 
 

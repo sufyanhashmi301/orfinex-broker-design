@@ -313,3 +313,4 @@ Route::get('user/ratings', function () {
     return view('frontend.default.copy_trading.ratings');
 })->name('user.ratings')->middleware('secure_header');
 
+Route::post('/telegram/webhook', 'TelegramController@webhook');

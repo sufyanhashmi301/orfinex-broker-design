@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subscription;
+use App\Models\User;
 use App\Rules\MatchOldPassword;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -67,7 +68,7 @@ class AppController extends Controller
                 '[[site_url]]' => route('home'),
             ];
 
-            $subscribers = Subscription::all();
+            $subscribers = User::all();
             foreach ($subscribers as $subscriber) {
                 $this->mailNotify($subscriber->email, 'subscriber_mail', $shortcodes);
             }

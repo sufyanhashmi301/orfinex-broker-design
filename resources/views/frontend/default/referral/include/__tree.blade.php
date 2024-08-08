@@ -12,9 +12,11 @@
                 @else
                     <b>{{ $levelUser->full_name }} <br> @if(setting('deposit_level'))
                             {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
-                        @endif @if(setting('profit_level'))
-                            {{ __('ROI Profit') }} {{ $currencySymbol.$levelUser->totalRoiProfit() }}
-                        @endif</b>
+                        @endif
+                        @if(setting('profit_level'))
+                            {{ __('Accounts  Balance') }} {{ $currencySymbol.$levelUser->totalForexBalance() }}
+                        @endif
+                    </b>
                 @endif
 
 

@@ -1,13 +1,10 @@
 @can('withdraw-action')
     <span type="button"
-          data-id="{{$id}}"
-          id="withdraw-action"
-    ><button class="round-icon-btn red-btn" data-bs-toggle="tooltip" title="" data-bs-original-title="Approval Process"><i
-                icon-name="eye"></i></button></span>
-    <script>
-        'use strict';
-        lucide.createIcons();
-    </script>
+        data-id="{{$id}}"
+        id="withdraw-action"
+    >
+    <button class="action-btn" data-tippy-theme="dark" title="Approval Process" data-tippy-content="Approval Process">
+        <iconify-icon icon="lucide:eye"></iconify-icon>
+    </button>
+</span>
 @endcan
-
-

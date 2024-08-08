@@ -40,14 +40,18 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'city',
         'zip_code',
         'address',
+        'comment',
         'balance',
         'profit_balance',
         'status',
         'ib_login',
         'ib_balance',
         'ib_status',
+        'is_multi_ib',
         'kyc',
         'kyc_credential',
+        'kyc_token',
+        'kyc_created_at',
         'risk_profile_tags',
         'google2fa_secret',
         'two_fa',
@@ -56,6 +60,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'transfer_status',
         'ref_id',
         'password',
+        'is_level_1_completed',
+        'is_level_2_completed',
+        'is_level_3_completed',
+        'notes',
     ];
 
     protected $appends = [
@@ -84,7 +92,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'two_fa' => 'boolean',
     ];
-
     public function riskProfileTags()
     {
         return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tags_users');
@@ -102,17 +109,53 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return ucwords("{$firstName} {$lastName}");
 //        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
     }
-
+    public function kycs()
+    {
+        return $this->belongsToMany(Kyc::class);
+    }
     public function getKycTypeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_type_of_name'] ?? '';
+        if (isset($this->attributes['kyc_credential']) && !empty($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
+        return '';
     }
+    public function getKycTypeLevel3Attribute(): string
+    {
+        if (isset($this->attributes['kyc_credential_level3']) && !empty($this->attributes['kyc_credential_level3'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
 
+        return '';
+    }
     public function getKycTimeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_time_of_time'] ?? '';
-    }
+        if (isset($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
 
+        return '';
+    }
+    public function getKycTimeLevel3Attribute(): string
+    {
+        if (isset($this->attributes['kyc_credential_level3'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
+
+        return '';
+    }
     public function getTotalProfitAttribute(): string
     {
         return $this->totalProfit();
@@ -289,5 +332,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             get: fn ($value) => $value != null ? decrypt($value) : $value,
             set: fn ($value) => encrypt($value),
         );
+    }
+    public function customerGroups()
+    {
+        return $this->belongsToMany(CustomerGroup::class,'customer_group_has_customers');
     }
 }

@@ -14,8 +14,10 @@ use App\Http\Controllers\ApiController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/forex', [ApiController::class, 'index'])->name('api.forex');
+//Route::get('/forex', [ApiController::class, 'index'])->name('api.forex');
 Route::middleware('auth:sanctum')->get('/chat-gpt/{id}',  [ApiController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
+Route::middleware('auth:sanctum')->get('/get/forex',  [ApiController::class, 'getForex'])->withoutMiddleware(['auth:sanctum']);
+Route::middleware('auth:sanctum')->get('/post/forex',  [ApiController::class, 'postForex'])->withoutMiddleware(['auth:sanctum']);
 //Route::get('/forex', 'ApiController@index')->name('api.forex');
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();

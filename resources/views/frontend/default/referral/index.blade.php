@@ -55,16 +55,16 @@
                             <p class="text-sm mb-3 dark:text-white">
                                 Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
                             </p>
-                            <a href="https://cloud.orfinex.com/doc/IB-Partner-Agreement.pdf" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
+                            <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
                                 <span>Read Partner Agreement</span>
                             </a>
-                            <a href="https://www.trustpilot.com/review/orfinex.com" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                            <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
                                 <span>Read Our Reviews on Trustpilot</span>
                             </a>
                             <div class="mt-5">
-                                <p class="text-sm">If you face any issue, please visit our <a href="https://support.orfinex.com" class="btn-link">Partner Support</a> or Email us at <a href="mailto:support@orfinex.com" class="btn-link">support@orfinex.com</a>.</p>
+                                <p class="text-sm">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.</p>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                           class="space-y-4">
                         @csrf
 
-                        @foreach($ibQuestions as $ibQuestion)
+                        @foreach($ibQuestions as $qIndex=>$ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
 {{--                                {{dd($field)}}--}}
                                 <div class="input-area">
@@ -102,11 +102,11 @@
                                             <div class="col-span-12">
                                                 @foreach($field->options as $index=>$option)
                                                     <div class="checkbox-area mb-2">
-                                                        <label for="flexCheckDefault{{$index}}"
+                                                        <label for="flexCheckDefault{{$qIndex}}{{$index}}"
                                                                class="inline-flex items-center cursor-pointer">
                                                             <input class="hidden" type="checkbox"
                                                                    name="fields[{{ $field->name }}][]"
-                                                                   value="{{ $option }}" id="flexCheckDefault{{$index}}"
+                                                                   value="{{ $option }}" id="flexCheckDefault{{$qIndex}}{{$index}}"
                                                                    @if($field->validation === 'required') required @endif />
                                                             <span
                                                                 class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">

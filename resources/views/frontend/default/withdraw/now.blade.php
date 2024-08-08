@@ -29,7 +29,7 @@
                     <h4 class="card-title">{{ __('Withdraw Money') }}</h4>
                     <div>
                         <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-dark">
-                            {{ __('Withdraw Account') }}
+                            {{ __('Add Withdraw Account') }}
                         </a>
                     </div>
                 </div>
@@ -51,12 +51,12 @@
                                             @foreach($forexAccounts as $forexAccount)
                                                 <option value="{{ $forexAccount->login }}" data-type="forex"
                                                         class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }}
-                                                    - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})</option>
+                                                    - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                             @endforeach
                                             @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
                                                 <option value="{{ auth()->user()->ib_login }}" data-type="ib-account"
                                                         class="inline-block font-Inter font-normal text-sm text-slate-600">{{ auth()->user()->ib_login }}
-                                                    - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})</option>
+                                                    - {{ __('IB') }} ({{ get_mt5_account_equity(auth()->user()->ib_login) }} {{$currency}})</option>
                                             @endif
                                         </select>
                                     </div>

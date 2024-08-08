@@ -23,7 +23,7 @@ class EmailTemplateController extends Controller
 
         if ($request->ajax()) {
 
-            $data = EmailTemplate::query()->latest();
+            $data = EmailTemplate::query()->orderBy('name','asc');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -40,6 +40,7 @@ class EmailTemplateController extends Controller
     public function edit($id)
     {
         $template = EmailTemplate::find($id);
+//        dd($template);
 
         return view('backend.email.edit', compact('template'));
     }

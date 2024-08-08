@@ -3,13 +3,11 @@
         Options -MultiViews -Indexes
     </IfModule>
 	<Files .env>
-       Order allow,deny
-       Deny from all
+       Require all denied
     </Files>
-   
+
     <Files laravel.log>
-       Order allow,deny
-       Deny from all
+       Require all denied
     </Files>
 
 

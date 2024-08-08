@@ -2,7 +2,8 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{route('home')}}" class="items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo','global')) }}" class="h-10" alt="Logo"/>
+        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
+        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
     </a>
     <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">
@@ -104,7 +105,32 @@
                 </span>
             </a>
         </li>
-
+        <li class="">
+            <a href="javascript:void(0);" class="navItem">
+              <span class="flex items-center">
+                <iconify-icon class="nav-icon" icon="solar:graph-up-broken"></iconify-icon>
+                <span>{{ __('Copy Trading') }}</span>
+              </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('user.follower_access') }}" class="{{ isActive('user.follower_access') }}">
+                        {{ __('Follower Access') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.provider_access') }}" class="{{ isActive('user.provider_access') }}">
+                        {{ __('Provider Access') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.ratings') }}" class="{{ isActive('user.ratings') }}">
+                        {{ __('Ratings') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li class="">
             <a href="javascript:void(0);" class="navItem">
               <span class="flex items-center">
@@ -132,6 +158,11 @@
                 <li>
                     <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">
                         {{ __('Transfer Log') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
+                        {{ __('Accounts History') }}
                     </a>
                 </li>
             </ul>

@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
+use App\Jobs\AgentReferralJob;
+use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
+use App\Models\ForexSchema;
 use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
@@ -23,19 +29,21 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Txn;
 
 class UserController extends Controller
 {
-    use NotifyTrait,ForexApiTrait;
-
+    use NotifyTrait, ForexApiTrait;
+    protected $forexApiService;
     /**
      * Display a listing of the resource.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ForexApiService $forexApiService)
     {
         $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['edit']]);
@@ -45,6 +53,7 @@ class UserController extends Controller
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
         $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
         $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
+        $this->forexApiService = $forexApiService;
     }
 
     /**
@@ -54,34 +63,57 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
+            $data = User::query();
 
-            $data = User::latest();
+            // Apply filters
+            if ($request->has('global_search') && $request->global_search) {
+                $search = $request->global_search;
+                $data->where(function($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+            if ($request->has('phone') && $request->phone) {
+                $data->where('phone', 'like', "%" . $request->phone . "%");
+            }
+            if ($request->has('country') && $request->country) {
+                $data->where('country', 'like', "%" . $request->country . "%");
+            }
+            if ($request->has('status') && $request->status !== '') {
+                $data->where('status', $request->status);
+            }
+            if ($request->has('created_at') && $request->created_at) {
+                $data->whereDate('created_at', $request->created_at);
+            }
+            if ($request->has('tag') && $request->tag) {
+                $data->where('comment', 'like', "%" . $request->tag . "%");
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
+
                 ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', function ($request) {
-                    return $request->balance.' '.setting('site_currency');
-                })
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
-                ->editColumn('total_profit', function ($request) {
-                    return $request->total_profit.' '.setting('site_currency');
-                })
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
+                ->rawColumns(['avatar', 'username','email','kyc', 'balance','equity','credit', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.user.index');
+        return view('backend.user.all');
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new UsersExport($request), 'users.xlsx');
     }
 
     /**
@@ -98,19 +130,15 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('balance', function ($request) {
-                    return $request->balance.' '.setting('site_currency');
-                })
-                ->editColumn('total_profit', function ($request) {
-                    return $request->total_profit.' '.setting('site_currency');
-                })
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
+                ->editColumn('username', 'backend.user.include.__user')
+                ->editColumn('email', 'backend.user.include.__email')
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
+                ->rawColumns(['avatar','username','email', 'kyc', 'balance','equity','credit','status', 'action'])
                 ->make(true);
         }
 
@@ -130,29 +158,81 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', function ($request) {
-                    return $request->balance.' '.setting('site_currency');
-                })
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('total_profit', function ($request) {
-                    return $request->total_profit.' '.setting('site_currency');
-                })
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
+                ->rawColumns(['avatar','username','email', 'kyc','balance','equity','credit', 'status', 'action'])
                 ->make(true);
         }
 
         return view('backend.user.disabled_user');
     }
+    public function withBalance(Request $request)
+    {
+        if ($request->ajax()) {
+            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+            $forexAccountIds = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $realForexAccounts)
+            ->where('Balance', '>',0)
+            ->pluck('Login');
+            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+            $data = User::whereIn('id', $userIds)->latest();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->editColumn('status', 'backend.user.include.__status')
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('action', 'backend.user.include.__action')
+                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->make(true);
+        }
 
+        return view('backend.user.with_balance');
+    }
+    public function withOutBalance(Request $request)
+    {
+        if ($request->ajax()) {
+            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
+            $forexAccountIds = DB::connection('mt5_db')
+            ->table('mt5_accounts')
+            ->whereIn('Login', $realForexAccounts)
+            ->where('Balance', '<=',0)
+            ->pluck('Login');
+
+        $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+        $data = User::whereIn('id', $userIds)->latest();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('avatar', 'backend.user.include.__avatar')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
+                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->editColumn('status', 'backend.user.include.__status')
+                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
+                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
+                ->addColumn('action', 'backend.user.include.__action')
+                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.user.without_balance');
+    }
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Application|Factory|View
      */
     public function edit($id)
@@ -160,28 +240,36 @@ class UserController extends Controller
 
         $user = User::find($id);
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-        $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->syncForexAccounts($id);
-            if ($user->ib_login) {
-                $getUserResponse = $this->getUserIBApi($user->ib_login);
-                if($getUserResponse) {
-                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-                        $balance = $getUserResponse->object()->Balance;
-                        $user->update(['ib_balance' => $balance]);
-                        $user = User::find($id);
-                    }
-                }
-            }
-
-        }
-
         $realForexAccounts = ForexAccount::realActiveAccount($id)
-            ->orderBy('balance','desc')
+            ->orderBy('balance', 'desc')
             ->get();
-        $tags = RiskProfileTag::where('status',true)
+        $tags = RiskProfileTag::where('status', true)
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags'));
+        $customerGroups = CustomerGroup::where('status',1)->get();
+        $users = User::where(function ($query) use ($id,$user) {
+            $query->where(function ($subquery) use ($id,$user) {
+                $subquery->whereNull('ref_id')
+                    ->orWhere('ref_id', '<>', $id);
+            })
+                ->where('id', '<>', $id)
+                ->where('id', '<>', $user->ref_id);
+        })
+            ->get();
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+        $schemas = ForexSchema::where('status', true)
+            ->where(function($query) use ($tagNames) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All')
+                    ->orWhere(function($subQuery) use ($tagNames) {
+                        foreach ($tagNames as $tagName) {
+                            $subQuery->orWhereJsonContains('tags', $tagName);
+                        }
+                    });
+            })
+            ->orderBy('priority', 'asc')
+            ->get();
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups', 'schemas'));
+
     }
 
     public function destroy($id)
@@ -199,12 +287,14 @@ class UserController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'status' => 'required',
+            'is_multi_ib' => 'required',
             'email_verified' => 'required',
             'kyc' => 'required',
             'two_fa' => 'required',
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
             'transfer_status' => 'required',
+            'account_limit' => 'nullable|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -212,20 +302,24 @@ class UserController extends Controller
 
             return redirect()->back();
         }
-
+        if (empty($input['account_limit'])) {
+            $input['account_limit'] = 1;
+        }
         $data = [
             'status' => $input['status'],
+            'is_multi_ib' => $input['is_multi_ib'],
             'kyc' => $input['kyc'],
             'two_fa' => $input['two_fa'],
             'deposit_status' => $input['deposit_status'],
             'withdraw_status' => $input['withdraw_status'],
             'transfer_status' => $input['transfer_status'],
             'email_verified_at' => $input['email_verified'] == 1 ? now() : null,
+            'account_limit' => $input['account_limit'],
         ];
 
         $user = User::find($id);
 
-        if ($user->status != $input['status'] && ! $input['status']) {
+        if ($user->status != $input['status'] && !$input['status']) {
 
             $shortcodes = [
                 '[[full_name]]' => $user->full_name,
@@ -250,12 +344,16 @@ class UserController extends Controller
      */
     public function update($id, Request $request)
     {
-        $input = $request->all();
 
+        $input = $request->all();
         $validator = Validator::make($input, [
             'first_name' => 'required',
             'last_name' => 'required',
-            'username' => 'required|unique:users,username,'.$id,
+//            'phone' => 'required',
+            'username' => 'required|unique:users,username,' . $id,
+            'email' => 'required|string|max:255|email|unique:users,email,' . $id,
+            'date_of_birth' => 'nullable|date_format:Y-m-d',
+            'group_id' => 'nullable|exists:customer_groups,id'
         ]);
 
         if ($validator->fails()) {
@@ -263,8 +361,16 @@ class UserController extends Controller
 
             return redirect()->back();
         }
-
+        if (empty($input['date_of_birth'])) {
+            $input['date_of_birth'] = null;
+        }
         User::find($id)->update($input);
+        $user = User::find($id);
+        if (isset($input['group_id'])) {
+            $user->customerGroups()->sync($input['group_id']);
+        } else {
+            $user->customerGroups()->sync([]);
+        }
         notify()->success('User Info Updated Successfully', 'success');
 
         return redirect()->back();
@@ -313,7 +419,6 @@ class UserController extends Controller
         $targetType = $request->input('target_type');
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
@@ -327,24 +432,43 @@ class UserController extends Controller
             $adminUser = \Auth::user();
 
             if ($type == 'add') {
-                if($targetType == 'forex') {
-                    $this->ForexDeposit($targetId,$amount,$comment);
+                if ($targetType == 'forex') {
+                    $data = [
+                        'login' => $targetId,
+                        'Amount' => $amount,
+                        'type' => 1,//deposit
+                        'TransactionComments' => $comment
+                    ];
+                     $this->forexApiService->balanceOperation($data);
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money added in '.$targetId.' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
 
                 $status = 'success';
                 $message = __('Account Balance Update');
 
             } elseif ($type == 'subtract') {
-                if($targetType == 'forex') {
-                    $balance = $this->getForexAccountBalance($targetId);
+                if ($targetType == 'forex') {
+                    $balance = $this->forexApiService->getValidatedBalance([
+                        'login' => $targetId
+                    ]);
+//                    $balance = $this->getForexAccountBalance($targetId);
                     if (BigDecimal::of($amount)->compareTo($balance) > 0) {
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
                     }
-                    $this->forexWithdraw($targetId,$amount,$comment);
+                    $data = [
+                        'login' => $targetId,
+                        'Amount' => $amount,
+                        'type' => 2,//withdraw
+                        'TransactionComments' => $comment
+                    ];
+                    $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
+                    if(!$withdrawResponse['success']){
+                        return redirect()->back();
+                    }
                 }
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in '.$targetId.' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin');
+                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
                 $status = 'success';
                 $message = __('Account Balance Updated');
             }
@@ -451,6 +575,20 @@ class UserController extends Controller
                 ->make(true);
         }
     }
+    public function ibInfo($id, Request $request)
+    {
+//dd($id);
+        if ($request->ajax()) {
+            $data = User::where('id', $id)->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('ib_status', 'backend.user.include.__ib_status')
+                ->addColumn('action', 'backend.user.include.__ib_action')
+                ->rawColumns(['ib_status','action'])
+                ->make(true);
+        }
+    }
 
     /**
      * @return RedirectResponse
@@ -461,4 +599,19 @@ class UserController extends Controller
 
         return redirect()->route('user.dashboard');
     }
+
+
+    public function createCustomer()
+    {
+        return view('backend.user.create');
+    }
+     public function createNote(Request $request,$id)
+     {
+         $user = User::find($id);
+         $user->update(['notes' => $request->notes]);
+         notify()->success('Note added successfully');
+
+         return redirect()->back();
+     }
+
 }

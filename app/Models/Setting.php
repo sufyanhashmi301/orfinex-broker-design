@@ -132,6 +132,7 @@ class Setting extends Model
      */
     public static function get($key, $section = null, $default = null)
     {
+
         if (self::has($key)) {
             $setting = self::getAllSettings()->where('name', $key)->first();
 

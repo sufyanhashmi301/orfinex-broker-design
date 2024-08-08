@@ -19,11 +19,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        $page = Page::where('code', 'login')->where('locale', app()->getLocale())->first();
-        $data = json_decode($page->data, true);
+//        $page = Page::where('code', 'login')->where('locale', app()->getLocale())->first();
+//        $data = json_decode($page->data, true);
+
         $googleReCaptcha = plugin_active('Google reCaptcha');
 
-        return view('frontend::auth.login', compact('data', 'googleReCaptcha'));
+        return view('frontend::auth.login', compact('googleReCaptcha'));
     }
 
     /**
@@ -33,6 +34,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+//        dd($request->all());
         $oldTheme = session()->get('site-color-mode');
 
         $request->authenticate();

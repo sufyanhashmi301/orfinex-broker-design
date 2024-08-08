@@ -9,6 +9,20 @@
                 <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
                     <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
+                <div class="relative gap-2 lg:gap-5 hidden lg:flex">
+                    <a href="{{route('user.economic_calendar')}}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                        <iconify-icon icon="lucide:calendar-days" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
+                        Economic Calendar
+                    </a>
+                    <a href="{{route('user.downloads')}}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                        <iconify-icon icon="lucide:download-cloud" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
+                        Downloads
+                    </a>
+                    <a href="{{ route('user.ticket.index') }}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                        <iconify-icon icon="lucide:headset" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
+                        Support
+                    </a>
+                </div>
             </div>
             <!-- end vertcial -->
 
@@ -96,12 +110,14 @@
                                     <span class="font-Inter">{{ __('Change Password') }}</span>
                                 </a>
                             </li>
+                            @if(setting('user_ranking', 'permission',false))
                             <li>
                                 <a href="{{ route('user.ranking-badge') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal">
                                     <iconify-icon icon="lucide:star" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
                                     <span class="font-Inter">{{ __('Ranking Badge') }}</span>
                                 </a>
                             </li>
+                            @endif
                             <li>
                                 <a href="{{ route('user.ticket.index') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal">
                                     <iconify-icon icon="lucide:headphones" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>

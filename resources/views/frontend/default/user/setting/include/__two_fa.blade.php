@@ -20,9 +20,9 @@
                     );
                 @endphp
 
-{{--                    {!! app('pragmarx.google2fa')->getQRCodeInline(config('app.name'), $user->email, $user->google2fa_secret) !!}--}}
+                    {!! app('pragmarx.google2fa')->getQRCodeInline(config('app.name'), $user->email, $user->google2fa_secret) !!}
 
-                <img src="{{ $inlineUrl }}">
+{{--                <img src="{{ $inlineUrl }}">--}}
 
                 <p class="dark:text-white py-2">
                     @if($user->two_fa)

@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                         </div>
-                            @endif
+                        @endif
                     </div>
                 </div>
 
@@ -83,6 +83,83 @@
                     </div>
                 </div>
 
+{{--                <div class="col-span-12">--}}
+{{--                    --}}
+{{--                    <div class="card">--}}
+{{--                        <header class="card-header noborder">--}}
+{{--                            <h4 class="card-title">--}}
+{{--                                {{ __('Available Promos & Deposit Bonuses!') }}--}}
+{{--                            </h4>--}}
+{{--                        </header>--}}
+{{--                        <div class="card-body p-6 pt-0">--}}
+{{--                            <div class="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 place-content-center">--}}
+{{--                                <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">--}}
+{{--                                    <div class="flex items-center justify-between mb-3">--}}
+{{--                                        <span class="badge bg-slate-900 text-slate-900 dark:text-slate-200 bg-opacity-30 capitalize">--}}
+{{--                                            {{ __('Loyalty Deposit Bonus') }}--}}
+{{--                                        </span>--}}
+{{--                                        <div class="group relative leading-none">--}}
+{{--                                            <iconify-icon icon="heroicons:information-circle-solid" class="text-2xl"></iconify-icon>--}}
+{{--                                            <div class="invisible absolute right-0 bottom-full bg-white border border-grey-100 rounded shadow px-4 py-2 group-hover:visible w-[335px]">--}}
+{{--                                                <p class="text-lg font-medium">--}}
+{{--                                                    Loyalty Deposit Bonus--}}
+{{--                                                </p>--}}
+{{--                                                <p class="text-sm">--}}
+{{--                                                    You will receive this percentage of the deposited amount in bonus up to a maximum amount.--}}
+{{--                                                </p>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="text-slate-900 dark:text-white text-3xl font-bold mb-3">--}}
+{{--                                        100% Bonus--}}
+{{--                                    </div>--}}
+{{--                                    <div class="text-slate-900 dark:text-white text-xl font-medium mb-3">--}}
+{{--                                        <span class="font-bold">$500 </span>--}}
+{{--                                        Remaining to claim--}}
+{{--                                    </div>--}}
+{{--                                    <a href="" class="btn btn-outline-dark inline-flex justify-center btn-sm">--}}
+{{--                                        <span class="flex items-center">--}}
+{{--                                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>--}}
+{{--                                            <span>Deposit</span>--}}
+{{--                                        </span>--}}
+{{--                                    </a>--}}
+{{--                                </div>--}}
+{{--                                <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">--}}
+{{--                                    <div class="flex items-center justify-between mb-3">--}}
+{{--                                        <span class="badge bg-slate-900 text-slate-900 dark:text-slate-200 bg-opacity-30 capitalize">--}}
+{{--                                            {{ __('Loyalty Deposit Bonus') }}--}}
+{{--                                        </span>--}}
+{{--                                        <div class="group relative leading-none">--}}
+{{--                                            <iconify-icon icon="heroicons:information-circle-solid" class="text-2xl"></iconify-icon>--}}
+{{--                                            <div class="invisible absolute right-0 bottom-full bg-white border border-grey-100 rounded shadow px-4 py-2 group-hover:visible w-[335px]">--}}
+{{--                                                <p class="text-lg font-medium">--}}
+{{--                                                    Loyalty Deposit Bonus--}}
+{{--                                                </p>--}}
+{{--                                                <p class="text-sm">--}}
+{{--                                                    You will receive this percentage of the deposited amount in bonus up to a maximum amount.--}}
+{{--                                                </p>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="text-slate-900 dark:text-white text-3xl font-bold mb-3">--}}
+{{--                                        20% Bonus--}}
+{{--                                    </div>--}}
+{{--                                    <div class="text-slate-900 dark:text-white text-xl font-medium mb-3">--}}
+{{--                                        <span class="font-bold">$10,000 </span>--}}
+{{--                                        Remaining to claim--}}
+{{--                                    </div>--}}
+{{--                                    <a href="" class="btn btn-outline-dark inline-flex justify-center btn-sm">--}}
+{{--                                        <span class="flex items-center">--}}
+{{--                                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>--}}
+{{--                                            <span>Deposit</span>--}}
+{{--                                        </span>--}}
+{{--                                    </a>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+
                 {{--Recent Transactions--}}
                 @include('frontend::user.include.__recent_transaction')
             </div>
@@ -93,10 +170,14 @@
             @include('frontend::user.mobile_screen_include.dashboard.__index')
         </div>
 
+        <!-- Modal for Account password -->
+        @include('frontend.default.user.forex.modal.__deposit_demo_account')
 
 @endsection
 @section('script')
+    @include('frontend.default.user.forex.fx-js')
     <script>
+
         function copyRef() {
             /* Get the text field */
             var textToCopy = $('#refLink').val();

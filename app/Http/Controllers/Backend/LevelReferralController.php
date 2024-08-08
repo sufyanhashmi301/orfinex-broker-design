@@ -26,16 +26,19 @@ class LevelReferralController extends Controller
 
         $referralType = [
             ReferralType::Deposit,
-            ReferralType::Investment,
+//            ReferralType::Investment,
             ReferralType::Profit,
+            ReferralType::MultiIB,
         ];
 
         $levelReferral = new LevelReferral();
         $deposits = $levelReferral->where('type', ReferralType::Deposit->value)->get();
-        $investments = $levelReferral->where('type', ReferralType::Investment->value)->get();
+//        $investments = $levelReferral->where('type', ReferralType::Investment->value)->get();
         $profits = $levelReferral->where('type', ReferralType::Profit->value)->get();
+        $multiIBs = $levelReferral->where('type', ReferralType::MultiIB->value)->get();
+//        dd($multiIBs);
 
-        return view('backend.referral.level.index', compact('referralType', 'investments', 'deposits', 'profits'));
+        return view('backend.referral.level.index', compact('referralType',  'deposits', 'profits', 'multiIBs'));
     }
 
     /**
@@ -105,9 +108,9 @@ class LevelReferralController extends Controller
 
     public function statusUpdate(Request $request)
     {
-
         $key = $request->type;
-        $value = setting($key) ? 0 : 1;
+        $value = setting($key,'global',1) ? 0 : 1;
+
         Setting::add($key, $value, 'boolean');
         notify()->success(ucwords(str_replace('_', ' ', $key)).'  Status Updated');
 

@@ -12,6 +12,7 @@ class ImportController extends Controller
 {
     public function index()
     {
+
    return view('backend.imports.user-imports');
     }
     public function import(Request $request)
@@ -24,4 +25,5 @@ class ImportController extends Controller
 
         return redirect()->back()->with('success', 'Data imported successfully.');
     }
+
 }

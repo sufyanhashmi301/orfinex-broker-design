@@ -69,7 +69,7 @@ class DepositController extends Controller
             'logo' => 'required_if:type,==,manual',
             'name' => 'required',
             'gateway_id' => 'required_if:type,==,auto',
-            'method_code' => 'required_if:type,==,manual',
+            'method_code' => 'unique:deposit_methods,gateway_code|required_if:type,==,manual',
             'currency' => 'required',
             'currency_symbol' => 'required',
             'charge' => 'required',
@@ -105,10 +105,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
+//        dd($data);
 
         $depositMethod = DepositMethod::create($data);
         notify()->success($depositMethod->name . ' ' . __(' Method Created'));
@@ -173,11 +175,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-
+//dd($data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);
@@ -295,26 +298,24 @@ class DepositController extends Controller
             } else {
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
-                $transaction->pay_amount = $input['pay_amount'];
+                $transaction->pay_amount = $input['final_amount'];
+                if(isset($input['pay_amount'])) {
+                    $transaction->pay_amount = $input['pay_amount'];
+                }
                 $transaction->save();
                 $transaction = $transaction->fresh();
-                if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
-                    $this->firstMinDepositUpdate($transaction->target_id);
-                } else {
-                    $transaction->user->increment('balance', $transaction->amount);
+//                dd($transaction);
+//                if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
+//                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+////                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
+////                    $this->firstMinDepositUpdate($transaction->target_id);
+//                } else {
+//                    $transaction->user->increment('balance', $transaction->amount);
+//                }
+
                 }
-
-
-                //level referral
-                if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-                    $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-                    creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
-                }
-            }
-
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+
 
             notify()->success('Approve successfully');
 
@@ -346,13 +347,5 @@ class DepositController extends Controller
         return redirect()->back();
     }
 
-    public function FirstMinDepositUpdate($login)
-    {
-        $forexAccount = ForexAccount::where('login', $login)->first();
-        if (!$forexAccount) {
-            return false;
-        }
-        $forexAccount->update(['first_min_deposit_paid'=>1]);
-    }
 }
 

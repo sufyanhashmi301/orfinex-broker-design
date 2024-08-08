@@ -18,10 +18,12 @@ use App\Models\IbQuestionAnswer;
 use App\Models\Referral;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\ForexApiService;
 use App\Services\ProfileService;
 use App\Services\Transaction\TransactionService;
 use App\Traits\ForexApi;
 use App\Traits\ForexApiTrait;
+use App\Traits\NotifyTrait;
 use App\Traits\ProfileTrait;
 use Brick\Math\BigDecimal;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,13 +32,13 @@ use Illuminate\Validation\ValidationException;
 
 class IBController extends Controller
 {
-    use ForexApiTrait,ProfileTrait;
+    use ForexApiTrait,ProfileTrait,NotifyTrait;
     private $profileService;
+    protected $forexApiService;
 
-
-    public function __construct()
+    public function __construct(ForexApiService $forexApiService)
     {
-
+        $this->forexApiService = $forexApiService;
     }
 
     /**
@@ -73,13 +75,25 @@ class IBController extends Controller
         $this->validate($request, $this->getValidationRules());
 
         $formData = $request->input('fields');
-        $userIbProgram = IbQuestionAnswer::updateOrCreate([
-            'user_id' => auth()->id(), // Assuming you are storing the user_id
+        $userIbProgram = IbQuestionAnswer::updateOrCreate([ 'user_id' => auth()->id()],[
+            // Assuming you are storing the user_id
             'fields' => json_encode($formData),
         ]);
-        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED) {
-            auth()->user()->update(['ib_status' => IBStatus::PENDING]);
+        $user = auth()->user();
+        if($user->ib_status != \App\Enums\IBStatus::APPROVED) {
+            $user->update(['ib_status' => IBStatus::PENDING]);
         }
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' => 'Pending',
+        ];
+
+        $this->mailNotify($user->email, 'ib_request', $shortcodes);
+        $this->pushNotify('ib_request', $shortcodes, route('admin.ib.pending.list'), $user->id);
+
         return response()->json(['reload' => true,'modal' => true, 'success' => __("IB request has successfully created. Admin will review your request")]);
 
     }
@@ -168,8 +182,10 @@ class IBController extends Controller
         }
         $accountFromID = $sourceFrom;
         $accountFromName = 'IB Account';
-
-        $balanceFrom = $this->getForexAccountBalance($sourceFrom);
+        $balanceFrom = $this->forexApiService->getValidatedBalance([
+            'login' => $sourceFrom
+        ]);
+//        $balanceFrom = $this->getForexAccountBalance($sourceFrom);
 
         $request->merge(['account_from'=>$sourceFrom]);
 //        }
@@ -227,8 +243,10 @@ class IBController extends Controller
 //dd('s');
         //***************** Validation complete *******************
 
-        $this->ibTransferProcess($request, $user_id, $amount, $sourceFrom, $sourceTo);
-
+        $ibTransferProcessResponse = $this->ibTransferProcess($request, $user_id, $amount, $sourceFrom, $sourceTo);
+        if(!$ibTransferProcessResponse){
+            return false;
+        }
         //debit entry of user
         $tnxData = [
             'user_id' => $user_id,
@@ -306,7 +324,18 @@ class IBController extends Controller
             $account->save();
         } else {
             $comment = "IB-Tr/To/,'#".$sourceTo."'/".get_ref_code(auth()->user()->id);
-            $this->forexWithdraw($sourceFrom, $amount, $comment);
+            $data = [
+                'login' => $sourceFrom,
+                'Amount' => $amount,
+                'type' => 2,//withdraw
+                'TransactionComments' => $comment
+            ];
+            $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//            $withdrawResponse = $this->forexWithdraw($sourceFrom, $amount, $comment);
+            if(!$withdrawResponse['success']){
+//                Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
+                return false;
+            }
         }
 
         if ($request->get('account_to') == AccountBalanceType::MAIN) {
@@ -322,7 +351,14 @@ class IBController extends Controller
 //                $amount = BigDecimal::of($amount)->dividedBy(100, $scale, RoundingMode::HALF_DOWN);
                 $amount =$amount*100;
             }
-            $this->forexDeposit($sourceTo, $amount, $comment);
+            $data = [
+                'login' => $sourceTo,
+                'Amount' => $amount,
+                'type' => 1,//deposit
+                'TransactionComments' => $comment
+            ];
+            $this->forexApiService->balanceOperation($data);
+//            $this->forexDeposit($sourceTo, $amount, $comment);
 
         }
 

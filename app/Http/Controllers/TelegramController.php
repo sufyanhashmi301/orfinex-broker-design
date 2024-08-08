@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ForexAccount;
-use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Http\Request;
 use Log;
@@ -29,18 +28,13 @@ class TelegramController extends Controller
                 $accountNumber = $text;
 
                 // Fetch account details from the database
-                $account =  DB::connection('mt5_db')->table('mt5_users')->where('Login', $accountNumber)->first();
-                Log::info('mt5 account detail:', ['mt5 account' => $account]);
+                $account = ForexAccount::where('login', $accountNumber)->first();
 
                 if ($account) {
                     $responseText = "Account Details:\n";
-                    $responseText .= "Balance: {$account->Balance}\n";
-                    $responseText .= "Credit: {$account->Credit}\n";
-                    $responseText .= "Equity: {$account->Equity}\n";
-                    $responseText .= "Used Margin: {$account->Margin}\n";
-                    $responseText .= "Free Margin: {$account->MarginFree}\n";
-                    $responseText .= "Floating: {$account->Floating}";
-
+                    $responseText .= "Balance: {$account->balance}\n";
+                    $responseText .= "Credit: {$account->credit}\n";
+                    $responseText .= "Equity: {$account->equity}";
 
                     Log::info('Account found:', ['account' => $account]);
 
@@ -62,6 +56,6 @@ class TelegramController extends Controller
             return response()->json(['status' => 'error'], 500);
         }
 
-        return response()->json(['status' => 'ok']);
+        return response()->json(['status' => 'ok sufyan']);
     }
 }

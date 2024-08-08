@@ -70,14 +70,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     //kyc apply
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
 //        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
-        Route::get('kyc/basic', [KycController::class, 'basicKyc'])->name('basic');
-        Route::get('kyc/level3', [KycController::class, 'kycLevel3'])->name('level3');
-        Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('data');
-        Route::post('kyc-submit', [KycController::class, 'submit'])->name('submit');
-        Route::post('kyc-level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
+        Route::get('/basic', [KycController::class, 'basicKyc'])->name('basic');
+        Route::get('/level3', [KycController::class, 'kycLevel3'])->name('level3');
+        Route::get('/{id}', [KycController::class, 'kycData'])->name('data');
+        Route::post('submit', [KycController::class, 'submit'])->name('submit');
+        Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
     });
-    Route::get('kyc/advance', [SumsubController::class, 'advanceKyc'])->name('kyc.advance');
-    Route::post('kyc/advance/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
+    Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
+    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 
@@ -313,3 +313,4 @@ Route::get('user/ratings', function () {
     return view('frontend.default.copy_trading.ratings');
 })->name('user.ratings')->middleware('secure_header');
 
+Route::post('/telegram/webhook', 'TelegramController@webhook');

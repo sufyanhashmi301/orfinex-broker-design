@@ -334,9 +334,9 @@
                     @canany(['support-ticket-list','support-ticket-action'])
                         @include('backend.user.include.__ticket')
                     @endcan
-                    @if($user->notes)
+                    
                     @include('backend.user.include.__note')
-                    @endif
+                    
                 </div>
             </div>
         </div>

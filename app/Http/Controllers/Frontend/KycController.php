@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
 use App\Models\Kyclevel;
-use App\Models\Kyclevelsetting;
+use App\Models\KycSubLevel;
 use App\Models\Userkyc;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,27 +25,39 @@ class KycController extends Controller
 
     public function kyc()
     {
-        $kycSettings =kyclevel::with('kyc')->get();
-        $level2Settings = DB::table('kyc_level_settings')
-        ->where('kyc_level_id', 2)
-        ->whereIn('unique_code', ['manual', 'samsub'])
-        ->get();
-        $userKyc = Userkyc::where('user_id',Auth::id())->get();
-        return view('frontend::user.kyc.index',get_defined_vars());
+        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true)->get();
+        $totalActiveLevels = $kycLevels->count();
+//        dd($totalActiveLevels);
+        $level1Settings = KycSubLevel::where('kyc_level_id', 1)
+            ->get();
+        $level2Settings = KycSubLevel::where('kyc_level_id', 2)
+            ->get();
+//        $userKyc = ::where('user_id',Auth::id())->get();
+        return view('frontend::user.kyc.index', get_defined_vars());
     }
 
     public function basicKyc()
     {
-        $kycs = Kyc::where('status', true)->where('kyc_level_id',2)->get();
+        $user = Auth::user();
+        $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
+        if ($checkLevel1) {
+            if ($user->email_verified_at == null) {
+                notify()->error('kindly complete the level 1 first');
+                return redirect()->back();
+            }
+        }
+        $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
 
         return view('frontend::user.kyc.basic.index', compact('kycs'));
     }
+
     public function kycLevel3()
     {
-        $kycs = Kyc::where('status', true)->where('kyc_level_id',3)->get();
+        $kycs = Kyc::where('status', true)->where('kyc_level_id', 3)->get();
 
         return view('frontend::user.kyc.basic.level3', compact('kycs'));
     }
+
     public function advanceKyc()
     {
         $SUMSUB_SECRET_KEY = 'qxjq7aQDCDVDHZihPww9PBn9eCkAgiMi';
@@ -68,6 +82,7 @@ class KycController extends Controller
         }
         return view('frontend::user.kyc.advance.index');
     }
+
     public function UpdateKycStatus(Request $req)
     {
         try {
@@ -75,7 +90,7 @@ class KycController extends Controller
             $user->update([
                 'kyc' => 1,
             ]);
-            return response()->json(['status' => 200,'success' => 'Verification completed']);
+            return response()->json(['status' => 200, 'success' => 'Verification completed']);
         } catch (\Throwable $th) {
             return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
         }
@@ -83,6 +98,7 @@ class KycController extends Controller
 
     public function kycData($id)
     {
+        dd($id);
         $fields = Kyc::find($id)->fields;
 
         return view('frontend::user.kyc.data', compact('fields'))->render();
@@ -91,6 +107,7 @@ class KycController extends Controller
     public function submit(Request $request)
     {
         $input = $request->all();
+//        dd($input);
         $validator = Validator::make($input, [
             'kyc_id' => 'required',
             'kyc_credential' => 'required',
@@ -106,9 +123,9 @@ class KycController extends Controller
 
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
         $user = \Auth::user();
-        $checkLevel1= Kyclevel::where('slug','level-1')->first();
-        if($checkLevel1->status==1){
-            if($user->email_verified_at == null){
+        $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
+        if ($checkLevel1) {
+            if ($user->email_verified_at == null) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }
@@ -132,19 +149,28 @@ class KycController extends Controller
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),
-            'kyc' => KYCStatus::Pending,
+            'kyc' => 2,
         ]);
-        $kycSettingsId = Kyclevelsetting::where('kyc_id',$input['kyc_id'])->first();
-        DB::table('user_kycs')->insert([
-            'user_id' => $user->id,
-            'kyclevel_id' => $kyc->kyc_level_id, 
-            'kyclevelsetting_id' => $kycSettingsId->id, 
-            'kyc_credential' => json_encode($kycCredential),
-            'kyc' => KYCStatus::Pending,
-            'is_level_2_completed'=>1,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+//        DB::table('user_kycs')->insert([
+//            'user_id' => $user->id,
+//            'kyclevel_id' => $kyc->kyc_level_id,
+//            'kyclevelsetting_id' => $kycSettingsId->id,
+//            'kyc_credential' => json_encode($kycCredential),
+//            'kyc' => KYCStatus::Pending,
+//            'is_level_2_completed' => 1,
+//            'created_at' => now(),
+//            'updated_at' => now(),
+//        ]);
+        // Data to insert into the pivot table
+        $pivotData = [
+            'kyc_credentials' => json_encode($kycCredential),
+            'status' => 2,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
+
+// Insert data into the pivot table
+        $user->kycs()->attach($kyc->id, $pivotData);
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[email]]' => $user->email,
@@ -159,6 +185,7 @@ class KycController extends Controller
         notify()->success(__(' KYC Updated'));
         return redirect()->route('user.kyc');
     }
+
     public function submitLevel3(Request $request)
     {
         $input = $request->all();
@@ -176,16 +203,16 @@ class KycController extends Controller
         $kyc = Kyc::find($input['kyc_id']);
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
         $user = \Auth::user();
-        $checkLevel1= Kyclevel::where('slug','level-1')->first();
-        if($checkLevel1->status==1){
-            if($user->email_verified_at == null){
+        $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->first();
+        if ($checkLevel1->status == 1) {
+            if ($user->email_verified_at == null) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }
         }
-        $checkLevel2= Kyclevel::where('slug','level-2')->first();
-        if($checkLevel2->status==1){
-            if($user->is_level_2_completed == 0){
+        $checkLevel2 = Kyclevel::where('slug', KycLevelSlug::LEVEL2)->first();
+        if ($checkLevel2->status == 1) {
+            if ($user->is_level_2_completed == 0) {
                 notify()->error('kindly complete the level 2 first');
                 return redirect()->back();
             }
@@ -210,14 +237,14 @@ class KycController extends Controller
             'kyc_credential_level3' => json_encode($kycCredential),
             'kyc_level3' => KYCStatus::Pending,
         ]);
-        $kycSettingsId = Kyclevelsetting::where('kyc_id',$input['kyc_id'])->first();
+        $kycSettingsId = Kyclevelsetting::where('kyc_id', $input['kyc_id'])->first();
         DB::table('user_kycs')->insert([
             'user_id' => $user->id,
-            'kyclevel_id' => $kyc->kyc_level_id, 
-            'kyclevelsetting_id' => $kycSettingsId->id, 
+            'kyclevel_id' => $kyc->kyc_level_id,
+            'kyclevelsetting_id' => $kycSettingsId->id,
             'kyc_credential' => json_encode($kycCredential),
             'kyc' => KYCStatus::Pending,
-            'is_level_2_completed'=>1,
+            'is_level_2_completed' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

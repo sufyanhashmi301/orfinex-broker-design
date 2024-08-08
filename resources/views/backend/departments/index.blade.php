@@ -1,26 +1,23 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.company.index')
 @section('title')
     {{ __('Departments') }}
 @endsection
-@section('content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('Departments') }}
-        </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="#" class="inline-flex items-center justify-center text-success-500 addDepartment">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
-                {{ __('Add New') }}
-            </a>
-        </div>
-    </div>
+@section('title-btn')
+    <a href="#" class="btn btn-primary inline-flex items-center justify-center addDepartment">
+        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+        {{ __('Add New') }}
+    </a>
+@endsection
+@section('company-content')
 
     <div class="card">
-        <div class="card-body p-6 pt-0">
-            <div class="overflow-x-auto -mx-6">
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class=" col-span-8  hidden"></span>
+                <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                    <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="departments-dataTable">
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="departments-dataTable">
                             <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
@@ -81,7 +78,7 @@
         })(jQuery);
         $('.addDepartment').on('click', function(e) {
             e.preventDefault();
-            
+
             $.ajax({
                 url: '{{ route("admin.departments.create") }}',
                 method: 'GET',
@@ -90,7 +87,7 @@
                     var departments = response.departments;
 
                     $('#addDepartment select[name="parent_id"]').empty().append('<option value="">This is Parent</option>');
-                    
+
                     $.each(departments, function(index, dept) {
                         $('#addDepartment select[name="parent_id"]').append('<option value="'+dept.id+'">'+dept.name+'</option>');
                     });
@@ -100,7 +97,7 @@
             });
         });
         $('body').on('click', '.deleteDepartment', function (event) {
-        
+
             "use strict";
             event.preventDefault();
             var id = $(this).data('id');
@@ -113,7 +110,7 @@
             $('.name').html(name);
             $('#deleteDepartment').modal('show');
         })
-       
+
         $('body').on('click', '.editDepartment', function (event) {
             "use strict";
             event.preventDefault();
@@ -121,7 +118,7 @@
             var id = $(this).data('id');
 
             $.get('departments/' + id + '/edit', function (data) {
-               
+
                 $('#editDepartmentModal').modal('show');
                 $('#edit-department-body').append(data);
 

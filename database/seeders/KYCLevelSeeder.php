@@ -1,8 +1,7 @@
 <?php
-
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\KycLevelSlug;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,10 +14,21 @@ class KYCLevelSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('kyc_levels')->truncate();
+        DB::table('kyc_sub_levels')->truncate();
+        DB::table('kycs')->truncate();
+        // DB::table('kyc_level_settings')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         DB::table('kyc_levels')->insert([
-            ['name' => 'Level 1', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>'level-1'],
-            ['name' => 'Level 2', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>'level-2'],
-            ['name' => 'Level 3', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>'level-3'],
+            ['name' => 'Level 1', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>KycLevelSlug::LEVEL1],
+            ['name' => 'Level 2', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>KycLevelSlug::LEVEL2],
+            ['name' => 'Level 3', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>KycLevelSlug::LEVEL3],
         ]);
+
+        // Call the other seeders
+        $this->call(KycSubLevelsTableSeeder::class);
+        $this->call(KycsTableSeeder::class);
     }
 }

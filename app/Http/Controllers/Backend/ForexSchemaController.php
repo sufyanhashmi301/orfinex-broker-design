@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schedule;
+use App\Models\SwapBasedAccount;
+use App\Models\SwapFreeAccount;
 use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
@@ -53,7 +55,13 @@ class ForexSchemaController extends Controller
     {
         return view('backend.forex_schema.create');
     }
-
+    public function view($id)
+    {
+        $schema = ForexSchema::find($id);
+        $swapBasedAccounts = SwapBasedAccount::where('account_type_id',$id)->orderBy('level_order')->get();
+        $swapFreeAccounts = SwapFreeAccount::where('account_type_id',$id)->orderBy('level_order')->get();
+        return view('backend.forex_schema.view',compact('schema','swapBasedAccounts','swapFreeAccounts'));
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -61,7 +69,6 @@ class ForexSchemaController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -104,23 +111,16 @@ class ForexSchemaController extends Controller
             'desc' => $input['desc'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'is_withdraw' => $input['is_withdraw'],
-//            'is_ib_partner' => $input['is_ib_partner'],
             'is_internal_transfer' => $input['is_internal_transfer'],
             'is_external_transfer' => $input['is_external_transfer'],
-//            'is_bonus' => $input['is_bonus'],
             'status' => $input['status'],
             'priority' => $input['priority'],
             'start_range' => $input['start_range'],
             'end_range' => $input['end_range'],
             'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon']) : null,
         ];
-//        dd($finalData);
-
-
         ForexSchema::create($finalData);
-
         notify()->success('schema created successfully');
-
         return redirect()->route('admin.accountType.index');
     }
 

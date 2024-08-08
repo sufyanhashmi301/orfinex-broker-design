@@ -13,7 +13,6 @@ class SumsubController extends Controller
     public function advanceKyc()
     {
         $sumsub = Plugin::find(8);
-//        dd($sumsub);
         $sumsubstatus = $sumsub->status;
         $sumsubscredentials = json_decode($sumsub->data);
 

@@ -63,8 +63,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'is_level_1_completed',
         'is_level_2_completed',
         'is_level_3_completed',
-        'kyc_credential_level3',
-        'kyc_level3',
         'notes',
     ];
 
@@ -111,7 +109,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return ucwords("{$firstName} {$lastName}");
 //        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
     }
-
+    public function kycs()
+    {
+        return $this->belongsToMany(Kyc::class);
+    }
     public function getKycTypeAttribute(): string
     {
         if (isset($this->attributes['kyc_credential']) && !empty($this->attributes['kyc_credential'])) {
@@ -120,7 +121,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
                 return $kycCredential['kyc_type_of_name'];
             }
         }
-
         return '';
     }
     public function getKycTypeLevel3Attribute(): string

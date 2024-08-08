@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::table('forex_schemas', function (Blueprint $table) {
             $table->integer('account_limit')->default(1)->after('first_min_deposit');
-
         });
     }
 

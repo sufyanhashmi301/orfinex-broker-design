@@ -45,6 +45,11 @@ use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\DesignationController;
+use App\Http\Controllers\Backend\RebateRuleController;
+use App\Http\Controllers\Backend\SwapBasedAccountController;
+use App\Http\Controllers\Backend\SwapFreeAccountController;
+use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\SymbolGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -107,9 +112,9 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
     });
     Route::resource('kyclevels', KYCLevelsController::class);
-    Route::group(['prefix' => 'kyclevels', 'as' => 'kyclevels.', 'controller' => KYCLevelsController::class], function () {
-        Route::post('kyclevel/updatelevel/{id}', 'kycLevel1Update')->name('level1.update');
-        Route::post('kyclevelstatus/update/{id}', 'kycLevel1StatusUpdate')->name('level1status.update');
+    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KYCLevelsController::class], function () {
+        Route::post('level/update/{id}', 'kycLevelUpdate')->name('level.update');
+        Route::post('subLevel/update/{id}', 'kycSubLevelUpdate')->name('subLevel.update');
         //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
     });
@@ -144,6 +149,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+    Route::get('accountType/view/{id}', [ForexSchemaController::class,'view'])->name('accountType.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
@@ -377,6 +383,13 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('/bonus/create', function () {
         return view('backend.bonus.create');
     });
+
+   
+
+    Route::get('/symbol-groups', function () {
+        return view('backend.symbol_groups.metatrader5');
+    });
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
@@ -391,9 +404,12 @@ Route::get('settings/platform-api/cTrader', function () {
 Route::get('settings/platform-api/db-synchronization', function () {
     return view('backend.setting.platform_api.db-synchronization');
 });
-Route::resource('customer-groups', CustomerGroupController::class)->only('index','create', 'edit', 'update', 'destroy');
-Route::post('customer-groups/store', [CustomerGroupController::class,'store'])->name('customer-groups.store');
-Route::resource('departments', DepartmentController::class)->only('index','create', 'edit', 'update', 'destroy');
-Route::post('departments/store', [DepartmentController::class,'store'])->name('departments.store');
-Route::resource('designations', DesignationController::class)->only('index','create', 'edit', 'update', 'destroy');
-Route::post('designations/store', [DesignationController::class,'store'])->name('designations.store');
+Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
+Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
+Route::post('symbols/store', [SymbolController::class,'store']);
+Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);

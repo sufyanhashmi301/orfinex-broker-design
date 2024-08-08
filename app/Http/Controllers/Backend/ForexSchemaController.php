@@ -157,6 +157,8 @@ class ForexSchemaController extends Controller
             'priority' => 'required|integer',
             'start_range' => ['required', new MinDigits(6)],
             'end_range' => ['required', new MinDigits(6)],
+            'demo_server' => 'required',
+            'live_server'=>'required'
 
         ]);
 
@@ -168,7 +170,6 @@ class ForexSchemaController extends Controller
 
         $schema = ForexSchema::find($id);
         $input = $request->all();
-//dd($input);
         $finalData = [
             'title' => $input['title'],
             'badge' => $input['badge'],
@@ -193,9 +194,10 @@ class ForexSchemaController extends Controller
             'priority' => $input['priority'],
             'start_range' => $input['start_range'],
             'end_range' => $input['end_range'],
+            'demo_server' => $input['demo_server'],
+            'live_server' => $input['live_server'],
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
         ];
-//        dd($finalData);
 
         $schema->update($finalData);
 

@@ -266,9 +266,8 @@
                             <label for="" class="form-label">
                                 {{ __('Trading Server (Live) ') }}
                             </label>
-                            <select name="" class="select2 form-control w-full">
-                                <option value="Banex Capital">{{ __('Banex Capital') }}</option>
-                            </select>
+                            <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ old('live_server', $schema->live_server) }}">
+                            
                         </div>
                     </div>
                 </div>
@@ -323,11 +322,9 @@
                         </div>
                         <div class="input-area relative">
                             <label for="" class="form-label">
-                                {{ __('Trading Server (Live) ') }}
+                                {{ __('Trading Server (Demo) ') }}
                             </label>
-                            <select name="" class="select2 form-control w-full">
-                                <option value="Banex Capital">{{ __('Banex Capital') }}</option>
-                            </select>
+                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ old('demo_server', $schema->demo_server) }}">
                         </div>
                     </div>
                 </div>

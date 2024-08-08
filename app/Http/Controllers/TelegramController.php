@@ -37,13 +37,19 @@ class TelegramController extends Controller
 //                    $responseText .= "Credit: {$account->credit}\n";
 //                    $responseText .= "Equity: {$account->equity}";
 
-                $account =  DB::connection('mt5_db')->table('mt5_users')->where('Login', $accountNumber)->first();
-
+                $account =  DB::connection('mt5_db')->table('mt5_accounts')->where('Login', $accountNumber)->first();
+                $accountUser =  DB::connection('mt5_db')->table('mt5_users')->where('Login', $accountNumber)->first();
                 if ($account) {
                     $responseText = "Account Details:\n";
+                    $responseText .= "Login: {$accountNumber}\n";
+                    $responseText .= "Name: " . $accountUser->FirstName . ' ' . $accountUser->LastName . "\n";
+                    $responseText .= "-----------------\n";
                     $responseText .= "Balance: {$account->Balance}\n";
                     $responseText .= "Credit: {$account->Credit}\n";
-                    $responseText .= "Equity: {$account->Equity}";
+                    $responseText .= "Equity: {$account->Equity}\n";
+                    $responseText .= "Used Margin: {$account->Margin}\n";
+                    $responseText .= "Free Margin: {$account->MarginFree}\n";
+                    $responseText .= "Floating: {$account->Floating}";
 
                     Log::info('Account found:', ['account' => $account]);
 

@@ -30,6 +30,7 @@ class SendMoneyController extends Controller
     {
         $this->forexApiService = $forexApiService;
     }
+    //external transfer
     public function sendMoney(Request $request)
     {
 //        $clientIp = request()->ip();
@@ -160,14 +161,14 @@ class SendMoneyController extends Controller
 
         //withdraw balance
         $targetType = 'forex_withdraw';
-        $comment = 'ext/transfer/to/'.$receiverAccount;
+        $comment = 'ext/transfer/from/'.$targetId.'/to/'.$receiverAccount;
         $data = [
-            'login' => $targetId,
+            'FromLogin' => $targetId,
+            'ToLogin' => $receiverAccount,
             'Amount' => $totalAmount,
-            'type' => 2,//withdraw
-            'TransactionComments' => $comment
+            'Comments' => $comment
         ];
-        $withdrawResponse = $this->forexApiService->balanceOperation($data);
+        $withdrawResponse = $this->forexApiService->transferFunds($data);
 //        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
         if(!$withdrawResponse['success']){
             return redirect()->back();
@@ -178,14 +179,14 @@ class SendMoneyController extends Controller
             TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
-        $comment =  "ext/transfer/from/".$targetId;
-        $data = [
-            'login' => $receiverAccount,
-            'Amount' => $amount,
-            'type' => 1,//deposit
-            'TransactionComments' => $comment
-        ];
-        $this->forexApiService->balanceOperation($data);
+//        $comment =  "ext/transfer/from/".$targetId;
+//        $data = [
+//            'login' => $receiverAccount,
+//            'Amount' => $amount,
+//            'type' => 1,//deposit
+//            'TransactionComments' => $comment
+//        ];
+//        $this->forexApiService->balanceOperation($data);
 //        $this->ForexDeposit($receiverAccount,$amount,$comment);
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
@@ -219,6 +220,8 @@ class SendMoneyController extends Controller
         return redirect()->route('user.notify');
 
     }
+
+    //internal transfer
     public function sendMoneyInternal()
     {
 //        $balance = BigDecimal::of(auth()->user()->ib_balance);
@@ -350,14 +353,14 @@ class SendMoneyController extends Controller
         if($targetType == 'forex') {
             //withdraw balance
             $targetType = 'forex_withdraw';
-            $comment = 'int/transfer/to/' . $receiverAccount;
+            $comment = 'int/transfer/from/'.$targetId.'/to/'.$receiverAccount;
             $data = [
-                'login' => $targetId,
+                'FromLogin' => $targetId,
+                'ToLogin' => $receiverAccount,
                 'Amount' => $totalAmount,
-                'type' => 2,//withdraw
-                'TransactionComments' => $comment
+                'Comments' => $comment
             ];
-            $withdrawResponse = $this->forexApiService->balanceOperation($data);
+            $withdrawResponse = $this->forexApiService->transferFunds($data);
 //            $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount, $comment);
             if(!$withdrawResponse['success']){
                 return redirect()->back();
@@ -371,14 +374,14 @@ class SendMoneyController extends Controller
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoneyInternal, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
-        $comment =  "int/transfer/from/".$targetId;
-        $data = [
-            'login' => $receiverAccount,
-            'Amount' => $amount,
-            'type' => 1,//deposit
-            'TransactionComments' => $comment
-        ];
-        $this->forexApiService->balanceOperation($data);
+//        $comment =  "int/transfer/from/".$targetId;
+//        $data = [
+//            'login' => $receiverAccount,
+//            'Amount' => $amount,
+//            'type' => 1,//deposit
+//            'TransactionComments' => $comment
+//        ];
+//        $this->forexApiService->balanceOperation($data);
 //        $this->ForexDeposit($receiverAccount,$amount,$comment);
 
         $receiveDescription = 'Transfer Money From '.$fromUser->username.'-'.$targetId;

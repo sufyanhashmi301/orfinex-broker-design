@@ -39,7 +39,7 @@
                                 {{ __('Balance') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->balance}} {{$account->currency}}
+                                {{get_mt5_account_balance($account->login)}} {{$account->currency}}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -55,7 +55,7 @@
                                 {{ __('Equity') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{$account->equity}}
+                                {{get_mt5_account_equity($account->login)}}
                             </span>
                         </li>
                     </ul>

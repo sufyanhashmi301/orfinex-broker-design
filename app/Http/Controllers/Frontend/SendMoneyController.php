@@ -170,9 +170,9 @@ class SendMoneyController extends Controller
         ];
         $withdrawResponse = $this->forexApiService->transferFunds($data);
 //        $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
-        if(!$withdrawResponse['success']){
-            return redirect()->back();
-        }
+//        if(!$withdrawResponse['success']){
+//            return redirect()->back();
+//        }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
@@ -362,9 +362,9 @@ class SendMoneyController extends Controller
             ];
             $withdrawResponse = $this->forexApiService->transferFunds($data);
 //            $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount, $comment);
-            if(!$withdrawResponse['success']){
-                return redirect()->back();
-            }
+//            if(!$withdrawResponse['success']){
+//                return redirect()->back();
+//            }
         }elseif($targetType == 'wallet'){
             $targetType = 'withdraw';
             $user->decrement('profit_balance', $totalAmount);

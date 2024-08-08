@@ -4,11 +4,16 @@
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="popup-body-text p-6 pt-5 edit-plugin-section">
-                    <form id="editStatusForm" action="" method="post" class="space-y-4">
+                    <div class="text-center mb-5">
+                        <h5 class="modal-title mb-3">{{ __('Change Status') }}</h5>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            {{ __('Choose the status for this KYC level: Active or Deactivate. Confirm your selection before saving.') }}
+                        </p>
+                    </div>
+                    <form id="editStatusForm" action="" method="post">
                         @csrf
-                        <div class="max-w-xs">
+                        <div class="max-w-xs mx-auto mb-10">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
                                 <div class="switch-field flex mb-3 overflow-hidden">
                                     <input
                                         type="radio"
@@ -27,10 +32,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <div class="input-area text-center">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Save Changes') }}
                             </button>
+                            <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button"
+                               class="btn-close"
+                               data-bs-dismiss="modal"
+                               aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
                         </div>
                     </form>
                 </div>

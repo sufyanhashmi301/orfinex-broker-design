@@ -11,12 +11,14 @@
 @endsection
 @section('symbol-groups-content')
     <div class="card">
-        <div class="card-body p-6 pt-3">
-            <div class="overflow-x-auto -mx-6">
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class=" col-span-8  hidden"></span>
+                <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                    <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="rebate-rules-dataTable">
-                            <thead>
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="rebate-rules-dataTable">
+                            <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Rebate Name') }}</th>
@@ -24,20 +26,13 @@
                                     <th scope="col" class="table-th">{{ __('Total Rebate') }}</th>
                                     <!-- <th scope="col" class="table-th">{{ __('Accounts') }}</th> -->
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">
-                                        <div class="flex items-center">
-                                            <span>{{ __('Action') }}</span>
-                                            <span class="toolTip onTop leading-none" data-tippy-content="primary tooltip!" data-tippy-theme="dark">
-                                                <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:info"></iconify-icon>
-                                            </span>
-                                        </div>
-                                    </th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
 
                             </tbody>
-                            
+
                         </table>
                     </div>
                 </div>
@@ -52,9 +47,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        
          $(document).ready(function() {
             $('#symbols').select2();
          });
+
          $(document).ready(function () {
             $('#modalForm').on('submit', function (e) {
                 e.preventDefault();
@@ -92,6 +89,7 @@
                 }
             }
         });
+
        (function ($) {
             "use strict";
             var table = $('#rebate-rules-dataTable')
@@ -102,7 +100,7 @@
                 paging: true,
                 ordering: true,
                 info: false,
-                searching: true,
+                searching: false,
                 lengthChange: true,
                 lengthMenu: [10, 25, 50, 100],
                 language: {
@@ -116,7 +114,6 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                searching: false,
                 ajax: "{{ route('admin.rebate-rules.index') }}",
                 columns: [
                     {"class": "table-td", data: 'id', name: 'ID',orderable : false},
@@ -128,16 +125,17 @@
                 ]
             });
         })(jQuery);
+
         $('.addRebateGroup').on('click', function(e) {
             e.preventDefault()
             $.ajax({
                 url: '{{ route("admin.rebate-rules.create") }}',
                 method: 'GET',
                 success: function(response) {
-                    
+
                     var symbols_data = response.symbolGroups;
                     var select = $('select[name="symbol_groups[]"]');
-                    select.empty(); 
+                    select.empty();
                     $.each(symbols_data, function(index, symbol) {
                         select.append(new Option(symbol, index));
                     });
@@ -145,43 +143,44 @@
                 }
             });
         });
-        $(document).on('click', '.editRebateRule', function(e) {
-    e.preventDefault();
-    var id = $(this).data('id');
-    $.ajax({
-        url: '{{ route("admin.rebate-rules.edit", ":id") }}'.replace(':id', id),
-        method: 'GET',
-        success: function(response) {
-            console.log(response);
-            $('#title').val(response.rebateRule.title);
-            var symbolGroupsSelect = $('#symbol_groups');
-            symbolGroupsSelect.empty();
-            $.each(response.allSymbolGroups, function(index, symbol) {
-                var selected = response.rebateRule.groups.some(function(s) {
-                    return s.id === symbol.id;
-                }) ? 'selected' : '';
-                symbolGroupsSelect.append('<option value="' + symbol.id + '" ' + selected + '>' + symbol.symbol_group + '</option>');
-            });
-            $('select[name="rule_type_id"]').val(response.rebateRule.rule_type_id);
-            $('#rebate_amount').val(response.rebateRule.rebate_amount);
-            $('#per_lot').val(response.rebateRule.per_lot);
-            $('select[name="status"]').val(response.rebateRule.status);
 
-            $('#editSymbolGroupModal').modal('show');
-            $('#editRebateRuleForm').attr('action', '{{ route("admin.rebate-rules.update", ":id") }}'.replace(':id', id));
-        },
-        error: function(xhr, status, error) {
-            console.error(xhr.responseText);
-        }
-    });
-});
+        $(document).on('click', '.editRebateRule', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            $.ajax({
+                url: '{{ route("admin.rebate-rules.edit", ":id") }}'.replace(':id', id),
+                method: 'GET',
+                success: function(response) {
+                    console.log(response);
+                    $('#title').val(response.rebateRule.title);
+                    var symbolGroupsSelect = $('#symbol_groups');
+                    symbolGroupsSelect.empty();
+                    $.each(response.allSymbolGroups, function(index, symbol) {
+                        var selected = response.rebateRule.groups.some(function(s) {
+                            return s.id === symbol.id;
+                        }) ? 'selected' : '';
+                        symbolGroupsSelect.append('<option value="' + symbol.id + '" ' + selected + '>' + symbol.symbol_group + '</option>');
+                    });
+                    $('select[name="rule_type_id"]').val(response.rebateRule.rule_type_id);
+                    $('#rebate_amount').val(response.rebateRule.rebate_amount);
+                    $('#per_lot').val(response.rebateRule.per_lot);
+                    $('select[name="status"]').val(response.rebateRule.status);
+
+                    $('#editSymbolGroupModal').modal('show');
+                    $('#editRebateRuleForm').attr('action', '{{ route("admin.rebate-rules.update", ":id") }}'.replace(':id', id));
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
 
         $(document).on('click', '.deleteRebateRule', function(event) {
 
             "use strict";
             event.preventDefault();
             var id = $(this).data('id');
-           
+
             var url = '{{ route("admin.rebate-rules.destroy", ":id") }}';
             url = url.replace(':id', id);
             $('#rebateRuleDeleteForm').attr('action', url)

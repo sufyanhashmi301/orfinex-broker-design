@@ -14,12 +14,14 @@
 @endsection
 @section('symbol-groups-content')
     <div class="card">
-        <div class="card-body p-6 pt-3">
-            <div class="overflow-x-auto -mx-6">
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class=" col-span-8  hidden"></span>
+                <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                    <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbols-dataTable">
-                            <thead>
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbols-dataTable">
+                            <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Symbol ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol') }}</th>
@@ -39,7 +41,7 @@
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
 
                             </tbody>
-                          
+
                         </table>
                     </div>
                 </div>
@@ -60,7 +62,7 @@
                 paging: true,
                 ordering: true,
                 info: false,
-                searching: true,
+                searching: false,
                 lengthChange: true,
                 lengthMenu: [10, 25, 50, 100],
                 language: {
@@ -74,7 +76,6 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                searching: false,
                 ajax: "{{ route('admin.symbols.index') }}",
                 columns: [
                     {"class": "table-td", data: 'Symbol_ID', name: 'ID',orderable : false},
@@ -91,9 +92,9 @@
             event.preventDefault();
             var checkbox = $('input[data-id="' + dataId + '"]');
             var newState = checkbox.is(':checked');
-            $.post('symbols/store', { 
+            $.post('symbols/store', {
                 "_token": "{{ csrf_token() }}",
-                "id": dataId 
+                "id": dataId
 
             }, function(response) {
                 if (response.success) {
@@ -106,6 +107,6 @@
             });
 
         }
-        
+
     </script>
 @endsection

@@ -25,6 +25,7 @@ use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\SumsubController;
+use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 /*
@@ -313,4 +314,4 @@ Route::get('user/ratings', function () {
     return view('frontend.default.copy_trading.ratings');
 })->name('user.ratings')->middleware('secure_header');
 
-Route::post('/telegram/webhook', 'TelegramController@webhook');
+Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);

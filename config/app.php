@@ -213,6 +213,7 @@ return [
         App\Providers\SettingServiceProvider::class,
         App\Providers\PluginServiceProvider::class,
         App\Providers\ThemeServiceProvider::class,
+        Telegram\Bot\Laravel\TelegramServiceProvider::class,
 
     ],
 

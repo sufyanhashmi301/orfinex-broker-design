@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ForexAccount;
+use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Http\Request;
 use Log;
@@ -27,14 +28,22 @@ class TelegramController extends Controller
                 // Assume the account number is sent as a plain text message
                 $accountNumber = $text;
 
-                // Fetch account details from the database
-                $account = ForexAccount::where('login', $accountNumber)->first();
+//                // Fetch account details from the database
+//                $account = ForexAccount::where('login', $accountNumber)->first();
+//
+//                if ($account) {
+//                    $responseText = "Account Details:\n";
+//                    $responseText .= "Balance: {$account->balance}\n";
+//                    $responseText .= "Credit: {$account->credit}\n";
+//                    $responseText .= "Equity: {$account->equity}";
+
+                $account =  DB::connection('mt5_db')->table('mt5_users')->where('Login', $accountNumber)->first();
 
                 if ($account) {
                     $responseText = "Account Details:\n";
-                    $responseText .= "Balance: {$account->balance}\n";
-                    $responseText .= "Credit: {$account->credit}\n";
-                    $responseText .= "Equity: {$account->equity}";
+                    $responseText .= "Balance: {$account->Balance}\n";
+                    $responseText .= "Credit: {$account->Credit}\n";
+                    $responseText .= "Equity: {$account->Equity}";
 
                     Log::info('Account found:', ['account' => $account]);
 

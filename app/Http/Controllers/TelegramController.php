@@ -30,6 +30,7 @@ class TelegramController extends Controller
 
                 // Fetch account details from the database
                 $account =  DB::connection('mt5_db')->table('mt5_users')->where('Login', $accountNumber)->first();
+                Log::info('mt5 account detail:', ['mt5 account' => $account]);
 
                 if ($account) {
                     $responseText = "Account Details:\n";

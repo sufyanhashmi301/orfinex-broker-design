@@ -32,7 +32,7 @@
                         {{ __('Total Payouts') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        ${{$user->totalIBWithdraw()}}
+{{--                        ${{$user->totalIBWithdraw()}}--}}
                     </div>
                 </div>
             </div>

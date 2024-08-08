@@ -93,15 +93,13 @@ class Txn
             }
 
             //level referral
-            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-                if(!isset($transaction->user->multi_ib_login)) {
-                    createMultiIBAccount($transaction->user);
-                }
-                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-                creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
-            }
-
-
+//            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
+//                if(!isset($transaction->user->multi_ib_login)) {
+//                    createMultiIBAccount($transaction->user);
+//                }
+//                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
+//                creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
+//            }
         }
 //        dd($status,$status == TxnStatus::Success,$transaction->type,TxnType::ManualDeposit, $transaction->type == TxnType::ManualDeposit);
         if (isset($transaction->target_id) && $transaction->target_type == 'withdraw_deposit') {

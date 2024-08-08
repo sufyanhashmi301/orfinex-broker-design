@@ -23,7 +23,7 @@ class TelegramController extends Controller
                 $chatId = $message->getChat()->getId();
                 $text = $message->getText();
 
-//                Log::info('Message received:', ['chatId' => $chatId, 'text' => $text]);
+                Log::info('Message received:', ['chatId' => $chatId, 'text' => $text]);
 
                 // Assume the account number is sent as a plain text message
                 $accountNumber = $text;
@@ -39,6 +39,7 @@ class TelegramController extends Controller
                     $responseText .= "Used Margin: {$account->Margin}";
                     $responseText .= "Free Margin: {$account->MarginFree}";
                     $responseText .= "Floating: {$account->Floating}";
+
 
                     Log::info('Account found:', ['account' => $account]);
 
@@ -60,6 +61,6 @@ class TelegramController extends Controller
             return response()->json(['status' => 'error'], 500);
         }
 
-        return response()->json(['status' => 'ok sufyan']);
+        return response()->json(['status' => 'ok']);
     }
 }

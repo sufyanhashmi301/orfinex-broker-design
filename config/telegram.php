@@ -1,5 +1,8 @@
 <?php
 
+<?php
+
+
 return [
     'bots' => [
         'banexcapital_bot' => [
@@ -19,3 +22,4 @@ return [
         // Add your custom Telegram commands here
     ],
 ];
+

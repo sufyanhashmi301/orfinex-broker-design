@@ -19,7 +19,8 @@ return new class extends Migration
             $table->text('tags')->nullable()->after('country');
             $table->boolean('is_real_islamic')->default(0)->after('real_swap_free');
             $table->boolean('is_demo_islamic')->default(0)->after('demo_swap_free');
-
+            $table->string('demo_server')->nullable()->after('demo_swap_free');
+            $table->string('live_server')->nullable()->after('demo_server');
         });
     }
 
@@ -36,7 +37,9 @@ return new class extends Migration
             $table->dropColumn('tags');
             $table->dropColumn('is_real_islamic');
             $table->dropColumn('is_demo_islamic');
-
+            $table->dropColumn('is_demo_islamic');
+            $table->dropColumn('demo_server');
+            $table->dropColumn('live_server');
         });
     }
 };

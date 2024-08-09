@@ -76,7 +76,9 @@ class ForexSchema extends Model
 		'tags',
 		'spread',
 		'commission',
-		'priority'
+		'priority',
+		'demo_server',
+		'live_server',
 	];
 
 	public function forexAccounts()

@@ -146,6 +146,7 @@
                 </div>
             </div>
         </div>
+        @if($schema->is_real_islamic==1)
         <div>
             <div class="flex justify-between flex-wrap items-center mb-5">
                 <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -216,6 +217,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 
     {{-- Modal for Add Level --}}

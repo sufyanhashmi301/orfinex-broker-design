@@ -177,16 +177,16 @@
             </ul>
         </li>
 
-{{--        @if(setting('sign_up_referral','permission'))--}}
-{{--            <li>--}}
-{{--                <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">--}}
-{{--                    <span class="flex items-center">--}}
-{{--                        <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>--}}
-{{--                        <span>{{ __('Partnership') }}</span>--}}
-{{--                    </span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
-{{--        @endif--}}
+        @if(setting('sign_up_referral','permission'))
+            <li>
+                <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                        <span>{{ __('Partnership') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endif
 
         <li>
             <a href="{{ route('user.setting.profile') }}" class="navItem {{ isActive('user.setting*') }}">

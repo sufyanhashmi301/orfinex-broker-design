@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Traits\UserFilterable;
 use Carbon\Carbon;
 use Coderflex\LaravelTicket\Concerns\HasTickets;
 use Coderflex\LaravelTicket\Contracts\CanUseTickets;
@@ -18,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasTickets;
+    use HasApiTokens, HasFactory, Notifiable, HasTickets,UserFilterable;
 
     /**
      * The attributes that are mass assignable.

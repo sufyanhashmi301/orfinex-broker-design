@@ -64,33 +64,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::query();
-
-            // Apply filters
-            if ($request->has('global_search') && $request->global_search) {
-                $search = $request->global_search;
-                $data->where(function($query) use ($search) {
-                    $query->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('username', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-            }
-            if ($request->has('phone') && $request->phone) {
-                $data->where('phone', 'like', "%" . $request->phone . "%");
-            }
-            if ($request->has('country') && $request->country) {
-                $data->where('country', 'like', "%" . $request->country . "%");
-            }
-            if ($request->has('status') && $request->status !== '') {
-                $data->where('status', $request->status);
-            }
-            if ($request->has('created_at') && $request->created_at) {
-                $data->whereDate('created_at', $request->created_at);
-            }
-            if ($request->has('tag') && $request->tag) {
-                $data->where('comment', 'like', "%" . $request->tag . "%");
-            }
+          $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+            $data = User::applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()

@@ -82,8 +82,8 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => 'required',
             'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',
-            'start_range' => ['required', new MinDigits(6)],
-            'end_range' => ['required', new MinDigits(6)],
+            'start_range' => setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
+            'end_range' => setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
         ]);
 
         if ($validator->fails()) {
@@ -155,8 +155,9 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => 'required',
             'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',
-            'start_range' => ['required', new MinDigits(6)],
-            'end_range' => ['required', new MinDigits(6)],
+            'start_range' => setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
+            'end_range' => setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
+
             'demo_server' => 'required',
             'live_server'=>'required'
 

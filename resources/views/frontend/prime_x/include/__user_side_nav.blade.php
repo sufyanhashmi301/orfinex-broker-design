@@ -39,14 +39,14 @@
     </button>
 
     <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
-        <a href="{{ route('user.ranking-badge') }}" class="inline-flex btn btn-outline-dark btn-sm">
-            {{ __('Ranking Badge') }}
-        </a>
-        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+{{--        <a href="{{ route('user.ranking-badge') }}" class="inline-flex btn btn-outline-dark btn-sm">--}}
+{{--            {{ __('Ranking Badge') }}--}}
+{{--        </a>--}}
+        <form method="POST" action="{{ route('logout') }}" id="logout-form" class="w-full">
             @csrf
             <a href="{{ url('logout') }}"
                onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();"
-               class="inline-flex btn btn-dark btn-sm">
+               class="inline-flex btn block-btn btn-dark btn-sm">
                 {{ __('Logout') }}
             </a>
         </form>

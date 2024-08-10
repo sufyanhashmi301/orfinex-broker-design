@@ -417,6 +417,14 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_forex_group_range', // unique name for field
+                'label' => 'Forex Group Range', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
         ],
     ],
 

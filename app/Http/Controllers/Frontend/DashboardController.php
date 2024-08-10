@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Jobs\AgentReferralJob;
 use App\Models\ForexAccount;
 use App\Traits\ForexApiTrait;
+use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
@@ -13,19 +14,30 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DashboardController extends Controller
 {
-    use ForexApiTrait;
+    use ForexApiTrait,NotifyTrait;
     public function dashboard(Request $request)
     {
-//        dd(getLocation(),'dashboar');
         $user = auth()->user();
+//        $shortcodes = [
+//            '[[full_name]]' => $user->first_name.' '.$user->last_name,
+//            '[[message]]' => '.New User added our system.',
+//            '[[site_title]]' => setting('site_title', 'global'),
+//            '[[site_url]]' => route('home'),
+//        ];
+//
+//        //notify method call
+//
+//        $this->mailNotify($user->email, 'new_user', $shortcodes);
+//        dd(getLocation());
 
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            $this->syncForexAccounts(auth()->id());
+        }
 //        if(!$user->ref_id) {
 //            AgentReferralJob::dispatch($user);
 //        }
+
 
         $transactions = Transaction::where('user_id', $user->id);
 
@@ -48,9 +60,10 @@ class DashboardController extends Controller
             'investment_bonus' => $user->totalInvestBonus(),
             'rank_achieved' => $user->rankAchieved(),
             'total_ticket' => $user->ticket->count(),
-            'total_forex_balance' => mt5_total_balance($user->id),
-            'total_forex_equity' => mt5_total_equity($user->id),
+            'total_forex_balance' => $user->totalForexBalance(),
+            'total_forex_equity' => $user->totalForexEquity(),
         ];
+
         $referral = $user->getReferrals()->first();
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')

@@ -8,10 +8,12 @@ use App\Events\UserReferred;
 use App\Models\ReferralLink;
 use App\Models\ReferralRelationship;
 use App\Models\User;
+use App\Traits\NotifyTrait;
 use Txn;
 
 class RewardUser
 {
+    use NotifyTrait;
     /**
      * Create the event listener.
      *
@@ -37,6 +39,17 @@ class RewardUser
                 'ref_id' => $referral->user->id,
             ]);
 
+            $referral = User::find($referral->user_id);
+            $shortcodes = [
+                '[[full_name]]' => $referral->first_name.' '.$referral->last_name,
+                '[[child_full_name]]' => $event->user->first_name.' '.$event->user->last_name,
+                '[[child_email]]' => $event->user->email,
+                '[[message]]' => '.New User added under your IB.',
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+            //send email to parent/referral user
+            $this->mailNotify($referral->email, 'new_user_ib', $shortcodes);
             // Sign Up Referral Bonus
             if (setting('sign_up_referral', 'permission') && null !== $event->user->email_verified_at) {
 

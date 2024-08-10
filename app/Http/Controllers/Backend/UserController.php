@@ -65,18 +65,20 @@ class UserController extends Controller
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
+                ->editColumn('balance', function ($request) {
+                    return $request->balance . ' ' . setting('site_currency');
+                })
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
                 })
                 ->editColumn('username', function ($request) {
                     return safe($request->username);
                 })
-//                ->editColumn('total_profit', function ($request) {
-//                    return $request->total_profit . ' ' . setting('site_currency');
-//                })
+                ->editColumn('total_profit', function ($request) {
+                    return $request->total_profit . ' ' . setting('site_currency');
+                })
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'balance','status', 'action'])
+                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
                 ->make(true);
         }
 
@@ -97,8 +99,9 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-
+                ->editColumn('balance', function ($request) {
+                    return $request->balance . ' ' . setting('site_currency');
+                })
                 ->editColumn('total_profit', function ($request) {
                     return $request->total_profit . ' ' . setting('site_currency');
                 })
@@ -108,7 +111,7 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'kyc', 'balance','status', 'action'])
+                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
                 ->make(true);
         }
 
@@ -130,14 +133,15 @@ class UserController extends Controller
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-
+                ->editColumn('balance', function ($request) {
+                    return $request->balance . ' ' . setting('site_currency');
+                })
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
                 })
-//                ->editColumn('total_profit', function ($request) {
-//                    return $request->total_profit . ' ' . setting('site_currency');
-//                })
+                ->editColumn('total_profit', function ($request) {
+                    return $request->total_profit . ' ' . setting('site_currency');
+                })
                 ->addColumn('action', 'backend.user.include.__action')
                 ->rawColumns(['avatar', 'kyc', 'status', 'action'])
                 ->make(true);
@@ -160,31 +164,31 @@ class UserController extends Controller
 //            AgentReferralJob::dispatch($user);
 //        }
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-//        $clientIp = request()->ip();
-//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-//            $this->syncForexAccounts($id);
-//            if ($user->ib_login) {
-//                $getUserResponse = $this->getUserApi($user->ib_login);
-//                if ($getUserResponse) {
-//                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                        $balance = $getUserResponse->object()->Balance;
-//                        $user->update(['ib_balance' => $balance]);
-//                        $user = User::find($id);
-//                    }
-//                }
-//            }
-//            if ($user->multi_ib_login) {
-//                $getUserResponse = $this->getUserApi($user->multi_ib_login);
-//                if ($getUserResponse) {
-//                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                        $balance = $getUserResponse->object()->Balance;
-//                        $user->update(['multi_ib_balance' => $balance]);
-//                        $user = User::find($id);
-//                    }
-//                }
-//            }
-//
-//        }
+        $clientIp = request()->ip();
+        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
+            $this->syncForexAccounts($id);
+            if ($user->ib_login) {
+                $getUserResponse = $this->getUserApi($user->ib_login);
+                if ($getUserResponse) {
+                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                        $balance = $getUserResponse->object()->Balance;
+                        $user->update(['ib_balance' => $balance]);
+                        $user = User::find($id);
+                    }
+                }
+            }
+            if ($user->multi_ib_login) {
+                $getUserResponse = $this->getUserApi($user->multi_ib_login);
+                if ($getUserResponse) {
+                    if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                        $balance = $getUserResponse->object()->Balance;
+                        $user->update(['multi_ib_balance' => $balance]);
+                        $user = User::find($id);
+                    }
+                }
+            }
+
+        }
 
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance', 'desc')
@@ -226,6 +230,7 @@ class UserController extends Controller
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
             'transfer_status' => 'required',
+            'account_limit' => 'required|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -243,6 +248,7 @@ class UserController extends Controller
             'withdraw_status' => $input['withdraw_status'],
             'transfer_status' => $input['transfer_status'],
             'email_verified_at' => $input['email_verified'] == 1 ? now() : null,
+            'account_limit' => $input['account_limit'],
         ];
 
         $user = User::find($id);

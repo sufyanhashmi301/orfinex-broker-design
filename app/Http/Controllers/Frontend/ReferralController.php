@@ -47,11 +47,19 @@ class ReferralController extends Controller
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
             if (auth()->user()->ib_login) {
                 $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
-//            dd($getUserResponse->object());
                 if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
 //                $this->updateUserAccount($getUserResponse);
                     $balance = $getUserResponse->object()->Balance;
                     auth()->user()->update(['ib_balance' => $balance]);
+                    auth()->setUser(auth()->user()->fresh());
+                }
+            }
+            if (auth()->user()->multi_ib_login) {
+                $getUserResponse = $this->getUserApi(auth()->user()->multi_ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+//                $this->updateUserAccount($getUserResponse);
+                    $balance = $getUserResponse->object()->Balance;
+                    auth()->user()->update(['multi_ib_balance' => $balance]);
                     auth()->setUser(auth()->user()->fresh());
                 }
             }

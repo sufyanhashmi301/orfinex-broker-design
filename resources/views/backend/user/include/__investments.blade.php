@@ -39,8 +39,7 @@
     <script>
         (function ($) {
             "use strict";
-            var table = $('#user-forex-account-dataTable').DataTable();
-            table.destroy();
+
             var table = $('#user-forex-account-dataTable').DataTable({
                 processing: true,
                 serverSide: true,

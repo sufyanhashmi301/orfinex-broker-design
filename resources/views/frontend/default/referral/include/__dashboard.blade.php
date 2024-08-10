@@ -59,7 +59,69 @@
         </div>
     </div>
 </div>
+@if(isset($user->multi_ib_login))
+<div class="grid xl:grid-cols-3 grid-cols-1 gap-5 mb-5">
+    <div class="card">
+        <div class="card-body pt-4 pb-3 px-4">
+            <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex-none">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#E5F9FF] dark:bg-slate-900 text-info-500">
+                        <iconify-icon icon="bi:currency-dollar"></iconify-icon>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        {{ __('Total Balance') }}
+                    </div>
+                    <div class="text-slate-900 dark:text-white text-lg font-medium">
+                        ${{$user->multi_ib_balance}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="card">
+        <div class="card-body pt-4 pb-3 px-4">
+            <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex-none">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500">
+                        <iconify-icon icon="iconoir:hand-cash"></iconify-icon>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        {{ __('Total Payouts') }}
+                    </div>
+                    <div class="text-slate-900 dark:text-white text-lg font-medium">
+                        ${{$user->totalMIBWithdraw()}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body pt-4 pb-3 px-4">
+            <div class="flex space-x-3 rtl:space-x-reverse">
+                <div class="flex-none">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#EAE6FF] dark:bg-slate-900 text-[#5743BE]">
+                        <iconify-icon icon="fluent:wallet-credit-card-32-filled"></iconify-icon>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                        {{ __('Multi IB Account') }}
+                    </div>
+                    <div class="text-slate-900 dark:text-white text-lg font-medium">
+                        {{$user->multi_ib_login}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 <div class="grid grid-cols-12 gap-5">
     <div class="lg:col-span-8 col-span-12">
         <div class="space-y-5">
@@ -121,7 +183,7 @@
                 <div class="card-body p-6">
                     <div class="text-center mb-3">
                         <h5 class="text-center text-success-600">${{$user->ib_balance}}</h5>
-                        <p class="text-center">Balance</p>
+                        <p class="text-center">IB Balance</p>
                     </div>
                     <form action="" class="space-y-2">
                         <div class="input-area relative">
@@ -151,26 +213,26 @@
                     </form>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-body p-6">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-200 dark:bg-slate-900 dark:text-white">
-                        <iconify-icon icon="bi:gift"></iconify-icon>
-                    </div>
-                    <h5 class="card-title my-2">Attach to level a partner</h5>
-                    <p class="text-sm dark:text-white mb-4">Join casecade and get guidance and support you need to grow!</p>
-                    <a href="" class="btn btn-dark block-btn">Attach</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body p-6">
-                    <div class="text-center">
-                        <img src="" class="rounded-full" alt="...">
-                        <h5 class="card-title my-2">Rebate</h5>
-                        <p class="text-sm dark:text-white mb-4">Boost your income by increasing client retention and attracting new clients.</p>
-                        <a href="" class="btn btn-dark block-btn">More details</a>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="card">--}}
+{{--                <div class="card-body p-6">--}}
+{{--                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-200 dark:bg-slate-900 dark:text-white">--}}
+{{--                        <iconify-icon icon="bi:gift"></iconify-icon>--}}
+{{--                    </div>--}}
+{{--                    <h5 class="card-title my-2">Attach to level a partner</h5>--}}
+{{--                    <p class="text-sm dark:text-white mb-4">Join casecade and get guidance and support you need to grow!</p>--}}
+{{--                    <a href="" class="btn btn-dark block-btn">Attach</a>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            <div class="card">--}}
+{{--                <div class="card-body p-6">--}}
+{{--                    <div class="text-center">--}}
+{{--                        <img src="" class="rounded-full" alt="...">--}}
+{{--                        <h5 class="card-title my-2">Rebate</h5>--}}
+{{--                        <p class="text-sm dark:text-white mb-4">Boost your income by increasing client retention and attracting new clients.</p>--}}
+{{--                        <a href="" class="btn btn-dark block-btn">More details</a>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
     </div>
 </div>

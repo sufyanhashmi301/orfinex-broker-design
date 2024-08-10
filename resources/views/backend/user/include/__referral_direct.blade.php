@@ -28,7 +28,7 @@
                 </div>
                 <div class="site-card-body table-responsive">
                     <div class="site-datatable">
-                        <table id="user-referral-dataTable" class="display data-table">
+                        <table id="user-referral-dataTable2" class="display data-table">
                             <thead>
                             <tr>
                                 <th>{{ __('Avatar') }}</th>
@@ -54,14 +54,14 @@
     <script>
         (function ($) {
             "use strict";
-            $('#user-referral-dataTable').DataTable({
+            $('#user-referral-dataTable2').DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax: "{{ route('admin.referral.direct.list',$user->id) }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
-                    {data: 'full_name', name: 'full_name'},
+                    {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
                     {data: 'kyc', name: 'kyc'},

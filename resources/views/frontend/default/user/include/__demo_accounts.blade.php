@@ -38,10 +38,9 @@
                         </td>
                     </tr>
                     @endforeach
+                    {{  $demoForexAccounts->links() }}
                 </tbody>
             </table>
-            {{  $demoForexAccounts->links() }}
-
         </div>
     </div>
 </div>

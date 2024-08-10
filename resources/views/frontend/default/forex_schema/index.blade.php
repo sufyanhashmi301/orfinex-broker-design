@@ -27,7 +27,7 @@
         </h4>
         <div class="space-x-2 rtl:space-x-reverse">
             <a href="{{ route('user.forex-account-logs') }}" class="btn btn-outline-dark">My Accounts</a>
-            <a href="{{ route('user.offers') }}" class="btn btn-dark">Get Bonus</a>
+{{--            <a href="{{ route('user.offers') }}" class="btn btn-dark">Get Bonus</a>--}}
         </div>
     </div>
     <div class="card-body p-6">

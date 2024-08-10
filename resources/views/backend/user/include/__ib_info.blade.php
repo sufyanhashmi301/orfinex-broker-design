@@ -80,7 +80,7 @@
                                     <strong>{{ $user->ib_login }}</strong>
                                 </td>
                                 <td>
-                                    <strong>{{ get_mt5_account_equity($user->ib_login) }}</strong>
+                                    <strong>{{ $user->ib_balance }}</strong>
                                 </td>
                                 <td>
                                     <strong>{{ ucfirst($user->ib_status)}}</strong>
@@ -94,7 +94,7 @@
                                     <strong>{{ $user->multi_ib_login }}</strong>
                                 </td>
                                 <td>
-                                    <strong>{{  get_mt5_account_equity($user->multi_ib_login)  }}</strong>
+                                    <strong>{{ $user->multi_ib_balance }}</strong>
                                 </td>
                                 <td>
                                     @if(isset($user->multi_ib_login ))

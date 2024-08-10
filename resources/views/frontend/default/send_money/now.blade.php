@@ -18,6 +18,11 @@
                                         class="inline-block font-Inter font-normal text-sm text-slate-600" data-type="forex">{{ auth()->user()->ib_login }}
                                     - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})</option>
                             @endif
+                            @if(isset(auth()->user()->multi_ib_login))
+                                <option value="{{ auth()->user()->multi_ib_login }}" data-type="mib-account"
+                                        class="inline-block font-Inter font-normal text-sm text-slate-600">{{ auth()->user()->multi_ib_login }}
+                                    - {{ __('Multi IB') }} ({{ auth()->user()->multi_ib_balance }} {{$currency}})</option>
+                            @endif
                         </select>
                     </div>
                 </div>

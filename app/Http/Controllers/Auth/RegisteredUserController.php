@@ -81,9 +81,13 @@ class RegisteredUserController extends Controller
         $shortcodes = [
             '[[full_name]]' => $input['first_name'].' '.$input['last_name'],
             '[[message]]' => '.New User added our system.',
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
         ];
 
         //notify method call
+
+        $this->mailNotify($user->email, 'new_user', $shortcodes);
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
 

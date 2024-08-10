@@ -36,6 +36,7 @@ class ForexLoginBelongsToUser implements Rule
         // Check if a forex account with the given login exists and belongs to the authenticated user
         $forexAccount = ForexAccount::where('login', $value)
             ->where('user_id', $user->id)
+            ->where('account_type', 'real')
             ->exists();
         $ibAndMIB = User::where('id', $user->id)
                      ->where(function ($query) use ($value) {

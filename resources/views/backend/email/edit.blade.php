@@ -112,21 +112,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="site-input-groups row">
-                                    <label name="" class="col-sm-3 col-label">
-                                        {{ __('Footer Banner') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Leave it blank if you don't need the banner"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <div class="wrap-custom-file">
-                                            <input type="file" name="banner" id="footerRightImg" accept=".gif, .jpg, .png">
-                                            <label for="footerRightImg" @if($template->banner) class="file-ok" style="background-image: url( {{ asset( $template->banner ) }} )" @endif>
-                                                <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="">
-                                                <span>{{ __('Update Banner') }}</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+{{--                                <div class="site-input-groups row">--}}
+{{--                                    <label name="" class="col-sm-3 col-label">--}}
+{{--                                        {{ __('Footer Banner') }}--}}
+{{--                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Leave it blank if you don't need the banner"></i>--}}
+{{--                                    </label>--}}
+{{--                                    <div class="col-sm-9">--}}
+{{--                                        <div class="wrap-custom-file">--}}
+{{--                                            <input type="file" name="banner" id="footerRightImg" accept=".gif, .jpg, .png">--}}
+{{--                                            <label for="footerRightImg" @if($template->banner) class="file-ok" style="background-image: url( {{ asset( $template->banner ) }} )" @endif>--}}
+{{--                                                <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="">--}}
+{{--                                                <span>{{ __('Update Banner') }}</span>--}}
+{{--                                            </label>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                                 <div class="site-input-groups row">
                                     <label for="" class="col-sm-3 col-label">
                                         {{ __('Footer Message Body') }}
@@ -178,7 +178,7 @@
                                 <div class="site-input-groups row">
                                     <div class="offset-sm-3 col-sm-9">
                                         <textarea name="bottom_body" class="form-textarea" cols="30" rows="8">
-                                            {{ br2nl($template->bottom_body) }}   
+                                            {{ br2nl($template->bottom_body) }}
                                         </textarea>
                                         <p class="paragraph mb-0 mt-2">
                                             <i icon-name="alert-triangle"></i>
@@ -187,14 +187,23 @@
                                         </p>
                                     </div>
                                 </div>
-                                
+
                                 <div class="site-input-groups row">
                                     <label for="" class="col-sm-3 col-label">
                                         {{ __('Note') }}
                                         <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the Note here"></i>
                                     </label>
                                     <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8"></textarea>
+                                        <textarea name="note" class="form-textarea" cols="30" rows="8">{{ br2nl($template->note) }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="site-input-groups row">
+                                    <label for="" class="col-sm-3 col-label">
+                                        {{ __('Support Link') }}
+                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Show the support link here"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <input type="url" name="support_link" class="box-input" value="{{ $template->support_link }}" />
                                     </div>
                                 </div>
                                 <div class="site-input-groups row">
@@ -203,17 +212,17 @@
                                         <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the Warning Messages here"></i>
                                     </label>
                                     <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8"></textarea>
+                                        <textarea name="warning_content" class="form-textarea" cols="30" rows="8">{{ br2nl($template->warning_content) }}</textarea>
                                     </div>
                                 </div>
-                                
+
                                 <div class="site-input-groups row">
                                     <label for="" class="col-sm-3 col-label">
                                         {{ __('Company About') }}
                                         <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the Company About here"></i>
                                     </label>
                                     <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8"></textarea>
+                                        <textarea name="company_info" class="form-textarea" cols="30" rows="8">{{ br2nl($template->company_info) }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row site-input-groups">

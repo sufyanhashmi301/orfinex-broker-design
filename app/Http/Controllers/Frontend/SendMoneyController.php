@@ -25,18 +25,18 @@ class SendMoneyController extends Controller
     use ForexApiTrait,NotifyTrait;
     public function sendMoney(Request $request)
     {
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            if (auth()->user()->ib_login) {
-//                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
-//                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                    $balance = $getUserResponse->object()->Balance;
-//                    auth()->user()->update(['ib_balance' => $balance]);
-//                    auth()->setUser(auth()->user()->fresh());
-//                }
-//            }
-////            $this->syncForexAccounts(auth()->id());
-//        }
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            if (auth()->user()->ib_login) {
+                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $balance = $getUserResponse->object()->Balance;
+                    auth()->user()->update(['ib_balance' => $balance]);
+                    auth()->setUser(auth()->user()->fresh());
+                }
+            }
+            $this->syncForexAccounts(auth()->id());
+        }
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -61,10 +61,7 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
             'receiver_account' => ['required','integer', 'different:target_id',
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'real');
@@ -158,7 +155,7 @@ class SendMoneyController extends Controller
         }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
+        $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
             TxnType::SendMoney, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
@@ -167,12 +164,6 @@ class SendMoneyController extends Controller
         $receiveDescription = 'Transfer Money Form '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription,
             TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id,  'User', [], $input['note'], $receiverAccount, 'forex_deposit');
-
-        //update Balance & Equity of mt5 DB with new updated balance
-        $balance = $this->getForexAccountBalance($targetId);
-        mt5_update_balance($targetId,$balance);
-        $balance = $this->getForexAccountBalance($receiverAccount);
-        mt5_update_balance($receiverAccount,$balance);
 
         notify()->success('Successfully Send Money', 'success');
 
@@ -189,25 +180,38 @@ class SendMoneyController extends Controller
         ];
         Session::put('user_notify', $notify);
 
+        $shortcodes = [
+            '[[sender_name]]' => $txnInfoSender->user->full_name,
+            '[[receiver_name]]' => $toUser->full_name,
+            '[[txn]]' => $txnInfoSender->tnx,
+            '[[account_from]]' => $targetId,
+            '[[account_to]]' => $receiverAccount,
+            '[[amount]]' => $txnInfoSender->amount,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' =>  'Completed',
+        ];
+        $this->mailNotify($txnInfo->user->email, 'external_transfer_sender', $shortcodes);
+
         return redirect()->route('user.notify');
 
     }
     public function sendMoneyInternal()
     {
-//        $balance = BigDecimal::of(auth()->user()->ib_balance);
+        $balance = BigDecimal::of(auth()->user()->ib_balance);
 //        dd(auth()->user()->ib_login);
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            if (auth()->user()->ib_login) {
-//                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
-//                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
-//                    $balance = $getUserResponse->object()->Balance;
-//                    auth()->user()->update(['ib_balance' => $balance]);
-//                    auth()->setUser(auth()->user()->fresh());
-//                }
-//            }
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        $clientIp = request()->ip();
+        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
+            if (auth()->user()->ib_login) {
+                $getUserResponse = $this->getUserApi(auth()->user()->ib_login);
+                if ($getUserResponse->status() == 200 && isset($getUserResponse->object()->Login)) {
+                    $balance = $getUserResponse->object()->Balance;
+                    auth()->user()->update(['ib_balance' => $balance]);
+                    auth()->setUser(auth()->user()->fresh());
+                }
+            }
+            $this->syncForexAccounts(auth()->id());
+        }
 
         $forexAccounts = ForexAccount::with('schema')
             ->where('user_id', auth()->id())
@@ -235,10 +239,7 @@ class SendMoneyController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', 'different:receiver_account', new ForexLoginBelongsToUser],
             'receiver_account' => ['required','integer', 'different:target_id', new ForexLoginBelongsToUser,
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'real');
@@ -329,20 +330,14 @@ class SendMoneyController extends Controller
         }
 
         $sendDescription = 'Transfer Money To '.$toUser->username.'-'.$receiverAccount;
-        $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoneyInternal, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
+        $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoneyInternal, TxnStatus::Success, null, null, $fromUser->id, $toUser->id,'User', [], $input['note'], $targetId, $targetType);
 
 //        $toUser->increment('balance', $amount);
         $comment =  "int/transfer/from/".$targetId;
         $this->ForexDeposit($receiverAccount,$amount,$comment);
-
         $receiveDescription = 'Transfer Money From '.$fromUser->username.'-'.$targetId;
         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::Success, null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, 'forex_deposit');
 
-        //update Balance & Equity of mt5 DB with new updated balance
-        $balance = $this->getForexAccountBalance($targetId);
-        mt5_update_balance($targetId,$balance);
-        $balance = $this->getForexAccountBalance($receiverAccount);
-        mt5_update_balance($receiverAccount,$balance);
         notify()->success('Successfully Send Money', 'success');
 
         $symbol = setting('currency_symbol', 'global');
@@ -357,7 +352,18 @@ class SendMoneyController extends Controller
             'view_name' => 'send_money',
         ];
         Session::put('user_notify', $notify);
-
+        $shortcodes = [
+            '[[sender_name]]' => $txnInfoSender->user->full_name,
+            '[[receiver_name]]' => $toUser->full_name,
+            '[[txn]]' => $txnInfoSender->tnx,
+            '[[account_from]]' => $targetId,
+            '[[account_to]]' => $receiverAccount,
+            '[[amount]]' => $txnInfoSender->amount,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' =>  'Completed',
+        ];
+        $this->mailNotify($txnInfo->user->email, 'internal_transfer_sender', $shortcodes);
         return redirect()->route('user.notify');
 
     }

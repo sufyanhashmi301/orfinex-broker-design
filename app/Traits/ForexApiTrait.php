@@ -297,9 +297,8 @@ trait ForexApiTrait
 //        dd($clientIp);
         if (in_array($clientIp, ['127.0.0.1', '::1'])) {
             $dataArray['URL'] = $URL;
-//            $dataArray['Login'] = 88868;
-            $localURL = 'https://brokerdemo.brokeret.com/api/get/forex';
-
+//            $dataArray['Login'] = 874641;
+            $localURL = 'https://client.mbfx.co/api/get/forex';
 //            dd($localURL,$dataArray);
             $response = Http::withoutVerifying()
                 ->retry(3, 100)
@@ -318,22 +317,20 @@ trait ForexApiTrait
 
     public function sendApiPostRequest($URL, $dataArray)
     {
-//        dd('ss');
-//        $clientIp = request()->ip();
-//        if (in_array($clientIp, ['127.0.0.1', '::1'])) {
-//            $dataArray['URL'] = $URL;
-//            $localURL = 'https://brokerdemo.brokeret.com/api/post/forex';
-////            dd($localURL,$dataArray);
-//            return Http::withoutVerifying()
-//                ->retry(3, 100)->get($localURL, $dataArray);
-//        } else {
+        $clientIp = request()->ip();
+        if (in_array($clientIp, ['127.0.0.1', '::1'])) {
+            $dataArray['URL'] = $URL;
+            $localURL = 'https://client.mbfx.co/api/post/forex';
+//            dd($localURL,$dataArray);
+            return Http::withoutVerifying()
+                ->retry(3, 100)->get($localURL, $dataArray);
+        } else {
             try {
-//                dd('ss');
                 return Http::retry(3, 100)->post($URL, $dataArray);
             } catch (\GuzzleHttp\Exception\RequestException $exception) {
                 return $exception;
             }
-//        }
+        }
     }
 
     public function isValidForexAccount($login)
@@ -426,19 +423,18 @@ trait ForexApiTrait
         $url = config('forextrading.dealerCreditUrl');
 
         $dataArray = [
-            'Login' => $login,
-            'Amount' => $amount,
-            'Comment' => $comment,
+            'Login' => 6735,
+            'Amount' => 1,
+            'Comment' => 'credit balance',
 
         ];
         $response = $this->sendApiPostRequest($url, $dataArray);
-//        dd($response->object());
+        dd($response->object());
         if ($response->status() == 200 && $response->object() == 10009) {
             return true;
         } else {
             $message = __('The forex account :login is not exist in MT5!.please choose valid account', ['login' => $login]);
             notify()->error($message, 'Error');
-            return false;
         }
     }
 //

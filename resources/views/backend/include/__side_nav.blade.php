@@ -73,12 +73,12 @@
                                         icon-name="check-square"></i>{{ __('KYC Form') }}</a>
                             </li>
                         @endcan
-                            {{--                            @can('kyc-form-manage')--}}
-                            <li class="{{ isActive('admin.risk-profile-tag*') }}">
-                                <a href="{{ route('admin.risk-profile-tag.index') }}"><i
-                                        icon-name="check-square"></i>{{ __('Risk Profile Tag Form') }}</a>
-                            </li>
-                            {{--                            @endcan--}}
+                        {{--                            @can('kyc-form-manage')--}}
+                        <li class="{{ isActive('admin.risk-profile-tag*') }}">
+                            <a href="{{ route('admin.risk-profile-tag.index') }}"><i
+                                    icon-name="check-square"></i>{{ __('Risk Profile Tag Form') }}</a>
+                        </li>
+                        {{--                            @endcan--}}
 
                     </ul>
                 </li>
@@ -143,10 +143,10 @@
                         @endcan
 
                         {{--                        @can('schema-edit')--}}
-{{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
-{{--                            <a href="{{route('admin.profit.deduction.index')}}"><i--}}
-{{--                                    icon-name="airplay"></i><span>{{ __('Manage Profits') }}</span></a>--}}
-{{--                        </li>--}}
+                        {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
+                        {{--                            <a href="{{route('admin.profit.deduction.index')}}"><i--}}
+                        {{--                                    icon-name="airplay"></i><span>{{ __('Manage Profits') }}</span></a>--}}
+                        {{--                        </li>--}}
                         {{--                        @endcan--}}
 
                     </ul>
@@ -162,14 +162,14 @@
                             </span>
                         </a>
                         <ul class="dropdown-items">
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts') }}">
-                                <a href="{{route('admin.forex-accounts',['type'=>'real'])}}">
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
+                                <a href="{{route('admin.forex-accounts-real')}}">
                                     <i icon-name="candlestick-chart"></i>
                                     <span>{{ __('Live Accounts') }}</span>
                                 </a>
                             </li>
-                            <li class="side-nav-item {{ isActive('admin.forex-accounts') }}">
-                                <a href="{{route('admin.forex-accounts',['type'=>'demo'])}}">
+                            <li class="side-nav-item {{ isActive('admin.forex-accounts-real') }}">
+                                <a href="{{route('admin.forex-accounts-real')}}">
                                     <i icon-name="line-chart"></i>
                                     <span>{{ __('Demo Accounts') }}</span>
                                 </a>
@@ -455,78 +455,7 @@
             @endcanany
 
             {{-- ************************************************************* Site  Essentials ********************************************************* --}}
-            @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
-                <li class="side-nav-item category-title">
-                    <span>{{ __('Site Essentials') }}</span>
-                </li>
-                @can('landing-page-manage')
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.theme*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="palette"></i><span>{{ __('Theme Manage') }}</span><span
-                                class="right-arrow"><i icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            <li class="{{ isActive('admin.theme.site') }}">
-                                <a href="{{ route('admin.theme.site') }}"><i
-                                        icon-name="roller-coaster"></i>{{ __('Site Theme') }}</a>
-                            </li>
-                            <li class="{{ isActive('admin.theme.dynamic-landing') }}">
-                                <a href="{{ route('admin.theme.dynamic-landing') }}"><i
-                                        icon-name="warehouse"></i>{{ __('Dynamic Landing Theme') }}</a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="side-nav-item side-nav-dropdown  {{ isActive(['admin.page.section.section*']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="home"></i><span>{{ __('Landing Page') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @foreach($landingSections as $section)
-                                <li class="@if(request()->is('admin/page/section/'.$section->code)) active @endif">
-                                    <a href="{{ route('admin.page.section.section',$section->code) }}"><i
-                                            icon-name="egg"></i>{{ $section->name }}</a>
-                                </li>
-                            @endforeach
-
-                        </ul>
-                    </li>
-                @endcan
-                @can('page-manage')
-                    <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.page.edit*','admin.page.create']) }}">
-                        <a href="javascript:void(0);" class="dropdown-link"><i
-                                icon-name="layout-grid"></i><span>{{ __('Pages') }}</span><span class="right-arrow"><i
-                                    icon-name="chevron-down"></i></span></a>
-                        <ul class="dropdown-items">
-                            @foreach($pages as $page)
-                                <li class="@if(request()->is('admin/page/edit/'.$page->code)) active @endif">
-                                    <a href="{{ route('admin.page.edit',$page->code) }}"><i
-                                            icon-name="egg"></i>{{ $page->title }}</a>
-                                </li>
-                            @endforeach
-                            <li class="{{ isActive('admin.page.create') }}">
-                                <a href="{{ route('admin.page.create') }}"><i
-                                        icon-name="egg"></i>{{ __('Add New Page') }}</a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
-                @can('navigation-manage')
-                    <li class="side-nav-item {{ isActive('admin.navigation*') }}">
-                        <a href="{{ route('admin.navigation.menu') }}"><i
-                                icon-name="menu"></i><span>{{ __('Site Navigations') }}</span></a>
-                    </li>
-                @endcan
-                @can('footer-manage')
-                    <li class="side-nav-item {{ isActive('admin.footer-content') }}">
-                        <a href="{{ route('admin.footer-content') }}"><i
-                                icon-name="list-end"></i><span>{{ __('Footer Contents') }}</span></a>
-                    </li>
-                @endcan
-            @endcanany
-
-            {{-- ************************************************************* Site  Essentials ********************************************************* --}}
-            @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
+            {{-- @canany(['landing-page-manage','page-manage','footer-manage','navigation-manage'])
                 <li class="side-nav-item category-title">
                     <span>{{ __('Site Essentials') }}</span>
                 </li>
@@ -562,7 +491,7 @@
                         </ul>
                     </li>
                 @endcan
-            @endcanany
+            @endcanany --}}
 
             {{-- **************************************************** Newslatter Templates  *************************************************************** --}}
 

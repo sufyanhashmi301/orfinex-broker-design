@@ -230,10 +230,8 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
 
-
 //        notify()->error(__('Withdrawals are currently disabled for a short period. We apologize for any inconvenience and will be back soon'), 'Error');
 //        return redirect()->back();
-
         if (!setting('user_withdraw', 'permission') || !\Auth::user()->withdraw_status) {
             abort('403', __('Withdraw Disable Now'));
         }
@@ -248,16 +246,13 @@ class WithdrawController extends Controller
         $input = $request->all();
 //        dd($input);
         $validator = Validator::make($input, [
-            'target_id' => ['required','integer', new ForexLoginBelongsToUser,
-                Rule::exists('forex_accounts', 'login')->where(function ($query) {
-                    $query->where('account_type', 'real');
-                })],
+            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
             'withdraw_account' => ['required'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
         ],[
             'target_id.required'=> __('Kindly select the forex account to withdraw'),
-            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
+//            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
         ]);
 
         if ($validator->fails()) {
@@ -319,10 +314,6 @@ class WithdrawController extends Controller
         $withdrawResponse = $this->forexWithdraw($targetId, $totalAmount,$comment);
         if($withdrawResponse){
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
-
-            //update Balance & Equity of mt5 DB with new updated balance
-            $balance = $this->getForexAccountBalance($targetId);
-            mt5_update_balance($targetId,$balance);
         }else{
             Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
             return redirect()->back();
@@ -353,7 +344,7 @@ class WithdrawController extends Controller
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
         ];
-
+        $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'withdraw_request', $shortcodes);
         $this->pushNotify('withdraw_request', $shortcodes, route('admin.withdraw.pending'), $user->id);
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);

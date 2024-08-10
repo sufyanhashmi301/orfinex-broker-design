@@ -48,18 +48,20 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ib_login',
         'ib_balance',
         'ib_status',
+        'multi_ib_login',
+        'multi_ib_balance',
         'is_multi_ib',
+        'multi_ib_calc_at',
+
         'kyc',
         'kyc_credential',
-        'kyc_token',
-        'applicant_id',
-        'kyc_created_at',
         'risk_profile_tags',
         'google2fa_secret',
         'two_fa',
         'deposit_status',
         'withdraw_status',
         'transfer_status',
+        'account_limit',
         'ref_id',
         'password',
     ];
@@ -168,12 +170,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             ->where('status', ForexAccountStatus::Ongoing);
 
     }
-    public function demoTradingAccounts()
-    {
-        return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing);
-
-    }
 
 
     public function totalRoiProfit()
@@ -214,6 +210,15 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return round($sum, 2);
     }
+    public function totalMIBWithdraw()
+    {
+        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::MultiIB);
+        })->sum('amount');
+
+        return round($sum, 2);
+    }
+
     public function totalInvestment()
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {

@@ -9,5 +9,4 @@ interface ForexAccountStatus
     const Pending = 'pending';
     const Canceled = 'canceled';
     const Archive = 'archive';
-    const Unknown = 'unknown';
 }

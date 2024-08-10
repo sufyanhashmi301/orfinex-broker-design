@@ -48,6 +48,7 @@
                                 </li>
                             @endcan
 
+
 {{--                            @can('user-permissions')--}}
 {{--                                <li class="{{ isActive('admin.settings.user-permissions') ?? isActive('admin.settings.permissions') }} ">--}}
 {{--                                    <a href="{{ route('admin.settings.user-permissions') }}">--}}
@@ -56,6 +57,7 @@
 {{--                                    </a>--}}
 {{--                                </li>--}}
 {{--                            @endcan--}}
+
                         </ul>
                     </div>
                     <div class="row">

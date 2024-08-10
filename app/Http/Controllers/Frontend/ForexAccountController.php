@@ -16,6 +16,7 @@ use App\Models\LevelReferral;
 use App\Models\Schema;
 use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
+use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -30,7 +31,7 @@ use Txn;
 
 class ForexAccountController extends GatewayController
 {
-    use ImageUpload, NotifyTrait,ForexApiTrait;
+    use ImageUpload, NotifyTrait, ForexApiTrait;
 
     public function forexAccountCreateNow(Request $request)
     {
@@ -44,7 +45,7 @@ class ForexAccountController extends GatewayController
             'group' => 'required',
             'leverage' => 'required',
             'account_name' => 'required',
-        ],[
+        ], [
             'main_password.required' => __('The main password field is required.'),
             'main_password.min' => __('The main password must be at least 8 characters long.'),
             'main_password.regex' => __('The main password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'),
@@ -57,10 +58,17 @@ class ForexAccountController extends GatewayController
 
             return redirect()->back();
         }
+        $user = Auth::user();
+        $accountType = implode('_', array_slice(explode('_', $request->group), 0, 1));
+        $realAccounts = ForexAccount::where('user_id', $user->id)->where('account_type', $accountType)->count();
+//        dd($realAccounts,$accountType,$user->account_limit);
+        if ($realAccounts >= $user->account_limit) {
+            notify()->error('Sorry, you have reached the limit for creating accounts. Please contact our support team to increase your account creation limit at '.setting('support_email', 'global'), 'Error');
+            return redirect()->back();
+        }
 
         $input = $request->all();
 
-        $user = Auth::user();
         $schema = ForexSchema::find($input['schema_id']);
 
         $group = $schema[$request->group];
@@ -70,9 +78,9 @@ class ForexAccountController extends GatewayController
         $password = $request->main_password;
 
 //        $dataArray = array(
-        if(url('/') == 'http://brokerdemo.brokeret.com') {
+        if (url('/') == 'http://brokerdemo.brokeret.com') {
             $data['Name'] = auth()->user()->full_name . '-demo';
-        }else{
+        } else {
             $data['Name'] = auth()->user()->full_name;
         }
         $data['Leverage'] = $request->leverage;
@@ -104,7 +112,7 @@ class ForexAccountController extends GatewayController
                 $accountData['forex_schema_id'] = $schema->id;
                 $accountData['login'] = $resData->Login;
                 $accountData['account_name'] = $request->account_name;
-                $accountData['account_type'] = implode('_', array_slice(explode('_', $request->group), 0, 1));
+                $accountData['account_type'] = $accountType;
                 $accountData['user_id'] = auth()->user()->id;
                 $accountData['currency'] = setting('site_currency', 'global');
 //                $accountData['invest_password'] = $investPassword;
@@ -118,27 +126,23 @@ class ForexAccountController extends GatewayController
                 $accountData['trading_platform'] = config('forextrading.tradingPlatform');
                 $forexTrading = ForexAccount::create($accountData);
 
-                if($user->ref_id) {
+                if ($user->ref_id) {
                     $referrer = User::find($user->ref_id);
-                    if($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)){
-                         $this->updateAgent($resData->Login, $referrer->ib_login);
+                    if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {
+                        $this->updateAgent($resData->Login, $referrer->ib_login);
                     }
                 }
 //                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
 //                    event(new NewForexAccountEvent($forexTrading));
 
-
-
-//                $shortcodes = [
-//                    '[[full_name]]' => $tnxInfo->user->full_name,
-//                    '[[txn]]' => $tnxInfo->tnx,
-//                    '[[plan_name]]' => $tnxInfo->invest->schema->name,
-//                    '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-//                    '[[site_title]]' => setting('site_title', 'global'),
-//                    '[[site_url]]' => route('home'),
-//                ];
-//
-//                $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
+                $shortcodes = [
+                    '[[full_name]]' => $forexTrading->user->full_name,
+                    '[[login]]' => $forexTrading->login,
+                    '[[plan_name]]' => $schema->title,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+                $this->mailNotify($forexTrading->user->email, 'user_forex_account_creation', $shortcodes);
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 
@@ -146,11 +150,10 @@ class ForexAccountController extends GatewayController
                 return redirect()->route('user.forex-account-logs');
             }
 //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-
         }
 
-            notify()->error('Some error occurred! please try again', 'Error');
-            return redirect()->route('user.schema.preview', $schema->id);
+        notify()->error('Some error occurred! please try again', 'Error');
+        return redirect()->route('user.schema.preview', $schema->id);
 
 //        $periodHours = $schema->schedule->time;
 //        $profitClearHours = $schema->profitWithdrawSchedule->time;
@@ -182,10 +185,10 @@ class ForexAccountController extends GatewayController
     public function userAccountExist($account)
     {
 //        dd($account);
-        $forexAccount = ForexAccount::where('login', $account)->where('status',ForexAccountStatus::Ongoing)->first();
+        $forexAccount = ForexAccount::where('login', $account)->where('status', ForexAccountStatus::Ongoing)->first();
 
         if ($forexAccount) {
-            $data = 'Name: '.$forexAccount->user->first_name.' '.$forexAccount->user->last_name;
+            $data = 'Name: ' . $forexAccount->user->first_name . ' ' . $forexAccount->user->last_name;
         } else {
             $data = 'Account Not Found';
         }
@@ -196,47 +199,21 @@ class ForexAccountController extends GatewayController
     public function forexAccountLogs(Request $request)
     {
 
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        $clientIp = request()->ip();
+        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
+            $this->syncForexAccounts(auth()->id());
+        }
         $realForexAccounts = ForexAccount::realActiveAccount()
-            ->orderBy('balance','desc')
+            ->orderBy('balance', 'desc')
             ->get();
         $demoForexAccounts = ForexAccount::demoActiveAccount()
-            ->orderBy('balance','desc')
+            ->orderBy('balance', 'desc')
             ->get();
         $archiveForexAccounts = ForexAccount::archiveAccount()
-            ->orderBy('balance','desc')
+            ->orderBy('balance', 'desc')
             ->get();
 
-        return view('frontend::user.forex.log',compact('realForexAccounts','demoForexAccounts','archiveForexAccounts'));
-    }
-    public function testForexAccount(Request $request)
-    {
-        dd($this->getUserInfoApi(88876));
-//        $this->getPositionList(9996792);
-//        $this->getPositionListGroup(9996792);
-//        $this->getOrderOpenUser(9996792);
-//        $this->getDealListUser(9997821);
-//        $this->getUserAccountBalance(9996792);
-//        $this->dealerCreditUrl(9996792,1,2);
-
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
-        $realForexAccounts = ForexAccount::realActiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-        $demoForexAccounts = ForexAccount::demoActiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-        $archiveForexAccounts = ForexAccount::archiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-
-        return view('frontend::user.forex.log',compact('realForexAccounts','demoForexAccounts','archiveForexAccounts'));
+        return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts'));
     }
 
     public function getLeverage(Request $request)
@@ -256,7 +233,7 @@ class ForexAccountController extends GatewayController
     {
 //        dd($request->all());
         $request->validate([
-            'login' => ['required','integer', new ForexLoginBelongsToUser],
+            'login' => ['required','integer', new ForexLoginBelongsToUserGeneral],
             'leverage' => 'sometimes|nullable|numeric|gt:0',
 //            'password' => 'sometimes|nullable|'.Password::min(8)->mixedCase(),
             'main_password' => ['sometimes',
@@ -313,8 +290,8 @@ class ForexAccountController extends GatewayController
 //            $updateUserApiResponse = $this->disableAccount($request->login);
 //        dd($updateUserApiResponse->object());
 //            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
-                ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
-                return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
+            ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
+            return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
 //            } else {
 //                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
 //            }
@@ -324,8 +301,8 @@ class ForexAccountController extends GatewayController
 //            $updateUserApiResponse = $this->enableAccount($request->login);
 ////        dd($updateUserApiResponse->object());
 //            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
-                ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
-                return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
+            ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
+            return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
 //            } else {
 //                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again'), 'reload' => false]);
 //            }

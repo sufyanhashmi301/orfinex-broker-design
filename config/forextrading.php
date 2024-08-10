@@ -1,8 +1,6 @@
 <?php
 
-//$base_url = 'http://8.217.97.85:7762/api/';
-$base_url = 'http://8.208.79.163:6653/api/';
-
+$base_url = 'http://8.217.97.85:7762/api/';
 return [
     'createUserUrl' => $base_url.'user/create',
     'updateUserUrl' => $base_url.'user/update',
@@ -30,6 +28,6 @@ return [
     'enableAccountUrl' => $base_url.'enable_account',
 //    'auth' => '49239111601',
     'group' => 'IB\1',
-    'server' => 'OrfinexPrime-MT5',
+    'server' => 'MBFXGlobal-Server',
     'tradingPlatform' => 'MT5',
 ];

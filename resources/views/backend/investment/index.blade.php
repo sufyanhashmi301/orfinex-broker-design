@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="title-content">
-                            <h2 class="title">{{ __('All :type Forex Accounts',['type'=>ucfirst($type)]) }}</h2>
+                            <h2 class="title">{{ __('All Forex Accounts') }}</h2>
                         </div>
                     </div>
                 </div>
@@ -105,19 +105,19 @@
                             <div class="site-datatable">
                                 <table id="dataTable" class="display data-table">
                                     <thead>
-                                        <tr>
-                                            <th>{{ __('Account Number') }}</th>
-                                            <th>{{ __('User') }}</th>
-                                            <th>{{ __('Account Type') }}</th>
-                                            <th>{{ __('Group') }}</th>
-{{--                                            <th>{{ __('Currency') }}</th>--}}
-                                            <th>{{ __('Leverage') }}</th>
-                                            <th>{{ __('Balance') }}</th>
-                                            <th>{{ __('Agent/IB Number') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Created At') }}</th>
-                                            <th>{{ __('Actions') }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ __('Account Number') }}</th>
+                                        <th>{{ __('User') }}</th>
+                                        <th>{{ __('Account Type') }}</th>
+                                        <th>{{ __('Group') }}</th>
+                                        <th>{{ __('Currency') }}</th>
+                                        <th>{{ __('Leverage') }}</th>
+                                        <th>{{ __('Balance') }}</th>
+                                        <th>{{ __('Agent/IB Number') }}</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Created At') }}</th>
+                                        <th>{{ __('Actions') }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
 
@@ -135,20 +135,17 @@
     <script>
         (function ($) {
             "use strict";
-            var type = "{{ $type }}"; // Retrieve the 'type' variable from PHP and assign it to a JavaScript variable
-            var url = '{{ route("admin.forex-accounts", ["type" => ":type"]) }}';
-            url = url.replace(':type', type);
             var table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: url,
+                ajax: "{{ route('admin.forex-accounts-real') }}",
                 columns: [
                     {data: 'login', name: 'login'},
                     {data: 'username', name: 'username'},
                     {data: 'schema', name: 'schema'},
                     // {data: 'login', name: 'login'},
                     {data: 'group', name: 'group'},
-                    // {data: 'currency', name: 'currency'},
+                    {data: 'currency', name: 'currency'},
                     {data: 'leverage', name: 'leverage'},
                     {data: 'balance', name: 'balance'},
                     {data: 'ib_number', name: 'ib_number'},

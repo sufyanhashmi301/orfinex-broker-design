@@ -183,8 +183,10 @@
                           >
                           <span class="text-slate-500 dark:text-slate-400 text-xs leading-6 capitalize">
                             {{ __('I agree with') }}
-                            <a href="{{url('/privacy-policy')}}">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
-                            <a href="{{url('/terms-and-conditions')}}">{{ __('Terms & Condition') }}</a>
+{{--                            <a href="{{url('/privacy-policy')}}">{{ __('Privacy & Policy') }}</a> {{ __('and') }}--}}
+{{--                            <a href="{{url('/terms-and-conditions')}}">{{ __('Terms & Condition') }}</a>--}}
+                             <a href="javascript:void(0)">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
+                            <a href="javascript:void(0)">{{ __('Terms & Condition') }}</a>
                           </span>
                         </label>
                       </div>

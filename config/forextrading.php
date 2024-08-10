@@ -30,6 +30,6 @@ return [
     'enableAccountUrl' => $base_url.'enable_account',
 //    'auth' => '49239111601',
     'group' => 'IB\1',
-    'server' => 'Banex-Capital',
+    'server' => 'MBFXGlobal-Server',
     'tradingPlatform' => 'MT5',
 ];

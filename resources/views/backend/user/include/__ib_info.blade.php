@@ -1,109 +1,90 @@
 <div
-    class="tab-pane fade"
+    class="tab-pane space-y-5 fade"
     id="ib-info"
     role="tabpanel"
     aria-labelledby="ib-info-tab"
 >
-
-    <div class="row">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-            <div class="site-card">
-                <div class="site-card-header">
-                    <h4 class="title">{{ __('IB Account') }}</h4>
-
-                    <div class="content">
-                        @can('user-ib-create')
-                            <span data-bs-toggle="modal" data-bs-target="#addIBModal">
-                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
-                                    <i icon-name="plus"></i>
-                                    Add New IB
-                                </a>
-                                </span>
-                        @endcan
-                        @can('user-ib-update')
-
-                            <span data-bs-toggle="modal" data-bs-target="#updateIBModal">
-                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
-                                    <i icon-name="plus"></i>
-                                    Update IB
-                                </a>
-                                </span>
-                        @endcan
-
-                    </div>
-                    <div class="content">
-                        @can('user-mib-create')
-
-                            <span data-bs-toggle="modal" data-bs-target="#addMIBModal">
-                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
-                                    <i icon-name="plus"></i>
-                                    Add New Multi IB
-                                </a>
-                                </span>
-                        @endcan
-                        @can('user-mib-update')
-
-                            <span data-bs-toggle="modal" data-bs-target="#updateMIBModal">
-                                <a href="javascript:void(0)" class="btn btn-dark btn-sm">
-                                    <i icon-name="plus"></i>
-                                    Update Multi IB
-                                </a>
-                                </span>
-                        @endcan
-                    </div>
-
-                </div>
-
-                <div class="site-card-body table-responsive">
-                    <div class="site-datatable">
-                        <table id="ib-info-dataTable" class="display data-table">
-                            <thead>
-                            <tr>
-                                <th>{{ __('Type') }}</th>
-                                <th>{{ __('Login') }}</th>
-                                <th>{{ __('Balance') }}</th>
-                                <th>{{ __('status') }}</th>
-                                <th></th>
-                                {{--                                <th>{{ __('Group') }}</th>--}}
-                                {{--                                <th>{{ __('Balance') }}</th>--}}
-                                {{--                                <th>{{ __('Equity') }}</th>--}}
-                                {{--                                <th>{{ __('Credit') }}</th>--}}
-
-                            </tr>
+    <div class="card">
+        <div class="card-header noborder">
+            <h4 class="card-title">{{ __('IB Account') }}</h4>
+            <div class="flex flex-wrap flex-md-nowrap align-items-stretch gap-2 mb-2 mb-md-0">
+                <span data-bs-toggle="modal" data-bs-target="#addIBModal">
+                    <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                        Add New IB
+                    </a>
+                </span>
+                <span data-bs-toggle="modal" data-bs-target="#updateIBModal">
+                    <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                        Update IB
+                    </a>
+                </span>
+                <span data-bs-toggle="modal" data-bs-target="#addMIBModal">
+                    <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                        Add New Multi IB
+                    </a>
+                </span>
+                <span data-bs-toggle="modal" data-bs-target="#updateMIBModal">
+                    <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                        Update Multi IB
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="card-body px-6 pb-6">
+            <div class="overflow-x-auto -mx-6">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                            <thead class="border-t border-slate-100 dark:border-slate-800">
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Type') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Login') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                    <th scope="col" class="table-th">{{ __('status') }}</th>
+                                    <th scope="col" class="table-th"></th>
+                                    {{--<th scope="col" class="table-th">{{ __('Group') }}</th>--}}
+                                    {{--<th scope="col" class="table-th">{{ __('Balance') }}</th>--}}
+                                    {{--<th scope="col" class="table-th">{{ __('Equity') }}</th>--}}
+                                    {{--<th scope="col" class="table-th">{{ __('Credit') }}</th>--}}
+                                </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <strong>{{ __('IB') }}</strong>
-                                </td>
-                                <td>
-                                    <strong>{{ $user->ib_login }}</strong>
-                                </td>
-                                <td>
-                                    <strong>{{ $user->ib_balance }}</strong>
-                                </td>
-                                <td>
-                                    <strong>{{ ucfirst($user->ib_status)}}</strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong>{{ __('Multi IB') }}</strong>
-                                </td>
-                                <td>
-                                    <strong>{{ $user->multi_ib_login }}</strong>
-                                </td>
-                                <td>
-                                    <strong>{{ $user->multi_ib_balance }}</strong>
-                                </td>
-                                <td>
-                                    @if(isset($user->multi_ib_login ))
-                                        <strong>{{ __('Approved') }}</strong>
-                                    @else
-                                        <strong>{{ __('Unprocessed') }}</strong>
-                                    @endif
-                                </td>
-                            </tr>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                <tr>
+                                    <td class="table-td">
+                                        {{ __('IB') }}
+                                    </td>
+                                    <td class="table-td">
+                                        {{ $user->ib_login }}
+                                    </td>
+                                    <td class="table-td">
+                                        {{ get_mt5_account_equity($user->ib_login) }}
+                                    </td>
+                                    <td class="table-td">
+                                        {{ ucfirst($user->ib_status)}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table-td">
+                                        {{ __('Multi IB') }}
+                                    </td>
+                                    <td class="table-td">
+                                        {{ $user->multi_ib_login }}
+                                    </td>
+                                    <td class="table-td">
+                                        {{  get_mt5_account_equity($user->multi_ib_login)  }}
+                                    </td>
+                                    <td class="table-td">
+                                        @if(isset($user->multi_ib_login ))
+                                            {{ __('Approved') }}
+                                        @else
+                                            {{ __('Unprocessed') }}
+                                        @endif
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -114,23 +95,37 @@
 </div>
 @push('single-script')
     <script>
-        {{--(function ($) {--}}
-        {{--    "use strict";--}}
-        {{--    var table = $('#ib-info-dataTable').DataTable();--}}
-        {{--    table.destroy();--}}
-        {{--    var table = $('#ib-info-dataTable').DataTable({--}}
-        {{--        processing: true,--}}
-        {{--        serverSide: true,--}}
-        {{--        autoWidth: false,--}}
-        {{--        ajax: "{{ route('admin.user.ib-info',$user->id) }}",--}}
-        {{--        columns: [--}}
-        {{--            {data: 'ib_login', name: 'ib_login'},--}}
-        {{--            {data: 'ib_balance', name: 'ib_balance'},--}}
-        {{--            {data: 'ib_status', name: 'ib_status'},--}}
-        {{--            // {data: 'action', name: 'action'},--}}
+        (function ($) {
+            "use strict";
 
-        {{--        ]--}}
-        {{--    });--}}
-        {{--})(jQuery);--}}
+            var table = $('#ib-info-dataTable').DataTable({
+                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
+                paging: true,
+                ordering: true,
+                info: false,
+                searching: true,
+                lengthChange: true,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                lengthMenu: "Show _MENU_ entries",
+                paginate: {
+                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                },
+                search: "Search:"
+                },
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: "{{ route('admin.user.ib-info',$user->id) }}",
+                columns: [
+                    {"class": "table-td", data: 'ib_login', name: 'ib_login'},
+                    {"class": "table-td", data: 'ib_balance', name: 'ib_balance'},
+                    {"class": "table-td", data: 'ib_status', name: 'ib_status'},
+                    // {data: 'action', name: 'action'},
+
+                ]
+            });
+        })(jQuery);
     </script>
 @endpush

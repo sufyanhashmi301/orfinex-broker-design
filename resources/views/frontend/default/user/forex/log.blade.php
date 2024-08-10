@@ -95,29 +95,32 @@
         </div>
     </div>
 
+    <!-- Modal for Account details -->
+    @include('frontend.default.user.forex.modal.__trade')
+
     <!-- Modal for Account password -->
     @include('frontend.default.user.forex.modal.__deposit_demo_account')
+    
         <!-- Modal for Account details -->
     @include('frontend.default.user.forex.modal.__account_details')
-    <!-- Modal for Account details-->
 
-        <!-- Modal for Account leverage -->
+    <!-- Modal for Account leverage -->
     @include('frontend.default.user.forex.modal.__change_leverage')
 
 
-        <!-- Modal for Account rename -->
+    <!-- Modal for Account rename -->
     @include('frontend.default.user.forex.modal.__account_rename')
 
 
-        <!-- Modal for Account password -->
+    <!-- Modal for Account password -->
     @include('frontend.default.user.forex.modal.__change_account_password')
 
 
-        <!-- Modal for Account invest password -->
+    <!-- Modal for Account invest password -->
     @include('frontend.default.user.forex.modal.__change_investor_password')
 
 
-        <!-- Modal for Account archive -->
+    <!-- Modal for Account archive -->
     @include('frontend.default.user.forex.modal.__archive_account')
 
     <!-- Modal for Account unarchive -->

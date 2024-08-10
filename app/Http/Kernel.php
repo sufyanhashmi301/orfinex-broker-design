@@ -45,7 +45,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
 //            'throttle:api',
 //            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -75,10 +75,12 @@ class Kernel extends HttpKernel
         'XSS' => \App\Http\Middleware\XSS::class,
         'KYC' => \App\Http\Middleware\KYC::class,
         '2fa' => \App\Http\Middleware\TwoFaCheck::class,
+        '2fa_admin' => \App\Http\Middleware\TwoFaCheckForAdmin::class,
         'isActive' => \App\Http\Middleware\CheckDeactivate::class,
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,
         'IB' => IBMiddleware::class,
+        'set.session.lifetime' => \App\Http\Middleware\SetSessionLifetime::class,
         'secure_header' => SecureHeaders1Middleware::class,
 
 

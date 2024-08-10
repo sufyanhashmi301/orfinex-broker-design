@@ -36,7 +36,7 @@ class MigrateOldData extends Command
 //
 ////        echo $readableDateTime;
 ////        dd($readableDateTime);
-        dd(Hash::make('axYsie!uixq.r@d'));
+        dd(Hash::make('12345678'));
 //        $tables = DB::connection('mysql')->getDoctrineSchemaManager()->listTableNames();
 //        foreach ($tables as $table) {
 //            Schema::disableForeignKeyConstraints();
@@ -87,7 +87,7 @@ class MigrateOldData extends Command
                 echo "Email not exist of Login: " . $oldUser->login . "\n";
             }
         }
-        $this->info('Data migration completed successfully with Total Forex Accounts ' . session('forex-count'));
+        $this->info('Data migration completed successfully with Total Accounts ' . session('forex-count'));
 
     }
 

@@ -12,11 +12,21 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    protected $fillable = ['avatar', 'name', 'email', 'phone', 'password', 'device_token', 'is_admin', 'status'];
+    protected $fillable = ['avatar', 'name', 'email', 'phone', 'password', 'device_token', 'is_admin', 'status','google2fa_secret','two_fa'];
 
 
     public function getCreatedAtAttribute(): string
     {
         return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'department_has_staff', 'staff_id', 'department_id');
+    }
+
+    public function designations()
+    {
+        return $this->belongsToMany(Designation::class, 'designation_has_staff', 'staff_id', 'designation_id');
     }
 }

@@ -10,5 +10,7 @@
     </style>
 @endsection
 @section('content')
-    <iframe src="http://209.209.42.14:8080/portal/registration/subscription"  class="w-full h-screen" frameborder="0"></iframe>
+    @if(setting('copy_trading_follower_access_show','platform_links',false))
+    <iframe src="{{setting('copy_trading_follower_access','platform_links','javascript:void(0);')}}" class="w-full h-screen" frameborder="0"></iframe>
+@endif
 @endsection

@@ -7,37 +7,23 @@
     {{ __('Add Custom CSS') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Add Custom CSS') }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Add Custom CSS') }}</h4>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <div class="paragraph mb-4"><i icon-name="alert-triangle"></i>You can add <strong>Custom CSS</strong> to write the css below and it will effect on the <strong>User Front End Pages</strong></div>
-                            <form action="{{ route('admin.custom-css.update') }}" method="post">
-                                @csrf
-                                <div class="site-input-groups">
-                                    <textarea name="custom_css" class="form-textarea editorContainer">{{ $customCss }}</textarea>
-                                </div>
-                                <button type="submit" class="site-btn-sm primary-btn">
-                                    {{ __('Save Changes') }}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+        <div class="card-body p-6">
+            <div class="paragraph text-xs mb-4"><iconify-icon icon="lucide:alert-triangle"></iconify-icon>You can add <strong>Custom CSS</strong> to write the css below and it will effect on the <strong>User Front End Pages</strong></div>
+            <form action="{{ route('admin.custom-css.update') }}" method="post">
+                @csrf
+                <div class="input-area mb-5">
+                    <textarea name="custom_css" class="form-conttrol editorContainer">{{ $customCss }}</textarea>
                 </div>
-            </div>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        {{ __('Save Changes') }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

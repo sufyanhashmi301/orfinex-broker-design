@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\ResetData;
@@ -18,14 +19,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        if(url('/') == 'http://brokerdemo.brokeret.com') {
-            $schedule->command('reset:data')->daily();
-        }
-
-        $schedule->command('ib:record')->dailyAt('03:10');
-        $schedule->command('multiIB:Bonus')->dailyAt('03:30');
+//        if(url('/') == 'http://brokerdemo.brokeret.com') {
+//            $schedule->command('reset:data')->daily();
+//        }
+//        $schedule->command('ib:record')->dailyAt('00:10');
+//        $schedule->command('multiIB:Bonus')->dailyAt('00:30');
 
 //        $schedule->command('ib:record')->everyMinute();
+//        $schedule->command('forex:create-accounts-from-mysql-to-mt5')->everyTwoMinutes();
 //        $schedule->command('multiIB:Bonus')->everyMinute();
 //        $schedule->command('queue:work --stop-when-empty')
 //            ->everyMinute()
@@ -47,6 +48,7 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         SynchroniseMissingTranslationKeys::class,
+        CreateForexAccountsFromMysqlToMT5::class,
         ResetData::class,
         IBProfitRecord::class,
         MultiIbBonus::class,

@@ -85,21 +85,19 @@
             </div>
             <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
                 <span style="font-size: small;">
-                    {!! $details['note'] !!}
-                    @if(isset($details['support_link']))
-                    <a href="{{$details['support_link']}}" target="_blank">
+                    You received this email because you made a trade on your Orfinex Prime Real Trading Account. If you have any questions or need assistance, please contact us via email at support@orfinex.com or visit 
+                    <a href="https://support.orfinex.com" target="_blank">
                         <b>Support Portal</b>
-                    </a>
-                        @endif
+                    </a>.
                 </span>
             </div>
             <div style="font-size: small; text-align: center;line-height: 14px !important;">
-                {!! $details['warning_content'] !!}
+                Risk warning: Trading in financial markets involves risks. Please ensure you understand these risks and are prepared to manage them.
             </div>
         </div>
         <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
             <font size="1">
-                {!! $details['company_info'] !!}
+                ORFINEX is a brand name of ORFINEX PRIME PTY LTD, which is a Corporate Authorized Representative who holds an Australian Financial Services License issued by the Australian Securities and Investments Commission (ASIC), AFSR no. 001306799 and ACN No# 672 906 320.
             </font>
         </div>
     </div>

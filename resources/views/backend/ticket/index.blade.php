@@ -2,67 +2,28 @@
 @section('title')
     {{ __('All Support Tickets') }}
 @endsection
-
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('All Support Tickets') }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body table-responsive">
-                            <div class="site-datatable">
-                                <table id="dataTable" class="display data-table">
-                                    <thead>
-                                    <tr>
-                                        <th>{{ __('Ticket Name') }}</th>
-                                        <th>{{ __('Opening Date') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Action') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            @yield('header-btn')
         </div>
     </div>
-@endsection
-
-@section('script')
-
-    <script>
-        (function ($) {
-            "use strict";
-
-            var table = $('#dataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('admin.ticket.index') }}",
-                columns: [
-                    {data: 'name', name: 'name'},
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
-            });
-
-
-        })(jQuery);
-    </script>
+    <div class="card p-4 mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+            <li class="nav-item">
+                <a href="{{ route('admin.ticket.index') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.ticket.index') }}">
+                    {{ __('All Tickets') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.ticket.ticketStatus') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.ticket.ticketStatus') }}">
+                    {{ __('Ticket Status') }}
+                </a>
+            </li>
+        </ul>
+    </div>
+    @yield('ticket-content')
 @endsection

@@ -1,15 +1,31 @@
 <?php
 
 return [
-    'global' => [
-        'title' => 'Global Settings',
+    'theme' => [
+        'title' => 'Theme Settings',
 
         'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_title', // unique name for field
+                'label' => 'Site Title', // you know what label it is
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => 'CRM', // default value if you want
+            ],
             [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_logo', // unique name for field
-                'label' => 'Site Logo', // you know what label it is
+                'label' => 'Site Logo (Dark) <iconify-icon class="ml-1" icon="lucide:info" title="Recommended Size 160 x 40"></iconify-icon>', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
+                'value' => 'default/fav.png', // default value if you want
+            ],
+            [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_logo_light', // unique name for field
+                'label' => 'Site Logo (Light)', // you know what label it is
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -30,13 +46,124 @@ return [
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
             [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'link_thumbnail', // unique name for field
+                'label' => 'Link Thumbnail Image ', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
+                'value' => 'default/auth-bg.jpg', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_color', // unique name for field
+                'label' => 'Primary Color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'secondary_color', // unique name for field
+                'label' => 'Secondary Color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'active_menu_bg', // unique name for field
+                'label' => 'Active menu bg', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'active_menu_color', // unique name for field
+                'label' => 'Active menu text Color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+        ],
+    ],
+
+    'common_settings' => [
+        'title' => 'Company Settings',
+
+        'elements' => [
+            [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_admin_prefix', // unique name for field
-                'label' => 'Site Admin Prefix', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'admin', // default value if you want
+                'name' => 'site_title', // unique name for field
+                'label' => 'Site Title', // you know what label it is
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => 'Brokeret', // default value if you want
             ],
+            [
+                'type' => 'email', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_email', // unique name for field
+                'label' => 'Site Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'admin@tdevs.co', // default value if you want
+            ],
+            [
+                'type' => 'email', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'support_email', // unique name for field
+                'label' => 'Support Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'support@tdevs.co', // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'company_website', // unique name for field
+                'label' => 'Company Website', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'https://company.com', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'company_phone', // unique name for field
+                'label' => 'Company Phone', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '123456789', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'registered_address', // unique name for field
+                'label' => 'Registered Address', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'United State', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'registered_number', // unique name for field
+                'label' => 'Registered Number', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '123456789', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copyright_text', // unique name for field
+                'label' => 'Copyright Text', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'All rights reserved @tdevs 2022', // default value if you want
+            ],
+        ],
+
+    ],
+
+    'currency_setting' => [
+        'title' => 'Currency Settings',
+
+        'elements' => [
             [
                 'type' => 'switch', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -52,6 +179,29 @@ return [
                 'label' => 'Site Currency', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'USD', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'currency_symbol', // unique name for field
+                'label' => 'Currency Symbol', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '$', // default value if you want
+            ],
+        ],
+    ],
+
+    'global' => [
+        'title' => 'Site Settings',
+
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'site_admin_prefix', // unique name for field
+                'label' => 'Site Admin Prefix', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 'admin', // default value if you want
             ],
             [
                 'type' => 'dropdown', // input fields type
@@ -71,14 +221,6 @@ return [
             ],
             [
                 'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'currency_symbol', // unique name for field
-                'label' => 'Currency Symbol', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '$', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
                 'data' => 'integer', // data type, string, int, boolean
                 'name' => 'referral_code_limit', // unique name for field
                 'label' => 'Referral Code Limit', // you know what label it is
@@ -92,30 +234,6 @@ return [
                 'label' => 'Home Redirect', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '/', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_title', // unique name for field
-                'label' => 'Site Title', // you know what label it is
-                'rules' => 'required|min:2|max:50', // validation rule of laravel
-                'value' => 'Hyiprio', // default value if you want
-            ],
-            [
-                'type' => 'email', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_email', // unique name for field
-                'label' => 'Site Email', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'admin@tdevs.co', // default value if you want
-            ],
-            [
-                'type' => 'email', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'support_email', // unique name for field
-                'label' => 'Support Email', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'support@tdevs.co', // default value if you want
             ],
         ],
     ],
@@ -301,6 +419,7 @@ return [
             ],
         ],
     ],
+
     'document_links' => [
         'title' => 'Document Links',
         'elements' => [
@@ -457,61 +576,11 @@ return [
                 'value' => 1, // default value if you want
             ],
 
-            [
-                'type' => 'url', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'client_portal_link', // unique name for field
-                'label' => 'Client Portal Link', // you know what label it is
-                'rules' => '', // validation rule of laravel
-                'value' => null, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'client_portal_show', // unique name for field
-                'label' => 'Client Portal Policy', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-
-            [
-                'type' => 'url', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'partnership_link', // unique name for field
-                'label' => 'Partnership Link', // you know what label it is
-                'rules' => '', // validation rule of laravel
-                'value' => null, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'partnership_show', // unique name for field
-                'label' => 'Partnership Policy', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-
-            [
-                'type' => 'url', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'copy_trading_link', // unique name for field
-                'label' => 'Copy Trading Link', // you know what label it is
-                'rules' => '', // validation rule of laravel
-                'value' => null, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'copy_trading_show', // unique name for field
-                'label' => 'Copy Trading Policy', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-
 
         ],
 
     ],
+
     'platform_links' => [
         'title' => 'Platform Links',
         'elements' => [
@@ -649,12 +718,105 @@ return [
                 'value' => 1, // default value if you want
             ],
 
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_follower_access', // unique name for field
+                'label' => 'Copy Trading Follower Access(iframe)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_follower_access_show', // unique name for field
+                'label' => 'Copy Trading Follower Access(iframe)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_provider_access', // unique name for field
+                'label' => 'Copy Trading Provider Access(iframe)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_provider_access_show', // unique name for field
+                'label' => 'Copy Trading Provider Access(iframe)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings', // unique name for field
+                'label' => 'Copy Trading Rating(iframe)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings_show', // unique name for field
+                'label' => 'Copy Trading Rating(iframe)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings_js', // unique name for field
+                'label' => 'Copy Trading Rating(Js)', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading_ratings_js_show', // unique name for field
+                'label' => 'Copy Trading Rating(Js)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+
         ],
 
 
     ],
-
-
+    'internal' => [
+        'title' => 'Internal Transfers Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_send', // unique name for field
+                'label' => 'External Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
+    ],
+    'external' => [
+        'title' => 'External Transfers Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_send', // unique name for field
+                'label' => 'External Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
+    ],
     'fee' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
@@ -791,7 +953,28 @@ return [
             ],
         ],
     ],
+    'features' => [
+        'title' => 'Features Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'withdraw_deduction', // unique name for field
+                'label' => 'Withdraw Deduction', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'copy_trading', // unique name for field
+                'label' => 'Copy Trading', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ],
 
+    ],
     'mail' => [
         'title' => 'Mail Settings',
         'elements' => [
@@ -863,6 +1046,52 @@ return [
             ],
         ],
     ],
+    'platform_api' => [
+        'title' => 'Platform API Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_url_real', // unique name for field
+                'label' => 'MT5 API url(real)', // you know what label it is
+                'rules' => 'required|min:5|max:50', // validation rule of laravel
+                'value' => 'http://11.222.333.444:1234', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_key_real', // unique name for field
+                'label' => 'Forex API key(real)', // you know what label it is
+                'rules' => 'required|min:5|max:1000', // validation rule of laravel
+                'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'demo_server_enable', // unique name for field
+                'label' => 'Demo Server Enable', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_url_demo', // unique name for field
+                'label' => 'MT5 API url(demo)', // you know what label it is
+                'rules' => 'sometimes|min:5|max:50', // validation rule of laravel
+                'value' => 'http://11.222.333.444:1234', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'mt5_api_key_demo', // unique name for field
+                'label' => 'MT5 API key(demo)', // you know what label it is
+                'rules' => 'sometimes|min:5|max:1000', // validation rule of laravel
+                'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
+            ],
+        ],
+    ],
 
     'site_maintenance' => [
         'title' => 'Site Maintenance',
@@ -914,14 +1143,6 @@ return [
                 'value' => 1, // default value if you want
             ],
             [
-                'type' => 'textarea', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'gdpr_text', // unique name for field
-                'label' => 'GDPR Text', // you know what label it is
-                'rules' => 'required|max:500', // validation rule of laravel
-                'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
-            ],
-            [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'gdpr_button_label', // unique name for field
@@ -936,6 +1157,14 @@ return [
                 'label' => 'Button URL', // you know what label it is
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => '/privacy-policy', // default value if you want
+            ],
+            [
+                'type' => 'textarea', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'gdpr_text', // unique name for field
+                'label' => 'GDPR Text', // you know what label it is
+                'rules' => 'required|max:500', // validation rule of laravel
+                'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
             ],
         ],
     ],

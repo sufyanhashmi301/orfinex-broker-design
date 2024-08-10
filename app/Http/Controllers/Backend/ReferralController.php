@@ -275,9 +275,9 @@ class ReferralController extends Controller
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
-//                ->editColumn('full_name', function ($data) {
-//                    return $data->first_name . ' ' . $data->last_name;
-//                })
+                ->editColumn('full_name', function ($data) {
+                    return $data->first_name . ' ' . $data->last_name;
+                })
                 ->editColumn('balance', function ($request) {
                     return $request->balance . ' ' . setting('site_currency');
                 })
@@ -289,7 +289,7 @@ class ReferralController extends Controller
                 })
 
                 ->addColumn('action', 'backend.user.include.__direct_referral_action')
-                ->rawColumns(['full_name','avatar', 'kyc', 'status', 'action'])
+                ->rawColumns(['avatar', 'kyc', 'status', 'action'])
                 ->make(true);
         }
     }

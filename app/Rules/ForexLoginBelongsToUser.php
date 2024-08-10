@@ -33,7 +33,7 @@ class ForexLoginBelongsToUser implements Rule
         $this->loginValue = $value;
         $user = Auth::user();
         $status = false;
-        // Check if a forex account with the given login exists and belongs to the authenticated user
+        // Check if a account with the given login exists and belongs to the authenticated user
         $forexAccount = ForexAccount::where('login', $value)
             ->where('user_id', $user->id)
             ->where('account_type', 'real')

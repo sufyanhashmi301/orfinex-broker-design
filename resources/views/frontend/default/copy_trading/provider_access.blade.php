@@ -2,7 +2,6 @@
 @section('title')
     {{ __('Become Provider') }}
 @endsection
-
 @section('style')
     <style>
         .page-content {
@@ -11,5 +10,9 @@
     </style>
 @endsection
 @section('content')
-    <iframe src="http://209.209.42.14:8080/portal/registration/provider" class="w-full h-screen" frameborder="0"></iframe>
+    @if(setting('copy_trading_provider_access','platform_links',false))
+        <iframe src="{{setting('copy_trading_provider_access_show','platform_links','javascript:void(0);')}}"
+                class="w-full h-screen"
+                frameborder="0"></iframe>
+    @endif
 @endsection

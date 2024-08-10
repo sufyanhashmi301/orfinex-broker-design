@@ -34,10 +34,7 @@ class IBProfitRecord extends Command
      */
     public function handle()
     {
-        $users = User::whereNotNull('ib_login')
-//            ->where('email', 'testing123@gmail.com')
-            ->where('ib_status', IBStatus::APPROVED)
-            ->get();
+        $users = User::whereNotNull('ib_login')->where('ib_status', IBStatus::APPROVED)->get();
 //        dd($users);
         foreach ($users as $user) {
 //            dd($user);
@@ -49,7 +46,7 @@ class IBProfitRecord extends Command
             if ($startIbCalc > Carbon::now()) {
                 return false;
             }
-//            dd($startIbCalc);
+//            dd($user);
             $start = $startIbCalc->timestamp;
             $end = Carbon::parse($startIbCalc)->endOfDay()->timestamp;
 //            dd($startIbCalc);

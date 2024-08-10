@@ -18,9 +18,9 @@
                         <iconify-icon icon="lucide:download-cloud" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
                         Downloads
                     </a>
-                    <a href="{{ route('portal.guide') }}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
+                    <a href="{{ route('user.ticket.index') }}" class="inline-flex items-center text-sm text-gray-700 dark:text-slate-100 rounded px-3 py-1 hover:text-gray-800 hover:bg-slate-100 dark:hover:bg-slate-900">
                         <iconify-icon icon="lucide:headset" class="text-lg mr-2 hidden xl:inline-block"></iconify-icon>
-                        Portal Guide
+                        Support
                     </a>
                 </div>
             </div>

@@ -105,10 +105,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
+//        dd($data);
 
         $depositMethod = DepositMethod::create($data);
         notify()->success($depositMethod->name . ' ' . __(' Method Created'));
@@ -173,11 +175,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-
+//dd($data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);
@@ -275,17 +278,6 @@ class DepositController extends Controller
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
 
-        $shortcodes = [
-            '[[full_name]]' => $transaction->user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[gateway_name]]' => $transaction->method,
-            '[[deposit_amount]]' => $transaction->amount,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
-
         if (isset($input['approve'])) {
 
             if ($transaction->type == TxnType::Investment) {
@@ -324,7 +316,6 @@ class DepositController extends Controller
                 }
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
 
             notify()->success('Approve successfully');
 
@@ -335,10 +326,21 @@ class DepositController extends Controller
                 $invest->delete();
             }
             Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
             notify()->success('Reject successfully');
         }
 
+        $shortcodes = [
+            '[[full_name]]' => $transaction->user->full_name,
+            '[[txn]]' => $transaction->tnx,
+            '[[gateway_name]]' => $transaction->method,
+            '[[deposit_amount]]' => $transaction->amount,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[message]]' => $transaction->approval_cause,
+            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
+        ];
+
+        $this->mailNotify($transaction->user->email, 'user_manual_deposit_request', $shortcodes);
         $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.deposit.log'), $transaction->user->id);
         $this->smsNotify('user_manual_deposit_request', $shortcodes, $transaction->user->phone);
 

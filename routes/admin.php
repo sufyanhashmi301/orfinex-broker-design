@@ -12,7 +12,7 @@ use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
 use App\Http\Controllers\Backend\IBSchemaController;
 use App\Http\Controllers\Backend\ImportController;
-use App\Http\Controllers\Backend\InvestmentController;
+use App\Http\Controllers\Backend\AccountsController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\LevelReferralController;
@@ -39,7 +39,17 @@ use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\IBController;
+use App\Http\Controllers\Backend\KYCLevelsController;
 use App\Http\Controllers\Backend\SecurityController;
+use App\Http\Controllers\Backend\CountryController;
+use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\Backend\DepartmentController;
+use App\Http\Controllers\Backend\DesignationController;
+use App\Http\Controllers\Backend\RebateRuleController;
+use App\Http\Controllers\Backend\SwapBasedAccountController;
+use App\Http\Controllers\Backend\SwapFreeAccountController;
+use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\SymbolGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,315 +62,354 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+//Route::group(['middleware' => [ '2fa']], function () {
+Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function () {
 //Admin Dashboard
-Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
-//===============================  Customer Management ==================================
-Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
-Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
-    Route::get('active', 'activeUser')->name('active');
-    Route::get('disabled', 'disabled')->name('disabled');
-    Route::get('login/{id}', 'userLogin')->name('login');
-    Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
-    Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
-    Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
-    Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
-    Route::post('mail-send', 'mailSend')->name('mail-send');
-    Route::get('transaction/{id}', 'transaction')->name('transaction');
-    Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
-});
 
-Route::resource('kyc-form', KycController::class);
-Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-    Route::get('pending', 'KycPending')->name('pending');
-    Route::get('rejected', 'KycRejected')->name('rejected');
-    Route::get('action/{id}', 'depositAction')->name('action');
-    Route::post('action-now', 'actionNow')->name('action.now');
-    Route::get('all', 'kycAll')->name('all');
+    // Customer Management
+    Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
+    Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
+        Route::get('active', 'activeUser')->name('active');
+        Route::get('disabled', 'disabled')->name('disabled');
+        Route::get('withBalance', 'withBalance')->name('with_balance');
+        Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
+        Route::get('login/{id}', 'userLogin')->name('login');
+        Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
+        Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
+        Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
+        Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
+        Route::post('mail-send', 'mailSend')->name('mail-send');
+        Route::get('transaction/{id}', 'transaction')->name('transaction');
+        Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
+        Route::post('export', 'export')->name('export');
+        Route::get('create', 'createCustomer')->name('create');
+        Route::post('note/create/{id}', 'createNote')->name('note.add');
 
-});
-Route::resource('risk-profile-tag', RiskProfileTagController::class);
-Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
-    Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
-    Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+    });
 
-});
+    Route::resource('kyc-form', KycController::class);
+    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
+        Route::get('editlevel2/{id}', 'editKycLevel2')->name('editKycLevel2');
+        Route::post('updatelevel2kyc/{id}', 'updateLevel2Kyc')->name('updateLevel2Kyc');
+        Route::get('pending', 'KycPending')->name('pending');
+        Route::get('pending/level3', 'KycLevel3Pending')->name('level3.pending');
+        Route::post('storelevel2', 'storeLevel2')->name('storeLevel2');
+        Route::post('storelevel3', 'storeLevel3')->name('storeLevel3');
+        Route::get('rejected', 'KycRejected')->name('rejected');
+        Route::get('action/{id}', 'depositAction')->name('action');
+        Route::get('level3/action/{id}', 'depositActionLevel3')->name('level3.action');
+        Route::post('action-now', 'actionNow')->name('action.now');
+        Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
+        Route::get('all', 'kycAll')->name('all');
 
-Route::resource('ib-form', IBController::class);
-Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
-    Route::get('pending', 'IbPendingList')->name('pending.list');
-    Route::get('approved', 'IbApprovedList')->name('approved.list');
-    Route::get('rejected', 'IbRejectedList')->name('rejected.list');
-    Route::get('all', 'ibAllList')->name('all.list');
-    Route::get('answer/view/{user}', 'answerView')->name('answer.view');
-    Route::post('approve', 'approveIbMember')->name('approve');
-    Route::post('update', 'updateIbMember')->name('update');
-    Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
-    Route::post('multi/update', 'updateMIbMember')->name('multi.update');
-    Route::post('reject', 'rejectIbMember')->name('reject');
-    Route::post('save/form', 'saveForm')->name('save.form');
+    });
+    Route::resource('risk-profile-tag', RiskProfileTagController::class);
+    Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
+        Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
+        Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
-});
+    });
+    Route::resource('kyclevels', KYCLevelsController::class);
+    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KYCLevelsController::class], function () {
+        Route::post('level/update/{id}', 'kycLevelUpdate')->name('level.update');
+        Route::post('subLevel/update/{id}', 'kycSubLevelUpdate')->name('subLevel.update');
+        //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+
+    });
+    Route::resource('ib-form', IBController::class);
+    Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
+        Route::get('pending', 'IbPendingList')->name('pending.list');
+        Route::get('approved', 'IbApprovedList')->name('approved.list');
+        Route::get('rejected', 'IbRejectedList')->name('rejected.list');
+        Route::get('all', 'ibAllList')->name('all.list');
+        Route::get('answer/view/{user}', 'answerView')->name('answer.view');
+        Route::post('approve', 'approveIbMember')->name('approve');
+        Route::post('update', 'updateIbMember')->name('update');
+        Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
+        Route::post('multi/update', 'updateMIbMember')->name('multi.update');
+        Route::post('reject', 'rejectIbMember')->name('reject');
+        Route::post('save/form', 'saveForm')->name('save.form');
+
+    });
 
 //===============================  Role Management ==================================
-Route::resource('roles', RoleController::class)->except('show', 'destroy');
-Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
-
+    Route::resource('roles', RoleController::class)->except('show', 'destroy');
+    Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
+    Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
+    Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
+    Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
+    Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
+    Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
+    Route::post('/2fa/verify', function () {
+//            dd(route('admin.dashboard'));
+        return redirect(route('admin.dashboard'));
+    })->name('2fa.verify');
 //===============================  Plans Management ==================================
-Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
-Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
-Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-Route::resource('blackListCountry', BlackListCountryController::class)->except('show'  );
+    Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
+    Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+    Route::get('accountType/view/{id}', [ForexSchemaController::class,'view'])->name('accountType.view');
+    Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
+    Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
+    Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
+    Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
 //===============================  Profit Deduction Management ==================================
-Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
-Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
+    Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
+    Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
 
 //===============================  Transactions ==================================
-Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
-Route::get('investments/{id?}', [InvestmentController::class, 'investments'])->name('investments');
-Route::get('forex-accounts/real/{id?}', [InvestmentController::class, 'forexAccountsReal'])->name('forex-accounts-real');
-Route::get('forex-accounts/demo/id?}', [InvestmentController::class, 'forexAccountsDemo'])->name('forex-accounts-demo');
-Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
+    Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
+    Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
+    Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
+    Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+
+    Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================
 
-Route::group(['prefix' => 'gateway', 'as' => 'gateway.', 'controller' => GatewayController::class], function () {
-    Route::get('/automatic', 'automatic')->name('automatic');
-    Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
-    Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
-});
-Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
-    //=============================== deposit Method ================================
-    Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-        Route::get('list/{type}', 'methodList')->name('list');
-        Route::get('create/{type}', 'createMethod')->name('create');
-        Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-        Route::get('edit/{type}', 'methodEdit')->name('edit');
-        Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+    Route::group(['prefix' => 'gateway', 'as' => 'gateway.', 'controller' => GatewayController::class], function () {
+        Route::get('/automatic', 'automatic')->name('automatic');
+        Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
+        Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
     });
-    //=============================== end deposit Method ================================
+    Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
+        //=============================== deposit Method ================================
+        Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
+            Route::get('list/{type}', 'methodList')->name('list');
+            Route::get('create/{type}', 'createMethod')->name('create');
+            Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
+            Route::get('edit/{type}', 'methodEdit')->name('edit');
+            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+        });
+        //=============================== end deposit Method ================================
 
-    Route::get('manual-pending', 'pending')->name('manual.pending');
-    Route::get('history', 'history')->name('history');
-    Route::get('action/{id}', 'depositAction')->name('action');
-    Route::post('action-now', 'actionNow')->name('action.now');
-});
-Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-    //=============================== withdraw Method ================================
-
-    Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-        Route::get('list/{type}', 'methods')->name('list');
-        Route::get('create/{type}', 'methodCreate')->name('create');
-        Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-        Route::get('edit/{type}', 'methodEdit')->name('edit');
-        Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+        Route::get('manual-pending', 'pending')->name('manual.pending');
+        Route::get('history', 'history')->name('history');
+        Route::get('action/{id}', 'depositAction')->name('action');
+        Route::post('action-now', 'actionNow')->name('action.now');
     });
+    Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
+        //=============================== withdraw Method ================================
 
-    //Schedule
-    Route::get('schedule', 'schedule')->name('schedule');
-    Route::post('schedule-update', 'scheduleUpdate')->name('schedule.update');
+        Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
+            Route::get('list/{type}', 'methods')->name('list');
+            Route::get('create/{type}', 'methodCreate')->name('create');
+            Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
+            Route::get('edit/{type}', 'methodEdit')->name('edit');
+            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+        });
 
-    Route::get('history', 'history')->name('history');
-    Route::get('pending', 'pending')->name('pending');
+        //Schedule
+        Route::get('schedule', 'schedule')->name('schedule');
+        Route::post('schedule-update', 'scheduleUpdate')->name('schedule.update');
 
-    Route::get('action/{id}', 'withdrawAction')->name('action');
-    Route::post('action-now', 'actionNow')->name('action.now');
+        Route::get('history', 'history')->name('history');
+        Route::get('pending', 'pending')->name('pending');
 
-});
-Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
-    Route::get('index', 'index')->name('index');
-    Route::post('store', 'store')->name('store');
-    Route::post('update', 'update')->name('update');
-    Route::post('delete', 'delete')->name('delete');
+        Route::get('action/{id}', 'withdrawAction')->name('action');
+        Route::post('action-now', 'actionNow')->name('action.now');
 
-    Route::get('direct/list/{id}', 'directList')->name('direct.list');
-    Route::post('direct/add', 'addDirectReferral')->name('direct.add');
-    Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
-    Route::get('target', 'target')->name('target');
-    Route::post('target-store', 'targetStore')->name('target-store');
-    Route::post('target-update', 'targetUpdate')->name('target-update');
+    });
+    Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
+        Route::get('index', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::post('update', 'update')->name('update');
+        Route::post('delete', 'delete')->name('delete');
 
-    //level referral
-    Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
-    Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
-});
+        Route::get('direct/list/{id}', 'directList')->name('direct.list');
+        Route::post('direct/add', 'addDirectReferral')->name('direct.add');
+        Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
+        Route::get('target', 'target')->name('target');
+        Route::post('target-store', 'targetStore')->name('target-store');
+        Route::post('target-update', 'targetUpdate')->name('target-update');
+
+        //level referral
+        Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
+        Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
+    });
 //===============================  Advertisement Material ==================================
-Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
+    Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
 
-Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
+    Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
 
 //===============================  Site Essentials ==================================
 
-Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
+    Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
-    Route::get('global', 'globalSettings')->name('global');
-    Route::get('site', 'siteTheme')->name('site');
-    Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
+        Route::get('site', 'siteTheme')->name('site');
+        Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
-    Route::get('status-update', 'statusUpdate')->name('status-update');
+        Route::get('status-update', 'statusUpdate')->name('status-update');
 
-    Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
-    Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
-    Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
-});
+        Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
+        Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
+        Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
+    });
 
-Route::group(['prefix' => 'navigation', 'as' => 'navigation.', 'controller' => NavigationController::class], function () {
-    Route::get('menu', 'index')->name('menu');
-    Route::post('menu-add', 'store')->name('menu.add');
-    Route::get('menu-edit/{id}', 'edit')->name('menu.edit');
-    Route::post('menu-update', 'update')->name('menu.update');
-    Route::post('menu-delete', 'delete')->name('menu.delete');
-    Route::get('menu-delete/{id}/{type}', 'typeDelete')->name('menu.type.delete');
-    Route::post('menu-position-update', 'positionUpdate')->name('position.update');
 
-    Route::get('header', 'header')->name('header');
-    Route::get('footer', 'footer')->name('footer');
-
-    Route::get('translate/{id}', 'translate')->name('translate');
-    Route::post('translate', 'translateNow')->name('translate.now');
-});
-Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
-    Route::get('create', 'create')->name('create');
-    Route::post('store', 'store')->name('store')->withoutMiddleware('XSS');
-    Route::get('edit/{name}', 'edit')->name('edit');
-    Route::post('update', 'update')->name('update')->withoutMiddleware('XSS');
-    Route::post('delete/now', 'deleteNow')->name('delete.now');
-
-    Route::get('section/{section}', 'landingSection')->name('section.section');
-    Route::post('section/update', 'landingSectionUpdate')->name('section.section.update');
-    Route::post('content-store', 'contentStore')->name('content-store');
-    Route::get('content-edit/{id}', 'contentEdit')->name('content-edit');
-    Route::post('content-update', 'contentUpdate')->name('content-update');
-    Route::post('content-delete', 'contentDelete')->name('content-delete');
-
-    Route::resource('blog', BlogController::class)->except('show')->withoutMiddleware('XSS');
-
-    Route::get('settings', 'pageSetting')->name('setting');
-    Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
-});
-Route::get('footer-content', [PageController::class, 'footerContent'])->name('footer-content');
-
-Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
-    Route::post('store', 'store')->name('store');
-    Route::post('update', 'update')->name('update');
-    Route::post('delete', 'delete')->name('delete');
-    Route::post('position-update', 'positionUpdate')->name('position.update');
-});
+    Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
+        Route::post('store', 'store')->name('store');
+        Route::post('update', 'update')->name('update');
+        Route::post('delete', 'delete')->name('delete');
+        Route::post('position-update', 'positionUpdate')->name('position.update');
+    });
 
 //===============================  site Settings ==================================
-Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
-    Route::get('site', 'siteSetting')->name('site');
-    Route::get('mail', 'mailSetting')->name('mail');
-    Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
-    Route::post('update', 'update')->name('update');
+    Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
+        Route::get('site', 'siteSetting')->name('site');
+        Route::get('mail', 'mailSetting')->name('mail');
+        Route::get('forex-api', 'forexApiSetting')->name('forex-api');
+        Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
+        Route::post('update', 'update')->name('update');
 
-    Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
-    Route::get('plugin-data/{id}', [PluginController::class, 'pluginData'])->name('plugin.data');
-    Route::post('plugin-update/{id}', [PluginController::class, 'update'])->name('plugin.update');
+        Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');
+        Route::get('plugin-data/{id}', [PluginController::class, 'pluginData'])->name('plugin.data');
+        Route::post('plugin-update/{id}', [PluginController::class, 'update'])->name('plugin.update');
 
-    //notification tune
-    Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
-        Route::get('tune', 'setTune')->name('tune');
-        Route::get('tune/status/{id}', 'status')->name('tune.status');
+        //notification tune
+        Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
+            Route::get('tune', 'setTune')->name('tune');
+            Route::get('tune/status/{id}', 'status')->name('tune.status');
+        });
+
+        Route::get('company', 'companySetting')->name('company');
+        Route::get('currency', 'currencySetting')->name('currency');
+        Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
+        Route::get('transfers', 'transfers')->name('transfers');
+        Route::get('gdpr', 'gdpr')->name('gdpr');
+
+        Route::get('slack', 'slackSetting')->name('slack');
+
+        Route::get('platform-api', 'platformApiSetting')->name('platform-api');
+        Route::get('misc', 'miscSetting')->name('misc');
+
     });
-
-});
 
 //===============================  Security Settings ==================================
-Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
-    Route::get('all-sections', 'allSections')->name('all-sections');
-    Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
-    Route::get('single-session', 'singleSession')->name('single-session');
-    Route::get('blocklist-email', 'blocklistEmail')->name('blocklist-email');
-    Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
-});
+    Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
+        Route::get('all-sections', 'allSections')->name('all-sections');
+        Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
+        Route::get('single-session', 'singleSession')->name('single-session');
+        Route::get('blocklist-email', 'blocklistEmail')->name('blocklist-email');
+        Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
+    });
 
 // show all notifications
-Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
-Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
-Route::get('notification-read/{id}', [NotificationController::class, 'readNotification'])->name('read-notification');
+    Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
+    Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
+    Route::get('notification-read/{id}', [NotificationController::class, 'readNotification'])->name('read-notification');
 
-Route::resource('language', LanguageController::class);
-Route::get('language-keyword/{language}', [LanguageController::class, 'languageKeyword'])->name('language-keyword');
-Route::post('language-keyword-update', [LanguageController::class, 'keywordUpdate'])->name('language-keyword-update');
-Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
+    Route::resource('language', LanguageController::class);
+    Route::get('language-keyword/{language}', [LanguageController::class, 'languageKeyword'])->name('language-keyword');
+    Route::post('language-keyword-update', [LanguageController::class, 'keywordUpdate'])->name('language-keyword-update');
+    Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
 
-Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
-Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
-Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
+    Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
+    Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
 
-Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
-    Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
-        Route::get('/', 'template')->name('index');
-        Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
-        Route::post('template-update', 'update_template')->name('template-update');
+    Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
+        Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
+            Route::get('/', 'template')->name('index');
+            Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
+            Route::post('template-update', 'update_template')->name('template-update');
 
+        });
+
+        Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
+            Route::get('/', 'template')->name('index');
+            Route::get('template-edit/{id}', 'editTemplate')->name('template-edit');
+            Route::post('template-update', 'updateTemplate')->name('template-update');
+        });
     });
-
-    Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
-        Route::get('/', 'template')->name('index');
-        Route::get('template-edit/{id}', 'editTemplate')->name('template-edit');
-        Route::post('template-update', 'updateTemplate')->name('template-update');
-    });
-});
 
 //===============================  Links Settings ==================================
-Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
-    Route::get('document-links', 'documentLinks')->name('document-links');
-    Route::get('platform-links', 'platformLinks')->name('platform-links');
-});
+    Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
+        Route::get('document-links', 'documentLinks')->name('document-links');
+        Route::get('platform-links', 'platformLinks')->name('platform-links');
+    });
 
 //===============================  Others ==================================
-Route::group(['controller' => AppController::class], function () {
-    Route::get('subscribers', 'subscribers')->name('subscriber');
-    Route::get('mail-send-subscriber', 'mailSendSubscriber')->name('mail.send.subscriber');
-    Route::post('mail-send-subscriber-now', 'mailSendSubscriberNow')->name('mail.send.subscriber.now');
-});
-Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
-    Route::get('index/{id?}', 'index')->name('index');
-    Route::post('reply', 'reply')->name('reply');
-    Route::get('show/{uuid}', 'show')->name('show');
-    Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
-});
-Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
-Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
+    Route::group(['controller' => AppController::class], function () {
+        Route::get('subscribers', 'subscribers')->name('subscriber');
+        Route::get('mail-send-subscriber', 'mailSendSubscriber')->name('mail.send.subscriber');
+        Route::post('mail-send-subscriber-now', 'mailSendSubscriberNow')->name('mail.send.subscriber.now');
+    });
+    Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
+        Route::get('index/{id?}', 'index')->name('index');
+        Route::get('status', 'ticketStatus')->name('ticketStatus');
+        Route::post('reply', 'reply')->name('reply');
+        Route::get('show/{uuid}', 'show')->name('show');
+        Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
+    });
+    Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
+    Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
 
 //admin self manage
-Route::get('profile', [AppController::class, 'profile'])->name('profile');
-Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
+    Route::get('profile', [AppController::class, 'profile'])->name('profile');
+    Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
 
-Route::get('password-change', [AppController::class, 'passwordChange'])->name('password-change');
-Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('password-update');
+    Route::get('password-change', [AppController::class, 'passwordChange'])->name('password-change');
+    Route::post('password-update', [AppController::class, 'passwordUpdate'])->name('password-update');
 
-Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
-Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
+    Route::get('application-info', [AppController::class, 'applicationInfo'])->name('application-info');
+    Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
+
+    Route::get('/ib-resources', function () {
+        return view('backend.ib.resources.index');
+    });
+
+    Route::get('ib-resources/new', function () {
+        return view('backend.ib.resources.create');
+    });
+
+    Route::get('/loyalty-points', function () {
+        return view('backend.loyalty_points.create');
+    });
+    Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
+    Route::post('import', [ImportController::class, 'import'])->name('import');
+
+    Route::get('/reports', function () {
+        return view('backend.reports.index');
+    });
+
+    Route::get('/bonus', function () {
+        return view('backend.bonus.index');
+    });
+
+    Route::get('/bonus/create', function () {
+        return view('backend.bonus.create');
+    });
+
+   
+
+    Route::get('/symbol-groups', function () {
+        return view('backend.symbol_groups.metatrader5');
+    });
+
+});
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
-Route::get('/ib-resources', function () {
-    return view('backend.ib.resources.index');
+Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+
+Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
+
+Route::get('settings/platform-api/cTrader', function () {
+    return view('backend.setting.platform_api.ctrader');
 });
 
-Route::get('ib-resources/new', function () {
-    return view('backend.ib.resources.create');
+Route::get('settings/platform-api/db-synchronization', function () {
+    return view('backend.setting.platform_api.db-synchronization');
 });
-
-Route::get('/loyalty-points', function () {
-    return view('backend.loyalty_points.create');
-});
-Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
-Route::post('import', [ImportController::class, 'import'])->name('import');
-
-Route::get('/reports', function () {
-    return view('backend.reports.index');
-});
-
-Route::get('/bonus', function () {
-    return view('backend.bonus.index');
-});
-
-Route::get('/bonus/create', function () {
-    return view('backend.bonus.create');
-});
+Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
+Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
+Route::post('symbols/store', [SymbolController::class,'store']);
+Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);

@@ -1,60 +1,36 @@
 @extends('backend.layouts.app')
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title"> @yield('title')</h2>
-                            @isset($button)
-                                <a href="{{$button['route']}}"
-                                   class="title-btn"
-                                   type="button"
-                                ><i icon-name="{{$button['icon']}}"></i>{{$button['name']}}</a>
-                            @endisset
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    @yield('page-title')
+    <div class="card p-4 mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+            @can('automatic-gateway-manage')
+                <li class="nav-item">
+                    <a href="{{ route('admin.deposit.method.list','auto') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.method.list','auto') . isActive('admin.deposit.method.create','auto'). isActive('admin.deposit.method.edit','auto')  }}">
+                        {{ __('Automatic Method') }}
+                    </a>
+                </li>
+            @endcan
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-tab-bars">
-                        <ul>
-
-                            @can('automatic-gateway-manage')
-                                <li class="{{ isActive('admin.deposit.method.list','auto') . isActive('admin.deposit.method.create','auto'). isActive('admin.deposit.method.edit','auto')  }}">
-                                    <a href="{{ route('admin.deposit.method.list','auto') }}"><i
-                                            icon-name="settings-2"></i>{{ __('Automatic Method') }}</a>
-                                </li>
-                            @endcan
-
-                            @can('manual-gateway-manage')
-                                <li class="{{ isActive('admin.deposit.method.list','manual') . isActive('admin.deposit.method.create','manual') . isActive('admin.deposit.method.edit','manual') }}">
-                                    <a href="{{ route('admin.deposit.method.list','manual') }}"><i
-                                            icon-name="book-open"></i>{{ __('Manual Method') }}</a>
-                                </li>
-                            @endcan
-                            @canany(['deposit-list','deposit-action'])
-                                <li class="{{ isActive('admin.deposit.manual.pending') }}">
-                                    <a href="{{ route('admin.deposit.manual.pending') }}"><i
-                                            icon-name="box"></i>{{ __('Manual Pending Deposit') }}</a>
-                                </li>
-                                <li class="{{ isActive('admin.deposit.history') }}">
-                                    <a href="{{ route('admin.deposit.history') }}"><i
-                                            icon-name="calendar"></i>{{ __('Deposit History') }}</a>
-                                </li>
-                            @endcanany
-                        </ul>
-                    </div>
-                    <div class="row">
-                        @yield('deposit_content')
-                    </div>
-                </div>
-            </div>
-        </div>
+            @can('manual-gateway-manage')
+                <li class="nav-item">
+                    <a href="{{ route('admin.deposit.method.list','manual') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.method.list','manual') . isActive('admin.deposit.method.create','manual') . isActive('admin.deposit.method.edit','manual') }}">
+                        {{ __('Manual Method') }}
+                    </a>
+                </li>
+            @endcan
+            @canany(['deposit-list','deposit-action'])
+                <li class="nav-item">
+                    <a href="{{ route('admin.deposit.manual.pending') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.manual.pending') }}">
+                        {{ __('Manual Pending Deposit') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.deposit.history') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.history') }}">
+                        {{ __('Deposit History') }}
+                    </a>
+                </li>
+            @endcanany
+        </ul>
     </div>
+    @yield('deposit_content')
 @endsection

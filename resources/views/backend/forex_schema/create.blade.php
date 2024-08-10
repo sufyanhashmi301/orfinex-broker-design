@@ -127,7 +127,7 @@
 
                         />
                     </div>
-                    <div class="input-area">
+                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range Start(Min 6 digits):') }}</label>
                         <input
                             type="text"
@@ -138,7 +138,7 @@
 
                         />
                     </div>
-                    <div class="input-area">
+                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range End(Min 6 digits):') }}</label>
                         <input
                             type="text"

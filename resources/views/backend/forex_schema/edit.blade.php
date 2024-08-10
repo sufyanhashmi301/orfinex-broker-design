@@ -130,7 +130,7 @@
 
                         />
                     </div>
-                    <div class="input-area">
+                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range Start(Min 6 digits):') }}</label>
                         <input
                             type="text"
@@ -142,7 +142,7 @@
 
                         />
                     </div>
-                    <div class="input-area">
+                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range End(Min 6 digits):') }}</label>
                         <input
                             type="text"
@@ -267,7 +267,7 @@
                                 {{ __('Trading Server (Live) ') }}
                             </label>
                             <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ old('live_server', $schema->live_server) }}">
-                            
+
                         </div>
                     </div>
                 </div>

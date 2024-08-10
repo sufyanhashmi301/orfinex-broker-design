@@ -67,40 +67,7 @@ class SettingController extends Controller
 
         return redirect()->back();
     }
-    public function infoUpdate(Request $request)
-    {
-        $input = $request->all();
-//        dd($input);
-        $user = \Auth::user();
-        $validator = Validator::make($request->all(), [
-            'email' => 'sometimes|unique:users,email,'.$user->id,
-            'phone' => 'sometimes',
-        ]);
-
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
-        }
-
-        $data = [];
-//        if(isset($input['email'])) {
-//            $data['email'] = $input['email'];
-//        }
-        if(isset($input['phone'])) {
-            $data['phone'] = $input['phone'];
-        }
-        if(isset($input['address'])) {
-            $data['address'] = $input['address'];
-        }
-
-        $user->update($data);
-
-        notify()->success('Your Profile Updated successfully');
-
-        return redirect()->route('user.setting.show');
-
-    }
+ 
     public function infoUpdate(Request $request)
     {
         $input = $request->all();

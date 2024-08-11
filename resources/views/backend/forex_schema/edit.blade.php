@@ -266,7 +266,7 @@
                             <label for="" class="form-label">
                                 {{ __('Trading Server (Live) ') }}
                             </label>
-                            <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ old('live_server', $schema->live_server) }}">
+                            <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ setting('live_server','platform_api') }}" readonly>
 
                         </div>
                     </div>
@@ -324,7 +324,7 @@
                             <label for="" class="form-label">
                                 {{ __('Trading Server (Demo) ') }}
                             </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ old('demo_server', $schema->demo_server) }}">
+                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('live_server','platform_api') }}" readonly>
                         </div>
                     </div>
                 </div>

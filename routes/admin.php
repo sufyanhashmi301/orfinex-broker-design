@@ -260,6 +260,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
+        Route::get('google-mail', 'googleMailSetting')->name('googleMail');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('update', 'update')->name('update');
@@ -384,7 +385,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.bonus.create');
     });
 
-   
+
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');

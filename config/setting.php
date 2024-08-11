@@ -1098,6 +1098,22 @@ return [
                 'rules' => 'sometimes|min:5|max:1000', // validation rule of laravel
                 'value' => 'PVTfAIPjQZ4Ggan', // default value if you want
             ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'live_server', // unique name for field
+                'label' => 'Live Server Name', // you know what label it is
+                'rules' => 'required|min:5|max:1000', // validation rule of laravel
+                'value' => 'MT5 Server', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'demo_server', // unique name for field
+                'label' => 'Demo Server Name', // you know what label it is
+                'rules' => 'sometimes|min:5|max:1000', // validation rule of laravel
+                'value' => 'MT5 Server', // default value if you want
+            ],
         ],
     ],
 

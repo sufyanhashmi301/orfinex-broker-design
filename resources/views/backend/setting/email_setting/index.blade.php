@@ -16,7 +16,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.links.platform-links') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.links.platform-links') }}">
+                <a href="{{ route('admin.settings.googleMail') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.googleMail') }}">
                     {{ __('Google Mail') }}
                 </a>
             </li>
@@ -24,7 +24,7 @@
     </div>
     @yield('email-content')
 
-    
+
     <!-- Modal for mail settings -->
     @include('backend.setting.email_setting.modal.__mail_settings')
 

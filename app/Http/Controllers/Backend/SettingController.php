@@ -46,6 +46,11 @@ class SettingController extends Controller
         return view('backend.setting.email_setting.mail');
     }
 
+    public static function googleMailSetting()
+    {
+        return view('backend.setting.email_setting.google-mail');
+    }
+
     public static function forexApiSetting()
     {
         return view('backend.setting.forex-api');

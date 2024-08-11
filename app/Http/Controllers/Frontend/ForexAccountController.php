@@ -172,9 +172,13 @@ class ForexAccountController extends GatewayController
                 $accountData['server'] = $server;
                 $accountData['created_by'] = $user->id;
                 $accountData['first_min_deposit_paid'] = 0;
-                $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-                $forexTrading = ForexAccount::create($accountData);
+                $accountData['trading_platform'] = setting('live_server','platform_api');
 
+                if($accountType == 'demo' && setting('demo_server_enable', 'platform_api') && !empty(setting('demo_server', 'platform_api'))) {
+                    $accountData['trading_platform'] = setting('demo_server', 'platform_api');
+                }
+
+                $forexTrading = ForexAccount::create($accountData);
                 if ($user->ref_id) {
                     $referrer = User::find($user->ref_id);
                     if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {

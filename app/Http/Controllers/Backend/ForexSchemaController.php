@@ -157,8 +157,6 @@ class ForexSchemaController extends Controller
             'priority' => 'required|integer',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
-            'demo_server' => 'required',
-            'live_server'=>'required'
 
         ]);
 
@@ -194,8 +192,6 @@ class ForexSchemaController extends Controller
             'priority' => $input['priority'],
             'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
             'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
-            'demo_server' => $input['demo_server'],
-            'live_server' => $input['live_server'],
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
         ];
 

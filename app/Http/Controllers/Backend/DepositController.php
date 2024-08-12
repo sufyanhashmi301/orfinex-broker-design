@@ -6,6 +6,7 @@ use App\Enums\GatewayType;
 use App\Enums\InvestStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Exports\DepositsExport;
 use App\Http\Controllers\Controller;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
@@ -21,6 +22,7 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 use Purifier;
 use Txn;
 
@@ -110,7 +112,6 @@ class DepositController extends Controller
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-//        dd($data);
 
         $depositMethod = DepositMethod::create($data);
         notify()->success($depositMethod->name . ' ' . __(' Method Created'));
@@ -222,13 +223,13 @@ class DepositController extends Controller
 
     public function history(Request $request)
     {
-
+        $filters = $request->only(['email', 'status',  'created_at']);
         if ($request->ajax()) {
             $data = Transaction::where(function ($query) {
                 $query->where('type', TxnType::ManualDeposit)
                     ->orWhere('type', TxnType::Deposit);
             })->latest();
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -345,6 +346,12 @@ class DepositController extends Controller
         $this->smsNotify('user_manual_deposit_request', $shortcodes, $transaction->user->phone);
 
         return redirect()->back();
+    }
+
+    public function export(Request $request)
+    {
+       
+        return Excel::download(new DepositsExport($request), 'deposits.xlsx');
     }
 
 }

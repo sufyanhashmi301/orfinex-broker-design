@@ -41,10 +41,17 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staffs = Admin::all();
 
-        return view('backend.staff.index', compact('roles', 'staffs'));
+        return view('backend.staff.index', compact('staffs'));
+    }
+
+    public function create()
+    {
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $departments = Department::with('children')->whereNull('parent_id')->get();
+        $designations = Designation::with('children')->whereNull('parent_id')->get();
+        return view('backend.staff.create', compact('roles','departments','designations'));
     }
 
     /**
@@ -88,13 +95,13 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        
+
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
         $staff->getRoleNames()->first();
         $departments = Department::with('children')->whereNull('parent_id')->get();
-        $designations = Designation::with('children')->whereNull('parent_id')->get(); 
-        return view('backend.staff.include.__edit_form', compact('staff', 'roles','departments','designations'))->render();
+        $designations = Designation::with('children')->whereNull('parent_id')->get();
+        return view('backend.staff.edit', compact('staff', 'roles','departments','designations'))->render();
     }
 
     /**
@@ -148,7 +155,7 @@ class StaffController extends Controller
         if($request->input('designation')){
             $staff->designations()->sync([$request->input('designation')]);
         }
-       
+
         notify()->success('Staff updated successfully');
         return redirect()->route('admin.staff.index');
     }

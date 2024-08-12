@@ -9,26 +9,12 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('staff-create')
-                <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#staffModal">
+                <a href="{{ route('admin.staff.create') }}" class="btn btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New Staff') }}
                 </a>
             @endcan
         </div>
-
-
-        <!-- Modal for Add New Staff -->
-        @can('staff-create')
-            @include('backend.staff.modal.__new_staff')
-        @endcan
-        <!-- Modal for Add New Staff-->
-
-        <!-- Modal for Edit Staff -->
-        @can('staff-edit')
-            @include('backend.staff.modal.__edit_staff')
-        @endcan
-        <!-- Modal for Edit Staff-->
-
 
     </div>
     <div class="card">
@@ -95,12 +81,11 @@
                                                 </button>
                                             @else
                                                 @can('staff-edit')
-                                                    <button class="toolTip onTop action-btn"
-                                                        data-id="{{$staff->id}}" type="button" id="edit"
+                                                    <a href="{{route('admin.staff.edit',$staff->id)}}" class="toolTip onTop action-btn"
                                                         data-tippy-theme="tooltip"
                                                         data-tippy-content="Edit Staff">
                                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                                    </button>
+                                                    </a>
                                                 @endcan
                                                 @can('staff-delete')
                                                     <button type="button" class="action-btn delete-schema-btn" data-id="{{ $staff->id }}">
@@ -120,10 +105,6 @@
         </div>
     </div>
 
-    <!-- Modal for Add New Staff -->
-    @can('staff-create')
-        @include('backend.staff.modal.__new_staff')
-    @endcan
     <!-- Modal for Add New Staff-->
 
     <!-- Modal for Edit Staff -->
@@ -149,7 +130,7 @@
             var id = $(this).data('id');
 
             $.get('staff/' + id + '/edit', function (data) {
-               
+
                 $('#editModal').modal('show');
                 $('#edit-staff-body').append(data);
 

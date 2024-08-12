@@ -24,8 +24,7 @@
                     @csrf
                     <div class="inout-area">
                         <label class="form-label" for="">{{ __('Risk Profile Tags:') }}</label>
-                        <select id="" class="form-control w-100" name="risk_profile_tag_id"
-                                placeholder="Tags">
+                        <select class="form-control w-full" name="risk_profile_tag_id" data-placeholder="Tags">
                             <option value="">{{__('Select Tag')}}</option>
                             @foreach( $tags as $tag)
                                 <option value="{{$tag->id}}">{{$tag->name}}</option>

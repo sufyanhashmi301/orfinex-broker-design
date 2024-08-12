@@ -13,6 +13,20 @@
             <!-- User Status Update End-->
             </div>
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
+                <div class="flex justify-between flex-wrap items-center mb-6">
+                    <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                        {{ __('Add Tag') }}
+                    </a>
+                    <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                        <a href="{{ url()->previous() }}" class="btn btn-white inline-flex items-center justify-center">
+                            {{ __('Go Back') }}
+                        </a>
+                        <button type="button" class="btn btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
+                            <iconify-icon class="text-xl" icon="lucide:refresh-cw"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
                 <div class="card overflow-hidden mb-5">
                     <div class="card-body py-1">
                         <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
@@ -51,7 +65,7 @@
                             <div class="bg-white dark:bg-slate-800 p-4">
                                 <div class="text-center space-y-2">
                                     <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Level Commission') }}
+                                        {{ __('Net Deposits') }}
                                     </p>
                                     <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                         {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
@@ -79,10 +93,10 @@
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Primary Balance') }}
+                                        {{ __('Current Balance') }}
                                     </div>
                                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                        $682
+                                        {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                     </div>
                                 </div>
                             </div>
@@ -98,10 +112,10 @@
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Investment Balance') }}
+                                        {{ __('Current Equity') }}
                                     </div>
                                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                        $682
+                                        {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
                                     </div>
                                 </div>
                             </div>
@@ -117,10 +131,10 @@
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Enrollment Commissions') }}
+                                        {{ __('Wallet Balance') }}
                                     </div>
                                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                        $682
+                                        $0
                                     </div>
                                 </div>
                             </div>
@@ -143,7 +157,7 @@
                                     aria-controls="pills-informations"
                                     aria-selected="true"
                                 >
-                                    {{ __('Informations') }}
+                                    {{ __('Overview') }}
                                 </a>
                             </li>
                         @endcanany
@@ -177,25 +191,7 @@
                                     aria-controls="ib-info"
                                     aria-selected="true"
                                 >
-                                    {{ __('IB') }}
-                                </a>
-                            </li>
-                        @endcan
-
-                        @can('profit-list')
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-deposit-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-deposit"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-deposit"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Earnings') }}
+                                    {{ __('Partner') }}
                                 </a>
                             </li>
                         @endcan
@@ -248,7 +244,7 @@
                                     aria-controls="pills-transfer"
                                     aria-selected="true"
                                 >
-                                    {{ __('Referral Tree') }}
+                                    {{ __('Network') }}
                                 </a>
                             </li>
                         @endif
@@ -285,6 +281,21 @@
                                     {{ __('Add Note') }}
                                 </a>
                             </li>
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-security-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-security"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-security"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Security') }}
+                                    </a>
+                                </li>
                         @endcanany
                     </ul>
                 </div>
@@ -331,12 +342,14 @@
                 @endif
 
                 <!-- ticket -->
-                    @canany(['support-ticket-list','support-ticket-action'])
-                        @include('backend.user.include.__ticket')
-                    @endcan
-                    
-                    @include('backend.user.include.__note')
-                    
+                @canany(['support-ticket-list','support-ticket-action'])
+                    @include('backend.user.include.__ticket')
+                @endcan
+
+                @include('backend.user.include.__note')
+
+                @include('backend.user.include.__security')
+
                 </div>
             </div>
         </div>

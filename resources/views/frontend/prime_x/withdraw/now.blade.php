@@ -51,12 +51,17 @@
                                         </option>
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{get_mt5_account_equity($forexAccount->login)}} {{$currency}})
                                             </option>
                                         @endforeach
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
                                             <option value="{{ auth()->user()->ib_login }}" data-type="ib-account" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ auth()->user()->ib_login }} - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})
+                                                {{ auth()->user()->ib_login }} - {{ __('IB') }} ({{ get_mt5_account_equity(auth()->user()->ib_login) }} {{$currency}})
+                                            </option>
+                                        @endif
+                                        @if(auth()->user()->is_multi_ib == 1 && isset(auth()->user()->multi_ib_login))
+                                            <option value="{{ auth()->user()->multi_ib_login }}" data-type="ib-account" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                {{ auth()->user()->multi_ib_login }} - {{ __('MIB') }} ({{ get_mt5_account_equity(auth()->user()->multi_ib_login) }} {{$currency}})
                                             </option>
                                         @endif
                                     </select>
@@ -114,7 +119,7 @@
                                             <strong>{{ __('Withdraw Amount') }}</strong>
                                         </td>
                                         <td class="dark:text-slate-300">
-                                            <span class="withdrawAmount"></span> 
+                                            <span class="withdrawAmount"></span>
                                             {{$currency}}
                                         </td>
                                     </tr>

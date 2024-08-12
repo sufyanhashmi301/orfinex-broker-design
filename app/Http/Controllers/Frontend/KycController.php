@@ -98,7 +98,7 @@ class KycController extends Controller
 
     public function kycData($id)
     {
-        dd($id);
+       
         $fields = Kyc::find($id)->fields;
 
         return view('frontend::user.kyc.data', compact('fields'))->render();

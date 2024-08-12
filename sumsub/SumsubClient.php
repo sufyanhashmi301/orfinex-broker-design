@@ -1,6 +1,6 @@
 <?php
 
-namespace Sumsub\AppTokenUsageExample;
+namespace sumsub;
 
 use Illuminate\Support\Facades\Http;
 use RuntimeException;

@@ -40,7 +40,7 @@
     @include('backend.designations.include.__delete')
     <!-- Modal for Delete deleteDepartment-->
 @endsection
-@section('script')
+@section('setting-script')
     <script>
         (function ($) {
             "use strict";

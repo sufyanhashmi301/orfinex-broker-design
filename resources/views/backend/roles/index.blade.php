@@ -71,7 +71,7 @@
 
 
 @endsection
-@section('script')
+@section('setting-script')
     <script>
         $(document).ready(function () {
             let deleteSchemaId = null;

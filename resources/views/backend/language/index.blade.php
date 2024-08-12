@@ -81,7 +81,7 @@
     </div>
     <!-- Modal for Delete Language End-->
 @endsection
-@section('script')
+@section('setting-script')
     <script>
         (function ($) {
             "use strict";

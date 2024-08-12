@@ -147,7 +147,7 @@
     </div>
 
 @endsection
-@section('script')
+@section('setting-script')
     <script>
         $(document).ready(function() {
             $('#demoServerToggle').change(function() {

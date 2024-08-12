@@ -167,4 +167,8 @@ class SettingController extends Controller
         return view('backend.setting.collab_tools.slack');
     }
 
+    public function copyTradingSetting(){
+        return view('backend.setting.copy_trading.brokeree');
+    }
+
 }

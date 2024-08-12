@@ -137,7 +137,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Role Management ==================================
     Route::resource('roles', RoleController::class)->except('show', 'destroy');
     Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
-    Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
+    Route::resource('staff', StaffController::class)->except('show', 'destroy');
     Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
     Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
     Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
@@ -285,6 +285,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
         Route::get('platform-api', 'platformApiSetting')->name('platform-api');
         Route::get('misc', 'miscSetting')->name('misc');
+        Route::get('copy_trading', 'copyTradingSetting')->name('copyTrading');
 
     });
 

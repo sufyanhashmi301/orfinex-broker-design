@@ -10,7 +10,7 @@
     </style>
 @endsection
 @section('content')
-    @if(setting('copy_trading_follower_access_show','platform_links',false))
+{{--    @if(setting('copy_trading_follower_access_show','platform_links',false))--}}
     <iframe src="{{setting('copy_trading_follower_access','platform_links','javascript:void(0);')}}" class="w-full h-screen" frameborder="0"></iframe>
-@endif
+{{--@endif--}}
 @endsection

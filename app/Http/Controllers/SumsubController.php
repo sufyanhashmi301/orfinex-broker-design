@@ -6,7 +6,8 @@ use App\Models\Plugin;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Request;
 use Log;
-use Sumsub\AppTokenUsageExample\SumsubClient;
+use sumsub\SumsubClient;
+
 
 class SumsubController extends Controller
 {

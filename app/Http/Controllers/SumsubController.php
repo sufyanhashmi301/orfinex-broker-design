@@ -25,10 +25,10 @@ class SumsubController extends Controller
             $externalUserId = uniqid();
             $levelName = $sumsubscredentials->level_name;
 //            dd($externalUserId);
-//            try {
+            try {
 //            dd($sumsubscredentials->app_token);
                 $testObject = new SumsubClient($sumsubscredentials->app_token, $sumsubscredentials->app_secret_id);
-                dd($testObject);
+//                dd($testObject);
                 $applicantId = $testObject->createApplicant($externalUserId, $levelName);
 //                dd($applicantId);
                 $test = $testObject->getApplicantStatus($applicantId);
@@ -38,9 +38,9 @@ class SumsubController extends Controller
                     'kyc_token' => $accessTokenInfo['token'],
                     'kyc_created_at' => Carbon::now()
                 ]);
-//            } catch (\Throwable $th) {
-//                return redirect()->back();
-//            }
+            } catch (\Throwable $th) {
+                return redirect()->back();
+            }
         }
         return view('frontend::user.kyc.advance.index', compact('sumsubstatus', 'currentTime', 'lastUpdatedTime'));
     }

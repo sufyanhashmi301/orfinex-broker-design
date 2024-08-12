@@ -49,10 +49,10 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('IB Account') }}
+                        {{ __('MIB Account') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-lg font-medium">
-                        {{$user->ib_login}}
+                        {{$user->multi_ib_login}}
                     </div>
                 </div>
             </div>
@@ -120,8 +120,8 @@
             <div class="card">
                 <div class="card-body p-6">
                     <div class="text-center mb-3">
-                        <h5 class="text-center text-success-600">${{get_mt5_account_equity($user->ib_login)}}</h5>
-                        <p class="text-center">Balance</p>
+                        <h5 class="text-center text-success-600">${{get_mt5_account_equity($user->multi_ib_login)}}</h5>
+                        <p class="text-center">MIB Balance</p>
                     </div>
                     <form action="" class="space-y-2">
                         <div class="input-area relative">

@@ -381,17 +381,6 @@
                 </li>
             @endcanany
 
-            @canany(['ranking-list','ranking-create','ranking-edit'])
-                <li class="">
-                    <a href="{{ route('admin.ranking.index') }}" class="navItem {{ isActive('admin.ranking*') }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:medal"></iconify-icon>
-                            <span>{{ __('User Rankings') }}</span>
-                        </span>
-                    </a>
-                </li>
-            @endcan
-
         @endcanany
 
         @can('email-template')

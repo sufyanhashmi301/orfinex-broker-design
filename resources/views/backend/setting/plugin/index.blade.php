@@ -75,7 +75,7 @@
     </div>
     <!-- Modal for Edit Plugin-->
 @endsection
-@section('script')
+@section('setting-script')
 
     <script>
         $('.editPlugin').on('click', function (e) {

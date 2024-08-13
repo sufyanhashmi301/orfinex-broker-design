@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         '*gateway/coingate/callback',
         '*ipn*',
         '*kyc/advance/status',
+        '*telegram/webhook',
     ];
 }

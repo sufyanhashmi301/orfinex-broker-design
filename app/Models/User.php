@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Traits\UserFilterable;
 use Carbon\Carbon;
 use Coderflex\LaravelTicket\Concerns\HasTickets;
 use Coderflex\LaravelTicket\Contracts\CanUseTickets;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasTickets;
+    use HasApiTokens, HasFactory, Notifiable, HasTickets,UserFilterable;
 
     /**
      * The attributes that are mass assignable.
@@ -336,5 +338,39 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function customerGroups()
     {
         return $this->belongsToMany(CustomerGroup::class,'customer_group_has_customers');
+    }
+    public function scopeApplyFilters(Builder $query, $filters)
+    {
+        if (!empty($filters['global_search'])) {
+            $search = $filters['global_search'];
+            $query->where(function($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['phone'])) {
+            $query->where('phone', 'like', "%" . $filters['phone'] . "%");
+        }
+
+        if (!empty($filters['country'])) {
+            $query->where('country', 'like', "%" . $filters['country'] . "%");
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['created_at'])) {
+            $query->whereDate('created_at', $filters['created_at']);
+        }
+
+        if (!empty($filters['tag'])) {
+            $query->where('comment', 'like', "%" . $filters['tag'] . "%");
+        }
+
+        return $query;
     }
 }

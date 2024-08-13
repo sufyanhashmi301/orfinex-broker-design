@@ -138,6 +138,11 @@ class ForexApiService
         $endpoint = 'useraccount/balanceOperation';
         return $this->post($endpoint, $data);
     }
+    public function transferFunds($data)
+    {
+        $endpoint = 'useraccount/transferfunds';
+        return $this->post($endpoint, $data);
+    }
 
     public function creditOperation($data)
     {

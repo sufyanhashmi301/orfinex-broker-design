@@ -82,8 +82,8 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => 'required',
             'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',
-            'start_range' => ['required', new MinDigits(6)],
-            'end_range' => ['required', new MinDigits(6)],
+            'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
+            'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
         ]);
 
         if ($validator->fails()) {
@@ -115,8 +115,8 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => $input['is_external_transfer'],
             'status' => $input['status'],
             'priority' => $input['priority'],
-            'start_range' => $input['start_range'],
-            'end_range' => $input['end_range'],
+            'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
+            'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
             'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon']) : null,
         ];
         ForexSchema::create($finalData);
@@ -155,8 +155,8 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => 'required',
             'account_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',
-            'start_range' => ['required', new MinDigits(6)],
-            'end_range' => ['required', new MinDigits(6)],
+            'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
+            'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
 
         ]);
 
@@ -165,10 +165,9 @@ class ForexSchemaController extends Controller
 
             return redirect()->back();
         }
-
+//        dd($request->all());
         $schema = ForexSchema::find($id);
         $input = $request->all();
-//dd($input);
         $finalData = [
             'title' => $input['title'],
             'badge' => $input['badge'],
@@ -191,11 +190,10 @@ class ForexSchemaController extends Controller
             'is_external_transfer' => $input['is_external_transfer'],
             'status' => $input['status'],
             'priority' => $input['priority'],
-            'start_range' => $input['start_range'],
-            'end_range' => $input['end_range'],
+            'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
+            'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
             'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
         ];
-//        dd($finalData);
 
         $schema->update($finalData);
 

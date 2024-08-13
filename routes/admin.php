@@ -83,7 +83,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::post('mail-send', 'mailSend')->name('mail-send');
         Route::get('transaction/{id}', 'transaction')->name('transaction');
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
-        Route::post('export', 'export')->name('export');
+        Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
 
@@ -137,7 +137,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Role Management ==================================
     Route::resource('roles', RoleController::class)->except('show', 'destroy');
     Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
-    Route::resource('staff', StaffController::class)->except('show', 'destroy', 'create');
+    Route::resource('staff', StaffController::class)->except('show', 'destroy');
     Route::delete('staff/{staffId}', [StaffController::class, 'destroy'])->name('staff.delete');
     Route::get('staff/security/{id}', [StaffController::class, 'security'])->name('staff.security');
     Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
@@ -161,6 +161,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
+    Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
@@ -187,6 +188,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
         Route::get('manual-pending', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');
+        Route::post('export',  'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
     });
@@ -204,10 +206,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         //Schedule
         Route::get('schedule', 'schedule')->name('schedule');
         Route::post('schedule-update', 'scheduleUpdate')->name('schedule.update');
-
+        Route::post('export',  'export')->name('export');
         Route::get('history', 'history')->name('history');
         Route::get('pending', 'pending')->name('pending');
-
+        Route::post('pending/export', 'pendingExport')->name('pending.export');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
 
@@ -260,6 +262,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
+        Route::get('google-mail', 'googleMailSetting')->name('googleMail');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('update', 'update')->name('update');
@@ -284,6 +287,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
         Route::get('platform-api', 'platformApiSetting')->name('platform-api');
         Route::get('misc', 'miscSetting')->name('misc');
+        Route::get('copy_trading', 'copyTradingSetting')->name('copyTrading');
 
     });
 
@@ -384,7 +388,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.bonus.create');
     });
 
-   
+
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');

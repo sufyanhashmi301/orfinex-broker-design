@@ -10,6 +10,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.risk-profile-tag.index') }}" class="navItem {{ request()->routeIs('admin.risk-profile-tag*') || request()->routeIs('admin.customer-groups*') ? 'active' : '' }}">
+                {{ __('Customer') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
                 {{ __('Site Settings') }}
             </a>
@@ -21,11 +26,6 @@
                 </a>
             </li>
         @endcanany
-        <li>
-            <a href="{{ route('admin.risk-profile-tag.index') }}" class="navItem {{ isActive('admin.risk-profile-tag*') }}">
-                {{ __('Risk Profile Tag Form') }}
-            </a>
-        </li>
         <li>
             <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme.site') }}">
                 {{ __('Theme')}}
@@ -79,6 +79,11 @@
             </a>
         </li>
         <li>
+            <a href="{{route('admin.settings.copyTrading')}}" class="navItem {{isActive('admin.settings.copyTrading')}}">
+                {{ __('Copy Trading')}}
+            </a>
+        </li>
+        <li>
             <a href="" class="navItem">
                 {{ __('Multi-Factor Auth')}}
             </a>
@@ -88,11 +93,13 @@
                 {{ __('Transfers')}}
             </a>
         </li>
-        <li>
-            <a href="{{ route('admin.customer-groups.index') }}" class="navItem {{ isActive('admin.customer-groups.index') }}">
-                {{ __('Customer Groups') }}
-            </a>
-        </li>
+        @canany(['ranking-list','ranking-create','ranking-edit'])
+            <li>
+                <a href="{{ route('admin.ranking.index') }}" class="navItem {{ isActive('admin.ranking*') }}">
+                    <span>{{ __('User Rankings') }}</span>
+                </a>
+            </li>
+        @endcan
         <li>
             <a href="{{ route('admin.settings.gdpr') }}" class="navItem {{ isActive('admin.settings.gdpr') }}">
                 {{ __('GDPR')}}
@@ -103,12 +110,7 @@
                 {{ __('Maintenance')}}
             </a>
         </li>
-        <li>
-            <a href="{{ route('admin.settings.forex-api') }}" class="navItem {{ isActive('admin.settings.forex-api') }}">
-                {{ __('Platform API') }}
-            </a>
-        </li>
-       
+
     </ul>
 @endsection
 @section('content')
@@ -120,4 +122,6 @@
     <script>
         new SimpleBar($("#sidebar_subMenus, #scrollModal")[0]);
     </script>
+
+    @yield('setting-script')
 @endsection

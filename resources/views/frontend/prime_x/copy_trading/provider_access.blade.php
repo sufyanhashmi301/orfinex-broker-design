@@ -10,5 +10,9 @@
     </style>
 @endsection
 @section('content')
-    <iframe src="https://copytrader.mbfx.co/portal/registration/provider" class="w-full h-screen" frameborder="0"></iframe>
+{{--    @if(setting('copy_trading_provider_access_show','platform_links',false))--}}
+        <iframe src="{{setting('copy_trading_provider_access','platform_links','javascript:void(0);')}}"
+                class="w-full h-screen"
+                frameborder="0"></iframe>
+{{--    @endif--}}
 @endsection

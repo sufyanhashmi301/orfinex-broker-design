@@ -10,6 +10,43 @@
     </div>
 @endsection
 @section('withdraw_content')
+<div class="card p-6 mb-5">
+        <form id="filter-form" method="POST" action="{{ route('admin.withdraw.pending.export') }}">
+            @csrf
+            <div class="flex justify-between flex-wrap items-center">
+                <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                    <div class="flex-1 input-area relative">
+                        <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
+                    </div>
+                  
+                   
+                    <div class="flex-1 input-area relative">
+                        <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                    </div>
+                
+                </div>
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                    <div class="input-area relative">
+                        <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                            {{ __('Apply Filter') }}
+                        </button>
+                    </div>
+                    <div class="input-area relative">
+                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                            {{ __('Export') }}
+                        </button>
+                    </div>
+                    <div class="input-area relative">
+                        <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                            <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="card">
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -89,7 +126,16 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.withdraw.pending') }}",
+                ajax: {
+                    url: "{{ route('admin.withdraw.pending') }}",
+                    data: function (d) {
+                        d.email = $('#email').val();
+                        
+                        d.created_at = $('#created_at').val();
+                       
+                    }
+                },
+              
                 columns: [
                     {"class": "table-td", data: 'created_at', name: 'created_at'},
                     {"class": "table-td", data: 'username', name: 'username'},
@@ -118,7 +164,9 @@
                 $('#deposit-action-modal').modal('toggle')
 
             })
-
+            $('#filter').click(function () {
+                table.draw();
+            });
         })(jQuery);
     </script>
 @endsection

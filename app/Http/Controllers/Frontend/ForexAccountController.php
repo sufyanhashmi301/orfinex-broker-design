@@ -98,17 +98,21 @@ class ForexAccountController extends GatewayController
             return redirect()->back();
         }
         $login = 0;
-//        $forexAccount = ForexAccount::where('forex_schema_id',$schema->id)->orderBY('login','desc')->first();
-//        if($forexAccount) {
-//            if($forexAccount->login >= $schema->end_range){
-//                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
-//                notify()->error($message, 'Error');
-//                return redirect()->back();
-//            }
-//            $login = $forexAccount->login++;
-//        }else{
-//            $login = $schema->start_range;
-//        }
+
+        if (setting('is_forex_group_range', 'global')){
+            $forexAccount = ForexAccount::where('forex_schema_id',$schema->id)->orderBY('login','desc')->first();
+            if($forexAccount) {
+                if($forexAccount->login >= $schema->end_range){
+                    $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
+                    notify()->error($message, 'Error');
+                    return redirect()->back();
+                }
+                $login = $forexAccount->login++;
+            }else{
+                $login = $schema->start_range;
+            }
+        }
+
         $group = '';
         if ($request->account_type === 'real') {
             $group = $request->is_islamic ? $schema->real_islamic : $schema->real_swap_free;
@@ -168,9 +172,13 @@ class ForexAccountController extends GatewayController
                 $accountData['server'] = $server;
                 $accountData['created_by'] = $user->id;
                 $accountData['first_min_deposit_paid'] = 0;
-                $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-                $forexTrading = ForexAccount::create($accountData);
+                $accountData['trading_platform'] = setting('live_server','platform_api');
 
+                if($accountType == 'demo' && setting('demo_server_enable', 'platform_api') && !empty(setting('demo_server', 'platform_api'))) {
+                    $accountData['trading_platform'] = setting('demo_server', 'platform_api');
+                }
+
+                $forexTrading = ForexAccount::create($accountData);
                 if ($user->ref_id) {
                     $referrer = User::find($user->ref_id);
                     if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {

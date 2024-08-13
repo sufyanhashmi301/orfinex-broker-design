@@ -46,6 +46,11 @@ class SettingController extends Controller
         return view('backend.setting.email_setting.mail');
     }
 
+    public static function googleMailSetting()
+    {
+        return view('backend.setting.email_setting.google-mail');
+    }
+
     public static function forexApiSetting()
     {
         return view('backend.setting.forex-api');
@@ -160,6 +165,10 @@ class SettingController extends Controller
     public static function slackSetting()
     {
         return view('backend.setting.collab_tools.slack');
+    }
+
+    public function copyTradingSetting(){
+        return view('backend.setting.copy_trading.brokeree');
     }
 
 }

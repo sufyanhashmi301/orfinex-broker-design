@@ -130,7 +130,7 @@
 
                         />
                     </div>
-                    <div class="input-area">
+                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range Start(Min 6 digits):') }}</label>
                         <input
                             type="text"
@@ -142,7 +142,7 @@
 
                         />
                     </div>
-                    <div class="input-area">
+                    <div class="input-area @if(!setting('is_forex_group_range', 'global')) hidden @endif">
                         <label class="form-label" for="">{{ __('Range End(Min 6 digits):') }}</label>
                         <input
                             type="text"
@@ -266,8 +266,8 @@
                             <label for="" class="form-label">
                                 {{ __('Trading Server (Live) ') }}
                             </label>
-                            <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ old('live_server', $schema->live_server) }}">
-                            
+                            <input type="text" class="form-control" name="live_server" placeholder="Trading Server Live" value="{{ setting('live_server','platform_api') }}" readonly>
+
                         </div>
                     </div>
                 </div>
@@ -324,7 +324,7 @@
                             <label for="" class="form-label">
                                 {{ __('Trading Server (Demo) ') }}
                             </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ old('demo_server', $schema->demo_server) }}">
+                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('live_server','platform_api') }}" readonly>
                         </div>
                     </div>
                 </div>

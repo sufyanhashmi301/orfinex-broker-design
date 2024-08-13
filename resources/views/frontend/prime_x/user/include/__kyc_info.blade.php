@@ -6,7 +6,7 @@
     if($user->email_verified_at != null)
         $completedSteps++;
 
-    if($user->is_level_2_completed != null)
+    if($user->is_level_2_completed != null || $user->kyc ==1)
         $completedSteps++;
     }
 @endphp

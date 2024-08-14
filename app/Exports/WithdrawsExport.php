@@ -4,6 +4,7 @@ namespace App\Exports;
 use App\Enums\TxnType;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -30,8 +31,8 @@ class WithdrawsExport implements FromQuery, WithHeadings, WithMapping
         ->orWhere('type', TxnType::WithdrawAuto)
             ->applyFilters($filters);
     
-        return $query->select('user_id', 'tnx',  'target_id', 'amount', 'method', 'status','created_at');
-       
+
+        return $query->select('user_id', 'tnx',  'target_id', 'amount','pay_currency', 'description', 'status','created_at');
     }
 
     public function headings(): array
@@ -45,7 +46,8 @@ class WithdrawsExport implements FromQuery, WithHeadings, WithMapping
             'Transaction ID',
             'Account',
             'Amount',
-            'Gateway',
+            'Currency',
+            'Description',
             'Status',
             'Date',
         ];
@@ -53,6 +55,7 @@ class WithdrawsExport implements FromQuery, WithHeadings, WithMapping
 
     public function map($transaction): array
     {
+       
         return [
             $transaction->user->first_name ?? 'N/A',  
             $transaction->user->last_name ?? 'N/A',  
@@ -62,9 +65,10 @@ class WithdrawsExport implements FromQuery, WithHeadings, WithMapping
             $transaction->tnx ?? 'N/A',
             $transaction->target_id ?? 'N/A',
             $transaction->amount ?? 'N/A',
-            $transaction->method ?? 'N/A',
+            $transaction->pay_currency ?? 'N/A',
+            $transaction->description ?? 'N/A',
             $transaction->status->label() ?? 'N/A',
-            $transaction->created_at ?? 'N/A', // Formatted date
+            $transaction->created_at ? Carbon::parse($transaction->created_at)->format('d M Y g:i A'): 'N/A', // Formatted date
         ];
     }
 }

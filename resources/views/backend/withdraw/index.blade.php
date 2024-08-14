@@ -39,6 +39,7 @@
                 </li>
             @endcan
         </ul>
+        @yield('filters')
     </div>
     @yield('withdraw_content')
 @endsection

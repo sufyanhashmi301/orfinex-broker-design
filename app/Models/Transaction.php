@@ -51,7 +51,7 @@ class Transaction extends Model
 
     public function getCreatedAtAttribute(): string
     {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
+        return Carbon::parse($this->attributes['created_at'])->format('M d, Y h:i');
     }
 
     public function getDayAttribute(): string
@@ -159,7 +159,7 @@ class Transaction extends Model
             });
         }
 
-        
+
         if (isset($filters['type']) && $filters['type'] !== '') {
             $typeEnum = TxnType::tryFrom($filters['type']);  // Convert string to enum
             if ($typeEnum) {

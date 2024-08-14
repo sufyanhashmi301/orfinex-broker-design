@@ -1,11 +1,11 @@
 @extends('backend.theme.index')
 @section('title')
-    {{ __('Global Settings') }}
+    {{ __('Theme Colors') }}
 @endsection
 @section('theme-content')
     <?php
-        $section = 'theme';
-        $fields = config('setting.theme');
+        $section = 'colors';
+        $fields = config('setting.colors');
         //   dd($fields);
     ?>
 

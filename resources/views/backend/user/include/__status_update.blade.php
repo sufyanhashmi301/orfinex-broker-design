@@ -1,5 +1,5 @@
 <div class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
-    <div class="bg-gradient-to-r from-slate-100 via-primary-100 to-danger-100 absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg">
+    <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg">
     </div>
     <div class="profile-box">
         <div class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
@@ -78,7 +78,7 @@
                 </span>
             </li>
         </ul>
-        <div class="flex items-center justify-between border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">
+        <div class="flex items-center justify-around border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">
             <div class="text-center">
                 <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                     {{ __('Total Balance') }}

@@ -339,11 +339,11 @@ class ForexAccountController extends GatewayController
             }
         }
 
-//        if ($request->name) {
-//            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
-//            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
-//
-//        }
+        if ($request->name) {
+            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
+            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
+
+        }
         if ($request->main_password) {
             $dataArray['MainPassword'] = $request->main_password;
 //            $updateUserApiResponse = $this->updateMainPassword($request->login, $request->main_password);

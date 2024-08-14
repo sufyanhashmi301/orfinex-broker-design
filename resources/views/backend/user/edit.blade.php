@@ -573,5 +573,15 @@
                 checkPassword(password, 'main', 'create-forex-account');
             });
         });
+
+
+        $('body').on('click', '.open-trades-modal', function (event) {
+            event.preventDefault();
+
+            // Get the account ID
+            var accountId = $(this).data('id');
+            alert(accountId);
+        });
+
     </script>
 @endsection

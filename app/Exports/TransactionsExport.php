@@ -3,6 +3,7 @@ namespace App\Exports;
 
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -28,8 +29,8 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
         $query = Transaction::query()
             ->applyFilters($filters);
     
-        return $query->select('user_id', 'tnx', 'type', 'target_id', 'amount', 'method', 'status','created_at');
-       
+        return $query->select('user_id', 'tnx', 'type', 'target_id', 'amount','pay_currency', 'description', 'status','created_at');
+
     }
 
     public function headings(): array
@@ -44,7 +45,8 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
             'Type',
             'Account',
             'Amount',
-            'Gateway',
+            'Currency',
+            'Description',
             'Status',
             'Date',
         ];
@@ -62,9 +64,10 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
             $transaction->type->label() ?? 'N/A',
             $transaction->target_id ?? 'N/A',
             $transaction->amount ?? 'N/A',
-            $transaction->method ?? 'N/A',
+            $transaction->pay_currency ?? 'N/A',
+            $transaction->description ?? 'N/A',
             $transaction->status->label() ?? 'N/A',
-            $transaction->created_at ?? 'N/A', // Formatted date
+            $transaction->created_at ? Carbon::parse($transaction->created_at)->format('d M Y g:i A'): 'N/A',
         ];
     }
 }

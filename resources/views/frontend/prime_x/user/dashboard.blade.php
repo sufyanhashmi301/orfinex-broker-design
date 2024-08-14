@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Dashboard') }}
+    {{ __(':full_name\'s Dashboard', ['full_name' => auth()->user()->full_name]) }}
 @endsection
 @section('content')
 

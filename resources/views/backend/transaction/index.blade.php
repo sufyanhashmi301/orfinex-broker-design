@@ -8,7 +8,7 @@
             {{ __('All Transactions') }}
         </h4>
     </div>
-    
+
     <div class="card p-6 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.transactions.export') }}">
             @csrf
@@ -37,7 +37,7 @@
                             <option value="exchange">Exchange</option>
                             <option value="referral">Referral</option>
                             <option value="bonus">Signup Bonus</option>
-                          
+
                             <option value="withdraw">Withdraw</option>
                             <option value="withdraw_auto">Withdraw Auto</option>
                             <option value="receive_money">Receive Money</option>
@@ -48,11 +48,11 @@
                             <option value="ib">IB</option>
                         </select>
                     </div>
-                
+
                     <div class="flex-1 input-area relative">
-                        <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                        <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
                     </div>
-                
+
                 </div>
                 <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                     <div class="input-area relative">
@@ -136,7 +136,7 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-               
+
                 ajax: {
                     url: "{{ route('admin.transactions') }}",
                     data: function (d) {
@@ -145,7 +145,7 @@
                         d.type = $('#type').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
-                       
+
                     }
                 },
                 columns: [
@@ -164,6 +164,6 @@
                 table.draw();
             });
         })(jQuery);
-       
+
     </script>
 @endsection

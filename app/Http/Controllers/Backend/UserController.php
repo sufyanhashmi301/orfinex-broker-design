@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Exports\ActiveUsersExport;
+use App\Exports\DisabledUsersExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
@@ -86,11 +88,18 @@ class UserController extends Controller
         return view('backend.user.all');
     }
 
-    public function export(Request $request)
+    public function export(Request $request, $type)
     {
-        return Excel::download(new UsersExport($request), 'users.xlsx');
+        switch ($type) {
+            case 'active':
+                return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
+            case 'disabled':
+                return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+            default:
+                return Excel::download(new UsersExport($request), 'users.xlsx');
+        }
     }
-
+   
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -98,10 +107,11 @@ class UserController extends Controller
      */
     public function activeUser(Request $request)
     {
+
         if ($request->ajax()) {
-
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('status', 1)->latest();
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -128,8 +138,9 @@ class UserController extends Controller
     public function disabled(Request $request)
     {
         if ($request->ajax()) {
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('status', 0)->latest();
-
+            $data->applyFilters( $filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')

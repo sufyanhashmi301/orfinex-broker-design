@@ -2,6 +2,70 @@
 @section('title')
     {{ __('Active Customers') }}
 @endsection
+@php
+    $riskProfileTags = getRiskProfileTag();
+@endphp
+@section('filters')
+    <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'active']) }}">
+        @csrf
+        <div class="flex justify-between flex-wrap items-center">
+            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="country" id="country" class="select2 form-control h-full w-full">
+                        <option value="" selected>
+                            {{ __('country') }}
+                        </option>
+                        @foreach( getCountries() as $country)
+                            <option value="{{ $country['name'] }}">
+                                {{ $country['name']  }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="tag" id="tag" class="select2 form-control w-full h-full">
+                        <option value="" selected>
+                            {{ __('tags') }}
+                        </option>
+                        @foreach($riskProfileTags as $tag)
+                            <option value="{{ $tag->name }}">
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="input-area relative">
+                    <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+@endsection
 @section('customers-content')
     <div class="card">
         <div class="card-body px-6 pb-6">
@@ -74,7 +138,17 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.user.active') }}",
+                ajax: {
+                    url: "{{ route('admin.user.active') }}",
+                    data: function (d) {
+                        d.global_search = $('#global_search').val();
+                        d.phone = $('#phone').val();
+                        d.country = $('#country').val();
+                        d.status = $('#status').val();
+                        d.created_at = $('#created_at').val();
+                        d.tag = $('#tag').val();
+                    }
+                },
                 columns: [
                     {"class": "table-td", data: 'avatar', name: 'avatar'},
                     {"class": "table-td", data: 'username', name: 'username'},
@@ -89,7 +163,9 @@
                     {"class": "table-td", data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
-
+            $('#filter').click(function () {
+                table.draw();
+            });
 
             //send mail modal form open
             $('body').on('click', '.send-mail', function () {

@@ -156,22 +156,38 @@
 @section('script')
     <script>
         $(document).ready(function () {
-            function updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic) {
-                var isIslamic = false;
-                if (accountType === 'real') {
-                    isIslamic = isRealIslamic == 1;
-                } else if (accountType === 'demo') {
-                    isIslamic = isDemoIslamic == 1;
-                }
-                $('#islamic-checkbox').prop('disabled', !isIslamic);
-            }
-
             function updateLeverageAndDeposit(result) {
-                $('#display-commission').text(result.commission);
+                // Assuming result contains these fields
+                $('#display-commission').text(result.commission === 0 ? 'No Commission' : result.commission);
                 $('#display-spread').text(result.spread);
-                $('#select-leverage').html(result.leverage);
                 $('#display-leverage').text(result.display_leverage);
                 $('#initial-deposit').text(result.first_min_deposit);
+
+                // Update the leverage dropdown options
+                var leverageOptions = result.leverage.split(',').map(function(leverage) {
+                    return `<option value="${leverage}">${leverage}</option>`;
+                }).join('');
+                $('#select-leverage').html(leverageOptions);
+            }
+
+            function updateIslamicCheckboxState() {
+                var accountType = $('#account-type').val();
+                var selectedOption = $('#select-schema').find('option:selected');
+                var isRealIslamic = selectedOption.data('is-real-islamic');
+                var isDemoIslamic = selectedOption.data('is-demo-islamic');
+
+                var isIslamic = false;
+                if (accountType === 'real' && isRealIslamic == 1) {
+                    isIslamic = true;
+                } else if (accountType === 'demo' && isDemoIslamic == 1) {
+                    isIslamic = true;
+                }
+
+                if (isIslamic) {
+                    $('#islamic-checkbox').closest('.input-area').show();
+                } else {
+                    $('#islamic-checkbox').closest('.input-area').hide();
+                }
             }
 
             $('#account-type-tabs .nav-link').on('click', function () {
@@ -181,22 +197,10 @@
                 $('#account-type').val(accountType);
 
                 $('#islamic-checkbox').prop('checked', false);
-
-                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
-            });
-
-            $("#islamic-checkbox").on('change', function () {
-                var isIslamic = $(this).is(':checked');
-                var accountType = $('#account-type').val();
-                var isRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-                var isDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-                updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
+                updateIslamicCheckboxState();
             });
 
             $("#select-schema").on('change', function (e) {
-                "use strict";
                 e.preventDefault();
                 var id = $(this).val();
                 var url = '{{ route("user.schema.select", ":id") }}';
@@ -212,15 +216,17 @@
                         $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
 
                         $('#islamic-checkbox').prop('checked', false);
-                        updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
+                        updateIslamicCheckboxState();
                     }
                 });
             });
 
-            var initialAccountType = $('#account-type').val();
-            var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');
-            var initialIsDemoIslamic = $('#select-schema').find('option:selected').data('is-demo-islamic');
-            updateIslamicCheckboxState(initialAccountType, initialIsRealIslamic, initialIsDemoIslamic);
+            $('#account-type').on('change', function () {
+                updateIslamicCheckboxState();
+            });
+
+            // Initial checkbox visibility update
+            updateIslamicCheckboxState();
 
             $("#select-leverage").on('change', function () {
                 var selectedLeverage = $(this).val();
@@ -228,7 +234,6 @@
             });
 
             $("#selectWallet").on('change', function (e) {
-                "use strict";
                 $('.gatewaySelect').empty();
                 $('.manual-row').empty();
                 var wallet = $(this).val();
@@ -241,7 +246,6 @@
             });
 
             $('body').on('change', '#gatewaySelect', function (e) {
-                "use strict";
                 e.preventDefault();
                 $('.manual-row').empty();
                 var code = $(this).val();
@@ -249,14 +253,12 @@
                 url = url.replace(':code', code);
                 $.get(url, function (data) {
                     if (data.credentials !== undefined) {
-                        console.log(data.credentials);
                         $('.manual-row').append(data.credentials);
                         imagePreview();
                     }
                 });
 
                 $('#amount').on('keyup', function (e) {
-                    "use strict";
                     var amount = $(this).val();
                     $('.amount').text(Number(amount));
                     $('.currency').text(currency);
@@ -271,5 +273,6 @@
                 checkPassword(password, 'main', 'create-forex-account');
             });
         });
+
     </script>
 @endsection

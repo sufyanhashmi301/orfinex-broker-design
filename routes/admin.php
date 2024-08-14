@@ -83,7 +83,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::post('mail-send', 'mailSend')->name('mail-send');
         Route::get('transaction/{id}', 'transaction')->name('transaction');
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
-        Route::post('export', 'export')->name('export');
+        Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
 
@@ -161,6 +161,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
+    Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
@@ -187,6 +188,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
         Route::get('manual-pending', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');
+        Route::post('export',  'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
     });
@@ -204,10 +206,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         //Schedule
         Route::get('schedule', 'schedule')->name('schedule');
         Route::post('schedule-update', 'scheduleUpdate')->name('schedule.update');
-
+        Route::post('export',  'export')->name('export');
         Route::get('history', 'history')->name('history');
         Route::get('pending', 'pending')->name('pending');
-
+        Route::post('pending/export', 'pendingExport')->name('pending.export');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
 
@@ -239,6 +241,8 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
         Route::get('site', 'siteTheme')->name('site');
+        Route::get('global', 'globalSetting')->name('global');
+        Route::get('colors', 'colorsSetting')->name('colors');
         Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
         Route::get('status-update', 'statusUpdate')->name('status-update');

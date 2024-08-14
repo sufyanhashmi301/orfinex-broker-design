@@ -1,8 +1,14 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.index')
 @section('title')
     {{ __('Theme Management') }}
 @endsection
-@section('content')
+@section('setting-content')
+
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+    </div>
     <div class="card p-4 mb-5">
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
             <li class="nav-item">
@@ -12,24 +18,15 @@
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.theme.site') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.theme.site') }}">
-                    {{ __('Site Theme') }}
+                    {{ __('Template Settings') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.theme.dynamic-landing') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.theme.dynamic-landing') }}">
-                    {{ __('Site Dynamic Landing Theme') }}
+                <a href="{{ route('admin.theme.colors') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.theme.colors') }}">
+                    {{ __('Theme Colors') }}
                 </a>
             </li>
-            @can('page-manage')
-            <li class="nav-item">
-                <a href="{{ route('admin.page.setting') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.page.setting') }}">
-                    <span>{{ __('Page') }}</span>
-                </a>
-            </li>
-            @endcan
         </ul>
     </div>
-    <div class="grid grid-cols-12 gap-5">
-        @yield('theme-content')
-    </div>
+    @yield('theme-content')
 @endsection

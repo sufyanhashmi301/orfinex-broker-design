@@ -3,7 +3,7 @@
     <div class="app-header z-[999] ltr:ml-[248px] rtl:mr-[248px] bg-white dark:bg-slate-800 shadow-sm dark:shadow-slate-700">
         <div class="flex justify-between items-center h-full">
             <p class="text-xl font-medium text-slate-900 dark:text-white">
-                {{auth()->user()->full_name}}’s Dashboard
+                @yield('title')
             </p>
             <!-- end vertcial -->
 

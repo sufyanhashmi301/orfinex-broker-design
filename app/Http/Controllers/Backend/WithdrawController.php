@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Exports\PendingWithdrawsExport;
+use App\Exports\WithdrawsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Gateway;
 use App\Models\Transaction;
@@ -24,6 +26,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Str;
 use Txn;
 
@@ -229,13 +232,13 @@ class WithdrawController extends Controller
      */
     public function pending(Request $request)
     {
-
+        $filters = $request->only(['email',  'created_at']);
         if ($request->ajax()) {
             $data = Transaction::where(function ($query) {
                 $query->where('type', TxnType::Withdraw)
                     ->where('status', 'pending');
             })->latest();
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -260,7 +263,7 @@ class WithdrawController extends Controller
      */
     public function history(Request $request)
     {
-
+        $filters = $request->only(['email', 'status',  'created_at']);
         $data = Transaction::where(function ($query) {
             $query->where('type', TxnType::Withdraw);
 
@@ -272,7 +275,7 @@ class WithdrawController extends Controller
                     ->orWhere('type', TxnType::WithdrawAuto);
 
             })->latest();
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -409,5 +412,15 @@ class WithdrawController extends Controller
             notify()->success('Withdrawal Schedule Update successfully');
 
             return redirect()->back();
+        }
+        public function export(Request $request)
+        {
+        
+            return Excel::download(new WithdrawsExport($request), 'withdraws.xlsx');
+        }
+        public function pendingExport(Request $request)
+        {
+        
+            return Excel::download(new PendingWithdrawsExport($request), 'pendingwithdraws.xlsx');
         }
     }

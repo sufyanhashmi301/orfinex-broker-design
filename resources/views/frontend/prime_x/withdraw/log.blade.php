@@ -24,7 +24,7 @@
                                     <input type="text" class="form-control" id="search" placeholder="Search"
                                         value="{{ request('query') }}"
                                         name="query"/>
-                                    <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
+                                    <input type="date" class="form-control flatpickr flatpickr-input active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
                                     <button type="submit" class="btn btn-dark btn-sm">
                                         <i icon-name="search"></i>
                                         {{ __('Search') }}
@@ -150,7 +150,7 @@
                                 <div class="transaction-amount sub mb-1 dark:text-white">- {{$raw->amount .' '.$currency}}</div>
                                 <div class="transaction-fee sub mb-1 dark:text-white">-{{  $raw->charge.' '. $currency .' '.__('Fee') }} </div>
                                 <div class="transaction-gateway mb-1 dark:text-white">{{ $raw->method }}</div>
-    
+
                                 @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
                                     <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
                                 @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)

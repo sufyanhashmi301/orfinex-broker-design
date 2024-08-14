@@ -4,15 +4,17 @@ namespace App\Models;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Traits\TransactionFilterable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
 class Transaction extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory, Searchable,TransactionFilterable;
 
     protected $guarded = ['id'];
 
@@ -49,7 +51,7 @@ class Transaction extends Model
 
     public function getCreatedAtAttribute(): string
     {
-        return Carbon::parse($this->attributes['created_at'])->format('M d Y h:i');
+        return Carbon::parse($this->attributes['created_at'])->format('M d, Y h:i');
     }
 
     public function getDayAttribute(): string
@@ -147,5 +149,34 @@ class Transaction extends Model
         return new Attribute(
             get: fn ($value) => ucwords($value),
         );
+    }
+    public function scopeApplyFilters(Builder $query, $filters)
+    {
+
+        if (!empty($filters['email'])) {
+            $query->whereHas('user', function ($query) use ($filters) {
+                $query->where('email', $filters['email']);
+            });
+        }
+
+
+        if (isset($filters['type']) && $filters['type'] !== '') {
+            $typeEnum = TxnType::tryFrom($filters['type']);  // Convert string to enum
+            if ($typeEnum) {
+                $query->where('type', $typeEnum->value);
+            }
+        }
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $statusEnum = TxnStatus::tryFrom($filters['status']);  // Convert string to enum
+            if ($statusEnum) {
+                $query->where('status', $statusEnum->value);
+            }
+        }
+
+        if (!empty($filters['created_at'])) {
+            $query->whereDate('created_at', $filters['created_at']);
+        }
+
+        return $query;
     }
 }

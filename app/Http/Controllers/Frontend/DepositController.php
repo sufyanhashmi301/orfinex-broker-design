@@ -165,6 +165,7 @@ class DepositController extends GatewayController
         return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 
     }
+
     public function depositDemoNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {

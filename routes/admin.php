@@ -241,6 +241,8 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
         Route::get('site', 'siteTheme')->name('site');
+        Route::get('global', 'globalSetting')->name('global');
+        Route::get('colors', 'colorsSetting')->name('colors');
         Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
         Route::get('status-update', 'statusUpdate')->name('status-update');

@@ -27,6 +27,7 @@
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Credit') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
@@ -73,6 +74,7 @@
                     {"class": "table-td", data: 'balance', name: 'balance'},
                     {"class": "table-td", data: 'equity', name: 'equity'},
                     {"class": "table-td", data: 'credit', name: 'credit'},
+                    {"class": "table-td", data: 'action', name: 'action'},
                 ]
             });
         })(jQuery);

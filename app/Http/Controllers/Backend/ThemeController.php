@@ -18,7 +18,17 @@ class ThemeController extends Controller
     {
         $themes = Theme::where('type', 'site')->get();
 
-        return view('backend.theme.global', compact('themes'));
+        return view('backend.theme.template', compact('themes'));
+    }
+
+    public function globalSetting()
+    {
+        return view('backend.theme.global');
+    }
+
+    public function colorsSetting()
+    {
+        return view('backend.theme.colors');
     }
 
     public function dynamicLanding()

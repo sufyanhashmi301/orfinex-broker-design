@@ -30,34 +30,41 @@ class PendingWithdrawsExport implements FromQuery, WithHeadings, WithMapping
         ->orWhere('type', TxnType::WithdrawAuto)
             ->applyFilters($filters);
     
-        return $query->select('user_id', 'tnx',  'target_id', 'amount', 'method', 'status');
+        return $query->select('user_id', 'tnx',  'target_id', 'amount', 'method', 'status','created_at');
        
     }
 
     public function headings(): array
     {
         return [
-            'User Name',
+            'First Name',
+            'Last Name',
+            'Username',
+            'Phone',
             'User Email',
             'Transaction ID',
             'Account',
             'Amount',
             'Gateway',
             'Status',
+            'Date'
         ];
     }
 
     public function map($transaction): array
     {
         return [
+            $transaction->user->first_name ?? 'N/A',  
+            $transaction->user->last_name ?? 'N/A',  
             $transaction->user->username ?? 'N/A',  
+            $transaction->user->phone ?? 'N/A',  
             $transaction->user->email ?? 'N/A', 
             $transaction->tnx ?? 'N/A',
             $transaction->target_id ?? 'N/A',
             $transaction->amount ?? 'N/A',
             $transaction->method ?? 'N/A',
             $transaction->status->label() ?? 'N/A',
-            //$transaction->created_at ? $transaction->created_at->format('d F Y') : 'N/A', // Formatted date
+            $transaction->created_at ?? 'N/A', // Formatted date
         ];
     }
 }

@@ -1,19 +1,14 @@
-@extends('backend.setting.index')
+@extends('backend.setting.customer.index')
 @section('title')
     {{ __('Risk Profile Tag') }}
 @endsection
-@section('setting-content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('Risk Profile Tag Forms') }}
-        </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                {{ __('Add New') }}
-            </a>
-        </div>
-    </div>
+@section('title-btns')
+    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
+        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+        {{ __('Add New') }}
+    </a>
+@endsection
+@section('customer-content')
 
     <div class="card">
         <div class="card-body p-6 pt-3">
@@ -71,7 +66,7 @@
     @include('backend.risk_profile_tag.modal.__delete_tag')
 
 @endsection
-@section('script')
+@section('setting-script')
     <script>
         $('.deleteRiskProfileTag').on('click',function (e) {
             "use strict";

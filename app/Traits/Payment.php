@@ -135,6 +135,7 @@ trait Payment
             'strong' => 'Transaction ID: '.$tnx,
             'action' => route('user.deposit.amount'),
             'a' => 'Deposit again',
+            'view_name' => 'deposit',
         ];
 
         if ($status == 'Pending') {
@@ -155,8 +156,9 @@ trait Payment
 
         $isStepOne = 'current';
         $isStepTwo = 'current';
+        Session::put('user_notify', $notify);
+        return redirect()->route('user.notify');
 
-        return view('frontend::deposit.success', compact('isStepOne', 'isStepTwo', 'notify'));
     }
 
     //automatic payment success snippet

@@ -60,6 +60,26 @@ if (!function_exists('setting')) {
         return is_null($value) ? value($default) : $value;
     }
 }
+if (!function_exists('getSettingCreatedAt')) {
+    function getSettingByColumn($key, $attribute = 'created_at')
+    {
+        $setting = \App\Models\Setting::where('name', $key)->first();
+//        dd($setting);
+
+        // Ensure the attribute exists on the model to avoid potential errors
+        if ($setting) {
+            // Check if the attribute is an instance of Carbon (or a date field)
+            if ($setting->{$attribute} instanceof \Illuminate\Support\Carbon) {
+                return $setting->{$attribute}->format('d M, Y H:i'); // Custom format
+            }
+            return $setting->{$attribute}; // Return non-date attribute directly
+        }
+
+        return 'N/A';
+    }
+}
+
+
 
 if (!function_exists('oldSetting')) {
 

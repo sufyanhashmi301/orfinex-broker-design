@@ -6,7 +6,8 @@ use App\Models\Plugin;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Request;
 use Log;
-use Sumsub\AppTokenUsageExample\SumsubClient;
+use sumsub\SumsubClient;
+
 
 class SumsubController extends Controller
 {
@@ -25,7 +26,6 @@ class SumsubController extends Controller
             $levelName = $sumsubscredentials->level_name;
 //            dd($externalUserId);
             try {
-//            dd($sumsubscredentials->app_token);
                 $testObject = new SumsubClient($sumsubscredentials->app_token, $sumsubscredentials->app_secret_id);
 //                dd($testObject);
                 $applicantId = $testObject->createApplicant($externalUserId, $levelName);

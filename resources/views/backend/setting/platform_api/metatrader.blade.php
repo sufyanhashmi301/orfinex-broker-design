@@ -76,11 +76,25 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 grid-cols-1 gap-5 mb-5">
-                    <div class="input-area relative">
-                        <label for="" class="form-label">
-                            {{ __('Name') }}
-                        </label>
-                        <input type="text" name="name" class=" form-control " placeholder="CTrader">
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Live Server Name') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="live_server"
+                            value="{{ setting('live_server','platform_api') }}"
+                            required
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Demo Server Name') }}</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="demo_server"
+                            value="{{ setting('demo_server','platform_api') }}"
+                            required
+                        />
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">
@@ -100,7 +114,8 @@
                                     {{ __('ID:') }}
                                 </span>
                             <span class="flex-1 text-slate-900 dark:text-white">
-                                    {{ __('4') }}
+                               {{ getSettingByColumn('mt5_api_url_real','id') }}
+
                                 </span>
                         </li>
                         <li class="flex items-center space-x-7 flex-wrap">
@@ -108,15 +123,15 @@
                                     {{ __('Created:') }}
                                 </span>
                             <span class="flex-1 text-slate-900 dark:text-white">
-                                    {{ __('Sep. 5, 2023 05:23:14') }}
+                                    {{ getSettingByColumn('mt5_api_url_real','created_at') }}
                                 </span>
                         </li>
                         <li class="flex items-center space-x-7 flex-wrap">
                                 <span class="flex-1 text-slate-400 dark:text-slate-400">
-                                    {{ __('Updated:') }}
+                                     {{ __('Updated:') }}
                                 </span>
                             <span class="flex-1 text-slate-900 dark:text-white">
-                                    {{ __('Mar. 14, 2024 02:44:24') }}
+                                     {{ getSettingByColumn('mt5_api_url_real','updated_at') }}
                                 </span>
                         </li>
                     </ul>
@@ -132,7 +147,7 @@
     </div>
 
 @endsection
-@section('script')
+@section('setting-script')
     <script>
         $(document).ready(function() {
             $('#demoServerToggle').change(function() {

@@ -16,7 +16,7 @@
                         <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                             Deposit Now
                         </a>
-                    </div> 
+                    </div>
                 @else
                     <div class="grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
                         <div class="filter">
@@ -25,7 +25,7 @@
                                     <input type="text" class="form-control" id="search" placeholder="Search"
                                         value="{{ request('query') }}"
                                         name="query"/>
-                                    <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
+                                    <input type="date" class="form-control flatpickr flatpickr-input active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
                                     <button type="submit" class="btn btn-dark btn-sm">
                                         <i icon-name="search"></i>
                                         {{ __('Search') }}

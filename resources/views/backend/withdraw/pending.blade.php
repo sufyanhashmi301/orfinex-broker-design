@@ -21,8 +21,8 @@
                   
                    
                     <div class="flex-1 input-area relative">
-                        <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
-                    </div>
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
+                </div>
                 
                 </div>
                 <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">

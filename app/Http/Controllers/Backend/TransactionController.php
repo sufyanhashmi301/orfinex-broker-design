@@ -35,6 +35,7 @@ class TransactionController extends Controller
     {
         if ($request->ajax()) {
             $filters = $request->only(['email', 'status', 'type', 'created_at']);
+          
             if ($id) {
                 $data = Transaction::where('user_id', $id)->latest();
                 

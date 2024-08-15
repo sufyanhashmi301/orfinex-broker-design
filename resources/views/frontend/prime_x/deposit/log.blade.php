@@ -23,7 +23,7 @@
                                     <input type="text" class="form-control" id="search" placeholder="Search"
                                         value="{{ request('query') }}"
                                         name="query"/>
-                                    <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
+                                    <input type="date" class="form-control flatpickr flatpickr-input active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
                                     <button type="submit" class="btn btn-dark btn-sm">
                                         <i icon-name="search"></i>
                                         {{ __('Search') }}
@@ -165,7 +165,7 @@
                 </div>
                 {{  $deposits->onEachSide(1)->links() }}
             </div>
-            
+
         </div>
     </div>
 @endsection

@@ -161,7 +161,7 @@ class SendMoneyController extends Controller
 
         //withdraw balance
         $targetType = 'forex_withdraw';
-        $comment = 'ext/transfer/from/'.$targetId.'/to/'.$receiverAccount;
+        $comment = 'ext/'.$targetId.'/to/'.$receiverAccount;
         $data = [
             'FromLogin' => $targetId,
             'ToLogin' => $receiverAccount,
@@ -353,7 +353,7 @@ class SendMoneyController extends Controller
         if($targetType == 'forex') {
             //withdraw balance
             $targetType = 'forex_withdraw';
-            $comment = 'int/transfer/from/'.$targetId.'/to/'.$receiverAccount;
+            $comment = 'int/'.$targetId.'/to/'.$receiverAccount;
             $data = [
                 'FromLogin' => $targetId,
                 'ToLogin' => $receiverAccount,

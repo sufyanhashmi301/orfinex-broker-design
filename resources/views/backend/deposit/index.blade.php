@@ -31,6 +31,7 @@
                 </li>
             @endcanany
         </ul>
+        @yield('filters')
     </div>
     @yield('deposit_content')
 @endsection

@@ -21,8 +21,8 @@
                                         <option value="{{ $forexAccount->login }}" @if(request()->get('login') == $forexAccount->login ) selected @endif>{{ $forexAccount->login }}</option>
                                     @endforeach
                                 </select>
-                                <input type="date" class="form-control" name="start_date" value="{{ request()->get('start_date') }}"/>
-                                <input type="date" class="form-control" name="end_date" value="{{ request()->get('end_date') }}"/>
+                                <input type="date" class="form-control flatpickr flatpickr-input active" name="start_date" value="{{ request()->get('start_date') }}"/>
+                                <input type="date" class="form-control flatpickr flatpickr-input active" name="end_date" value="{{ request()->get('end_date') }}"/>
                                 <button type="submit" class="btn btn-dark btn-sm">
                                     <i icon-name="search"></i>
                                     {{ __('Search') }}

@@ -315,3 +315,8 @@ Route::get('user/ratings', function () {
 })->name('user.ratings')->middleware('secure_header');
 
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
+
+
+Route::get('user/partner/dashboard', function () {
+    return view('frontend::partner.dashboard');
+});

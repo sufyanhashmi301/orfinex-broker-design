@@ -53,6 +53,13 @@ return [
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
+        ],
+    ],
+
+    'colors' => [
+        'title' => 'Theme Colors',
+
+        'elements' => [
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean

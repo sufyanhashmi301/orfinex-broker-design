@@ -95,15 +95,14 @@
             </div>
         </div>
     @endcan
-    <!-- Modal for Pending Deposit Approval -->
 @endsection
+@include('backend.withdraw.modals.view')
 @section('script')
     <script>
         (function ($) {
             "use strict";
             var table = $('#dataTable').DataTable();
             table.destroy();
-
             var table = $('#dataTable')
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
@@ -149,8 +148,6 @@
                 ]
             });
 
-
-            //send mail modal form open
             $('body').on('click', '#withdraw-action', function () {
                 $('.withdraw-action').empty();
 
@@ -166,6 +163,24 @@
             })
             $('#filter').click(function () {
                 table.draw();
+            });
+            $(document).on('click', '.viewTransaction', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                         $('#transaction_id').text(response.transaction.tnx);
+                         $('#transaction_type').text(response.transaction.target_type);
+                         $('#amount').text(response.transaction.final_amount);
+                         $('#currency').text(response.transaction.pay_currency);
+                         $('#approval_cause').text(response.transaction.approval_cause);
+                        
+                        $('#viewTransactionModal').modal('show');
+                        
+                    }
+                });
             });
         })(jQuery);
     </script>

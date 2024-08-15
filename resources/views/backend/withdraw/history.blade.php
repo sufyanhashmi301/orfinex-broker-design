@@ -72,6 +72,7 @@
                                     <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
@@ -88,6 +89,7 @@
         </div>
     </div>
 @endsection
+@include('backend.withdraw.modals.view')
 @section('script')
     <script>
         (function ($) {
@@ -135,12 +137,30 @@
                     {"class": "table-td", data: 'charge', name: 'charge'},
                     {"class": "table-td", data: 'method', name: 'method'},
                     {"class": "table-td", data: 'status', name: 'status'},
+                    {"class": "table-td", data: 'action', name: 'action'},
                 ]
             });
             $('#filter').click(function () {
                 table.draw();
             });
-
+            $(document).on('click', '.viewTransaction', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                         $('#transaction_id').text(response.transaction.tnx);
+                         $('#transaction_type').text(response.transaction.target_type);
+                         $('#amount').text(response.transaction.final_amount);
+                         $('#currency').text(response.transaction.pay_currency);
+                         $('#approval_cause').text(response.transaction.approval_cause);
+                        
+                        $('#viewTransactionModal').modal('show');
+                        
+                    }
+                });
+            });
         })(jQuery);
     </script>
 @endsection

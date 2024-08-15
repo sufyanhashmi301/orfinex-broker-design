@@ -241,7 +241,8 @@ class DepositController extends Controller
                     return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->rawColumns(['status', 'type', 'final_amount', 'username'])
+                ->addColumn('action', 'backend.transaction.include.__action')
+                ->rawColumns(['status', 'type', 'final_amount', 'username','action'])
                 ->make(true);
         }
 
@@ -307,14 +308,7 @@ class DepositController extends Controller
                 }
                 $transaction->save();
                 $transaction = $transaction->fresh();
-//                dd($transaction);
-//                if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-//                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-////                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
-////                    $this->firstMinDepositUpdate($transaction->target_id);
-//                } else {
-//                    $transaction->user->increment('balance', $transaction->amount);
-//                }
+
 
                 }
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
@@ -355,6 +349,10 @@ class DepositController extends Controller
        
         return Excel::download(new DepositsExport($request), 'deposits.xlsx');
     }
-
+    public function view($id)
+    {
+        $transaction = Transaction::find($id);
+        return response()->json(['transaction'=>$transaction]);
+    }
 }
 

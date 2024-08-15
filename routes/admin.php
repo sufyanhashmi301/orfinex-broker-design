@@ -162,6 +162,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
+    Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');

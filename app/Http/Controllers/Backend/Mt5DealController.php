@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Mt5Deal;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Mt5DealController extends Controller
 {
     public function getDeals($login)
     {
-        // Fetch deals by login
-        $deals = Mt5Deal::where('login', $login)->get();
+//        dd($login);
+        $deals = DB::connection('mt5_db')
+            ->table('mt5_positions')
+            ->where('Login', $login)
+            ->limit(12)
+            ->get();
 
-        // Return the deals as a JSON response
-        return response()->json($deals);
+        return view('backend.user.include.__open_trades', compact('deals'));
     }
 }

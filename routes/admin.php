@@ -50,6 +50,7 @@ use App\Http\Controllers\Backend\SwapBasedAccountController;
 use App\Http\Controllers\Backend\SwapFreeAccountController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
+use App\Http\Controllers\Backend\Mt5DealController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -419,3 +420,5 @@ Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','c
 Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
 Route::post('symbols/store', [SymbolController::class,'store']);
 Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+
+Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');

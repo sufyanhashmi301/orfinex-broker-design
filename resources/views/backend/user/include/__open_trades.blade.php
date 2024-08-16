@@ -57,6 +57,7 @@
                         @endif
                         </tbody>
                     </table>
+                    {{  $deals->links() }}
                 </div>
             </div>
         </div>

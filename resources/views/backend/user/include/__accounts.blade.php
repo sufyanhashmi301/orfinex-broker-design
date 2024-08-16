@@ -55,7 +55,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <div class="modal-body p-6 pt-0" id="dealsModalBody">
+            <div class="modal-body px-6" id="dealsModalBody">
 
             </div>
         </div>
@@ -121,6 +121,25 @@
                     $('#dealsModalBody').html(response);
                     $('#openTradesModal').modal('show');
 
+                },
+                error: function() {
+                    alert('Failed to fetch data');
+                }
+            });
+        });
+
+
+        // Handler for pagination links inside the modal
+        $('body').on('click', '#dealsModalBody nav a', function(event) {
+            event.preventDefault();
+
+            var url = $(this).attr('href'); // Get the href attribute from the pagination link
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    $('#dealsModalBody').html(response); // Update the modal content
                 },
                 error: function() {
                     alert('Failed to fetch data');

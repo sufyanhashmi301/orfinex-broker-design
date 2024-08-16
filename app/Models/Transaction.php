@@ -174,7 +174,12 @@ class Transaction extends Model
         }
 
         if (!empty($filters['created_at'])) {
-            $query->whereDate('created_at', $filters['created_at']);
+            $dateRange = explode(' to ', $filters['created_at']);
+            if (count($dateRange) === 2) {
+                $startDate = Carbon::parse($dateRange[0])->startOfDay();  // Start of the day for the start date
+                $endDate = Carbon::parse($dateRange[1])->endOfDay();      // End of the day for the end date
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
         }
 
         return $query;

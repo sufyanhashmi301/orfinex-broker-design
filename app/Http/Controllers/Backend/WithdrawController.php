@@ -285,7 +285,8 @@ class WithdrawController extends Controller
                     return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->rawColumns(['status', 'type', 'amount', 'username'])
+                ->addColumn('action', 'backend.transaction.include.__action')
+                ->rawColumns(['status', 'type', 'amount', 'username','action'])
                 ->make(true);
         }
 

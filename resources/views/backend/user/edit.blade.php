@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Current Balance') }}
+                                        {{ __('Used Margin') }}
                                     </div>
                                     <div class="text-slate-900 dark:text-white text-lg font-medium">
                                         {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
@@ -112,7 +112,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Current Equity') }}
+                                        {{ __('Free Margin') }}
                                     </div>
                                     <div class="text-slate-900 dark:text-white text-lg font-medium">
                                         {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
@@ -572,15 +572,6 @@
                 var password = $(this).val();
                 checkPassword(password, 'main', 'create-forex-account');
             });
-        });
-
-
-        $('body').on('click', '.open-trades-modal', function (event) {
-            event.preventDefault();
-
-            // Get the account ID
-            var accountId = $(this).data('id');
-            alert(accountId);
         });
 
     </script>

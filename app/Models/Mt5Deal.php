@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Mt5Deal extends Model
 {
     use HasFactory;
+    protected $table = 'mt5_deals_2021';
 }

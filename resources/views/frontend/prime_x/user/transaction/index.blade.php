@@ -7,7 +7,7 @@
 @section('content')
     <div class="space-y-5">
         <div class="card desktop-screen-show md:block hidden">
-            <div class="card-body p-6">
+            <div class="card-body p-6 pb-0">
                 @if(count($transactions) == 0)
                     <div class="flex items-center justify-center flex-col">
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
@@ -140,7 +140,26 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                {{  $transactions->links() }}
+                                <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3">
+                                    <div>
+                                        @php
+                                            $from = $transactions->firstItem(); // The starting item number on the current page
+                                            $to = $transactions->lastItem(); // The ending item number on the current page
+                                            $total = $transactions->total(); // The total number of items
+                                        @endphp
+
+                                        <p class="text-sm text-gray-700 px-3">
+                                            Showing
+                                            <span class="font-medium">{{ $from }}</span>
+                                            to
+                                            <span class="font-medium">{{ $to }}</span>
+                                            of
+                                            <span class="font-medium">{{ $total }}</span>
+                                            results
+                                        </p>
+                                    </div>
+                                    {{  $transactions->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,36 +1,8 @@
-@extends('frontend::layouts.user')
+@extends('frontend::layouts.partner')
 @section('title')
-    {{ __('Dashboard') }}
+    {{ __('Partner Dashboard') }}
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
-            <li class="nav-item">
-                <a href="{{ route('user.referral') }}"
-                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral') }}">
-                    IB Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('user.referral.network') }}"
-                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral.network') }}">
-                    Network
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('user.referral.advertisement.material') }}"
-                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral.advertisement.material') }}">
-                    Resources
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('user.referral.reports') }}"
-                   class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.referral.reports') }}">
-                    Reports
-                </a>
-            </li>
-        </ul>
-    </div>
 
     @if(request()->routeIs('user.referral'))
         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && auth()->user()->ibQuestionAnswers)

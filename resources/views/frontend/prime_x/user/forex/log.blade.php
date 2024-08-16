@@ -68,7 +68,7 @@
 
     <!-- Modal for Account details -->
     @include('frontend::.user.forex.modal.__trade')
-    
+
     <!-- Modal for Account details -->
     @include('frontend::.user.forex.modal.__account_details')
 

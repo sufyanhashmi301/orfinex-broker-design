@@ -1,37 +1,39 @@
-<div class="card">
-    <div class="card-header flex-wrap">
-        <h3 class="card-title mb-4 sm:mb-0">{{ __('All Referral Logs') }}</h3>
-        <div class="sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="tabs-tab" role="tablist">
+<div class="flex justify-between flex-wrap items-center mb-6">
+    <h4 class="font-medium text-xl capitalize text-slate-700 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
+        {{ __('All Referral Logs') }}
+    </h4>
+    <div class="sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="tabs-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a href="#tabs-" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-300"
+                   id="tabs-generalTarget-tab" data-bs-toggle="pill" data-bs-target="#tabs-generalTarget" role="tab"
+                   aria-controls="tabs-generalTarget" aria-selected="true">
+                    <i icon-name="network"></i>
+                    {{ __('General') }}
+                </a>
+            </li>
+
+            @foreach($referrals->keys() as $raw)
+                @php
+                    $target = json_decode($raw,true);
+                @endphp
                 <li class="nav-item" role="presentation">
-                    <a href="#tabs-" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 active dark:bg-slate-900 dark:text-slate-300"
-                    id="tabs-generalTarget-tab" data-bs-toggle="pill" data-bs-target="#tabs-generalTarget" role="tab"
-                    aria-controls="tabs-generalTarget" aria-selected="true">
-                        <i icon-name="network"></i>
-                        {{ __('General') }}
+                    <a href="#tabs-t{{ $target['id'] }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                       id="tabs-t{{ $target['id'] }}-tab" data-bs-toggle="pill" data-bs-target="#tabs-t{{ $target['id'] }}" role="tab"
+                       aria-controls="tabs-t{{ $target['id'] }}" aria-selected="false">
+                        <i icon-name="boxes"></i>
+                        @if(setting('site_referral','global') == 'level')
+                            Level {{ $target['the_order'] }}
+                        @else
+                            {{ $target['name'] }}
+                        @endif
                     </a>
                 </li>
-
-                @foreach($referrals->keys() as $raw)
-                    @php
-                        $target = json_decode($raw,true);
-                    @endphp
-                    <li class="nav-item" role="presentation">
-                        <a href="#tabs-t{{ $target['id'] }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                        id="tabs-t{{ $target['id'] }}-tab" data-bs-toggle="pill" data-bs-target="#tabs-t{{ $target['id'] }}" role="tab"
-                        aria-controls="tabs-t{{ $target['id'] }}" aria-selected="false">
-                            <i icon-name="boxes"></i>
-                            @if(setting('site_referral','global') == 'level')
-                                Level {{ $target['the_order'] }}
-                            @else
-                                {{ $target['name'] }}
-                            @endif
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+            @endforeach
+        </ul>
     </div>
+</div>
+<div class="card">
     <div class="card-body p-6 table-responsive">
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="tabs-generalTarget" role="tabpanel" aria-labelledby="tabs-generalTarget-tab">

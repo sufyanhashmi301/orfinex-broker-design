@@ -1,10 +1,8 @@
 @can('withdraw-action')
-    <span type="button"
-        data-id="{{$id}}"
-        id="withdraw-action"
-    >
-    <button class="action-btn" data-tippy-theme="dark" title="Approval Process" data-tippy-content="Approval Process">
-        <iconify-icon icon="lucide:eye"></iconify-icon>
-    </button>
-</span>
+  <span data-bs-toggle="tooltip" title="" data-bs-placement="top" data-bs-original-title="View Transaction">
+  <a href="{{ route('admin.transactions.view',$id) }}" data-id="{{ $id }}" class="action-btn viewTransaction">
+    <iconify-icon icon="lucide:eye"></iconify-icon>
+    </a>
+
+  </span>
 @endcan

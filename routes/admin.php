@@ -50,6 +50,7 @@ use App\Http\Controllers\Backend\SwapBasedAccountController;
 use App\Http\Controllers\Backend\SwapFreeAccountController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
+use App\Http\Controllers\Backend\Mt5DealController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -162,6 +163,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
+    Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
@@ -419,3 +421,5 @@ Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','c
 Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
 Route::post('symbols/store', [SymbolController::class,'store']);
 Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+
+Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');

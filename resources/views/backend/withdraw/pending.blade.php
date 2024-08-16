@@ -21,8 +21,8 @@
                   
                    
                     <div class="flex-1 input-area relative">
-                        <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
-                    </div>
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
+                </div>
                 
                 </div>
                 <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -95,15 +95,14 @@
             </div>
         </div>
     @endcan
-    <!-- Modal for Pending Deposit Approval -->
 @endsection
+@include('backend.withdraw.modals.view')
 @section('script')
     <script>
         (function ($) {
             "use strict";
             var table = $('#dataTable').DataTable();
             table.destroy();
-
             var table = $('#dataTable')
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
@@ -149,8 +148,6 @@
                 ]
             });
 
-
-            //send mail modal form open
             $('body').on('click', '#withdraw-action', function () {
                 $('.withdraw-action').empty();
 
@@ -166,6 +163,24 @@
             })
             $('#filter').click(function () {
                 table.draw();
+            });
+            $(document).on('click', '.viewTransaction', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                         $('#transaction_id').text(response.transaction.tnx);
+                         $('#transaction_type').text(response.transaction.target_type);
+                         $('#amount').text(response.transaction.final_amount);
+                         $('#currency').text(response.transaction.pay_currency);
+                         $('#approval_cause').text(response.transaction.approval_cause);
+                        
+                        $('#viewTransactionModal').modal('show');
+                        
+                    }
+                });
             });
         })(jQuery);
     </script>

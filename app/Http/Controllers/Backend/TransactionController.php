@@ -35,6 +35,7 @@ class TransactionController extends Controller
     {
         if ($request->ajax()) {
             $filters = $request->only(['email', 'status', 'type', 'created_at']);
+          
             if ($id) {
                 $data = Transaction::where('user_id', $id)->latest();
                 
@@ -51,7 +52,8 @@ class TransactionController extends Controller
                     return $request->charge.' '.setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->rawColumns(['status', 'type', 'final_amount', 'username'])
+                ->addColumn('action', 'backend.transaction.include.__action')
+                ->rawColumns(['status', 'type', 'final_amount', 'username','action'])
                 ->make(true);
         }
 
@@ -61,5 +63,10 @@ class TransactionController extends Controller
     {
        
         return Excel::download(new TransactionsExport($request), 'transactions.xlsx');
+    }
+    public function view($id)
+    {
+        $transaction = Transaction::find($id);
+        return response()->json(['transaction'=>$transaction]);
     }
 }

@@ -1,4 +1,4 @@
-@extends('frontend::layouts.user')
+@extends('frontend::layouts.partner')
 @section('title')
     {{ __('Partner Dashboard') }}
 @endsection

@@ -81,7 +81,7 @@
         <div class="flex items-center justify-around border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">
             <div class="text-center">
                 <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                    {{ __('Total Balance') }}
+                    {{ __('Current Balance') }}
                 </div>
                 <div class="text-slate-900 dark:text-white text-xl font-medium">
                     {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
@@ -89,7 +89,7 @@
             </div>
             <div class="text-center">
                 <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                    {{ __('Total Equity') }}
+                    {{ __('Current Equity') }}
                 </div>
                 <div class="text-slate-900 dark:text-white text-xl font-medium">
                     {{ setting('currency_symbol','global') . $user->totalForexEquity() }}

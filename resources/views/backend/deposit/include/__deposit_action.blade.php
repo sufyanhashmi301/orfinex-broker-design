@@ -60,7 +60,8 @@
         <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
         <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
     </div>
-
+    
+@if($data->status->value=='pending')
     <div class="action-btns text-right">
         <button type="submit" name="approve" value="yes" class="btn btn-dark inline-flex items-center justify-center mr-2">
             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
@@ -71,7 +72,7 @@
             {{ __('Reject') }}
         </button>
     </div>
-
+@endif
 </form>
 {{--{{dd($gateway)}}--}}
 <script>

@@ -108,8 +108,6 @@
             //send mail modal form open
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();
-                console.log('ttt');
-
                 var id = $(this).data('id');
                 var url = '{{ route("admin.deposit.action",":id") }}';
                 url = url.replace(':id', id);

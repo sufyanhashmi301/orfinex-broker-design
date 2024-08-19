@@ -46,6 +46,7 @@ class TransactionController extends Controller
                 $data = Transaction::query()->latest();
             }
             $data->applyFilters($filters);
+           
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')

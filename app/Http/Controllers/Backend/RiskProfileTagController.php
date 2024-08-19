@@ -135,11 +135,8 @@ class RiskProfileTagController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-//            'user_id' => 'required|exists:risk_profile_tags,id',
-//            'user_id' => 'required|exists:users,id',
             'risk_profile_tag_id' => [
                 'required',
-//                'exists:risk_profile_tags,id',
                 Rule::unique('risk_profile_tags_users')
                     ->where('user_id', $id)
                     ->where('risk_profile_tag_id', $request->input('risk_profile_tag_id')),
@@ -150,27 +147,10 @@ class RiskProfileTagController extends Controller
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
-//        dd($input);
         $user = User::find($id);
+        $tag = RiskProfileTag::whereId($request->input('risk_profile_tag_id'))->first();
+        $user->update(['comment'=>$tag->name]);
         $user->riskProfileTags()->attach($request->input('risk_profile_tag_id'));
-        // $user->riskProfileTags()->sync($selectedTags);
-//        dd($input,$user,json_encode($input['risk_profile_tags'])    );
-//        $user->update([
-//            'risk_profile_tags' => isset($input['risk_profile_tags'])? json_encode($input['risk_profile_tags']):[],
-//        ]);
-
-//        $shortcodes = [
-//            '[[full_name]]' => $user->full_name,
-//            '[[email]]' => $user->email,
-//            '[[site_title]]' => setting('site_title', 'global'),
-//            '[[site_url]]' => route('home'),
-//            '[[message]]' => $input['message'],
-//            '[[status]]' => $input['status'],
-//        ];
-//        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
-//        $this->smsNotify('kyc_action', $shortcodes, $user->phone);
-//        $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
-
         notify()->success(__('Risk Profile Tag Update Successfully'));
 
         return redirect()->back();

@@ -88,8 +88,21 @@
             </div>
         </div>
     </div>
+    @can('deposit-action')
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deposit-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-body popup-body">
+                        <div class="popup-body-text deposit-action p-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
-@include('backend.deposit.modals.view')
+
 @section('script')
     <script>
         (function ($) {
@@ -143,24 +156,18 @@
                 table.draw();
             });
 
-            $(document).on('click', '.viewTransaction', function(e) {
-                e.preventDefault();
+            $('body').on('click', '#deposit-action', function () {
+                $('.deposit-action').empty();
                 var id = $(this).data('id');
-                $.ajax({
-                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                         $('#transaction_id').text(response.transaction.tnx);
-                         $('#transaction_type').text(response.transaction.target_type);
-                         $('#amount').text(response.transaction.final_amount);
-                         $('#currency').text(response.transaction.pay_currency);
-                         $('#approval_cause').text(response.transaction.approval_cause);
-                        
-                        $('#viewTransactionModal').modal('show');
-                        
-                    }
+                var url = '{{ route("admin.deposit.action",":id") }}';
+                url = url.replace(':id', id);
+                $.get(url, function (data) {
+                    $('.deposit-action').append(data)
+                    imagePreview()
                 });
-            });
+
+                $('#deposit-action-modal').modal('toggle');
+            })
         })(jQuery);
     </script>
 @endsection

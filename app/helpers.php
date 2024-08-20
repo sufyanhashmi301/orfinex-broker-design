@@ -9,6 +9,7 @@ use App\Models\Gateway;
 use App\Models\IbSchema;
 use App\Models\User;
 use App\Models\RiskProfileTag;
+use App\Services\ForexApiService;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
 
@@ -584,17 +585,24 @@ if (!function_exists('add_child_agent')) {
     function add_child_agent($pUser)
     {
         $users = User::where('ref_id', $pUser->id)->get();
+//        dd($users);
         foreach ($users as $user) {
             $forexAccounts = ForexAccount::where('user_id', $user->id)
                 ->where('account_type', 'real')
                 ->get();
 //        dd($forexAccounts,$this->user);
-            $forexApiTrait = new class {
-                use ForexApiTrait;
-            };
+//            $forexApiTrait = new class {
+//                use ForexApiTrait;
+//            };
+            $forexApiService = new ForexApiService();
             foreach ($forexAccounts as $forexAccount) {
+//                dd($forexAccount);
                 if ($pUser->ib_login) {
-                    $forexApiTrait->updateAgent($forexAccount->login, $pUser->ib_login);
+                    $data = [
+                        'login' => $forexAccount->login,
+                        'agent' => $pUser->ib_login,
+                    ];
+                    $forexApiService->updateAgentAccount($data);
                 }
             }
         }

@@ -27,46 +27,53 @@ class SwapMultiLevelController extends Controller
     public function store(StoreSwapBasedAccountRequest $request)
     {
 //        dd($request->all());
-        $checkLevelExist = MultiLevel::where('type',get_hash($request->type))->where('level_order',$request->level_order)->first();
-        if($checkLevelExist){
+        $checkLevelExist = MultiLevel::where('type', get_hash($request->type))->where('level_order', $request->level_order)->first();
+        if ($checkLevelExist) {
             notify()->error(__('Level already taken.'));
-            return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
+            return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
         }
-        $request->merge(['type'=>get_hash($request->type)]);
+        $request->merge(['type' => get_hash($request->type)]);
 //        dd($request->all());
         $account = $this->swapBasedAccountService->create($request);
-        notify()->success(__('Swap based account created successfully.'));
-        return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
+        notify()->success(__('Multi Level Account created successfully.'));
+        return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
 
     }
-    public function edit(MultiLevel $swapBasedAccount)
+
+    public function edit($id)
     {
-
-         return view('backend.forex_schema.include.__editSwapBasForm', compact('swapBasedAccount'))->render();
+        $multiLevelAccount = MultiLevel::findOrFail($id);
+        return view('backend.forex_schema.include.__editSwapBasForm', compact('multiLevelAccount'))->render();
 
     }
+
     public function show(MultiLevel $swapBasedAccount)
     {
         return response()->json($swapBasedAccount);
     }
 
-    public function update(UpdateSwapBasedAccountRequest $request, MultiLevel $swapBasedAccount)
+    public function update(UpdateSwapBasedAccountRequest $request, MultiLevel $swapBasedAccount,$id)
     {
-        $checkLevelExist = MultiLevel::where('level_order',$request->level_order)->first();
-        if($checkLevelExist){
+//        dd($swapBasedAccount);
+//        dd($request->all(),$swapBasedAccount,$id);
+        $checkLevelExist = MultiLevel::where('id','<>' ,$id)->where('type', get_hash($request->type))->where('level_order', $request->level_order)->exists();
+        if ($checkLevelExist) {
             notify()->error(__('Level already taken.'));
-            return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
+            return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
         }
-        $this->swapBasedAccountService->update($swapBasedAccount, $request->validated());
-        notify()->success(__('Swap based account updated successfully.'));
-        return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
+//        dd($request->validated());
+
+        $this->swapBasedAccountService->update($swapBasedAccount, $request->validated(),$id);
+        notify()->success(__('Multi Level Account updated successfully.'));
+        return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
 
     }
 
-    public function destroy(MultiLevel $swapBasedAccount)
+    public function destroy($id)
     {
-        $this->swapBasedAccountService->delete($swapBasedAccount);
-        notify()->success(__('Swap based account deleted successfully.'));
-        return redirect()->route('admin.accountType.view',$swapBasedAccount->forex_scheme_id);
+//        dd($id);
+        $swapBasedAccount =  $this->swapBasedAccountService->delete($id);
+        notify()->success(__('Multi Level Account deleted successfully.'));
+        return redirect()->route('admin.accountType.view', $swapBasedAccount->forex_scheme_id);
     }
 }

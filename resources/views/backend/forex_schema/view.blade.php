@@ -199,10 +199,10 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="{{ route('admin.islamic-multi-level.edit',$swapfreeAccount->id) }}" data-id="{{ $swapfreeAccount->id }}" class="action-btn editSwapFree">
+                                                <a href="{{ route('admin.swap-multi-level.edit',$swapfreeAccount->id) }}" data-id="{{ $swapfreeAccount->id }}" class="action-btn editSwapBased">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </a>
-                                                <button class="action-btn deleteSwapFree" type="button"  data-id="{{ $swapfreeAccount->id }}">
+                                                <button class="action-btn deleteSwapBased" type="button"  data-id="{{ $swapfreeAccount->id }}">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </button>
                                             </div>
@@ -225,8 +225,8 @@
     @include('backend.forex_schema.modal.__create_swap_free')
     @include('backend.forex_schema.modal.__editSwapBased')
     @include('backend.forex_schema.modal.__deleteSwapBased')
-    @include('backend.forex_schema.modal.__editSwapFree')
-    @include('backend.forex_schema.modal.__deleteSwapFree')
+{{--    @include('backend.forex_schema.modal.__editSwapFree')--}}
+{{--    @include('backend.forex_schema.modal.__deleteSwapFree')--}}
 @endsection
 @section('script')
     <script>
@@ -240,6 +240,7 @@
                 event.preventDefault();
                 $('#edit-swap-based-body').empty();
                 var id = $(this).data('id');
+                console.log(id,'id')
                 var url = '{{ route("admin.swap-multi-level.edit", ":id") }}';
                 url = url.replace(':id', id);
                 $.get(url, function (data) {
@@ -261,30 +262,7 @@
                 $('.name').html(name);
                 $('#deleteSwapBased').modal('show');
             })
-            $('body').on('click', '.editSwapFree', function (event) {
-                "use strict";
-                event.preventDefault();
-                $('#edit-swap-free-body').empty();
-                var id = $(this).data('id');
-                var url = '{{ route("admin.islamic-multi-level.edit", ":id") }}';
-                url = url.replace(':id', id);
-                $.get(url, function (data) {
-                    $('#editSwapFreeModal').modal('show');
-                    $('#edit-swap-free-body').append(data);
-                });
-            })
-            $('body').on('click', '.deleteSwapFree', function (event) {
 
-                "use strict";
-                event.preventDefault();
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-
-                var url = '{{ route("admin.islamic-multi-level.destroy", ":id") }}';
-                url = url.replace(':id', id);
-                $('#swapFreeDeleteForm').attr('action', url)
-                $('#deleteSwapFree').modal('show');
-            })
         });
     </script>
 @endsection

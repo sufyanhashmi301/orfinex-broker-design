@@ -9,5 +9,5 @@ class ReferralRelationship extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['referral_link_id', 'user_id'];
+    protected $fillable = ['referral_link_id', 'user_id', 'multi_level_id'];
 }

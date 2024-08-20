@@ -199,7 +199,7 @@
                 </div>
                 <div class="input-area">
                     <div class="relative">
-                        <input type="text" class="form-control !pr-32" id="referral-input" value="http://khjkahd3y9d30jdksads" readonly>
+                        <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $getReferral->link }}" readonly>
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                             <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">{{ __('Copy Link') }}</a>
                         </span>

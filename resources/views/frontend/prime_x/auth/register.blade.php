@@ -44,6 +44,7 @@
                     <!-- BEGIN: Login Form -->
                     <form method="POST" action="{{ route('register') }}" class="space-y-4">
                         @csrf
+                        <input type="hidden" name="level" value="{{ request('level') ?? old('level') }}" >
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="fromGroup">
                                 <label class="block capitalize form-label">

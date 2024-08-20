@@ -20,18 +20,19 @@ class MultiLevelIBController extends Controller
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $schemas = ForexSchema::active()  // Use the defined scope for active schemas
+        $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
         ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
         ->orderBy('priority', 'asc')
             ->get();
 
         $maxLevelOrder = MultiLevel::where('status', 1)  // Assuming '1' indicates active status
         ->select('forex_scheme_id', \DB::raw('COUNT(*) as count'))
-            ->groupBy('forex_scheme_id')
+            ->groupBy('forex_scheme_id','type')
             ->orderByDesc('count')
             ->first();
         $maxLevelOrder = $maxLevelOrder->count;
         $getReferral = $user->getReferrals()->first();
+        $levelOrder = 0;
         return view('frontend::partner.dashboard', get_defined_vars());
 
     }
@@ -43,17 +44,27 @@ class MultiLevelIBController extends Controller
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        if($levelOrder==0){
-            $schemas = ForexSchema::active()  // Use the defined scope for active schemas
+        if($levelOrder==0 ){
+            $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
             ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
             ->orderBy('priority', 'asc')
                 ->get();
         }else {
-            $schemas = ForexSchema::active()
+            $swapSchemas = ForexSchema::active()
                 ->relevantForUser($user->country, $tagNames)
                 ->whereHas('multiLevels', function ($query) use ($levelOrder) {
-                    $query->where('type', MultiLevelType::SWAP);
-                    $query->where('level_order', $levelOrder);
+                    $query->where('type', MultiLevelType::SWAP)
+                        ->where('level_order', $levelOrder)
+                        ->where('status', true);
+                })
+                ->orderBy('priority', 'asc')
+                ->get();
+            $swapFreeSchemas = ForexSchema::active()
+                ->relevantForUser($user->country, $tagNames)
+                ->whereHas('multiLevels', function ($query) use ($levelOrder) {
+                    $query->where('type', MultiLevelType::SWAP_FREE)
+                        ->where('level_order', $levelOrder)
+                        ->where('status', true);
                 })
                 ->orderBy('priority', 'asc')
                 ->get();
@@ -62,7 +73,7 @@ class MultiLevelIBController extends Controller
         $getReferral = $user->getReferrals()->first();
 
         // Render the view with the updated schemas
-        $html = view('frontend::partner.include.__schemes', compact('schemas','getReferral'))->render();
+        $html = view('frontend::partner.include.__schemes', get_defined_vars())->render();
 
         // Return the rendered view as JSON
         return response()->json(['html' => $html]);

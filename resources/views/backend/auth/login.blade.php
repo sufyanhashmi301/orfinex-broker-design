@@ -2,55 +2,55 @@
 @section('title')
     {{ __('Login') }}
 @endsection
-@section('auth-content')    
-    <div class="logo d-sm-none mb-3">
-        <a href="{{ route('home') }}">
-            <img src="{{asset(setting('site_logo','global') )}}" height="65" alt="{{asset(setting('site_title','global') )}}"/>
-        </a>
-    </div>
-    <div class="login">
-        <div class="side-img primary-overlay" style="background: url({{ asset(setting('login_bg','global')) }}) no-repeat center center;">
-            <div class="logo">
-                <a href="{{ route('home') }}">
-                    <img src="{{asset(setting('site_logo','global') )}}" alt="{{asset(setting('site_title','global') )}}"/>
-                </a>
-            </div>
-        </div>
-        <div class="login-content">
-            <div class="title mb-4">
-                <h3>{{ __('Admin Login') }}</h3>
-            </div>
-            <div class="auth-body">
-                <form action="{{ route('admin.login') }}" method="post">
-                    @csrf
-                    <div class="single-box">
-                        <label for="" class="box-label">{{ __('Admin Email') }}</label>
-                        <input
-                            type="email"
-                            name="email"
-                            class="box-input"
-                            placeholder="Admin Email"
-                            required
-                        />
-                    </div>
-                    <div class="single-box">
-                        <label for="" class="box-label">{{ __('Password') }}</label>
-                        <input
-                            type="password"
-                            name="password"
-                            class="box-input"
-                            placeholder="Password"
-                            required
-                        />
-                    </div>
-                    <div class="single-box">
-                        <button class="site-btn primary-btn" type="submit">{{ __('Admin Login') }}</button>
-                        <a href="{{route('admin.forget.password.now')}}"
-                           class="link mt-2">{{ __('Forget Password?') }}</a>
-                    </div>
-                </form>
+@section('auth-content')
 
+<div class="max-w-sm w-full space-y-10">
+    <div class="text-center">
+        <a href="{{ route('home')}}" class="inline-block">
+            <img src="{{asset(setting('site_logo','global') )}}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
+        </a>
+        <h2 class="text-2xl font-semibold text-gray-700 mt-5">
+            {{ __('Admin Login') }}
+        </h2>
+    </div>
+    <!-- BEGIN: Login Form -->
+    <form action="{{ route('admin.login') }}" method="post" class="space-y-5">
+        @csrf
+        <div class="relative rounded shadow">
+            <div class="absolute z-10 rounded ring-1 ring-slate-100 ring-inset pointer-events-none" style="inset: 0px"></div>
+            <div>
+                <input
+                    type="email"
+                    name="email"
+                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aer px-3 py-2"
+                    placeholder="Admin Email"
+                    required
+                />
+            </div>
+            <div>
+                <input
+                    type="password"
+                    name="password"
+                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aeg px-3 py-2"
+                    placeholder="Password"
+                    required
+                />
             </div>
         </div>
-    </div>
+        <div class="flex justify-between">
+            <label class="flex items-center cursor-pointer">
+                <input class="hiddens mr-2" type="checkbox" name="remember" />
+                <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
+                    {{ __('Keep me signed in') }}
+                </span>
+            </label>
+            <a href="{{route('admin.forget.password.now')}}" class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium">
+                {{ __('Forget Password?') }}
+            </a>
+        </div>
+        <button class="btn btn-dark block w-full text-center" type="submit">
+            {{ __('Admin Login') }}
+        </button>
+    </form>
+</div>
 @endsection

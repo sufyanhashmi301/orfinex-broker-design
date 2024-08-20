@@ -46,7 +46,7 @@ class TicketController extends Controller
                 ->make(true);
         }
 
-        return view('backend.ticket.index');
+        return view('backend.ticket.all');
     }
 
     public function show($uuid)
@@ -61,7 +61,7 @@ class TicketController extends Controller
         Ticket::uuid($uuid)->close();
         notify()->success('Ticket Closed successfully', 'success');
 
-        return Redirect::route('admin.ticket.index');
+        return Redirect::route('admin.ticket.all');
 
     }
 
@@ -110,4 +110,9 @@ class TicketController extends Controller
         return Redirect::route('admin.ticket.show', $ticket->uuid);
 
     }
+
+    public function ticketStatus() {
+        return view('backend.ticket.status');
+    }
+
 }

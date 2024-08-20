@@ -4,7 +4,7 @@
 
         //site chart
         let chart;
-        $('input[name="daterange"]').daterangepicker({
+        $('input[name="daterange"]').flatpickr({
             opens: 'left'
         }, function(start,end) {
 

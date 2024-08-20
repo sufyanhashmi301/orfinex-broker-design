@@ -9,10 +9,12 @@ use App\Models\DepositMethod;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
+use charlesassets\LaravelPerfectMoney\PerfectMoney;
 use Exception;
 use Payment\Binance\BinanceTxn;
 use Payment\Blockchain\BlockchainTxn;
 use Payment\BlockIo\BlockIoTxn;
+use Payment\Bridgerpay\BridgerpayTxn;
 use Payment\Btcpayserver\BtcpayserverTxn;
 use Payment\Cashmaal\CashmaalTxn;
 use Payment\Coinbase\CoinbaseTxn;
@@ -45,8 +47,10 @@ trait Payment
         $txn = $txnInfo->tnx;
         Session::put('deposit_tnx', $txn);
         $gateway = DepositMethod::code($gateway)->first()->gateway->gateway_code ?? 'none';
+//        dd($gateway);
 
         $gatewayTxn = self::gatewayMap($gateway, $txnInfo);
+//        dd($txnInfo,$gatewayTxn);
         if ($gatewayTxn) {
             return $gatewayTxn->deposit();
         }
@@ -131,6 +135,7 @@ trait Payment
             'strong' => 'Transaction ID: '.$tnx,
             'action' => route('user.deposit.amount'),
             'a' => 'Deposit again',
+            'view_name' => 'deposit',
         ];
 
         if ($status == 'Pending') {
@@ -151,8 +156,9 @@ trait Payment
 
         $isStepOne = 'current';
         $isStepTwo = 'current';
+        Session::put('user_notify', $notify);
+        return redirect()->route('user.notify');
 
-        return view('frontend::deposit.success', compact('isStepOne', 'isStepTwo', 'notify'));
     }
 
     //automatic payment success snippet
@@ -192,12 +198,12 @@ trait Payment
             $txnInfo->update([
                 'status' => TxnStatus::Success,
             ]);
-            Txn::update($ref, 'success', $txnInfo->user_id);
+            Txn::update($ref, TxnStatus::Success, $txnInfo->user_id);
 
-            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
-                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
-                creditReferralBonus($txnInfo->user, 'deposit', $txnInfo->amount, $level);
-            }
+//            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
+//                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
+//                creditReferralBonus($txnInfo->user, 'deposit', $txnInfo->amount, $level);
+//            }
 
             if ($isRedirect) {
                 return redirect(URL::temporarySignedRoute(
@@ -237,6 +243,7 @@ trait Payment
             'paytm' => PaytmTxn::class,
             'razorpay' => RazorpayTxn::class,
             'twocheckout' => TwocheckoutTxn::class,
+            'bridgerpay' => BridgerpayTxn::class,
         ];
 
         if (array_key_exists($gateway, $gatewayMap)) {

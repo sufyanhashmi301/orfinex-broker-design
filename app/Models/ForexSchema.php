@@ -57,19 +57,32 @@ class ForexSchema extends Model
 		'badge',
 		'leverage',
 		'first_min_deposit',
+        'account_limit',
 		'real_swap_free',
+		'is_real_islamic',
 		'real_islamic',
 		'demo_swap_free',
+		'is_demo_islamic',
 		'demo_islamic',
 		'is_withdraw',
 		'is_ib_partner',
 		'is_internal_transfer',
 		'is_external_transfer',
 		'is_bonus',
+		'start_range',
+		'end_range',
 		'status',
 		'country',
+		'tags',
 		'spread',
 		'commission',
-		'priority'
+		'priority',
+		'demo_server',
+		'live_server',
 	];
+
+	public function forexAccounts()
+	{
+		return $this->hasMany(ForexAccount::class);
+	}
 }

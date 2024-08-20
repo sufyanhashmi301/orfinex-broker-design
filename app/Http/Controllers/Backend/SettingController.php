@@ -43,7 +43,22 @@ class SettingController extends Controller
      */
     public static function mailSetting()
     {
-        return view('backend.setting.mail');
+        return view('backend.setting.email_setting.mail');
+    }
+
+    public static function googleMailSetting()
+    {
+        return view('backend.setting.email_setting.google-mail');
+    }
+
+    public static function forexApiSetting()
+    {
+        return view('backend.setting.forex-api');
+    }
+
+    public static function platformApiSetting()
+    {
+        return view('backend.setting.platform_api.metatrader');
     }
 
     public static function mailConnectionTest(Request $request)
@@ -72,16 +87,19 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-
+//         dd($request->all());
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
+//        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
 
         try {
             $validSettings = array_keys($rules);
             foreach ($data as $key => $val) {
+                // dd($data, $key, $val, $validSettings);
 
                 if (in_array($key, $validSettings)) {
+
                     if ($request->hasFile($key)) {
                         $oldImage = Setting::get($key, $section);
 
@@ -111,6 +129,46 @@ class SettingController extends Controller
     public static function serverSetting()
     {
         return view('backend.server_settings.server.index');
+    }
+
+    public static function companySetting()
+    {
+        return view('backend.setting.company.company');
+    }
+
+    public static function miscSetting()
+    {
+        return view('backend.setting.company.misc');
+    }
+
+    public static function currencySetting()
+    {
+        return view('backend.setting.site_setting.currency');
+    }
+
+    public static function siteMaintenance()
+    {
+        return view('backend.setting.site_setting.site_maintenance');
+    }
+
+    public function transfers(Request $request)
+    {
+        $type = $request->query('type');
+        return view('backend.setting.transfers.index', compact('type'));
+    }
+
+    public static function gdpr()
+    {
+        return view('backend.setting.site_setting.gdpr');
+    }
+
+    public static function slackSetting()
+    {
+        return view('backend.setting.collab_tools.slack');
+    }
+
+    public function copyTradingSetting(){
+        return view('backend.setting.copy_trading.brokeree');
     }
 
 }

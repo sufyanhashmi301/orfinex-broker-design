@@ -1,66 +1,45 @@
 @extends('backend.layouts.app')
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title"> @yield('title')</h2>
-                            @isset($button)
-                                <a href="{{ $button['route']}}"
-                                   class="title-btn"
-                                   type="button"
-                                ><i icon-name="{{ $button['icon']}}"></i>{{ $button['name']}}</a>
-                            @endisset
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    @yield('page-title')
+    <div class="card p-4 mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+            @can('withdraw-list')
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdraw.pending') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.pending') }}">
+                        {{ __('Pending Withdraws') }}
+                    </a>
+                </li>
+            @endcan
+            @can('withdraw-method-manage')
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-tab-bars">
-                        <ul>
-                            @can('withdraw-list')
-                                <li class="{{ isActive('admin.withdraw.pending') }}">
-                                    <a href="{{ route('admin.withdraw.pending') }}"><i
-                                            icon-name="anchor"></i>{{ __('Pending Withdraws') }}</a>
-                                </li>
-                            @endcan
-                            @can('withdraw-method-manage')
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdraw.method.list','auto') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.method.list','auto') . isActive('admin.withdraw.method.create','auto'). isActive('admin.withdraw.method.edit','auto')  }}">
+                        {{ __('Automatic Method') }}
+                    </a>
+                </li>
 
-                                <li class="{{ isActive('admin.withdraw.method.list','auto') . isActive('admin.withdraw.method.create','auto'). isActive('admin.withdraw.method.edit','auto')  }}">
-                                    <a href="{{ route('admin.withdraw.method.list','auto') }}"><i
-                                            icon-name="banknote"></i>{{ __('Automatic Method') }}</a>
-                                </li>
-
-                                <li class="{{ isActive('admin.withdraw.method.list','manual') . isActive('admin.withdraw.method.create','manual') . isActive('admin.withdraw.method.edit','manual') }}">
-                                    <a href="{{ route('admin.withdraw.method.list','manual') }}"><i
-                                            icon-name="landmark"></i>{{ __('Manual Method') }}</a>
-                                </li>
-                            @endcan
-                            @can('withdraw-schedule')
-                                <li class="{{ isActive('admin.withdraw.schedule') }}">
-                                    <a href="{{ route('admin.withdraw.schedule') }}"><i
-                                            icon-name="alarm-clock"></i>{{ __('Withdraw Schedule') }}</a>
-                                </li>
-                            @endcan
-                            @can('withdraw-list')
-                                <li class="{{ isActive('admin.withdraw.history') }}">
-                                    <a href="{{ route('admin.withdraw.history') }}"><i
-                                            icon-name="calendar"></i>{{ __('Withdraw History') }}</a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </div>
-                    <div class="row">
-                        @yield('withdraw_content')
-                    </div>
-                </div>
-            </div>
-        </div>
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdraw.method.list','manual') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.method.list','manual') . isActive('admin.withdraw.method.create','manual') . isActive('admin.withdraw.method.edit','manual') }}">
+                        {{ __('Manual Method') }}
+                    </a>
+                </li>
+            @endcan
+            @can('withdraw-schedule')
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdraw.schedule') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.schedule') }}">
+                        {{ __('Withdraw Schedule') }}
+                    </a>
+                </li>
+            @endcan
+            @can('withdraw-list')
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdraw.history') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.history') }}">
+                        {{ __('Withdraw History') }}
+                    </a>
+                </li>
+            @endcan
+        </ul>
+        @yield('filters')
     </div>
+    @yield('withdraw_content')
 @endsection

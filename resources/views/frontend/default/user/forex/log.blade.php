@@ -97,8 +97,11 @@
 
     <!-- Modal for Account details -->
     @include('frontend.default.user.forex.modal.__trade')
-    
-    <!-- Modal for Account details -->
+
+    <!-- Modal for Demo deposit -->
+    @include('frontend.default.user.forex.modal.__deposit_demo_account')
+
+        <!-- Modal for Account details -->
     @include('frontend.default.user.forex.modal.__account_details')
 
     <!-- Modal for Account leverage -->

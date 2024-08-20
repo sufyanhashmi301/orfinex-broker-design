@@ -8,6 +8,7 @@ use App\Models\ForexAccount;
 use App\Models\IbQuestion;
 use App\Models\IbSchema;
 use App\Models\User;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -18,6 +19,13 @@ use Illuminate\Support\Facades\View;
 class IBController extends Controller
 {
     use ForexApiTrait, NotifyTrait;
+
+    protected $forexApiService;
+
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
 
     public function index(Request $request)
     {
@@ -212,17 +220,21 @@ class IBController extends Controller
                     return redirect()->back();
                 }
             }
-
-            $responseLogin = $this->saveForexAccount($user);
-//            $responseLogin = 1223
-
+            $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
+            if (!$ibSchema) {
+                return false;
+            }
+            $group = $ibSchema->group;
+//            dd($group);
+            $responseLogin =  $this->createForexAccount($user, $group);
+//            dd($responseLogin);
             if ($responseLogin) {
                 $user->ib_login = $responseLogin;
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
-                $this->updateChildAgents($user);
-//                event(new NewIBEvent($user));
+                add_child_agent($user);
+
                 $shortcodes = [
                     '[[full_name]]' => $user->full_name,
                     '[[email]]' => $user->email,
@@ -254,6 +266,7 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
+
     public function updateIbMember(Request $request)
     {
         $input = $request->all();
@@ -277,7 +290,7 @@ class IBController extends Controller
 //                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
 //            }
             if ($user->ib_login == $request->ib_login) {
-                $message = __('Already assigns same IB number :ib',['ib'=>$request->ib_login]);
+                $message = __('Already assigns same IB number :ib', ['ib' => $request->ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -285,9 +298,11 @@ class IBController extends Controller
                     return redirect()->back();
                 }
             }
-            $response = $this->getUserInfoApi($request->ib_login);
-            if(!$response){
-                $message = __(':ib not exist in MT5. Kindly enter the correct IB account ',['ib'=>$request->ib_login]);
+            $response = $this->forexApiService->getUserByLogin([
+                'login' => $request->ib_login
+            ]);
+            if (!$response['success']) {
+                $message = __(':ib not exist in MT5. Kindly enter the correct IB account ', ['ib' => $request->ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -297,41 +312,42 @@ class IBController extends Controller
             }
 
 //            $responseLogin = 1223
-                $user->ib_login = $request->ib_login;
-                $user->ib_status = IBStatus::APPROVED;
-                $user->save();
+            $user->ib_login = $request->ib_login;
+            $user->ib_status = IBStatus::APPROVED;
+            $user->save();
 
-                $this->updateChildAgents($user);
+            add_child_agent($user);
 //                event(new NewIBEvent($user));
-                $shortcodes = [
-                    '[[full_name]]' => $user->full_name,
-                    '[[email]]' => $user->email,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                    '[[status]]' => IBStatus::APPROVED,
-                ];
-                $this->mailNotify($user->email, 'ib_action', $shortcodes);
-                $this->smsNotify('ib_action', $shortcodes, $user->phone);
-                $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
-                $message = __('User has been successfully updated IB account');
-                if ($request->ajax()) {
-                    return response()->json(['title' => 'Account Updated for IB', 'success' => $message, 'reload' => $isReload]);
-                } else {
-                    notify()->success($message, 'IB Updated successfully');
-                    return redirect()->back();
-                }
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::APPROVED,
+            ];
+            $this->mailNotify($user->email, 'ib_action', $shortcodes);
+            $this->smsNotify('ib_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
+            $message = __('User has been successfully updated IB account');
+            if ($request->ajax()) {
+                return response()->json(['title' => 'Account Updated for IB', 'success' => $message, 'reload' => $isReload]);
             } else {
-                $message = __('some error occurred.please try again');
-                if ($request->ajax()) {
-                    return response()->json(['error' => $message, 'reload' => false]);
-                } else {
-                    notify()->error($message, 'Error Log');
+                notify()->success($message, 'IB Updated successfully');
+                return redirect()->back();
+            }
+        } else {
+            $message = __('some error occurred.please try again');
+            if ($request->ajax()) {
+                return response()->json(['error' => $message, 'reload' => false]);
+            } else {
+                notify()->error($message, 'Error Log');
 
-                    return redirect()->back();
-                }
+                return redirect()->back();
             }
         }
-   public function approveMIbMember(Request $request)
+    }
+
+    public function approveMIbMember(Request $request)
     {
 //        dd($request->all());
         $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
@@ -353,12 +369,15 @@ class IBController extends Controller
                 }
             }
 
-            $responseLogin = $this->saveMIBAccount($user);
-//            $responseLogin = 1223
+            $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();
+            if (!$ibSchema) {
+                return false;
+            }
+            $group = $ibSchema->group;
+            $responseLogin = $this->createForexAccount($user, $group);
 
             if ($responseLogin) {
                 $user->multi_ib_login = $responseLogin;
-//                $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
 //                event(new NewIBEvent($user));
@@ -393,6 +412,7 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
+
     public function updateMIbMember(Request $request)
     {
         $input = $request->all();
@@ -413,7 +433,7 @@ class IBController extends Controller
         $user = User::find($userID);
         if (!blank($user)) {
             if ($user->multi_ib_login == $request->multi_ib_login) {
-                $message = __('Already assigns same MIB number :ib',['ib'=>$request->multi_ib_login]);
+                $message = __('Already assigns same MIB number :ib', ['ib' => $request->multi_ib_login]);
                 if ($request->ajax()) {
                     return response()->json(['error' => $message, 'reload' => false]);
                 } else {
@@ -421,16 +441,20 @@ class IBController extends Controller
                     return redirect()->back();
                 }
             }
-            $response = $this->getUserInfoApi($request->multi_ib_login);
-            if(!$response){
-                $message = __(':ib not exist in MT5. Kindly enter the correct MIB account ',['ib'=>$request->multi_ib_login]);
-                if ($request->ajax()) {
-                    return response()->json(['error' => $message, 'reload' => false]);
-                } else {
-                    notify()->error($message, 'Error Log');
-                    return redirect()->back();
+            $response = $this->forexApiService->getUserByLogin([
+                'login' => $request->multi_ib_login
+            ]);
+            if (!$response['success']) {
+                $response = $this->getUserInfoApi($request->multi_ib_login);
+                if (!$response) {
+                    $message = __(':ib not exist in MT5. Kindly enter the correct MIB account ', ['ib' => $request->multi_ib_login]);
+                    if ($request->ajax()) {
+                        return response()->json(['error' => $message, 'reload' => false]);
+                    } else {
+                        notify()->error($message, 'Error Log');
+                        return redirect()->back();
+                    }
                 }
-            }
 
 //            $responseLogin = 1223
                 $user->ib_login = $request->multi_ib_login;
@@ -463,150 +487,53 @@ class IBController extends Controller
                 }
             }
         }
+    }
 
-
-    public function updateChildAgents($pUser)
+    public function createForexAccount($user, $group)
     {
-        $users = User::where('ref_id', $pUser->id)->get();
-        foreach ($users as $user) {
-            $forexAccounts = ForexAccount::where('user_id', $user->id)
-                ->where('account_type', 'real')
-                ->get();
-//        dd($forexAccounts,$this->user);
-            foreach ($forexAccounts as $forexAccount) {
-                $this->updateAgent($forexAccount->login, $pUser->ib_login);
+        $phone = $user->phone;
+        if (!$phone) {
+            $phone = 12345678;
+        }
+        $country = $user->country;
+        if (!$country) {
+            $country = 'UAE';
+        }
+        $password = 'SNNH@2024@bol';
+        $investPassword = 'SNNH@2024@bol';
+        $data = [
+            "login" => 0,
+            "group" => $group,
+            "firstName" => $user->first_name,
+            "middleName" => "",
+            "lastName" => $user->last_name,
+            "leverage" => 1,
+            "rights" => "USER_RIGHT_ALL",
+            "country" => $country,
+            "city" => $user->city,
+            "state" => "",
+            "zipCode" => $user->zip_code,
+            "address" => $user->address,
+            "phone" => $phone,
+            "email" => $user->email,
+            "agent" => 0,
+            "account" => "",
+            "company" => env('APP_NAME', 'Company'),
+            "language" => 0,
+            "phonePassword" => 'SNNH@2024@bol',
+            "status" => "RE",
+            "masterPassword" => $password,
+            "investorPassword" => $investPassword
+        ];
+//        dd($data);
+        $response = $this->forexApiService->createUser($data);
+//        dd($response);
+        if ($response['success']) {
+            $resResult = $response['result'];
+            $mt5Login = $resResult['login'];
+            if ($mt5Login && $resResult['responseCode'] == 0) {
+                return $mt5Login;
             }
-        }
-    }
-
-    public function saveForexAccount($user)
-    {
-        $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
-//        dd($ibSchema);
-        if (!$ibSchema) {
-            return false;
-        }
-        $group = $ibSchema->group;
-//        dd($group);
-//        $group = 'IB\1';
-
-        $server = config('forextrading.server');
-        $password = 'SNNH@2024@bol';
-        $investPassword = 'SNNH@2024@bol';
-        $name = $user->full_name;
-        if (!$name) {
-            $name = 'abc';
-        }
-        $phone = $user->phone;
-        if (!$phone) {
-            $phone = 12345678;
-        }
-        $country = $user->country;
-        if (!$country) {
-            $country = 'UAE';
-        }
-        $dataArray = array(
-            'Name' => $name,
-            'Leverage' => 1,
-            'Group' => $group,
-            'MasterPassword' => $password,
-            'InvestorPassword' => $investPassword,
-//            'PhonePassword' => $password,
-            'Email' => $user->email,
-            'Phone' => $phone,
-            'Country' => $country,
-        );
-        $dataArray['Login'] = 0;
-        $dataArray['Language'] = 0;
-        $dataArray['Rights'] = 'USER_RIGHT_ALL';
-        $dataArray['Status'] = 'YES';
-        $URL = config('forextrading.createUserUrl');
-//        dd($dataArray,$URL);
-        $response = $this->sendApiPostRequest($URL, $dataArray);
-//        dd($response->object());
-//        if ($response->serverError() || $response->failed()) {
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-//        }
-
-        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
-            $resData = $response->object();
-//            dd($response,$response->data[0]->Login);
-//            if ($resData->Login) {
-////                $data = $request->all();
-//                $data['account_type_id'] = $accountType->id;
-//                $data['login'] = $resData->Login;
-//                $data['account_name'] = 'IB Account';
-//                $data['type'] = 'IB';
-//                $data['user_id'] = $user->id;
-//                $data['currency'] = base_currency();
-//                $data['main_password'] = $password;
-//                $data['invest_password'] = $investPassword;
-//                $data['phone_password'] = $resData->PhonePassword;
-//                $data['group'] = $resData->Group;
-//                $data['leverage'] = $resData->Leverage;
-//                $data['auth'] = $auth;
-//                $data['status'] = ForexTradingStatus::ACTIVE;
-//                $data['server'] = $server;
-//                $data['account_type'] = $accountType->account_type;
-//                $data['trading_platform'] = $accountType->one_platform_type;
-//                ForexTrading::create($data);
-
-            return $resData->Login;
-//            }
-            return false;
-        }
-        return false;
-        //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
-    }
-    public function saveMIBAccount($user)
-    {
-        $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();
-//        dd($ibSchema);
-        if (!$ibSchema) {
-            return false;
-        }
-        $group = $ibSchema->group;
-//        dd($group);
-//        $group = 'IB\1';
-
-        $server = config('forextrading.server');
-        $password = 'SNNH@2024@bol';
-        $investPassword = 'SNNH@2024@bol';
-        $name = $user->full_name;
-        if (!$name) {
-            $name = 'abc';
-        }
-        $phone = $user->phone;
-        if (!$phone) {
-            $phone = 12345678;
-        }
-        $country = $user->country;
-        if (!$country) {
-            $country = 'UAE';
-        }
-        $dataArray = array(
-            'Name' => $name,
-            'Leverage' => 1,
-            'Group' => $group,
-            'MasterPassword' => $password,
-            'InvestorPassword' => $investPassword,
-//            'PhonePassword' => $password,
-            'Email' => $user->email,
-            'Phone' => $phone,
-            'Country' => $country,
-        );
-        $dataArray['Login'] = 0;
-        $dataArray['Language'] = 0;
-        $dataArray['Rights'] = 'USER_RIGHT_ALL';
-        $dataArray['Status'] = 'YES';
-        $URL = config('forextrading.createUserUrl');
-//        dd($dataArray,$URL);
-        $response = $this->sendApiPostRequest($URL, $dataArray);
-        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
-            $resData = $response->object();
-
-            return $resData->Login;
-//            }
             return false;
         }
         return false;

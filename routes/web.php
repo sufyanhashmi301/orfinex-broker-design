@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\DepositController;
@@ -23,6 +24,8 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
+use App\Http\Controllers\SumsubController;
+use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 /*
@@ -35,6 +38,7 @@ use App\Traits\ForexApiTrait;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
 
@@ -48,7 +52,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -62,12 +66,19 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
     Route::post('/password-store', [UserController::class, 'newPassword'])->name('new.password');
 
-    //kyc apply
     Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
-    Route::get('kyc/basic', [KycController::class, 'basicKyc'])->name('kyc.basic');
-    Route::get('kyc/{id}', [KycController::class, 'kycData'])->name('kyc.data');
-    Route::post('kyc-submit', [KycController::class, 'submit'])->name('kyc.submit');
 
+    //kyc apply
+    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
+//        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+        Route::get('/basic', [KycController::class, 'basicKyc'])->name('basic');
+        Route::get('/level3', [KycController::class, 'kycLevel3'])->name('level3');
+        Route::get('/{id}', [KycController::class, 'kycData'])->name('data');
+        Route::post('submit', [KycController::class, 'submit'])->name('submit');
+        Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
+    });
+    Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
+    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 
@@ -96,6 +107,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('', [DepositController::class, 'deposit'])->name('amount');
         Route::get('gateway/{code}', [GatewayController::class, 'gateway'])->name('gateway');
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
+        Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
     });
     //Send Money
@@ -105,7 +117,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
         Route::post('internal-now', 'sendMoneyInternalNow')->name('internal-now');
         Route::get('log', 'sendMoneyLog')->name('log');
-
     });
 
     //wallet exchange
@@ -122,7 +133,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
-
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');
@@ -146,9 +156,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('referral/reports', [ReferralController::class, 'reports'])->name('referral.reports');
         Route::get('ranking-badge', [UserController::class, 'rankingBadge'])->name('ranking-badge');
     });
-//    Route::get('referral/advertisement-material', function () {
-//        return view('frontend::referral.index');
-//    })->name('referral.advertisement-material');
+    //    Route::get('referral/advertisement-material', function () {
+    //        return view('frontend::referral.index');
+    //    })->name('referral.advertisement-material');
 
     //settings
     Route::group(['prefix' => 'settings', 'as' => 'setting.', 'controller' => SettingController::class], function () {
@@ -160,11 +170,17 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::post('profile-update', 'profileUpdate')->name('profile-update');
         Route::post('info-update', 'infoUpdate')->name('info-update');
 
-        Route::post('/2fa/verify', function () {
+        Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
+//            dd($request->all());
+//            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
-    });
 
+        Route::get('/communication', function () {
+            return view('frontend::user.setting.communication.index');
+        })->name('communication');
+
+    });
 });
 
 //translate
@@ -238,15 +254,15 @@ Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers
 
 
 Route::get('user/agreements', function () {
-    return view('frontend.default.user.setting.agreements.index');
+    return view('frontend::user.setting.agreements.index');
 })->name('user.agreements');
 
 Route::get('user/margin-account', function () {
-    return view('frontend.default.user.setting.margin.index');
+    return view('frontend::user.setting.margin.index');
 })->name('user.margin-account');
 
 Route::get('get/account/{login}', function ($login) {
-//    dd($login);
+    //    dd($login);
     // Your custom logic here
 
 
@@ -259,6 +275,7 @@ Route::get('user/deposit-methods', function () {
 Route::get('user/platform', function () {
     return view('frontend.default.terminal.index');
 })->name('user.platform');
+
 
 Route::get('user/fund-board', function () {
     return view('frontend.default.fund_board.index');
@@ -277,13 +294,45 @@ Route::get('user/fund/detail', function () {
 })->name('user.fund.detail');
 
 Route::get('user/downloads', function () {
-    return view('frontend.default.user.downloads');
+    return view('frontend::user.downloads');
 })->name('user.downloads');
 
 Route::get('user/economic_calendar', function () {
-    return view('frontend.default.user.economic_calendar');
+    return view('frontend::user.economic_calendar');
 })->name('user.economic_calendar');
 
+Route::get('user/provider_access', function () {
 
-Route::post('/sumsub-test', [SumsubController::class, 'testSumsub'])->name('Sumsubtest');
+    return view('frontend.prime_x.copy_trading.provider_access');
+})->name('user.provider_access')->middleware('secure_header');
 
+Route::get('user/follower_access', function () {
+    return view('frontend.prime_x.copy_trading.follower_access');
+})->name('user.follower_access')->middleware('secure_header');
+
+Route::get('user/ratings', function () {
+    return view('frontend.prime_x.copy_trading.ratings');
+})->name('user.ratings')->middleware('secure_header');
+
+Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
+
+
+Route::get('user/partner/dashboard', function () {
+    return view('frontend::partner.dashboard');
+});
+
+Route::get('user/partner/accounts', function () {
+    return view('frontend::partner.accounts');
+});
+
+Route::get('user/partner/clients', function () {
+    return view('frontend::partner.clients');
+});
+
+Route::get('user/wallets', function () {
+    return view('frontend::wallets.index');
+});
+
+Route::get('user/webterminal', function () {
+    return view('frontend::webterminal.index');
+});

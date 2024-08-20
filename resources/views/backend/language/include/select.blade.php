@@ -1,4 +1,4 @@
-<select class="form-select form-select-sm" aria-label=".form-select-sm example" name="{{ $name }}"
+<select class="form-control w-100" aria-label=".form-select-sm example" name="{{ $name }}"
         @if(isset($submit) && $submit) onChange='submit();' @endif>
     @if(isset($optional) && $optional)
         <option value> -----</option>

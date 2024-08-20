@@ -8,6 +8,7 @@ enum TxnType: string
 {
     case Deposit = 'deposit';
     case ForexDeposit = 'forex_deposit';
+    case DemoDeposit = 'demo_deposit';
     case Subtract = 'subtract';
     case ManualDeposit = 'manual_deposit';
     case SendMoney = 'send_money';
@@ -24,5 +25,29 @@ enum TxnType: string
     case Refund = 'refund';
     case MultiIB = 'multi_ib';
     case IB = 'ib';
-
+    
+    public function label(): string
+    {
+        return match($this) {
+            self::Deposit => 'Deposit',
+            self::ForexDeposit => 'Forex Deposit',
+            self::DemoDeposit => 'Demo Deposit',
+            self::Subtract => 'Subtract',
+            self::ManualDeposit => 'Manual Deposit',
+            self::SendMoney => 'Send Money',
+            self::SendMoneyInternal => 'Send Money Internal',
+            self::Exchange => 'Exchange',
+            self::Referral => 'Referral',
+            self::SignupBonus => 'Signup Bonus',
+            self::Bonus => 'Bonus',
+            self::Withdraw => 'Withdraw',
+            self::WithdrawAuto => 'Withdraw Auto',
+            self::ReceiveMoney => 'Receive Money',
+            self::Investment => 'Investment',
+            self::Interest => 'Interest',
+            self::Refund => 'Refund',
+            self::MultiIB => 'Multi IB',
+            self::IB => 'IB',
+        };
+    }
 }

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
+use App\Models\Kyclevel;
+use App\Models\Kyclevelsetting;
+use App\Models\KycSubLevel;
 use App\Models\User;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -15,6 +19,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class KycController extends Controller
@@ -51,10 +56,73 @@ class KycController extends Controller
      *
      * @return string
      */
-    public function store(Request $request)
+//    public function store(Request $request)
+//    {
+//        $input = $request->all();
+//        $validator = Validator::make($input, [
+//
+//            'name' => 'required|unique:kycs,name',
+//            'status' => 'required',
+//            'fields' => 'required',
+//        ]);
+//        if ($validator->fails()) {
+//            notify()->error($validator->errors()->first(), 'Error');
+//
+//            return redirect()->back();
+//        }
+//        $kycLevel = Kyclevel::where('slug','level-2')->first();
+//        $data = [
+//            'kyc_level_id' => $kycLevel->id,
+//            'name' => $input['name'],
+//            'status' => $input['status'],
+//            'fields' => json_encode($input['fields']),
+//        ];
+//
+//        $kyc = Kyc::create($data);
+//        $kycSettings = new Kyclevelsetting();
+//        $kycSettings->title = $input['name'];
+//        $kycSettings->unique_code = 'manual';
+//        $kycSettings->kyc_level_id = $kycLevel->id;
+//        $kycSettings->kyc_id = $kyc->id;
+//        $kycSettings->status = true;
+//        $kycSettings->save();
+//        notify()->success($kyc->name.' '.__(' KYC Created'));
+//
+//        return redirect()->route('admin.kyc-form.index');
+//    }
+    public function storeLevel2(Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input, [
+            'name' => 'required|unique:kycs,name',
+            'kyc_sub_level_id' => 'required',
+            'status' => 'required',
+            'fields' => 'required',
+        ]);
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), 'Error');
+
+            return redirect()->back();
+        }
+        $kycLevel = Kyclevel::where('slug',KycLevelSlug::LEVEL2)->first();
+        $data = [
+            'kyc_sub_level_id' => get_hash($input['kyc_sub_level_id']),
+            'name' => $input['name'],
+            'status' => $input['status'],
+            'fields' => json_encode($input['fields']),
+        ];
+        $kyc = Kyc::create($data);
+        KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>1]);
+        KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>0]);
+        notify()->success($kyc->name.' '.__(' KYC Created'));
+
+        return redirect()->back();
+    }
+    public function storeLevel3(Request $request)
+    {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+
             'name' => 'required|unique:kycs,name',
             'status' => 'required',
             'fields' => 'required',
@@ -64,18 +132,26 @@ class KycController extends Controller
 
             return redirect()->back();
         }
+        $kycLevel = Kyclevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $data = [
+            'kyc_level_id' => $kycLevel->id,
             'name' => $input['name'],
             'status' => $input['status'],
             'fields' => json_encode($input['fields']),
         ];
 
         $kyc = Kyc::create($data);
+        $kycSettings = new Kyclevelsetting();
+        $kycSettings->title = $input['name'];
+        $kycSettings->unique_code = 'manual';
+        $kycSettings->kyc_level_id = $kycLevel->id;
+        $kycSettings->kyc_id = $kyc->id;
+        $kycSettings->status = true;
+        $kycSettings->save();
         notify()->success($kyc->name.' '.__(' KYC Created'));
 
-        return redirect()->route('admin.kyc-form.index');
+        return redirect()->back();
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -83,7 +159,8 @@ class KycController extends Controller
      */
     public function create()
     {
-        return view('backend.kyc.create');
+        $levels = Kyclevel::orderBy('id','desc')->get();
+        return view('backend.kyc.create',get_defined_vars());
     }
 
     /**
@@ -107,7 +184,14 @@ class KycController extends Controller
 
         return view('backend.kyc.edit', compact('kyc'));
     }
-
+    public function editKycLevel2($id)
+    {
+        $kyc = Kyc::find($id);
+        if (!$kyc) {
+            return response()->json(['error' => 'KYC record not found'], 404);
+        }
+        return response()->json(['kyc' => $kyc]);
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -130,7 +214,8 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('kyc', KYCStatus::Pending->value)->latest('updated_at');
+            $data = User::where('kyc', KYCStatus::Pending->value)
+            ->latest('updated_at');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -144,6 +229,33 @@ class KycController extends Controller
         }
 
         return view('backend.kyc.pending');
+    }
+    public function KycLevel3Pending (Request $request)
+    {
+
+        if ($request->ajax()) {
+            $data = User::where('is_level_3_completed', 0)
+            ->where('kyc_credential_level3','!=',NULL)
+            ->where('kyc_level3', KYCStatus::Pending->value)
+            ->latest('updated_at');
+            //->get();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('time', function($row) {
+                    return $row->kyc_time_level3;
+                })
+                ->addColumn('user', 'backend.kyc.include.__user')
+                ->addColumn('type', function($row) {
+                    return $row->kyc_type_level3;
+                })
+                ->addColumn('status', 'backend.kyc.include.__statuslevel3')
+                ->addColumn('action', 'backend.kyc.include.__action')
+                ->rawColumns(['time', 'user', 'type', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.kyc.level3.pending');
     }
 
     /**
@@ -185,20 +297,73 @@ class KycController extends Controller
 
         return view('backend.kyc.include.__kyc_data', compact('kycCredential', 'id', 'kycStatus'))->render();
     }
+    public function depositActionLevel3($id)
+    {
+        $user = User::find($id);
+        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        unset($kycCredential['kyc_type_of_name']);
+        unset($kycCredential['kyc_time_of_time']);
 
+        $kycStatus = $user->kyc_level3;
+
+        return view('backend.kyc.include.__kyc_data_level3', compact('kycCredential', 'id', 'kycStatus'))->render();
+    }
     /**
      * @return RedirectResponse
      */
     public function actionNow(Request $request)
     {
+
         $input = $request->all();
         $user = User::find($input['id']);
+        $kycLevel3Status = Kyclevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
-//        dd($input);
+        if($kycLevel3Status->status==1){
+            $user->update([
+
+               'kyc_credential' => $kycCredential,
+               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
+           ]);
+        }else{
+            $user->update([
+                'kyc' => $input['status'],
+               'kyc_credential' => $kycCredential,
+               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
+           ]);
+        }
+
+
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[kyc_type]]' => $kycCredential['kyc_type_of_name'],
+            '[[message]]' => $input['message'],
+            '[[status]]' => $input['status'],
+        ];
+        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
+        $this->smsNotify('kyc_action', $shortcodes, $user->phone);
+        $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
+
+        notify()->success(__('KYC Update Successfully'));
+
+        return redirect()->route('admin.kyc.all');
+    }
+    public function actionLevel3Now(Request $request)
+    {
+
+        $input = $request->all();
+
+        $user = User::find($input['id']);
+        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
         $user->update([
             'kyc' => $input['status'],
-            'kyc_credential' => $kycCredential,
+            'kyc_credential_level3' => $kycCredential,
+            'is_level_3_completed' => $input['status'] == 1 ? 1 : 0,
+            'kyc_level3' => $input['status'],
         ]);
 
         $shortcodes = [
@@ -210,13 +375,7 @@ class KycController extends Controller
             '[[message]]' => $input['message'],
             '[[status]]' => $input['status'],
         ];
-        //reject kyc status
-        if($input['status'] == 1){
-            $this->mailNotify($user->email, 'kyc_approve', $shortcodes);
-        }
-        if($input['status'] == 3){
-            $this->mailNotify($user->email, 'kyc_reject', $shortcodes);
-        }
+        $this->mailNotify($user->email, 'kyc_action', $shortcodes);
         $this->smsNotify('kyc_action', $shortcodes, $user->phone);
         $this->pushNotify('kyc_action', $shortcodes, route('user.kyc'), $user->id);
 
@@ -224,13 +383,42 @@ class KycController extends Controller
 
         return redirect()->route('admin.kyc.all');
     }
-
     /**
      * Update the specified resource in storage.
      *
      * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+//    public function update(Request $request, $id)
+//    {
+//
+//
+//        $input = $request->all();
+//        $validator = Validator::make($input, [
+//            'name' => 'required|unique:kycs,name,'.$id,
+//            'status' => 'required',
+//            'fields' => 'required',
+//        ]);
+//
+//        if ($validator->fails()) {
+//
+//            notify()->error($validator->errors()->first(), 'Error');
+//
+//            return redirect()->back();
+//        }
+//
+//        $data = [
+//            'name' => $input['name'],
+//            'status' => $input['status'],
+//            'fields' => json_encode($input['fields']),
+//        ];
+//
+//        $kyc = Kyc::find($id);
+//        $kyc->update($data);
+//        notify()->success($kyc->name.' '.__(' KYC Updated'));
+//
+//        return redirect()->route('admin.kyc-form.index');
+//    }
+    public function updateLevel2Kyc(Request $request, $id)
     {
 
         $input = $request->all();
@@ -242,7 +430,6 @@ class KycController extends Controller
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
@@ -254,11 +441,11 @@ class KycController extends Controller
 
         $kyc = Kyc::find($id);
         $kyc->update($data);
+        KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>1]);
+        KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>0]);
         notify()->success($kyc->name.' '.__(' KYC Updated'));
-
-        return redirect()->route('admin.kyc-form.index');
+        return redirect()->back();
     }
-
     /**
      * @return Application|Factory|View|JsonResponse
      *

@@ -4833,6 +4833,9 @@ textarea.form-control.is-invalid{
 .\!w-\[100px\]{
   width: 100px !important;
 }
+.\!w-auto {
+    width: auto !important;
+}
 .w-\[6px\]{
   width: 6px;
 }

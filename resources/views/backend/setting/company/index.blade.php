@@ -34,7 +34,12 @@
                     {{ __('Misc') }}
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.settings.company.permissions') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.company.permissions') }}">
+                    {{ __('Permission') }}
+                </a>
+            </li>
         </ul>
     </div>
-    @yield('company-content')
+@yield('company-content')
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Jobs\AgentReferralJob;
+use App\Models\Banner;
 use App\Models\ForexAccount;
 use App\Traits\ForexApiTrait;
 use Illuminate\Http\Request;
@@ -61,6 +62,7 @@ class DashboardController extends Controller
             ->paginate(3)->withQueryString();
         $getReferral = $user->getReferrals()->first();
         $qrCode = QrCode::size(300)->generate($getReferral->link);
-        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode'));
+        $banners = Banner::where('status', 1)->get();
+        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode', 'banners'));
     }
 }

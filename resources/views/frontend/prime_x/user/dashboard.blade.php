@@ -4,36 +4,37 @@
 @endsection
 @section('content')
 
-        <div class="grid grid-cols-1 gap-5 mb-5">
-{{--            <div class="flex items-center justify-between flex-wrap md:nowrap gap-5 bg-no-repeat bg-cover bg-center p-4 rounded-[6px]" style="background-image: url({{ asset('frontend/images/yellow-gradient.png') }});">--}}
-{{--                <div class="">--}}
-{{--                    <p class="text-base text-slate-600 text-opacity-80 mb-2">--}}
-{{--                        You don't have an Active Account yet.--}}
-{{--                    </p>--}}
-{{--                    <p class="text-lg font-medium text-slate-900">--}}
-{{--                        Unlock Exclusive Bonus to Kickstart Your Success.--}}
-{{--                    </p>--}}
-{{--                </div>--}}
-{{--                <div class="ltr:right-6 rtl:left-6">--}}
-{{--                    <a href="" class="btn btn-sm btn-dark inline-flex items-center">--}}
-{{--                        {{ __('Open New Account') }}--}}
-{{--                    </a>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            <div class="flex flex-wrap items-center justify-between md:nowrap bg-slate-900 dark:bg-slate-800 px-4 py-5 rounded-[6px] relative gap-5">
-                <div class="">
-                    <p class="text-base text-white text-opacity-80 mb-2">
-                        {{ __("You don't have an Active Account yet.") }}
-                    </p>
-                    <h4 class="text-lg font-medium text-white">
-                        {{ __('Unlock Exclusive Bonus to Kickstart Your Success.') }}
-                    </h4>
+        <div class="grid grid-cols-{{ $banners->count() }} gap-5 mb-5">
+            @foreach($banners as $banner)
+                <div class="card flex flex-wrap items-center justify-between md:nowrap  px-4 py-5 gap-5">
+                    <div class="">
+                        <p class="text-base text-slate-900 dark:text-white text-opacity-80 mb-2">
+                            {{ $banner->subtitle }}
+                        </p>
+                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
+                            {{ $banner->title }}
+                        </h4>
+                    </div>
+                    @if($banners->count() <= 2)
+                        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                            <a href="{{ $banner->button_link }}" class="btn btn-dark inline-flex items-center justify-center">
+                                {{ $banner->button_text }}
+                            </a>
+                            <a href="{{ $banner->primary_link }}" class="btn inline-flex items-center justify-center">
+                                <span class="flex items-center">
+                                    <span>{{ __('Learn More') }}</span>
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                </span>
+                            </a>
+                        </div>
+                    @else
+                        <a href="{{ $banner->primary_link }}" class="btn inline-flex items-center justify-center">
+                            <span>{{ __('Learn More') }}</span>
+                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                        </a>
+                    @endif
                 </div>
-                    <a href="{{route('user.schema')}}" class="btn btn-light btn-sm inline-flex items-center justify-center">
-                        {{ __('Open New Account') }}
-                    </a>
-                </div>
-            </div>
+            @endforeach
         </div>
 
         <div class="md:block hidden desktop-screen-show">

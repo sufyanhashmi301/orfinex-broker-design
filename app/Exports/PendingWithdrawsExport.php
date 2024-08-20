@@ -31,7 +31,7 @@ class PendingWithdrawsExport implements FromQuery, WithHeadings, WithMapping
         ->orWhere('type', TxnType::WithdrawAuto)
             ->applyFilters($filters);
 
-        return $query->select('user_id', 'tnx',  'target_id', 'amount','pay_currency', 'description', 'status','created_at');
+        return $query->select('user_id', 'tnx',  'target_id', 'amount','pay_currency','charge', 'description', 'status','created_at');
     }
 
     public function headings(): array
@@ -46,7 +46,7 @@ class PendingWithdrawsExport implements FromQuery, WithHeadings, WithMapping
             'Account',
             'Pay Amount',
             'Final Amount',
-           
+           'Charge',
             'Description',
             'Status',
             'Date'
@@ -64,7 +64,8 @@ class PendingWithdrawsExport implements FromQuery, WithHeadings, WithMapping
             $transaction->tnx ?? 'N/A',
             $transaction->target_id ?? 'N/A',
             $transaction->pay_amount .' '. $transaction->pay_currency  ?? 'N/A',
-            $transaction->final_amount ?? 'N/A',
+            $transaction->final_amount .' USD' ?? 'N/A',
+            $transaction->charge . ' USD' ?? 'N/A',
             $transaction->description ?? 'N/A',
             $transaction->status->label() ?? 'N/A',
             $transaction->created_at ? Carbon::parse($transaction->created_at)->format('d M Y g:i A'): 'N/A',

@@ -254,23 +254,22 @@ class DepositController extends Controller
 
         $data = Transaction::find($id);
         $gateway = $this->gateway($data->method);
-//        dd($gateway);
         return view('backend.deposit.include.__deposit_action', compact('data', 'id', 'gateway'))->render();
     }
     public function gateway($code)
     {
         $gateway = DepositMethod::code($code)->first();
-
-        if ($gateway->type == GatewayType::Manual->value) {
-        $fieldOptions = $gateway->field_options;
-        $paymentDetails = $gateway->payment_details;
-        $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
-    }else{
-        $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
-        $gateway['currency'] = $gatewayCurrency;
-    }
-//        dd($gateway);
-        return $gateway;
+        if($gateway){
+            if ($gateway->type == GatewayType::Manual->value) {
+                $fieldOptions = $gateway->field_options;
+                $paymentDetails = $gateway->payment_details;
+                $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+            }else{
+                $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
+                $gateway['currency'] = $gatewayCurrency;
+            }
+            return $gateway;
+        }
     }
 
 

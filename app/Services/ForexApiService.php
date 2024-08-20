@@ -82,6 +82,7 @@ class ForexApiService
     public function updateAgentAccount($data)
     {
         $endpoint = 'user/updateAgentAccount';
+//        dd($endpoint,$data);
         return $this->post($endpoint, $data);
     }
 

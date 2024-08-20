@@ -320,3 +320,19 @@ Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
 Route::get('user/partner/dashboard', function () {
     return view('frontend::partner.dashboard');
 });
+
+Route::get('user/partner/accounts', function () {
+    return view('frontend::partner.accounts');
+});
+
+Route::get('user/partner/clients', function () {
+    return view('frontend::partner.clients');
+});
+
+Route::get('user/wallets', function () {
+    return view('frontend::wallets.index');
+});
+
+Route::get('user/webterminal', function () {
+    return view('frontend::webterminal.index');
+});

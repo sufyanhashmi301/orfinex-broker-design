@@ -87,6 +87,11 @@ class ForexSchema extends Model
 		return $this->hasMany(ForexAccount::class);
 	}
 
+    public function multiLevels()
+    {
+        return $this->hasMany(MultiLevel::class,'forex_scheme_id');
+    }
+
     public function scopeActive(Builder $query)
     {
         return $query->where('status', true);

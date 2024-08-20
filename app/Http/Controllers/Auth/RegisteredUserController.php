@@ -38,6 +38,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
 
+        dd($request->all());
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');

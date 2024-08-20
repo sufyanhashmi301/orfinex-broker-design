@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\MultiLevel;
@@ -42,16 +43,26 @@ class MultiLevelIBController extends Controller
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $schemas = ForexSchema::active()
-            ->relevantForUser($user->country, $tagNames)
-            ->whereHas('swapBasedAccounts', function($query) use ($levelOrder) {
-                $query->where('level_order', $levelOrder);
-            })
+        if($levelOrder==0){
+            $schemas = ForexSchema::active()  // Use the defined scope for active schemas
+            ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
             ->orderBy('priority', 'asc')
-            ->get();
+                ->get();
+        }else {
+            $schemas = ForexSchema::active()
+                ->relevantForUser($user->country, $tagNames)
+                ->whereHas('multiLevels', function ($query) use ($levelOrder) {
+                    $query->where('type', MultiLevelType::SWAP);
+                    $query->where('level_order', $levelOrder);
+                })
+                ->orderBy('priority', 'asc')
+                ->get();
+        }
+
+        $getReferral = $user->getReferrals()->first();
 
         // Render the view with the updated schemas
-        $html = view('frontend::partner.include.__schemes', compact('schemas'))->render();
+        $html = view('frontend::partner.include.__schemes', compact('schemas','getReferral'))->render();
 
         // Return the rendered view as JSON
         return response()->json(['html' => $html]);

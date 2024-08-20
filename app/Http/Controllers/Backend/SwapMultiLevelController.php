@@ -30,13 +30,13 @@ class SwapMultiLevelController extends Controller
         $checkLevelExist = MultiLevel::where('type', get_hash($request->type))->where('level_order', $request->level_order)->first();
         if ($checkLevelExist) {
             notify()->error(__('Level already taken.'));
-            return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
+            return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
         }
         $request->merge(['type' => get_hash($request->type)]);
 //        dd($request->all());
         $account = $this->swapBasedAccountService->create($request);
         notify()->success(__('Multi Level Account created successfully.'));
-        return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
+        return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
 
     }
 
@@ -59,13 +59,12 @@ class SwapMultiLevelController extends Controller
         $checkLevelExist = MultiLevel::where('id','<>' ,$id)->where('type', get_hash($request->type))->where('level_order', $request->level_order)->exists();
         if ($checkLevelExist) {
             notify()->error(__('Level already taken.'));
-            return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
+            return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
         }
 //        dd($request->validated());
-
         $this->swapBasedAccountService->update($swapBasedAccount, $request->validated(),$id);
         notify()->success(__('Multi Level Account updated successfully.'));
-        return redirect()->route('admin.accountType.view', $request->forex_scheme_id);
+        return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
 
     }
 
@@ -74,6 +73,6 @@ class SwapMultiLevelController extends Controller
 //        dd($id);
         $swapBasedAccount =  $this->swapBasedAccountService->delete($id);
         notify()->success(__('Multi Level Account deleted successfully.'));
-        return redirect()->route('admin.accountType.view', $swapBasedAccount->forex_scheme_id);
+        return redirect()->route('admin.multi-level.view', $swapBasedAccount->forex_scheme_id);
     }
 }

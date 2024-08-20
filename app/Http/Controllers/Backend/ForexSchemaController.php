@@ -62,7 +62,7 @@ class ForexSchemaController extends Controller
         $swapBasedAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP)->orderBy('level_order','asc')->get();
         $swapFreeAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP_FREE)->orderBy('level_order','asc')->get();
 
-        return view('backend.forex_schema.view',compact('schema','swapBasedAccounts','swapFreeAccounts'));
+        return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts'));
     }
     /**
      * Store a newly created resource in storage.

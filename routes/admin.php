@@ -150,7 +150,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
-    Route::get('accountType/view/{id}', [ForexSchemaController::class,'view'])->name('accountType.view');
+    Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
@@ -415,7 +415,6 @@ Route::get('settings/platform-api/db-synchronization', function () {
 Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
 Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
 Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('islamic-multi-level', IslamicMultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
 Route::resource('swap-multi-level', SwapMultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
 Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
 Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);

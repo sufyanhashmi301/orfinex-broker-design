@@ -221,12 +221,12 @@
     </div>
 
     {{-- Modal for Add Level --}}
-    @include('backend.forex_schema.modal.__create_swap_based')
-    @include('backend.forex_schema.modal.__create_swap_free')
-    @include('backend.forex_schema.modal.__editSwapBased')
-    @include('backend.forex_schema.modal.__deleteSwapBased')
-{{--    @include('backend.forex_schema.modal.__editSwapFree')--}}
-{{--    @include('backend.forex_schema.modal.__deleteSwapFree')--}}
+    @include('backend.multi_level.modal.__create_swap_based')
+    @include('backend.multi_level.modal.__create_swap_free')
+    @include('backend.multi_level.modal.__editSwapBased')
+    @include('backend.multi_level.modal.__deleteSwapBased')
+{{--    @include('backend.multi_level.modal.__editSwapFree')--}}
+{{--    @include('backend.multi_level.modal.__deleteSwapFree')--}}
 @endsection
 @section('script')
     <script>

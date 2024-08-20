@@ -1,3 +1,8 @@
+@if($schemas->isEmpty())
+    <tr>
+        <td class="table-td text-center" colspan="3">{{ __('No Data Found') }}</td>
+    </tr>
+@else
 @foreach($schemas as $index => $schema)
     <div class="input-area grid grid-cols-12 items-center gap-5">
         <div class="lg:col-span-2 col-span-12 form-label !mb-0">
@@ -13,3 +18,6 @@
         </div>
     </div>
 @endforeach
+
+
+@endif

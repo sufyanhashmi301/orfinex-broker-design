@@ -22,8 +22,9 @@
                     </button>
                 </div>
                 <div class="p-6">
-                    <form action="{{route('admin.swap-based-accounts.store')}}" method="post">
+                    <form action="{{route('admin.swap-multi-level.store')}}" method="post">
                         @csrf
+                        <input type="hidden" name="type" value="{{the_hash(\App\Enums\MultiLevelType::SWAP)}}" >
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Title') }}</label>
@@ -35,7 +36,7 @@
                                     required
                                 />
                             </div>
-                            <input type="hidden" name="account_type_id" value="{{$schema->id}}">
+                            <input type="hidden" name="forex_scheme_id" value="{{$schema->id}}">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Level Order') }}</label>
                                 <input

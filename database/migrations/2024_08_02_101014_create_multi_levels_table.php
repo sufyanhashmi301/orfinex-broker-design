@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\MultiLevelType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('swap_free_accounts', function (Blueprint $table) {
+        Schema::create('multi_levels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_type_id')->constrained('forex_accounts');
+//            $table->foreignId('account_type_id')->constrained('forex_accounts');
+            $table->foreignId('forex_scheme_id')->constrained('forex_schemas'); // This also creates an unsigned big integer
+            $table->string('type')->default(MultiLevelType::SWAP);
             $table->string('title');
-            $table->integer('level_order')->unique();
+            $table->integer('level_order');
             $table->string('group_tag');
             $table->text('description')->nullable();
             $table->boolean('status')->default(0);
@@ -32,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('swap_free_accounts');
+        Schema::dropIfExists('multi_levels');
     }
 };

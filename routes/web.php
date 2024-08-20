@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\InvestController;
 use App\Http\Controllers\Frontend\IpnController;
 use App\Http\Controllers\Frontend\KycController;
+use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ReferralController;
 use App\Http\Controllers\Frontend\ForexSchemaController;
@@ -110,6 +111,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
     });
+
+    // Multi Level
+    Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
+        Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
+        Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
+
+    });
+
     //Send Money
     Route::group(['middleware' => 'KYC','prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
         Route::get('/', 'sendMoney')->name('view');

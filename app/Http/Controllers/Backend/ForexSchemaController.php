@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schedule;
-use App\Models\SwapBasedAccount;
+use App\Models\MultiLevel;
 use App\Models\SwapFreeAccount;
 use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
@@ -58,8 +59,9 @@ class ForexSchemaController extends Controller
     public function view($id)
     {
         $schema = ForexSchema::find($id);
-        $swapBasedAccounts = SwapBasedAccount::where('account_type_id',$id)->orderBy('level_order')->get();
-        $swapFreeAccounts = SwapFreeAccount::where('account_type_id',$id)->orderBy('level_order')->get();
+        $swapBasedAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP)->orderBy('level_order','asc')->get();
+        $swapFreeAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP_FREE)->orderBy('level_order','asc')->get();
+
         return view('backend.forex_schema.view',compact('schema','swapBasedAccounts','swapFreeAccounts'));
     }
     /**

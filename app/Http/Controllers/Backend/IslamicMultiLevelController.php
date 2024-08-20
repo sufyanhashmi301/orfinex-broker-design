@@ -10,7 +10,7 @@ use App\Models\SwapFreeAccount;
 use App\Services\SwapFreeAccountService;
 use Illuminate\Http\Request;
 
-class SwapFreeAccountController extends Controller
+class IslamicMultiLevelController extends Controller
 {
     protected $swapFreeAccountService;
 
@@ -30,18 +30,18 @@ class SwapFreeAccountController extends Controller
         $checkLevelExist = SwapFreeAccount::where('level_order',$request->level_order)->first();
         if($checkLevelExist){
             notify()->error(__('Level already taken.'));
-            return redirect()->route('admin.accountType.view',$request->account_type_id);
+            return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
         }
         $account = $this->swapFreeAccountService->create($request);
         notify()->success(__('Swap free account created successfully.'));
-        return redirect()->route('admin.accountType.view',$request->account_type_id);
-        
+        return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
+
     }
     public function edit(SwapFreeAccount $swapFreeAccount)
     {
-    
+
          return view('backend.forex_schema.include.__editSwapFreeForm', compact('swapFreeAccount'))->render();
-       
+
     }
     public function show(SwapFreeAccount $swapFreeAccount)
     {
@@ -53,17 +53,17 @@ class SwapFreeAccountController extends Controller
         $checkLevelExist = SwapFreeAccount::where('level_order',$request->level_order)->first();
         if($checkLevelExist){
             notify()->error(__('Level already taken.'));
-            return redirect()->route('admin.accountType.view',$request->account_type_id);
+            return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
         }
         $this->swapFreeAccountService->update($swapFreeAccount, $request->validated());
         notify()->success(__('Swap free account updated successfully.'));
-        return redirect()->route('admin.accountType.view',$request->account_type_id);
+        return redirect()->route('admin.accountType.view',$request->forex_scheme_id);
     }
 
     public function destroy(SwapFreeAccount $swapFreeAccount)
     {
         $this->swapFreeAccountService->delete($swapFreeAccount);
         notify()->success(__('Swap free account deleted successfully.'));
-        return redirect()->route('admin.accountType.view',$swapFreeAccount->account_type_id);
+        return redirect()->route('admin.accountType.view',$swapFreeAccount->forex_scheme_id);
     }
 }

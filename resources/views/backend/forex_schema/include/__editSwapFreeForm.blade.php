@@ -1,4 +1,4 @@
-<form action="{{route('admin.swap-free-accounts.update',$swapFreeAccount->id)}}" method="post">
+<form action="{{route('admin.islamic-multi-level.update',$swapFreeAccount->id)}}" method="post">
     @method('put')
                         @csrf
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
@@ -13,7 +13,7 @@
                                     required
                                 />
                             </div>
-                            <input type="hidden" name="account_type_id" value="{{$swapFreeAccount->account_type_id}}">
+                            <input type="hidden" name="forex_scheme_id" value="{{$swapFreeAccount->forex_scheme_id}}">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Level Order') }}</label>
                                 <input

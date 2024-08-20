@@ -14,7 +14,7 @@ class StoreSwapFreeAccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'account_type_id' => 'required|exists:forex_accounts,id',
+            'forex_scheme_id' => 'required|exists:forex_schemas,id',
             'title' => 'required|string|max:255',
             'level_order' => 'required|integer',
             'group_tag' => 'required|string|max:255',

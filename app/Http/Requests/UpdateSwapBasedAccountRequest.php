@@ -16,7 +16,7 @@ class UpdateSwapBasedAccountRequest extends FormRequest
     {
         $accountId = $this->route('swapBasedAccount');
         return [
-            'account_type_id' => 'required|exists:forex_accounts,id',
+            'forex_scheme_id' => 'required|exists:forex_schemas,id',
             'title' => 'required|string|max:255',
             'level_order' => [
                 'required',

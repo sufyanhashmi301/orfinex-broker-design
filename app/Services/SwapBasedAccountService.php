@@ -3,24 +3,24 @@
 namespace App\Services;
 
 use App\Http\Requests\StoreSwapBasedAccountRequest;
-use App\Models\SwapBasedAccount;
+use App\Models\MultiLevel;
 use Illuminate\Support\Facades\DB;
 
 class SwapBasedAccountService
 {
     public function create(StoreSwapBasedAccountRequest $request)
     {
-       
-        return SwapBasedAccount::create($request->validated());
+
+        return MultiLevel::create($request->all());
     }
 
-    public function update( SwapBasedAccount $swapBasedAccount, array $data)
+    public function update( MultiLevel $swapBasedAccount, array $data)
     {
         $swapBasedAccount->update($data);
         return $swapBasedAccount;
     }
 
-    public function delete(SwapBasedAccount $swapBasedAccount)
+    public function delete(MultiLevel $swapBasedAccount)
     {
         return  $swapBasedAccount->delete();
     }

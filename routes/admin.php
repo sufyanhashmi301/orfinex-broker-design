@@ -51,6 +51,7 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\Mt5DealController;
+use App\Http\Controllers\Backend\DashboardBannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -292,6 +293,9 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('platform-api', 'platformApiSetting')->name('platform-api');
         Route::get('misc', 'miscSetting')->name('misc');
         Route::get('copy_trading', 'copyTradingSetting')->name('copyTrading');
+
+        Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
+        Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
     });
 

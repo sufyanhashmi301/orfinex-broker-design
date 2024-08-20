@@ -85,21 +85,16 @@
             </div>
             <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
                 <span style="font-size: small;">
-                    {!! $details['note'] !!}
-                    @if(isset($details['support_link']))
-                    <a href="{{$details['support_link']}}" target="_blank">
-                        <b>Support Portal</b>
-                    </a>
-                        @endif
+                    {{ setting('email_disclaimer', 'global') }}
                 </span>
             </div>
             <div style="font-size: small; text-align: center;line-height: 14px !important;">
-                {!! $details['warning_content'] !!}
+                {{ setting('email_risk_warning', 'global') }}
             </div>
         </div>
         <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
             <font size="1">
-                {!! $details['company_info'] !!}
+                {{ setting('email_footer', 'global') }}
             </font>
         </div>
     </div>

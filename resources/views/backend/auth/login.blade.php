@@ -3,7 +3,7 @@
     {{ __('Login') }}
 @endsection
 @section('auth-content')
-
+    
 <div class="max-w-sm w-full space-y-10">
     <div class="text-center">
         <a href="{{ route('home')}}" class="inline-block">
@@ -36,6 +36,11 @@
                     required
                 />
             </div>
+            @if($googleReCaptcha)
+                <div class="g-recaptcha mb-3" id="feedback-recaptcha"
+                     data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}">
+                </div>
+            @endif
         </div>
         <div class="flex justify-between">
             <label class="flex items-center cursor-pointer">
@@ -53,4 +58,9 @@
         </button>
     </form>
 </div>
+@endsection
+@section('script')
+    @if($googleReCaptcha)
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    @endif
 @endsection

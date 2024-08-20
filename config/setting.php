@@ -1151,5 +1151,58 @@ return [
             ],
         ],
     ],
+    'company_misc' => [
+        'title' => 'Misc Settings',
+        'elements' => [
+            [
+                'type' => 'textarea', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'disclaimer', // unique name for field
+                'label' => 'Disclaimer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'textarea', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_disclaimer', // unique name for field
+                'label' => 'Disclaimer Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'footer_content', // unique name for field
+                'label' => 'Footer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_footer', // unique name for field
+                'label' => 'Footer Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'risk_warning', // unique name for field
+                'label' => 'Risk Warning', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_risk_warning', // unique name for field
+                'label' => 'Risk Warning Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+        ],
+    ],
 
 ];

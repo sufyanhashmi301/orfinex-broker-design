@@ -136,6 +136,16 @@ class SettingController extends Controller
         return view('backend.setting.company.company');
     }
 
+    public static function companyPermissions()
+    {
+        return view('backend.setting.company.permission');
+    }
+
+    public static function customerPermissions()
+    {
+        return view('backend.setting.customer.permission');
+    }
+
     public static function miscSetting()
     {
         return view('backend.setting.company.misc');

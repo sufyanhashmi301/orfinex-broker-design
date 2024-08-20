@@ -110,8 +110,21 @@
             </div>
         </div>
     </div>
+    @can('transaction-action')
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-body popup-body">
+                        <div class="popup-body-text deposit-action p-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
-@include('backend.transaction.modals.view')
+
 @section('script')
     <script>
         (function ($) {
@@ -166,20 +179,17 @@
             $('#filter').click(function () {
                 table.draw();
             });
-            $(document).on('click', '.viewTransaction', function(e) {
-                e.preventDefault();
+            $('body').on('click', '#deposit-action', function () {
+                $('.deposit-action').empty();
+                
                 var id = $(this).data('id');
                 $.ajax({
                     url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
                     method: 'GET',
                     success: function(response) {
-                         $('#transaction_id').text(response.transaction.tnx);
-                         $('#transaction_type').text(response.transaction.target_type);
-                         $('#amount').text(response.transaction.final_amount);
-                         $('#currency').text(response.transaction.pay_currency);
-                         $('#approval_cause').text(response.transaction.approval_cause);
-                        
-                        $('#viewTransactionModal').modal('show');
+                        $('.deposit-action').append(response)
+                        imagePreview()
+                        $('#transaction-action-modal').modal('show');
                         
                     }
                 });

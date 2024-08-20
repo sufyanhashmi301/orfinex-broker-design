@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\GatewayType;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use DataTables;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransactionsExport;
+use App\Models\DepositMethod;
+
 class TransactionController extends Controller
 {
     /**
@@ -43,6 +46,7 @@ class TransactionController extends Controller
                 $data = Transaction::query()->latest();
             }
             $data->applyFilters($filters);
+           
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -66,7 +70,10 @@ class TransactionController extends Controller
     }
     public function view($id)
     {
-        $transaction = Transaction::find($id);
-        return response()->json(['transaction'=>$transaction]);
+        $data = Transaction::find($id);
+       
+        return view('backend.transaction.modals.view', compact('data', 'id'))->render();
+        
     }
+   
 }

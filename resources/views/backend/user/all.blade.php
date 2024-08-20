@@ -17,7 +17,7 @@
                     <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <select name="country" id="country" class="select2 form-control h-full w-full">
+                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a country') }}">
                         <option value="" selected>
                             {{ __('country') }}
                         </option>
@@ -32,7 +32,7 @@
                     <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <select name="tag" id="tag" class="select2 form-control w-full h-full">
+                    <select name="tag" id="tag" class="select2 form-control w-full h-full" data-placeholder="{{ __('Select a tag') }}">
                         <option value="" selected>
                             {{ __('tags') }}
                         </option>
@@ -165,7 +165,14 @@
                     {"class": "table-td", data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
-
+            $('#country').select2({
+                placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
+               
+            });
+            $('#tag').select2({
+                placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
+               
+            });
             $('#filter').click(function () {
                 table.draw();
             });

@@ -116,11 +116,13 @@ class ForexAccountController extends GatewayController
         $group = '';
         if ($request->account_type === 'real') {
             $group = $request->is_islamic ? $schema->real_islamic : $schema->real_swap_free;
+            $server = setting('live_server', 'platform_api');
         } elseif ($request->account_type === 'demo') {
             $group = $request->is_islamic ? $schema->demo_islamic : $schema->demo_swap_free;
+            $server = setting('demo_server', 'platform_api');
         }
 
-        $server = config('forextrading.server');
+
         $password = $request->main_password;
 
         $data = [

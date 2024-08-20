@@ -29,7 +29,7 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
         $query = Transaction::query()
             ->applyFilters($filters);
     
-        return $query->select('user_id', 'tnx', 'type', 'target_id', 'amount','pay_currency', 'description', 'status','created_at');
+        return $query->select('user_id', 'tnx', 'type', 'target_id', 'pay_amount', 'final_amount','pay_currency', 'description', 'status','created_at');
 
     }
 
@@ -44,8 +44,9 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
             'Transaction ID',
             'Type',
             'Account',
-            'Amount',
-            'Currency',
+            'Pay Amount',
+            'Final Amount',
+            
             'Description',
             'Status',
             'Date',
@@ -63,8 +64,9 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
             $transaction->tnx ?? 'N/A',
             $transaction->type->label() ?? 'N/A',
             $transaction->target_id ?? 'N/A',
-            $transaction->amount ?? 'N/A',
-            $transaction->pay_currency ?? 'N/A',
+            $transaction->pay_amount .' '.$transaction->pay_currency ?? 'N/A',
+            $transaction->final_amount .' USD' ?? 'N/A',
+        
             $transaction->description ?? 'N/A',
             $transaction->status->label() ?? 'N/A',
             $transaction->created_at ? Carbon::parse($transaction->created_at)->format('d M Y g:i A'): 'N/A',

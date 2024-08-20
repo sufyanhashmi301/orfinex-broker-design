@@ -1,40 +1,69 @@
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="viewTransactionModal" tabindex="-1" aria-labelledby="symbolGroupModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-            <div class="flex items-start justify-between gap-3 p-5">
-                <div>
-                    <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
-                        {{ __('View Transaction') }}
-                    </h3>
+<div class="flex items-center justify-between mb-5">
+    <h3 class="text-xl font-medium dark:text-white capitalize">
+        {{ __('Withdraw') }}
+    </h3>
+    <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center
+                dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+        <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10
+                    11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+        <span class="sr-only">Close modal</span>
+    </button>
+</div>
+<form action="#" method="post" class="space-y-5">
+    @csrf
 
-                </div>
-                <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
-                    <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <div class="modal-body p-6 pt-0">
-                <ul class="divide-y divide-slate-100 dark:divide-slate-700">
-                    <li class="flex items-center justify-between w-full py-[8px]">
-                        <span class="font-medium">{{ __('Transaction Id') }}</span>
-                        <span id="transaction_id"></span>
-                    </li>
-                    <li class="flex items-center justify-between w-full py-[8px]">
-                        <span class="font-medium">{{ __('Transaction Type') }}</span>
-                        <span id="transaction_type"></span>
-                    </li>
-                    <li class="flex items-center justify-between w-full py-[8px]">
-                        <span class="font-medium">{{ __('Amount') }}</span>
-                        <span id="amount"></span>
-                    </li>
-                    <li class="flex items-center justify-between w-full py-[8px]">
-                        <span class="font-medium">{{ __('Approval Cause') }}</span>
-                        <span id="approval_cause"></span>
-                    </li>
-                </ul>
-            </div>
+{{--        {{ __('Total amount') }}: <strong>{{ $data->final_amount. ' '.$currency }}</strong>--}}
+
+    <div class="input-area">
+        <label class="form-label" for="">{{ __('Withdrawal Amount:') }}</label>
+        <div class="joint-input relative">
+            <input type="text" name="final_amount" id="amount"  value="{{$data->final_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
+            <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency">
+                {{$currency}}
+            </span>
         </div>
     </div>
-</div>
+    @if($data->pay_currency != $currency)
+        <div class="input-area">
+            <label class="form-label" for="">{{ __('Conversion Amount:') }}</label>
+            <div class="joint-input relative">
+                <input type="text" name="pay_amount" id="converted-amount" value="{{$data->pay_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
+                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="converted-currency">
+                    {{$data->pay_currency}}
+                </span>
+            </div>
+            <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
+
+        </div>
+    @endif
+    <br>
+
+    <ul class="list-group mb-4">
+      
+    @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
+        @foreach( json_decode($data->manual_field_data) as $key => $value)
+            <li class="list-group-item py-1 px-2 rounded border">
+                {{ $key }}:
+
+                @if($value != new stdClass())
+                    @if( file_exists('assets/'.$value))
+                        <img src="{{ asset($value) }}" alt=""/>
+                    @else
+                        <strong>{{ $value }}</strong>
+                    @endif
+                @endif
+            </li>
+        @endforeach
+        @endif
+    </ul>
+
+    <div class="input-area">
+        <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
+        <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
+    </div>
+
+   
+
+</form>

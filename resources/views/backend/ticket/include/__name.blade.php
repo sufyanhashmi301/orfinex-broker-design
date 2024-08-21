@@ -8,10 +8,11 @@
       </div>
     </div>
     <div class="flex-1 text-start">
-        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-            {{ $title. ' - '. $uuid }}
+        <h4 class="text-base font-medium text-slate-600 whitespace-nowrap mb-1">
+            {{ $title }}
         </h4>
-        <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+        <div class="flex items-center text-xs font-normal text-slate-600 dark:text-slate-400 space-x-3">
+            <span>#{{ $uuid }} </span>
             <a href="{{ route('admin.user.edit',$user->id) }}" class="link"> {{ $user->username }}</a>
         </div>
     </div>

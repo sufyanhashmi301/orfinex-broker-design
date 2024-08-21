@@ -352,6 +352,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
         Route::get('index/{id?}', 'index')->name('index');
         Route::get('status', 'ticketStatus')->name('ticketStatus');
+        Route::get('priority', 'ticketPriority')->name('ticketPriority');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
         Route::get('close-now/{uuid}', 'closeNow')->name('close.now');

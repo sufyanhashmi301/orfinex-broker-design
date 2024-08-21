@@ -2,6 +2,22 @@
 @section('title')
     {{ __('All Support Tickets') }}
 @endsection
+@section('header-btn')
+    <div class="input-area relative w-1/5" style="padding-left: 3rem;">
+        <label for="" class="inline-inputLabel text-sm">{{ __('Filter:') }}</label>
+        <select class="form-control !bg-transparent">
+            <option selected="">All</option>
+            <option>...</option>
+        </select>
+    </div>
+    <div class="input-area relative w-1/5" style="padding-left: 3rem;">
+        <label for="" class="inline-inputLabel text-sm">{{ __('Sort:') }}</label>
+        <select class="form-control !bg-transparent">
+            <option selected="">Choose...</option>
+            <option>...</option>
+        </select>
+    </div>
+@endsection
 @section('ticket-content')
     <div class="card">
         <div class="card-body px-6 pb-6">
@@ -14,7 +30,7 @@
                             <thead class=" border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Ticket Name') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Opening Date') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Ticket Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -32,6 +48,22 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('style')
+    <style>
+        .dashcode-data-table .table-td select{
+            --tw-bg-opacity: 1;
+            background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+            border: none;
+            outline: none;
+            box-shadow: none;
+        }
+        .dark .dashcode-data-table .table-td select {
+            --tw-bg-opacity: 1;
+            background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+        }
+    </style>
 @endsection
 
 @section('script')
@@ -64,7 +96,7 @@
                 ajax: "{{ route('admin.ticket.index') }}",
                 columns: [
                     {"class": "table-td", data: 'name', name: 'name'},
-                    {"class": "table-td", data: 'created_at', name: 'created_at'},
+                    {"class": "table-td", data: 'priority', name: 'priority'},
                     {"class": "table-td", data: 'status', name: 'status'},
                     {"class": "table-td", data: 'action', name: 'action', orderable: false, searchable: false},
                 ]

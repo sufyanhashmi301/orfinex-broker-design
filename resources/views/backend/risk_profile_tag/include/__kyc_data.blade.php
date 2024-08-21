@@ -40,8 +40,4 @@
             @endif
         </div>
     </form>
-    <script>
-      'use strict';
-      lucide.createIcons();
-    </script>
 @endif

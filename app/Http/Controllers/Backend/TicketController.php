@@ -40,9 +40,10 @@ class TicketController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.ticket.include.__name')
+                ->addColumn('priority', 'backend.ticket.include.__priority')
                 ->addColumn('status', 'backend.ticket.include.__status')
                 ->addColumn('action', 'backend.ticket.include.__action')
-                ->rawColumns(['name', 'status', 'action'])
+                ->rawColumns(['name', 'priority', 'status', 'action'])
                 ->make(true);
         }
 
@@ -113,6 +114,10 @@ class TicketController extends Controller
 
     public function ticketStatus() {
         return view('backend.ticket.status');
+    }
+
+    public function ticketPriority() {
+        return view('backend.ticket.priority');
     }
 
 }

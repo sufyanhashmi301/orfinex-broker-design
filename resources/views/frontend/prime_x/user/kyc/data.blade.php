@@ -27,7 +27,7 @@
         </div>
     @elseif($field['type'] == 'textarea')
 
-        <div class="input-area">
+        <div class="input-area col-span-2">
             <div class="progress-steps-form">
                 <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
                 <div class="input-group">
@@ -38,7 +38,7 @@
         </div>
 
     @else
-        <div class="input-area">
+        <div class="input-area col-span-2">
             <div class="progress-steps-form">
                 <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
                 <input type="text" class="form-control" name="kyc_credential[{{$field['name']}}]"

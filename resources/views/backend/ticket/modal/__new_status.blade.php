@@ -17,7 +17,8 @@
                     </button>
                 </div>
                 <div class="p-6 pt-0">
-                    <form action="" method="post" id="modalForm" class="space-y-4">
+                    <form action="{{ route('admin.ticket.statuses.store') }}" method="post" class="space-y-4">
+                        @csrf
                         <div class="input-area !mt-0">
                             <label for="" class="form-label">{{ __('Status Name:') }}</label>
                             <input
@@ -31,7 +32,7 @@
 
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Status Type') }}</label>
-                            <select name="role" class="select2 form-control w-full">
+                            <select name="status_type" class="select2 form-control w-full">
                                 <option value="open">Open</option>
                                 <option value="closed">Closed</option>
                             </select>

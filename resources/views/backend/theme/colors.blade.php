@@ -53,12 +53,13 @@
                                         <label for="" class="form-label">
                                             {{ __($field['label']) }}
                                         </label>
-                                        <div class="relative">
-                                            <input type="" name="" class="form-control" value="{{ oldSetting($field['name'],$section) }}">
+                                        <div class="color-input-group relative">
+                                            <input type="" name="" class="form-control text-input" value="{{ oldSetting($field['name'],$section) }}">
                                             <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
                                                 <input
                                                     type="{{$field['type']}}"
                                                     name="{{$field['name']}}"
+                                                    class="color-input"
                                                     value="{{ oldSetting($field['name'],$section) }}"
                                                 />
                                             </span>
@@ -86,4 +87,39 @@
             </div>
         </div>
     </div>
+@endsection
+@section('setting-script')
+    <script>
+        $(document).ready(function() {
+            // Function to synchronize text and color inputs in the same group
+            function syncGroupInputs(group) {
+                var $textInput = $(group).find('.text-input');
+                var $colorInput = $(group).find('.color-input');
+
+                $textInput.on('input', function() {
+                    var colorValue = $(this).val();
+                    if (isValidColor(colorValue)) {
+                        $colorInput.val(colorValue).css('background-color', colorValue);
+                    }
+                });
+
+                $colorInput.on('input', function() {
+                    var colorValue = $(this).val();
+                    $textInput.val(colorValue);
+                });
+            }
+
+            // Function to validate color input
+            function isValidColor(value) {
+                var s = new Option().style;
+                s.color = value;
+                return s.color !== '';
+            }
+
+            // Initialize synchronization for each input group
+            $('.color-input-group').each(function() {
+                syncGroupInputs(this);
+            });
+        });
+    </script>
 @endsection

@@ -48,6 +48,9 @@
         </div>
     </div>
 
+    <!-- Modal for Add New Group -->
+    @include('backend.symbol_groups.modal.__create')
+    
     {{--Modal for edit symbol group--}}
     @include('backend.symbol_groups.modal.__edit')
 
@@ -63,26 +66,26 @@
             $('#symbols').select2();
          });
          $(document).ready(function () {
-            $('#modalForm').on('submit', function (e) {
-                e.preventDefault();
-                let formData = $(this).serialize();
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("admin.symbol-groups.store") }}', // Adjust the route to your store function
-                    data: formData,
-                    success: function (response) {
-                        if (response.success) {
-                            window.location.reload();
-                        }
-                    },
-                    error: function (xhr) {
-                        let errors = xhr.responseJSON.errors;
-                        if (errors) {
-                            displayErrors(errors);
-                        }
-                    }
-                });
-            });
+            {{--$('#modalForm').on('submit', function (e) {--}}
+            {{--    e.preventDefault();--}}
+            {{--    let formData = $(this).serialize();--}}
+            {{--    $.ajax({--}}
+            {{--        type: 'POST',--}}
+            {{--        url: '{{ route("admin.symbol-groups.store") }}', // Adjust the route to your store function--}}
+            {{--        data: formData,--}}
+            {{--        success: function (response) {--}}
+            {{--            if (response.success) {--}}
+            {{--                window.location.reload();--}}
+            {{--            }--}}
+            {{--        },--}}
+            {{--        error: function (xhr) {--}}
+            {{--            let errors = xhr.responseJSON.errors;--}}
+            {{--            if (errors) {--}}
+            {{--                displayErrors(errors);--}}
+            {{--            }--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
 
             function displayErrors(errors) {
                 $('.invalid-feedback').hide(); // Hide all previous error messages
@@ -165,7 +168,6 @@
                         console.log(index);
                         select.append(new Option(symbol, index));
                     });
-
 
                     $('#symbolGroupModal').modal('show');
                 }

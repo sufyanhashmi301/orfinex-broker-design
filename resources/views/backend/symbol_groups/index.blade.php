@@ -28,8 +28,7 @@
 
     @yield('symbol-groups-content')
 
-    <!-- Modal for Add New Group -->
-    @include('backend.symbol_groups.modal.__create')
+
 @endsection
 @section('script')
 

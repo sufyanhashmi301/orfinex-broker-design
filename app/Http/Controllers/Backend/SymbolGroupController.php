@@ -21,6 +21,7 @@ class SymbolGroupController extends Controller
     }
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $data = SymbolGroup::with('symbols')->latest('updated_at')->get();
 
@@ -36,7 +37,8 @@ class SymbolGroupController extends Controller
                 ->rawColumns(['symbols', 'action'])
                 ->make(true);
         }
-        return view('backend.symbol_groups.all');
+        $symbols = Symbol::where('status',true)->get();
+        return view('backend.symbol_groups.all',compact('symbols'));
     }
 
     public function create()
@@ -46,13 +48,14 @@ class SymbolGroupController extends Controller
     }
     public function store(StoreSymbolGroupRequest $request)
     {
-        try {
+//        dd($request->all());
+//        try {
             $this->symbolGroupService->createSymbolGroupWithSymbols($request->name, $request->symbols);
             notify()->success(__('Symbol Group updated successfully.'));
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
+            return redirect()->back();
+//        } catch (\Exception $e) {
+//            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+//        }
     }
 
     public function edit($id)

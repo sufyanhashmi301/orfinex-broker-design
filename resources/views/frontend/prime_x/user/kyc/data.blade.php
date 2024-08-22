@@ -1,4 +1,4 @@
-<div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 @foreach( json_decode($fields, true) as $key => $field)
 
     @if($field['type'] == 'file')

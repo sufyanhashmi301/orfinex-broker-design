@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSwapBasedAccountRequest;
 use App\Http\Requests\UpdateSwapBasedAccountRequest;
 use App\Models\MultiLevel;
+use App\Models\RebateRule;
 use App\Services\SwapBasedAccountService;
 use Illuminate\Http\Request;
 
-class SwapMultiLevelController extends Controller
+class MultiLevelController extends Controller
 {
     protected $swapBasedAccountService;
 
@@ -34,7 +35,7 @@ class SwapMultiLevelController extends Controller
         }
         $request->merge(['type' => get_hash($request->type)]);
 //        dd($request->all());
-        $account = $this->swapBasedAccountService->create($request);
+        $this->swapBasedAccountService->create($request);
         notify()->success(__('Multi Level Account created successfully.'));
         return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
 
@@ -43,7 +44,9 @@ class SwapMultiLevelController extends Controller
     public function edit($id)
     {
         $multiLevelAccount = MultiLevel::findOrFail($id);
-        return view('backend.forex_schema.include.__editSwapBasForm', compact('multiLevelAccount'))->render();
+        $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
+
+        return view('backend.multi_level.include.__editSwapBasForm', compact('multiLevelAccount','rebateRules'))->render();
 
     }
 

@@ -26,7 +26,9 @@ class UpdateSwapBasedAccountRequest extends FormRequest
 //            ],
             'group_tag' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|boolean'
+            'status' => 'required|boolean',
+            'rebate_rules' => 'required|array',
+            'rebate_rules.*' => 'exists:rebate_rules,id',
         ];
     }
 }

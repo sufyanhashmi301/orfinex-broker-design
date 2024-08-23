@@ -21,59 +21,37 @@ class SymbolGroupService
         }
     }
 
-    
+
 
     public function delete(SymbolGroup $symbolGroup)
     {
         try {
-            SymbolGroupHasSymbols::where('symbol_group_id',$symbolGroup->id)->delete();
+            $symbolGroup = SymbolGroup::find($symbolGroup->id);
+            $symbolGroup->symbols()->detach(); // Detach all associated symbols
             return $symbolGroup->delete();
+
+
         } catch (Exception $e) {
-      
+
             throw new Exception("Failed to delete symbol group: " . $e->getMessage());
         }
     }
     public function createSymbolGroupWithSymbols($groupName, $symbolIds)
     {
-        try {
-            DB::transaction(function () use ($groupName, $symbolIds) {
                 $symbolGroup = SymbolGroup::create([
-                    'symbol_group' => $groupName,
+                    'title' => $groupName,
                     'platform_type' => 'mt5'
                 ]);
-                foreach ($symbolIds as $symbolId) {
-                    try {
-                        $symbol = Symbol::findOrFail($symbolId);
-                        SymbolGroupHasSymbols::create([
-                            'symbol_id' => $symbol->id,
-                            'symbol_group_id' => $symbolGroup->id,
-                            'symbol_name' => $symbol->symbol
-                        ]);
-                    } catch (ModelNotFoundException $e) {
-                        throw new Exception("Symbol with ID {$symbolId} not found.");
-                    }
-                }
-            });
-        } catch (Exception $e) {
-            throw new Exception("Failed to create symbol group with symbols: " . $e->getMessage());
-        }
+                $symbolGroup->symbols()->attach($symbolIds);
+
     }
     public function updateSymbolGroupWithSymbols($id, $name, $symbols)
     {
         try {
             $symbolGroup = SymbolGroup::findOrFail($id);
-            $symbolGroup->symbol_group = $name;
+            $symbolGroup->title = $name;
             $symbolGroup->save();
-            $symbolGroupSymbols = [];
-            foreach ($symbols as $symbolId) {
-                try {
-                    $symbol = Symbol::findOrFail($symbolId);
-                    $symbolGroupSymbols[$symbolId] = ['symbol_name' => $symbol->symbol];
-                } catch (ModelNotFoundException $e) {
-                    throw new Exception("Symbol with ID {$symbolId} not found.");
-                }
-            }
-            $symbolGroup->symbols()->sync($symbolGroupSymbols);
+            $symbolGroup->symbols()->sync($symbols);
         } catch (Exception $e) {
             throw new Exception("Failed to update symbol group with symbols: " . $e->getMessage());
         }

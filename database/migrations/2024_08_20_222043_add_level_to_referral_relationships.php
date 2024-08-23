@@ -26,6 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('referral_relationships', function (Blueprint $table) {
+            $table->dropForeign(['multi_level_id']); // Removes the column if the migration is rolled back
             $table->dropColumn('multi_level_id'); // Removes the column if the migration is rolled back
 
         });

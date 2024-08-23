@@ -49,13 +49,13 @@ class SymbolGroupController extends Controller
     public function store(StoreSymbolGroupRequest $request)
     {
 //        dd($request->all());
-//        try {
+        try {
             $this->symbolGroupService->createSymbolGroupWithSymbols($request->name, $request->symbols);
             notify()->success(__('Symbol Group updated successfully.'));
             return redirect()->back();
-//        } catch (\Exception $e) {
-//            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-//        }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function edit($id)

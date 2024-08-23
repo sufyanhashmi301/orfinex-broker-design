@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
+use App\Models\RebateRule;
 use App\Models\Schedule;
 use App\Models\MultiLevel;
 use App\Models\SwapFreeAccount;
@@ -61,8 +62,9 @@ class ForexSchemaController extends Controller
         $schema = ForexSchema::find($id);
         $swapBasedAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP)->orderBy('level_order','asc')->get();
         $swapFreeAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP_FREE)->orderBy('level_order','asc')->get();
+        $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
 
-        return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts'));
+        return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts','rebateRules'));
     }
     /**
      * Store a newly created resource in storage.

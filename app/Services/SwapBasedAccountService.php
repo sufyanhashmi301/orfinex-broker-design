@@ -11,21 +11,23 @@ class SwapBasedAccountService
 {
     public function create(StoreSwapBasedAccountRequest $request)
     {
-
-        return MultiLevel::create($request->all());
+        $multiLevel = MultiLevel::create($request->all());
+        $multiLevel->rebateRules()->attach($request->rebate_rules);
     }
 
     public function update( MultiLevel $swapBasedAccount, array $data,$id)
     {
-        $swapBasedAccount = MultiLevel::findOrFail($id);
-        $swapBasedAccount->update($data);
-        return $swapBasedAccount;
+        $multiLevel = MultiLevel::findOrFail($id);
+        $multiLevel->update($data);
+//        dd($data['rebate_rules']);
+        $multiLevel->rebateRules()->sync($data['rebate_rules']);
     }
 
     public function delete($id)
     {
-        $swapBasedAccount = MultiLevel::findOrFail($id);
-          $swapBasedAccount->delete();
-        return $swapBasedAccount;
+        $multiLevel = MultiLevel::findOrFail($id);
+        $multiLevel->rebateRules()->detach();
+        $multiLevel->delete();
+        return $multiLevel;
     }
 }

@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('symbol_groups', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('platform_type');
+        Schema::create('multi_level_rebate_rule', function (Blueprint $table) {
+            $table->foreignId('multi_level_id')->constrained()->onDelete('cascade');
+            $table->foreignId('rebate_rule_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('symbol_groups');
+        Schema::dropIfExists('multi_level_rebate_rule');
     }
 };

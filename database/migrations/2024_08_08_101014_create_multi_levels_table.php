@@ -16,7 +16,6 @@ return new class extends Migration
     {
         Schema::create('multi_levels', function (Blueprint $table) {
             $table->id();
-//            $table->foreignId('account_type_id')->constrained('forex_accounts');
             $table->foreignId('forex_scheme_id')->constrained('forex_schemas'); // This also creates an unsigned big integer
             $table->string('type')->default(MultiLevelType::SWAP);
             $table->string('title');

@@ -16,24 +16,27 @@
                     </button>
                 </div>
                 <div class="p-6 pt-0">
-                    <form action="" method="post" id="modalForm" class="space-y-4">
+                    <form action="{{ route('admin.ticket.priorities.store') }}" method="post" class="space-y-4">
+                        @csrf
                         <div class="input-area !mt-0">
-                            <label for="" class="form-label">{{ __('Priority Name:') }}</label>
+                            <label for="" class="form-label">{{ __('Priority Title:') }}</label>
                             <input
                                 type="text"
                                 name="name"
                                 class="form-control mb-0"
-                                placeholder="Status Name"
+                                placeholder="Priority Name"
                                 required
                             />
                         </div>
 
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Priority Type') }}</label>
-                            <select name="role" class="select2 form-control w-full">
-                                <option value="open">Open</option>
-                                <option value="closed">Closed</option>
-                            </select>
+                            <label for="" class="form-label">{{ __('Pick Color') }}</label>
+                            <div class="color-input-group relative">
+                                <input type="" name="" class="form-control text-input" value="#000000">
+                                <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
+                                    <input type="color" name="color" class="color-input" value="#000000">
+                                </span>
+                            </div>
                         </div>
 
                         <div class="action-btns text-right">

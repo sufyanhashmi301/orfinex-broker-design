@@ -52,6 +52,8 @@ use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\DashboardBannerController;
+use App\Http\Controllers\Backend\TicketStatusController;
+use App\Http\Controllers\Backend\TicketPriorityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -356,6 +358,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
         Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
+
+        Route::resource('statuses', TicketStatusController::class);
+        Route::resource('priorities', TicketPriorityController::class);
+
     });
     Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
     Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');

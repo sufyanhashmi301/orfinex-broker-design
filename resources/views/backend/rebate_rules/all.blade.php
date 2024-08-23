@@ -3,7 +3,9 @@
     {{ __('All Rebate Rules') }}
 @endsection
 @section('title-btns')
-
+    <a href="{{route('admin.symbols.index')}}" class="btn btn-white inline-flex items-center justify-center">
+        {{ __('View All Symbols') }}
+    </a>
     <a href="" class="btn btn-primary inline-flex items-center justify-center addRebateGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Rebate Rules') }}

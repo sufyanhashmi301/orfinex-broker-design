@@ -1,8 +1,8 @@
-<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 @foreach( json_decode($fields, true) as $key => $field)
 
     @if($field['type'] == 'file')
-        <div class="col-xl-12 col-md-12">
+        <div class="input-area">
             <label for="" class="form-label">{{ $field['name'] }}</label>
             <div class="wrap-custom-file">
                 <input
@@ -27,7 +27,7 @@
         </div>
     @elseif($field['type'] == 'textarea')
 
-        <div class="col-xl-12 col-md-12">
+        <div class="input-area md:col-span-2">
             <div class="progress-steps-form">
                 <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
                 <div class="input-group">
@@ -38,7 +38,7 @@
         </div>
 
     @else
-        <div class="col-span-12">
+        <div class="input-area md:col-span-2">
             <div class="progress-steps-form">
                 <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
                 <input type="text" class="form-control" name="kyc_credential[{{$field['name']}}]"

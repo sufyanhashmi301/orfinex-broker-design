@@ -3,7 +3,7 @@
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding
         rounded-md outline-none text-current">
             <div class="modal-body popup-body">
-                <div class="flex items-center justify-between p-5">
+                <div class="flex items-start justify-between p-5">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize">
                             {{ __('Update Priority Type - Open') }}
@@ -21,40 +21,8 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 pt-0">
-                    <form action="" method="post" id="modalForm" class="space-y-4">
-                        <div class="input-area !mt-0">
-                            <label for="" class="form-label">{{ __('Priority Name:') }}</label>
-                            <input
-                                type="text"
-                                name="name"
-                                class="form-control mb-0"
-                                placeholder="Status Name"
-                                required
-                            />
-                        </div>
+                <div class="p-6 pt-0" id="edit-priority-body">
 
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Priority Type') }}</label>
-                            <select name="role" class="select2 form-control w-full">
-                                <option value="open">Open</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                        </div>
-
-                        <div class="action-btns text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                {{ __('Update Priority') }}
-                            </button>
-                            <a href="#" class="btn btn-danger inline-flex items-center justify-center"
-                                data-bs-dismiss="modal"
-                                aria-label="Close">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                                {{ __('Close') }}
-                            </a>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

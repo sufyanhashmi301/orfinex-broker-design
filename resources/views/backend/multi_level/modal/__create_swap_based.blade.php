@@ -58,14 +58,28 @@
                                 />
                             </div>
                             <div class="lg:col-span-2 input-area">
+                                <label for="" class="form-label">
+                                    {{ __('Select Rebate Rules') }}
+                                </label>
+                                <select name="rebate_rules[]" class="select2 form-control w-full" multiple="multiple">
+                                    @foreach($rebateRules as $rebateRule)
+                                        <option  value="{{ $rebateRule->id }}">
+                                            {{ $rebateRule->title  }}
+                                        </option>
+                                    @endforeach
+
+                                </select>
+                                <div class="invalid-feedback" id="rebate-rules" style="display: none;"></div>
+                            </div>
+                            <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">{{ __('Short Description') }}</label>
-                                <input
+                                <textarea
                                     type="text"
                                     name="description"
                                     class="form-control mb-0"
                                     placeholder="Short Description"
                                     required
-                                />
+                                ></textarea>
                             </div>
                             <div class="lg:col-span-2 input-area">
                                 <label for="status" class="form-label">{{ __('Status') }}</label>

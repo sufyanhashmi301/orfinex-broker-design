@@ -46,7 +46,7 @@
 @section('script')
 
     <script>
-        
+
          $(document).ready(function() {
             $('#symbols').select2();
          });
@@ -117,7 +117,7 @@
                 columns: [
                     {"class": "table-td", data: 'id', name: 'ID',orderable : false},
                     {"class": "table-td", data: 'title', name: 'Rebate Name',orderable : false},
-                    {"class": "table-td", data: 'groups', name: 'Symbol Groups',orderable : false},
+                    {"class": "table-td", data: 'symbolGroups', name: 'Symbol Groups',orderable : false},
                     {"class": "table-td", data: 'rebate_amount', name: 'Total Rebate',orderable : false},
                     {"class": "table-td", data: 'status', name: 'Status',orderable : false},
                     {"class": "table-td", data: 'action', name: 'action',orderable : false},
@@ -143,38 +143,44 @@
             });
         });
 
-        $(document).on('click', '.editRebateRule', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            $.ajax({
-                url: '{{ route("admin.rebate-rules.edit", ":id") }}'.replace(':id', id),
-                method: 'GET',
-                success: function(response) {
-                    console.log(response);
-                    $('#title').val(response.rebateRule.title);
-                    var symbolGroupsSelect = $('#symbol_groups');
-                    symbolGroupsSelect.empty();
-                    $.each(response.allSymbolGroups, function(index, symbol) {
-                        var selected = response.rebateRule.groups.some(function(s) {
-                            return s.id === symbol.id;
-                        }) ? 'selected' : '';
-                        symbolGroupsSelect.append('<option value="' + symbol.id + '" ' + selected + '>' + symbol.symbol_group + '</option>');
-                    });
-                    $('select[name="rule_type_id"]').val(response.rebateRule.rule_type_id);
-                    $('#rebate_amount').val(response.rebateRule.rebate_amount);
-                    $('#per_lot').val(response.rebateRule.per_lot);
-                    $('select[name="status"]').val(response.rebateRule.status);
+         $(document).on('click', '.editRebateRule', function(e) {
+             e.preventDefault();
+             var id = $(this).data('id');
+             $.ajax({
+                 url: '{{ route("admin.rebate-rules.edit", ":id") }}'.replace(':id', id),
+                 method: 'GET',
+                 success: function(response) {
+                     $('#edit_rebate_rule').html(response);
+                     $('#editSymbolGroupModal').modal('show');
+                 },
+                 error: function(xhr, status, error) {
+                     console.error(xhr.responseText);
+                 }
+             });
+         });
 
-                    $('#editSymbolGroupModal').modal('show');
-                    $('#editRebateRuleForm').attr('action', '{{ route("admin.rebate-rules.update", ":id") }}'.replace(':id', id));
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        });
+         $('#editSymbolGroupModal').on('submit', '#editRebateRuleForm', function(e) {
+             e.preventDefault();
+             var form = $(this);
+             var actionUrl = form.attr('action');
 
-        $(document).on('click', '.deleteRebateRule', function(event) {
+             $.ajax({
+                 url: actionUrl,
+                 method: 'POST',
+                 data: form.serialize(),
+                 success: function(response) {
+                     $('#editSymbolGroupModal').modal('hide');
+                     location.reload(); // Reload the page to reflect changes
+                 },
+                 error: function(xhr, status, error) {
+                     console.error(xhr.responseText);
+                     // Handle validation errors and display them
+                 }
+             });
+         });
+
+
+         $(document).on('click', '.deleteRebateRule', function(event) {
 
             "use strict";
             event.preventDefault();

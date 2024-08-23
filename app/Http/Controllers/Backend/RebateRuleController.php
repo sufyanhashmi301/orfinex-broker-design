@@ -20,12 +20,12 @@ class RebateRuleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = RebateRule::with('groups')->latest('updated_at')->get();
-    
+            $data = RebateRule::with('symbolGroups')->get();
+
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('groups', function($row) {
-                    return $row->groups->pluck('symbol_group')->implode(', ');
+                ->addColumn('symbolGroups', function($row) {
+                    return $row->symbolGroups->pluck('title')->implode(', ');
                 })
                 ->addColumn('status', 'backend.rebate_rules.include.__status')
                 ->addColumn('action', 'backend.rebate_rules.include.__action')
@@ -37,7 +37,7 @@ class RebateRuleController extends Controller
 
     public function create()
     {
-        $symbolGroups = SymbolGroup::pluck('symbol_group','id')->toArray();
+        $symbolGroups = SymbolGroup::pluck('title','id')->toArray();
         return response()->json(['symbolGroups'=>$symbolGroups]);
     }
     public function store(StoreRebateRuleRequest $request)
@@ -50,16 +50,13 @@ class RebateRuleController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-   
+
     public function edit($id)
     {
-        $rebateRule = RebateRule::with('groups')->find($id);
+        $rebateRule = RebateRule::with('symbolGroups')->find($id);
         $allSymbolGroups = SymbolGroup::all();
-    
-        return response()->json([
-            'rebateRule' => $rebateRule,
-            'allSymbolGroups' => $allSymbolGroups
-        ]);
+
+        return view('backend.rebate_rules.include.__edit_form', compact('rebateRule', 'allSymbolGroups'));
     }
     public function show(RebateRule $rebateRule)
     {
@@ -71,7 +68,7 @@ class RebateRuleController extends Controller
         notify()->success(__('Rebate Rule updated successfully.'));
         return redirect()->route('admin.rebate-rules.index');
     }
-   
+
 
     public function destroy(RebateRule $rebateRule)
     {

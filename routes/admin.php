@@ -46,7 +46,7 @@ use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\DesignationController;
 use App\Http\Controllers\Backend\RebateRuleController;
-use App\Http\Controllers\Backend\SwapMultiLevelController;
+use App\Http\Controllers\Backend\MultiLevelController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
@@ -420,7 +420,7 @@ Route::get('settings/platform-api/db-synchronization', function () {
 Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
 Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
 Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('swap-multi-level', SwapMultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+Route::resource('swap-multi-level', MultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
 Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
 Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
 Route::post('symbols/store', [SymbolController::class,'store']);

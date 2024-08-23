@@ -50,7 +50,7 @@
 
     <!-- Modal for Add New Group -->
     @include('backend.symbol_groups.modal.__create')
-    
+
     {{--Modal for edit symbol group--}}
     @include('backend.symbol_groups.modal.__edit')
 
@@ -128,7 +128,7 @@
                 ajax: "{{ route('admin.symbol-groups.index') }}",
                 columns: [
                     {"class": "table-td", data: 'id', name: 'ID',orderable : false},
-                    {"class": "table-td", data: 'symbol_group', name: 'Symbol Group',orderable : false},
+                    {"class": "table-td", data: 'title', name: 'Symbol Group',orderable : false},
                     {"class": "table-td", data: 'symbols', name: 'symbols',orderable : false},
                     {
                         "class": "table-td",
@@ -181,7 +181,7 @@
                 method: 'GET',
                 success: function(response) {
                     console.log(response);
-                    $('#groupName').val(response.symbolGroup.symbol_group);
+                    $('#groupName').val(response.symbolGroup.title);
                     var symbolsSelect = $('#symbols');
                     symbolsSelect.empty();
                     $.each(response.allSymbols, function(index, symbol) {

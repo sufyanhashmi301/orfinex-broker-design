@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class MultiLevel
- * 
+ *
  * @property int $id
  * @property int $forex_scheme_id
  * @property string $type
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property ForexSchema $forex_schema
  *
  * @package App\Models
@@ -47,8 +47,13 @@ class MultiLevel extends Model
 		'status'
 	];
 
-	public function forex_schema()
+	public function forexSchema()
 	{
-		return $this->belongsTo(ForexSchema::class, 'forex_scheme_id');
+		return $this->belongsTo(ForexSchema::class, 'forex_scheme_id')->withTimestamps();
 	}
+
+    public function rebateRules()
+    {
+        return $this->belongsToMany(RebateRule::class)->withTimestamps();
+    }
 }

@@ -10,4 +10,13 @@ class ReferralRelationship extends Model
     use HasFactory;
 
     protected $fillable = ['referral_link_id', 'user_id', 'multi_level_id'];
+
+    public function referralLink()
+    {
+        return $this->belongsTo(ReferralLink::class, 'referral_link_id');
+    }
+    public function multiLevel()
+    {
+        return $this->belongsTo(MultiLevel::class, 'multi_level_id');
+    }
 }

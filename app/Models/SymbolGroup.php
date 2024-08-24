@@ -33,7 +33,7 @@ class SymbolGroup extends Model
 		'platform_type'
 	];
 
-	public function rebateRules()
+	public function rebateRule()
 	{
 		return $this->belongsToMany(RebateRule::class)
 					->withPivot('id')

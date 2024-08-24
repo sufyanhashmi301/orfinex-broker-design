@@ -25,7 +25,8 @@ enum TxnType: string
     case Refund = 'refund';
     case MultiIB = 'multi_ib';
     case IB = 'ib';
-    
+    case MultiLevelBonus = 'multi_level_bonus';
+
     public function label(): string
     {
         return match($this) {
@@ -48,6 +49,7 @@ enum TxnType: string
             self::Refund => 'Refund',
             self::MultiIB => 'Multi IB',
             self::IB => 'IB',
+            self::MultiLevelBonus => 'MultiLevel Bonus',
         };
     }
 }

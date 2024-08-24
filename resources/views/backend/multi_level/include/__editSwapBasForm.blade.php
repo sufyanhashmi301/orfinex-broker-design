@@ -43,7 +43,7 @@
             <select name="rebate_rules[]" class="select2 form-control w-full" multiple="multiple">
                 @foreach($rebateRules as $rebateRule)
                     <option value="{{ $rebateRule->id }}"
-                            @selected(in_array($rebateRule->id, $multiLevelAccount->rebateRules->pluck('id')->toArray()))>
+                            @selected(in_array($rebateRule->id, $multiLevelAccount->rebateRule->pluck('id')->toArray()))>
                         {{ $rebateRule->title }}
                     </option>
                 @endforeach

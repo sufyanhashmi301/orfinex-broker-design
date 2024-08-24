@@ -47,14 +47,29 @@ class MultiLevelRebateDistribution extends Command
         $realForexAccounts = ForexAccount::realActiveAccount($childUserId)
             ->orderBy('balance', 'desc')
             ->get();
-
+        $childUser = User::find($childUserId);
         foreach ($realForexAccounts as $realForexAccount) {
+            $sysmbols = $this->getUserAssignedSymbols($ReferralRelationship);
             $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime);
+            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime,$sysmbols);
             $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship);
         }
     }
 
+    protected function getUserAssignedSymbols($ReferralRelationship)
+    {
+        return $ReferralRelationship->multiLevel->rebateRule()
+            ->with('symbolGroups.symbols')
+            ->get()
+            ->flatMap(function ($rebateRule) {
+                return $rebateRule->symbolGroups->flatMap(function ($symbolGroup) {
+                    return $symbolGroup->symbols;
+                });
+            })
+            ->pluck('symbol') // Assuming 'symbol_name' is the column you want to extract
+            ->unique() // To ensure no duplicate symbols
+            ->toArray();
+    }
     protected function getLastDeal($childUserId, $login)
     {
         return MetaDeal::where('login', $login)
@@ -63,7 +78,7 @@ class MultiLevelRebateDistribution extends Command
             ->value('time') ?: Carbon::now()->startOfDay();
     }
 
-    protected function getMT5Deals($login, $lastDealTime)
+    protected function getMT5Deals($login, $lastDealTime,$sysmbols)
     {
         $table = 'mt5_deals_' . Carbon::now()->year;
 
@@ -71,6 +86,7 @@ class MultiLevelRebateDistribution extends Command
             ->table($table)
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)
+//            ->whereIn('Symbol', $sysmbols)
             ->where('Time', '>', $lastDealTime)
             ->where('Volume', '>', 0)
             ->whereColumn('Volume', 'VolumeClosed')

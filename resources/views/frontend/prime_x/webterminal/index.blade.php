@@ -3,8 +3,8 @@
     {{ __('Webterminal') }}
 @endsection
 @section('content')
-    <iframe src="{{ setting('terminal_src_light','global') }}" width="{{ setting('terminal_width','global') }}" height="{{ setting('terminal_height','global') }}" class="dark:hidden"></iframe>
-    <iframe src="{{ setting('terminal_src_dark','global') }}" width="{{ setting('terminal_width','global') }}" height="{{ setting('terminal_height','global') }}" class="hidden dark:block"></iframe>
+    <iframe src="{{ setting('webterminal_src_light','global') }}" width="{{ setting('webterminal_width','global') }}" height="{{ setting('webterminal_height','global') }}" class="dark:hidden"></iframe>
+    <iframe src="{{ setting('webterminal_src_dark','global') }}" width="{{ setting('webterminal_width','global') }}" height="{{ setting('webterminal_height','global') }}" class="hidden dark:block"></iframe>
 @endsection
 @section('style')
     <style>

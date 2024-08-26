@@ -470,7 +470,34 @@
             </ul>
         </li>
 
-        {{-- ************************************************************* Site  Settings *********************************************************--}}
+        <li class="">
+            <a href="javascript:void(0);" class="navItem">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="mdi:partnership"></iconify-icon>
+                    <span>{{ __('Partnership') }}</span>
+                </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li class="">
+                    <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">
+                        {{ __('Symbols') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('admin.symbol-groups.index') }}" class="{{ isActive('admin.symbol-groups*') }}">
+                        {{ __('Symbol Groups') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('admin.rebate-rules.index') }}" class="{{ isActive('admin.rebate-rules*') }}">
+                        {{ __('Rebate Rules') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+{{-- ************************************************************* Site  Settings *********************************************************--}}
         @canany(['site-setting','email-setting','plugin-setting','page-manage'])
             @canany(['site-setting','email-setting','plugin-setting'])
                 <li class="mt-auto">

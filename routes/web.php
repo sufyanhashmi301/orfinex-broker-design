@@ -344,4 +344,4 @@ Route::get('user/wallets', function () {
 
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
-});
+})->name('webterminal');

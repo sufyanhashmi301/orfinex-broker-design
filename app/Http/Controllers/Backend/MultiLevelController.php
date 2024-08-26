@@ -28,7 +28,7 @@ class MultiLevelController extends Controller
     public function store(StoreSwapBasedAccountRequest $request)
     {
 //        dd($request->all());
-        $checkLevelExist = MultiLevel::where('type', get_hash($request->type))->where('level_order', $request->level_order)->first();
+        $checkLevelExist = MultiLevel::where('type', get_hash($request->type))->where('forex_scheme_id', $request->forex_scheme_id)->where('level_order', $request->level_order)->first();
         if ($checkLevelExist) {
             notify()->error(__('Level already taken.'));
             return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
@@ -59,7 +59,7 @@ class MultiLevelController extends Controller
     {
 //        dd($swapBasedAccount);
 //        dd($request->all(),$swapBasedAccount,$id);
-        $checkLevelExist = MultiLevel::where('id','<>' ,$id)->where('type', get_hash($request->type))->where('level_order', $request->level_order)->exists();
+        $checkLevelExist = MultiLevel::where('id','<>' ,$id)->where('type', get_hash($request->type))->where('forex_scheme_id', $request->forex_scheme_id)->where('level_order', $request->level_order)->exists();
         if ($checkLevelExist) {
             notify()->error(__('Level already taken.'));
             return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);

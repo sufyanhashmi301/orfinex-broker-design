@@ -29,6 +29,7 @@ use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -120,7 +121,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     });
 
     //Send Money
-    Route::group(['middleware' => 'KYC','prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
+    Route::group(['middleware' => 'KYC', 'prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
         Route::get('/', 'sendMoney')->name('view');
         Route::post('now', 'sendMoneyNow')->name('now');
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
@@ -196,7 +197,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
 Route::get('language-update', [HomeController::class, 'languageUpdate'])->name('language-update');
 
 //Gateway Manage
-Route::get('gateway-list', [GatewayController::class, 'gatewayList'])->name('gateway.list')->middleware('XSS','translate','auth');
+Route::get('gateway-list', [GatewayController::class, 'gatewayList'])->name('gateway.list')->middleware('XSS', 'translate', 'auth');
 
 //Gateway status
 Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as' => 'status.'], function () {
@@ -259,7 +260,6 @@ Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-p
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
-
 
 
 Route::get('user/agreements', function () {

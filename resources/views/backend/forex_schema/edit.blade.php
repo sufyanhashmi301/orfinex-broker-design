@@ -324,7 +324,7 @@
                             <label for="" class="form-label">
                                 {{ __('Trading Server (Demo) ') }}
                             </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('live_server','platform_api') }}" readonly>
+                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
                         </div>
                     </div>
                 </div>

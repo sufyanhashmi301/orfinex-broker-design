@@ -36,7 +36,7 @@
                             {{ __('Trading Server (Live) ') }}
                         </label>
                         <select name="" class="select2 form-control w-full">
-                            <option value="Banex Capital">{{ __('Banex Capital') }}</option>
+                            <option value="{{ setting('live_server','platform_api') }}">{{ setting('live_server','platform_api') }}</option>
                         </select>
                     </div>
                     <div class="input-area !mb-7">

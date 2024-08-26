@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="card p-6 mb-5">
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open w-full">
             <li class="nav-item">
                 <a href="{{route('admin.user.index')}}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.user.index') }}">
                     {{ __('All Customers') }}
@@ -41,9 +41,37 @@
                     {{ __('Without Balance') }}
                 </a>
             </li>
+            <li class="nav-item !ml-auto">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+                    <span class="flex items-center">
+                        <span>{{ __('More') }}</span>
+                        <iconify-icon icon="lucide:chevron-down" class="text-xl ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
+                    </span>
+                </a>
+            </li>
         </ul>
 
-        @yield('filters')
+        <div class="hidden mt-5" id="filters_div">
+            @yield('filters')
+        </div>
     </div>
     @yield('customers-content')
+@endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
+    </script>
+    @yield('customers-script')
 @endsection

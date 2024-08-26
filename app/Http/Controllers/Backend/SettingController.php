@@ -181,4 +181,8 @@ class SettingController extends Controller
         return view('backend.setting.copy_trading.brokeree');
     }
 
+    public function  webterminalSetting(){
+        return view('backend.setting.platform_api.webterminal');
+    }
+
 }

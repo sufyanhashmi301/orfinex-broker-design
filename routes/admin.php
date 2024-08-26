@@ -299,6 +299,8 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
+        Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+
     });
 
 //===============================  Security Settings ==================================

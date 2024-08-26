@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSwapBasedAccountRequest;
 use App\Http\Requests\UpdateSwapBasedAccountRequest;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
+use App\Models\ReferralRelationship;
 use App\Services\SwapBasedAccountService;
 use Illuminate\Http\Request;
 
@@ -73,7 +74,11 @@ class MultiLevelController extends Controller
 
     public function destroy($id)
     {
-//        dd($id);
+        $referral = ReferralRelationship::where('multi_level_id',$id)->exists();
+        if ($referral) {
+            notify()->error(__('Sorry, there is already someone assigned to this level. Please remove that user first!'));
+            return redirect()->back();
+        }
         $swapBasedAccount =  $this->swapBasedAccountService->delete($id);
         notify()->success(__('Multi Level Account deleted successfully.'));
         return redirect()->route('admin.multi-level.view', $swapBasedAccount->forex_scheme_id);

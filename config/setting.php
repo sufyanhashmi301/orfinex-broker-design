@@ -1204,5 +1204,42 @@ return [
             ],
         ],
     ],
+    'webterminal' => [
+        'title' => 'Webterminal Settings',
+        'elements' => [
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'terminal_src_light', // unique name for field
+                'label' => 'Terminal Src (Light)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'terminal_src_dark', // unique name for field
+                'label' => 'Terminal Src (Dark)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'terminal_width', // unique name for field
+                'label' => 'Terminal Width', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'terminal_height', // unique name for field
+                'label' => 'Terminal Height', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+        ],
+    ],
 
 ];

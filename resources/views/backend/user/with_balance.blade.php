@@ -47,7 +47,7 @@
     <!-- Modal for Send Email-->
 @endsection
 
-@section('script')
+@section('customers-script')
 
     <script>
         (function ($) {

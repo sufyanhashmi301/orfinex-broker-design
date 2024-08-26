@@ -501,7 +501,7 @@
         @canany(['site-setting','email-setting','plugin-setting','page-manage'])
             @canany(['site-setting','email-setting','plugin-setting'])
                 <li class="mt-auto">
-                    <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive(['admin.settings*']) }}">
+                    <a href="{{ route('admin.settings.company') }}" class="navItem {{ isActive(['admin.settings*']) }}">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
                             <span>{{ __('Settings') }}</span>

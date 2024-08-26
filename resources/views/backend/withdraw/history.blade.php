@@ -10,7 +10,7 @@
     </div>
 @endsection
 @section('filters')
-    <form id="filter-form" method="POST" action="{{ route('admin.withdraw.export') }}" class="mt-5">
+    <form id="filter-form" method="POST" action="{{ route('admin.withdraw.export') }}">
         @csrf
         <div class="flex justify-between flex-wrap items-center">
             <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
@@ -170,5 +170,20 @@
                 });
             });
         })(jQuery);
+
+        $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
+
     </script>
 @endsection

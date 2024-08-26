@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateSwapBasedAccountRequest;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\ReferralRelationship;
+use App\Models\Symbol;
 use App\Services\SwapBasedAccountService;
 use Illuminate\Http\Request;
 
@@ -34,15 +35,40 @@ class MultiLevelController extends Controller
             notify()->error(__('Level already taken.'));
             return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
         }
+
+        //validate Duplicate symbols
+//        $this->validateDuplicateSymbols($request);
+
         $request->merge(['type' => get_hash($request->type)]);
-//        dd($request->all());
         $this->swapBasedAccountService->create($request);
         notify()->success(__('Multi Level Account created successfully.'));
         return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
 
     }
 
-    public function edit($id)
+    public function validateDuplicateSymbols($request)
+    {
+        $rebateRuleIds = $request->rebate_rules;
+
+        // Load the symbols associated with the selected rebate rules
+        $symbols = Symbol::whereHas('symbolGroups.rebateRule', function ($query) use ($rebateRuleIds) {
+            $query->whereIn('rebate_rules.id', $rebateRuleIds);
+        })->with('symbolGroups.rebateRule')->get();
+//        dd($symbols);
+
+        // Check for duplicate symbols
+        $symbolNames = $symbols->pluck('symbol')->toArray();
+        $duplicates = array_unique(array_diff_assoc($symbolNames, array_unique($symbolNames)));
+
+        if (!empty($duplicates)) {
+            // If duplicates exist, return with an error message
+            $duplicateSymbols = implode(', ', $duplicates);
+            notify()->error(__('Symbols duplicate of :symbols.', ['symbols' => $duplicateSymbols]));
+            return redirect()->back();
+        }
+    }
+        public function edit($id)
+
     {
         $multiLevelAccount = MultiLevel::findOrFail($id);
         $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();

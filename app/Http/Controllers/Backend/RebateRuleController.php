@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRebateRuleRequest;
+use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\SymbolGroup;
 use App\Services\RebateRuleService;
@@ -72,6 +73,10 @@ class RebateRuleController extends Controller
 
     public function destroy(RebateRule $rebateRule)
     {
+        if($rebateRule->multiLevels()->count() > 0) {
+            notify()->error(__('Sorry,Cannot delete this rebate rule because it is still associated with multi-levels. Please detach the levels first'));
+            return redirect()->back();
+        }
         $this->rebateRuleService->delete($rebateRule);
         notify()->success(__('Rebate Rule deleted successfully.'));
         return redirect()->route('admin.rebate-rules.index');

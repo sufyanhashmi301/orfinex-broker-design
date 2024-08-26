@@ -1210,34 +1210,42 @@ return [
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'terminal_src_light', // unique name for field
-                'label' => 'Terminal Src (Light)', // you know what label it is
+                'name' => 'webterminal_src_light', // unique name for field
+                'label' => 'Web Terminal (Light)', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'terminal_src_dark', // unique name for field
-                'label' => 'Terminal Src (Dark)', // you know what label it is
+                'name' => 'webterminal_src_dark', // unique name for field
+                'label' => 'Web Terminal (Dark)', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'terminal_width', // unique name for field
-                'label' => 'Terminal Width', // you know what label it is
+                'name' => 'webterminal_width', // unique name for field
+                'label' => 'Web Terminal Width', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'terminal_height', // unique name for field
-                'label' => 'Terminal Height', // you know what label it is
+                'name' => 'webterminal_height', // unique name for field
+                'label' => 'Web Terminal Height', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_webterminal', // unique name for field
+                'label' => 'Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
             ],
         ],
     ],

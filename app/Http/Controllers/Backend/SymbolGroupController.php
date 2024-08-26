@@ -82,6 +82,10 @@ class SymbolGroupController extends Controller
 
     public function destroy(SymbolGroup $symbolGroup)
     {
+        if($symbolGroup->rebateRule()->count() > 0) {
+            notify()->error(__('Sorry,Cannot delete this symbol group because it is still associated with rebate rules. Please detach first'));
+            return redirect()->back();
+        }
         $this->symbolGroupService->delete($symbolGroup);
         notify()->success(__('Symbol Group deleted successfully.'));
         return redirect()->route('admin.symbol-groups.index');

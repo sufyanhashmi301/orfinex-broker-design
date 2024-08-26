@@ -11209,8 +11209,8 @@ ul.custom-list ul li{
   padding-top: 1.5rem;
 }
 .dashcode-data-table .dataTables_paginate{
-  margin-top: 1.5rem;
-  margin-right: 1rem;
+  /*margin-top: 1.5rem;*/
+  /*margin-right: 1rem;*/
 }
 .dashcode-data-table .dataTables_paginate > :not([hidden]) ~ :not([hidden]){
   --tw-space-x-reverse: 0;
@@ -11218,7 +11218,7 @@ ul.custom-list ul li{
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 .dashcode-data-table .dataTables_paginate{
-  padding-bottom: 1.5rem;
+  /*padding-bottom: 1.5rem;*/
 }
 .dashcode-data-table .dataTables_paginate .paginate_button{
   margin-right: 0.5rem;

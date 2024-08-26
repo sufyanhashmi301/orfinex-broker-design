@@ -51,13 +51,11 @@
                                         </option>
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login)  }} {{$currency}})
                                             </option>
                                         @endforeach
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
-                                            <option value="{{ auth()->user()->ib_login }}" data-type="ib-account" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ auth()->user()->ib_login }} - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})
-                                            </option>
+                                          @include('frontend::common.include.__ib_dropdown' )
                                         @endif
                                     </select>
                                 </div>
@@ -114,7 +112,7 @@
                                             <strong>{{ __('Withdraw Amount') }}</strong>
                                         </td>
                                         <td class="dark:text-slate-300">
-                                            <span class="withdrawAmount"></span> 
+                                            <span class="withdrawAmount"></span>
                                             {{$currency}}
                                         </td>
                                     </tr>

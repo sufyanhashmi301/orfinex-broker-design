@@ -9,7 +9,7 @@ use Razorpay\Api\Request;
 
 class SymbolService
 {
-    
+
     public function createSymbolFromMt5($symbolId)
     {
         $data = DB::connection('mt5_db')
@@ -17,7 +17,7 @@ class SymbolService
             ->select('Symbol_ID', 'Symbol', 'Path', 'Description', 'ContractSize')
             ->where('Symbol_ID', $symbolId)
             ->first();
-        
+
         if (!$data) {
             return ['success' => false, 'message' => 'Symbol not found in MT5'];
         }
@@ -25,12 +25,16 @@ class SymbolService
         $existingSymbol = Symbol::where('symbol', $data->Symbol)->first();
         if ($existingSymbol) {
             if($existingSymbol->status==1){
-                $existingSymbol->status =0;
+                if($existingSymbol->symbolGroups()->count() > 0) {
+                    notify()->error(__('Sorry,Cannot disable this symbol because it is still associated with symbol groups. Please detach first'));
+                    return ['success'=>false];
+                }
+                $existingSymbol->status = 0;
             }else{
                 $existingSymbol->status =1;
             }
             $existingSymbol->update();
-            
+
             notify()->success(__('Status Changed successfully'));
             return ['success'=>false];
         }

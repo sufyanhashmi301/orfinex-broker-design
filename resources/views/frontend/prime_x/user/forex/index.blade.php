@@ -38,7 +38,7 @@
                         <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                             Deposit Now
                         </a>
-                    </div> 
+                    </div>
                 @else
                     <div class="grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
                         <div class="filter">

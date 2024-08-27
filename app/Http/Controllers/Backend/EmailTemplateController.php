@@ -72,14 +72,19 @@ class EmailTemplateController extends Controller
             'bottom_status' => $input['bottom_status'],
             'bottom_title' => $input['bottom_title'],
             'bottom_body' => nl2br($input['bottom_body']),
+            'support_link' => $input['support_link'],
+            'note' => nl2br($input['note']),
+            'warning_content' => nl2br($input['warning_content']),
+            'company_info' => nl2br($input['company_info']),
             'status' => $input['status'],
         ];
 
         $template = EmailTemplate::find($input['id']);
+//        dd($input,$data);
         if (isset($input['banner']) && is_file($input['banner'])) {
             $data['banner'] = self::imageUploadTrait($input['banner'], $template->banner);
         }
-
+//dd($data);
         $template->update($data);
 
         notify()->success(__('Email Template Updated Successfully'));

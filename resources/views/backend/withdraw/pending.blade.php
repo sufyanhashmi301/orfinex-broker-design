@@ -18,12 +18,12 @@
                     <div class="flex-1 input-area relative">
                         <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
                     </div>
-                  
-                   
+
+
                     <div class="flex-1 input-area relative">
-                        <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
-                    </div>
-                
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
+                </div>
+
                 </div>
                 <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                     <div class="input-area relative">
@@ -48,14 +48,14 @@
         </form>
     </div>
     <div class="card">
-        <div class="card-body px-6 pb-6">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
-                            <thead class=" border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
@@ -69,7 +69,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-    
+
                             </tbody>
                         </table>
                     </div>
@@ -82,12 +82,12 @@
         </div>
     </div>
     <!-- Modal for Pending Deposit Approval -->
-    @can('withdraw-action')
-        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deposit-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+    @can('transaction-action')
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                    <div class="modal-body popup-body p-6">
-                        <div class="popup-body-text withdraw-action">
+              <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-body popup-body">
+                        <div class="popup-body-text deposit-action p-6">
 
                         </div>
                     </div>
@@ -95,33 +95,30 @@
             </div>
         </div>
     @endcan
-    <!-- Modal for Pending Deposit Approval -->
 @endsection
+
 @section('script')
     <script>
         (function ($) {
             "use strict";
             var table = $('#dataTable').DataTable();
             table.destroy();
-
             var table = $('#dataTable')
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
-                paging: true,
-                ordering: true,
-                info: false,
-                searching: true,
-                lengthChange: true,
-                lengthMenu: [10, 25, 50, 100],
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                searching: false,
+                lengthChange: false,
+                info: true,
                 language: {
-                lengthMenu: "Show _MENU_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                },
-                search: "Search:"
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
                 },
                 processing: true,
                 serverSide: true,
@@ -130,27 +127,25 @@
                     url: "{{ route('admin.withdraw.pending') }}",
                     data: function (d) {
                         d.email = $('#email').val();
-                        
+
                         d.created_at = $('#created_at').val();
-                       
+
                     }
                 },
-              
+
                 columns: [
-                    {"class": "table-td", data: 'created_at', name: 'created_at'},
-                    {"class": "table-td", data: 'username', name: 'username'},
-                    {"class": "table-td", data: 'tnx', name: 'tnx'},
-                    {"class": "table-td", data: 'target_id', name: 'target_id'},
-                    {"class": "table-td", data: 'amount', name: 'amount'},
-                    {"class": "table-td", data: 'charge', name: 'charge'},
-                    {"class": "table-td", data: 'method', name: 'method'},
-                    {"class": "table-td", data: 'status', name: 'status'},
-                    {"class": "table-td", data: 'action', name: 'action'},
+                    {data: 'created_at', name: 'created_at'},
+                    {data: 'username', name: 'username'},
+                    {data: 'tnx', name: 'tnx'},
+                    {data: 'target_id', name: 'target_id'},
+                    {data: 'amount', name: 'amount'},
+                    {data: 'charge', name: 'charge'},
+                    {data: 'method', name: 'method'},
+                    {data: 'status', name: 'status'},
+                    {data: 'action', name: 'action'},
                 ]
             });
 
-
-            //send mail modal form open
             $('body').on('click', '#withdraw-action', function () {
                 $('.withdraw-action').empty();
 
@@ -166,6 +161,21 @@
             })
             $('#filter').click(function () {
                 table.draw();
+            });
+            $('body').on('click', '#deposit-action', function () {
+                $('.deposit-action').empty();
+
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                        $('.deposit-action').append(response)
+                        imagePreview()
+                        $('#transaction-action-modal').modal('show');
+
+                    }
+                });
             });
         })(jQuery);
     </script>

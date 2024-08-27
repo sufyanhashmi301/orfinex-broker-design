@@ -1,6 +1,6 @@
 @if ($paginator->hasPages())
     <nav class="flex justify-end items-center p-3">
-        <ul class="list-none @if($isMobile) pagination-sm @endif">
+        <ul class="flex list-none @if($isMobile) pagination-sm @endif">
 
             @if ($paginator->onFirstPage())
                 <li class="inline-block disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">

@@ -69,6 +69,7 @@ class TicketController extends Controller
             '[[site_url]]' => route('home'),
         ];
 
+        $this->mailNotify($ticket->user->email, 'user_support_ticket', $shortcodes);
         $this->mailNotify(setting('support_email', 'global'), 'admin_support_ticket', $shortcodes);
 
         notify()->success('Your Ticket Was created successfully', 'success');

@@ -784,32 +784,6 @@ return [
         ]
     ],
 
-    'internal' => [
-        'title' => 'Internal Transfers Settings',
-        'elements' => [
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'min_send', // unique name for field
-                'label' => 'External Minimum Transfer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-        ],
-    ],
-    'external' => [
-        'title' => 'External Transfers Settings',
-        'elements' => [
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'min_send', // unique name for field
-                'label' => 'External Minimum Transfer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-        ],
-    ],
     'fee' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
@@ -1174,6 +1148,104 @@ return [
                 'label' => 'GDPR Text', // you know what label it is
                 'rules' => 'required|max:500', // validation rule of laravel
                 'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
+            ],
+        ],
+    ],
+    'company_misc' => [
+        'title' => 'Misc Settings',
+        'elements' => [
+            [
+                'type' => 'textarea', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'disclaimer', // unique name for field
+                'label' => 'Disclaimer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'textarea', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_disclaimer', // unique name for field
+                'label' => 'Disclaimer Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'footer_content', // unique name for field
+                'label' => 'Footer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_footer', // unique name for field
+                'label' => 'Footer Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'risk_warning', // unique name for field
+                'label' => 'Risk Warning', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_risk_warning', // unique name for field
+                'label' => 'Risk Warning Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+        ],
+    ],
+    'webterminal' => [
+        'title' => 'Webterminal Settings',
+        'elements' => [
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'webterminal_src_light', // unique name for field
+                'label' => 'Web Terminal (Light)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'webterminal_src_dark', // unique name for field
+                'label' => 'Web Terminal (Dark)', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'webterminal_width', // unique name for field
+                'label' => 'Web Terminal Width', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'webterminal_height', // unique name for field
+                'label' => 'Web Terminal Height', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_webterminal', // unique name for field
+                'label' => 'Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
             ],
         ],
     ],

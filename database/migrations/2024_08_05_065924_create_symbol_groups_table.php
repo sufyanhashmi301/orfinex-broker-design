@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('symbol_groups', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->string('platform_type');
-            $table->string('symbol_group');
             $table->timestamps();
         });
     }

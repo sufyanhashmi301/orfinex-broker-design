@@ -21,6 +21,7 @@ class SymbolGroupController extends Controller
     }
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $data = SymbolGroup::with('symbols')->latest('updated_at')->get();
 
@@ -36,7 +37,8 @@ class SymbolGroupController extends Controller
                 ->rawColumns(['symbols', 'action'])
                 ->make(true);
         }
-        return view('backend.symbol_groups.all');
+        $symbols = Symbol::where('status',true)->get();
+        return view('backend.symbol_groups.all',compact('symbols'));
     }
 
     public function create()
@@ -46,10 +48,11 @@ class SymbolGroupController extends Controller
     }
     public function store(StoreSymbolGroupRequest $request)
     {
+//        dd($request->all());
         try {
             $this->symbolGroupService->createSymbolGroupWithSymbols($request->name, $request->symbols);
             notify()->success(__('Symbol Group updated successfully.'));
-            return response()->json(['success' => true]);
+            return redirect()->back();
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
@@ -79,6 +82,10 @@ class SymbolGroupController extends Controller
 
     public function destroy(SymbolGroup $symbolGroup)
     {
+        if($symbolGroup->rebateRule()->count() > 0) {
+            notify()->error(__('Sorry,Cannot delete this symbol group because it is still associated with rebate rules. Please detach first'));
+            return redirect()->back();
+        }
         $this->symbolGroupService->delete($symbolGroup);
         notify()->success(__('Symbol Group deleted successfully.'));
         return redirect()->route('admin.symbol-groups.index');

@@ -68,13 +68,15 @@
 
     <!-- Modal for Account details -->
     @include('frontend::.user.forex.modal.__trade')
-    
+
     <!-- Modal for Account details -->
     @include('frontend::.user.forex.modal.__account_details')
 
     <!-- Modal for Account leverage -->
     @include('frontend::.user.forex.modal.__change_leverage')
 
+    <!-- Modal for Demo deposit -->
+    @include('frontend::.user.forex.modal.__deposit_demo_account')
 
     <!-- Modal for Account rename -->
     @include('frontend::.user.forex.modal.__account_rename')

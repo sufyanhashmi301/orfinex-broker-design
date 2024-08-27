@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -85,4 +86,26 @@ class ForexSchema extends Model
 	{
 		return $this->hasMany(ForexAccount::class);
 	}
+
+    public function multiLevels()
+    {
+        return $this->hasMany(MultiLevel::class,'forex_scheme_id');
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', true);
+    }
+    public function scopeRelevantForUser(Builder $query, $country, array $tags)
+    {
+        return $query->where(function($q) use ($country, $tags) {
+            $q->whereJsonContains('country', $country)
+                ->orWhereJsonContains('country', 'All')
+                ->orWhere(function($subQuery) use ($tags) {
+                    foreach ($tags as $tag) {
+                        $subQuery->orWhereJsonContains('tags', $tag);
+                    }
+                });
+        });
+    }
 }

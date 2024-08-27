@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\InvestController;
 use App\Http\Controllers\Frontend\IpnController;
 use App\Http\Controllers\Frontend\KycController;
+use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ReferralController;
 use App\Http\Controllers\Frontend\ForexSchemaController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -110,8 +112,16 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
     });
+
+    // Multi Level
+    Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
+        Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
+        Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
+
+    });
+
     //Send Money
-    Route::group(['middleware' => 'KYC','prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
+    Route::group(['middleware' => 'KYC', 'prefix' => 'send-money', 'as' => 'send-money.', 'controller' => SendMoneyController::class], function () {
         Route::get('/', 'sendMoney')->name('view');
         Route::post('now', 'sendMoneyNow')->name('now');
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
@@ -187,7 +197,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
 Route::get('language-update', [HomeController::class, 'languageUpdate'])->name('language-update');
 
 //Gateway Manage
-Route::get('gateway-list', [GatewayController::class, 'gatewayList'])->name('gateway.list')->middleware('XSS','translate','auth');
+Route::get('gateway-list', [GatewayController::class, 'gatewayList'])->name('gateway.list')->middleware('XSS', 'translate', 'auth');
 
 //Gateway status
 Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as' => 'status.'], function () {
@@ -250,7 +260,6 @@ Route::post('ib-program/store', [IBController::class, 'store'])->name('user.ib-p
 Route::get('user/transfer', [TransferController::class, 'index'])->name('user.transfer');
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
-
 
 
 Route::get('user/agreements', function () {
@@ -320,3 +329,19 @@ Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
 Route::get('user/partner/dashboard', function () {
     return view('frontend::partner.dashboard');
 });
+
+Route::get('user/partner/accounts', function () {
+    return view('frontend::partner.accounts');
+});
+
+Route::get('user/partner/clients', function () {
+    return view('frontend::partner.clients');
+});
+
+Route::get('user/wallets', function () {
+    return view('frontend::wallets.index');
+});
+
+Route::get('user/webterminal', function () {
+    return view('frontend::webterminal.index');
+})->name('webterminal');

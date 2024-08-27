@@ -24,7 +24,9 @@
                                 @if(setting('kyc_verification','permission'))
                                     {{-- Kyc Info--}}
                                     <div class="md:block hidden">
-                                        @include('frontend::user.include.__kyc_info')
+                                        @if(!Route::is('webterminal'))
+                                            @include('frontend::user.include.__kyc_info')
+                                        @endif
                                     </div>
                                     <div class="md:hidden block">
 {{--                                        @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}

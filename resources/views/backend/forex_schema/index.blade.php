@@ -76,7 +76,7 @@
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
                                         @can('schema-edit')
-                                                <a href="{{route('admin.accountType.view',$schema->id)}}" class="action-btn">
+                                                <a href="{{route('admin.multi-level.view',$schema->id)}}" class="action-btn">
                                                     <iconify-icon icon="lucide:eye"></iconify-icon>
                                                 </a>
                                             @endcan
@@ -150,7 +150,7 @@
                 alert('You must type "delete" to confirm.');
             }
         });
-       
+
     });
 </script>
 @endsection

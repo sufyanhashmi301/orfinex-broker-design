@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\GatewayType;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use DataTables;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TransactionsExport;
+use App\Models\DepositMethod;
+
 class TransactionController extends Controller
 {
     /**
@@ -35,6 +38,7 @@ class TransactionController extends Controller
     {
         if ($request->ajax()) {
             $filters = $request->only(['email', 'status', 'type', 'created_at']);
+          
             if ($id) {
                 $data = Transaction::where('user_id', $id)->latest();
                 
@@ -42,6 +46,7 @@ class TransactionController extends Controller
                 $data = Transaction::query()->latest();
             }
             $data->applyFilters($filters);
+           
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -51,7 +56,8 @@ class TransactionController extends Controller
                     return $request->charge.' '.setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->rawColumns(['status', 'type', 'final_amount', 'username'])
+                ->addColumn('action', 'backend.transaction.include.__action')
+                ->rawColumns(['status', 'type', 'final_amount', 'username','action'])
                 ->make(true);
         }
 
@@ -62,4 +68,16 @@ class TransactionController extends Controller
        
         return Excel::download(new TransactionsExport($request), 'transactions.xlsx');
     }
+    public function view($id)
+    {
+        $data = Transaction::find($id);
+        if($data->status->value=='pending'){
+            return view('backend.withdraw.include.__withdraw_action', compact('data', 'id'))->render();
+        }else{
+            return view('backend.transaction.modals.view', compact('data', 'id'))->render();
+        }
+        
+        
+    }
+   
 }

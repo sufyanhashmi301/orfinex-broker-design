@@ -49,10 +49,6 @@
 
     <script>
 
-         $(document).ready(function() {
-            $('#symbols').select2();
-         });
-
          $(document).ready(function () {
             $('#modalForm').on('submit', function (e) {
                 e.preventDefault();
@@ -152,12 +148,14 @@
                  success: function(response) {
                      $('#edit_rebate_rule').html(response);
                      $('#editSymbolGroupModal').modal('show');
+                     $('.select2').select2();
                  },
                  error: function(xhr, status, error) {
                      console.error(xhr.responseText);
                  }
              });
          });
+
 
          $('#editSymbolGroupModal').on('submit', '#editRebateRuleForm', function(e) {
              e.preventDefault();
@@ -190,7 +188,40 @@
             url = url.replace(':id', id);
             $('#rebateRuleDeleteForm').attr('action', url)
             $('#deleteRebateRule').modal('show');
-        })
+        });
+
+        $(document).on('click', '.status-checkbox', function(event) {
+
+             "use strict";
+             event.preventDefault();
+             var checkbox = $(this);
+             var itemId = checkbox.data('id');
+             var status = checkbox.is(':checked') ? 1 : 0;
+
+             $.ajax({
+                 url: '{{ route('admin.rebateRules.updateStatus') }}',
+                 type: 'POST',
+                 data: {
+                     id: itemId,
+                     status: status,
+                     _token: '{{ csrf_token() }}'
+                 },
+                 success: function(response) {
+                     if (response.success) {
+                         window.location.reload();
+                     } else {
+                         window.location.reload();
+                     }
+                 },
+                 error: function(xhr, status, error) {
+                     // Handle any general errors
+                     console.error('AJAX Error:', status, error); // Log the error
+                     alert('An unexpected error occurred.');
+                     // Optionally revert the checkbox to its previous state if needed
+                     checkbox.prop('checked', !status); // Revert checkbox state if needed
+                 }
+             });
+        });
 
     </script>
 @endsection

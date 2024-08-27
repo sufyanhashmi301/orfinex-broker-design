@@ -75,7 +75,6 @@
                             <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">{{ __('Short Description') }}</label>
                                 <textarea
-                                    type="text"
                                     name="description"
                                     class="form-control mb-0"
                                     placeholder="Short Description"

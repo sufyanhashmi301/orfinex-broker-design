@@ -179,6 +179,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasOne(IbQuestionAnswer::class);
     }
+    public function referralRelationship()
+    {
+        return $this->hasOne(ReferralRelationship::class,'user_id');
+    }
 
     public function totalProfit($days = null)
     {

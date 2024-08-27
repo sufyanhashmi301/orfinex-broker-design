@@ -36,7 +36,7 @@
                             {{ __('Trading Server (Live) ') }}
                         </label>
                         <select name="" class="select2 form-control w-full">
-                            <option value="Banex Capital">{{ __('Banex Capital') }}</option>
+                            <option value="{{ setting('live_server','platform_api') }}">{{ setting('live_server','platform_api') }}</option>
                         </select>
                     </div>
                     <div class="input-area !mb-7">
@@ -128,7 +128,7 @@
                                             </td>
                                             <td class="table-td">
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
-                                                    <a href="{{ route('admin.swap-based-accounts.edit',$swapBasedAccount->id) }}" data-id="{{ $swapBasedAccount->id }}" class="action-btn editSwapBased">
+                                                    <a href="{{ route('admin.swap-multi-level.edit',$swapBasedAccount->id) }}" data-id="{{ $swapBasedAccount->id }}" class="action-btn editSwapBased">
                                                         <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                     </a>
                                                     <button class="action-btn deleteSwapBased" type="button" data-id="{{ $swapBasedAccount->id }}">
@@ -199,10 +199,10 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="{{ route('admin.swap-free-accounts.edit',$swapfreeAccount->id) }}" data-id="{{ $swapfreeAccount->id }}" class="action-btn editSwapFree">
+                                                <a href="{{ route('admin.swap-multi-level.edit',$swapfreeAccount->id) }}" data-id="{{ $swapfreeAccount->id }}" class="action-btn editSwapBased">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </a>
-                                                <button class="action-btn deleteSwapFree" type="button"  data-id="{{ $swapfreeAccount->id }}">
+                                                <button class="action-btn deleteSwapBased" type="button"  data-id="{{ $swapfreeAccount->id }}">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </button>
                                             </div>
@@ -221,12 +221,12 @@
     </div>
 
     {{-- Modal for Add Level --}}
-    @include('backend.forex_schema.modal.__create_swap_based')
-    @include('backend.forex_schema.modal.__create_swap_free')
-    @include('backend.forex_schema.modal.__editSwapBased')
-    @include('backend.forex_schema.modal.__deleteSwapBased')
-    @include('backend.forex_schema.modal.__editSwapFree')
-    @include('backend.forex_schema.modal.__deleteSwapFree')
+    @include('backend.multi_level.modal.__create_swap_based')
+    @include('backend.multi_level.modal.__create_swap_free')
+    @include('backend.multi_level.modal.__editSwapBased')
+    @include('backend.multi_level.modal.__deleteSwapBased')
+{{--    @include('backend.multi_level.modal.__editSwapFree')--}}
+{{--    @include('backend.multi_level.modal.__deleteSwapFree')--}}
 @endsection
 @section('script')
     <script>
@@ -240,7 +240,8 @@
                 event.preventDefault();
                 $('#edit-swap-based-body').empty();
                 var id = $(this).data('id');
-                var url = '{{ route("admin.swap-based-accounts.edit", ":id") }}';
+                console.log(id,'id')
+                var url = '{{ route("admin.swap-multi-level.edit", ":id") }}';
                 url = url.replace(':id', id);
                 $.get(url, function (data) {
                     $('#editSwapBasedModal').modal('show');
@@ -254,37 +255,14 @@
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                var url = '{{ route("admin.swap-based-accounts.destroy", ":id") }}';
+                var url = '{{ route("admin.swap-multi-level.destroy", ":id") }}';
                 url = url.replace(':id', id);
                 $('#swapBasedDeleteForm').attr('action', url)
 
                 $('.name').html(name);
                 $('#deleteSwapBased').modal('show');
             })
-            $('body').on('click', '.editSwapFree', function (event) {
-                "use strict";
-                event.preventDefault();
-                $('#edit-swap-free-body').empty();
-                var id = $(this).data('id');
-                var url = '{{ route("admin.swap-free-accounts.edit", ":id") }}';
-                url = url.replace(':id', id);
-                $.get(url, function (data) {
-                    $('#editSwapFreeModal').modal('show');
-                    $('#edit-swap-free-body').append(data);
-                });
-            })
-            $('body').on('click', '.deleteSwapFree', function (event) {
 
-                "use strict";
-                event.preventDefault();
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-
-                var url = '{{ route("admin.swap-free-accounts.destroy", ":id") }}';
-                url = url.replace(':id', id);
-                $('#swapFreeDeleteForm').attr('action', url)
-                $('#deleteSwapFree').modal('show');
-            })
         });
     </script>
 @endsection

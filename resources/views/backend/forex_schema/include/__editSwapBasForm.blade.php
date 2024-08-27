@@ -1,6 +1,8 @@
-<form action="{{route('admin.swap-based-accounts.update',$swapBasedAccount->id)}}" method="post">
+<form action="{{route('admin.swap-multi-level.update',$multiLevelAccount->id)}}" method="post">
     @method('put')
-                        @csrf
+    <input type="hidden" name="type" value="{{the_hash($multiLevelAccount->type)}}" >
+
+    @csrf
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Title') }}</label>
@@ -9,11 +11,11 @@
                                     name="title"
                                     class="form-control mb-0"
                                     placeholder="Title"
-                                    value="{{$swapBasedAccount->title}}"
+                                    value="{{$multiLevelAccount->title}}"
                                     required
                                 />
                             </div>
-                            <input type="hidden" name="account_type_id" value="{{$swapBasedAccount->account_type_id}}">
+                            <input type="hidden" name="forex_scheme_id" value="{{$multiLevelAccount->forex_scheme_id}}">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Level Order') }}</label>
                                 <input
@@ -21,7 +23,7 @@
                                     name="level_order"
                                     class="form-control mb-0"
                                     placeholder="2"
-                                    value="{{$swapBasedAccount->level_order}}"
+                                    value="{{$multiLevelAccount->level_order}}"
                                     required
                                 />
                             </div>
@@ -32,7 +34,7 @@
                                     name="group_tag"
                                     class="form-control mb-0"
                                     placeholder="real\Promo\nb50s"
-                                    value="{{$swapBasedAccount->group_tag}}"
+                                    value="{{$multiLevelAccount->group_tag}}"
                                     required
                                 />
                             </div>
@@ -43,15 +45,15 @@
                                     name="description"
                                     class="form-control mb-0"
                                     placeholder="Short Description"
-                                     value="{{$swapBasedAccount->description}}"
+                                     value="{{$multiLevelAccount->description}}"
                                     required
                                 />
                             </div>
                             <div class="lg:col-span-2 input-area">
                                 <label for="status" class="form-label">{{ __('Status') }}</label>
                                 <select name="status" class="form-control w-full">
-                                    <option value="1" {{$swapBasedAccount->status==1?'selected':''}}>{{ __('Enable') }}</option>
-                                    <option value="0" {{$swapBasedAccount->status==0 ?'selected':''}}>{{ __('Disable') }}</option>
+                                    <option value="1" {{$multiLevelAccount->status==1?'selected':''}}>{{ __('Enable') }}</option>
+                                    <option value="0" {{$multiLevelAccount->status==0 ?'selected':''}}>{{ __('Disable') }}</option>
                                 </select>
                             </div>
                         </div>

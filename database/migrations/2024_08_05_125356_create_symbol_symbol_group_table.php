@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('symbol_group_has_symbols', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('symbol_id')->constrained('symbols');
-            $table->foreignId('symbol_group_id')->constrained('symbol_groups');
-            $table->string('symbol_name');
+        Schema::create('symbol_symbol_group', function (Blueprint $table) {
+            $table->foreignId('symbol_id')->constrained()->onDelete('cascade');
+            $table->foreignId('symbol_group_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('symbol_group_has_symbols');
+        Schema::dropIfExists('symbol_symbol_group');
     }
 };

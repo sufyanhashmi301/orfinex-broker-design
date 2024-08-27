@@ -7,6 +7,7 @@ use App\Enums\TxnType;
 use App\Events\UserReferred;
 use App\Http\Controllers\Controller;
 use App\Models\LoginActivities;
+use App\Models\MultiLevel;
 use App\Models\Page;
 use App\Models\Ranking;
 use App\Models\User;
@@ -38,6 +39,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
 
+
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');
@@ -51,10 +53,11 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
             'i_agree' => ['required'],
+            'level' => ['sometimes', 'exists:multi_levels,id']
         ]);
 
         $input = $request->all();
-
+        $multiLevel = $request->level;
         $location = getLocation();
         $phone = $isPhone ? ($isCountry ? explode(':', $input['country'])[1] : $location->dial_code).' '.$input['phone'] : $location->dial_code.' ';
         $country = $isCountry ? explode(':', $input['country'])[0] : $location->name;
@@ -86,13 +89,15 @@ class RegisteredUserController extends Controller
         ];
 
         //notify method call
-
         $this->mailNotify($user->email, 'new_user', $shortcodes);
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
 
+        if(!$multiLevel){
+            $multiLevel = null;
+        }
         //referral code
-        event(new UserReferred($request->cookie('invite'), $user));
+        event(new UserReferred($request->cookie('invite'), $user,$multiLevel));
 
         if (setting('referral_signup_bonus', 'permission') && (float) setting('signup_bonus', 'fee') > 0) {
             $signupBonus = (float) setting('signup_bonus', 'fee');

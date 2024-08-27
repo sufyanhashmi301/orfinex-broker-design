@@ -14,18 +14,21 @@ class UpdateSwapBasedAccountRequest extends FormRequest
 
     public function rules()
     {
-        $accountId = $this->route('swapBasedAccount');
+//        $accountId = $this->route('swap-multi-level');
+//        dd($accountId);
         return [
-            'account_type_id' => 'required|exists:forex_accounts,id',
+            'forex_scheme_id' => 'required|exists:forex_schemas,id',
             'title' => 'required|string|max:255',
-            'level_order' => [
-                'required',
-                'integer',
-                Rule::unique('swap_based_accounts', 'level_order')->ignore($accountId),
-            ],
+//            'level_order' => [
+//                'required',
+//                'integer',
+//                Rule::unique('multi_levels', 'level_order')->ignore($accountId),
+//            ],
             'group_tag' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|boolean'
+            'status' => 'required|boolean',
+            'rebate_rules' => 'required|array',
+            'rebate_rules.*' => 'exists:rebate_rules,id',
         ];
     }
 }

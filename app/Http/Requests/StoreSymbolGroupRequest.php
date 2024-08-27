@@ -17,7 +17,7 @@ class StoreSymbolGroupRequest extends FormRequest
             'name' => 'required|string|max:255',
             'symbols' => 'required|array',
             'symbols.*' => 'exists:symbols,id'
-           
+
         ];
     }
 }

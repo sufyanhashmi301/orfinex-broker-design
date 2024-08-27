@@ -22,15 +22,13 @@
                                             <option value="{{ $forexAccount->login }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
-                                            <option value="{{ auth()->user()->ib_login }}" data-type="ib-account"
-                                                    class="inline-block font-Inter font-normal text-sm text-slate-600" data-type="forex">{{ auth()->user()->ib_login }}
-                                                - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})</option>
+                                            @include('frontend::common.include.__ib_dropdown' )
                                         @endif
                                         <option  value="profit_wallet" data-type="wallet" class="inline-block font-Inter font-normal text-sm text-slate-600" >{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
                                     </select>
                                 </div>
                             </div>
-            
+
                             <div class="input-area relative mb-5">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Account To:') }}</label>
                                 <div class="input-group select2-lg">

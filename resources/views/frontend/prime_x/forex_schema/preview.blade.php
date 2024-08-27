@@ -9,15 +9,21 @@
         </h3>
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="account-type-tabs">
             <li class="nav-item">
-                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active" data-type="real" id="real-tab">
+                <a href="javascript:;"
+                   class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
+                   data-type="real" id="real-tab">
                     {{ __('Real') }}
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300" data-type="demo" id="demo-tab">
-                    {{ __('Demo') }}
-                </a>
-            </li>
+            @if(isset($schema->demo_swap_free))
+                <li class="nav-item">
+                    <a href="javascript:;"
+                       class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                       data-type="demo" id="demo-tab">
+                        {{ __('Demo') }}
+                    </a>
+                </li>
+            @endif
         </ul>
         <p class="card-text">
             {{ __('Risk-Free Account: Trade using virtual money') }}
@@ -30,32 +36,33 @@
             </h4>
             <div class="card h-auto">
                 <div class="card-body p-6">
-                    <form class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post" enctype="multipart/form-data">
+                    <form class="space-y-5" action="{{route('user.forex-account-create-now')}}" method="post"
+                          enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="account_type" id="account-type" value="real">
                         <div class="input-area">
                             <label class="form-label" for="">
-                                {{ __('Select Account Type:') }}
+                                {{ __('Account Type:') }}
                             </label>
-                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-schema" name="schema_id" required>
-                                @foreach($schemas as $plan)
-                                    <option value="{{$plan->id}}"
-                                            @if($plan->id == $schema->id ) selected @endif
-                                            data-is-real-islamic="{{$plan->is_real_islamic}}"
-                                            data-is-demo-islamic="{{$plan->is_demo_islamic}}"
-                                            data-first-min-deposit="{{$plan->first_min_deposit}}"
-                                            data-leverage="{{$plan->leverage}}">
-                                        {{$plan->title}}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="hidden" class="form-control py-2 h-[48px]" value="{{$schema->id}}"
+                                   aria-label="{{ __('Nickname') }}" name="schema_id" id="select-schema" aria-describedby="basic-addon1"
+                                   data-is_real_islamic="{{$schema->is_real_islamic}}"
+                                   data-is_demo_islamic="{{$schema->is_demo_islamic}}"
+                                   data-first-min-deposit="{{$schema->first_min_deposit}}"
+                                   data-leverage="{{$schema->leverage}}" required readonly>
+                            <input type="text" class="form-control py-2 h-[48px]" value="{{$schema->title}}"
+                                   aria-label="{{ __('Nickname') }}" aria-describedby="basic-addon1" required readonly>
                         </div>
                         <div class="input-area">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
-                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox" data-target="#live-islamic-group">
-                                        <input type="checkbox" name="is_islamic" value="1" class="sr-only peer" id="islamic-checkbox">
-                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    <label
+                                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer toggle-checkbox"
+                                        data-target="#live-islamic-group">
+                                        <input type="checkbox" name="is_islamic" value="1" class="sr-only peer"
+                                               id="islamic-checkbox">
+                                        <span
+                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
                                 <label class="form-label pt-0 !mb-0" style="width:auto">
@@ -67,7 +74,8 @@
                             <label class="form-label" for="">
                                 {{ __('Select Leverage:') }}
                             </label>
-                            <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-leverage" name="leverage" required>
+                            <select class="form-control py-2 h-[48px]" aria-label="Default select example"
+                                    id="select-leverage" name="leverage" required>
                                 @foreach(explode(',', $schema->leverage) as $leverage)
                                     <option value="{{$leverage}}">{{$leverage}}</option>
                                 @endforeach
@@ -77,13 +85,18 @@
                             <label class="form-label" for="">
                                 {{ __('Account Nickname:') }}
                             </label>
-                            <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Nickname') }}" aria-label="{{ __('Nickname') }}" name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
+                            <input type="text" class="form-control py-2 h-[48px]"
+                                   placeholder="{{ __('Enter Nickname') }}" aria-label="{{ __('Nickname') }}"
+                                   name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
                         </div>
                         <div class="input-area">
                             <label class="form-label" for="">
                                 {{ __('Main Password:') }}
                             </label>
-                            <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter Main Password') }}" aria-label="{{ __('Main Password') }}" name="main_password" id="enter-main-password" aria-describedby="basic-addon1" required>
+                            <input type="text" class="form-control py-2 h-[48px]"
+                                   placeholder="{{ __('Enter Main Password') }}" aria-label="{{ __('Main Password') }}"
+                                   name="main_password" id="enter-main-password" aria-describedby="basic-addon1"
+                                   required>
                             <ul>
                                 <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
                                     {{ __('Use from 8 to 15 characters') }}
@@ -100,7 +113,8 @@
                             </ul>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account">
+                            <button type="submit" class="btn inline-flex justify-center btn-dark me-3"
+                                    id="create-forex-account">
                                 {{ __('Create Account') }}
                             </button>
                             <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-outline-dark">
@@ -129,7 +143,8 @@
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>{{ __('Commission') }}</span>
-                            <span id="display-commission">{{$schema->commission == 0 ? __('No Commission') : $schema->commission}}</span>
+                            <span
+                                id="display-commission">{{$schema->commission == 0 ? __('No Commission') : $schema->commission}}</span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>{{ __('Leverage') }}</span>
@@ -144,11 +159,13 @@
             </div>
         </div>
     </div>
-    <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
+    <div
+        class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
         <div class="flex items-center space-x-3 rtl:space-x-reverse">
             <iconify-icon class="text-xl flex-0" icon="lucide:info"></iconify-icon>
             <p class="flex-1 font-Inter">
-                {{ __('Comprehensive details on our instruments and trading conditions can be found on the') }} <a href="" class="text-warning-600">{{ __('Customer Contract') }}</a> {{ __('page.') }}
+                {{ __('Comprehensive details on our instruments and trading conditions can be found on the') }} <a
+                    href="" class="text-warning-600">{{ __('Customer Contract') }}</a> {{ __('page.') }}
             </p>
         </div>
     </div>
@@ -164,7 +181,7 @@
                 $('#initial-deposit').text(result.first_min_deposit);
 
                 // Update the leverage dropdown options
-                var leverageOptions = result.leverage.split(',').map(function(leverage) {
+                var leverageOptions = result.leverage.split(',').map(function (leverage) {
                     return `<option value="${leverage}">${leverage}</option>`;
                 }).join('');
                 $('#select-leverage').html(leverageOptions);
@@ -172,9 +189,15 @@
 
             function updateIslamicCheckboxState() {
                 var accountType = $('#account-type').val();
-                var selectedOption = $('#select-schema').find('option:selected');
-                var isRealIslamic = selectedOption.data('is-real-islamic');
-                var isDemoIslamic = selectedOption.data('is-demo-islamic');
+                var select_plan_id = $('#select-schema');
+                var selectedOption = select_plan_id.val();
+                var isRealIslamic = select_plan_id.data('is_real_islamic');
+                var isDemoIslamic = select_plan_id.data('is_demo_islamic');
+                console.log(selectedOption,'selectedOption');
+                console.log(isRealIslamic,'isRealIslamic');
+                console.log(isDemoIslamic,'isDemoIslamic');
+
+                console.log(accountType,'accountType');
 
                 var isIslamic = false;
                 if (accountType === 'real' && isRealIslamic == 1) {
@@ -182,7 +205,7 @@
                 } else if (accountType === 'demo' && isDemoIslamic == 1) {
                     isIslamic = true;
                 }
-
+                console.log(isIslamic,'isIslamic');
                 if (isIslamic) {
                     $('#islamic-checkbox').closest('.input-area').show();
                 } else {
@@ -200,26 +223,26 @@
                 updateIslamicCheckboxState();
             });
 
-            $("#select-schema").on('change', function (e) {
-                e.preventDefault();
-                var id = $(this).val();
-                var url = '{{ route("user.schema.select", ":id") }}';
-                url = url.replace(':id', id);
+            {{--$("#select-schema").on('change', function (e) {--}}
+            {{--    e.preventDefault();--}}
+            {{--    var id = $(this).val();--}}
+            {{--    var url = '{{ route("user.schema.select", ":id") }}';--}}
+            {{--    url = url.replace(':id', id);--}}
 
-                $.ajax({
-                    url: url,
-                    success: function (result) {
-                        $('#first-min-amount').text(result.first_min_deposit);
-                        updateLeverageAndDeposit(result);
+            {{--    $.ajax({--}}
+            {{--        url: url,--}}
+            {{--        success: function (result) {--}}
+            {{--            $('#first-min-amount').text(result.first_min_deposit);--}}
+            {{--            updateLeverageAndDeposit(result);--}}
 
-                        $('#select-schema').data('is-real-islamic', result.is_real_islamic);
-                        $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
+            {{--            $('#select-schema').data('is_real_islamic', result.is_real_islamic);--}}
+            {{--            $('#select-schema').data('is_demo_islamic', result.is_demo_islamic);--}}
 
-                        $('#islamic-checkbox').prop('checked', false);
-                        updateIslamicCheckboxState();
-                    }
-                });
-            });
+            {{--            $('#islamic-checkbox').prop('checked', false);--}}
+            {{--            updateIslamicCheckboxState();--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
 
             $('#account-type').on('change', function () {
                 updateIslamicCheckboxState();

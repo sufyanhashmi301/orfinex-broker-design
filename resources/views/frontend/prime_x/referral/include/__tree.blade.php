@@ -18,9 +18,6 @@
                         @endif
                     </b>
                 @endif
-
-
-
             </p>
         </div>
     </div>

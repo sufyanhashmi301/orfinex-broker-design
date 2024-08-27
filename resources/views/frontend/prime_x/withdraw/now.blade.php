@@ -51,18 +51,11 @@
                                         </option>
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{get_mt5_account_equity($forexAccount->login)}} {{$currency}})
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login)  }} {{$currency}})
                                             </option>
                                         @endforeach
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
-                                            <option value="{{ auth()->user()->ib_login }}" data-type="ib-account" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ auth()->user()->ib_login }} - {{ __('IB') }} ({{ get_mt5_account_equity(auth()->user()->ib_login) }} {{$currency}})
-                                            </option>
-                                        @endif
-                                        @if(auth()->user()->is_multi_ib == 1 && isset(auth()->user()->multi_ib_login))
-                                            <option value="{{ auth()->user()->multi_ib_login }}" data-type="ib-account" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ auth()->user()->multi_ib_login }} - {{ __('MIB') }} ({{ get_mt5_account_equity(auth()->user()->multi_ib_login) }} {{$currency}})
-                                            </option>
+                                          @include('frontend::common.include.__ib_dropdown' )
                                         @endif
                                     </select>
                                 </div>

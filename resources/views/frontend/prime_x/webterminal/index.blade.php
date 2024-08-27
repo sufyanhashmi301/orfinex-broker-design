@@ -3,5 +3,16 @@
     {{ __('Webterminal') }}
 @endsection
 @section('content')
-    <iframe src="https://webtrader.banexcapital.com/terminal?utm_campaign=BanexClientOffice&utm_source=www.banexcapital.com&mode=connect&lang=en&theme-mode=0&theme=blueRed" width="100%" height="600px"></iframe>
+    <iframe src="{{ setting('webterminal_src_light','global') }}" width="{{ setting('webterminal_width','global') }}" height="{{ setting('webterminal_height','global') }}" class="dark:hidden"></iframe>
+    <iframe src="{{ setting('webterminal_src_dark','global') }}" width="{{ setting('webterminal_width','global') }}" height="{{ setting('webterminal_height','global') }}" class="hidden dark:block"></iframe>
+@endsection
+@section('style')
+    <style>
+        .page-content {
+            padding: 0 !important;
+        }
+        #content_layout > div {
+            height: calc(100vh - 92px);
+        }
+    </style>
 @endsection

@@ -76,7 +76,7 @@
                         </div>
                         <div class="flex justify-between items-center mt-3">
                             <p class="account-balance mb-0 dark:text-white">
-                                <span class="text-lg font-semibold">{{$account->balance}}</span>
+                                <span class="text-lg font-semibold">{{ get_mt5_account_balance($account->login) }} </span>
                                 <span>{{$account->currency}}</span>
                             </p>
                             <div class="action-btns flex items-center gap-3">

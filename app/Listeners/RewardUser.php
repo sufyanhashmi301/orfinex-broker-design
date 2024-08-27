@@ -33,7 +33,7 @@ class RewardUser
     {
         $referral = ReferralLink::find($event->referralId);
         if (! is_null($referral)) {
-            ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $event->user->id]);
+            ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $event->user->id, 'multi_level_id' => $event->multiLevelId]);
 
             User::find($event->user->id)->update([
                 'ref_id' => $referral->user->id,

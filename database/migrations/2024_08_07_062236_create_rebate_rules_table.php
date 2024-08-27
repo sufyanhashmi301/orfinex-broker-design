@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->unsignedBigInteger('rule_type_id');
-            $table->decimal('rebate_amount',8,2)->default(0.00);
+            $table->double('rebate_amount',8,2)->default(0.00);
             $table->integer('per_lot');
             $table->boolean('status')->default(0);
             $table->timestamps();

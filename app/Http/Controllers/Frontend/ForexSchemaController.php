@@ -16,20 +16,12 @@ class ForexSchemaController extends Controller
 
 //        $this->sendApiPostRequest('url','data');
 //        $this->getUserApi(554944);
+        $user = auth()->user();
+        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-
-        $schemas = ForexSchema::where('status', true)
-            ->where(function($query) use ($tagNames) {
-                $query->whereJsonContains('country', auth()->user()->country)
-                    ->orWhereJsonContains('country', 'All')
-                    ->orWhere(function($subQuery) use ($tagNames) {
-                        foreach ($tagNames as $tagName) {
-                            $subQuery->orWhereJsonContains('tags', $tagName);
-                        }
-                    });
-            })
-            ->orderBy('priority', 'asc')
+        $schemas = ForexSchema::active()  // Use the defined scope for active schemas
+        ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
+        ->orderBy('priority', 'asc')
             ->get();
 //        dd($schemas);
 

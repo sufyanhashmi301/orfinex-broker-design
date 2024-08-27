@@ -18,7 +18,7 @@ class ForexApiService
         $this->apiKeyReal = setting('mt5_api_key_real', 'platform_api');
 
         $demoServerEnabled = setting('demo_server_enable', 'platform_api');
-        $demoUrl = setting('mt5_api_url_demo', 'platform_api');
+        $demoUrl = setting('mt5_api_url_demo', 'platform_api'). '/api';
         $demoKey = setting('mt5_api_key_demo', 'platform_api');
 
         if ($demoServerEnabled && $demoUrl) {

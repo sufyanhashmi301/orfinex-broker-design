@@ -206,8 +206,8 @@
                     </div>
                 </div>
             </div>
-            <div class="py-6 space-y-5">
-                <div class="flex justify-between flex-wrap items-center">
+            <div class="py-6">
+                <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
                     <div class="input-area relative min-w-[184px]">
                         <select name="level_order" class="select2 form-control w-full">
@@ -218,7 +218,7 @@
                     </div>
                 </div>
                 <span id="schemes">
-              @include('frontend.prime_x.partner.include.__schemes')
+                    @include('frontend.prime_x.partner.include.__schemes')
                 </span>
             </div>
             <div class="py-6 space-y-5">

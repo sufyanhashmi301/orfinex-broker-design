@@ -1,16 +1,13 @@
-<br>
-<h4 class="card-title">{{ __('Swap Accounts') }}</h4>
 @if($swapSchemas->isEmpty())
-
-    <tr>
-        <td class="table-td text-center" colspan="3">{{ __('No Data Found') }}</td>
-    </tr>
+    <p class="text-center text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 text-sm rounded py-5">
+        {{ __('No Data Found') }}
+    </p>
 @else
 
 
     @foreach($swapSchemas as $index => $schema)
 
-        <div class="input-area grid grid-cols-12 items-center gap-5">
+        <div class="input-area grid grid-cols-12 items-center gap-5 mb-5">
             <div class="lg:col-span-2 col-span-12 form-label !mb-0">
                 {{ $schema->title }}
             </div>
@@ -38,13 +35,17 @@
     @endforeach
 @endif
 @if($levelOrder != 0 )
-    <br>
-    <br>
-    <h4 class="card-title">{{ __('Swap Free/Islamic Accounts') }}</h4>
+    <div class="col-span-12 pt-3">
+        <h4 class="card-title mb-5">
+            {{ __('Swap Free/Islamic Accounts') }}
+        </h4>
+    </div>
     @if($swapFreeSchemas->isEmpty())
-        <tr>
-            <td class="table-td text-center" colspan="3">{{ __('No Data Found') }}</td>
-        </tr>
+        <div class="col-span-12">
+            <p class="text-center text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 text-sm rounded py-5">
+                {{ __('No Data Found') }}
+            </p>
+        </div>
     @else
         @foreach($swapFreeSchemas as $index => $schema)
 

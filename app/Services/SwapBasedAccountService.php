@@ -3,25 +3,31 @@
 namespace App\Services;
 
 use App\Http\Requests\StoreSwapBasedAccountRequest;
-use App\Models\SwapBasedAccount;
+use App\Models\MultiLevel;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\AssignOp\Mul;
 
 class SwapBasedAccountService
 {
     public function create(StoreSwapBasedAccountRequest $request)
     {
-       
-        return SwapBasedAccount::create($request->validated());
+        $multiLevel = MultiLevel::create($request->all());
+        $multiLevel->rebateRule()->attach($request->rebate_rules);
     }
 
-    public function update( SwapBasedAccount $swapBasedAccount, array $data)
+    public function update( MultiLevel $swapBasedAccount, array $data,$id)
     {
-        $swapBasedAccount->update($data);
-        return $swapBasedAccount;
+        $multiLevel = MultiLevel::findOrFail($id);
+        $multiLevel->update($data);
+//        dd($data['rebate_rules']);
+        $multiLevel->rebateRule()->sync($data['rebate_rules']);
     }
 
-    public function delete(SwapBasedAccount $swapBasedAccount)
+    public function delete($id)
     {
-        return  $swapBasedAccount->delete();
+        $multiLevel = MultiLevel::findOrFail($id);
+        $multiLevel->rebateRule()->detach();
+        $multiLevel->delete();
+        return $multiLevel;
     }
 }

@@ -45,19 +45,25 @@
                                     {{ __('Account to withdraw:') }}
                                 </label>
                                 <div class="input-group select2-lg">
-                                    <select id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
-                                        <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>
+                                    <select id="tradingAccount" name="target_id"
+                                            class="select2 form-control !text-lg w-full mt-2 py-2">
+                                        <option selected
+                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
+                                                disabled>
                                             --{{ __('Select Account') }}--
                                         </option>
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ $forexAccount->equity }} {{$currency}})
+                                            <option value="{{ $forexAccount->login }}" data-type="forex"
+                                                    class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
+                                                ({{ get_mt5_account_equity($forexAccount->login)  }} {{$currency}})
                                             </option>
                                         @endforeach
+                                        @if(auth()->user()->is_multi_ib == 1 && isset(auth()->user()->multi_ib_login))
+                                            @include('frontend::common.include.__mib_dropdown' )
+                                        @endif
                                         @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
-                                            <option value="{{ auth()->user()->ib_login }}" data-type="ib-account" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                                {{ auth()->user()->ib_login }} - {{ __('IB') }} ({{ auth()->user()->ib_balance }} {{$currency}})
-                                            </option>
+                                            @include('frontend::common.include.__ib_dropdown' )
                                         @endif
                                     </select>
                                 </div>
@@ -67,12 +73,16 @@
                                     {{ __('Withdraw Account') }}
                                 </label>
                                 <div class="input-group select2-lg">
-                                    <select name="withdraw_account" id="withdrawAccountId" class="select2 form-control !text-lg w-full mt-2 py-2">
-                                        <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>
+                                    <select name="withdraw_account" id="withdrawAccountId"
+                                            class="select2 form-control !text-lg w-full mt-2 py-2">
+                                        <option selected
+                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
+                                                disabled>
                                             {{ __('Withdraw Method') }}
                                         </option>
                                         @foreach($accounts as $account)
-                                            <option value="{{ $account->id }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                            <option value="{{ $account->id }}"
+                                                    class="inline-block font-Inter font-normal text-sm text-slate-600">
                                                 {{ $account->method_name }}
                                             </option>
                                         @endforeach
@@ -83,18 +93,28 @@
                             <div class="input-area relative">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
-                                    <input type="text" name="amount" id="amount" oninput="this.value = validateDouble(this.value)" class="form-control !text-lg withdrawAmount" placeholder="Enter Amount" aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon1">
+                                    <input type="text" name="amount" id="amount"
+                                           oninput="this.value = validateDouble(this.value)"
+                                           class="form-control !text-lg withdrawAmount" placeholder="Enter Amount"
+                                           aria-describedby="basic-addon1">
+                                    <span
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center"
+                                        id="basic-addon1">
                                         {{ $currency }}
                                     </span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block withdrawAmountRange"></div>
+                                <div
+                                    class="font-Inter text-xs text-red-500 pt-2 inline-block withdrawAmountRange"></div>
                             </div>
                             <div class="input-area relative conversion hidden">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
                                 <div class="relative">
-                                    <input type="text" oninput="this.value = validateDouble(this.value)" class="form-control !text-lg " id="converted-amount" placeholder="Enter Amount" aria-describedby="basic-addon2">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+                                    <input type="text" oninput="this.value = validateDouble(this.value)"
+                                           class="form-control !text-lg " id="converted-amount"
+                                           placeholder="Enter Amount" aria-describedby="basic-addon2">
+                                    <span
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center"
+                                        id="basic-addon2">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
                             </div>
@@ -109,15 +129,15 @@
                         <div class="card-body p-6">
                             <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                 <tbody class="selectDetailsTbody">
-                                    <tr class="detailsCol">
-                                        <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
-                                            <strong>{{ __('Withdraw Amount') }}</strong>
-                                        </td>
-                                        <td class="dark:text-slate-300">
-                                            <span class="withdrawAmount"></span> 
-                                            {{$currency}}
-                                        </td>
-                                    </tr>
+                                <tr class="detailsCol">
+                                    <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                                        <strong>{{ __('Withdraw Amount') }}</strong>
+                                    </td>
+                                    <td class="dark:text-slate-300">
+                                        <span class="withdrawAmount"></span>
+                                        {{$currency}}
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
@@ -153,13 +173,13 @@
 
                 $.get(url, function (data) {
                     info = data.info;
-                    if (info.pay_currency === currency){
+                    if (info.pay_currency === currency) {
                         $('.conversion').addClass('hidden');
-                    }else {
+                    } else {
                         $('.conversion').removeClass('hidden');
                         $('#basic-addon2').text(info.pay_currency);
                         $('#amount').trigger('keyup')
-                        $('.conversion-rate').text('1' +' '+ currency + ' = ' + info.rate +' '+ info.pay_currency)
+                        $('.conversion-rate').text('1' + ' ' + currency + ' = ' + info.rate + ' ' + info.pay_currency)
 
                     }
                     $(data.html).insertAfter(".detailsCol");

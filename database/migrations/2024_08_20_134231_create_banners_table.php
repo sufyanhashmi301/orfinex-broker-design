@@ -13,11 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('symbol_group_has_symbols', function (Blueprint $table) {
+        Schema::create('banners', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('symbol_id')->constrained('symbols');
-            $table->foreignId('symbol_group_id')->constrained('symbol_groups');
-            $table->string('symbol_name');
+            $table->string('title');
+            $table->string('subtitle');
+            $table->string('primary_link')->nullable();
+            $table->string('button_text')->nullable();
+            $table->string('button_link')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('symbol_group_has_symbols');
+        Schema::dropIfExists('banners');
     }
 };

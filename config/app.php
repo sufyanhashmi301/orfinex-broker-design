@@ -45,6 +45,7 @@ return [
 
     'demo' => env('APP_DEMO', false),
 
+    'force_https' => env('FORCE_HTTPS', false),
     /*
     |--------------------------------------------------------------------------
     | Application URL

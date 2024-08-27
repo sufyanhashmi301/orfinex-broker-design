@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('swap_based_accounts', function (Blueprint $table) {
+        Schema::create('ticket_statuses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_type_id')->constrained('forex_accounts');
-            $table->string('title');
-            $table->integer('level_order')->unique();
-            $table->string('group_tag');
-            $table->text('description')->nullable();
-            $table->boolean('status')->default(0);
+            $table->string('name');
+            $table->string('status_type');
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('swap_based_accounts');
+        Schema::dropIfExists('ticket_statuses');
     }
 };

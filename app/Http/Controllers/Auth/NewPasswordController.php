@@ -53,7 +53,14 @@ class NewPasswordController extends Controller
             ->update(['password' => Hash::make($request->password)]);
 
         DB::table('password_resets')->where(['email' => $request->email])->delete();
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[password]]' => $request->password,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
 
+        $this->mailNotify($user->email, 'portal_update_password', $shortcodes);
         notify()->success('Your password has been changed!', 'Success');
 
         return redirect()->route('login');

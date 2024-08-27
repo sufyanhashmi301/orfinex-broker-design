@@ -13,14 +13,14 @@
 @endsection
 @section('symbol-groups-content')
     <div class="card">
-        <div class="card-body px-6 pb-6">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="symbol-groups-dataTable">
-                            <thead class=" border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol Group') }}</th>
@@ -48,6 +48,9 @@
         </div>
     </div>
 
+    <!-- Modal for Add New Group -->
+    @include('backend.symbol_groups.modal.__create')
+
     {{--Modal for edit symbol group--}}
     @include('backend.symbol_groups.modal.__edit')
 
@@ -63,26 +66,26 @@
             $('#symbols').select2();
          });
          $(document).ready(function () {
-            $('#modalForm').on('submit', function (e) {
-                e.preventDefault();
-                let formData = $(this).serialize();
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("admin.symbol-groups.store") }}', // Adjust the route to your store function
-                    data: formData,
-                    success: function (response) {
-                        if (response.success) {
-                            window.location.reload();
-                        }
-                    },
-                    error: function (xhr) {
-                        let errors = xhr.responseJSON.errors;
-                        if (errors) {
-                            displayErrors(errors);
-                        }
-                    }
-                });
-            });
+            {{--$('#modalForm').on('submit', function (e) {--}}
+            {{--    e.preventDefault();--}}
+            {{--    let formData = $(this).serialize();--}}
+            {{--    $.ajax({--}}
+            {{--        type: 'POST',--}}
+            {{--        url: '{{ route("admin.symbol-groups.store") }}', // Adjust the route to your store function--}}
+            {{--        data: formData,--}}
+            {{--        success: function (response) {--}}
+            {{--            if (response.success) {--}}
+            {{--                window.location.reload();--}}
+            {{--            }--}}
+            {{--        },--}}
+            {{--        error: function (xhr) {--}}
+            {{--            let errors = xhr.responseJSON.errors;--}}
+            {{--            if (errors) {--}}
+            {{--                displayErrors(errors);--}}
+            {{--            }--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
 
             function displayErrors(errors) {
                 $('.invalid-feedback').hide(); // Hide all previous error messages
@@ -104,31 +107,28 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
-                paging: true,
-                ordering: true,
-                info: false,
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
                 searching: false,
-                lengthChange: true,
-                lengthMenu: [10, 25, 50, 100],
+                lengthChange: false,
+                info: true,
                 language: {
-                lengthMenu: "Show _MENU_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                },
-                search: "Search:"
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
                 },
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax: "{{ route('admin.symbol-groups.index') }}",
                 columns: [
-                    {"class": "table-td", data: 'id', name: 'ID',orderable : false},
-                    {"class": "table-td", data: 'symbol_group', name: 'Symbol Group',orderable : false},
-                    {"class": "table-td", data: 'symbols', name: 'symbols',orderable : false},
+                    {data: 'id', name: 'ID',orderable : false},
+                    {data: 'title', name: 'Symbol Group',orderable : false},
+                    {data: 'symbols', name: 'symbols',orderable : false},
                     {
-                        "class": "table-td",
                         data: 'created_at',
                         name: 'created_at',
                         orderable: false,
@@ -144,7 +144,7 @@
                             return `${dateString} ${timeString}`;
                         }
                     },
-                    {"class": "table-td", data: 'action', name: 'action',orderable : false},
+                    {data: 'action', name: 'action',orderable : false},
                 ]
             });
         })(jQuery);
@@ -166,7 +166,6 @@
                         select.append(new Option(symbol, index));
                     });
 
-
                     $('#symbolGroupModal').modal('show');
                 }
             });
@@ -179,7 +178,7 @@
                 method: 'GET',
                 success: function(response) {
                     console.log(response);
-                    $('#groupName').val(response.symbolGroup.symbol_group);
+                    $('#groupName').val(response.symbolGroup.title);
                     var symbolsSelect = $('#symbols');
                     symbolsSelect.empty();
                     $.each(response.allSymbols, function(index, symbol) {

@@ -99,29 +99,27 @@
             "use strict";
 
             var table = $('#ib-info-dataTable').DataTable({
-                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
-                paging: true,
-                ordering: true,
-                info: false,
-                searching: true,
-                lengthChange: true,
-                lengthMenu: [10, 25, 50, 100],
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                searching: false,
+                lengthChange: false,
+                info: true,
                 language: {
-                lengthMenu: "Show _MENU_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                },
-                search: "Search:"
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
                 },
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax: "{{ route('admin.user.ib-info',$user->id) }}",
                 columns: [
-                    {"class": "table-td", data: 'ib_login', name: 'ib_login'},
-                    {"class": "table-td", data: 'ib_balance', name: 'ib_balance'},
-                    {"class": "table-td", data: 'ib_status', name: 'ib_status'},
+                    {data: 'ib_login', name: 'ib_login'},
+                    {data: 'ib_balance', name: 'ib_balance'},
+                    {data: 'ib_status', name: 'ib_status'},
                     // {data: 'action', name: 'action'},
 
                 ]

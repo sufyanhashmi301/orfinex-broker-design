@@ -46,11 +46,14 @@ use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\DesignationController;
 use App\Http\Controllers\Backend\RebateRuleController;
-use App\Http\Controllers\Backend\SwapBasedAccountController;
-use App\Http\Controllers\Backend\SwapFreeAccountController;
+use App\Http\Controllers\Backend\MultiLevelController;
+use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\Mt5DealController;
+use App\Http\Controllers\Backend\DashboardBannerController;
+use App\Http\Controllers\Backend\TicketStatusController;
+use App\Http\Controllers\Backend\TicketPriorityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -150,7 +153,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
-    Route::get('accountType/view/{id}', [ForexSchemaController::class,'view'])->name('accountType.view');
+    Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
@@ -293,6 +296,11 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('misc', 'miscSetting')->name('misc');
         Route::get('copy_trading', 'copyTradingSetting')->name('copyTrading');
 
+        Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
+        Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
+
+        Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+
     });
 
 //===============================  Security Settings ==================================
@@ -348,9 +356,14 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
         Route::get('index/{id?}', 'index')->name('index');
         Route::get('status', 'ticketStatus')->name('ticketStatus');
+        Route::get('priority', 'ticketPriority')->name('ticketPriority');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
         Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
+
+        Route::resource('statuses', TicketStatusController::class);
+        Route::resource('priorities', TicketPriorityController::class);
+
     });
     Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
     Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
@@ -392,34 +405,36 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.bonus.create');
     });
 
-
-
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');
     });
 
+
+    Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
+
+    Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
+
+    Route::get('settings/platform-api/cTrader', function () {
+        return view('backend.setting.platform_api.ctrader');
+    })->name('platform_api.ctrader');
+
+    Route::get('settings/platform-api/db-synchronization', function () {
+        return view('backend.setting.platform_api.db-synchronization');
+    })->name('platform_api.db-synchronization');
+
+    Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
+    Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+    Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
+    Route::resource('swap-multi-level', MultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
+    Route::post('symbols/store', [SymbolController::class,'store']);
+    Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
+
+
+    Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
-
-Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
-
-Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
-
-Route::get('settings/platform-api/cTrader', function () {
-    return view('backend.setting.platform_api.ctrader');
-});
-
-Route::get('settings/platform-api/db-synchronization', function () {
-    return view('backend.setting.platform_api.db-synchronization');
-});
-Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
-Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-Route::resource('swap-free-accounts', SwapFreeAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-Route::resource('swap-based-accounts', SwapBasedAccountController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
-Route::post('symbols/store', [SymbolController::class,'store']);
-Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-
-Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');

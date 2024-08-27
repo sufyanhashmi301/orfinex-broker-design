@@ -22,8 +22,9 @@
                     </button>
                 </div>
                 <div class="p-6">
-                    <form action="{{route('admin.swap-based-accounts.store')}}" method="post">
+                    <form action="{{route('admin.swap-multi-level.store')}}" method="post">
                         @csrf
+                        <input type="hidden" name="type" value="{{the_hash(\App\Enums\MultiLevelType::SWAP)}}" >
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Title') }}</label>
@@ -35,7 +36,7 @@
                                     required
                                 />
                             </div>
-                            <input type="hidden" name="account_type_id" value="{{$schema->id}}">
+                            <input type="hidden" name="forex_scheme_id" value="{{$schema->id}}">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Level Order') }}</label>
                                 <input
@@ -57,14 +58,28 @@
                                 />
                             </div>
                             <div class="lg:col-span-2 input-area">
+                                <label for="" class="form-label">
+                                    {{ __('Select Rebate Rules') }}
+                                </label>
+                                <select name="rebate_rules[]" class="select2 form-control w-full" multiple="multiple">
+                                    @foreach($rebateRules as $rebateRule)
+                                        <option  value="{{ $rebateRule->id }}">
+                                            {{ $rebateRule->title  }}
+                                        </option>
+                                    @endforeach
+
+                                </select>
+                                <div class="invalid-feedback" id="rebate-rules" style="display: none;"></div>
+                            </div>
+                            <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">{{ __('Short Description') }}</label>
-                                <input
+                                <textarea
                                     type="text"
                                     name="description"
                                     class="form-control mb-0"
                                     placeholder="Short Description"
                                     required
-                                />
+                                ></textarea>
                             </div>
                             <div class="lg:col-span-2 input-area">
                                 <label for="status" class="form-label">{{ __('Status') }}</label>

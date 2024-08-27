@@ -17,7 +17,7 @@ rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-togg
         </a>
         @endif
     </div>
-    
+
     <div class="all-noti divide-y divide-slate-100 dark:divide-slate-900">
         {{--        {{dd($notifications)}}--}}
         @foreach($notifications as $notification)
@@ -50,10 +50,4 @@ rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-togg
         @endif
     </div>
 </div>
-
-@if(isset($lucideCall))
-    <script>
-        lucide.createIcons();
-    </script>
-@endif
 

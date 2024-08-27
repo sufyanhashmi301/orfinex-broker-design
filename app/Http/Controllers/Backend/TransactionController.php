@@ -71,8 +71,12 @@ class TransactionController extends Controller
     public function view($id)
     {
         $data = Transaction::find($id);
-       
-        return view('backend.transaction.modals.view', compact('data', 'id'))->render();
+        if($data->status->value=='pending'){
+            return view('backend.withdraw.include.__withdraw_action', compact('data', 'id'))->render();
+        }else{
+            return view('backend.transaction.modals.view', compact('data', 'id'))->render();
+        }
+        
         
     }
    

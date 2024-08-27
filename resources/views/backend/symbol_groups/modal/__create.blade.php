@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <div class="p-6 pt-3">
-                    <form action="" method="post" id="modalForm">
+                    <form action="{{route('admin.symbol-groups.store')}}" method="post" id="modalForm">
                         @csrf
                         <div class="space-y-5">
                             <div class="input-area relative">
@@ -30,7 +30,7 @@
                                     name="name"
                                     class="form-control mb-0"
                                     placeholder="New York"
-                                    
+
                                 />
                                 <div class="invalid-feedback" id="name-error" style="display: none;"></div>
                             </div>
@@ -38,12 +38,17 @@
                                 <label for="" class="form-label">
                                     {{ __('Select Symbols') }}
                                 </label>
-                                <select name="symbol_groups[]" class="select2 form-control w-full" multiple="multiple">
-                                    
+                                <select name="symbols[]" class="select2 form-control w-full" multiple="multiple">
+                                    @foreach($symbols as $symbol)
+                                        <option  value="{{ $symbol->id }}">
+                                            {{ $symbol->symbol  }}
+                                        </option>
+                                    @endforeach
+
                                 </select>
                                 <div class="invalid-feedback" id="symbols-error" style="display: none;"></div>
                             </div>
-                           
+
                         </div>
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">

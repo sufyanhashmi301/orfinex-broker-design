@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('path');
             $table->text('description');
             $table->string('contract_size');
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

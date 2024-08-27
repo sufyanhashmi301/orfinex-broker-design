@@ -41,6 +41,7 @@
     $googleAnalytics = plugin_active('Google Analytics');
     $tawkChat = plugin_active('Tawk Chat');
     $fb = plugin_active('Facebook Messenger');
+    $customChat = plugin_active('Custom Chat');
 @endphp
 
 @if($googleAnalytics)
@@ -52,6 +53,8 @@
 @if($fb)
     @include('frontend::plugin.fb',['data' => json_decode($fb->data, true)])
 @endif
-
+@if($customChat)
+    @include('frontend::plugin.custom_chat',['data' => json_decode($customChat->data, true)])
+@endif
 
 

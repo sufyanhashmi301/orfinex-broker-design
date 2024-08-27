@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminLoginActivity;
 use App\Models\LoginActivities;
 
-
 use App\Rules\Recaptcha;
-
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Foundation\Application;
@@ -36,7 +34,6 @@ class AuthController extends Controller
      */
     public function loginView()
     {
-
         $googleReCaptcha = plugin_active('Google reCaptcha');
         return view('backend.auth.login',compact('googleReCaptcha'));
     }
@@ -55,7 +52,6 @@ class AuthController extends Controller
             'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
 
         ]);
-
         $credentials = Arr::except($credentials, ['g-recaptcha-response']);
 //dd($request->all());
 

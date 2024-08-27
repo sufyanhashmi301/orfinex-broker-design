@@ -1,9 +1,7 @@
-    
-    
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-        id="deleteSwapFree"
+        id="deleteTicketPriority"
         tabindex="-1"
-        aria-labelledby="deleteDepartment"
+        aria-labelledby="deleteTicketPriority"
         aria-hidden="true"
     >
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
@@ -18,10 +16,10 @@
                         </h4>
                     </div>
                     <p>
-                        {{ __('You want to Delete') }} 
-                        <strong class="name"></strong> {{ __('Account?') }}
+                        {{ __('You want to Delete') }}
+                        <strong class="name"></strong> {{ __('Ticket priority?') }}
                     </p>
-                    <form method="post" id="swapFreeDeleteForm">
+                    <form method="post" id="priorityDeleteForm">
                         @method('DELETE')
                         @csrf
                         <div class="action-btns">

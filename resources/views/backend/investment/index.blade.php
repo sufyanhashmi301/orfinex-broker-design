@@ -86,14 +86,14 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-body p-6">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class="col-span-8 hidden"></span>
                 <span class="col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
-                            <thead class=" border-t border-slate-100 dark:border-slate-800">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Account Number') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
@@ -130,37 +130,37 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'grid grid-cols-12 gap-5 px-6 mt-6'<'col-span-4'l><'col-span-8 flex justify-end'f><'#pagination.flex items-center'>><'min-w-full't><'flex justify-end items-center'p>",
-                paging: true,
-                ordering: true,
-                info: false,
-                searching: true,
-                lengthChange: true,
-                lengthMenu: [10, 25, 50, 100],
-                language: {
-                lengthMenu: "Show _MENU_ entries",
-                paginate: {
-                    previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                    next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                },
-                search: "Search:"
-                },
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
                 processing: true,
+                searching: false,
+                lengthChange: false,
+                info: true,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:",
+                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
+                },
                 serverSide: true,
+                autoWidth: false,
                 ajax: "{{ route('admin.forex-accounts',['type'=>'real']) }}",
                 columns: [
-                    {"class": "table-td", data: 'login', name: 'login'},
-                    {"class": "table-td", data: 'username', name: 'username'},
-                    {"class": "table-td", data: 'schema', name: 'schema'},
-                    // {"class": "table-td", data: 'login', name: 'login'},
-                    {"class": "table-td", data: 'group', name: 'group'},
-                    {"class": "table-td", data: 'currency', name: 'currency'},
-                    {"class": "table-td", data: 'leverage', name: 'leverage'},
-                    {"class": "table-td", data: 'balance', name: 'balance'},
-                    {"class": "table-td", data: 'ib_number', name: 'ib_number'},
-                    {"class": "table-td", data: 'status', name: 'status'},
-                    {"class": "table-td", data: 'created_at', name: 'created_at'},
-                    {"class": "table-td", data: 'action', name: 'action'},
+                    {data: 'login', name: 'login'},
+                    {data: 'username', name: 'username'},
+                    {data: 'schema', name: 'schema'},
+                    // {data: 'login', name: 'login'},
+                    {data: 'group', name: 'group'},
+                    {data: 'currency', name: 'currency'},
+                    {data: 'leverage', name: 'leverage'},
+                    {data: 'balance', name: 'balance'},
+                    {data: 'ib_number', name: 'ib_number'},
+                    {data: 'status', name: 'status'},
+                    {data: 'created_at', name: 'created_at'},
+                    {data: 'action', name: 'action'},
                 ]
             });
 

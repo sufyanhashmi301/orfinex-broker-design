@@ -182,6 +182,7 @@
 
     <div class="card mb-6">
         <div class="card-body divide-y divide-slate-100 dark:divide-slate-700 px-6">
+
             <div class="py-6">
                 <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Signup') }}</h4>
@@ -198,7 +199,7 @@
                 </div>
                 <div class="input-area">
                     <div class="relative">
-                        <input type="text" class="form-control !pr-32" id="referral-input" value="http://khjkahd3y9d30jdksads" readonly>
+                        <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $getReferral->link }}" readonly>
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                             <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">{{ __('Copy Link') }}</a>
                         </span>
@@ -209,52 +210,16 @@
                 <div class="flex justify-between flex-wrap items-center">
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
                     <div class="input-area relative min-w-[184px]">
-                        <select name="" class="select2 form-control w-full">
-                            <option value="0">{{ __('Level 0') }}</option>
-                            <option value="1">{{ __('Level 1') }}</option>
-                            <option value="2">{{ __('Level 2') }}</option>
+                        <select name="level_order" class="select2 form-control w-full">
+                            @for ($i = 0; $i <= $maxLevelOrder; $i++)
+                                <option value="{{ $i }}">{{ __('Level ' . $i) }}</option>
+                            @endfor
                         </select>
                     </div>
                 </div>
-                <div class="input-area grid grid-cols-12 items-center gap-5">
-                    <div class="lg:col-span-2 col-span-12 form-label !mb-0">
-                        {{ __('Standard') }}
-                    </div>
-                    <div class="lg:col-span-10 col-span-12">
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-32" id="standard-input" value="http://khjkahd3y9d30jdksads" readonly>
-                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                <a href="javascript:;" class="copy-button" type="button" data-target="#standard-input">{{ __('Copy Link') }}</a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-area grid grid-cols-12 items-center gap-5">
-                    <div class="lg:col-span-2 col-span-12 form-label !mb-0">
-                        {{ __('Pro') }}
-                    </div>
-                    <div class="lg:col-span-10 col-span-12">
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-32" id="pro-input" value="http://khjkahd3y9d30jdksads" readonly>
-                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                <a href="javascript:;" class="copy-button" type="button" data-target="#pro-input">{{ __('Copy Link') }}</a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-area grid grid-cols-12 items-center gap-5">
-                    <div class="lg:col-span-2 col-span-12 form-label !mb-0">
-                        {{ __('Business') }}
-                    </div>
-                    <div class="lg:col-span-10 col-span-12">
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-32" id="business-input" value="http://khjkahd3y9d30jdksads" readonly>
-                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                <a href="javascript:;" class="copy-button" type="button" data-target="#business-input">{{ __('Copy Link') }}</a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <span id="schemes">
+              @include('frontend.prime_x.partner.include.__schemes')
+                </span>
             </div>
             <div class="py-6 space-y-5">
                 <div class="flex justify-between flex-wrap items-center">
@@ -429,6 +394,53 @@
                 }, 2000);
 
             });
+            $(document).ready(function() {
+                $('select[name="level_order"]').on('change', function() {
+                    var selectedLevel = $(this).val();
+
+                    $.ajax({
+                        url: "{{ route('user.multi-level.ib.get.schemes') }}",
+                        type: "POST",
+                        data: {
+                            level_order: selectedLevel,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            // Inject the returned HTML into the container
+                            $('#schemes').html(response.html);
+
+                            // Re-bind the copy button functionality if needed
+                            bindCopyButtons();
+                        }
+                    });
+                });
+
+                function bindCopyButtons() {
+                    $('.copy-button').click(function() {
+                        var targetSelector = $(this).data('target');
+                        var $input = $(targetSelector);
+
+                        $input.select();
+                        document.execCommand('copy');
+
+                        // Change the button text and style
+                        var $button = $(this);
+                        var originalText = $button.text();
+                        $button.text('Copied');
+                        $button.addClass('copy-button');
+
+                        // Revert the button text and style after 2 seconds
+                        setTimeout(function() {
+                            $button.text(originalText);
+                            $button.removeClass('copy-button');
+                        }, 2000);
+                    });
+                }
+
+                // Initial binding
+                bindCopyButtons();
+            });
+
         });
 
     </script>

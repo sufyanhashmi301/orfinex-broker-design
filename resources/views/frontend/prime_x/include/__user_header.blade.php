@@ -2,12 +2,34 @@
 <div class="z-[9] sticky top-0" id="app_header">
     <div class="app-header z-[999] ltr:ml-[248px] rtl:mr-[248px] bg-white dark:bg-slate-800 shadow-sm dark:shadow-slate-700">
         <div class="flex justify-between items-center h-full">
-            <p class="text-xl font-medium text-slate-900 dark:text-white">
-                @yield('title')
-            </p>
+            {{--<p class="text-xl font-medium text-slate-900 dark:text-white">--}}
+                {{--@yield('title')--}}
+            {{--</p>--}}
+
+            {{--<div class="relative md:block hidden">
+                <button class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <iconify-icon class="text-slate-800 dark:text-white text-xl" icon="mdi:dots-grid"></iconify-icon>
+                </button>
+                <!-- Mail Dropdown -->
+                <div class="dropdown-menu z-10 hidden bg-white divide-y divide-slate-100 shadow w-44 dark:bg-slate-800 border dark:border-slate-700 !top-[23px] rounded-md overflow-hidden">
+                    <ul class="py-1 text-sm text-slate-800 dark:text-slate-200">
+                        <li>
+                            <a href="{{ route('webterminal') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal">
+                                <iconify-icon icon="gala:terminal" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                <span class="font-Inter">{{ __('Webterminal') }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>--}}
+            @if(setting('is_webterminal','global'))
+                <a href="{{ route('webterminal') }}" class="block lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">
+                    <img src="{{ asset('frontend/images/trading.png') }}" alt="" style="height: 24px">
+                </a>
+            @endif
             <!-- end vertcial -->
 
-            <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0">
+            <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
                 <!-- BEGIN: Profile Dropdown -->
                 <div class="md:block hidden w-full">
                     <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">

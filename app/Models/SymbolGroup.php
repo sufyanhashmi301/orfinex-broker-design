@@ -1,18 +1,48 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class SymbolGroup
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $platform_type
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property Collection|RebateRule[] $rebate_rules
+ * @property Collection|Symbol[] $symbols
+ *
+ * @package App\Models
+ */
 class SymbolGroup extends Model
 {
-    use HasFactory;
-    protected $guarded =[];
+	protected $table = 'symbol_groups';
 
-    public function symbols()
-    {
-        return $this->belongsToMany(Symbol::class, 'symbol_group_has_symbols', 'symbol_group_id', 'symbol_id')
-                    ->withPivot('symbol_name');
-    }
+	protected $fillable = [
+		'title',
+		'platform_type'
+	];
+
+	public function rebateRule()
+	{
+		return $this->belongsToMany(RebateRule::class)
+					->withPivot('id')
+					->withTimestamps();
+	}
+
+	public function symbols()
+	{
+		return $this->belongsToMany(Symbol::class)
+					->withTimestamps();
+	}
 }

@@ -26,11 +26,13 @@ class RebateRuleController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('symbolGroups', function($row) {
-                    return $row->symbolGroups->pluck('title')->implode(', ');
+                    return view('backend.rebate_rules.include.__symbol_groups', [
+                        'symbolGroups' => $row->symbolGroups->pluck('title')
+                    ])->render();
                 })
                 ->addColumn('status', 'backend.rebate_rules.include.__status')
                 ->addColumn('action', 'backend.rebate_rules.include.__action')
-                ->rawColumns(['status','action'])
+                ->rawColumns(['symbolGroups','status','action'])
                 ->make(true);
         }
         return view('backend.rebate_rules.all');
@@ -81,4 +83,31 @@ class RebateRuleController extends Controller
         notify()->success(__('Rebate Rule deleted successfully.'));
         return redirect()->route('admin.rebate-rules.index');
     }
+
+    public function updateStatus(Request $request)
+    {
+        $rebateRule = RebateRule::find($request->id);
+
+        if ($rebateRule) {
+            $rebateRule->status = $request->status;
+            $rebateRule->save();
+
+            // Use the notify helper function
+            notify(__('Rebate Rule updated successfully.'));
+
+            // Return JSON response
+            return response()->json([
+                'success' => true,
+                'status' => $request->status,
+                'message' => __('Rebate Rule updated successfully.')
+            ]);
+        }
+
+        // Return JSON response for error
+        return response()->json([
+            'success' => false,
+            'message' => __('Error updating status.')
+        ], 404);
+    }
+
 }

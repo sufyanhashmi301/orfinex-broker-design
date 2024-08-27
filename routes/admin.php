@@ -416,11 +416,12 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
     Route::get('settings/platform-api/cTrader', function () {
         return view('backend.setting.platform_api.ctrader');
-    });
+    })->name('platform_api.ctrader');
 
     Route::get('settings/platform-api/db-synchronization', function () {
         return view('backend.setting.platform_api.db-synchronization');
-    });
+    })->name('platform_api.db-synchronization');
+
     Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
@@ -429,6 +430,8 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
     Route::post('symbols/store', [SymbolController::class,'store']);
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
+
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
 

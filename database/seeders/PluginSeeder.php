@@ -25,14 +25,13 @@ class PluginSeeder extends Seeder
                     'name' => 'Custom Chat',
                     'description' => 'Free Instant Messaging system',
                     'data' => json_encode([
-                        'style' => "<link rel='stylesheet' href='https://primexbroker.online/static/css/main.css' />",
-                        'script' => "<script src='https://primexbroker.online/static/js/main.js'></script>"
+                        'style' => "<link rel='stylesheet' href='https://mydomain.online/static/css/main.css' />",
+                        'script' => "<script src='https://mydomain.online/static/js/main.js'></script>"
                     ]),
                     'status' => 0,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ],
-                // You can add more entries here...
             ]);
         }
     }

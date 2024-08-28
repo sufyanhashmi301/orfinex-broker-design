@@ -51,7 +51,7 @@
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select language') }}</label>
-                                <select class="form-control w-100" name="language" placeholder="Language" multiple>
+                                <select class="select2 form-control w-full" name="language" placeholder="Language" multiple>
                                     @foreach($languages as $language)
                                         <option value="{{$language->name}}" @if( $language->name == $advertisement->language ) selected @endif>{{$language->name}}</option>
                                     @endforeach
@@ -62,7 +62,7 @@
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select Type') }}</label>
-                                <select class="form-control w-100" name="type" placeholder="Language" multiple>
+                                <select class="select2 form-control w-full" name="type" placeholder="Language" multiple>
                                     <option  value="social_media"  @if( 'social_media' == $advertisement->type ) selected @endif>
                                         {{ __('Social Media') }}
                                     </option>

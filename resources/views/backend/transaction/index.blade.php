@@ -3,13 +3,13 @@
     {{ __('Transactions') }}
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
+    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('All Transactions') }}
         </h4>
     </div>
 
-    <div class="card p-6 mb-5">
+    <div class="innerMenu card p-6 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.transactions.export') }}">
             @csrf
             <div class="flex justify-between flex-wrap items-center">
@@ -77,7 +77,7 @@
         </form>
     </div>
     <div class="card">
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
@@ -133,7 +133,7 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 searching: false,
                 lengthChange: false,
                 info: true,

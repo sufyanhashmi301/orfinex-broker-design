@@ -4,7 +4,7 @@
 @endsection
 @section('security-content')
     <div class="card">
-        <div class="card-body px-6 pb-6">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>

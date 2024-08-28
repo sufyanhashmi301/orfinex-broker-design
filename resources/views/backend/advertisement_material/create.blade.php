@@ -50,7 +50,7 @@
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select Language') }}</label>
-                                <select  name="language" class="form-control w-100" placeholder="Manage Country" multiple>
+                                <select  name="language" class="select2 form-control w-full" placeholder="Manage Country" multiple>
                                     @foreach($languages as $language)
                                         <option value="{{$language->name}}">{{$language->name}}</option>
                                     @endforeach
@@ -61,7 +61,7 @@
                         <div class="col-span-2 md:col-span-1">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select Type') }}</label>
-                                <select  name="type" class="form-control w-100" placeholder="Manage Type" multiple>
+                                <select  name="type" class="select2 form-control w-full" placeholder="Manage Type" multiple>
 
                                     {{--@foreach( getCountries() as $country)--}}
                                     {{--<option  value="{{ $country['name'] }}">--}}

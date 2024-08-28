@@ -41,7 +41,7 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $staffs = Admin::all();
+        $staffs = Admin::paginate(10);
 
         return view('backend.staff.index', compact('staffs'));
     }

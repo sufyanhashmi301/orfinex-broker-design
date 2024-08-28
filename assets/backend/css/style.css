@@ -123,7 +123,7 @@
     color: rgb(71 85 105 / var(--tw-text-opacity));
 }
 
-.dataTables_wrapper {
+.dataTables_wrapper, .basicTable_wrapper {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 385px);

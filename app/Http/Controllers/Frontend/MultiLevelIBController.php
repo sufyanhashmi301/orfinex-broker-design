@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\AccountBalanceType;
 use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\ForexSchema;
 use App\Models\MultiLevel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MultiLevelIBController extends Controller
@@ -18,6 +21,13 @@ class MultiLevelIBController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $user_id = $user->id;
+        $totalMonthlyReferrals = $user->getReferral->monthlyRelationships()->count();
+        $sourceFrom = AccountBalanceType::AFFILIATE_WALLET;
+        $account = get_user_account($user_id,$sourceFrom);
+        $accountFromID = $account->id;
+        $accountFromName = w2n($sourceFrom);
+        $affiliateBalance = $this->getAccountBalance($sourceFrom, true);
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
         $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
@@ -33,8 +43,30 @@ class MultiLevelIBController extends Controller
         $maxLevelOrder = $maxLevelOrder->count;
         $getReferral = $user->getReferrals()->first();
         $levelOrder = 0;
+        $dataCount = [
+            'total_deposit' => $user->totalDeposit(30),
+            'net_deposit' => $user->totalDeposit(),
+            'total_rebate' => $user->totalRebateMeta(),
+            'total_volume' => $user->totalVolumeMeta(),
+//            'total_investment' => $user->totalInvestment(),
+//            'total_profit' => $user->totalProfit(),
+//            'profit_last_7_days' => $user->totalProfit(7),
+            'total_withdraw' => $user->totalWithdraw(30),
+//            'total_transfer' => $user->totalTransfer(),
+//            'total_referral_profit' => $user->totalReferralProfit(),
+            'total_referral' => $user->getReferral->monthlyRelationships()->count(),
+
+//            'total_forex_balance' => mt5_total_balance($user->id),
+//            'total_forex_equity' => mt5_total_equity($user->id),
+        ];
         return view('frontend::partner.dashboard', get_defined_vars());
 
+    }
+    public function getAccountBalance($name = null, $echo = false)
+    {
+        $name = (empty($name)) ? AccType('main') : $name;
+        $userID = auth()->user()->id;
+        return Account::getBalance($name, $userID, $echo);
     }
     public function getSchemes(Request $request)
     {

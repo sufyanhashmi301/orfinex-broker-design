@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -53,4 +54,9 @@ class ReferralLink extends Model
     {
         return $this->hasMany(ReferralRelationship::class);
     }
+    public function monthlyRelationships()
+    {
+        return $this->hasMany(ReferralRelationship::class)->where('created_at','>',Carbon::now()->subDay(30));
+    }
+
 }

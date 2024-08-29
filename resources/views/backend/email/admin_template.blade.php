@@ -14,6 +14,7 @@
             </a>
         </div>
     </div>
+    @include('backend.email.include.__menu')
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

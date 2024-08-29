@@ -198,5 +198,11 @@
             }
         });
     });
+
+    $(".dateOfBirth").flatpickr({
+        dateFormat: "d.m.Y",
+        maxDate: "15.12.2017"
+    });
+
 </script>
 @endsection

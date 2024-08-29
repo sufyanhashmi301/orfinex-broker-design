@@ -44,16 +44,7 @@
 
         </div>
         <div class="main-content" style="background-color: #ffffff; padding: 35px;">
-            <div class="banner" style="margin-bottom: 0px;">
-                <img style="max-width: 100%;" src="{{ $details['banner'] }}" alt="">
-            </div>
             <div class="contents" style="color: #666; background: #fff; padding: 35px;">
-                <h2 class="title" style="font-size: 24px; font-weight: 500; color: #333; margin-bottom: 40px;">
-                    {{ $details['title'] }}
-                </h2>
-                <div class="greetings" style="margin-bottom: 15px; margin-top: 15px;">
-                    {{ $details['salutation'] }}
-                </div>
                 <p style="margin-bottom: 0px; line-height: 32px; font-size: 16px;">
                     {!! $details['message_body'] !!}
                 </p>

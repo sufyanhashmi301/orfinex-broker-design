@@ -300,6 +300,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
         Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+        Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
     });
 

@@ -94,7 +94,8 @@ if (!function_exists('generateUniqueWalletId')) {
     function generateUniqueWalletId()
     {
         do {
-            $id = substr(bin2hex(random_bytes(6)), 0, 10); // Generates a random, 10-character hexadecimal string.
+            // Generate a random 10-digit integer.
+            $id = mt_rand(1000000000, 9999999999);
         } while (Account::where('wallet_id', $id)->exists()); // Ensure uniqueness in the database.
 
         return $id;
@@ -972,7 +973,6 @@ if (!function_exists('mt5_total_balance')) {
             ->table('mt5_accounts')
             ->whereIn('Login', $forexAccounts)
             ->sum('Balance');
-
         return $totalBalance;
 
     }

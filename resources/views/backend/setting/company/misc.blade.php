@@ -47,7 +47,7 @@
                                    class="form-control @if($errors->has($field['name'])) has-error @endif"
                                    placeholder="Label"
                                    value="{{oldSetting($field['name'],$section)}}"
-                                   required=""
+
                             >
                         </div>
                     @endif

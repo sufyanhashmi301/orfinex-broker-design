@@ -20,8 +20,10 @@ trait NotifyTrait
     //============================= mail template helper ===================================================
     protected function mailNotify($email, $code, $shortcodes = null)
     {
-        try {
+
+//        try {
             $template = EmailTemplate::where('status', true)->where('code', $code)->first();
+//        dd($template);
             if ($template) {
                 $find = array_keys($shortcodes);
                 $replace = array_values($shortcodes);
@@ -47,7 +49,7 @@ trait NotifyTrait
                     'site_title' => setting('site_title', 'global'),
                     'site_link' => route('home'),
                 ];
-//dd($details);
+//dd($details,$code);
                 if ($code == 'email_verification') {
                     return (new MailMessage)
                         ->subject($details['subject'])
@@ -56,11 +58,11 @@ trait NotifyTrait
 
                 return Mail::to($email)->send(new MailSend($details));
             }
-        } catch (Exception $e) {
-            notify()->error('SMTP connection failed', 'Error');
-
-            return false;
-        }
+//        } catch (Exception $e) {
+//            notify()->error('SMTP connection failed', 'Error');
+//
+//            return false;
+//        }
     }
 
     //============================= push notification template helper ===================================================

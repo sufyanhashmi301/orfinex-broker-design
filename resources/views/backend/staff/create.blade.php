@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.staff.store') }}" method="post" id="modalForm" class="space-y-5">
+    <form action="{{ route('admin.staff.store') }}" method="post" enctype="multipart/form-data" class="space-y-5">
         @csrf
         <div class="card">
             <div class="card-header">
@@ -84,11 +84,11 @@
                         <div class="wrap-custom-file h-full">
                             <input
                                 type="file"
-                                name="icon"
-                                id="schema-icon"
+                                name="avatar"
+                                id="profile-avatar"
                                 accept=".gif, .jpg, .png"
                             />
-                            <label for="schema-icon">
+                            <label for="profile-avatar">
                                 <img
                                     class="upload-icon"
                                     src="{{asset('global/materials/upload.svg')}}"
@@ -110,7 +110,7 @@
                 <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                     <div class="input-area">
                         <label class="form-label" for="department">{{ __('Select Department:') }}</label>
-                        <select name="department" class="select2 form-control w-100" id="department">
+                        <select name="department_id" class="select2 form-control w-100" id="department">
                             <option value="">Select</option>
                             @foreach($departments as $department)
                                 <option value="{{ $department->id }}">
@@ -122,7 +122,7 @@
 
                     <div class="input-area">
                         <label class="form-label" for="designation">{{ __('Select Designation:') }}</label>
-                        <select name="designation" class="select2 form-control w-100" id="designation">
+                        <select name="designation_id" class="select2 form-control w-100" id="designation">
                             <option value="">Select</option>
                             @foreach($designations as $designation)
                                 <option value="{{ $designation->id }}">
@@ -141,7 +141,6 @@
                             @foreach($roles as $role)
                                 <option value="{{$role->name}}">{{ str_replace('-', ' ', $role->name) }}</option>
                             @endforeach
-
                         </select>
                     </div>
 
@@ -210,7 +209,7 @@
                 <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Date Of Birth:') }}</label>
-                        <input type="text" name="date_of_joining" class="form-control dateOfBirth flatpickr flatpickr-input" placeholder="">
+                        <input type="text" name="date_of_joining" class="form-control dateOfBirth" placeholder="2006-12-19">
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Gender:') }}</label>
@@ -245,7 +244,7 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Personal Phone Number:') }}</label>
-                        <input type="text" name="personal_phone" class="form-control" placeholder="">
+                        <input type="text" name="phone" class="form-control" placeholder="">
                     </div>
                 </div>
             </div>
@@ -321,4 +320,12 @@
             </div>
         </div>
     </form>
+@endsection
+@section('script')
+    <script !src="">
+        $(".dateOfBirth").flatpickr({
+            dateFormat: "Y-m-d",
+            maxDate: "31.12.2006"
+        });
+    </script>
 @endsection

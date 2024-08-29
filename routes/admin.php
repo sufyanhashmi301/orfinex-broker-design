@@ -330,6 +330,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
             Route::get('/', 'template')->name('index');
+            Route::get('user', 'userTemplate')->name('user-template');
             Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
             Route::post('template-update', 'update_template')->name('template-update');
 

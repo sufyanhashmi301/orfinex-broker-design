@@ -28,6 +28,9 @@
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Role') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Designation') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Department') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Location') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -42,6 +45,21 @@
                                         {{ $staff->getRoleNames()->first() }}
                                     </td>
                                     <td class="table-td">{{ $staff->email }}</td>
+                                    <td class="table-td">
+                                        @if(isset($staff->designation))
+                                            {{ $staff->designation->name }}
+                                        @else
+                                            <span>-</span>
+                                        @endif
+                                    </td>
+                                    <td class="table-td">
+                                        @if(isset($staff->department))
+                                            {{ $staff->department->name }}
+                                        @else
+                                            <span>-</span>
+                                        @endif
+                                    </td>
+                                    <td class="table-td">{{ $staff->location }}</td>
                                     <td class="table-td">
                                         @if($staff->status)
                                             <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">

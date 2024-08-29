@@ -14,6 +14,7 @@
             </a>
         </div>
     </div>
+    @include('backend.sms.include.__menu')
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -70,7 +71,7 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.template.sms.index') }}",
+                ajax: "{{ route('admin.template.sms.user-template') }}",
                 columns: [
                     {data: 'name', name: 'name'},
                     {data: 'status', name: 'status'},

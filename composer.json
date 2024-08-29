@@ -37,6 +37,7 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^5.5",
         "stripe/stripe-php": "^9.8",
+        "symfony/process": "^6.4",
         "twilio/sdk": "^7.3",
         "unicodeveloper/laravel-paystack": "1.0.*",
         "yajra/laravel-datatables-oracle": "^10.0"

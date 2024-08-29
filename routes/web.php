@@ -25,6 +25,7 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
+use App\Http\Controllers\PythonController;
 use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
@@ -345,3 +346,4 @@ Route::get('user/wallets', function () {
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
+Route::get('/run-python/{input}', [PythonController::class, 'runScript']);

@@ -893,156 +893,231 @@ if (!function_exists('update_total_balance')) {
 }
 if (!function_exists('get_mt5_account')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Retrieves the MT5 account details for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return object|null The MT5 account object, or null if not found or on error.
      * @version 1.0.0
      * @since 1.0
      */
     function get_mt5_account($login)
     {
-        return DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->first();
-
+        try {
+            return DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $login)
+                ->first();
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+            return null;
+        }
     }
 }
 if (!function_exists('get_mt5_account_balance')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Retrieves the balance of an MT5 account for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return float The balance of the MT5 account, or 0.0 if not found or on error.
      * @version 1.0.0
      * @since 1.0
      */
     function get_mt5_account_balance($login)
     {
-        $balance = 0.0;
-        $mt5Account = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->first();
-        if ($mt5Account) {
-            $balance = $mt5Account->Balance;
+        try {
+            $mt5Account = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $login)
+                ->first();
+            return $mt5Account ? $mt5Account->Balance : 0.0;
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when retrieving balance: ' . $e->getMessage());
+            return 0.0;
         }
-        return $balance;
-
     }
 }
+
 if (!function_exists('get_mt5_account_equity')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Retrieves the equity of an MT5 account for a specific login.
+     *
+     * @param int $login The login ID of the MT5 account.
+     * @return float The equity of the MT5 account, or 0.0 if not found or on error.
      * @version 1.0.0
      * @since 1.0
      */
     function get_mt5_account_equity($login)
     {
-        $equity = 0.0;
-        $mt5Account = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->first();
-        if ($mt5Account) {
-            $equity = $mt5Account->Equity;
+        try {
+            $mt5Account = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $login)
+                ->first();
+            return $mt5Account ? $mt5Account->Equity : 0.0;
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
+            return 0.0;
         }
-        return $equity;
-
     }
 }
+
+
+
 if (!function_exists('mt5_total_balance')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Calculates the total balance for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total balance, or 0 if the connection fails.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_total_balance($user_id)
     {
-        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
 
-        $totalBalance = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $forexAccounts)
-            ->sum('Balance');
-        return $totalBalance;
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
 
+            // Calculate the total balance using the mt5_db connection
+            $totalBalance = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Balance');
+
+            return $totalBalance;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
     }
 }
+
 if (!function_exists('mt5_total_equity')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Calculates the total equity for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total equity, or 0 if the connection fails.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_total_equity($user_id)
     {
-        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
 
-        $totalEquity = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $forexAccounts)
-            ->sum('Equity');
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
 
-        return $totalEquity;
+            // Calculate the total equity using the mt5_db connection
+            $totalEquity = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Equity');
 
+            return $totalEquity;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
     }
 }
+
 if (!function_exists('mt5_total_credit')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_total_credit($user_id)
     {
-        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
 
-        $totalEquity = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $forexAccounts)
-            ->sum('Credit');
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
 
-        return $totalEquity;
+            // Calculate the total credit using the mt5_db connection
+            $totalCredit = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Credit');
 
+            return $totalCredit;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
     }
 }
+
 if (!function_exists('mt5_update_balance')) {
     /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
+     * Updates the balance and equity for a specific forex account login.
+     *
+     * @param int $login The login ID of the forex account.
+     * @param float $balance The new balance to be set.
+     * @return bool True if update was successful, False if it failed.
      * @version 1.0.0
      * @since 1.0
      */
     function mt5_update_balance($login, $balance)
     {
-//        $forexAccounts = ForexAccount::where('user_id', $user_id)->where('account_type', 'real')
-//            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
-        DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->where('Login', $login)
-            ->update(['Balance' => $balance, 'Equity' => $balance]);
+        try {
+            // Update the balance and equity for the given login
+            $updated = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->where('Login', $login)
+                ->update(['Balance' => $balance, 'Equity' => $balance]);
 
+            // Return true if update was successful
+            return $updated > 0;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed during balance update: ' . $e->getMessage());
+
+            // Return false in case of failure
+            return false;
+        }
     }
 }
+
 if (!function_exists('the_hash')) {
     /**
      * @param $data

@@ -8,22 +8,29 @@ use Symfony\Component\Process\Process;
 
 class PythonController extends Controller
 {
-    public function runScript(Request $request,$input)
+    public function runScript(Request $request)
     {
+        // Validate incoming request
+        $request->validate([
+            'query' => 'required|string',
+        ]);
+
+        $query = $request->input('query');
+
+        // Define paths
+        $venvPythonPath = base_path('venv/bin/python'); // Path to the Python interpreter in your virtual environment
         $scriptPath = base_path('python-scripts/chatgpt-01.py');
         $embeddingsPath = base_path('python-scripts/CW360_Dataset.csv');
-        $query = $input;
 
         // Command to execute
-        $process = new Process(['python', $scriptPath, $embeddingsPath, $query]);
+        $process = new Process([$venvPythonPath, $scriptPath, $embeddingsPath, $query]);
 
-//        try {
+        try {
             $process->mustRun();
             $output = $process->getOutput();
-            dd($output);
             return response()->json(['output' => $output]);
-//        } catch (ProcessFailedException $exception) {
-//            return response()->json(['error' => $exception->getMessage()], 500);
-//        }
+        } catch (ProcessFailedException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        }
     }
 }

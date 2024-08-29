@@ -16,5 +16,6 @@ class VerifyCsrfToken extends Middleware
         '*ipn*',
         '*kyc/advance/status',
         '*telegram/webhook',
+        '*/custom/chat/python',
     ];
 }

@@ -10,12 +10,12 @@
     </style>
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
+    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
             {{ __('All :type Accounts',['type'=>ucfirst($type)]) }}
         </h4>
     </div>
-    <div class="card p-4 mb-5">
+    <div class="innerMenu card p-4 mb-5">
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 gap-x-2">
             <div class="position-relative bg-slate-50 dark:bg-slate-900 rounded p-4">
                 <div class="flex flex-col text-center">
@@ -86,7 +86,7 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class="col-span-8 hidden"></span>
                 <span class="col-span-4 hidden"></span>
@@ -130,7 +130,7 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 processing: true,
                 searching: false,
                 lengthChange: false,

@@ -38,7 +38,7 @@ class AdvertisementMaterialController extends Controller
      */
     public function index()
     {
-        $advertisements = AdvertisementMaterial::all();
+        $advertisements = AdvertisementMaterial::paginate(10);
 
         return view('backend.advertisement_material.index', compact('advertisements'));
     }

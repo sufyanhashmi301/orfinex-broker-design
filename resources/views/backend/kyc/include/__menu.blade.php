@@ -1,4 +1,4 @@
-<div class="card p-4 mb-5">
+<div class="innerMenu card p-4 mb-5">
     @php
     $kycLevels = \App\Models\Kyclevel::get();
     @endphp

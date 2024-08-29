@@ -1,4 +1,4 @@
-<div class="card p-4 mb-5">
+<div class="innerMenu card p-4 mb-5">
     <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
         @can('schema-edit')
             <li class="nav-item">

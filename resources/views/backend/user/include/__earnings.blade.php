@@ -16,7 +16,7 @@
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
+                    <div class="overflow-hidden">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="user-profit-dataTable">
                             <thead>
                                 <tr>
@@ -43,7 +43,7 @@
             "use strict";
 
             var table = $('#user-profit-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 searching: false,
                 lengthChange: false,
                 info: true,

@@ -18,56 +18,46 @@
     </div>
 @endsection
 @section('withdraw_content')
-    <div class="card">
-        <div class="card-body p-6 space-y-4">
-            <p class="paragraph text-xs">
-                {{ __(' All the ') }} <strong>{{ __('Withdraw Methods') }}</strong> {{ __('setup for user') }}
-            </p>
-            @foreach( $withdrawMethods as $method)
-                @php
-                    $icon = $method->icon;
-                    if (null != $method->gateway_id && $method->icon == ''){
-                        $icon = $method->gateway->logo;
-                    }
-                @endphp
-
-                <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
-                    <div class="gateway-name flex items-center gap-2">
-                        <div class="gateway-icon relative mr-4">
-                            <img
-                                class="h-7"
-                                src="{{ asset($icon) }}"
-                                alt=""
-                            />
-                            <span class="icon-currency-type bg-slate-900 text-white rounded-full font-Inter text-xs py-0.5 px-2 absolute -top-[14px] -right-[15px]">
-                                {{ $method->currency }}
-                            </span>
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+        @foreach( $withdrawMethods as $method)
+            @php
+                $icon = $method->icon;
+                if (null != $method->gateway_id && $method->icon == ''){
+                    $icon = $method->gateway->logo;
+                }
+            @endphp
+            <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
+                <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
+                    <div class="grid-view-layout">
+                        <div class="flex justify-between items-center mb-4">
+                            <img class="inline-block h-10" src="{{ asset($icon) }}" alt=""/>
+                            <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-xl text-center">
+                                <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
+                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                </span>
+                            </a>
                         </div>
-                        <div class="gateway-title">
-                            <h4 class="text-sm">{{ $method->name }}</h4>
-                            <p class="text-xs">{{ __('Minimum Withdraw: ').$method->min_withdraw .' '.$currency }}</p>
-                        </div>
-                    </div>
-                    <div class="gateway-right flex items-center gap-2">
+                        <h4 class="text-base font-medium dark:text-white">{{$method->name}}</h4>
+                        <ul class="divide-y divide-slate-100 dark:divide-slate-700 h-full">
+                            <li class="flex items-center py-3">
+                                <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Minimum Withdraw:') }}</span>
+                                <span class="flex-1 text-right text-slate-600 dark:text-slate-300">{{ $method->min_withdraw .' '.$currency }}</span>
+                            </li>
+                        </ul>
                         <div class="gateway-status">
-                            @if( $method->status)
+                            @if($method->status)
                                 <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
                                     {{ __('Activated') }}
                                 </div>
                             @else
                                 <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
-                                    {{ __('DeActivated') }}
+                                    {{ __('Deactivated') }}
                                 </div>
                             @endif
                         </div>
-                        <div class="gateway-edit">
-                            <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="action-btn">
-                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                            </a>
-                        </div>
                     </div>
                 </div>
-            @endforeach
-        </div>
+            </div>
+        @endforeach
     </div>
 @endsection

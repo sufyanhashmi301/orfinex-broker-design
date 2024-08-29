@@ -1,12 +1,15 @@
 <?php
 
+use App\Enums\AccountBalanceType;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Helpers\NioHash;
+use App\Models\Account;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\RiskProfileTag;
 use App\Services\ForexApiService;
@@ -26,6 +29,162 @@ if (!function_exists('is_force_https')) {
         }
 
         return false;
+    }
+}
+if (!function_exists('AccType')) {
+    /**
+     * @param $name |string
+     * @param $object |boolean
+     * @return string|boolean|object
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function AccType($name = null, $object = true)
+    {
+//        dd($name);
+        $name = strtoupper($name);
+        $acType = get_enums(AccountBalanceType::class, false);
+        $acType = ($object === true) ? (object)$acType : $acType;
+//        dd($name,$acType);
+
+        if (empty($name)) return $acType;
+
+        return isset($acType->$name) ? $acType->$name : false;
+    }
+}
+if (!function_exists('get_user_account')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_user_account($userId, $balance = null)
+    {
+        // Default to main balance type if not specified.
+        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
+
+        // Attempt to retrieve the account.
+        $account = Account::where('user_id', $userId)
+            ->where('balance', $balance)
+            ->first();
+
+        // If no account exists, create a new one.
+        if (blank($account)) {
+            $account = Account::create([
+                'user_id' => $userId,
+                'balance' => $balance,
+                'amount' => 0.00,
+                'wallet_id' => generateUniqueWalletId()  // Generate a unique 10-character ID for the wallet
+            ]);
+        }
+
+        return $account;
+    }
+}
+
+/**
+ * Generates a unique 10-character alphanumeric ID.
+ * @return string
+ */
+if (!function_exists('generateUniqueWalletId')) {
+    function generateUniqueWalletId()
+    {
+        do {
+            $id = substr(bin2hex(random_bytes(6)), 0, 10); // Generates a random, 10-character hexadecimal string.
+        } while (Account::where('wallet_id', $id)->exists()); // Ensure uniqueness in the database.
+
+        return $id;
+    }
+}
+if (!function_exists('w2n')) {
+    /**
+     * @param $account
+     * @version 1.0.0
+     * @since 1.0
+     */
+
+    function w2n($account = null)
+    {
+        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
+        $nameMap = [
+            AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
+            AccountBalanceType::PRICING_INVEST => __(sys_settings('account_invest', 'Funded Account')),
+            AccountBalanceType::REFERRAL => __(sys_settings('account_referral', 'Referral Account')),
+            AccountBalanceType::FOREX_TRADING => __(sys_settings('forex_trading', 'Forex Trading')),
+            AccountBalanceType::AFFILIATE_WALLET => __(sys_settings('affiliate_wallet', 'Affiliate')),
+            AccountBalanceType::MASTER_AFFILIATE => __(sys_settings('master_affiliate', 'Master Affiliate')),
+            AccountBalanceType::STRIPE => __(sys_settings('stripe', 'Stripe')),
+        ];
+
+        return Arr::get($nameMap, $account);
+    }
+}
+if (!function_exists('sys_settings')) {
+    /**
+     * @param $key
+     * @param null $default
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function sys_settings($key, $default = null)
+    {
+//        dd($key,$default);
+        $settings = Cache::remember('sys_settings', 1800, function () {
+            return Setting::all()->pluck('name', 'val');
+        });
+//dd($settings);
+        $value = $settings->get($key) ?? $default;
+
+
+        return is_json($value) ? json_decode($value, true) : $value;
+    }
+}
+if (!function_exists('is_json')) {
+    /**
+     * check json value
+     * @param $string , $decoded
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function is_json($string, $decoded = false)
+    {
+        if (is_array($string)) return false;
+        json_decode($string);
+        $check = (json_last_error() == JSON_ERROR_NONE);
+
+        if ($decoded && $check) {
+            return json_decode($string);
+        }
+
+        return $check;
+    }
+}
+if (!function_exists('get_enums')) {
+    /**
+     * @param $enumClass
+     * @param bool $flipArray
+     * @return array
+     * @throws ReflectionException
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_enums($enumClass, $flipArray = true)
+    {
+        try {
+            $reflector = new \ReflectionClass($enumClass);
+            $enums = $reflector->getConstants();
+            return $flipArray ? array_flip($enums) : $enums;
+        } catch (\Exception $e) {
+            if (env('APP_DEBUG', false)) {
+                save_error_log($e, 'enum-refection');
+            }
+            return [];
+        }
     }
 }
 if (!function_exists('isActive')) {

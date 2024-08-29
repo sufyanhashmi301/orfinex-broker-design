@@ -13,7 +13,7 @@ class TicketPriorityService
 
     public function getAll()
     {
-        return TicketPriority::all();
+        return TicketPriority::paginate(10);
     }
 
     public function getById(int $id): TicketPriority

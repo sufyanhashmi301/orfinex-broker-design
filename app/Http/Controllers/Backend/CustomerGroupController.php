@@ -19,8 +19,8 @@ class CustomerGroupController extends Controller
 
     public function index()
     {
-        $customerGroups = CustomerGroup::all();
-        
+        $customerGroups = CustomerGroup::paginate(10);
+
         return view('backend.customer_groups.index', compact('customerGroups'));
     }
 
@@ -31,11 +31,11 @@ class CustomerGroupController extends Controller
 
     public function store(StoreCustomerGroupRequest $request)
     {
-       
+
         $this->customerGroupService->create($request->validated());
         notify()->success(__(' Customer Group Created'));
         return redirect()->route('admin.customer-groups.index');
-        
+
     }
 
     public function show(CustomerGroup $customerGroup)
@@ -53,15 +53,15 @@ class CustomerGroupController extends Controller
         $this->customerGroupService->update($customerGroup, $request->validated());
         notify()->success(__(' Customer Group updated successfully.'));
         return redirect()->route('admin.customer-groups.index');
-       
+
     }
 
     public function destroy(CustomerGroup $customerGroup)
     {
-        
+
         $this->customerGroupService->delete($customerGroup);
         notify()->success(__(' Customer Group deleted successfully.'));
         return redirect()->route('admin.customer-groups.index');
-        
+
     }
 }

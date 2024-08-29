@@ -68,7 +68,7 @@
 @endsection
 @section('customers-content')
     <div class="card">
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
                 <span class=" col-span-8  hidden"></span>
                 <span class="  col-span-4 hidden"></span>
@@ -121,7 +121,7 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 processing: true,
                 searching: false,
                 lengthChange: false,

@@ -38,11 +38,11 @@
                     @endphp
                     @include('global.__notification_data',['notifications'=>$notifications,'totalUnread'=>$totalUnread,'totalCount'=>$totalCount])
                 </div>
-                {{-- <div>
-                    <a href="{{ route('home') }}" class="toolTip onLeft h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] lg:bg-gray-500-f7 bg-slate-50 dark:bg-slate-900 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" target="_blank" data-tippy-content="Visit Landing Page" data-tippy-theme="dark">
-                        <iconify-icon class="text-slate-800 dark:text-white text-xl" icon="lucide:globe"></iconify-icon>
+                <div>
+                    <a href="{{ route('admin.profile') }}" class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] lg:bg-gray-500-f7 bg-slate-50 dark:bg-slate-900 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                        <iconify-icon class="text-slate-800 dark:text-white text-xl" icon="lucide:settings"></iconify-icon>
                     </a>
-                </div> --}}
+                </div>
                 <div class="md:block hidden w-full">
                     <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 ltr:mr-[10px] rtl:ml-[10px]">

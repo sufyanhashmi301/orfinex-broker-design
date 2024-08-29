@@ -37,7 +37,7 @@
         <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
+                    <div class="overflow-hidden">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>

@@ -17,6 +17,7 @@
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-4 col-span-12">
             <div class="card">
+<<<<<<< HEAD
                 <div class="card-header noborder">
                     <div>
                         <h4 class="card-title mb-2">{{ __('Shortcut Glossary') }}</h4>
@@ -64,6 +65,14 @@
                             </button>
                         </div>
                     </div>
+=======
+                <div class="card-body p-6">
+                    <p class="paragraph text-sm mb-0 mt-2">
+                        <iconify-icon icon="lucide:alert-triangle"></iconify-icon>
+                        {{ __('The Shortcuts you can use') }}
+                        <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
+                    </p>
+>>>>>>> 9c981db1 (staff design changes.)
                 </div>
             </div>
         </div>
@@ -190,6 +199,7 @@
 @section('script')
     <script>
         $(document).ready(function() {
+<<<<<<< HEAD
             $('.copy-button').click(function() {
 
                 var targetSelector = $(this).data('target');
@@ -209,6 +219,10 @@
                     $icon.removeClass('text-success-500');
                 }, 2000);
 
+=======
+            $('.secondary_message__toggle').on('click', function() {
+                $('#secondary_message__body').toggleClass('hidden');
+>>>>>>> 9c981db1 (staff design changes.)
             });
         });
     </script>

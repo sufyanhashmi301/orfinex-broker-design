@@ -51,9 +51,9 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\Mt5DealController;
-use App\Http\Controllers\Backend\DashboardBannerController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
+use App\Http\Controllers\Backend\BannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -437,6 +437,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
 
 });

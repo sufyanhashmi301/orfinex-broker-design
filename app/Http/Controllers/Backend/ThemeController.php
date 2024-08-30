@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -17,8 +18,9 @@ class ThemeController extends Controller
     public function siteTheme()
     {
         $themes = Theme::where('type', 'site')->get();
+        $banners = Banner::all();
 
-        return view('backend.theme.template', compact('themes'));
+        return view('backend.theme.template', compact('themes', 'banners'));
     }
 
     public function globalSetting()

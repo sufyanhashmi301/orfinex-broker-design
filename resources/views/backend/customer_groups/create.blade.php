@@ -23,30 +23,23 @@
                     <input type="text" class="form-control" required="" name="name" placeholder="Group Name"/>
                 </div>
                 <div class="input-area">
-                    <label class="form-label" for="">{{ __('Status:') }}</label>
-                    <div class="switch-field flex mb-3 overflow-hidden">
-                        <input
-                            type="radio"
-                            id="active-status-2"
-                            name="status"
-                            checked
-                            value="1"
-                        />
-                        <label for="active-status-2">{{ __('Active') }}</label>
-                        <input
-                            type="radio"
-                            id="deactivate-status-2"
-                            name="status"
-                            value="0"
-
-                        />
-                        <label for="deactivate-status-2">{{ __('Deactivate') }}</label>
+                    <div class="flex items-center space-x-7 flex-wrap">
+                        <label class="form-label !w-auto pt-0">
+                            {{ __('Status:') }}
+                        </label>
+                        <div class="form-switch ps-0">
+                            <input type="hidden" value="0" name="status">
+                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                <input type="checkbox" name="status" value="1" class="sr-only peer">
+                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="text-right p-5">
                     <button class="btn btn-dark inline-flex items-center justify-center" type="submit">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                        Add New Group
+                        {{ __('Add New Group') }}
                     </button>
                 </div>
             </form>

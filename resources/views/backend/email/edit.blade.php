@@ -17,12 +17,53 @@
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-4 col-span-12">
             <div class="card">
-                <div class="card-body p-6">
-                    <p class="paragraph text-sm mb-0 mt-2">
-                        <iconify-icon icon="lucide:alert-triangle"></iconify-icon>
-                        {{ __('The Shortcuts you can use') }}
-                        <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
-                    </p>
+                <div class="card-header noborder">
+                    <div>
+                        <h4 class="card-title mb-2">{{ __('Shortcut Glossary') }}</h4>
+                        <p class="card-text">
+                            <iconify-icon icon="lucide:alert-triangle"></iconify-icon>
+                            {{ __('The Shortcuts you can use') }}
+                            <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="card-body space-y-5 p-6">
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Full Name:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="fullname-input" value="[[full_name]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#fullname-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Site title:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="sitetitle-input" value="[[site_title]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#sitetitle-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Site URL:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="siteurl-input" value="[[site_url]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#siteurl-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Token:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="token-input" value="[[token]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#token-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,8 +190,25 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $('.secondary_message__toggle').on('click', function() {
-                $('#secondary_message__body').toggleClass('hidden');
+            $('.copy-button').click(function() {
+
+                var targetSelector = $(this).data('target');
+                var $input = $(targetSelector);
+
+                $input.select();
+                document.execCommand('copy');
+
+                // Change the button text and style
+                var $button = $(this);
+                var $icon = $button.find('iconify-icon');
+                $icon.addClass('text-success-500');
+                $button.addClass('copy-button');
+
+                // Revert the button text and style after 2 seconds
+                setTimeout(function() {
+                    $icon.removeClass('text-success-500');
+                }, 2000);
+
             });
         });
     </script>

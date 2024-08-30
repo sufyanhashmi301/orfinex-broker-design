@@ -51,10 +51,30 @@
             </form>
         </div>
     </div>
+    <div id="notification-container" class="fixed top-0 right-0 mt-4 mr-4 space-y-2 z-50">
+        <!-- Notifications will be added here dynamically -->
+    </div>
 @endsection
 
 @section('setting-script')
     <script>
+        function showNotification(message, type) {
+            const container = document.getElementById('notification-container');
+
+            // Create a new notification element
+            const notification = document.createElement('div');
+            notification.className = `p-4 mb-2 rounded-md text-white text-sm ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+            notification.textContent = message;
+
+            // Append the notification to the container
+            container.appendChild(notification);
+
+            // Automatically remove the notification after a few seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000); // 5 seconds
+        }
+
         document.getElementById('test-connection-btn').addEventListener('click', function() {
             const form = document.getElementById('db-credentials-form');
             const formData = new FormData(form);
@@ -66,23 +86,15 @@
                 },
                 body: formData
             })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.status === 'success') {
-                        displayMessage(data.message);
-                    } else {
-                        displayMessageError(data.message);
-                    }
-                })
-                .catch(error => displayMessageError('An error occurred while testing the connection.'));
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => showNotification('An error occurred while testing the connection.', 'error'));
         });
-
-        function displayMessage(message) {
-            toastr.success(message, 'Success');
-        }
-
-        function displayMessageError(message) {
-            toastr.error(message, 'Error');
-        }
     </script>
 @endsection

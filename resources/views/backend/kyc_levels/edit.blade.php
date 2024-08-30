@@ -250,6 +250,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </form>
     @include('backend.kyc_levels.include.__editlevel1')

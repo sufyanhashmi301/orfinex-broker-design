@@ -118,11 +118,13 @@
                         <select name="department_id" class="select2 form-control w-100" id="department">
                             <option value="">Select</option>
                             @foreach($departments as $department)
-                                <option value="{{ $department->id }}" @selected($staff->departments->contains($department->id))>
+                                <option value="{{ $department->id }}"
+                                        @if($staff->departments && $staff->departments->contains($department->id)) selected @endif>
                                     {{ $department->name }}
                                 </option>
                                 @foreach($department->children as $child)
-                                    <option value="{{ $child->id }}" @selected($staff->departments->contains($child->id))>
+                                    <option value="{{ $child->id }}"
+                                            @if($staff->departments && $staff->departments->contains($child->id)) selected @endif>
                                         -- {{ $child->name }}
                                     </option>
                                 @endforeach
@@ -135,11 +137,13 @@
                         <select name="designation_id" class="select2 form-control w-100" id="designation">
                             <option value="">Select</option>
                             @foreach($designations as $designation)
-                                <option value="{{ $designation->id }}" @selected($staff->designations->contains($designation->id))>
+                                <option value="{{ $designation->id }}"
+                                        @if($staff->designations && $staff->designations->contains($designation->id)) selected @endif>
                                     {{ $designation->name }}
                                 </option>
                                 @foreach($designation->children as $child)
-                                    <option value="{{ $child->id }}" @selected($staff->designations->contains($child->id))>
+                                    <option value="{{ $child->id }}"
+                                            @if($staff->designations && $staff->designations->contains($child->id)) selected @endif>
                                         -- {{ $child->name }}
                                     </option>
                                 @endforeach

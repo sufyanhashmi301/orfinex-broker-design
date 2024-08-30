@@ -97,8 +97,8 @@
                     <h6 class="block mb- text-3xl text-slate-900 dark:text-white font-medium leading-none">
                         {{ $affiliateBalance }} {{$currency}}
                     </h6>
-                    <a href="" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
-                        {{ __('Add Credit') }}
+                    <a href="{{route('user.withdraw.view')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
+                        {{ __('Withdraw') }}
                     </a>
                     <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                         <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">

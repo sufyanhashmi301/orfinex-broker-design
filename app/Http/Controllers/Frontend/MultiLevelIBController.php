@@ -27,7 +27,7 @@ class MultiLevelIBController extends Controller
         $account = get_user_account($user_id,$sourceFrom);
         $accountFromID = $account->id;
         $accountFromName = w2n($sourceFrom);
-        $affiliateBalance = $this->getAccountBalance($sourceFrom, true);
+        $affiliateBalance = $user->multi_ib_balance;
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
         $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas

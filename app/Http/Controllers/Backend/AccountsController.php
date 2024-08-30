@@ -28,6 +28,7 @@ class   AccountsController extends Controller
      * @return void
      */
     protected $forexApiService;
+
     public function __construct(ForexApiService $forexApiService)
     {
         $this->forexApiService = $forexApiService;
@@ -61,31 +62,40 @@ class   AccountsController extends Controller
                 ->addColumn('schema', 'backend.investment.include.__invest_schema')
                 ->addColumn('status', 'backend.investment.include.__status')
                 ->addColumn('action', 'backend.investment.include.__action')
-                ->rawColumns(['ib_number', 'schema', 'username','balance','equity','credit', 'status','action'])
+                ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
         $realForexAccounts = ForexAccount::where('account_type', $type)
             ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
 //dd($realForexAccounts);
-        $withBalance = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $realForexAccounts)
-            ->where('Balance', '>',0)->count();
-        $withoutBalance = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $realForexAccounts)
-            ->where('Balance', 0)->count();
-        $unActiveAccounts = ForexAccount::where('account_type',$type)->where('status','!=',ForexAccountStatus::Ongoing)->count();
+        try {
+            $withBalance = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '>', 0)->count();
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+            $withBalance = 0.0;
+        }
+        try {
+            $withoutBalance = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', 0)->count();
+        } catch (\Exception $e) {
+            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+            $withoutBalance = 0.0;
+        }
+        $unActiveAccounts = ForexAccount::where('account_type', $type)->where('status', '!=', ForexAccountStatus::Ongoing)->count();
 
         $data = [
-        'TotalAccounts' => ForexAccount::where('account_type', $type)->count(),
-        'withBalance' => $withBalance,
-        'withoutBalance' => $withoutBalance,
-        'unActiveAccounts' => $unActiveAccounts,
+            'TotalAccounts' => ForexAccount::where('account_type', $type)->count(),
+            'withBalance' => $withBalance,
+            'withoutBalance' => $withoutBalance,
+            'unActiveAccounts' => $unActiveAccounts,
         ];
-        return view('backend.investment.index',compact('data','type'));
+        return view('backend.investment.index', compact('data', 'type'));
     }
-
 
 
     public function forexAccountCreateNow(Request $request)
@@ -137,7 +147,7 @@ class   AccountsController extends Controller
         $input = $request->all();
         $user = User::find($request->user_id);
         $schema = ForexSchema::find($input['schema_id']);
-        $accountType = $request->account_type ;
+        $accountType = $request->account_type;
 //        dd(ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count(),$accountType,$schema->account_limit);
 //        if (ForexAccount::where(['user_id'=> $user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count() >= $schema->account_limit) {
 //            $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.',['title'=> $schema->title]);
@@ -145,15 +155,15 @@ class   AccountsController extends Controller
 //            return redirect()->back();
 //        }
         $login = 0;
-        $forexAccount = ForexAccount::where('forex_schema_id',$schema->id)->orderBY('login','desc')->first();
-        if($forexAccount) {
-            if($forexAccount->login >= $schema->end_range){
-                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
+        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
+        if ($forexAccount) {
+            if ($forexAccount->login >= $schema->end_range) {
+                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
                 notify()->error($message, 'Error');
                 return redirect()->back();
             }
             $login = $forexAccount->login++;
-        }else{
+        } else {
             $login = $schema->start_range;
         }
         $group = '';
@@ -191,9 +201,9 @@ class   AccountsController extends Controller
             "investorPassword" => 'SNNH@2024@bol'
         ];
 //        dd($data,$accountType);
-        if($accountType == 'real'){
+        if ($accountType == 'real') {
             $response = $this->forexApiService->createUser($data);
-        }else{
+        } else {
             $response = $this->forexApiService->createUserDemo($data);
         }
         if ($response['success']) {

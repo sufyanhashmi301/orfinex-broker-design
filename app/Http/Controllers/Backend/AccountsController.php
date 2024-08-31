@@ -269,4 +269,8 @@ class   AccountsController extends Controller
         return redirect()->back();
     }
 
+    public function changeLeverage(){
+        return view('backend.investment.change_leverage');
+    }
+
 }

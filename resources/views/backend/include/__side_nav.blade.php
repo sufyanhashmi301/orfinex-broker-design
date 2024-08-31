@@ -175,6 +175,11 @@
                                 {{ __('Demo Accounts') }}
                             </a>
                         </li>
+                        <li>
+                            <a href="{{route('admin.change-leverage')}}" class="{{ isActive('admin.change-leverage') }}">
+                                {{ __('Change Leverage') }}
+                            </a>
+                        </li>
                     </ul>
 
                 </li>

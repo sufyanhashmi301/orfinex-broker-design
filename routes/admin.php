@@ -170,6 +170,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
 
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 

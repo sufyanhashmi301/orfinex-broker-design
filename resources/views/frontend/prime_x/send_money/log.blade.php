@@ -36,7 +36,7 @@
                         <div class="inline-block min-w-full align-middle">
                             <div class="overflow-hidden ">
                                 <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                    <thead class=" border-t border-slate-100 dark:border-slate-800">
+                                    <thead class="border-t border-slate-100 dark:border-slate-800">
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Description') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
@@ -46,7 +46,7 @@
                                             <th scope="col" class="table-th">{{ __('Method') }}</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($sendMoneys as $raw)
                                         <tr>
                                             <td class="table-td">

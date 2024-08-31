@@ -1,7 +1,7 @@
 <div class="card overflow-hidden mb-3">
     <div class="card-body py-1">
         <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
-            <div class="bg-white dark:bg-slate-800">
+            <div class="bg-white dark:bg-dark">
                 <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
                     <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                         {{ __('Balance') }}
@@ -15,7 +15,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800">
+            <div class="bg-white dark:bg-dark">
                 <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
                     <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                         {{ __('Equity') }}
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800">
+            <div class="bg-white dark:bg-dark">
                 <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
                     <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                         {{ __('Success Points') }}

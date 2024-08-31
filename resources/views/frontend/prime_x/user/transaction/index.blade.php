@@ -49,7 +49,7 @@
                                             <th scope="col" class="table-th">{{ __('Method') }}</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($transactions as $transaction)
                                         <tr>
                                             <td class="table-td">

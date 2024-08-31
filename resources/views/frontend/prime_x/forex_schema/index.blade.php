@@ -14,7 +14,7 @@
 </div>
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
     @foreach($schemas as $schema)
-    <div class="card relative border bg-white dark:bg-slate-800 dark:border-slate-700">
+    <div class="card relative border dark:border-slate-700">
         <div class="card-body p-6">
             <div class="">
                 <div class="flex items-center justify-between mb-1">
@@ -30,7 +30,7 @@
                 </p>
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{$schema->desc }}</p>
             </div>
-            <ul class="bg-slate-50 dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
+            <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                 <li class="flex items-center py-3">
                     <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
                         {{ __('Initial Deposit') }}

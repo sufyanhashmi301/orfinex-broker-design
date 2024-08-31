@@ -43,7 +43,7 @@
             <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
                 <div class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500 mb-3">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-body text-warning-500 mb-3">
                             <iconify-icon icon="heroicons-outline:download"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500 mb-3">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-body text-warning-500 mb-3">
                             <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500 mb-3">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-body text-warning-500 mb-3">
                             <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -73,7 +73,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500 mb-3">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-body text-warning-500 mb-3">
                             <iconify-icon icon="uil:chart-line"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -83,7 +83,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500 mb-3">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-body text-warning-500 mb-3">
                             <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -93,7 +93,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500 mb-3">
+                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-body text-warning-500 mb-3">
                             <iconify-icon icon="heroicons-outline:support"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -111,7 +111,7 @@
                         </header>
                         <div class="card-body p-6 pt-0 mt-auto">
                             <div class="grid lg:grid-cols-2 grid-cols-1 gap-3">
-                                <div class="bg-slate-100 dark:bg-slate-900">
+                                <div class="bg-slate-100 dark:bg-body">
                                     <div class="card-body p-4 py-6">
                                         <div class="flex items-center justify-between gap-5 mb-10">
                                             <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Live Accounts:') }}</h5>
@@ -128,7 +128,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="bg-slate-100 dark:bg-slate-900">
+                                <div class="bg-slate-100 dark:bg-body">
                                     <div class="card-body p-4 py-6">
                                         <div class="flex items-center justify-between gap-5 mb-10">
                                             <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Demo Accounts:') }}</h5>

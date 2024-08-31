@@ -25,7 +25,7 @@
                 <p class=" text-base leading-5 text-slate-500">
                     Instantly transfer funds between your accounts, seamlessly and without limits.
                 </p>
-                <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
+                <div class="bg-slate-50 dark:bg-body rounded p-4">
                     <div class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                         <span>For sending funds to</span>
                         <span class="text-slate-900 dark:text-slate-300">your accounts</span>
@@ -59,7 +59,7 @@
                 <p class=" text-base leading-5 text-slate-500">
                     Safely send money to friends and family with easy-to-use External Transfer feature.
                 </p>
-                <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
+                <div class="bg-slate-50 dark:bg-body rounded p-4">
                     <div class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                         <span>For sending funds to</span>
                         <span class="text-slate-900 dark:text-slate-300">your accounts</span>

@@ -1,4 +1,4 @@
-<div class="card overflow-hidden mb-5">
+<div class="card overflow-hidden mb-3">
     <div class="card-body py-1">
         <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
             <div class="bg-white dark:bg-slate-800">

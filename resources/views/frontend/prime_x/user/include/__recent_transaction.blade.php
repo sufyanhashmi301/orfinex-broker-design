@@ -1,5 +1,14 @@
 <div class="col-span-12">
     <div class="card">
+        <header class="card-header noborder">
+            <h4 class="card-title">{{ __('Recent Transactions') }}</h4>
+            <div>
+                <a href="" class="btn-link inline-flex items-center">
+                    {{ __('See All Transactions') }}
+                    <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
+                </a>
+            </div>
+        </header>
         <div class="card-body p-6 pt-0">
             <!-- BEGIN: Company Table -->
             @if(count($recentTransactions) == 0)

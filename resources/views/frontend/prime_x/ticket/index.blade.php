@@ -23,7 +23,7 @@
                                         <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         <th scope="col" class="table-th">{{ __('Action') }}</th>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($tickets as $ticket)
                                         <tr>
                                             <td class="table-td">

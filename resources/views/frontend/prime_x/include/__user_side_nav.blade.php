@@ -1,5 +1,4 @@
-<div id="bodyOverlay"
-     class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
+<div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{route('home')}}" class="items-center md:flex hidden">
         <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
@@ -52,10 +51,8 @@
         </form>
     </div>
 </div>
-<div id="nav_shadow"
-     class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50"
-     id="sidebar_menus">
+<div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
         <li>
             <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">

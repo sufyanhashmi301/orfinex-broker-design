@@ -2,7 +2,7 @@
     <div class="hv-item-parent">
         <div class="person">
             @if(null != $levelUser->avatar)
-                <img src="{{ asset($levelUser->avatar)}}">
+                <img src="{{ asset($levelUser->avatar)}}" class="inline-flex" alt="">
             @else
                 <div class="f-name-l-name">{{ $levelUser->first_name[0] }}{{ $levelUser->last_name[0] }}</div>
             @endif

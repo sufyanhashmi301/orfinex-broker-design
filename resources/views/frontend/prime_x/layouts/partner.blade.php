@@ -6,7 +6,7 @@
 <!--Full Layout-->
 <main class="app-wrapper">
 
-    <div class="sidebar-wrapper group">
+    <div class="sidebar-wrapper group dark:shadow-slate-700">
         @include('frontend::include.__partner_side_nav')
     </div>
 

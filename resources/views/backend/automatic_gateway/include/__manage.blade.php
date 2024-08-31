@@ -25,7 +25,7 @@
                                 <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
                                 <div class="wrap-custom-file">
                                     <input type="file" name="logo" id="schema-icon" accept=".gif, .jpg, .png"/>
-                                    <label for="schema-icon" class="file-ok" style="background-image: url({{ asset($gateway->logo) }})">
+                                    <label for="schema-icon" class="file-ok" style="background-image: url('https://cdn.brokeret.com/crm-assets/integration-logo/svg/{{ $gateway->logo }}')">
                                         <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt=""/>
                                         <span>{{ __('Update Logo') }}</span>
                                     </label>
@@ -55,26 +55,19 @@
                         @endforeach
 
                         <div class="col-span-2">
-                            <div class="input-area max-w-xs mb-0">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
-                                <div class="switch-field flex overflow-hidden same-type">
-                                    <input
-                                        type="radio"
-                                        id="status-enable-{{$gateway->id}}"
-                                        name="status"
-                                        value="1"
-                                        @if($gateway->status) checked @endif
-                                    />
-                                    <label
-                                        for="status-enable-{{$gateway->id}}">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="status-disable-{{$gateway->id}}"
-                                        name="status"
-                                        value="0"
-                                        @if(!$gateway->status) checked @endif
-                                    />
-                                    <label for="status-disable-{{$gateway->id}}">{{ __('Deactivate') }}</label>
+                            <div class="input-area">
+                                <label class="form-label" for=""></label>
+                                <div class="flex items-center space-x-7 flex-wrap">
+                                    <label class="form-label !w-auto">
+                                        {{ __('Status:') }}
+                                    </label>
+                                    <div class="form-switch ps-0">
+                                        <input type="hidden" value="0" name="status">
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="status" value="1" class="sr-only peer" @if($gateway->status) checked @endif>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

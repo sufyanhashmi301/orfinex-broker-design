@@ -37,19 +37,19 @@
                 @if(count($transactions) == 0 && isset($login) )
                     <div class="flex items-center justify-center flex-col">
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                            You don't have any transaction yet.
+                            {{ __("You don't have any transaction yet.") }}
                         </p>
                         <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                            Deposit Now
+                            {{ __('Deposit Now') }}
                         </a>
                     </div>
                 @elseif(count($transactions) == 0 && !isset($login))
                         <div class="flex items-center justify-center flex-col">
                             <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                                Kindly select the account to view the orders or
+                                {{ __('Kindly select the account to view the orders or') }}
                             </p>
                             <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                                Deposit Now
+                                {{ __('Deposit Now') }}
                             </a>
                         </div>
                     @else
@@ -69,7 +69,7 @@
 
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($transactions as $transaction)
                                         <tr>
                                             <td class="table-td">

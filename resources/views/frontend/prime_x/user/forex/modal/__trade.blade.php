@@ -1,8 +1,8 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="tradeModal" tabindex="-1" aria-labelledby="tradeModal" aria-hidden="true">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding
         rounded-md outline-none text-current">
-            <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+            <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize">
@@ -19,58 +19,58 @@
                 <div class="p-6 space-y-4">
                     <ul class="account-details-list divide-y divide-slate-100 dark:divide-slate-700 h-full">
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Live Account Name :</span>
-                            <span class="ml-auto dark:text-white">Standard MT5 - Islamic</span>
+                            <span class="font-medium dark:text-white">{{ __('Live Account Name :') }}</span>
+                            <span class="ml-auto dark:text-white">{{ __('Standard MT5 - Islamic') }}</span>
                         </li>
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Account Type :</span>
-                            <span class="ml-auto dark:text-white">MT5</span>
+                            <span class="font-medium dark:text-white">{{ __('Account Type :') }}</span>
+                            <span class="ml-auto dark:text-white">{{ __('MT5') }}</span>
                         </li>
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Account Currency :</span>
-                            <span class="ml-auto dark:text-white">USD</span>
+                            <span class="font-medium dark:text-white">{{ __('Account Currency :') }}</span>
+                            <span class="ml-auto dark:text-white">{{ __('USD') }}</span>
                         </li>
                     </ul>
                     <div class="flex items-center justify-between flex-wrap gap-3">
                         @if(setting('desktop_terminal_windows_show','platform_links',false))
                             <a href="{{setting('desktop_terminal_windows_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
                                 <iconify-icon class="text-xl mr-2" icon="material-symbols:window-sharp"></iconify-icon>
-                                <span>Metatrader5 for windows</span>
+                                <span>{{ __('Metatrader5 for windows') }}</span>
                             </a>
                         @endif
                         @if(setting('desktop_terminal_mac_show','platform_links',false))
                             <a href="{{setting('desktop_terminal_mac_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
                                 <iconify-icon class="text-xl mr-2" icon="fa6-brands:app-store-ios"></iconify-icon>
-                                <span>Metatrader5 for MAC</span>
+                                <span>{{ __('Metatrader5 for MAC') }}</span>
                             </a>
                         @endif
                         @if(setting('mobile_application_android_show','platform_links',false))
                             <a href="{{setting('mobile_application_android_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
                                 <iconify-icon class="text-xl mr-2" icon="ion:logo-google-playstore"></iconify-icon>
-                                <span>Metatrader5 for Android</span>
+                                <span>{{ __('Metatrader5 for Android') }}</span>
                             </a>
                         @endif
                         @if(setting('mobile_application_Android_APK_show','platform_links',false))
                             <a href="{{setting('mobile_application_Android_APK_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
                                 <iconify-icon class="text-xl mr-2" icon="material-symbols:android"></iconify-icon>
-                                <span>Metatrader5 for Android APK</span>
+                                <span>{{ __('Metatrader5 for Android APK') }}</span>
                             </a>
                         @endif
                         @if(setting('mobile_application_iOS_show','platform_links',false))
                             <a href="{{setting('mobile_application_iOS_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
                                 <iconify-icon class="text-xl mr-2" icon="fa6-brands:apple"></iconify-icon>
-                                <span>Metatrader5 for IOS</span>
+                                <span>{{ __('Metatrader5 for IOS') }}</span>
                             </a>
                         @endif
                         @if(setting('web_terminal_show','platform_links',false))
                             <a href="{{setting('web_terminal_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
                                 <iconify-icon class="text-xl mr-2" icon="mdi:web"></iconify-icon>
-                                <span>MT5 web trader</span>
+                                <span>{{ __('MT5 web trader') }}</span>
                             </a>
                         @endif
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>

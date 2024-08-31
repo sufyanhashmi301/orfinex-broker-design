@@ -20,7 +20,7 @@
                                 <a href="{{ $banner->button_link }}" class="btn btn-dark inline-flex items-center justify-center">
                                     {{ $banner->button_text }}
                                 </a>
-                                <a href="{{ $banner->primary_link }}" class="btn inline-flex items-center justify-center">
+                                <a href="{{ $banner->primary_link }}" class="btn inline-flex items-center justify-center dark:text-white">
                                     <span class="flex items-center">
                                         <span>{{ __('Learn More') }}</span>
                                         <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>

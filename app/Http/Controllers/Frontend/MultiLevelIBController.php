@@ -23,7 +23,7 @@ class MultiLevelIBController extends Controller
         $user = auth()->user();
         $user_id = $user->id;
         $totalMonthlyReferrals = $user->getReferral->monthlyRelationships()->count();
-        $sourceFrom = AccountBalanceType::AFFILIATE_WALLET;
+        $sourceFrom = AccountBalanceType::IB_WALLET;
         $account = get_user_account($user_id,$sourceFrom);
         $accountFromID = $account->id;
         $accountFromName = w2n($sourceFrom);

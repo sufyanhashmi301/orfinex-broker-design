@@ -101,6 +101,91 @@ if (!function_exists('generateUniqueWalletId')) {
         return $id;
     }
 }
+if (!function_exists('user_balance')) {
+    /**
+     * @param $balance
+     * @param $userId | auth->user
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function user_balance($balance = null, $userId = null)
+    {
+        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
+        $userid = !empty($userId) ? $userId : auth()->user()->id;
+        $account = Account::where('user_id', $userid)->where('balance', $balance)->first();
+
+        if (!blank($account)) {
+            $amount = data_get($account, 'amount', 0.00);
+            return ($amount) ? $amount : 0.00;
+        }
+
+        return 0;
+    }
+}
+//if (!function_exists('account_balance')) {
+//    /**
+//     * @param $account
+//     * @param $userId | auth->user
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//
+//    function account_balance($account = null, $type = 'base')
+//    {
+//        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
+//        $userid = auth()->user()->id;
+//        $account = Account::where('user_id', $userid)->where('balance', $account)->first();
+//        $amount = (!blank($account)) ? data_get($account, 'amount', 0.00) : 0.00;
+//
+//        if ($type == 'alter' || $type == 'secondary') {
+//            return to_amount(base_to_secondary($amount), secondary_currency());
+//        }
+//
+//        return to_amount($amount, base_currency());
+//    }
+//}
+//
+//if (!function_exists('base_currency')) {
+//    /**
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//    function base_currency()
+//    {
+//        return sys_settings('base_currency', 'USD');
+//    }
+//}
+//
+//if (!function_exists('secondary_currency')) {
+//    /**
+//     * @return mixed
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//    function secondary_currency()
+//    {
+//        return sys_settings('alter_currency', 'USD');
+//    }
+//}
+//if (!function_exists('base_to_secondary')) {
+//
+//    /**
+//     * @param $amount
+//     * @return float|int
+//     * @version 1.0.0
+//     * @since 1.0
+//     */
+//    function base_to_secondary($amount)
+//    {
+//        if ($amount == 0) {
+//            return 0.00;
+//        }
+//        $secondaryCurrency = secondary_currency();
+//        $exchangeRate = get_exchange_rates(actived_exchange(), $secondaryCurrency);
+//        return ($amount * $exchangeRate);
+//    }
+//}
+
 if (!function_exists('w2n')) {
     /**
      * @param $account
@@ -113,14 +198,8 @@ if (!function_exists('w2n')) {
         $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
         $nameMap = [
             AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
-            AccountBalanceType::PRICING_INVEST => __(sys_settings('account_invest', 'Funded Account')),
-            AccountBalanceType::REFERRAL => __(sys_settings('account_referral', 'Referral Account')),
-            AccountBalanceType::FOREX_TRADING => __(sys_settings('forex_trading', 'Forex Trading')),
-            AccountBalanceType::AFFILIATE_WALLET => __(sys_settings('affiliate_wallet', 'Affiliate')),
-            AccountBalanceType::MASTER_AFFILIATE => __(sys_settings('master_affiliate', 'Master Affiliate')),
-            AccountBalanceType::STRIPE => __(sys_settings('stripe', 'Stripe')),
-        ];
-
+              AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
+           ];
         return Arr::get($nameMap, $account);
     }
 }

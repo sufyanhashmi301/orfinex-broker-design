@@ -131,7 +131,6 @@ class AdvertisementMaterialController extends Controller
 
         $advertisement = AdvertisementMaterial::find($id);
         $input = $request->all();
-//dd($input);
         $finalData = [
             'language' => $input['language'],
             'type' => $input['type'],

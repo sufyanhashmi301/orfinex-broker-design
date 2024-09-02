@@ -152,7 +152,7 @@ class MultiLevelRebateDistribution extends Command
     }
     protected function addBalance($parentId, $transaction)
     {
-        $sourceFrom = AccountBalanceType::AFFILIATE_WALLET;
+        $sourceFrom = AccountBalanceType::IB_WALLET;
 
         $userAccount = get_user_account($parentId,$sourceFrom);
 //        dd($userAccount);

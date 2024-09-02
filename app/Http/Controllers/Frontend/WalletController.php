@@ -14,7 +14,6 @@ class WalletController extends Controller
      */
     public function index()
     {
-
         return view('frontend::wallets.index');
     }
 

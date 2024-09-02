@@ -109,7 +109,7 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-dark">
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
                                     {{ __('Proceed to Payment') }}
                                 </button>
                             </div>

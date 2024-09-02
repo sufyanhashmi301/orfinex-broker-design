@@ -33,14 +33,14 @@
                 @if(count($transactions) == 0)
                     <div class="flex items-center justify-center flex-col">
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                            You don't have any transaction yet.
+                            {{ __("You don't have any transaction yet.") }}
                         </p>
                         <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                            Deposit Now
+                            {{ __('Deposit Now') }}
                         </a>
                     </div>
                 @else
-                    <div class="grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
+                    <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
                         <div class="filter">
                             <form action="{{ route('user.transactions') }}" method="get">
                                 <div class="search flex gap-3 items-center">
@@ -58,7 +58,7 @@
                     </div>
                     <div class="overflow-x-auto -mx-6">
                         <div class="inline-block min-w-full align-middle">
-                            <div class="overflow-hidden ">
+                            <div class="overflow-hidden basicTable_wrapper">
                                 <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                     <thead class=" border-t border-slate-100 dark:border-slate-800">
                                         <tr>

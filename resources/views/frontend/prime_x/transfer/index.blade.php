@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div>
-                    <a href="{{ route('user.send-money.internal-view') }}" class="btn block-btn btn-dark inline-flex items-center">
+                    <a href="{{ route('user.send-money.internal-view') }}" class="btn block-btn btn-primary inline-flex items-center">
                         Transfer Now
                     </a>
                 </div>

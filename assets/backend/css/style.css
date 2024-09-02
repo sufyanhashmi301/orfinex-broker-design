@@ -137,3 +137,7 @@
 .dashcode-data-table .dataTables_empty {
     text-align: center;
 }
+.dark .dropdown-menu{
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}

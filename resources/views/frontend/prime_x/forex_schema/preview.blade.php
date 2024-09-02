@@ -113,8 +113,7 @@
                             </ul>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn inline-flex justify-center btn-dark me-3"
-                                    id="create-forex-account">
+                            <button type="submit" class="btn inline-flex justify-center btn-primary mr-3" id="create-forex-account">
                                 {{ __('Create Account') }}
                             </button>
                             <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-outline-dark">

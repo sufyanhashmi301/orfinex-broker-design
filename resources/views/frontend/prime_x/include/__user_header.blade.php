@@ -24,7 +24,7 @@
             </div>--}}
             @if(setting('is_webterminal','global'))
                 <a href="{{ route('webterminal') }}" class="block lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">
-                    <img src="{{ asset('frontend/images/trading.png') }}" alt="" style="height: 24px">
+                    <img src="{{ asset('frontend/images/trading.png') }}" class="dark:invert" alt="" style="height: 24px">
                 </a>
             @endif
             <!-- end vertcial -->

@@ -89,7 +89,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-dark block w-full text-center">
+                    <button type="submit" class="btn btn-primary block w-full text-center">
                         {{ __('Reset Password') }}
                     </button>
                 </form>

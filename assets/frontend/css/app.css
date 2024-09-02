@@ -6606,7 +6606,10 @@ textarea.form-control.is-invalid{
   fill: #000;
 }
 .dark .dark\:fill-white {
-    fill: #fff;
+  fill: #fff;
+}
+.dark .dark\:invert{
+  filter: invert(100%);
 }
 .fill-\[\#afafaf\]{
   fill: #afafaf;
@@ -8991,16 +8994,16 @@ ToolTip And PopOver
   --tw-ring-offset-width: 1px;
 }
 .dark .btn-dark{
+    --tw-bg-opacity: 1;
+    background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+}
+/*.dark .btn-dark{
   --tw-border-opacity: 1;
   border-width: 1px;
   border-color: rgb(71 85 105 / var(--tw-border-opacity));
   background: transparent;
   --tw-text-opacity: 1;
   color: rgb(203 213 225 / var(--tw-text-opacity));
-}
-/*.dark .btn-dark{
-  --tw-bg-opacity: 1;
-  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
 }
 .dark .btn-dark{
     --btn-bg: #52525b;

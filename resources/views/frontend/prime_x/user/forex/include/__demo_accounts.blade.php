@@ -62,7 +62,7 @@
                     </div>
                     <div class="list-view-layout">
                         <div class="flex items-center">
-                        <span class="badge bg-primary-500 text-primary-900 bg-opacity-30 capitalize">
+                        <span class="badge bg-primary text-primary-900 bg-opacity-30 capitalize">
                             {{ucfirst(data_get($account,'account_type'))}}
                         </span>
                             <span

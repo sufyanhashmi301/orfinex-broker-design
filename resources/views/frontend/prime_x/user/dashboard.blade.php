@@ -122,7 +122,7 @@
                                         </div>
                                         <div class="flex items-center justify-between gap-5">
                                             <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
-                                            <a href="" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center">
+                                            <a href="" class="btn btn-primary btn-sm inline-flex items-center justify-center">
                                                 {{ __('Create Account') }}
                                             </a>
                                         </div>
@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="flex items-center justify-between gap-5">
                                             <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
-                                            <a href="" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center">
+                                            <a href="" class="btn btn-primary btn-sm inline-flex items-center justify-center">
                                                 {{ __('Create Account') }}
                                             </a>
                                         </div>

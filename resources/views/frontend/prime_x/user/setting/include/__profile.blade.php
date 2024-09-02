@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <div class="text-center bg-slate-50 dark:bg-slate-900 rounded py-3 px-6">
+                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
                     <p class="text-xl text-slate-900 dark:text-white mb-2">
                         ${{auth()->user()->totalForexBalance()}}
                     </p>
@@ -26,7 +26,7 @@
                         {{ __('Balance') }}
                     </p>
                 </div>
-                <div class="text-center bg-slate-50 dark:bg-slate-900 rounded py-3 px-6">
+                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
                     <p class="text-xl text-slate-900 dark:text-white mb-2">
                         ${{auth()->user()->totalForexEquity()}}
                     </p>
@@ -34,7 +34,7 @@
                         {{ __('Equity') }}
                     </p>
                 </div>
-                <div class="text-center bg-slate-50 dark:bg-slate-900 rounded py-3 px-6">
+                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
                     <p class="text-xl text-slate-900 dark:text-white mb-2">
                         0
                     </p>
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="text-right mt-4">
-                    <button type="submit" class="btn btn-dark" id="profile-update-save">{{ __('Save Changes') }}</button>
+                    <button type="submit" class="btn btn-primary inline-flex items-center justify-center" id="profile-update-save">{{ __('Save Changes') }}</button>
                 </div>
             </div>
         </form>

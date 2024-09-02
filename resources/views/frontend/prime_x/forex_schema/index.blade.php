@@ -8,7 +8,7 @@
         {{ __('Open New Account') }}
     </h4>
     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-sm btn-outline-secondary">My Accounts</a>
+        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-sm btn-primary">{{ __('My Accounts') }}</a>
         {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">Get Bonus</a> --}}
     </div>
 </div>
@@ -58,7 +58,7 @@
                     </span>
                 </li>
             </ul>
-            <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-5">
+            <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                 {{ __('Create Account') }}
             </a>
         </div>

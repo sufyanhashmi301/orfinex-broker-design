@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\AccountBalanceType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,10 @@ class WalletController extends Controller
      */
     public function index()
     {
-        return view('frontend::wallets.index');
+        $userID = \Auth::user()->id;
+        $mainWallet = get_user_account($userID);
+        $ibWallet = get_user_account($userID,AccountBalanceType::IB_WALLET);
+        return view('frontend::wallets.index', get_defined_vars());
     }
 
     /**

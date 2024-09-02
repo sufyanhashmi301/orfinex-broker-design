@@ -26,8 +26,13 @@ class PrimexMigrateSystem extends Command
         // Disable foreign key checks and truncate tables
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('risk_profile_tags_users')->truncate();
+        DB::table('accounts')->truncate();
+        DB::table('ledgers')->truncate();
         DB::table('users')->truncate();
         DB::table('transactions')->truncate();
+        DB::table('old_transactions')->truncate();
+        DB::table('meta_transactions')->truncate();
+        DB::table('ib_transactions')->truncate();
         DB::table('forex_accounts')->truncate();
         DB::table('messages')->truncate();
         DB::table('notifications')->truncate();
@@ -37,6 +42,17 @@ class PrimexMigrateSystem extends Command
         DB::table('tickets')->truncate();
         DB::table('invests')->truncate();
         DB::table('withdraw_accounts')->truncate();
+        DB::table('admin_login_activities')->truncate();
+        DB::table('login_activities')->truncate();
+        DB::table('meta_deals')->truncate();
+        DB::table('multi_levels')->truncate();
+        DB::table('multi_level_rebate_rule')->truncate();
+        DB::table('rebate_rules')->truncate();
+        DB::table('rebate_rule_symbol_group')->truncate();
+        DB::table('symbols')->truncate();
+        DB::table('symbol_groups')->truncate();
+        DB::table('symbol_symbol_group')->truncate();
+        DB::table('black_list_countries')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->info('Tables truncated successfully.');

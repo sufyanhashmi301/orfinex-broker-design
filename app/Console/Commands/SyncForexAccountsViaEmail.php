@@ -88,7 +88,7 @@ class SyncForexAccountsViaEmail extends Command
                                     'created_by' => $user->id,
                                     'first_min_deposit_paid' => 0,
                                     'trading_platform' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),
-                                    'server' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'), 
+                                    'server' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),
                                     'agent' => $accountData['agent'], // Agent from API response
                                 ];
 

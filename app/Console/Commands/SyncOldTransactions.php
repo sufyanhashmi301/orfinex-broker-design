@@ -15,7 +15,7 @@ class SyncOldTransactions extends Command
 
     public function handle()
     {
-//        $this->syncDeposits();
+        $this->syncDeposits();
         $this->syncWithdrawals();
     }
 

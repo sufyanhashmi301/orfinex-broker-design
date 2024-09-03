@@ -38,7 +38,7 @@
                 </div>
                 <div class="mb-5">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ data_get($mainWallet,'wallet_id') }}
+                        E-{{ data_get($mainWallet,'wallet_id') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
                         {{ data_get($mainWallet,'amount') }} {{$currency}}
@@ -97,7 +97,7 @@
                 </div>
                 <div class="mb-5">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ data_get($ibWallet,'wallet_id') }}
+                        IB-{{ data_get($ibWallet,'wallet_id') }}
 
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">

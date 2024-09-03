@@ -53,6 +53,7 @@ class PrimexMigrateSystem extends Command
         DB::table('symbol_groups')->truncate();
         DB::table('symbol_symbol_group')->truncate();
         DB::table('black_list_countries')->truncate();
+        DB::table('customer_group_has_customers')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->info('Tables truncated successfully.');

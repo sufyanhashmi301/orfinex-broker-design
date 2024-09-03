@@ -44,16 +44,7 @@
 
         </div>
         <div class="main-content" style="background-color: #ffffff; padding: 35px;">
-            <div class="banner" style="margin-bottom: 0px;">
-                <img style="max-width: 100%;" src="{{ $details['banner'] }}" alt="">
-            </div>
             <div class="contents" style="color: #666; background: #fff; padding: 35px;">
-                <h2 class="title" style="font-size: 24px; font-weight: 500; color: #333; margin-bottom: 40px;">
-                    {{ $details['title'] }}
-                </h2>
-                <div class="greetings" style="margin-bottom: 15px; margin-top: 15px;">
-                    {{ $details['salutation'] }}
-                </div>
                 <p style="margin-bottom: 0px; line-height: 32px; font-size: 16px;">
                     {!! $details['message_body'] !!}
                 </p>
@@ -85,19 +76,16 @@
             </div>
             <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
                 <span style="font-size: small;">
-                    You received this email because you made a trade on your Orfinex Prime Real Trading Account. If you have any questions or need assistance, please contact us via email at support@orfinex.com or visit 
-                    <a href="https://support.orfinex.com" target="_blank">
-                        <b>Support Portal</b>
-                    </a>.
+                    {{ setting('email_disclaimer', 'global') }}
                 </span>
             </div>
             <div style="font-size: small; text-align: center;line-height: 14px !important;">
-                Risk warning: Trading in financial markets involves risks. Please ensure you understand these risks and are prepared to manage them.
+                {{ setting('email_risk_warning', 'global') }}
             </div>
         </div>
         <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
             <font size="1">
-                ORFINEX is a brand name of ORFINEX PRIME PTY LTD, which is a Corporate Authorized Representative who holds an Australian Financial Services License issued by the Australian Securities and Investments Commission (ASIC), AFSR no. 001306799 and ACN No# 672 906 320.
+                {{ setting('email_footer', 'global') }}
             </font>
         </div>
     </div>

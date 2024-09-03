@@ -6,116 +6,107 @@
     <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div class="col-xl-8">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Add New IB Account Type') }}</h2>
-                            <a href="{{ url()->previous() }}" class="title-btn"><i
-                                    icon-name="corner-down-left"></i>{{ __('Back') }}</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                {{ __('Add New IB Account Type') }}
+            </h4>
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                    {{ __('Back') }}
+                </a>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body p-6">
+                <form action="{{route('admin.ibAccountType.store')}}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="grid grid-cols-2 gap-5">
+                        <div class="lg:col-span-1 col-span-2 schema-name">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Title:') }}</label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    class="form-control"
+                                    placeholder="Account Title"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 col-span-2 schema-badge">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Account Type Badge:') }}</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Account Type Badge"
+                                    name="badge"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 col-span-2 ">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Select IB Type:') }}</label>
+                                <select name="type" id="" class="form-control w-100" required>
+                                    <option value="ib">{{__("IB")}}</option>
+                                    <option value="multi_ib">{{__("Multi IB")}}</option>
+                                </select>
+                            </div>
 
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-xl-8">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <form action="{{route('admin.ibAccountType.store')}}" method="post" enctype="multipart/form-data"
-                                  class="row">
-                                @csrf
-                                <div class="col-xl-6 schema-name">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Title:') }}</label>
-                                        <input
-                                            type="text"
-                                            name="title"
-                                            class="box-input"
-                                            placeholder="Forex Account Title"
-                                            required
-                                        />
-                                    </div>
+                        </div>
+                        <div class="lg:col-span-1 col-span-2 ">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Group:') }}</label>
+                                <input
+                                    type="text"
+                                    name="group"
+                                    class="form-control"
+                                    placeholder="MT5 Group"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="input-area fw-normal">
+                                <label for="" class="form-label">{{ __('Detail:') }}</label>
+                                <div class="site-editor">
+                                <textarea class="summernote" name="desc"></textarea>
                                 </div>
-                                <div class="col-xl-6 schema-badge">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Account Type Badge:') }}</label>
-                                        <input
-                                            type="text"
-                                            class="box-input"
-                                            placeholder="Account Type Badge"
-                                            name="badge"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 ">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Select IB Type:') }}</label>
-                                        <select name="type" id="" class="site-nice-select w-100" required>
-                                            <option value="ib">{{__("IB")}}</option>
-                                            <option value="multi_ib">{{__("Multi IB")}}</option>
-                                        </select>
-                                    </div>
+                            </div>
+                        </div>
 
+                        <div class="lg:col-span-1 col-span-2">
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Status:') }}</label>
+                                <div class="switch-field flex overflow-hidden same-type">
+                                    <input
+                                        type="radio"
+                                        id="status-active"
+                                        name="status"
+                                        checked=""
+                                        value="1"
+                                    />
+                                    <label for="status-active">{{ __('Active') }}</label>
+                                    <input
+                                        type="radio"
+                                        id="status-deactive"
+                                        name="status"
+                                        value="0"
+                                    />
+                                    <label for="status-deactive">{{ __('Deactivate') }}</label>
                                 </div>
-                                <div class="col-xl-6 ">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Group:') }}</label>
-                                        <input
-                                            type="text"
-                                            name="group"
-                                            class="box-input"
-                                            placeholder="MT5 Group"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div class="col-xl-12">
-                                    <div class="site-input-groups fw-normal">
-                                        <label for="" class="box-input-label">{{ __('Detail:') }}</label>
-                                        <div class="site-editor">
-                                        <textarea class="summernote"
-                                                  name="desc"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-6">
-                                    <div class="site-input-groups">
-                                        <label class="box-input-label" for="">{{ __('Status:') }}</label>
-                                        <div class="switch-field same-type">
-                                            <input
-                                                type="radio"
-                                                id="status-active"
-                                                name="status"
-                                                checked=""
-                                                value="1"
-                                            />
-                                            <label for="status-active">{{ __('Active') }}</label>
-                                            <input
-                                                type="radio"
-                                                id="status-deactive"
-                                                name="status"
-                                                value="0"
-                                            />
-                                            <label for="status-deactive">{{ __('Deactivate') }}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-12">
-                                    <button type="submit" class="site-btn-sm primary-btn w-100">
-                                        {{ __('Add New') }}
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
+                        </div>
+                        <div class="col-span-2 text-right">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                {{ __('Add New') }}
+                            </button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

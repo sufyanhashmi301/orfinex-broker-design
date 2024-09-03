@@ -38,7 +38,7 @@ class AdvertisementMaterialController extends Controller
      */
     public function index()
     {
-        $advertisements = AdvertisementMaterial::all();
+        $advertisements = AdvertisementMaterial::paginate(10);
 
         return view('backend.advertisement_material.index', compact('advertisements'));
     }
@@ -62,7 +62,7 @@ class AdvertisementMaterialController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
+
 
         $validator = Validator::make($request->all(), [
             'img' => 'required',
@@ -131,13 +131,12 @@ class AdvertisementMaterialController extends Controller
 
         $advertisement = AdvertisementMaterial::find($id);
         $input = $request->all();
-//dd($input);
         $finalData = [
             'language' => $input['language'],
             'type' => $input['type'],
             'status' => $input['status'],
 
-            'icon' => $request->hasFile('img') ? self::imageUploadTrait($input['img']) : $advertisement->img,
+            'img' => $request->hasFile('image') ? self::imageUploadTrait($input['image']) : $advertisement->img,
         ];
 //        dd($finalData);
 

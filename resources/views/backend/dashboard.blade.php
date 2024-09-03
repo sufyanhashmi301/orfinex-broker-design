@@ -4,134 +4,117 @@
     {{ __('Dashboard') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ setting('site_title', 'global') }} {{ __('Dashboard') }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                @canany(['deposit-action','withdraw-action','kyc-action',])
-                    @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
-                        <div class="col-xl-12">
-                            <div class="admin-latest-announcements">
-                                <div class="content"><i
-                                        icon-name="zap"></i>{{ __("Explore what's important to review first") }}</div>
-                                <div class="content">
-                                    @can('withdraw-action')
-                                        @if($data['withdraw_count'])
-                                            <a href="{{ route('admin.withdraw.pending') }}" class="site-btn-xs red-btn"><i
-                                                    icon-name="loader"
-                                                    class="spining-icon"></i>{{ __('Withdraw Requests') }}
-                                                ({{ $data['withdraw_count'] }})</a>
-                                        @endif
-                                    @endcan
 
-                                    @can('kyc-action')
-                                        @if($data['kyc_count'])
-                                            <a href="{{ route('admin.kyc.pending') }}" class="site-btn-xs green-btn"><i
-                                                    icon-name="loader" class="spining-icon"></i>{{ __('KYC Requests') }}
-                                                ({{ $data['kyc_count'] }})</a>
-                                        @endif
-                                    @endcan
-
-                                    @can('deposit-action')
-                                        @if($data['deposit_count'])
-                                            <a href="{{ route('admin.deposit.manual.pending') }}"
-                                               class="site-btn-xs primary-btn"><i icon-name="loader"
-                                                                                  class="spining-icon"></i>{{ __('Deposit Requests') }}
-                                                ({{ $data['deposit_count'] }})</a>
-                                        @endif
-                                    @endcan
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-            </div>
-            @endcanany
-
-            @include('backend.include.__data_card')
-
-
-            <div class="row">
-                <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12">
-                    <div class="site-chart">
-                        <div class="site-card">
-                            <div class="site-card-header">
-                                <h3 class="title">{{ __('Site Statistics') }}</h3>
-                                <div class="card-header-links">
-                                    <input class="card-header-input" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
-                                </div>
-                            </div>
-                            <div class="site-card-body">
-                                <canvas id="depositChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
-                    <div class="site-chart">
-                        <div class="site-card">
-                            <div class="site-card-header">
-                                <h3 class="title">{{ __('Scheme Statistics') }}</h3>
-                            </div>
-                            <div class="site-card-body">
-                                <canvas id="schemeChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
-                    <div class="site-chart">
-                        <div class="site-card">
-                            <div class="site-card-header">
-                                <h3 class="title">{{ __('Top Country Statistics') }}</h3>
-                            </div>
-                            <div class="site-card-body">
-                                <canvas id="countryChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
-                    <div class="site-chart">
-                        <div class="site-card">
-                            <div class="site-card-header">
-                                <h3 class="title">{{ __('Best Browser Statistics') }}</h3>
-                            </div>
-                            <div class="site-card-body">
-                                <canvas id="browserChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
-                    <div class="site-chart">
-                        <div class="site-card">
-                            <div class="site-card-header">
-                                <h3 class="title">{{ __('Best OS Statistics') }}</h3>
-                            </div>
-                            <div class="site-card-body">
-                                <canvas id="osChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-           @include('backend.include.__latest_user_invest')
-
-        </div>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
+            {{ setting('site_title', 'global') }} {{ __('Dashboard') }}
+        </h4>
     </div>
+    @canany(['deposit-action','withdraw-action','kyc-action',])
+        @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
+            <div class="admin-latest-announcements flex flex-wrap justify-between items-center py-[18px] px-4 sm:px-6 font-normal font-Inter rounded-md bg-danger-500 bg-opacity-[14%] text-danger-500 mb-5">
+                <div class="content flex items-center ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                    <iconify-icon class="text-lg mr-2" icon="lucide:zap"></iconify-icon>
+                    {{ __("Explore what's important to review first") }}
+                </div>
+                <div class="content">
+                    @can('withdraw-action')
+                        @if($data['withdraw_count'])
+                            <a href="{{ route('admin.withdraw.pending') }}" class="btn btn-sm btn-danger inline-flex items-center justify-center">
+                                <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
+                                {{ __('Withdraw Requests') }}
+                                ({{ $data['withdraw_count'] }})
+                            </a>
+                        @endif
+                    @endcan
+
+                    @can('kyc-action')
+                        @if($data['kyc_count'])
+                            <a href="{{ route('admin.kyc.pending') }}" class="btn btn-sm btn-success inline-flex items-center justify-center">
+                                <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
+                                {{ __('KYC Requests') }}
+                                ({{ $data['kyc_count'] }})
+                            </a>
+                        @endif
+                    @endcan
+
+                    @can('deposit-action')
+                        @if($data['deposit_count'])
+                            <a href="{{ route('admin.deposit.manual.pending') }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                                <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
+                                {{ __('Deposit Requests') }}
+                                ({{ $data['deposit_count'] }})
+                            </a>
+                        @endif
+                    @endcan
+                </div>
+            </div>
+        @endif
+    @endcanany
+
+    <div class="space-y-5 mb-5">
+        @include('backend.include.__data_card')
+    </div>
+
+    <div class="grid grid-cols-12 gap-5">
+        <div class="lg:col-span-8 col-span-12">
+            <div class="card h-full">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('Site Statistics') }}</h3>
+                    <div class="card-header-links">
+                        <input class="form-control !py-1" data-mode="range" type="text" name="daterange" value="{{ $data['start_date'] .' - '. $data['end_date'] }}" />
+                    </div>
+                </div>
+                <div class="card-body p-6">
+                    <canvas id="depositChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('Scheme Statistics') }}</h3>
+                </div>
+                <div class="card-body p-6">
+                    <canvas id="schemeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('Top Country Statistics') }}</h3>
+                </div>
+                <div class="card-body p-6">
+                    <canvas id="countryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('Best Browser Statistics') }}</h3>
+                </div>
+                <div class="card-body p-6">
+                    <canvas id="browserChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('Best OS Statistics') }}</h3>
+                </div>
+                <div class="card-body p-6">
+                    <canvas id="osChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        @include('backend.include.__latest_user_invest')
+
+    </div>
+
     <!-- Modal for Send Email -->
     @include('backend.user.include.__mail_send')
     <!-- Modal for Send Email-->

@@ -3,27 +3,26 @@
     {{ __('Dynamic Landing Theme') }}
 @endsection
 @section('theme-content')
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-        <div class="site-card">
-            <div class="site-card-header">
-                <h3 class="title">{{ __('Dynamic Landing Theme') }}</h3>
-                <form action="{{ route('admin.theme.dynamic-landing-update') }}" method="post"
-                      enctype="multipart/form-data">
+    <div class="col-span-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ __('Dynamic Landing Theme') }}</h4>
+                <form action="{{ route('admin.theme.dynamic-landing-update') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <div class="card-header-links">
-                        <div class="card-header-links new-referral">
-                            <div class="input-group joint-input">
-                                <input type="file" placeholder="hfh" name="theme_file" class="form-control" required/>
-                                <button type="submit" class="input-group-text"><i icon-name="upload-cloud"></i></button>
-                            </div>
+                    <div class="card-header-links new-referral">
+                        <div class="joint-input relative">
+                            <input type="file" placeholder="hfh" name="theme_file" class="form-control !pr-12" required/>
+                            <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
+                                <iconify-icon icon="lucide:upload-cloud"></iconify-icon>
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="site-card-body">
-                <p class="paragraph">
-                    <i icon-name="info"></i>{{ __('You can upload your own HTML template here as a website Home page and other pages. You need to add ') }}
+            <div class="card-body p-6">
+                <p class="paragraph flex items-center text-sm">
+                    <iconify-icon class="text-warning-500 text-sm mr-1" icon="lucide:info"></iconify-icon>{{ __('You can upload your own HTML template here as a website Home page and other pages. You need to add ') }}
                     <strong> @@lasset('landing asset')</strong> {{  __(' for any assets support on the theme') }}
                 </p>
                 @foreach($landingThemes as $theme)
@@ -79,51 +78,43 @@
     </div>
 
     <!-- Modal for Delete Theme Lending -->
-    <div
-        class="modal fade"
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
         id="deleteLandingTheme"
         tabindex="-1"
-        aria-labelledby="deleteLandingThemeModalLabel"
+        aria-labelledby="deleteLandingTheme"
         aria-hidden="true"
     >
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content site-table-modal">
-                <div class="modal-body popup-body">
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
-                    <div class="popup-body-text centered">
-                        <form method="post" id="themeLandingDeleteForm">
-                            @csrf
-                            <div class="info-icon">
-                                <i icon-name="alert-triangle"></i>
-                            </div>
-                            <div class="title">
-                                <h4>{{ __('Are you sure?') }}</h4>
-                            </div>
-                            <p>
-                                {{ __('You want to Delete') }} <strong
-                                    class="name"></strong> {{ __('landing Theme?') }}
-                            </p>
-                            <div class="action-btns">
-                                <button type="submit" class="site-btn-sm primary-btn me-2">
-                                    <i icon-name="check"></i>
-                                    {{ __(' Confirm') }}
-                                </button>
-                                <a href="" class="site-btn-sm red-btn" type="button"
-                                   class="btn-close"
-                                   data-bs-dismiss="modal"
-                                   aria-label="Close">
-                                    <i icon-name="x"></i>
-                                    {{ __('Cancel') }}
-                                </a>
-                            </div>
-                        </form>
-
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                <div class="modal-body p-6 py-8 text-center space-y-5">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                        <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                     </div>
+                    <div class="title">
+                        <h4 class="text-xl font-medium dark:text-white capitalize">
+                            {{ __('Reject IB Member') }}
+                        </h4>
+                    </div>
+                    <p>
+                        {{ __('You want to Delete') }} 
+                        <strong class="name"></strong> {{ __('landing Theme?') }}
+                    </p>
+                    <form method="post" id="themeLandingDeleteForm">
+                        @csrf
+                        <div class="action-btns">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __(' Confirm') }}
+                            </button>
+                            <a href="" class="btn btn-danger inline-flex items-center justify-center" type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

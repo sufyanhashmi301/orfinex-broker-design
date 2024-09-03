@@ -16,9 +16,9 @@
                     btn.prop('disabled', false);
                     $('#view_leverage_form').html(res);
                     // NioApp.Toast(res.success, 'success');
-                    // if(res.reload) {
-                    //     setTimeout(function(){ location.reload(); }, 900);
-                    // }
+                    if(res.reload) {
+                        setTimeout(function(){ location.reload(); }, 900);
+                    }
                 } else if (res.error) {
                     tNotify('warning', res.error);
                     setTimeout(function () {

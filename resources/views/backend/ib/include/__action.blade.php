@@ -1,29 +1,27 @@
-<!-- Update your __action Blade file -->
-<!-- Update your __action Blade file -->
-@if ($user->ibQuestionAnswers)
-    <button type="button" class="btn btn-danger detail-btn" data-toggle="modal" data-target="#viewDataModal"
-            data-user-id="{{ $user->id }}">
-        <i class="fas fa-eye"></i>
-    </button>
-
-@else
-    <button type="button" class="btn btn-danger detail-btn" data-toggle="tooltip" data-placement="top"
-            title="No IB Data Available">
-        <i class="fas fa-eye-slash"></i>
-    </button>
-@endif
-
-@can('ib-action')
-    @if($user->ib_status !=='approved')
-        <button class="btn btn-primary approve-btn" data-toggle="tooltip" data-placement="top" title="Edit">
-            <i class="fas fa-edit"></i>
+<div class="flex space-x-3 rtl:space-x-reverse">
+    <!-- Update your __action Blade file -->
+    @if ($user->ibQuestionAnswers)
+        <button type="button" class="action-btn detail-btn" data-toggle="modal" data-target="#viewDataModal" data-user-id="{{ $user->id }}">
+            <iconify-icon icon="lucide:eye"></iconify-icon>
         </button>
 
-
-        <button type="button" class="btn btn-danger reject-btn" data-toggle="tooltip" data-placement="top"
-                title="Reject">
-            <i class="fas fa-times"></i>
+    @else
+        <button type="button" class="toolTip onTop action-btn detail-btn" data-tippy-theme="dark" data-tippy-content="No IB Data Available" title="No IB Data Available">
+            <iconify-icon icon="lucide:eye-off"></iconify-icon>
         </button>
     @endif
-@endcan
 
+
+    @can('ib-action')
+        @if($user->ib_status !=='approved')
+            <button class="toolTip onTop action-btn approve-btn" data-tippy-theme="dark" data-tippy-content="Edit" title="Edit">
+                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+            </button>
+
+
+            <button type="button" class="toolTip onTop action-btn reject-btn" data-tippy-theme="dark" data-tippy-content="Reject" title="Reject">
+                <iconify-icon icon="mdi:multiply"></iconify-icon>
+            </button>
+        @endif
+    @endcan
+</div>

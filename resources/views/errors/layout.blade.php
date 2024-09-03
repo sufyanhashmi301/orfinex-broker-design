@@ -1,110 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title')</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Jost', sans-serif;
-        }
-
-        .dark-bg {
-            background: #032836;
-            color: #fff;
-        }
-
-        .light-bg {
-            background: #fff;
-            color: #001219b3;
-        }
-
-        .unusual-page {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .unusual-page .unusual-page-img {
-            height: 250px;
-            margin-bottom: 40px;
-        }
-
-        .back-to-home-btn {
-            --tw-bg-opacity: 1;
-            background-color: rgb(15 23 42 / var(--tw-bg-opacity));
-            --tw-text-opacity: 1;
-            color: rgb(255 255 255 / var(--tw-text-opacity));
-            --tw-ring-opacity: 1;
-            --tw-ring-color: rgb(15 23 42 / var(--tw-ring-opacity));
-            display: inline-block;
-            padding: 13px 27px;
-            border-radius: 50px;
-            color: #ffffff;
-            /* background: #e73667; */
-            font-weight: 500;
-            font-size: 13px;
-            text-transform: uppercase;
-            box-shadow: 0px 0px 2px #00304966;
-            text-decoration: none;
-            margin-top: 20px;
-        }
-
-        .back-to-home-btn:hover {
-            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-            --tw-ring-opacity: 0.8;
-            --tw-ring-offset-width: 1px;
-        }
-
-        @media (max-width: 991px) {
-            .unusual-page .unusual-page-img {
-                height: 150px;
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" class="light">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="csrf-token" content="{{ csrf_token() }} ">
+        <link
+            rel="shortcut icon"
+            href="{{ asset(setting('site_favicon','global')) }}"
+            type="image/x-icon"
+        />
+        <link rel="icon" href="{{ asset(setting('site_favicon','global')) }}" type="image/x-icon"/>
+        <link rel="stylesheet" href="{{ asset('global/css/rt-plugins.css') }}">
+        <link rel="stylesheet" href="{{ asset('global/css/app.css') }}">
+        <title>{{ setting('site_title', 'global') }} - @yield('title')</title>
+        <style>
+            .notfound {
+                position: relative;
+                height: 240px;
             }
-        }
 
-        .unusual-page .title {
-            font-size: 62px;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 991px) {
-            .unusual-page .title {
-                font-size: 42px;
+            .notfound h1 {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+                font-size: 220px;
+                font-weight: 900;
+                margin: 0;
+                text-transform: uppercase;
+                letter-spacing: -40px;
+                margin-left: -20px;
             }
-        }
 
-        .unusual-page .description {
-            font-size: 22px;
-            font-weight: 300;
-        }
-
-        @media (max-width: 991px) {
-            .unusual-page .description {
-                font-size: 18px;
+            .notfound h1>span {
+                text-shadow: -8px 0 0 #fff;
             }
-        }
-    </style>
-</head>
 
-<body class="light-bg">
+            .notfound h3 {
+                position: relative;
+                font-size: 16px;
+                font-weight: 700;
+                text-transform: uppercase;
+                margin: 0;
+                letter-spacing: 3px;
+                padding-left: 6px;
+            }
 
-<div class="unusual-page">
-    @yield('content')
-</div>
+            @media only screen and (max-width:767px) {
+                .notfound {
+                    height: 200px;
+                }
 
-</body>
+                .notfound h1 {
+                    font-size: 180px;
+                }
+            }
+
+            @media only screen and (max-width:480px) {
+                .notfound {
+                    height: 162px;
+                }
+
+                .notfound h1 {
+                    font-size: 118px;
+                    height: 150px;
+                    line-height: 162px;
+                    letter-spacing: -20px;
+                }
+            }
+        </style>
+    </head>
+    <body class=" font-inter skin-default">
+        <div class="min-h-screen flex flex-col justify-center items-center text-center py-20">
+            @yield('content')
+        </div>
+        <script src="{{ asset('global/js/jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ asset('global/js/rt-plugins.js') }}"></script>
+        <script src="{{ asset('global/js/app.js') }}"></script>
+    </body>
 </html>
 
 

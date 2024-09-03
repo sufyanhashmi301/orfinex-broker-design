@@ -3,46 +3,33 @@
     {{ __('Send Email to All') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('Send Email to All Subscriber') }}</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between flex-wrap items-center mb-6">
+            <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+                {{ __('Send Email to All Subscriber') }}
+            </h4>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body">
-                            <form action="{{ route('admin.mail.send.subscriber.now') }}" method="post">
-                                @csrf
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Subject:') }}</label>
-                                    <input type="text" name="subject" class="box-input mb-0" required=""/>
-                                </div>
-                                <div class="site-input-groups">
-                                    <label for="" class="box-input-label">{{ __('Email Details') }}</label>
-                                    <textarea name="message" class="form-textarea"></textarea>
-                                </div>
-
-                                <div class="action-btns">
-                                    <button type="submit" class="site-btn-sm primary-btn me-2">
-                                        <i icon-name="send"></i>
-                                        {{ __('Send Email') }}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+        <div class="card">
+            <div class="card-body p-6">
+                <form action="{{ route('admin.mail.send.subscriber.now') }}" method="post" class="space-y-5">
+                    @csrf
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Subject:') }}</label>
+                        <input type="text" name="subject" class="form-control mb-0" required=""/>
                     </div>
-                </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">{{ __('Email Details') }}</label>
+                        <textarea name="message" class="form-control" rows="6"></textarea>
+                    </div>
+
+                    <div class="action-btns text-right">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send"></iconify-icon>
+                            {{ __('Send Email') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 @endsection
-

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -11,18 +12,25 @@ use ZipArchive;
 
 class ThemeController extends Controller
 {
-    public function globalSettings()
-    {
-        $themes = Theme::where('type', 'site')->get();
-        return view('backend.theme.global', compact('themes'));
-    }
+
 
 
     public function siteTheme()
     {
         $themes = Theme::where('type', 'site')->get();
+        $banners = Banner::all();
 
-        return view('backend.theme.site', compact('themes'));
+        return view('backend.theme.template', compact('themes', 'banners'));
+    }
+
+    public function globalSetting()
+    {
+        return view('backend.theme.global');
+    }
+
+    public function colorsSetting()
+    {
+        return view('backend.theme.colors');
     }
 
     public function dynamicLanding()

@@ -34,6 +34,8 @@ return new class extends Migration
             $table->text('country')->nullable();
             $table->timestamps();
         });
+        DB::table('forex_schemas')->update(['country' => json_encode(["All"])]);
+
     }
 
     /**

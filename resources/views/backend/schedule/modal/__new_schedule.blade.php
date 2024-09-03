@@ -1,65 +1,69 @@
-<div
-    class="modal fade"
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
     id="addNewSchedule"
     tabindex="-1"
-    aria-labelledby="addNewScheduleModalLabel"
+    aria-labelledby="addNewSchedule"
     aria-hidden="true"
 >
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content site-table-modal">
+    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-                <div class="popup-body-text">
-                    <h3 class="title mb-4">{{ __('Add New Schedule') }}</h3>
-                    <form action="{{route('admin.schedule.store')}}" method="post">
+                <div class="flex items-center justify-between p-5">
+                    <h3 class="text-xl font-medium dark:text-white capitalize">
+                        {{ __('Add New Schedule') }}
+                    </h3>
+                    <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <div class="popup-body-text p-6 pt-0">
+                    <form action="{{route('admin.schedule.store')}}" method="post" class="space-y-5">
                         @csrf
-                        <div class="site-input-groups">
-                            <label for="" class="box-input-label">{{ __('Schedule Name:') }}</label>
+                        <div class="input-area">
+                            <label for="" class="form-label">{{ __('Schedule Name:') }}</label>
                             <input
                                 type="text"
                                 name="name"
-                                class="box-input mb-0"
+                                class="form-control mb-0"
                                 placeholder="Ex: Hours, Day, Month"
                                 required=""
                             />
                         </div>
-                        <div class="site-input-groups">
-                            <label for="" class="box-input-label">{{ __('Schedule In Hours:') }}</label
+                        <div class="input-area">
+                            <label for="" class="form-label">{{ __('Schedule In Hours:') }}</label
                             >
-                            <div class="input-group joint-input">
+                            <div class="joint-input relative">
                                 <input
                                     type="text"
                                     name="time"
-                                    class="form-control"
+                                    class="form-control !pr-12"
                                     placeholder="Ex: 24"
                                     onkeypress="return validateNumber(event)"
                                 />
-                                <span class="input-group-text">{{ __('Hour') }}</span>
+                                <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-2">
+                                    {{ __('Hour') }}
+                                </span>
                             </div>
                         </div>
 
-                        <div class="action-btns">
-                            <button type="submit" class="site-btn-sm primary-btn me-2">
-                                <i icon-name="check"></i>
+                        <div class="action-btns text-right">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                 {{ __('Add Schedule') }}
                             </button>
                             <a
                                 href="#"
-                                class="site-btn-sm red-btn"
+                                class="btn btn-danger inline-flex items-center justify-center"
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
                             >
-                                <i icon-name="x"></i>
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                                 {{ __('Cancel') }}
                             </a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

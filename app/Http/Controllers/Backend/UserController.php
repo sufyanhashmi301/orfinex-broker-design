@@ -232,13 +232,13 @@ class UserController extends Controller
         $tags = RiskProfileTag::where('status', true)
             ->get();
         $customerGroups = CustomerGroup::where('status',1)->get();
-        $users = User::where('id', '<>', $id)
-            ->where(function ($query) use ($id, $user) {
-                $query->whereNull('ref_id')
-                    ->orWhere('ref_id', '<>', $id);
-            })
-            ->where('id', '<>', $user->ref_id)
-            ->get();
+//        $users = User::where('id', '<>', $id)
+//            ->where(function ($query) use ($id, $user) {
+//                $query->whereNull('ref_id')
+//                    ->orWhere('ref_id', '<>', $id);
+//            })
+//            ->where('id', '<>', $user->ref_id)
+//            ->get();
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
@@ -253,7 +253,7 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups', 'schemas'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags','customerGroups', 'schemas'));
 
     }
 

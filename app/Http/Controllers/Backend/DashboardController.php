@@ -34,6 +34,7 @@ class DashboardController extends Controller
         })->sum('amount');
 
         $activeUser = $user->where('status', 1)->count();
+        dd($activeUser);
 
         $totalStaff = $admin->count();
 

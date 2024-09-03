@@ -99,7 +99,7 @@ class UserController extends Controller
                 return Excel::download(new UsersExport($request), 'users.xlsx');
         }
     }
-   
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -232,15 +232,14 @@ class UserController extends Controller
         $tags = RiskProfileTag::where('status', true)
             ->get();
         $customerGroups = CustomerGroup::where('status',1)->get();
-        $users = User::where(function ($query) use ($id,$user) {
-            $query->where(function ($subquery) use ($id,$user) {
-                $subquery->whereNull('ref_id')
+        $users = User::where('id', '<>', $id)
+            ->where(function ($query) use ($id, $user) {
+                $query->whereNull('ref_id')
                     ->orWhere('ref_id', '<>', $id);
             })
-                ->where('id', '<>', $id)
-                ->where('id', '<>', $user->ref_id);
-        })
+            ->where('id', '<>', $user->ref_id)
             ->get();
+
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
             ->where(function($query) use ($tagNames) {

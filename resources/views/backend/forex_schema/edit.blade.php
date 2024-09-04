@@ -227,7 +227,6 @@
                                 value="{{$schema->real_swap_free}}"
                                 class="form-control"
                                 placeholder="Platform Group"
-                                required
                             />
                         </div>
                         <div class="input-area !mb-7">
@@ -286,7 +285,6 @@
                                 value="{{$schema->demo_swap_free}}"
                                 class="form-control"
                                 placeholder="Platform Group"
-                                required
                             />
                         </div>
                         <div class="input-area !mb-7">

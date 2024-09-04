@@ -362,6 +362,9 @@
     @endcan
     <!-- Modal for Send Email-->
 
+    {{-- Modal for User KYC Verification --}}
+    @include('backend.user.include.__user_kyc_verification_modal')
+
     {{-- Modal for add Forex Account --}}
     @include('backend.user.include.__forex_account')
 

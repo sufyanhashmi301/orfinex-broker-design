@@ -141,7 +141,7 @@
         <h4 class="text-xl text-slate-600 dark:text-slate-300">{{ __('Recent Transactions') }}</h4>
     </div>
     <div class="card">
-        <div class="card-body p-6">
+        <div class="card-body px-6 pb-6">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">

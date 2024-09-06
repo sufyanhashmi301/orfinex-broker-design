@@ -7,7 +7,7 @@
                 </div>
                 <div class="card-body p-6">
 
-                    @if($user->kyc == \App\Enums\KYCStatus::Verified->value)
+                    @if($user->kyc == \App\Enums\KYCStatus::Basic_Verified->value)
                         <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize rounded-3xl">
                             {{ __('KYC Verified') }}
                         </div>

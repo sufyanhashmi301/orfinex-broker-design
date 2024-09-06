@@ -338,7 +338,7 @@ class UserController extends Controller
             'username' => 'required|unique:users,username,' . $id,
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
             'date_of_birth' => 'nullable|date_format:Y-m-d',
-            'group_id' => 'nullable|exists:customer_groups,id'
+            'group_id' => 'sometimes|exists:customer_groups,id'
         ]);
 
         if ($validator->fails()) {
@@ -351,10 +351,10 @@ class UserController extends Controller
         }
         User::find($id)->update($input);
         $user = User::find($id);
-        if (isset($input['group_id'])) {
+        if (isset($input['group_id']) && $input['group_id'] !== '') {
             $user->customerGroups()->sync($input['group_id']);
-        } else {
-            $user->customerGroups()->sync([]);
+        }else{
+            $user->customerGroups()->detach();
         }
         notify()->success('User Info Updated Successfully', 'success');
 

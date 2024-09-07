@@ -1,53 +1,57 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('Plugin Settings') }}
-@endsection
 @section('title')
     {{ __('Plugin Settings') }}
 @endsection
 @section('setting-content')
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-        <div class="site-card">
-            <div class="site-card-header">
-                <h3 class="title">{{ $title }}</h3>
-                @if($isLink)
-                    <div class="card-header-links">
-                        <a href="{{ route('admin.settings.notification.tune') }}" class="card-header-link new-referral"
-                           type="button" data-type="investment">
-                            <i icon-name="volume-1"></i>{{ __('Set Tune') }}</a>
-                    </div>
-
-                @endif
-
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ $title }}
+        </h4>
+        @if($isLink)
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <a href="{{ route('admin.settings.notification.tune') }}" class="btn btn-primary inline-flex items-center justify-center new-referral" type="button" data-type="investment">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:volume-1"></iconify-icon>
+                    {{ __('Set Tune') }}
+                </a>
             </div>
-            <div class="site-card-body">
-                <p class="paragraph">
-                    <i icon-name="info"></i>{{ __('You can') }}
+        @endif
+    </div>
+    @include('backend.setting.plugin.include.__menu')
+
+    <div class="col-span-12">
+        <div class="card">
+            <div class="card-body p-6 space-y-4">
+                <p class="paragraph text-xs">
+                    <iconify-icon class="text-sm mr-2 text-warning-500" icon="lucide:info"></iconify-icon>{{ __('You can') }}
                     <strong>{{ __('Enable or Disable') }}</strong> {{ __('any of the plugin') }}
                 </p>
                 @foreach($plugins as $plugin)
-                    <div class="single-gateway">
-                        <div class="gateway-name">
-                            <div class="gateway-icon">
-                                <img
-                                    src="{{ asset($plugin->icon) }}" alt=""/>
+                    <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                        <div class="gateway-name flex items-center gap-2">
+                            <div class="gateway-icon mr-4">
+                                <img class="h-7" src="{{ asset($plugin->icon) }}" alt=""/>
                             </div>
                             <div class="gateway-title">
-                                <h4>{{ $plugin->name }}</h4>
-                                <p>{{ $plugin->description }}</p>
+                                <h4 class="text-sm">{{ $plugin->name }}</h4>
+                                <p class="text-xs">{{ $plugin->description }}</p>
                             </div>
                         </div>
-                        <div class="gateway-right">
+                        <div class="gateway-right flex items-center gap-2">
                             <div class="gateway-status">
                                 @if($plugin->status)
-                                    <div class="site-badge success">{{ __('Activated') }}</div>
+                                    <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        {{ __('Activated') }}
+                                    </div>
                                 @else
-                                    <div class="site-badge pending">{{ __('DeActivated') }}</div>
+                                    <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                        {{ __('DeActivated') }}
+                                    </div>
                                 @endif
                             </div>
                             <div class="gateway-edit">
-                                <a type="button" class="editPlugin" data-id="{{$plugin->id}}"><i
-                                        icon-name="settings-2"></i></a>
+                                <a type="button" class="action-btn cursor-pointer editPlugin" data-id="{{$plugin->id}}">
+                                    <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -58,23 +62,11 @@
     </div>
 
     <!-- Modal for Edit Plugin -->
-    <div
-        class="modal fade"
-        id="editPlugin"
-        tabindex="-1"
-        aria-labelledby="editPluginModalLabel"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content site-table-modal">
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editPlugin" tabindex="-1" aria-labelledby="editPlugin" aria-hidden="true">
+        <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                 <div class="modal-body popup-body">
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
-                    <div class="popup-body-text edit-plugin-section">
+                    <div class="popup-body-text p-6 pt-5 edit-plugin-section">
 
                     </div>
                 </div>
@@ -83,7 +75,7 @@
     </div>
     <!-- Modal for Edit Plugin-->
 @endsection
-@section('script')
+@section('setting-script')
 
     <script>
         $('.editPlugin').on('click', function (e) {

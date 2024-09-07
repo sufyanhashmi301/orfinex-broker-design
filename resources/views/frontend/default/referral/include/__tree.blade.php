@@ -14,7 +14,7 @@
                             {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
                         @endif
                         @if(setting('profit_level'))
-                            {{ __('Forex Balance') }} {{ $currencySymbol.$levelUser->totalForexBalance() }}
+                            {{ __('Accounts  Balance') }} {{ $currencySymbol.$levelUser->totalForexBalance() }}
                         @endif
                     </b>
                 @endif

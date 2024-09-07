@@ -10,7 +10,9 @@ class DepositMethod extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-
+    protected $casts = [
+        'country' => 'array',
+    ];
     protected $appends = [
         'gateway_logo',
     ];
@@ -28,10 +30,19 @@ class DepositMethod extends Model
     public function getGatewayLogoAttribute()
     {
 
-        if (null == $this->logo) {
-            return asset($this->gateway->logo);
+        if ( isset($this->gateway_id)) {
+            return $this->gateway->logo;
         }
 
         return asset($this->logo);
     }
+//    public function getCountryAttribute($value)
+//    {
+//        return $value ? json_decode($value, true) : ['All'];
+//    }
+
+//    public function setCountryAttribute($value)
+//    {
+//        $this->attributes['country'] = json_encode($value);
+//    }
 }

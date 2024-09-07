@@ -40,13 +40,14 @@ class TicketController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.ticket.include.__name')
+                ->addColumn('priority', 'backend.ticket.include.__priority')
                 ->addColumn('status', 'backend.ticket.include.__status')
                 ->addColumn('action', 'backend.ticket.include.__action')
-                ->rawColumns(['name', 'status', 'action'])
+                ->rawColumns(['name', 'priority', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.ticket.index');
+        return view('backend.ticket.all');
     }
 
     public function show($uuid)
@@ -61,7 +62,7 @@ class TicketController extends Controller
         Ticket::uuid($uuid)->close();
         notify()->success('Ticket Closed successfully', 'success');
 
-        return Redirect::route('admin.ticket.index');
+        return Redirect::route('admin.ticket.all');
 
     }
 
@@ -103,11 +104,20 @@ class TicketController extends Controller
             '[[site_url]]' => route('home'),
         ];
 
-        $this->mailNotify($ticket->user->email, 'user_support_ticket', $shortcodes);
+        $this->mailNotify($ticket->user->email, 'user_support_ticket_reply', $shortcodes);
 
         notify()->success('Ticket Reply successfully', 'success');
 
         return Redirect::route('admin.ticket.show', $ticket->uuid);
 
     }
+
+    public function ticketStatus() {
+        return view('backend.ticket.status');
+    }
+
+    public function ticketPriority() {
+        return view('backend.ticket.priority');
+    }
+
 }

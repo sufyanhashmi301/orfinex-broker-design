@@ -16,6 +16,7 @@ use App\Models\Ticket;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -102,11 +103,12 @@ class DashboardController extends Controller
             return $platform->count();
         })->toArray();
 
-        $country = User::all()->groupBy('country')->map(function ($country) {
-            return $country->count();
-        })->toArray();
-        arsort($country);
-        $country = array_slice($country, 0, 5);
+        $country = User::select('country', DB::raw('count(*) as count'))
+            ->groupBy('country')
+            ->orderByDesc('count')
+            ->limit(5)
+            ->pluck('count', 'country')
+            ->toArray();
 
         $symbol = setting('currency_symbol','global');
 

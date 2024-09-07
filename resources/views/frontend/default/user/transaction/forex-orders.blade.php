@@ -2,7 +2,7 @@
 
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Forex Orders Log') }}
+    {{ __('Accounts Orders Log') }}
 @endsection
 @section('content')
     <div class="mb-5">
@@ -18,7 +18,7 @@
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
             <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
-                {{ __('Forex Orders Log') }}
+                {{ __('Accounts Orders Log') }}
             </li>
         </ul>
     </div>
@@ -26,7 +26,7 @@
         <div class="card desktop-screen-show md:block hidden">
             <header class=" card-header noborder">
                 <h4 class="card-title">
-                    {{ __('Forex Orders Log') }}
+                    {{ __('Accounts Orders Log') }}
                 </h4>
             </header>
             <div class="card-body px-6 pb-6">
@@ -145,7 +145,7 @@
         <!-- Transactions -->
         <div class="card all-feature-mobile mobile-transactions mb-3">
             <div class="card-header">
-                <h4 class="card-title">{{ __('Forex Orders Log') }}</h4>
+                <h4 class="card-title">{{ __('Accounts Orders Log') }}</h4>
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
                 <div class="filter mb-3">

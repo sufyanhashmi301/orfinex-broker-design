@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -57,19 +58,54 @@ class ForexSchema extends Model
 		'badge',
 		'leverage',
 		'first_min_deposit',
+        'account_limit',
 		'real_swap_free',
+		'is_real_islamic',
 		'real_islamic',
 		'demo_swap_free',
+		'is_demo_islamic',
 		'demo_islamic',
 		'is_withdraw',
 		'is_ib_partner',
 		'is_internal_transfer',
 		'is_external_transfer',
 		'is_bonus',
+		'start_range',
+		'end_range',
 		'status',
 		'country',
+		'tags',
 		'spread',
 		'commission',
-		'priority'
+		'priority',
+		'demo_server',
+		'live_server',
 	];
+
+	public function forexAccounts()
+	{
+		return $this->hasMany(ForexAccount::class);
+	}
+
+    public function multiLevels()
+    {
+        return $this->hasMany(MultiLevel::class,'forex_scheme_id');
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', true);
+    }
+    public function scopeRelevantForUser(Builder $query, $country, array $tags)
+    {
+        return $query->where(function($q) use ($country, $tags) {
+            $q->whereJsonContains('country', $country)
+                ->orWhereJsonContains('country', 'All')
+                ->orWhere(function($subQuery) use ($tags) {
+                    foreach ($tags as $tag) {
+                        $subQuery->orWhereJsonContains('tags', $tag);
+                    }
+                });
+        });
+    }
 }

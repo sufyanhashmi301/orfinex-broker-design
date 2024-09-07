@@ -31,6 +31,7 @@ class NowpaymentsTxn extends BaseTxn
             'cancel_url' => route('status.cancel'),
             'success_url' => route('status.success'),
         ]);
+//        dd($payment);
 
         return redirect()->to($payment['invoice_url']);
     }

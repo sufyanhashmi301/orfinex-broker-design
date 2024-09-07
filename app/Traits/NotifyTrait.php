@@ -20,8 +20,10 @@ trait NotifyTrait
     //============================= mail template helper ===================================================
     protected function mailNotify($email, $code, $shortcodes = null)
     {
-        try {
+
+//        try {
             $template = EmailTemplate::where('status', true)->where('code', $code)->first();
+//        dd($template);
             if ($template) {
                 $find = array_keys($shortcodes);
                 $replace = array_values($shortcodes);
@@ -38,12 +40,16 @@ trait NotifyTrait
                     'bottom_status' => $template->bottom_status,
                     'bottom_title' => str_replace($find, $replace, $template->bottom_title),
                     'bottom_body' => str_replace($find, $replace, $template->bottom_body),
+                    'note' => str_replace($find, $replace, $template->note),
+                    'support_link' => str_replace($find, $replace, $template->support_link),
+                    'warning_content' => str_replace($find, $replace, $template->warning_content),
+                    'company_info' => str_replace($find, $replace, $template->company_info),
 
                     'site_logo' => asset(setting('site_logo', 'global')),
                     'site_title' => setting('site_title', 'global'),
                     'site_link' => route('home'),
                 ];
-
+//dd($details,$code);
                 if ($code == 'email_verification') {
                     return (new MailMessage)
                         ->subject($details['subject'])
@@ -52,11 +58,11 @@ trait NotifyTrait
 
                 return Mail::to($email)->send(new MailSend($details));
             }
-        } catch (Exception $e) {
-            notify()->error('SMTP connection failed', 'Error');
-
-            return false;
-        }
+//        } catch (Exception $e) {
+//            notify()->error('SMTP connection failed', 'Error');
+//
+//            return false;
+//        }
     }
 
     //============================= push notification template helper ===================================================

@@ -3,258 +3,213 @@
     {{ __('Edit Email Template') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="container-fluid mt-4">
-            <div class="row justify-content-center">
-                <div class="col-xl-8 col-md-12">
-                    <div class="site-card">
-                        <div class="site-card-header">
-                            <h3 class="title"> {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}</h3>
-                            <div class="card-header-links">
-                                <a href="{{ route('admin.email-template') }}" class="card-header-link">
-                                    {{ __('Back') }}
-                                </a>
-                            </div>
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a href="{{ route('admin.email-template') }}" class="btn btn-primary inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
+                {{ __('Back') }}
+            </a>
+        </div>
+    </div>
+    <div class="grid grid-cols-12 gap-5">
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card">
+                <div class="card-header noborder">
+                    <div>
+                        <h4 class="card-title mb-2">{{ __('Shortcut Glossary') }}</h4>
+                        <p class="card-text">
+                            <iconify-icon icon="lucide:alert-triangle"></iconify-icon>
+                            {{ __('The Shortcuts you can use') }}
+                            <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="card-body space-y-5 p-6">
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Full Name:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="fullname-input" value="[[full_name]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#fullname-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
                         </div>
-                        <div class="site-card-body">
-                            <form action="{{ route('admin.email-template-update') }}" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $template->id }}">
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Email Subject') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Here the Email Subject will come"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" name="subject" class="box-input" value="{{ $template->subject }}" required/>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label name="" class="col-sm-3 col-label">
-                                        {{ __('Banner') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Leave it blank if you don't need the banner"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <div class="wrap-custom-file">
-                                            <input type="file" name="banner" id="heroRightImg" accept=".gif, .jpg, .png">
-                                            <label for="heroRightImg" @if($template->banner) class="file-ok" style="background-image: url( {{ asset( $template->banner ) }} )" @endif>
-                                                <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="">
-                                                <span>{{ __('Update Banner') }}</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Title') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="Leave it blank if you don't need the title" data-bs-original-title="Leave it blank if you don't need the title"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" name="title" class="box-input" value="{{ $template->title }}" required/>
-                                    </div>
-                                </div>
-
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Salutation') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Show the Greetings here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" name="salutation" class="box-input" value="{{ $template->salutation }}" required/>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Message Body') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the main Messages here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <textarea name="message_body" class="form-textarea" cols="30" rows="8">
-                                            {{ br2nl($template->message_body) }}
-                                        </textarea>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Button') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Leave it blank if you don't need the button"></i>
-                                    </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" name="button_level" class="box-input" value="{{ $template->button_level }}" required/>
-                                    </div>
-                                    <div class="col-sm-5">
-                                        <input type="text" name="button_link" class="box-input" value="{{ $template->button_link }}" required/>
-                                    </div>
-                                </div>
-                                <div class="row site-input-groups">
-                                    <label for="" class="col-sm-3 col-label pt-0">
-                                        {{ __('Newsletter Footer') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Newsletter Footer Status"></i>
-                                    </label>
-                                    <div class="col-sm-5">
-                                        <div class="site-input-groups mb-0">
-                                            <div class="switch-field mb-0">
-                                                <input type="radio" id="welcome_user_newslatter_footer_status" name="footer_status" value="1" @checked($template->footer_status) />
-                                                <label for="welcome_user_newslatter_footer_status">
-                                                    {{ __('Enable') }}
-                                                </label>
-                                                <input
-                                                    type="radio"
-                                                    id="welcome_user_newslatter_footer_desable"
-                                                    name="footer_status"
-                                                    value="0"
-                                                    @checked(!$template->footer_status)
-                                                />
-                                                <label for="welcome_user_newslatter_footer_desable">
-                                                    {{ __('Disable') }}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label name="" class="col-sm-3 col-label">
-                                        {{ __('Footer Banner') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Leave it blank if you don't need the banner"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <div class="wrap-custom-file">
-                                            <input type="file" name="banner" id="footerRightImg" accept=".gif, .jpg, .png">
-                                            <label for="footerRightImg" @if($template->banner) class="file-ok" style="background-image: url( {{ asset( $template->banner ) }} )" @endif>
-                                                <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="">
-                                                <span>{{ __('Update Banner') }}</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Footer Message Body') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the footer Messages here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8">
-                                            {{ br2nl($template->footer_body) }}
-                                        </textarea>
-                                    </div>
-                                </div>
-                                <div class="row site-input-groups">
-                                    <label for="" class="col-sm-3 col-label pt-0">
-                                        {{ __('Newsletter Bottom') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Newslatter Bottom Status"></i>
-                                    </label>
-                                    <div class="col-sm-5">
-                                        <div class="site-input-groups mb-0">
-                                            <div class="switch-field mb-0">
-                                                <input
-                                                    type="radio"
-                                                    id="footer_bottom"
-                                                    name="bottom_status"
-                                                    value="1"
-                                                    @checked( $template->bottom_status)
-                                                />
-                                                <label for="footer_bottom">{{ __('Enable') }}</label>
-                                                <input
-                                                    type="radio"
-                                                    id="footer_bottom_disable"
-                                                    name="bottom_status"
-                                                    value="0"
-                                                    @checked(!$template->bottom_status)
-                                                />
-                                                <label for="footer_bottom_disable">{{ __('Disable') }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Newsletter Bottom Title') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Show the Greetings here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" name="bottom_title" class="box-input" value="{{ $template->bottom_title }}" required/>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <textarea name="bottom_body" class="form-textarea" cols="30" rows="8">
-                                            {{ br2nl($template->bottom_body) }}   
-                                        </textarea>
-                                        <p class="paragraph mb-0 mt-2">
-                                            <i icon-name="alert-triangle"></i>
-                                            {{ __('The Shortcuts you can use') }}
-                                            <strong>{{ implode(", ",json_decode($template->short_codes)) }}</strong>
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Note') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the Note here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8"></textarea>
-                                    </div>
-                                </div>
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Warning Content') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the Warning Messages here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8"></textarea>
-                                    </div>
-                                </div>
-                                
-                                <div class="site-input-groups row">
-                                    <label for="" class="col-sm-3 col-label">
-                                        {{ __('Company About') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Write the Company About here"></i>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <textarea name="footer_body" class="form-textarea" cols="30" rows="8"></textarea>
-                                    </div>
-                                </div>
-                                <div class="row site-input-groups">
-                                    <label for="" class="col-sm-3 col-label pt-0">
-                                        {{ __('Template Status') }}
-                                        <i icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Template Status"></i>
-                                    </label>
-                                    <div class="col-sm-5">
-                                        <div class="site-input-groups mb-0">
-                                            <div class="switch-field mb-0">
-                                                <input
-                                                    type="radio"
-                                                    id="template_status_enable"
-                                                    name="status"
-                                                    value="1"
-                                                    @checked($template->status)
-                                                />
-                                                <label for="template_status_enable">{{ __('Enable') }}</label>
-                                                <input
-                                                    type="radio"
-                                                    id="template_status_disable"
-                                                    name="status"
-                                                    value="0"
-                                                    @checked(!$template->status)
-                                                />
-                                                <label for="template_status_disable">{{ __('Disable') }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="offset-sm-3 col-sm-9">
-                                        <button type="submit" class="site-btn-sm primary-btn w-100">{{ __('Save Changes') }}</button>
-                                    </div>
-                                </div>
-                            </form>
+                    </div>
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Site title:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="sitetitle-input" value="[[site_title]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#sitetitle-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Site URL:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="siteurl-input" value="[[site_url]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#siteurl-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-areaa relative pl-28">
+                        <label for="" class="form-label inline-inputLabel">{{ __('Token:') }}</label>
+                        <div class="relative">
+                            <input type="text" class="form-control !pr-12" id="token-input" value="[[token]]" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full flex items-center justify-center copy-button" type="button" data-target="#token-input">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="lg:col-span-8 col-span-12">
+            <div class="card">
+                <div class="card-body p-6">
+                    <form action="{{ route('admin.email-template-update') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $template->id }}">
+                        <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
+                                {{ __('Email Type') }}
+                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="Leave it blank if you don't need the title" data-tippy-content="Leave it blank if you don't need the title"></iconify-icon>
+                            </label>
+                            <div class="md:col-span-9 col-span-12">
+                                <input type="text" name="title" class="form-control" value="{{ $template->title }}" required/>
+                            </div>
+                        </div>
+                        <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
+                                {{ __('Email Subject') }}
+                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Here the Email Subject will come"></iconify-icon>
+                            </label>
+                            <div class="md:col-span-9 col-span-12">
+                                <input type="text" name="subject" class="form-control" value="{{ $template->subject }}" required/>
+                            </div>
+                        </div>
+                        <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
+                                {{ __('Message Body') }}
+                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the main Messages here"></iconify-icon>
+                            </label>
+                            <div class="md:col-span-9 col-span-12">
+                        <textarea name="message_body" class="form-control" cols="30" rows="8">
+                            {{ br2nl($template->message_body) }}
+                        </textarea>
+                            </div>
+                        </div>
+                        <div class="input-area grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
+                                {{ __('Button') }}
+                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Leave it blank if you don't need the button"></iconify-icon>
+                            </label>
+                            <div class="md:col-span-4 col-span-12">
+                                <input type="text" name="button_level" class="form-control" value="{{ $template->button_level }}" required/>
+                            </div>
+                            <div class="md:col-span-5 col-span-12">
+                                <input type="text" name="button_link" class="form-control" value="{{ $template->button_link }}" required/>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-12 gap-5 mb-6">
+                            <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
+                                {{ __('Secondary Message Body') }}
+                                <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Newslatter Bottom Status"></iconify-icon>
+                            </label>
+                            <div class="md:col-span-9 col-span-12">
+                                <div class="input-area mb-5">
+                                    <div class="form-switch ps-0">
+                                        <input type="hidden" value="0" name="bottom_status">
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer secondary_message__toggle">
+                                            <input type="checkbox" name="bottom_status" value="1" class="sr-only peer" @checked( $template->bottom_status)>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="input-area mb-5" id="secondary_message__body">
+                                    <textarea name="bottom_body" class="form-control" cols="30" rows="8">
+                                        {{ br2nl($template->bottom_body) }}
+                                    </textarea>
+                                </div>
+
+                                <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto pt-0">
+                                            {{ __('Template Status') }}
+                                        </label>
+                                        <div class="form-switch ps-0">
+                                            <input type="hidden" value="0" name="status">
+                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="status" value="1" class="sr-only peer" @checked($template->status)>
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto pt-0">
+                                            {{ __('Disclaimer') }}
+                                        </label>
+                                        <div class="form-switch ps-0">
+                                            <input type="hidden" value="0" name="disclaimer">
+                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="disclaimer" value="1" class="sr-only peer">
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-7 flex-wrap">
+                                        <label class="form-label !w-auto pt-0">
+                                            {{ __('Risk Warning') }}
+                                        </label>
+                                        <div class="form-switch ps-0">
+                                            <input type="hidden" value="0" name="risk_warning">
+                                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                <input type="checkbox" name="risk_warning" value="1" class="sr-only peer">
+                                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right mt-10">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                {{ __('Save Changes') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('.copy-button').click(function() {
 
+                var targetSelector = $(this).data('target');
+                var $input = $(targetSelector);
+
+                $input.select();
+                document.execCommand('copy');
+
+                // Change the button text and style
+                var $button = $(this);
+                var $icon = $button.find('iconify-icon');
+                $icon.addClass('text-success-500');
+                $button.addClass('copy-button');
+
+                // Revert the button text and style after 2 seconds
+                setTimeout(function() {
+                    $icon.removeClass('text-success-500');
+                }, 2000);
+
+            });
+        });
+    </script>
+@endsection

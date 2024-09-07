@@ -10,11 +10,11 @@ use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Rules\ForexLoginBelongsToUserForDemo;
+use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Txn;
@@ -23,7 +23,12 @@ use Validator;
 class DepositController extends GatewayController
 {
     use ImageUpload, NotifyTrait, ForexApiTrait;
+    protected $forexApiService;
 
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
     public function deposit()
     {
 
@@ -33,7 +38,13 @@ class DepositController extends GatewayController
 
         $isStepOne = 'current';
         $isStepTwo = '';
-        $gateways = DepositMethod::where('status', 1)->get();
+        $gateways = DepositMethod::where('status', 1)
+            ->where(function($query) {
+                $query->whereJsonContains('country', auth()->user()->country)
+                    ->orWhereJsonContains('country', 'All');
+            })->get();
+
+//        dd($gateways);
 
 //        $clientIp = request()->ip();
 //        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
@@ -63,8 +74,8 @@ class DepositController extends GatewayController
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [
-            'target_id.required' => __('Kindly select Forex Account for deposit'),
-            'target_id.exists' => 'The selected forex account does not exist or is not of type real.',
+            'target_id.required' => __('Kindly select Account for deposit'),
+            'target_id.exists' => 'The selected account does not exist or is not of type real.',
 
         ]);
 
@@ -94,7 +105,13 @@ class DepositController extends GatewayController
 //        $targetId = 124234234;
         $clientIp = request()->ip();
         if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $this->isValidForexAccount($targetId);
+            $response = $this->forexApiService->getUserByLogin([
+                'login' => $targetId
+            ]);
+            if(!$response['success']){
+                notify()->error(__('Sorry,Your deposited account is Not valid!'), 'Error');
+                return redirect()->back();
+            }
         }
 
         if (isset($forexAccount->schema->first_min_deposit) & $forexAccount->schema->first_min_deposit > 0) {
@@ -108,7 +125,6 @@ class DepositController extends GatewayController
             }
         }
 //        dd('ss');
-
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;
         $payAmount = $finalAmount * $gatewayInfo->rate;
@@ -132,10 +148,24 @@ class DepositController extends GatewayController
 //        $targetId = '1063794';
 //        $targetType = 'forex_deposit';
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Deposit With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+        if($gatewayInfo->type == 'manual'){
+            $shortcodes = [
+                '[[full_name]]' => $txnInfo->user->full_name,
+                '[[txn]]' => $txnInfo->tnx,
+                '[[gateway_name]]' => $txnInfo->method,
+                '[[deposit_amount]]' => $txnInfo->amount,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[message]]' => $txnInfo->approval_cause,
+                '[[status]]' =>  'Pending',
+            ];
+            $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
 
+        }
         return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 
     }
+
     public function depositDemoNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
@@ -148,8 +178,8 @@ class DepositController extends GatewayController
                 })],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/','numeric','min:1','max:100000'],
         ], [
-            'target_id.required' => __('Kindly select Forex Account for deposit'),
-            'target_id.exists' => 'The selected forex account does not exist or is not of type demo.',
+            'target_id.required' => __('Kindly select Account for deposit'),
+            'target_id.exists' => 'The selected account does not exist or is not of type demo.',
         ]);
 
         $input = $request->all();
@@ -167,11 +197,15 @@ class DepositController extends GatewayController
 
         $clientIp = request()->ip();
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-           $isValid =  $this->isValidForexAccount($targetId);
 //           dd($isValid);
-        if(!$isValid){
-               return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
-           }
+        $response = $this->forexApiService->getUserByLogin([
+            'login' => $targetId
+        ]);
+        if(!$response['success']){
+            return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
+
+        }
+
 //        }
         $charge = 0;
         $finalAmount = (float)$amount + (float)$charge;
@@ -180,9 +214,14 @@ class DepositController extends GatewayController
 
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, 'USD', $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
         $comment = 'demo/deposit/'.substr($txnInfo->tnx, -7);
-
-        $depositResponse = $this->forexDeposit($targetId, $finalAmount,$comment);
-        if($depositResponse){
+        $data = [
+            'login' => $targetId,
+            'Amount' => $finalAmount,
+            'type' => 1,//deposit
+            'TransactionComments' => $comment
+        ];
+        $depositResponse = $this->forexApiService->balanceOperationDemo($data);
+        if ($depositResponse['success']) {
             Txn::update($txnInfo->tnx, TxnStatus::Success, $txnInfo->user_id, 'System');
             return response()->json(['success' => __('Successfully Deposited.'), 'reload' => true]);
         } else {

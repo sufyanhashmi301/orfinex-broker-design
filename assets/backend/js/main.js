@@ -1,45 +1,7 @@
 // iDevs Admin
 (function ($) {
 
-
     'use strict';
-
-    // Lucide Icons Activation
-    lucide.createIcons();
-
-    // Side Nav Collapse
-    $(".sidebar-toggle").on('click', function () {
-        $(".layout").toggleClass("nav-folded");
-    });
-
-    // Side Nav Hover
-    $(".side-nav").on('mouseenter mouseleave', function () {
-        $(".nav-folded .side-nav").toggleClass("side-nav-hover");
-    });
-
-    // Side Nav dropdowns
-    $('.side-nav-dropdown > .dropdown-link').on('click', function () {
-        $(".dropdown-items").slideUp(400);
-        if (
-            $(this)
-                .parent()
-                .hasClass("show")
-        ) {
-            $(".side-nav-dropdown").removeClass("show");
-            $(this)
-                .parent()
-                .removeClass("show");
-        } else {
-            $(".side-nav-dropdown").removeClass("show");
-            $(this)
-                .next(".dropdown-items")
-                .slideDown(400);
-            $(this)
-                .parent()
-                .addClass("show");
-        }
-    });
-
 
     // Counter For Dashboard Card
     $('.count').counterUp({
@@ -48,7 +10,7 @@
     });
 
 
-// Image Preview
+    // Image Preview
     $('input[type="file"]').each(function () {
         // Refs
         var $file = $(this),
@@ -76,7 +38,7 @@
     });
 
 
-// Custom Toaster
+    // Custom Toaster
     $('.toast__close').on('click', function (e) {
         e.preventDefault();
         var parent = $(this).parent('.site-toaster');
@@ -85,15 +47,6 @@
         });
     });
 
-
-// ToolTip
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-
-
-    $('.site-nice-select').niceSelect();
 
     //Text Editor
     $(document).ready(function () {

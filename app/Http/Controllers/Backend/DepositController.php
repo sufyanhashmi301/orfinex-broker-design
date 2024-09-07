@@ -6,6 +6,7 @@ use App\Enums\GatewayType;
 use App\Enums\InvestStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Exports\DepositsExport;
 use App\Http\Controllers\Controller;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
@@ -21,6 +22,7 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 use Purifier;
 use Txn;
 
@@ -105,6 +107,7 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
@@ -173,11 +176,12 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-
+//dd($data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);
@@ -219,13 +223,15 @@ class DepositController extends Controller
 
     public function history(Request $request)
     {
-
+        
+        $filters = $request->only(['email', 'status',  'created_at']);
+      
         if ($request->ajax()) {
             $data = Transaction::where(function ($query) {
                 $query->where('type', TxnType::ManualDeposit)
                     ->orWhere('type', TxnType::Deposit);
             })->latest();
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -235,7 +241,8 @@ class DepositController extends Controller
                     return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
-                ->rawColumns(['status', 'type', 'final_amount', 'username'])
+                ->addColumn('action', 'backend.transaction.include.__action')
+                ->rawColumns(['status', 'type', 'final_amount', 'username','action'])
                 ->make(true);
         }
 
@@ -247,23 +254,22 @@ class DepositController extends Controller
 
         $data = Transaction::find($id);
         $gateway = $this->gateway($data->method);
-//        dd($gateway);
         return view('backend.deposit.include.__deposit_action', compact('data', 'id', 'gateway'))->render();
     }
     public function gateway($code)
     {
         $gateway = DepositMethod::code($code)->first();
-
-        if ($gateway->type == GatewayType::Manual->value) {
-        $fieldOptions = $gateway->field_options;
-        $paymentDetails = $gateway->payment_details;
-        $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
-    }else{
-        $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
-        $gateway['currency'] = $gatewayCurrency;
-    }
-//        dd($gateway);
-        return $gateway;
+        if($gateway){
+            if ($gateway->type == GatewayType::Manual->value) {
+                $fieldOptions = $gateway->field_options;
+                $paymentDetails = $gateway->payment_details;
+                $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+            }else{
+                $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
+                $gateway['currency'] = $gatewayCurrency;
+            }
+            return $gateway;
+        }
     }
 
 
@@ -274,6 +280,17 @@ class DepositController extends Controller
         $id = $input['id'];
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
+
+        $shortcodes = [
+            '[[full_name]]' => $transaction->user->full_name,
+            '[[txn]]' => $transaction->tnx,
+            '[[gateway_name]]' => $transaction->method,
+            '[[deposit_amount]]' => $transaction->amount,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[message]]' => $transaction->approval_cause,
+            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
+        ];
 
         if (isset($input['approve'])) {
 
@@ -301,18 +318,13 @@ class DepositController extends Controller
                 }
                 $transaction->save();
                 $transaction = $transaction->fresh();
-//                dd($transaction);
-//                if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-//                    $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-////                    $this->ForexDeposit($transaction->target_id, $transaction->final_amount, $comment);
-////                    $this->firstMinDepositUpdate($transaction->target_id);
-//                } else {
-//                    $transaction->user->increment('balance', $transaction->amount);
-//                }
+
 
                 }
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
+
+            $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
 
             notify()->success('Approve successfully');
 
@@ -323,26 +335,25 @@ class DepositController extends Controller
                 $invest->delete();
             }
             Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+            $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
             notify()->success('Reject successfully');
         }
 
-        $shortcodes = [
-            '[[full_name]]' => $transaction->user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[gateway_name]]' => $transaction->method,
-            '[[deposit_amount]]' => $transaction->amount,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
-
-        $this->mailNotify($transaction->user->email, 'user_manual_deposit_request', $shortcodes);
         $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.deposit.log'), $transaction->user->id);
         $this->smsNotify('user_manual_deposit_request', $shortcodes, $transaction->user->phone);
 
         return redirect()->back();
     }
 
+    public function export(Request $request)
+    {
+       
+        return Excel::download(new DepositsExport($request), 'deposits.xlsx');
+    }
+    public function view($id)
+    {
+        $transaction = Transaction::find($id);
+        return response()->json(['transaction'=>$transaction]);
+    }
 }
 

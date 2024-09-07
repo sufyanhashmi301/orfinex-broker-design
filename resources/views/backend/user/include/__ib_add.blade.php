@@ -1,51 +1,40 @@
 <!-- Confirmation Modal -->
-<div
-    class="modal fade"
-    id="addIBModal"
-    tabindex="-1"
-    aria-labelledby="addIBModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content site-table-modal">
-            <div class="modal-body popup-body">
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-                <div class="popup-body-text">
-                    <h3 class="title mb-4"> {{ __('Add IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span></h3>
-                    <form id="addIBModalForm" action="{{ route('admin.ib.approve') }}" method="POST">
-                        @csrf
-
-                        <input type="hidden" name="user_id" value="{{$user->id}}">
-
-                        <p>
-                            Are you sure you want to add IB Account?
-                        </p>
-
-                        <div class="action-btns">
-                            <button type="submit" class="site-btn-sm primary-btn me-2">
-                                <i icon-name="send"></i>
-                                {{ __('Add IB') }}
-                            </button>
-                            <a
-                                href="#"
-                                class="site-btn-sm red-btn"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            >
-                                <i icon-name="x"></i>
-                                {{ __('Close') }}
-                            </a>
-                        </div>
-                    </form>
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+     id="addIBModal"
+     tabindex="-1"
+     aria-labelledby="addIBModalLabel"
+     aria-hidden="true"
+ >
+     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-body p-6 py-8 text-center space-y-5">
+                <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                    <iconify-icon class="text-4xl" icon="lucide:shield-question"></iconify-icon>
                 </div>
+                <div class="title">
+                    <h4 class="text-xl font-medium dark:text-white capitalize">
+                        {{ __('Add IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span>    
+                    </h4>
+                </div>
+                <p>{{ __('Are you sure you want to add IB Account?') }}</p>
+                
+                <form id="addIBModalForm" action="{{ route('admin.ib.approve') }}" method="POST">
+                    @csrf
+                    <div class="action-btns text-center">
+                        <!-- Other form fields go here -->
+                        <input type="hidden" name="user_id"  value="{{$user->id}}">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Add IB') }}
+                        </button>
+                        <button type="button" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                            {{ __('Cancel') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
 

@@ -38,7 +38,7 @@ class IBSchemaController extends Controller
      */
     public function index()
     {
-        $schemas = IbSchema::orderBy('priority','asc')->get();
+        $schemas = IbSchema::orderBy('priority','asc')->paginate(10);
 
         return view('backend.ib_schema.index', compact('schemas'));
     }
@@ -147,6 +147,16 @@ class IBSchemaController extends Controller
         $schema->update($finalData);
 
         notify()->success('schema Update successfully');
+
+        return redirect()->route('admin.ibAccountType.index');
+    }
+    public function destroy($id)
+    {
+        $ibSchema = IbSchema::findOrFail($id);
+
+        $ibSchema->delete();
+
+        notify()->success('schema deleted successfully');
 
         return redirect()->route('admin.ibAccountType.index');
     }

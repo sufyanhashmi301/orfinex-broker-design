@@ -1,1 +1,3 @@
-<div class="site-badge primary-bg">{{ ucwords(str_replace("_"," ",$type)) }}</div>
+<div class="badge bg-slate-900 text-white capitalize">
+    {{ ucwords(str_replace("_"," ",$type)) }}
+</div>

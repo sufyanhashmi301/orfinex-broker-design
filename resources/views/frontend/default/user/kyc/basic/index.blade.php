@@ -27,7 +27,7 @@
         <div class="card-body p-6">
             @if($user->kyc == \App\Enums\KYCStatus::Pending->value)
                 <div class="site-badge warnning"> {{ __('Your Kyc Is Pending') }}</div>
-            @elseif($user->kyc == \App\Enums\KYCStatus::Verified->value)
+            @elseif($user->kyc == \App\Enums\KYCStatus::Basic_Verified->value)
                 <div class="site-badge success"> {{ __('Your Kyc Is Verified') }} </div>
             @else
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

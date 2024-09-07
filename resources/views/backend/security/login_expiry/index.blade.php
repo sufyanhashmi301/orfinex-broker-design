@@ -1,69 +1,86 @@
 @extends('backend.security.index')
-@section('security-title')
-    {{ __('Login Expiry') }}
-@endsection
 @section('title')
     {{ __('Login Expiry') }}
 @endsection
 @section('security-content')
-    <div class="col-xl-12">
-        <div class="site-card">
-            <div class="site-card-body table-responsive">
-                <div class="site-datatable">
-                    <table id="dataTable" class="display data-table">
-                        <thead>
-                        <tr>
-                            <th>{{ __('#') }}</th>
-                            <th>{{ __('User') }}</th>
-                            <th>{{ __('Expiry Date') }}</th>
-                            <th>{{ __('Action') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>
-                                    <div class="flex align-items-center">
-                                        <span class="avatar-text">NA</span>
-                                        <div class="ml-2">
-                                            <p class="fw-bold lh-1 mb-1">Naeem Ali</p>
-                                            <p class="small lh-1 mb-0">Junior</p>
+    <div class="card">
+        <div class="card-body px-6 pt-3">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class=" col-span-8  hidden"></span>
+                <span class="  col-span-4 hidden"></span>
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="data-table">
+                            <thead class=" border-t border-slate-100 dark:border-slate-800">
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('#') }}</th>
+                                    <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Expiry Date') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                <tr>
+                                    <td class="table-td">1</td>
+                                    <td class="table-td">
+                                        <a href="javascript:;" class="flex">
+                                            <span class="w-8 h-8 rounded-[100%] bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize ltr:mr-3 rtl:ml-3">
+                                                NA
+                                            </span>
+                                            <div>
+                                                <span class="text-sm text-slate-900 dark:text-white block capitalize">
+                                                    Naeem Ali
+                                                </span>
+                                                <span class="text-xs text-slate-500 dark:text-slate-300">
+                                                    Junior
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td class="table-td">10-1-2024</td>
+                                    <td class="table-td">
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            <a href="" class="action-btn">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </a>
+                                            <a href="" class="action-btn">
+                                                <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                            </a>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>10-1-2024</td>
-                                <td>
-                                    <a href="" class="round-icon-btn primary-btn">
-                                        <i icon-name="edit-3"></i>
-                                    </a>
-                                    <a href="" class="round-icon-btn red-btn">
-                                        <i icon-name="trash-2"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>
-                                    <div class="flex align-items-center">
-                                        <span class="avatar-text">NA</span>
-                                        <div class="ml-2">
-                                            <p class="fw-bold lh-1 mb-1">Naeem Ali</p>
-                                            <p class="small lh-1 mb-0">Junior</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table-td">2</td>
+                                    <td class="table-td">
+                                        <a href="javascript:;" class="flex">
+                                            <span class="w-8 h-8 rounded-[100%] bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize ltr:mr-3 rtl:ml-3">
+                                                NA
+                                            </span>
+                                            <div>
+                                                <span class="text-sm text-slate-900 dark:text-white block capitalize">
+                                                    Naeem Ali
+                                                </span>
+                                                <span class="text-xs text-slate-500 dark:text-slate-300">
+                                                    Junior
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td class="table-td">15-1-2-24</td>
+                                    <td class="table-td">
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            <a href="" class="action-btn">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </a>
+                                            <a href="" class="action-btn">
+                                                <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                            </a>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>15-1-2-24</td>
-                                <td>
-                                    <a href="" class="round-icon-btn primary-btn">
-                                        <i icon-name="edit-3"></i>
-                                    </a>
-                                    <a href="" class="round-icon-btn red-btn">
-                                        <i icon-name="trash-2"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

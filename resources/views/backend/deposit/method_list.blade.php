@@ -2,50 +2,57 @@
 @section('title')
     {{ __(ucwords($type).' Deposit Method') }}
 @endsection
+@section('page-title')
+    <div class="flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            @isset($button)
+                <a href="{{$button['route']}}" class="btn btn-primary inline-flex items-center justify-center" type="button">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:{{$button['icon']}}"></iconify-icon>
+                    {{$button['name']}}
+                </a>
+            @endisset
+        </div>
+    </div>
+@endsection
 @section('deposit_content')
-    <div class="col-xl-12 col-md-12">
-        <div class="site-card">
-            <div class="site-card-header">
-                <h3 class="title">{{ __('Setup Payment Methods') }}</h3>
-            </div>
-            <div class="site-card-body">
-                <p class="paragraph">
-                    {{ __(' All the ') }}
-                    <strong>{{ __('Deposit Payment Methods') }}</strong> {{ __('Setup for user') }}
-                </p>
-                @foreach($depositMethods as $method)
-                    <div class="single-gateway">
-                        <div class="gateway-name">
-                            <div class="gateway-icon">
-                                <img
-                                    src="{{ asset($method->logo ?? $method->gateway->logo) }}"
-                                    alt=""
-                                />
-                                <span class="icon-currency-type">{{ $method->currency }}</span>
-                            </div>
-                            <div class="gateway-title">
-                                <h4>{{$method->name}}</h4>
-                                <p>{{ __('Minimum Deposit: ').$method->minimum_deposit .' '. $currency }}</p>
-                            </div>
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+        @foreach($depositMethods as $method)
+            <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
+                <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
+                    <div class="grid-view-layout">
+                        <div class="flex justify-between items-center mb-4">
+
+                            <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($method->logo) }}" alt=""/>
+                            <a href="{{ route('admin.deposit.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-xl text-center">
+                                <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
+                                    <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                </span>
+                            </a>
                         </div>
-                        <div class="gateway-right">
-                            <div class="gateway-status">
-                                @if($method->status)
-                                    <div class="site-badge success">{{ __('Activated') }}</div>
-                                @else
-                                    <div class="site-badge pending">{{ __('Deactivated') }}</div>
-                                @endif
-                            </div>
-                            <div class="gateway-edit">
-                                <a href="{{ route('admin.deposit.method.edit',['type' => strtolower($type),'id' => $method->id]) }}"><i
-                                        icon-name="settings-2"></i></a>
-                            </div>
+                        <h4 class="text-base font-medium dark:text-white">{{$method->name}}</h4>
+                        <ul class="divide-y divide-slate-100 dark:divide-slate-700 h-full">
+                            <li class="flex items-center py-3">
+                                <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Minimum Deposit:') }}</span>
+                                <span class="flex-1 text-right text-slate-600 dark:text-slate-300">{{ $method->minimum_deposit .' '. $currency }}</span>
+                            </li>
+                        </ul>
+                        <div class="gateway-status">
+                            @if($method->status)
+                                <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                    {{ __('Activated') }}
+                                </div>
+                            @else
+                                <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                    {{ __('Deactivated') }}
+                                </div>
+                            @endif
                         </div>
                     </div>
-                @endforeach
-
+                </div>
             </div>
-
-        </div>
+        @endforeach
     </div>
 @endsection

@@ -1,17 +1,15 @@
 @extends('backend.setting.index')
-@section('setting-title')
-    {{ __('Site Settings') }}
-@endsection
 @section('title')
     {{ __('Site Settings') }}
 @endsection
 @section('setting-content')
+    <div class="space-y-5">
+        @foreach(config('setting') as $section => $fields)
 
-    @foreach(config('setting') as $section => $fields)
+            @includeIf('backend.setting.site_setting.include.__'. $section)
 
-        @includeIf('backend.setting.site_setting.include.__'. $section)
-
-    @endforeach
+        @endforeach
+    </div>
 @endsection
 @push('single-script')
     <script>
@@ -33,15 +31,15 @@
 
         function currencyShow(currencyType){
             if (currencyType === 'fiat'){
-                $('.currency-fiat').removeClass('d-none')
-                $('.currency-crypto').addClass('d-none')
+                $('.currency-fiat').removeClass('hidden')
+                $('.currency-crypto').addClass('hidden')
 
                 $('.site-currency-fiat').attr('name','site_currency');
                 $('.site-currency-crypto').attr('name','');
 
             }else {
-                $('.currency-crypto').removeClass('d-none')
-                $('.currency-fiat').addClass('d-none')
+                $('.currency-crypto').removeClass('hidden')
+                $('.currency-fiat').addClass('hidden')
 
                 $('.site-currency-crypto').attr('name','site_currency');
                 $('.site-currency-fiat').attr('name','');

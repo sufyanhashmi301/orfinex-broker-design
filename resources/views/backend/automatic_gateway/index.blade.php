@@ -28,7 +28,7 @@
                                 @foreach($gateways as $gateway)
                                 <tr>
                                     <td class="table-td">
-                                        <img class="h-7" src="https://cdn.brokeret.com/crm-assets/integration-logo/svg/{{ $gateway->logo }}" alt="">
+                                        <img class="h-7" src="{{ $gateway->logo }}" alt="">
                                     </td>
                                     <td class="table-td">{{ $gateway->name }}</td>
                                     <td class="table-td">

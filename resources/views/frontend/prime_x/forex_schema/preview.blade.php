@@ -8,14 +8,17 @@
             {{ __('Choose Account Type') }}
         </h3>
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4" id="account-type-tabs">
-            <li class="nav-item">
-                <a href="javascript:;"
-                   class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
-                   data-type="real" id="real-tab">
-                    {{ __('Real') }}
-                </a>
-            </li>
-            @if(isset($schema->demo_swap_free))
+            @if($schema->real_swap_free || $schema->real_islamic)
+                <li class="nav-item">
+                    <a href="javascript:;"
+                       class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                       data-type="real" id="real-tab">
+                        {{ __('Real') }}
+                    </a>
+                </li>
+            @endif
+
+            @if($schema->demo_swap_free || $schema->demo_islamic)
                 <li class="nav-item">
                     <a href="javascript:;"
                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
@@ -25,6 +28,7 @@
                 </li>
             @endif
         </ul>
+
         <p class="card-text">
             {{ __('Risk-Free Account: Trade using virtual money') }}
         </p>
@@ -172,6 +176,45 @@
 @section('script')
     <script>
         $(document).ready(function () {
+            // Function to update the selected account type
+            function updateAccountTypeBasedOnValues() {
+                var realSwapFree = '{{ $schema->real_swap_free }}'; // Get from backend
+                var realIslamic = '{{ $schema->real_islamic }}';   // Get from backend
+                var demoSwapFree = '{{ $schema->demo_swap_free }}'; // Get from backend
+                var demoIslamic = '{{ $schema->demo_islamic }}';   // Get from backend
+
+                var selectedAccountType = 'real'; // Default to real account
+
+                // Check if real or demo values are filled
+                if (realSwapFree || realIslamic) {
+                    selectedAccountType = 'real'; // If any real account value is present
+                } else if (demoSwapFree || demoIslamic) {
+                    selectedAccountType = 'demo'; // If any demo account value is present
+                }
+
+                // If both real and demo have values, pre-select real
+                if ((realSwapFree || realIslamic) && (demoSwapFree || demoIslamic)) {
+                    selectedAccountType = 'real';
+                }
+
+                // Update the UI based on the selected account type
+                $('#account-type-tabs .nav-link').removeClass('active');
+                $('#' + selectedAccountType + '-tab').addClass('active');
+                $('#account-type').val(selectedAccountType);
+            }
+
+            // Call the function to update account type based on the values
+            updateAccountTypeBasedOnValues();
+
+            // Handle account type switching when clicking on tabs
+            $('#account-type-tabs .nav-link').on('click', function () {
+                $('#account-type-tabs .nav-link').removeClass('active');
+                $(this).addClass('active');
+                var accountType = $(this).data('type');
+                $('#account-type').val(accountType);
+            });
+
+
             function updateLeverageAndDeposit(result) {
                 // Assuming result contains these fields
                 $('#display-commission').text(result.commission === 0 ? 'No Commission' : result.commission);
@@ -295,6 +338,5 @@
                 checkPassword(password, 'main', 'create-forex-account');
             });
         });
-
     </script>
 @endsection

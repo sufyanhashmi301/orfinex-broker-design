@@ -16,7 +16,7 @@
     @endforeach
 </ul>
 
-@if($kycStatus !== \App\Enums\KYCStatus::Verified->value)
+@if($kycStatus !== \App\Enums\KYCStatus::Basic_Verified->value)
     <form action="{{ route('admin.kyc.action.now') }}" method="post">
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">

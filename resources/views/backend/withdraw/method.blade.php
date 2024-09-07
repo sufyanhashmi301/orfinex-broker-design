@@ -30,7 +30,7 @@
                 <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
                     <div class="grid-view-layout">
                         <div class="flex justify-between items-center mb-4">
-                            <img class="inline-block h-10" src="{{ asset($icon) }}" alt=""/>
+                            <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" alt=""/>
                             <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-xl text-center">
                                 <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
                                     <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>

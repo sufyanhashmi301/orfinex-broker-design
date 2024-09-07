@@ -17,7 +17,7 @@ class KYC
     public function handle(Request $request, Closure $next)
     {
         $kyc = auth()->user()->kyc;
-        if ($kyc == KYCStatus::Verified->value || ! setting('kyc_verification', 'permission')) {
+        if ($kyc == KYCStatus::Basic_Verified->value || ! setting('kyc_verification', 'permission')) {
             return $next($request);
         }
         tnotify('warning', 'Your account is unverified with Kyc.');

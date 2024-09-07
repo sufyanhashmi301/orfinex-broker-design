@@ -25,7 +25,7 @@
                                 <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
                                 <div class="wrap-custom-file">
                                     <input type="file" name="logo" id="schema-icon" accept=".gif, .jpg, .png"/>
-                                    <label for="schema-icon" class="file-ok" style="background-image: url('https://cdn.brokeret.com/crm-assets/integration-logo/svg/{{ $gateway->logo }}')">
+                                    <label for="schema-icon" class="file-ok" style="background-image: url('{{ $gateway->logo }}')">
                                         <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt=""/>
                                         <span>{{ __('Update Logo') }}</span>
                                     </label>

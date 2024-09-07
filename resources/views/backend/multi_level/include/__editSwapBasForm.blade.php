@@ -51,14 +51,12 @@
         </div>
         <div class="lg:col-span-2 input-area">
             <label for="description" class="form-label">{{ __('Short Description') }}</label>
-            <input
-                type="text"
+            <textarea
                 name="description"
                 class="form-control mb-0"
                 placeholder="Short Description"
-                value="{{ $multiLevelAccount->description }}"
                 required
-            />
+            />{{ $multiLevelAccount->description }}</textarea>
         </div>
         <div class="lg:col-span-2 input-area">
             <label for="status" class="form-label">{{ __('Status') }}</label>

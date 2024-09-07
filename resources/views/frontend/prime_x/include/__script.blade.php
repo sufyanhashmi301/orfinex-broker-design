@@ -36,6 +36,28 @@
 
 @yield('script')
 @stack('script')
+<script>
+    $(document).ready(function () {
+        function calculateHeights() {
+            // Store heights in variables, checking if elements exist
+            var headerHeight = $('#app_header').length ? $('#app_header').outerHeight() : 0;
+            var footerHeight = $('#footer').length ? $('#footer').outerHeight() : 0;
+            var titleHeight = $('.pageTitle').length ? $('.pageTitle').outerHeight() + 24 : 0;
+            var tabsHeight = $('.innerMenu').length ? $('.innerMenu').outerHeight() + 20 : 0;
+
+            // Calculate the available height for content
+            var totalHeight = headerHeight + footerHeight + titleHeight + tabsHeight + 73;
+            var minHeight = 'calc(100vh - ' + totalHeight + 'px)';
+
+            $('.dataTables_wrapper, .basicTable_wrapper').css('min-height', minHeight);
+        }
+
+        // Run the function on page load and window resize
+        calculateHeights();
+        // $(window).resize(calculateHeights);
+    });
+</script>
+
 
 @php
     $googleAnalytics = plugin_active('Google Analytics');

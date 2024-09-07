@@ -246,6 +246,7 @@
                 $.get(url, function (data) {
                     $('#editSwapBasedModal').modal('show');
                     $('#edit-swap-based-body').append(data);
+                    $('.select2').select2();
                 });
             })
             $('body').on('click', '.deleteSwapBased', function (event) {

@@ -43,7 +43,7 @@ class RiskProfileTagController extends Controller
      */
     public function index()
     {
-        $riskProfileTags = RiskProfileTag::all();
+        $riskProfileTags = RiskProfileTag::paginate(10);
 
         return view('backend.risk_profile_tag.index', compact('riskProfileTags'));
     }

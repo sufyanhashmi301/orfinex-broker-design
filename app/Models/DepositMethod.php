@@ -30,8 +30,8 @@ class DepositMethod extends Model
     public function getGatewayLogoAttribute()
     {
 
-        if (null == $this->logo) {
-            return asset($this->gateway->logo);
+        if ( isset($this->gateway_id)) {
+            return $this->gateway->logo;
         }
 
         return asset($this->logo);

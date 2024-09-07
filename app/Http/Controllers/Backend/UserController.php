@@ -99,7 +99,7 @@ class UserController extends Controller
                 return Excel::download(new UsersExport($request), 'users.xlsx');
         }
     }
-   
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -232,15 +232,14 @@ class UserController extends Controller
         $tags = RiskProfileTag::where('status', true)
             ->get();
         $customerGroups = CustomerGroup::where('status',1)->get();
-        $users = User::where(function ($query) use ($id,$user) {
-            $query->where(function ($subquery) use ($id,$user) {
-                $subquery->whereNull('ref_id')
-                    ->orWhere('ref_id', '<>', $id);
-            })
-                ->where('id', '<>', $id)
-                ->where('id', '<>', $user->ref_id);
-        })
-            ->get();
+//        $users = User::where('id', '<>', $id)
+//            ->where(function ($query) use ($id, $user) {
+//                $query->whereNull('ref_id')
+//                    ->orWhere('ref_id', '<>', $id);
+//            })
+//            ->where('id', '<>', $user->ref_id)
+//            ->get();
+
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
             ->where(function($query) use ($tagNames) {
@@ -254,7 +253,7 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'users','customerGroups', 'schemas'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags','customerGroups', 'schemas'));
 
     }
 
@@ -339,7 +338,7 @@ class UserController extends Controller
             'username' => 'required|unique:users,username,' . $id,
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
             'date_of_birth' => 'nullable|date_format:Y-m-d',
-            'group_id' => 'nullable|exists:customer_groups,id'
+            'group_id' => 'sometimes|exists:customer_groups,id'
         ]);
 
         if ($validator->fails()) {
@@ -352,10 +351,10 @@ class UserController extends Controller
         }
         User::find($id)->update($input);
         $user = User::find($id);
-        if (isset($input['group_id'])) {
+        if (isset($input['group_id']) && $input['group_id'] !== '') {
             $user->customerGroups()->sync($input['group_id']);
-        } else {
-            $user->customerGroups()->sync([]);
+        }else{
+            $user->customerGroups()->detach();
         }
         notify()->success('User Info Updated Successfully', 'success');
 

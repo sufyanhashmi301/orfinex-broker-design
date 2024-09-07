@@ -41,7 +41,7 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $staffs = Admin::all();
+        $staffs = Admin::paginate(10);
 
         return view('backend.staff.index', compact('staffs'));
     }
@@ -63,6 +63,8 @@ class StaffController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
+            'first_name' => 'required',
+            'last_name' => 'required',
             'name' => 'required',
             'email' => 'required|email|unique:admins,email',
             'password' => 'required|same:confirm-password',

@@ -9,14 +9,14 @@
                 @if(count($deposits) == 0)
                     <div class="flex items-center justify-center flex-col">
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                            You don't have any transaction yet.
+                            {{ __("You don't have any transaction yet.") }}
                         </p>
                         <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                            Deposit Now
+                            {{ __('Deposit Now') }}
                         </a>
                     </div>
                 @else
-                    <div class="grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
+                    <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
                         <div class="filter">
                             <form action="{{ route('user.deposit.log') }}" method="get">
                                 <div class="search flex gap-3 items-center">
@@ -34,9 +34,9 @@
                     </div>
                     <div class="overflow-x-auto -mx-6">
                         <div class="inline-block min-w-full align-middle">
-                            <div class="overflow-hidden ">
+                            <div class="overflow-hidden basicTable_wrapper">
                                 <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                    <thead class=" border-t border-slate-100 dark:border-slate-800">
+                                    <thead class="border-t border-slate-100 dark:border-slate-800">
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Description') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
@@ -46,7 +46,7 @@
                                             <th scope="col" class="table-th">{{ __('Method') }}</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($deposits as $raw)
                                         <tr>
                                             <td class="table-td">
@@ -74,12 +74,12 @@
                                                 {{ $raw->tnx }}
                                             </td>
                                             <td class="table-td">
-                                                <strong class="text-success-900">
+                                                <span class="font-medium">
                                                     +{{$raw->amount.' '.$currency }}
-                                                </strong>
+                                                </span>
                                             </td>
                                             <td class="table-td">
-                                                <span class="text-danger-900">
+                                                <span class="font-medium">
                                                     -{{ $raw->charge }} {{ $currency }}
                                                 </span>
                                             </td>
@@ -112,7 +112,7 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3">
+                                <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3 mt-auto">
                                     <div>
                                         @php
                                             $from = $deposits->firstItem(); // The starting item number on the current page
@@ -120,7 +120,7 @@
                                             $total = $deposits->total(); // The total number of items
                                         @endphp
 
-                                        <p class="text-sm text-gray-700 px-3">
+                                        <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
                                             Showing
                                             <span class="font-medium">{{ $from }}</span>
                                             to

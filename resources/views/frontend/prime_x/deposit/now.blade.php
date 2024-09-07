@@ -39,7 +39,7 @@
                                     <input type="text" name="amount" class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
                                         aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
                             </div>
@@ -49,7 +49,7 @@
                                     <input type="text"  class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
                                         aria-describedby="basic-addon2">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
                             </div>
@@ -109,7 +109,7 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-dark">
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
                                     {{ __('Proceed to Payment') }}
                                 </button>
                             </div>
@@ -119,7 +119,7 @@
             </div>
         </form>
     </div>
-    
+
     <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-slate-800 bg-opacity-[14%] text-slate-800 dark:bg-slate-500 dark:bg-opacity-[14%] dark:text-slate-300">
         <div class="accordion-item">
             <h2 class="accordion-header text-lg" id="flush-headingStaySafeOnline">

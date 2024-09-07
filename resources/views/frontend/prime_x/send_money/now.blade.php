@@ -40,7 +40,7 @@
                                     <input type="text" class="form-control !text-lg sendAmount" name="amount" required
                                         placeholder="Enter Amount" aria-label="Amount"
                                         oninput="this.value = validateDouble(this.value)" aria-describedby="basic-addon1">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon1">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">
                                         {{ $currency }}
                                     </span>
                                 </div>
@@ -91,7 +91,7 @@
                                         </tbody>
                                     </table>
                                     <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                        <button type="submit" class="btn w-full inline-flex justify-center btn-dark">
+                                        <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
                                             {{ __('Transfer Now') }}
                                             <i class="anticon anticon-double-right"></i>
                                         </button>

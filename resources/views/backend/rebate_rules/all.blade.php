@@ -13,9 +13,9 @@
 @endsection
 @section('symbol-groups-content')
     <div class="card">
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8  hidden"></span>
+                <span class=" col-span-8 hidden"></span>
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
@@ -39,6 +39,10 @@
                     </div>
                 </div>
             </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
     @include('backend.rebate_rules.modal.__create')
@@ -48,10 +52,6 @@
 @section('script')
 
     <script>
-
-         $(document).ready(function() {
-            $('#symbols').select2();
-         });
 
          $(document).ready(function () {
             $('#modalForm').on('submit', function (e) {
@@ -97,7 +97,7 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 searching: false,
                 lengthChange: false,
                 info: true,
@@ -152,12 +152,14 @@
                  success: function(response) {
                      $('#edit_rebate_rule').html(response);
                      $('#editSymbolGroupModal').modal('show');
+                     $('.select2').select2();
                  },
                  error: function(xhr, status, error) {
                      console.error(xhr.responseText);
                  }
              });
          });
+
 
          $('#editSymbolGroupModal').on('submit', '#editRebateRuleForm', function(e) {
              e.preventDefault();
@@ -190,7 +192,40 @@
             url = url.replace(':id', id);
             $('#rebateRuleDeleteForm').attr('action', url)
             $('#deleteRebateRule').modal('show');
-        })
+        });
+
+        $(document).on('click', '.status-checkbox', function(event) {
+
+             "use strict";
+             event.preventDefault();
+             var checkbox = $(this);
+             var itemId = checkbox.data('id');
+             var status = checkbox.is(':checked') ? 1 : 0;
+
+             $.ajax({
+                 url: '{{ route('admin.rebateRules.updateStatus') }}',
+                 type: 'POST',
+                 data: {
+                     id: itemId,
+                     status: status,
+                     _token: '{{ csrf_token() }}'
+                 },
+                 success: function(response) {
+                     if (response.success) {
+                         window.location.reload();
+                     } else {
+                         window.location.reload();
+                     }
+                 },
+                 error: function(xhr, status, error) {
+                     // Handle any general errors
+                     console.error('AJAX Error:', status, error); // Log the error
+                     alert('An unexpected error occurred.');
+                     // Optionally revert the checkbox to its previous state if needed
+                     checkbox.prop('checked', !status); // Revert checkbox state if needed
+                 }
+             });
+        });
 
     </script>
 @endsection

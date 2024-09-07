@@ -47,10 +47,10 @@
                         <div class="flex flex-wrap items-center py-6 md:px-6 px-3 gap-5">
                             <div class="md:flex-1">
                                 <h4 class="card-title flex items-center">
-                                    {{ $ticket->title.' - '.$ticket->uuid }} 
+                                    {{ $ticket->title.' - '.$ticket->uuid }}
                                     <span class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl ml-2">
                                         {{ __('Opened') }}
-                                    </span>    
+                                    </span>
                                 </h4>
                             </div>
                             <div class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse">
@@ -61,7 +61,7 @@
                         </div>
                     </header>
                     <!-- header -->
-                    <div class="chat-content parent-height bg-white dark:bg-slate-800">
+                    <div class="chat-content parent-height">
                         <div class="msgs overflow-y-auto msg-height clearfix p-6 space-y-6">
                             <div class="card ring-1 ring-slate-700 overflow-hidden float-right w-11/12 md:w-2/3 mb-3">
                                 <div class="bg-slate-100 dark:bg-slate-700 p-3">

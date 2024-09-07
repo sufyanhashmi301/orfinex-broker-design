@@ -216,7 +216,6 @@
                                 name="real_swap_free"
                                 class="form-control"
                                 placeholder="Platform Group"
-                                required
                             />
                         </div>
                         <div class="input-area !mb-7">
@@ -270,7 +269,6 @@
                                 name="demo_swap_free"
                                 class="form-control"
                                 placeholder="Platform Group"
-                                required
                             />
                         </div>
                         <div class="input-area !mb-7">

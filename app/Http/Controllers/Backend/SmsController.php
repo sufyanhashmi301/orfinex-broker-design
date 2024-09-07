@@ -15,7 +15,7 @@ class SmsController extends Controller
 
         if ($request->ajax()) {
 
-            $data = SmsTemplate::query()->latest();
+            $data = SmsTemplate::query()->where('for', 'Admin')->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -26,7 +26,26 @@ class SmsController extends Controller
                 ->make(true);
         }
 
-        return view('backend.sms.template');
+        return view('backend.sms.admin_template');
+    }
+
+    public function userTemplate(Request $request)
+    {
+
+        if ($request->ajax()) {
+
+            $data = SmsTemplate::query()->where('for', 'User')->latest();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', 'backend.sms.include.__name')
+                ->addColumn('status', 'backend.sms.include.__status')
+                ->addColumn('action', 'backend.sms.include.__action')
+                ->rawColumns(['name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.sms.user_template');
     }
 
     public function edit_template($id)

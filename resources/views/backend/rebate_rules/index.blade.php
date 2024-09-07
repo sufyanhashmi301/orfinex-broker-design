@@ -3,7 +3,7 @@
     {{ __('Rebate Symbol Group') }}
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
+    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
@@ -11,12 +11,12 @@
             @yield('title-btns')
         </div>
     </div>
-    
+
 
     @yield('symbol-groups-content')
 
     <!-- Modal for Add New Group -->
- 
+
 @endsection
 @section('script')
 

@@ -51,9 +51,9 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\Mt5DealController;
-use App\Http\Controllers\Backend\DashboardBannerController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
+use App\Http\Controllers\Backend\BannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -170,6 +170,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
 
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
@@ -300,6 +301,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
         Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+        Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
     });
 
@@ -323,12 +325,14 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
 
     Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
 
     Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
             Route::get('/', 'template')->name('index');
+            Route::get('user', 'userTemplate')->name('user-template');
             Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
             Route::post('template-update', 'update_template')->name('template-update');
 
@@ -416,11 +420,12 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
     Route::get('settings/platform-api/cTrader', function () {
         return view('backend.setting.platform_api.ctrader');
-    });
+    })->name('platform_api.ctrader');
 
     Route::get('settings/platform-api/db-synchronization', function () {
         return view('backend.setting.platform_api.db-synchronization');
-    });
+    })->name('platform_api.db-synchronization');
+
     Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
@@ -429,8 +434,11 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
     Route::post('symbols/store', [SymbolController::class,'store']);
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
+
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
 
 });

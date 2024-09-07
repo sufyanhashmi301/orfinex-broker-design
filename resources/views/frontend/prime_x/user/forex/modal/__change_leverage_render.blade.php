@@ -10,7 +10,7 @@
                     <option value="{{$leverage}}" @if($leverage == $forexTrading->leverage) selected @endif>1:{{$leverage}}</option>
                 @endforeach
             </select>
-            <small class="mt-1">The leverage range you want to adjust in account.</small>
+            <small class="dark:text-slate-300 mt-1">{{ __('The leverage range you want to adjust in account.') }}</small>
         </div>
     </div>
     <div class="flex items-center mt-4">
@@ -23,11 +23,11 @@
             {{ __('Close') }}
         </a>
     </div>
-    <div class="divider border-b my-5"></div>
+    <div class="divider border-b dark:border-slate-700 my-5"></div>
     <div class="flex">
-        <p class="text-xs mb-0">
-            Leverage of 1:2000 is only available when your equity is less than 5,000 USD. Your actual leverage could be lower depending on
-            <a href="#" class="text-gray">various conditions</a>.
+        <p class="text-xs dark:text-slate-300 mb-0">
+            {{ __('Leverage of 1:2000 is only available when your equity is less than 5,000 USD. Your actual leverage could be lower depending on') }}
+            <a href="#" class="text-gray">{{ __('various conditions') }}</a>.
         </p>
     </div>
 </form>

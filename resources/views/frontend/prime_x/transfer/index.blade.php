@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div class="price-table rounded-[6px] shadow-base dark:bg-slate-800 p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
+        <div class="card price-table shadow-base p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
             <header class="mb-6">
                 <h4 class="text-xl text-slate-500 dark:text-slate-300 mb-3">
                     Internal Transfer
@@ -25,20 +25,20 @@
                 <p class=" text-base leading-5 text-slate-500">
                     Instantly transfer funds between your accounts, seamlessly and without limits.
                 </p>
-                <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
+                <div class="bg-slate-50 dark:bg-body rounded p-4">
                     <div class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span>For sending funds to</span>  
+                        <span>For sending funds to</span>
                         <span class="text-slate-900 dark:text-slate-300">your accounts</span>
                     </div>
                 </div>
                 <div>
-                    <a href="{{ route('user.send-money.internal-view') }}" class="btn block-btn btn-dark inline-flex items-center">
+                    <a href="{{ route('user.send-money.internal-view') }}" class="btn block-btn btn-primary inline-flex items-center">
                         Transfer Now
                     </a>
                 </div>
             </div>
         </div>
-        <div class="price-table rounded-[6px] shadow-base dark:bg-slate-800 p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
+        <div class="card price-table shadow-base p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
             <header class="mb-6">
                 <h4 class="text-xl text-slate-500 dark:text-slate-300 mb-3">
                     External Transfer
@@ -59,9 +59,9 @@
                 <p class=" text-base leading-5 text-slate-500">
                     Safely send money to friends and family with easy-to-use External Transfer feature.
                 </p>
-                <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
+                <div class="bg-slate-50 dark:bg-body rounded p-4">
                     <div class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span>For sending funds to</span>  
+                        <span>For sending funds to</span>
                         <span class="text-slate-900 dark:text-slate-300">your accounts</span>
                     </div>
                 </div>

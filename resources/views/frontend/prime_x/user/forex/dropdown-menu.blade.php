@@ -4,8 +4,8 @@
         <iconify-icon icon="heroicons-outline:dots-horizontal"></iconify-icon>
       </span>
     </button>
-    <ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
-        <div class="dropdown-header flex justify-around border-b p-3">
+    <ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+        <div class="dropdown-header flex justify-around border-b dark:border-slate-700 p-3">
             @if($account->account_type == 'demo' && $account->status == \App\Enums\ForexAccountStatus::Ongoing)
                 <a href="{{route('user.deposit.amount')}}" class="text-center dropdown-deposit-demo-account"
                    data-bs-toggle="modal"

@@ -11,7 +11,7 @@
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($realForexAccounts as $account)
         <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
-            <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
+            <div class="card-body rounded-md p-6">
                 <div class="grid-view-layout">
                     <div class="flex justify-between items-center mb-4">
                         <h5 class="mb-0 dark:text-white">{{$account->account_name}}</h5>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="list-view-layout">
                     <div class="flex items-center">
-                        <span class="badge bg-primary-500 text-primary-900 bg-opacity-30 capitalize">
+                        <span class="badge bg-primary text-primary-900 bg-opacity-30 capitalize">
                             {{ucfirst(data_get($account,'account_type'))}}
                         </span>
                         <span class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mx-1">MT5</span>

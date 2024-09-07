@@ -9,31 +9,33 @@
                 <div class="card-body p-6">
                     <di class="space-y-5">
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Tell Us!</p>
-                            <p class="text-sm dark:text-slate-100">Please provide us with as much information as possible when creating your support ticket. The more details you share, the better we can assist you.</p>
-                        </div>
-                        <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Show Us!</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Tell Us!') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                If you're encountering any issues, consider attaching screenshots or images to your ticket. Visual aids can help us better understand and address your concerns.
+                                {{ __('Please provide us with as much information as possible when creating your support ticket. The more details you share, the better we can assist you.') }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Caution</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Show Us!') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                Please be aware that our ticket response time may extend up to 2 business days.
+                                {{ __("If you're encountering any issues, consider attaching screenshots or images to your ticket. Visual aids can help us better understand and address your concerns.") }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Response Time</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Caution') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                Our dedicated support team is available from Monday to Friday, operating from 8:00 AM to 8:00 PM (Australian Timezone) and 9:00 AM to 6:00 PM (Dubai Time Zone). We make every effort to handle tickets promptly. However, during weekends or government holidays, our response time may experience a delay of one or two business days.
+                                {{ __('Please be aware that our ticket response time may extend up to 2 business days.') }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-danger-600 font-medium mb-2">Important Notice</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Response Time') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.
+                                {{ __('Our dedicated support team is available from Monday to Friday, operating from 8:00 AM to 8:00 PM (Australian Timezone) and 9:00 AM to 6:00 PM (Dubai Time Zone). We make every effort to handle tickets promptly. However, during weekends or government holidays, our response time may experience a delay of one or two business days.') }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-lg text-danger-600 font-medium mb-2">{{ __('Important Notice') }}</p>
+                            <p class="text-sm dark:text-slate-100">
+                                {{ __('Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.') }}
                             </p>
                         </div>
                     </di>
@@ -45,7 +47,7 @@
                 <div class="card-header noborder">
                     <h4 class="card-title">{{ __('Add Ticket') }}</h4>
                     <div>
-                        <a href="{{ route('user.ticket.index') }}" class="btn btn-dark">
+                        <a href="{{ route('user.ticket.index') }}" class="btn btn-primary inline-flex items-center justify-center">
                             {{ __('All Tickets') }}
                         </a>
                     </div>
@@ -81,14 +83,14 @@
                                                 src="{{ asset('global/materials/upload.svg') }}"
                                                 alt=""
                                             />
-                                            <span>{{ __('Attach Image') }}</span>
+                                            <span class="dark:text-slate-300">{{ __('Attach Image') }}</span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="buttons mt-5">
-                                <button type="submit" class="btn btn-dark">
-                                    {{ __('Add New Ticket') }}<i class="anticon anticon-double-right"></i>
+                                <button type="submit" class="btn btn-primary inline-flex items-center justify-center">
+                                    {{ __('Add New Ticket') }}
                                 </button>
                             </div>
                         </form>

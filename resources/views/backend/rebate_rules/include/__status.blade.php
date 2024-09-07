@@ -8,7 +8,7 @@
             type="checkbox"
             name=""
             value="1"
-            class="sr-only peer"
+            class="status-checkbox sr-only peer"
             data-id="{{ $id }}"
             {{ $checked }}
             data-previous-state="{{ $checked ? 'true' : 'false' }}">

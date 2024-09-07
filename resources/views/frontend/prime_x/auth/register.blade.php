@@ -23,7 +23,7 @@
                         <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-[56px]">
                     </a>
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-700">Sign Up</h2>
+                <h2 class="text-2xl font-semibold text-gray-700">{{ __('Sign Up') }}</h2>
                 <div class="">
                     @if ($errors->any())
                         <div class="alert alert-warning alert-dismissible fade show mt-2 text-sm" role="alert">
@@ -191,7 +191,7 @@
                           </span>
                         </label>
                       </div>
-                        <button type="submit" class="btn btn-dark block w-full text-center">
+                        <button type="submit" class="btn btn-primary block w-full text-center">
                           {{ __('Create Account') }}
                         </button>
                     </form>

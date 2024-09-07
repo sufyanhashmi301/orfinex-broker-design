@@ -122,3 +122,22 @@
     --tw-text-opacity: 1;
     color: rgb(71 85 105 / var(--tw-text-opacity));
 }
+
+.dataTables_wrapper, .basicTable_wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 385px);
+}
+#processingIndicator {
+    position: absolute;
+    top: calc(50% - 54px);
+    left: calc(50% - 54px);
+}
+
+.dashcode-data-table .dataTables_empty {
+    text-align: center;
+}
+.dark .dropdown-menu{
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}

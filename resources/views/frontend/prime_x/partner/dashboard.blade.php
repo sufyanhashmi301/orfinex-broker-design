@@ -14,11 +14,11 @@
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Count of referring') }}
+                            {{ __('Total Referral') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('62,11.00 USD') }}
+                                {{ $dataCount['total_referral'] }}
                             </h6>
                             <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
                                 +452%
@@ -89,16 +89,16 @@
             <div class="card h-full">
                 <div class="card-body h-full flex flex-col p-6">
                     <p class="text-slate-900 dark:text-white text-sm font-medium mb-10">
-                        {{ __('Vault ID: 42134242342132') }}
+                        {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
                     </p>
                     <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-2">
                         {{ __('Your Current Balance') }}
                     </p>
                     <h6 class="block mb- text-3xl text-slate-900 dark:text-white font-medium leading-none">
-                        {{ __('23,25.00 USD') }}
+                        {{ $affiliateBalance }} {{$currency}}
                     </h6>
-                    <a href="" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
-                        {{ __('Add Credit') }}
+                    <a href="{{route('user.withdraw.view')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
+                        {{ __('Withdraw') }}
                     </a>
                     <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                         <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
@@ -124,7 +124,7 @@
                     {{ __('Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ __('0.00 USD') }}
+                    {{ $dataCount['total_deposit'] }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -134,7 +134,7 @@
                     {{ __('Withdrawal') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ __('0.00 USD') }}
+                    {{ $dataCount['total_withdraw'] }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -144,7 +144,7 @@
                     {{ __('Net Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ __('0.00 USD') }}
+                    {{ $dataCount['net_deposit'] }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -154,7 +154,7 @@
                     {{ __('Rebate') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ __('0.00 USD') }}
+                    {{ $dataCount['total_rebate'] }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -164,7 +164,7 @@
                     {{ __('Volume') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ __('0.00 USD') }}
+                    {{ $dataCount['total_volume'] }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -206,8 +206,8 @@
                     </div>
                 </div>
             </div>
-            <div class="py-6 space-y-5">
-                <div class="flex justify-between flex-wrap items-center">
+            <div class="py-6">
+                <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
                     <div class="input-area relative min-w-[184px]">
                         <select name="level_order" class="select2 form-control w-full">
@@ -218,7 +218,7 @@
                     </div>
                 </div>
                 <span id="schemes">
-              @include('frontend.prime_x.partner.include.__schemes')
+                    @include('frontend.prime_x.partner.include.__schemes')
                 </span>
             </div>
             <div class="py-6 space-y-5">

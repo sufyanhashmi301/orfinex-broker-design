@@ -23,7 +23,7 @@ class EmailTemplateController extends Controller
 
         if ($request->ajax()) {
 
-            $data = EmailTemplate::query()->orderBy('name','asc');
+            $data = EmailTemplate::query()->where('for', 'Admin')->orderBy('name','asc');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -34,7 +34,26 @@ class EmailTemplateController extends Controller
                 ->make(true);
         }
 
-        return view('backend.email.template');
+        return view('backend.email.admin_template');
+    }
+
+    public function userTemplate(Request $request)
+    {
+
+        if ($request->ajax()) {
+
+            $data = EmailTemplate::query()->where('for', 'User')->orderBy('name','asc');
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', 'backend.email.include.__name')
+                ->addColumn('status', 'backend.email.include.__status')
+                ->addColumn('action', 'backend.email.include.__action')
+                ->rawColumns(['name', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.email.user_template');
     }
 
     public function edit($id)
@@ -64,18 +83,12 @@ class EmailTemplateController extends Controller
             'subject' => $input['subject'],
             'message_body' => nl2br($input['message_body']),
             'title' => $input['title'],
-            'salutation' => $input['salutation'],
             'button_level' => $input['button_level'],
             'button_link' => $input['button_link'],
             'footer_status' => $input['footer_status'],
-            'footer_body' => nl2br($input['footer_body']),
             'bottom_status' => $input['bottom_status'],
             'bottom_title' => $input['bottom_title'],
             'bottom_body' => nl2br($input['bottom_body']),
-            'support_link' => $input['support_link'],
-            'note' => nl2br($input['note']),
-            'warning_content' => nl2br($input['warning_content']),
-            'company_info' => nl2br($input['company_info']),
             'status' => $input['status'],
         ];
 

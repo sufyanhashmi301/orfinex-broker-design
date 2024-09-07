@@ -35,9 +35,9 @@
                                 </div>
                             </div>
                             <div class="buttons text-right mt-4">
-                                <button type="submit" class="btn inline-flex justify-center btn-dark">
+                                <button type="submit" class="btn inline-flex justify-center btn-primary">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:check"></iconify-icon>
                                     {{ __('Add New Withdraw Account') }}
-                                    <i class="anticon anticon-double-right"></i>
                                 </button>
                             </div>
                         </form>

@@ -6,6 +6,7 @@ use App\Models\Language;
 use App\Models\Theme;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        if(is_force_https()){
+            URL::forceScheme('https');
+        }
 
         $timezone = setting('site_timezone', 'global');
         config()->set([

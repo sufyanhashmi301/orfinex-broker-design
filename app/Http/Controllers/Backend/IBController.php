@@ -30,7 +30,7 @@ class IBController extends Controller
     public function index(Request $request)
     {
 
-        $questions = IbQuestion::all();
+        $questions = IbQuestion::paginate(10);
         return view('backend.ib.index', compact('questions'));
     }
 

@@ -344,6 +344,10 @@ Route::get('user/partner/clients', function () {
     return view('frontend::partner.clients');
 });
 
+Route::get('user/active-plans', function () {
+    return view('frontend::fund_board.active_plan');
+})->name('user.activePlan');
+
 Route::get('user/contracts', function () {
     return view('frontend::contracts.index');
 })->name('user.contracts');

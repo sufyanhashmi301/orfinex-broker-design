@@ -284,28 +284,28 @@ Route::get('get/account/{login}', function ($login) {
 });
 
 Route::get('user/deposit-methods', function () {
-    return view('frontend.default.deposit.deposit-methods');
+    return view('frontend::deposit.deposit-methods');
 })->name('user.deposit-methods');
 
 Route::get('user/platform', function () {
-    return view('frontend.default.terminal.index');
+    return view('frontend::terminal.index');
 })->name('user.platform');
 
 
 Route::get('user/fund-board', function () {
-    return view('frontend.default.fund_board.index');
+    return view('frontend::fund_board.index');
 })->name('user.fund-board');
 
 Route::get('user/fund/plans', function () {
-    return view('frontend.default.fund_board.plans');
+    return view('frontend::fund_board.plans');
 })->name('user.fund.plans');
 
 Route::get('user/fund/details', function () {
-    return view('frontend.default.fund_board.plan_details');
+    return view('frontend::fund_board.plan_details');
 })->name('user.fund.details');
 
 Route::get('user/fund/detail', function () {
-    return view('frontend.default.fund_board.detail');
+    return view('frontend::fund_board.detail');
 })->name('user.fund.detail');
 
 Route::get('user/downloads', function () {

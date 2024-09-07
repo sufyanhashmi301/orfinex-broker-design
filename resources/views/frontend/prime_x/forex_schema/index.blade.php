@@ -8,7 +8,7 @@
         {{ __('Open New Account') }}
     </h4>
     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-sm btn-primary">{{ __('My Accounts') }}</a>
+        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-primary inline-flex items-center justify-center">{{ __('My Accounts') }}</a>
         {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">Get Bonus</a> --}}
     </div>
 </div>

@@ -13,170 +13,123 @@
     </style>
 @endsection
 @section('content')
-    <div class="md:flex justify-between items-center mb-5">
-        <div class="">
-            <ul class="m-0 p-0 list-none">
-                <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
-                    <a href="{{route('user.dashboard')}}">
-                        <iconify-icon icon="heroicons-outline:home"></iconify-icon>
-                        <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
-                    </a>
-                </li>
-                <li class="inline-block relative text-sm text-primary-500 font-Inter ">
-                    Dashboard
-                    <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
-                </li>
-                <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
-                    Fund Board
-                </li>
-            </ul>
+    <div class="card mb-5">
+        <div class="card-header noborder">
+            <div>
+                <h4 class="card-title mb-1">{{ __('Money well funded') }}</h4>
+                <p class="card-text">{{ __('Direct Funding') }}</p>
+            </div>
+            <button type="button" class="btn btn-secondary light inline-flex items-center justify-center">
+                {{ __('2 Step Challenge') }}
+            </button>
         </div>
     </div>
 
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-8 col-span-12">
             <div class="card">
-                <div class="card-header noborder">
-                    <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-                        Money well funded
-                    </h4>
-                    <div class="">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm text-slate-600 dark:text-slate-100 font-Inter font-normal">Challenge Funding</span>
-                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                <input type="checkbox" value="" checked="checked" class="sr-only peer">
-                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                            </label>
-                            <span class="text-sm text-slate-600 dark:text-slate-100 font-Inter font-normal">Direct Funding</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body p-6 pt-0">
-                    <div class="p-4 bg-slate-100 dark:bg-slate-700 shadow rounded-xl mb-5">
-                        <div class="tab-content" id="plans-tab-content">
-                            <div class="tab-pane fade show active" id="challenge-tab-pane" role="tabpanel" aria-labelledby="challenge-tab">
-                                <div class="grid md:grid-cols-2 grid-cols-1">
-                                    <div class="text-center space-x-3 space-y-3 md:space-y-0">
-                                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center challenge-btn active" data-challenge="two_step_challenge" id="step-challenge__2">
-                                            2 Step Challenge
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center challenge-btn" data-challenge="single_step_challenge" id="step-challenge__1">
-                                            1 Step Challenge
-                                        </button>
-                                    </div>
-                                    <div class="text-center space-x-3 space-y-3 md:space-y-0" id="phaseButtons" style="">
-                                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center phase-btn active" data-phase="1">
-                                            Phase 1
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center phase-btn" data-phase="2">
-                                            Phase 2
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="direct-tab-pane" role="tabpanel" aria-labelledby="direct-tab">
-                                <div class="text-center md:text-start space-x-3 space-y-3 md:space-y-0">
-                                    <button class="btn btn-sm btn-outline-dark leverage-btn active" data-leverage="5">
-                                        Leverage 1:5
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-dark leverage-btn" data-leverage="10">
-                                        Leverage 1:10
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-dark leverage-btn" data-leverage="20">
-                                        Leverage 1:20
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-body p-6">
                     <form action="" class="space-y-8">
                         <div class="input-area relative">
-                            <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">Account Balance</p>
-                                <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    Select your initial starting capital.
-                                </p>
-                            </div>
+                            <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
+                                {{ __('Allocated Funds') }}
+                            </p>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                                 <div class="warning-radio">
                                     <label class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="radio" class="hidden priceInput" name="scheme" value="" data-price=" 139" checked="">
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="dark:text-white">$10000.00</span>
-                                            <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
-                                            </span>
-                                        </span>
+                                        <span class="dark:text-white">{{ __('$10000.00') }}</span>
                                     </label>
                                 </div>
                                 <div class="warning-radio">
                                     <label class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="radio" class="hidden priceInput" name="scheme" value="" data-price=" 139">
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="dark:text-white">$10000.00</span>
-                                            <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
-                                            </span>
-                                        </span>
+                                        <span class="dark:text-white">{{ __('$10000.00') }}</span>
                                     </label>
                                 </div>
                                 <div class="warning-radio">
                                     <label class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="radio" class="hidden priceInput" name="scheme" value="" data-price=" 139">
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="dark:text-white">$10000.00</span>
-                                            <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
-                                            </span>
-                                        </span>
+                                        <span class="dark:text-white">{{ __('$10000.00') }}</span>
                                     </label>
                                 </div>
                                 <div class="warning-radio">
                                     <label class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="radio" class="hidden priceInput" name="scheme" value="" data-price=" 139">
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="dark:text-white">$10000.00</span>
-                                            <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
-                                            </span>
-                                        </span>
+                                        <span class="dark:text-white">{{ __('$10000.00') }}</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="input-area relative">
+                            <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
+                                {{ __('Rules') }}
+                            </p>
+                            <div class="grid md:grid-cols-3 grid-cols-1 gap-5">
+                                <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
+                                    <span class="leading-none">
+                                        <span class="leading-none dark:text-white text-sm font-medium block mb-1">
+                                            {{ __('Daily DD') }}
+                                        </span>
+                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                    </span>
+                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                                        {{ __('500') }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
+                                    <span class="leading-none">
+                                        <span class="leading-none dark:text-white text-sm font-medium block mb-1">
+                                            {{ __('Max DD') }}
+                                        </span>
+                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                    </span>
+                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                                        {{ __('1000') }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
+                                    <span class="leading-none">
+                                        <span class="leading-none dark:text-white text-sm font-medium block mb-1">
+                                            {{ __('Profit Target') }}
+                                        </span>
+                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                    </span>
+                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                                        {{ __('500') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-area relative">
                             <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">Platform</p>
+                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">{{ __('Platform') }}</p>
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    Please select your trading platform.
+                                    {{ __('Please select your trading platform.') }}
                                 </p>
                             </div>
-                            <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                <div class="warning-radio">
-                                    <label class="flex items-center cursor-pointer px-3 py-2 rounded border dark:border-slate-700">
-                                        <input type="radio" class="hidden priceInput" name="platform" value="" checked>
-                                        <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="flex-1 inline-flex justify-end items-center">
-                                            <div>
-                                                <img src="{{ asset('frontend/images/mt-5-logo.png') }}" alt="">
-                                                <span class="badge bg-slate-900 text-white capitalize mt-2">
-                                                    Best for Web Trading
-                                                </span>
-                                            </div>
+                            <div class="warning-radio">
+                                <label class="flex items-center cursor-pointer rounded border dark:border-slate-700 px-3 py-4">
+                                    <input type="radio" class="hidden priceInput" name="platform" value="" checked>
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <span class="flex-1 inline-flex items-center">
+                                            <img src="{{ asset('frontend/images/mt-5-logo.png') }}" class="h-5" alt="">
+                                            <span class="text-sm font-normal text-slate-600 dark:text-slate-400 ml-2">
+                                                {{ __('Best for Web Trading') }}
+                                            </span>
                                         </span>
-                                    </label>
-                                </div>
+                                </label>
                             </div>
                         </div>
                         <div class="input-area relative">
                             <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">Addons</p>
+                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">{{ __('Addons') }}</p>
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    Tailor your account to suit your trading style and preference.
+                                    {{ __('Tailor your account to suit your trading style and preference.') }}
                                 </p>
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
@@ -189,12 +142,12 @@
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="leading-none">
                                                 <span class="leading-none dark:text-white text-sm block mb-1">
-                                                    Bi-Weekly Payouts
+                                                    {{ __('Bi-Weekly Payouts') }}
                                                 </span>
-                                                <small class="leading-none dark:text-slate-100 text-xs">Instead of Monthly</small>
+                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>
                                             </span>
-                                            <span class="badge bg-slate-900 text-white capitalize">
-                                                +5%
+                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                                                {{ __('+5%') }}
                                             </span>
                                         </span>
                                     </label>
@@ -208,12 +161,12 @@
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="leading-none">
                                                 <span class="leading-none dark:text-white text-sm block mb-1">
-                                                    Swap Free (Islamic)
+                                                    {{ __('Swap Free (Islamic)') }}
                                                 </span>
-                                                <small class="leading-none dark:text-slate-100 text-xs">Efficient Group</small>
+                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>
                                             </span>
-                                            <span class="badge bg-slate-900 text-white capitalize">
-                                                +10%
+                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                                                {{ __('+10%') }}
                                             </span>
                                         </span>
                                     </label>
@@ -223,10 +176,10 @@
                         <div class="input-area relative">
                             <div class="mb-3">
                                 <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
-                                    Payment Gateway
+                                    {{ __('Payment Gateway') }}
                                 </p>
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    Select your source to pay for service charges.
+                                    {{ __('Select your source to pay for service charges.') }}
                                 </p>
                             </div>
                             <div class="grid grid-cols-1 gap-5 mb-5">
@@ -244,42 +197,57 @@
         </div>
         <div class="lg:col-span-4 col-span-12">
             <div class="card order-info p-6 rounded-lg">
-                <div class="pricing-amount text-center text-2xl text-slate-900 dark:text-white font-bold mb-3">
-                    <span class="amount">
-                        $ <span class="order-info__total">139.00</span>
-                    </span>
+                <ul class="space-y-3 border-b dark:border-slate-700 pb-5">
+                    <li class="flex items-center justify-between text-base">
+                        <span>{{ __('Price') }}</span>
+                        <span>{{ __('$1490,00.00') }}</span>
+                    </li>
+                    <li class="flex items-center justify-between text-base">
+                        <span>{{ __('Discount') }}</span>
+                        <span>{{ __('$500.00') }}</span>
+                    </li>
+                </ul>
+                <div class="pricing-amount py-5 border-b dark:border-slate-700 mb-5">
+                    <div class="amount flex items-center justify-between text-slate-900 dark:text-white">
+                        <span>{{ __('Total Amount') }}</span>
+                        <span class="order-info__total text-xl font-semibold">{{ __('$1490,00.00') }}</span>
+                    </div>
                 </div>
                 <div class="order__discount-code space-y-4 mb-10">
-                    <div class="input-area">
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-24" placeholder="Discount Code" id="discount-code">
-                            <button class="absolute right-0 top-1/2 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center text-sm px-2 dark:text-slate-100 hover:bg-slate-900 hover:text-white" id="apply-discount">Apply Code</button>
-                        </div>
-                    </div>
-                    <div class="input-area">
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-24" placeholder="Affiliate Code" id="referral-code">
-                            <button class="absolute right-0 top-1/2 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center text-sm px-2 dark:text-slate-100 hover:bg-slate-900 hover:text-white" id="add-referral">Apply Code</button>
-                        </div>
-                    </div>
+                    <ul class="space-y-3 mb-5">
+                        <li>
+                            <a href="" class="inline-flex items-center justify-between text-sm w-full">
+                                <span class="underline">{{ __('Terms and Condition') }}</span>
+                                <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" class="inline-flex items-center justify-between text-sm w-full">
+                                <span class="underline">{{ __('Privacy Policy') }}</span>
+                                <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" class="inline-flex items-center justify-between text-sm w-full">
+                                <span class="underline">{{ __('Customer Agreement') }}</span>
+                                <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                            </a>
+                        </li>
+                    </ul>
                     <div class="form-group text-start">
-                        <p class="text-xs dark:text-slate-100 mb-2">By confirming the order:</p>
                         <div class="flex w-full items-start">
                             <input type="checkbox" name="confirmation" class="custom-control-input mt-1" id="checkbox-terms" required="">
                             <label class="custom-control-label text-xs dark:text-slate-100 ml-2" for="checkbox-terms">
-                                <span>
-                                    I declare that I have read and agree with
-                                    <a href="javascript:;" class="btn-link !text-xs">Terms &amp; Condition</a>
-                                </span>
+                                {{ __('By confirming the order: I declare that i have read and agree with Terms & Conditions By confirming the order: I declare that i have read and agree with Terms & Conditions.') }}
                             </label>
                         </div>
-                        <span style="color:red;" class="text-sm hidden" id="term-validation">
-                            kindly accept the terms &amp; conditions for proceeding
+                        <span class="text-sm text-primary hidden" id="term-validation">
+                            {{ __('kindly accept the terms &amp; conditions for proceeding') }}
                         </span>
                     </div>
                 </div>
-                <a href="javascript:;" class="btn btn-outline-dark inline-flex items-center justify-center w-full proceed-payment">
-                    Proceed With Payment
+                <a href="javascript:;" class="btn btn-dark inline-flex items-center justify-center w-full proceed-payment">
+                    {{ __('Proceed With Payment') }}
                 </a>
             </div>
         </div>

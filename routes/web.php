@@ -344,6 +344,21 @@ Route::get('user/partner/clients', function () {
     return view('frontend::partner.clients');
 });
 
+Route::get('user/contracts', function () {
+    return view('frontend::contracts.index');
+})->name('user.contracts');
+
+Route::get('user/certificates', function () {
+    return view('frontend::certificates.index');
+})->name('user.certificates');
+
+Route::get('user/utilities', function () {
+    return view('frontend::utilities.index');
+})->name('user.utilities');
+
+Route::get('user/leaderboard', function () {
+    return view('frontend::leaderboard.index');
+})->name('user.leaderboard');
 
 
 Route::get('user/webterminal', function () {

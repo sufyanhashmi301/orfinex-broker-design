@@ -432,9 +432,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-10">
+                <div class="mt-10 flex items-center gap-3">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                        {{ __('Update Schema') }}
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                        {{ __('Update') }}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary inline-flex items-center justify-center">
+                        {{ __('Cancel') }}
+                    </button>
+                    <button type="button" class="btn btn-outline-danger inline-flex items-center justify-center ml-auto">
+                        {{ __('Delete') }}
                     </button>
                 </div>
             </div>

@@ -7,6 +7,7 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
+use App\Models\ForexSchemaPhaseRule;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Rules\ForexLoginBelongsToUserForDemo;
@@ -23,15 +24,18 @@ use Validator;
 class DepositController extends GatewayController
 {
     use ImageUpload, NotifyTrait, ForexApiTrait;
+
     protected $forexApiService;
 
     public function __construct(ForexApiService $forexApiService)
     {
         $this->forexApiService = $forexApiService;
     }
-    public function deposit()
+
+    public function deposit($id = null)
     {
 
+//        dd($request->all());
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');
         }
@@ -39,7 +43,7 @@ class DepositController extends GatewayController
         $isStepOne = 'current';
         $isStepTwo = '';
         $gateways = DepositMethod::where('status', 1)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All');
             })->get();
@@ -56,21 +60,24 @@ class DepositController extends GatewayController
             ->where('status', ForexAccountStatus::Ongoing)
             ->orderBy('id', 'desc')
             ->get();
+        $ruleId = get_hash($id);
+        $rule = ForexSchemaPhaseRule::findOrFail($ruleId);
 
-//        dd($forexAccounts);
+//        dd($rule);
 
-        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'gateways', 'forexAccounts'));
+        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'gateways', 'forexAccounts', 'rule'));
     }
 
     public function depositNow(Request $request)
     {
 
+//        dd($request->all());
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');
         }
 
         $validator = Validator::make($request->all(), [
-            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
+            'target_id' => ['required'],
             'gateway_code' => 'required',
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
         ], [
@@ -90,41 +97,19 @@ class DepositController extends GatewayController
 
         $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
         $amount = $input['amount'];
+        
 
-        if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
-            $currencySymbol = setting('currency_symbol', 'global');
-            $message = 'Please Deposit the Amount within the range ' . $currencySymbol . $gatewayInfo->minimum_deposit . ' to ' . $currencySymbol . $gatewayInfo->maximum_deposit;
-            notify()->error($message, 'Error');
+//        dd($input);
+        $targetId = get_hash($input['target_id']);
+        $targetType = 'forex_deposit';
+//        $forexAccount = ForexAccount::where('login', $targetId)->first();
+//        $targetId = 124234234;
+        $rule = ForexSchemaPhaseRule::findOrFail($targetId);
+        if (!$rule) {
+            notify()->error(__('Sorry,Your Provided rule is not valid!'), 'Error');
             return redirect()->back();
         }
 
-//        dd($input);
-        $targetId = $input['target_id'];
-        $targetType = 'forex_deposit';
-        $forexAccount = ForexAccount::where('login', $targetId)->first();
-//        $targetId = 124234234;
-        $clientIp = request()->ip();
-        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-            $response = $this->forexApiService->getUserByLogin([
-                'login' => $targetId
-            ]);
-            if(!$response['success']){
-                notify()->error(__('Sorry,Your deposited account is Not valid!'), 'Error');
-                return redirect()->back();
-            }
-        }
-
-        if (isset($forexAccount->schema->first_min_deposit) & $forexAccount->schema->first_min_deposit > 0) {
-            if (!$forexAccount->first_min_deposit_paid) {
-                if ($amount < $forexAccount->schema->first_min_deposit) {
-                    $currencySymbol = setting('currency_symbol', 'global');
-                    $message = 'Please Deposit the first Minimum Amount of ' . $currencySymbol . $forexAccount->schema->first_min_deposit;
-                    notify()->error($message, 'Error');
-                    return redirect()->back();
-                }
-            }
-        }
-//        dd('ss');
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;
         $payAmount = $finalAmount * $gatewayInfo->rate;
@@ -148,7 +133,7 @@ class DepositController extends GatewayController
 //        $targetId = '1063794';
 //        $targetType = 'forex_deposit';
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Deposit With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
-        if($gatewayInfo->type == 'manual'){
+        if ($gatewayInfo->type == 'manual') {
             $shortcodes = [
                 '[[full_name]]' => $txnInfo->user->full_name,
                 '[[txn]]' => $txnInfo->tnx,
@@ -157,7 +142,7 @@ class DepositController extends GatewayController
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
                 '[[message]]' => $txnInfo->approval_cause,
-                '[[status]]' =>  'Pending',
+                '[[status]]' => 'Pending',
             ];
             $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
 
@@ -172,11 +157,11 @@ class DepositController extends GatewayController
             abort('403', 'Deposit Disable Now');
         }
         $request->validate([
-            'target_id' => ['required','integer', new ForexLoginBelongsToUserForDemo,
+            'target_id' => ['required', 'integer', new ForexLoginBelongsToUserForDemo,
                 Rule::exists('forex_accounts', 'login')->where(function ($query) {
                     $query->where('account_type', 'demo');
                 })],
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/','numeric','min:1','max:100000'],
+            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/', 'numeric', 'min:1', 'max:100000'],
         ], [
             'target_id.required' => __('Kindly select Account for deposit'),
             'target_id.exists' => 'The selected account does not exist or is not of type demo.',
@@ -201,8 +186,8 @@ class DepositController extends GatewayController
         $response = $this->forexApiService->getUserByLogin([
             'login' => $targetId
         ]);
-        if(!$response['success']){
-            return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
+        if (!$response['success']) {
+            return response()->json(['error' => __('Your Account is Deactivated, please contact: ' . setting('support_email', 'global')), 'reload' => false]);
 
         }
 
@@ -212,8 +197,8 @@ class DepositController extends GatewayController
         $payAmount = $finalAmount;
         $depositType = TxnType::DemoDeposit;
 
-        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, 'USD', $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
-        $comment = 'demo/deposit/'.substr($txnInfo->tnx, -7);
+        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of ' . $targetId, $depositType, TxnStatus::Pending, 'USD', $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+        $comment = 'demo/deposit/' . substr($txnInfo->tnx, -7);
         $data = [
             'login' => $targetId,
             'Amount' => $finalAmount,

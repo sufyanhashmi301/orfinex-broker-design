@@ -14,7 +14,8 @@
             </a>
         </div>
     </div>
-    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data" class="space-y-5">
+    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data"
+          id="accountTypeForm">
         @csrf
         <div class="grid grid-cols-12 gap-5">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -45,25 +46,30 @@
                 <div class="card h-full">
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
-                            <select name="country[]" class="select2 form-control w-full h-9" placeholder="Manage Country" multiple>
-                                <option  value="All" >
+                            <label class="form-label"
+                                   for="">{{ __('Select countries/tags where you want to show this forex scheme(select "All" if you have to show this scheme to whole world):') }}</label>
+                            <select name="country[]" class="select2 form-control w-full h-9"
+                                    placeholder="Manage Country" multiple>
+                                <option value="All" {{ in_array('All', old('country', [])) ? 'selected' : '' }}>
                                     {{ __('All') }}
                                 </option>
-                                @foreach( getCountries() as $country)
-                                    <option  value="{{ $country['name'] }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                        {{ $country['name']  }}
+                                @foreach(getCountries() as $country)
+                                    <option
+                                        value="{{ $country['name'] }}" {{ in_array($country['name'], old('country', [])) ? 'selected' : '' }}>
+                                        {{ $country['name'] }}
                                     </option>
                                 @endforeach
-
                             </select>
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Choose the tags where you would like this account type to be shown:') }}</label>
-                            <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags" multiple>
-                                @foreach( getRiskProfileTag() as $tag)
-                                    <option  value="{{ $tag->name }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
-                                        {{  $tag->name  }}
+                            <label class="form-label"
+                                   for="">{{ __('Choose the tags where you would like this account type to be shown:') }}</label>
+                            <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags"
+                                    multiple>
+                                @foreach(getRiskProfileTag() as $tag)
+                                    <option
+                                        value="{{ $tag->name }}" {{ in_array($tag->name, old('tags', [])) ? 'selected' : '' }}>
+                                        {{ $tag->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -92,6 +98,7 @@
                             name="title"
                             class="form-control"
                             placeholder="Account Title"
+                            value="{{ old('title') }}"
                             required
                         />
                     </div>
@@ -102,6 +109,7 @@
                             class="form-control"
                             placeholder="Account Type Badge"
                             name="badge"
+                            value="{{ old('badge') }}"
                             required
                         />
                     </div>
@@ -113,6 +121,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Priority e.g 1,2,3.."
+                            value="{{ old('priority') }}"
                             required
                         />
                     </div>
@@ -124,7 +133,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Account Limit"
-
+                            value="{{ old('account_limit') }}"
                         />
                     </div>
                     <div class="input-area">
@@ -135,7 +144,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Start Range"
-
+                            value="{{ old('start_range') }}"
                         />
                     </div>
                     <div class="input-area">
@@ -146,7 +155,7 @@
                             oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="End Range"
-
+                            value="{{ old('end_range') }}"
                         />
                     </div>
                 </div>
@@ -165,6 +174,7 @@
                             class="form-control"
                             placeholder="Account Type Spread"
                             name="spread"
+                            value="{{ old('spread') }}"
                             required
                         />
                     </div>
@@ -175,6 +185,7 @@
                             class="form-control"
                             placeholder="Account Type Commission"
                             name="commission"
+                            value="{{ old('commission') }}"
                             required
                         />
                     </div>
@@ -185,6 +196,7 @@
                             name="leverage"
                             class="form-control"
                             placeholder="leverage e.g 10,20,50"
+                            value="{{ old('leverage') }}"
                             required
                         />
                     </div>
@@ -195,7 +207,7 @@
                             name="first_min_deposit"
                             class="form-control"
                             placeholder="Min deposit"
-
+                            value="{{ old('first_min_deposit') }}"
                         />
                     </div>
                 </div>
@@ -209,28 +221,26 @@
             <div class="card">
                 <div class="card-header noborder">
                     <h4 class="card-title">{{ __('Phase 1') }}</h4>
-                    <button class="text-xl text-center block" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
-                            <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
-                        </span>
-                    </button>
                 </div>
                 <div class="card-body p-6 pt-3 space-y-5">
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Platform Group') }}</label>
                         <input
                             type="text"
-                            name="real_swap_free"
+                            name="group"
                             class="form-control"
                             placeholder="Platform Group"
+                            value="{{ old('group') }}"
                         />
                     </div>
                     <div class="input-area !mb-7">
                         <div class="flex items-center space-x-7 flex-wrap">
                             <div class="primary-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="radio" class="hidden" name="phase" checked>
-                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <input type="radio" class="hidden" name="type"
+                                           value="{{ \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE }}" {{ old('type') == \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE ? 'checked' : '' }}>
+                                    <span
+                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="text-primary text-sm leading-6 capitalize">
                                         {{ __('Challenge Phase') }}
                                     </span>
@@ -239,8 +249,10 @@
 
                             <div class="primary-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="radio" class="hidden" name="phase">
-                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <input type="radio" class="hidden" name="type"
+                                           value="{{ \App\Enums\FundedSchemeTypes::FUNDED_PHASE }}" {{ old('type') == \App\Enums\FundedSchemeTypes::FUNDED_PHASE ? 'checked' : '' }}>
+                                    <span
+                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="text-secondary text-sm leading-6 capitalize">
                                         {{ __('Funded Phase') }}
                                     </span>
@@ -249,8 +261,10 @@
 
                             <div class="primary-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="radio" class="hidden" name="phase">
-                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <input type="radio" class="hidden" name="type"
+                                           value="{{ \App\Enums\FundedSchemeTypes::DIRECT_FUNDING }}" {{ old('type') == \App\Enums\FundedSchemeTypes::DIRECT_FUNDING ? 'checked' : '' }}>
+                                    <span
+                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="text-info text-sm leading-6 capitalize">
                                         {{ __('Direct Funding') }}
                                     </span>
@@ -260,23 +274,31 @@
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Validity Period') }}</label>
-                        <select name="" class="select2 form-control w-full">
-                            <option value="1 Month">{{ __('1 Month') }}</option>
-                            <option value="2 Month">{{ __('2 Month') }}</option>
-                            <option value="3 Month">{{ __('3 Month') }}</option>
+                        <select name="validity_count" class="select2 form-control w-full">
+                            @for ($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}" {{ old('validity_count') == $i ? 'selected' : '' }}>
+                                    {{ $i }} {{ __('Month') }}
+                                </option>
+                            @endfor
                         </select>
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Server: ') }}</label>
-                        <select name="" class="select2 form-control w-full">
-                            <option value="brokeret">{{ __('Brokeret') }}</option>
+                        <select name="server" class="select2 form-control w-full">
+                            <option
+                                value="{{ setting('live_server', 'platform_api') }}" {{ old('server') == setting('live_server', 'platform_api') ? 'selected' : '' }}>
+                                {{ setting('live_server', 'platform_api') }}
+                            </option>
                         </select>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button type="button" class="btn btn-secondary light inline-flex items-center justify-center w-full" data-bs-toggle="modal" data-bs-target="#controlRoomModal">
+                        <button type="button"
+                                class="btn btn-secondary light inline-flex items-center justify-center w-full"
+                                data-bs-toggle="modal" data-bs-target="#controlRoomModal">
                             {{ __('Control Room') }}
                         </button>
-                        <button type="button" class="btn btn-secondary light inline-flex items-center justify-center w-full">
+                        <button type="button"
+                                class="btn btn-secondary light inline-flex items-center justify-center w-full">
                             {{ __('Statistics') }}
                         </button>
                     </div>
@@ -297,20 +319,25 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('More Details') }}
         </h4>
+        @include('backend.forex_schema.modal.__control_room')
         <div class="card">
             <div class="card-body p-6">
                 <div class="input-area mb-5">
                     <label for="" class="form-label">{{ __('Detail:') }}</label>
                     <div class="site-editor">
-                        <textarea class="summernote" name="desc"></textarea>
+                        <textarea class="summernote" name="desc">{{ old('desc') }}</textarea>
                     </div>
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                         <div class="input-area">
-                            <select name="status" id="" class="select2 form-control w-full" data-placeholder="Status">
-                                <option value="1">{{ __('Active') }}</option>
-                                <option value="0">{{ __('Deactivate') }}</option>
+                            <select name="status" class="select2 form-control w-full" data-placeholder="Status">
+                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>
+                                    {{ __('Active') }}
+                                </option>
+                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>
+                                    {{ __('Deactivate') }}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -319,81 +346,54 @@
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_withdraw"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_withdraw"
-                                                value="1"
-                                                class="sr-only peer"
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input type="hidden" name="is_weekend_holding" value="0">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_weekend_holding" value="1"
+                                                   class="sr-only peer" {{ old('is_weekend_holding') ? 'checked' : '' }}>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
-
-                                    <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Weekend Holding') }}
-                                    </label>
+                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Weekend Holding') }}</label>
                                 </div>
                             </div>
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_internal_transfer"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_internal_transfer"
-                                                value="1"
-                                                class="sr-only peer"
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input type="hidden" name="is_scalable" value="0">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_scalable" value="1"
+                                                   class="sr-only peer" {{ old('is_scalable') ? 'checked' : '' }}>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Scaleable') }}
-                                    </label>
+                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Scalable') }}</label>
                                 </div>
                             </div>
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0" style="line-height:0;">
-                                        <input
-                                            class="form-check-input"
-                                            type="hidden"
-                                            value="0"
-                                            name="is_external_transfer"
-                                        >
-                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                name="is_external_transfer"
-                                                value="1"
-                                                class="sr-only peer"
-                                            >
-                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <input type="hidden" name="is_refundable" value="0">
+                                        <label
+                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_refundable" value="1"
+                                                   class="sr-only peer" {{ old('is_refundable') ? 'checked' : '' }}>
+                                            <span
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
-                                    <label class="form-label !w-auto pt-0 !mb-0">
-                                        {{ __('Refundable') }}
-                                    </label>
+                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Refundable') }}</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                {{--Modal for Control Room--}}
                 <div class="mt-10 flex items-center gap-3">
-                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="submit-form">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Add New') }}
                     </button>
@@ -403,72 +403,136 @@
                 </div>
             </div>
         </div>
+
     </form>
 
-    {{--Modal for Control Room--}}
-    @include('backend.forex_schema.modal.__control_room')
+
 
 @endsection
 @section('script')
     <script>
-        $(document).ready(function() {
-            $('.toggle-checkbox').change(function() {
-                var target = $(this).data('target');
-                $(target).toggleClass('hidden');
-            });
+        // $('body').on('submit','#accountTypeForm', function(e) {
+        //     alert('Form submit triggered');
+        //     e.preventDefault();
+        // });
+        $(document).ready(function () {
+            // Initialize the first rule row when the modal is opened
+            function initializeFirstRule() {
+                const newRow = `<tr>
+            <td class="table-td"><input type="text" name="rules[0][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[0][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[0][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[0][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[0][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[0][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td">
+                <input type="checkbox" name="rules[0][is_new_order]" class="form-check-input" value="1" />
+            </td>
+            <td class="table-td">
+                <a href="#" class="action-btn deleteRule">
+                    <iconify-icon icon="lucide:trash"></iconify-icon>
+                </a>
+            </td>
+        </tr>
+    `;
+                $('#rulesTable tbody').append(newRow);
+            }
 
-            // Add a new row to the table inside the modal
-            $('#newRule').click(function() {
-                const newRow = $(`
-                    <tr>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <input type="text" name="" class="form-control !py-1 !text-xs" />
-                        </td>
-                        <td class="table-td">
-                            <div class="form-switch ps-0">
-                                <input class="form-check-input" type="hidden" value="0" name="new_order">
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="new_order" value="1" class="sr-only peer">
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="table-td">
-                            <a href="#" class="action-btn deleteRule">
-                                <iconify-icon icon="lucide:trash"></iconify-icon>
-                            </a>
-                        </td>
-                    </tr>
-                `);
-
-                // Append the new row to the table body
+            // Add more rule rows when "New Rule" is clicked
+            $('#newRule').click(function () {
+                const rowCount = $('#rulesTable tbody tr').length;
+                const newRow = `
+        <tr>
+            <td class="table-td"><input type="text" name="rules[${rowCount}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[${rowCount}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[${rowCount}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[${rowCount}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[${rowCount}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td"><input type="text" name="rules[${rowCount}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+            <td class="table-td">
+                <input type="checkbox" name="rules[${rowCount}][is_new_order]" class="form-check-input" value="1" />
+            </td>
+            <td class="table-td">
+                <a href="#" class="action-btn deleteRule">
+                    <iconify-icon icon="lucide:trash"></iconify-icon>
+                </a>
+            </td>
+        </tr>
+    `;
                 $('#rulesTable tbody').append(newRow);
             });
 
-            // Delegate delete button click event
-            $('#rulesTable').on('click', '.deleteRule', function(e) {
-                e.preventDefault(); // Prevent the default link behavior
-                // Remove the row that contains the clicked delete button
+            // Delete row logic
+            $('#rulesTable').on('click', '.deleteRule', function (e) {
+                e.preventDefault();
                 $(this).closest('tr').remove();
             });
+
+            // Initialize first rule row when modal opens
+            $('#controlRoomModal').on('shown.bs.modal', function () {
+                if ($('#rulesTable tbody tr').length === 0) {
+                    initializeFirstRule();
+                }
+            });
+
+            // Validate that all fields are filled and accept only numbers
+            function validateInputs() {
+                let isValid = true;
+                $('.validate-number').each(function () {
+                    const value = $(this).val();
+                    if (!value || isNaN(value)) {
+                        $(this).addClass('border-red-500');
+                        if ($(this).next('.error-message').length === 0) {
+                            $(this).after('<span class="error-message text-red-500">Please enter a valid number.</span>');
+                        }
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('border-red-500');
+                        $(this).next('.error-message').remove();
+                    }
+                });
+                return isValid;
+            }
+
+            // Ensure that at least one rule is set
+            function checkForAtLeastOneRule() {
+                return $('#rulesTable tbody tr').length > 0;
+            }
+
+            // Hide modal and prepare rules for submission if validation passes
+            $('.update-rules').click(function (e) {
+                e.preventDefault();
+                if (validateInputs() && checkForAtLeastOneRule()) {
+                    $('#controlRoomModal').modal('hide');
+                }
+            });
+
+            //Validate main form on submission
+            $('#accountTypeForm').on('submit', function (e) {
+                // e.preventDefault();
+                console.log('Form submit triggered');
+                // console.log(validateInputs(),'validateInputs()');
+                // Check if there is at least one rule
+                if (!checkForAtLeastOneRule()) {
+                    console.log(checkForAtLeastOneRule(), 'checkForAtLeastOneRule');
+
+                    e.preventDefault(); // Prevent form submission
+                    if ($('#rulesTable').next('.error-message').length === 0) {
+                        $('#rulesTable').after('<span class="error-message text-red-500">At least one rule must be set.</span>');
+                        alert('At least one rule must be set on control room.');
+                    }
+                } else {
+                    // Ensure validation passes
+                    if (!validateInputs()) {
+                        console.log(validateInputs(), 'validateInputs()');
+                        alert('kindly fill out every field of rules on control room or delete the row if not needed');
+                        e.preventDefault(); // Prevent form submission if validation fails
+                    }
+                }
+
+                // e.preventDefault();
+            });
         });
+
     </script>
 @endsection

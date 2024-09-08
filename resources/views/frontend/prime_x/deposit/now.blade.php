@@ -3,24 +3,26 @@
     <div class="progress-steps-form mb-6">
         <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="target_id" value="{{the_hash($rule->id)}}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Enter your deposit details.') }}
                     </h4>
                     <div class="card">
+                        <p>{{__('Pay amount :amount via scheme of :title ',['amount' => $rule->amount,'title' => $rule->forexSchemaPhase->forexSchema->title,])}}</p>
                         <div class="card-body p-6 space-y-5">
-                            <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>
-                                <div class="input-group select2-lg">
-                                    <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
-                                        <option selected disabled>--{{ __('Select Account') }}--</option>
-                                        @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+{{--                            <div class="input-area relative">--}}
+{{--                                <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>--}}
+{{--                                <div class="input-group select2-lg">--}}
+{{--                                    <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">--}}
+{{--                                        <option selected disabled>--{{ __('Select Account') }}--</option>--}}
+{{--                                        @foreach($forexAccounts as $forexAccount)--}}
+{{--                                            <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Payment Method:') }}</label>
                                 <div class="input-group select2-lg">
@@ -38,7 +40,7 @@
                                 <div class="relative">
                                     <input type="text" name="amount" class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
-                                        aria-describedby="basic-addon1">
+                                        aria-describedby="basic-addon1" value="{{$rule->amount}}" readonly>
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
@@ -48,7 +50,7 @@
                                 <div class="relative">
                                     <input type="text"  class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
-                                        aria-describedby="basic-addon2">
+                                        aria-describedby="basic-addon2" readonly>
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>

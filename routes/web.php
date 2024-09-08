@@ -107,7 +107,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
-        Route::get('', [DepositController::class, 'deposit'])->name('amount');
+        Route::get('{id?}', [DepositController::class, 'deposit'])->name('amount');
         Route::get('gateway/{code}', [GatewayController::class, 'gateway'])->name('gateway');
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');

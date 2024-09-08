@@ -16,173 +16,48 @@
                         <div class="overflow-hidden">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="rulesTable">
                                 <thead>
-                                    <tr>
-                                        <th scope="col" class="table-th">{{ __('ID') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Funds') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Daily DD') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Max DD') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Fee') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Discount') }}</th>
-                                        <th scope="col" class="table-th">{{ __('New Orders') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                    </tr>
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Funds') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Daily DD') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Max DD') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Discount') }}</th>
+                                    <th scope="col" class="table-th">{{ __('New Orders') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                    <tr>
-                                        <td class="table-td">
-                                            1
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('10000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('500') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="form-switch ps-0">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="hidden"
-                                                    value="0"
-                                                    name="new_order"
-                                                >
-                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="new_order"
-                                                        value="1"
-                                                        class="sr-only peer"
-                                                    >
-                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="#" class="action-btn delete-schema-btn">
+                                @if(old('rules'))
+                                    @foreach(old('rules') as $index => $rule)
+                                        <tr>
+                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['allotted_funds'] }}" /></td>
+                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['daily_drawdown_limit'] }}" /></td>
+                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['max_drawdown_limit'] }}" /></td>
+                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['profit_target'] }}" /></td>
+                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['fee'] }}" /></td>
+                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['discount'] }}" /></td>
+                                            <td class="table-td">
+                                                <input type="checkbox" name="rules[{{ $index }}][is_new_order]" class="form-check-input" value="1" {{ isset($rule['is_new_order']) ? 'checked' : '' }} />
+                                            </td>
+                                            <td class="table-td">
+                                                <a href="#" class="action-btn deleteRule">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table-td">
-                                            1
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('10000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('500') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="form-switch ps-0">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="hidden"
-                                                    value="0"
-                                                    name="new_order"
-                                                >
-                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="new_order"
-                                                        value="1"
-                                                        class="sr-only peer"
-                                                    >
-                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="#" class="action-btn delete-schema-btn" data-id="1">
-                                                    <iconify-icon icon="lucide:trash"></iconify-icon>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="table-td">
-                                            1
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('10000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('500') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            {{ __('1000') }}
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="form-switch ps-0">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="hidden"
-                                                    value="0"
-                                                    name="new_order"
-                                                >
-                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="new_order"
-                                                        value="1"
-                                                        class="sr-only peer"
-                                                    >
-                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td class="table-td">
-                                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="#" class="action-btn delete-schema-btn" data-id="1">
-                                                    <iconify-icon icon="lucide:trash"></iconify-icon>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <!-- Add a default row if no rules are present -->
+                                @endif
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
                 </div>
                 <div class="action-btns mt-10">
-                    <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                    <button type="button" class="btn btn-dark inline-flex items-center justify-center mr-2 update-rules">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Update') }}
                     </button>
@@ -195,3 +70,5 @@
         </div>
     </div>
 </div>
+
+

@@ -47,7 +47,7 @@
                             <iconify-icon icon="heroicons-outline:download"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Deposit') }}
+                            {{ __('Payment') }}
                         </div>
                     </div>
                 </a>
@@ -57,17 +57,17 @@
                             <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Withdraw') }}
+                            {{ __('Payout') }}
                         </div>
                     </div>
                 </a>
                 <a href="{{ route('user.transfer') }}" class="card">
                     <div class="card-body flex flex-col items-center justify-center p-8">
                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
+                            <iconify-icon icon="lucide:trophy"></iconify-icon>
                         </div>
                         <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Transfer') }}
+                            {{ __('Leaderboard') }}
                         </div>
                     </div>
                 </a>

@@ -62,15 +62,6 @@
         </li>
 
         <li>
-            <a href="{{ route('user.wallet.index') }}" class="navItem {{ isActive('user.wallet*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="solar:wallet-linear"></iconify-icon>
-                    <span>{{ __('Wallets') }}</span>
-                </span>
-            </a>
-        </li>
-
-        <li>
             <a href="{{ route('user.forex-account-logs') }}" class="navItem {{ isActive('user.forex*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
@@ -84,6 +75,15 @@
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
                     <span>{{ __('New Account') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.wallet.index') }}" class="navItem {{ isActive('user.wallet*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="solar:wallet-linear"></iconify-icon>
+                    <span>{{ __('Wallets') }}</span>
                 </span>
             </a>
         </li>
@@ -116,34 +116,25 @@
                 </span>
             </a>
         </li>
-        @if(setting('copy_trading', 'features'))
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-              <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="solar:graph-up-broken"></iconify-icon>
-                <span>{{ __('Copy Trading') }}</span>
-              </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+
+        <li>
+            <a href="{{ route('user.contracts') }}" class="navItem {{ isActive('user.contracts') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="fluent-mdl2:edit-note"></iconify-icon>
+                    <span>{{ __('Contracts') }}</span>
+                </span>
             </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('user.follower_access') }}" class="{{ isActive('user.follower_access') }}">
-                        {{ __('Follower Access') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.provider_access') }}" class="{{ isActive('user.provider_access') }}">
-                        {{ __('Provider Access') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.ratings') }}" class="{{ isActive('user.ratings') }}">
-                        {{ __('Ratings') }}
-                    </a>
-                </li>
-            </ul>
         </li>
-        @endif
+
+        <li>
+            <a href="{{ route('user.certificates') }}" class="navItem {{ isActive('user.certificates') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
+                    <span>{{ __('Certificates') }}</span>
+                </span>
+            </a>
+        </li>
+
         <li class="">
             <a href="javascript:void(0);" class="navItem">
               <span class="flex items-center">
@@ -180,17 +171,6 @@
                 </li>
             </ul>
         </li>
-
-        @if(setting('sign_up_referral','permission'))
-            <li>
-                <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">
-                    <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
-                        <span>{{ __('Partner Area') }}</span>
-                    </span>
-                </a>
-            </li>
-        @endif
 
         <li>
             <a href="{{ route('user.setting.profile') }}" class="navItem {{ isActive('user.setting*') }}">

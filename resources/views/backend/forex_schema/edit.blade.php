@@ -306,11 +306,30 @@
         </div>
     </form>
 
+    <div id="notification-container" class="fixed top-0 right-0 mt-4 mr-4 space-y-2 z-50"></div>
+
 @endsection
 
 @section('script')
     <script>
         $(document).ready(function () {
+            function showNotification(message, type) {
+                const container = document.getElementById('notification-container');
+
+                // Create a new notification element
+                const notification = document.createElement('div');
+                notification.className = `p-4 mb-2 rounded-md text-white text-sm ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+                notification.textContent = message;
+
+                // Append the notification to the container
+                container.appendChild(notification);
+
+                // Automatically remove the notification after a few seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000); // 5 seconds
+            }
+
             // Function to add a new rule row for a specific phase
             function addNewRule(phaseIndex) {
                 const rowCount = $('#rulesTable_' + phaseIndex + ' tbody tr').length; // Get the current number of rows
@@ -401,7 +420,7 @@
                     if (isNaN(value) || value === '') {
                         $(this).addClass('border-red-500');
                         formIsValid = false;
-                        alert('Please fill in all fields correctly before updating the rules.'); // Show alert if validation fails
+                        showNotification('Please fill in all fields correctly before updating the rules.', 'error');
                     } else {
                         $(this).removeClass('border-red-500');
                     }
@@ -410,7 +429,7 @@
 
                 if (!formIsValid) {
                     e.preventDefault();
-                    alert('Please ensure all fields are filled in correctly.');
+                    showNotification('Please ensure all fields are filled in correctly.', 'error');
                 }
             });
         });

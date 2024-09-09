@@ -392,15 +392,14 @@
                         {{ __('Add New') }}
                     </button>
                     <button type="button" class="btn btn-outline-secondary inline-flex items-center justify-center">
-                        {{ __('Cancel') }}
+                        {{ __('Cancelllll') }}
                     </button>
                 </div>
             </div>
         </div>
 
     </form>
-
-
+    <div id="notification-container" class="fixed top-0 right-0 mt-4 mr-4 space-y-2 z-50"></div>
 
 @endsection
 @section('script')
@@ -409,6 +408,23 @@
         //     alert('Form submit triggered');
         //     e.preventDefault();
         // });
+        function showNotification(message, type) {
+            const container = document.getElementById('notification-container');
+
+            // Create a new notification element
+            const notification = document.createElement('div');
+            notification.className = `p-4 mb-2 rounded-md text-white text-sm ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+            notification.textContent = message;
+
+            // Append the notification to the container
+            container.appendChild(notification);
+
+            // Automatically remove the notification after a few seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000); // 5 seconds
+        }
+
         $(document).ready(function () {
             // Initialize the first rule row when the modal is opened
             function initializeFirstRule() {
@@ -437,27 +453,25 @@
             // Add more rule rows when "New Rule" is clicked
             $('#newRule').click(function () {
                 const rowCount = $('#rulesTable tbody tr').length;
-                const newRow = `
-        <tr>
-            <td class="table-td"><input type="text" name="rules[${rowCount}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[${rowCount}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[${rowCount}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[${rowCount}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[${rowCount}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[${rowCount}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td">
-                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                    <input type="checkbox" name="rules[${rowCount}][is_new_order]" value="1" class="sr-only peer">
-                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                </label>
-            </td>
-            <td class="table-td">
-                <a href="#" class="action-btn deleteRule">
-                    <iconify-icon icon="lucide:trash"></iconify-icon>
-                </a>
-            </td>
-        </tr>
-    `;
+                const newRow = `<tr>
+                    <td class="table-td"><input type="text" name="rules[${rowCount}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[${rowCount}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[${rowCount}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[${rowCount}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[${rowCount}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[${rowCount}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td">
+                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                            <input type="checkbox" name="rules[${rowCount}][is_new_order]" value="1" class="sr-only peer">
+                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                        </label>
+                    </td>
+                    <td class="table-td">
+                        <a href="#" class="action-btn deleteRule">
+                            <iconify-icon icon="lucide:trash"></iconify-icon>
+                        </a>
+                    </td>
+                </tr>`;
                 $('#rulesTable tbody').append(newRow);
             });
 
@@ -514,17 +528,14 @@
                 // Check if there is at least one rule
                 if (!checkForAtLeastOneRule()) {
                     console.log(checkForAtLeastOneRule(), 'checkForAtLeastOneRule');
+                    showNotification('At least one rule must be set on control room.', 'error');
 
                     e.preventDefault(); // Prevent form submission
-                    if ($('#rulesTable').next('.error-message').length === 0) {
-                        $('#rulesTable').after('<span class="error-message text-red-500">At least one rule must be set.</span>');
-                        alert('At least one rule must be set on control room.');
-                    }
                 } else {
                     // Ensure validation passes
                     if (!validateInputs()) {
                         console.log(validateInputs(), 'validateInputs()');
-                        alert('kindly fill out every field of rules on control room or delete the row if not needed');
+                        showNotification('kindly fill out every field of rules on control room or delete the row if not needed', 'error');
                         e.preventDefault(); // Prevent form submission if validation fails
                     }
                 }

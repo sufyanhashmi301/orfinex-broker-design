@@ -246,10 +246,8 @@
 
                             <div class="primary-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="radio" class="hidden" name="type"
-                                           value="{{ \App\Enums\FundedSchemeTypes::FUNDED_PHASE }}" {{ old('type') == \App\Enums\FundedSchemeTypes::FUNDED_PHASE ? 'checked' : '' }}>
-                                    <span
-                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <input type="radio" class="hidden" name="type" value="{{ \App\Enums\FundedSchemeTypes::FUNDED_PHASE }}" {{ old('type') == \App\Enums\FundedSchemeTypes::FUNDED_PHASE ? 'checked' : '' }}>
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="text-secondary text-sm leading-6 capitalize">
                                         {{ __('Funded Phase') }}
                                     </span>
@@ -258,10 +256,8 @@
 
                             <div class="primary-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="radio" class="hidden" name="type"
-                                           value="{{ \App\Enums\FundedSchemeTypes::DIRECT_FUNDING }}" {{ old('type') == \App\Enums\FundedSchemeTypes::DIRECT_FUNDING ? 'checked' : '' }}>
-                                    <span
-                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <input type="radio" class="hidden" name="type" value="{{ \App\Enums\FundedSchemeTypes::DIRECT_FUNDING }}" {{ old('type') == \App\Enums\FundedSchemeTypes::DIRECT_FUNDING ? 'checked' : '' }}>
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="text-info text-sm leading-6 capitalize">
                                         {{ __('Direct Funding') }}
                                     </span>
@@ -392,7 +388,7 @@
                         {{ __('Add New') }}
                     </button>
                     <button type="button" class="btn btn-outline-secondary inline-flex items-center justify-center">
-                        {{ __('Cancelllll') }}
+                        {{ __('Cancel') }}
                     </button>
                 </div>
             </div>

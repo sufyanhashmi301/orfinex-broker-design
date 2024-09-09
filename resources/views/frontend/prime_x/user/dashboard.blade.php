@@ -107,23 +107,23 @@
                 <div class="lg:col-span-7 col-span-12">
                     <div class="card h-full flex flex-col">
                         <header class="card-header noborder">
-                            <h4 class="card-title">{{ __('My Trading Accounts') }}</h4>
+                            <h4 class="card-title">{{ __('Accounts') }}</h4>
                         </header>
                         <div class="card-body p-6 pt-0 mt-auto">
                             <div class="grid lg:grid-cols-2 grid-cols-1 gap-3">
                                 <div class="bg-slate-100 dark:bg-body">
                                     <div class="card-body p-4 py-6">
                                         <div class="flex items-center justify-between gap-5 mb-10">
-                                            <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Live Accounts:') }}</h5>
+                                            <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Challenge Accounts:') }}</h5>
                                             <a href="{{ route('user.forex-account-logs') }}" class="btn-link inline-flex items-center">
                                                 {{ __('See All') }}
                                                 <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
                                             </a>
                                         </div>
                                         <div class="flex items-center justify-between gap-5">
-                                            <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
+                                            <h5 class="text-xl text-slate-900 dark:text-white font-medium">0</h5>
                                             <a href="{{route('user.schema')}}" class="btn btn-primary btn-sm inline-flex items-center justify-center">
-                                                {{ __('Create Account') }}
+                                                {{ __('Start Challenge') }}
                                             </a>
                                         </div>
                                     </div>
@@ -131,16 +131,16 @@
                                 <div class="bg-slate-100 dark:bg-body">
                                     <div class="card-body p-4 py-6">
                                         <div class="flex items-center justify-between gap-5 mb-10">
-                                            <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Demo Accounts:') }}</h5>
+                                            <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Funded Accounts:') }}</h5>
                                             <a href="{{ route('user.forex-account-logs') }}" class="btn-link inline-flex items-center">
                                                 {{ __('See All') }}
                                                 <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
                                             </a>
                                         </div>
                                         <div class="flex items-center justify-between gap-5">
-                                            <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
+                                            <h5 class="text-xl text-slate-900 dark:text-white font-medium">0</h5>
                                             <a href="{{route('user.schema')}}" class="btn btn-primary btn-sm inline-flex items-center justify-center">
-                                                {{ __('Create Account') }}
+                                                {{ __('Challenge Accounts') }}
                                             </a>
                                         </div>
                                     </div>

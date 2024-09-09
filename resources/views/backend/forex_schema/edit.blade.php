@@ -27,8 +27,7 @@
                         <div class="input-area">
                             <div class="wrap-custom-file">
                                 <input type="file" name="icon" id="schema-icon" accept=".gif, .jpg, .png"/>
-                                <label for="schema-icon" class="file-ok"
-                                       style="background-image: url({{ asset($schema->icon) }})">
+                                <label for="schema-icon" class="file-ok" style="background-image: url({{ asset($schema->icon) }})">
                                     <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt=""/>
                                     <span>{{ __('Update Avatar') }}</span>
                                 </label>
@@ -41,8 +40,9 @@
                 <div class="card h-full">
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
-                            <label class="form-label"
-                                   for="">{{ __('Select countries/tags where you want to show this forex scheme:') }}</label>
+                            <label class="form-label" for="">
+                                {{ __('Select countries/tags where you want to show this forex scheme:') }}
+                            </label>
                             <select name="country[]" class="select2 form-control w-full h-9" multiple>
                                 <option value="All"
                                         @if(in_array('All', json_decode($schema->country, true))) selected @endif>
@@ -57,8 +57,9 @@
                             </select>
                         </div>
                         <div class="input-area">
-                            <label class="form-label"
-                                   for="">{{ __('Choose the tags where you would like this account type to be shown:') }}</label>
+                            <label class="form-label" for="">
+                                {{ __('Choose the tags where you would like this account type to be shown:') }}
+                            </label>
                             <select name="tags[]" class="select2 form-control w-full h-9" multiple>
                                 @foreach(getRiskProfileTag() as $tag)
                                     <option value="{{ $tag->name }}"
@@ -171,29 +172,30 @@
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <div class="primary-radio">
                                     <label class="flex items-center cursor-pointer">
-                                        <input type="radio" class="hidden" name="phases[{{ $loop->index }}][type]"
-                                               value="{{ \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE }}" {{ $phase->type == \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE ? 'checked' : '' }}>
-                                        <span
-                                            class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex mr-2"></span>
-                                        <span class="text-primary text-sm">{{ __('Challenge Phase') }}</span>
+                                        <input type="radio" class="hidden" name="phases[{{ $loop->index }}][type]" value="{{ \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE }}" {{ $phase->type == \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE ? 'checked' : '' }}>
+                                        <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                        <span class="text-info text-sm leading-6 capitalize">
+                                            {{ __('Challenge Phase') }}
+                                        </span>
+                                    </span>
                                     </label>
                                 </div>
                                 <div class="primary-radio">
                                     <label class="flex items-center cursor-pointer">
-                                        <input type="radio" class="hidden" name="phases[{{ $loop->index }}][type]"
-                                               value="{{ \App\Enums\FundedSchemeTypes::FUNDED_PHASE }}" {{ $phase->type == \App\Enums\FundedSchemeTypes::FUNDED_PHASE ? 'checked' : '' }}>
-                                        <span
-                                            class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex mr-2"></span>
-                                        <span class="text-secondary text-sm">{{ __('Funded Phase') }}</span>
+                                        <input type="radio" class="hidden" name="phases[{{ $loop->index }}][type]" value="{{ \App\Enums\FundedSchemeTypes::FUNDED_PHASE }}" {{ $phase->type == \App\Enums\FundedSchemeTypes::FUNDED_PHASE ? 'checked' : '' }}>
+                                        <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                        <span class="text-info text-sm leading-6 capitalize">
+                                            {{ __('Funded Phase') }}
+                                        </span>
                                     </label>
                                 </div>
                                 <div class="primary-radio">
                                     <label class="flex items-center cursor-pointer">
-                                        <input type="radio" class="hidden" name="phases[{{ $loop->index }}][type]"
-                                               value="{{ \App\Enums\FundedSchemeTypes::DIRECT_FUNDING }}" {{ $phase->type == \App\Enums\FundedSchemeTypes::DIRECT_FUNDING ? 'checked' : '' }}>
-                                        <span
-                                            class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex mr-2"></span>
-                                        <span class="text-info text-sm">{{ __('Direct Funding') }}</span>
+                                        <input type="radio" class="hidden" name="phases[{{ $loop->index }}][type]" value="{{ \App\Enums\FundedSchemeTypes::DIRECT_FUNDING }}" {{ $phase->type == \App\Enums\FundedSchemeTypes::DIRECT_FUNDING ? 'checked' : '' }}>
+                                        <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                        <span class="text-info text-sm leading-6 capitalize">
+                                            {{ __('Direct Funding') }}
+                                        </span>
                                     </label>
                                 </div>
                             </div>
@@ -229,6 +231,16 @@
                     </div>
                 </div>
             @endforeach
+            <a href="" class="card">
+                <div class="card-body h-full p-6">
+                    <div class="h-full flex items-center justify-center">
+                    <span class="flex flex-col items-center justify-center">
+                        <iconify-icon class="text-3xl font-light mb-1" icon="tabler:layout-grid-add"></iconify-icon>
+                        {{ __('Add Another Phase') }}
+                    </span>
+                    </div>
+                </div>
+            </a>
         </div>
 
         <!-- More Details -->

@@ -1,48 +1,61 @@
 <div class="card overflow-hidden mb-3">
     <div class="card-body py-1">
-        <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
-            <div class="bg-white dark:bg-dark">
-                <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
-                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Balance') }}
+        <div class="grid md:grid-cols-2 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
+            <div>
+                <p class="block mb-1 text-sm text-slate-900 dark:text-white font-medium">
+                    {{ __('Challenge') }}
+                </p>
+                <div class="grid md:grid-cols-2 gap-px">
+                    <div class="bg-white dark:bg-dark">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                            <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                {{ __('Allotted Fund') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                                {{$dataCount['total_forex_balance']}}
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-sm text-success-500">
-                        {{ __('+452%') }}
-                    </div>
-                    <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
-                        {{$dataCount['total_forex_balance']}}
-                    </div>
-                </div>
-            </div>
 
-            <div class="bg-white dark:bg-dark">
-                <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
-                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Equity') }}
-                    </div>
-                    <div class="text-sm text-success-500">
-                        {{ __('+452%') }}
-                    </div>
-                    <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
-                        {{$dataCount['total_forex_equity']}}
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-dark">
-                <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
-                    <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Success Points') }}
-                    </div>
-                    <div class="text-sm text-success-500">
-                        {{ __('+452%') }}
-                    </div>
-                    <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
-                        0
+                    <div class="bg-white dark:bg-dark">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                            <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                {{ __('Allotted Equity') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                                {{$dataCount['total_forex_equity']}}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- END: Group Chart2 -->
+            <div>
+                <p class="block mb-1 text-sm text-slate-900 dark:text-white font-medium">
+                    {{ __('Funded') }}
+                </p>
+                <div class="grid md:grid-cols-2 gap-px">
+                    <div class="bg-white dark:bg-dark">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                            <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                {{ __('Success Points') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                                0
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-dark">
+                        <div class="flex flex-wrap justify-between items-baseline gap-y-2 gap-x-4 p-4">
+                            <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                {{ __('Success Points') }}
+                            </div>
+                            <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
+                                0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

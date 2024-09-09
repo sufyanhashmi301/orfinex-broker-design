@@ -14,10 +14,9 @@
             </a>
         </div>
     </div>
-    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data"
-          id="accountTypeForm">
+    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data" id="accountTypeForm">
         @csrf
-        <div class="grid grid-cols-12 gap-5">
+        <div class="grid grid-cols-12 gap-5 mb-6">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                 <div class="card h-full">
                     <div class="card-body p-6">
@@ -78,7 +77,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card mb-6">
             <div class="card-header noborder">
                 <div>
                     <h4 class="card-title">
@@ -161,10 +160,10 @@
                 </div>
             </div>
         </div>
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
             {{ __('Key Features') }}
         </h4>
-        <div class="card">
+        <div class="card mb-6">
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
@@ -214,10 +213,10 @@
             </div>
         </div>
 
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
             {{ __('Phases / Steps') }}
         </h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             <div class="card">
                 <div class="card-header noborder">
                     <h4 class="card-title">{{ __('Phase 1') }}</h4>
@@ -237,10 +236,8 @@
                         <div class="flex items-center space-x-7 flex-wrap">
                             <div class="primary-radio">
                                 <label class="flex items-center cursor-pointer">
-                                    <input type="radio" class="hidden" name="type"
-                                           value="{{ \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE }}" {{ old('type') == \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE ? 'checked' : '' }}>
-                                    <span
-                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <input type="radio" class="hidden" name="type" value="{{ \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE }}" {{ old('type') == \App\Enums\FundedSchemeTypes::CHALLENGE_PHASE ? 'checked' : '' }}>
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="text-primary text-sm leading-6 capitalize">
                                         {{ __('Challenge Phase') }}
                                     </span>
@@ -316,7 +313,7 @@
             </a>
         </div>
 
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
             {{ __('More Details') }}
         </h4>
         @include('backend.forex_schema.modal.__control_room')
@@ -377,12 +374,9 @@
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0" style="line-height:0;">
                                         <input type="hidden" name="is_refundable" value="0">
-                                        <label
-                                            class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="is_refundable" value="1"
-                                                   class="sr-only peer" {{ old('is_refundable') ? 'checked' : '' }}>
-                                            <span
-                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_refundable" value="1" class="sr-only peer" {{ old('is_refundable') ? 'checked' : '' }}>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                     <label class="form-label !w-auto pt-0 !mb-0">{{ __('Refundable') }}</label>
@@ -419,22 +413,24 @@
             // Initialize the first rule row when the modal is opened
             function initializeFirstRule() {
                 const newRow = `<tr>
-            <td class="table-td"><input type="text" name="rules[0][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[0][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[0][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[0][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[0][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td"><input type="text" name="rules[0][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-            <td class="table-td">
-                <input type="checkbox" name="rules[0][is_new_order]" class="form-check-input" value="1" />
-            </td>
-            <td class="table-td">
-                <a href="#" class="action-btn deleteRule">
-                    <iconify-icon icon="lucide:trash"></iconify-icon>
-                </a>
-            </td>
-        </tr>
-    `;
+                    <td class="table-td"><input type="text" name="rules[0][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[0][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[0][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[0][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[0][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td"><input type="text" name="rules[0][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+                    <td class="table-td">
+                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                            <input type="checkbox" name="rules[0][is_new_order]" value="1" class="sr-only peer">
+                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                        </label>
+                    </td>
+                    <td class="table-td">
+                        <a href="#" class="action-btn deleteRule">
+                            <iconify-icon icon="lucide:trash"></iconify-icon>
+                        </a>
+                    </td>
+                </tr>`;
                 $('#rulesTable tbody').append(newRow);
             }
 
@@ -450,7 +446,10 @@
             <td class="table-td"><input type="text" name="rules[${rowCount}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
             <td class="table-td"><input type="text" name="rules[${rowCount}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
             <td class="table-td">
-                <input type="checkbox" name="rules[${rowCount}][is_new_order]" class="form-check-input" value="1" />
+                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                    <input type="checkbox" name="rules[${rowCount}][is_new_order]" value="1" class="sr-only peer">
+                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                </label>
             </td>
             <td class="table-td">
                 <a href="#" class="action-btn deleteRule">

@@ -10,8 +10,10 @@
                         {{ __('Enter your deposit details.') }}
                     </h4>
                     <div class="card">
-                        <p>{{__('Pay amount :amount via scheme of :title ',['amount' => $rule->amount,'title' => $rule->forexSchemaPhase->forexSchema->title,])}}</p>
                         <div class="card-body p-6 space-y-5">
+                            <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-secondary-500 bg-opacity-[14%] text-secondary-500">
+                                <p>{{__('Pay amount :amount via scheme of :title ',['amount' => $rule->amount,'title' => $rule->forexSchemaPhase->forexSchema->title,])}}</p>
+                            </div>
 {{--                            <div class="input-area relative">--}}
 {{--                                <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>--}}
 {{--                                <div class="input-group select2-lg">--}}

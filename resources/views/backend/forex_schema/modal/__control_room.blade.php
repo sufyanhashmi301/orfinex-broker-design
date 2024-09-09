@@ -31,14 +31,29 @@
                                 @if(old('rules'))
                                     @foreach(old('rules') as $index => $rule)
                                         <tr>
-                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['allotted_funds'] }}" /></td>
-                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['daily_drawdown_limit'] }}" /></td>
-                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['max_drawdown_limit'] }}" /></td>
-                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['profit_target'] }}" /></td>
-                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['fee'] }}" /></td>
-                                            <td class="table-td"><input type="text" name="rules[{{ $index }}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['discount'] }}" /></td>
                                             <td class="table-td">
-                                                <input type="checkbox" name="rules[{{ $index }}][is_new_order]" class="form-check-input" value="1" {{ isset($rule['is_new_order']) ? 'checked' : '' }} />
+                                                <input type="text" name="rules[{{ $index }}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['allotted_funds'] }}" />
+                                            </td>
+                                            <td class="table-td">
+                                                <input type="text" name="rules[{{ $index }}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['daily_drawdown_limit'] }}" />
+                                            </td>
+                                            <td class="table-td">
+                                                <input type="text" name="rules[{{ $index }}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['max_drawdown_limit'] }}" />
+                                            </td>
+                                            <td class="table-td">
+                                                <input type="text" name="rules[{{ $index }}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['profit_target'] }}" />
+                                            </td>
+                                            <td class="table-td">
+                                                <input type="text" name="rules[{{ $index }}][fee]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['fee'] }}" />
+                                            </td>
+                                            <td class="table-td">
+                                                <input type="text" name="rules[{{ $index }}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="{{ $rule['discount'] }}" />
+                                            </td>
+                                            <td class="table-td">
+                                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                                    <input type="checkbox" name="rules[{{ $index }}][is_new_order]" value="1" class="sr-only peer" {{ isset($rule['is_new_order']) ? 'checked' : '' }}>
+                                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                                </label>
                                             </td>
                                             <td class="table-td">
                                                 <a href="#" class="action-btn deleteRule">

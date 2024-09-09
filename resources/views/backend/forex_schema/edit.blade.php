@@ -16,12 +16,11 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.accountType.update', $schema->id) }}" method="post" enctype="multipart/form-data"
-          id="accountTypeForm">
+    <form action="{{ route('admin.accountType.update', $schema->id) }}" method="post" enctype="multipart/form-data" id="accountTypeForm">
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-12 gap-5">
+        <div class="grid grid-cols-12 gap-5 mb-6">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
                 <div class="card h-full">
                     <div class="card-body p-6">
@@ -74,7 +73,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card mb-6">
             <div class="card-header noborder">
                 <div>
                     <h4 class="card-title">
@@ -120,10 +119,10 @@
             </div>
         </div>
 
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
             {{ __('Key Features') }}
         </h4>
-        <div class="card">
+        <div class="card mb-6">
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
@@ -151,10 +150,10 @@
         </div>
 
         <!-- Phases/Steps Section -->
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-5">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
             {{ __('Phases / Steps') }}
         </h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             @foreach($schema->forexSchemaPhases as $phase)
                 <div class="card">
                     <div class="card-header noborder">
@@ -233,7 +232,7 @@
         </div>
 
         <!-- More Details -->
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400">{{ __('More Details') }}</h4>
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 mb-3">{{ __('More Details') }}</h4>
         <div class="card">
             <div class="card-body p-6">
                 <div class="input-area mb-5">
@@ -257,10 +256,10 @@
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0">
                                         <input type="hidden" name="is_weekend_holding" value="0">
-                                        <input type="checkbox" name="is_weekend_holding" value="1"
-                                               class="sr-only peer" {{ $schema->is_weekend_holding ? 'checked' : '' }}>
-                                        <span
-                                            class="peer-checked:bg-black-500 bg-gray-200 rounded-full peer-checked:translate-x-full w-11 h-6 inline-block"></span>
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_weekend_holding" value="1" class="sr-only peer" {{ $schema->is_weekend_holding ? 'checked' : '' }}>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
                                     </div>
                                     <label class="form-label !w-auto">{{ __('Weekend Holding') }}</label>
                                 </div>
@@ -269,10 +268,10 @@
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0">
                                         <input type="hidden" name="is_scalable" value="0">
-                                        <input type="checkbox" name="is_scalable" value="1"
-                                               class="sr-only peer" {{ $schema->is_scalable ? 'checked' : '' }}>
-                                        <span
-                                            class="peer-checked:bg-black-500 bg-gray-200 rounded-full peer-checked:translate-x-full w-11 h-6 inline-block"></span>
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_scalable" value="1" class="sr-only peer" {{ $schema->is_scalable ? 'checked' : '' }}>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
                                     </div>
                                     <label class="form-label !w-auto">{{ __('Scalable') }}</label>
                                 </div>
@@ -281,10 +280,10 @@
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0">
                                         <input type="hidden" name="is_refundable" value="0">
-                                        <input type="checkbox" name="is_refundable" value="1"
-                                               class="sr-only peer" {{ $schema->is_refundable ? 'checked' : '' }}>
-                                        <span
-                                            class="peer-checked:bg-black-500 bg-gray-200 rounded-full peer-checked:translate-x-full w-11 h-6 inline-block"></span>
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_refundable" value="1" class="sr-only peer" {{ $schema->is_refundable ? 'checked' : '' }}>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
                                     </div>
                                     <label class="form-label !w-auto">{{ __('Refundable') }}</label>
                                 </div>
@@ -316,24 +315,27 @@
             function addNewRule(phaseIndex) {
                 const rowCount = $('#rulesTable_' + phaseIndex + ' tbody tr').length; // Get the current number of rows
                 const newRow = `<tr>
-        <!-- Hidden field for new rule ID (empty) -->
-                <input type="hidden" name="rules[${phaseIndex}][${rowCount}][id]" value="" />
-                    <!-- Empty unique_id field for new rule -->
-                <td class="table-td">
-                <input type="text" name="rules[${phaseIndex}][${rowCount}][unique_id]" value="" class="form-control" readonly />
-                </td>
-                <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][allotted_funds]" class="form-control validate-number" /></td>
-                <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][daily_drawdown_limit]" class="form-control validate-number" /></td>
-                <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][max_drawdown_limit]" class="form-control validate-number" /></td>
-                <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][profit_target]" class="form-control validate-number" /></td>
-                <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][fee]" class="form-control validate-number" /></td>
-                <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][discount]" class="form-control validate-number" /></td>
-                <td class="table-td"><input type="checkbox" name="rules[${phaseIndex}][${rowCount}][is_new_order]" class="form-check-input" value="1" /></td>
-                <td class="table-td">
-                <a href="#" class="action-btn deleteRule">
-                <iconify-icon icon="lucide:trash"></iconify-icon>
-                </a>
-                </td>
+                    <input type="hidden" name="rules[${phaseIndex}][${rowCount}][id]" value="" />
+                    <td class="table-td">
+                    <input type="text" name="rules[${phaseIndex}][${rowCount}][unique_id]" value="" class="form-control" readonly />
+                    </td>
+                    <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][allotted_funds]" class="form-control validate-number" /></td>
+                    <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][daily_drawdown_limit]" class="form-control validate-number" /></td>
+                    <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][max_drawdown_limit]" class="form-control validate-number" /></td>
+                    <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][profit_target]" class="form-control validate-number" /></td>
+                    <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][fee]" class="form-control validate-number" /></td>
+                    <td class="table-td"><input type="text" name="rules[${phaseIndex}][${rowCount}][discount]" class="form-control validate-number" /></td>
+                    <td class="table-td">
+                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                            <input type="checkbox" name="rules[${phaseIndex}][${rowCount}][is_new_order]" value="1" class="sr-only peer">
+                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                        </label>
+                    </td>
+                    <td class="table-td">
+                        <a href="#" class="action-btn deleteRule">
+                            <iconify-icon icon="lucide:trash"></iconify-icon>
+                        </a>
+                    </td>
                 </tr>`;
                 $('#rulesTable_' + phaseIndex + ' tbody').append(newRow); // Append the new row to the specific phase's table
                 }

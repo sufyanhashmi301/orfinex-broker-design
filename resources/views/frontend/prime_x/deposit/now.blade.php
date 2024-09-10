@@ -3,7 +3,7 @@
     <div class="progress-steps-form mb-6">
         <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="target_id" value="{{the_hash($rule->id)}}">
+            <input type="hidden" name="target_id" value="{{the_hash($investment->id)}}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
@@ -12,7 +12,7 @@
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
                             <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-secondary-500 bg-opacity-[14%] text-secondary-500">
-                                <p>{{__('Pay amount :amount via scheme of :title ',['amount' => $rule->amount,'title' => $rule->forexSchemaPhase->forexSchema->title,])}}</p>
+                                <p>{{__('Pay amount :amount via scheme of :title ',['amount' => $investment->total,'title' => $investment->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->title,])}}</p>
                             </div>
 {{--                            <div class="input-area relative">--}}
 {{--                                <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>--}}
@@ -42,7 +42,7 @@
                                 <div class="relative">
                                     <input type="text" name="amount" class="form-control !text-lg"
                                         oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
-                                        aria-describedby="basic-addon1" value="{{$rule->amount}}" readonly>
+                                        aria-describedby="basic-addon1" value="{{$investment->total}}" readonly>
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>

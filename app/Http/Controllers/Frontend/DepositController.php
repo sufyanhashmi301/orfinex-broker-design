@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\ForexAccountStatus;
+use App\Enums\PricingInvestmentStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
+use App\Models\ForexSchemaInvestment;
 use App\Models\ForexSchemaPhaseRule;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
@@ -60,12 +62,12 @@ class DepositController extends GatewayController
             ->where('status', ForexAccountStatus::Ongoing)
             ->orderBy('id', 'desc')
             ->get();
-        $ruleId = get_hash($id);
-        $rule = ForexSchemaPhaseRule::findOrFail($ruleId);
+
+        $investment = ForexSchemaInvestment::where('pvx',get_hash($id))->firstorFail();
 
 //        dd($rule);
 
-        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'gateways', 'forexAccounts', 'rule'));
+        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'gateways', 'forexAccounts', 'investment'));
     }
 
     public function depositNow(Request $request)
@@ -97,18 +99,14 @@ class DepositController extends GatewayController
 
         $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
         $amount = $input['amount'];
-        
+
 
 //        dd($input);
         $targetId = get_hash($input['target_id']);
         $targetType = 'forex_deposit';
 //        $forexAccount = ForexAccount::where('login', $targetId)->first();
 //        $targetId = 124234234;
-        $rule = ForexSchemaPhaseRule::findOrFail($targetId);
-        if (!$rule) {
-            notify()->error(__('Sorry,Your Provided rule is not valid!'), 'Error');
-            return redirect()->back();
-        }
+
 
         $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
         $finalAmount = (float)$amount + (float)$charge;
@@ -144,14 +142,14 @@ class DepositController extends GatewayController
                 '[[message]]' => $txnInfo->approval_cause,
                 '[[status]]' => 'Pending',
             ];
-            $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
+//            $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
 
         }
         return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 
     }
 
-    public function depositDemoNow(Request $request)
+        public function depositDemoNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');

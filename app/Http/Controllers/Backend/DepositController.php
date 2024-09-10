@@ -10,10 +10,12 @@ use App\Exports\DepositsExport;
 use App\Http\Controllers\Controller;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
+use App\Models\ForexSchemaPhaseRule;
 use App\Models\Gateway;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
+use App\Services\ForexSchemaInvestormService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -22,6 +24,7 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Purifier;
 use Txn;
@@ -35,8 +38,11 @@ class DepositController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    private $investment;
+
+    public function __construct(ForexSchemaInvestormService $investment)
     {
+        $this->investment = $investment;
         $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
     }
@@ -223,9 +229,9 @@ class DepositController extends Controller
 
     public function history(Request $request)
     {
-        
+
         $filters = $request->only(['email', 'status',  'created_at']);
-      
+
         if ($request->ajax()) {
             $data = Transaction::where(function ($query) {
                 $query->where('type', TxnType::ManualDeposit)
@@ -313,11 +319,12 @@ class DepositController extends Controller
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
                 $transaction->pay_amount = $input['final_amount'];
-                if(isset($input['pay_amount'])) {
+                if (isset($input['pay_amount'])) {
                     $transaction->pay_amount = $input['pay_amount'];
                 }
                 $transaction->save();
                 $transaction = $transaction->fresh();
+                $this->approveInvestment($transaction->target_id);
 
 
                 }
@@ -347,13 +354,36 @@ class DepositController extends Controller
 
     public function export(Request $request)
     {
-       
+
         return Excel::download(new DepositsExport($request), 'deposits.xlsx');
     }
     public function view($id)
     {
         $transaction = Transaction::find($id);
         return response()->json(['transaction'=>$transaction]);
+    }
+    public function approveInvestment($ivID)
+    {
+        $ivInvestment = ForexSchemaPhaseRule::findOrFail($ivID);
+//        dd($ivInvestment);
+        if (filled($ivInvestment)) {
+
+//            try {
+//            $this->wrapInTransaction(function ($ivInvestment){
+                $this->investment->approveSubscription($ivInvestment, '', '');
+//                    try {
+//                        ProcessEmail::dispatch('investment-approved-customer', data_get($ivInvestment, 'user'), null, $ivInvestment);
+//                        ProcessEmail::dispatch('investment-approved-admin', data_get($ivInvestment, 'user'), null, $ivInvestment);
+//                    } catch (\Exception $e) {
+//                        save_mailer_log($e, 'investment-placed');
+//                    }
+//            }, $ivInvestment);
+            return true;
+//            } catch (\Exception $e) {
+//                throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
+//            }
+        }
+        throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
     }
 }
 

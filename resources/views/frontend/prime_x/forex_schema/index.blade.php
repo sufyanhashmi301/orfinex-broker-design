@@ -57,22 +57,22 @@
                                 {{ $schema->commission ? $schema->commission : 'NA' }}
                             </span>
                         </li>
-                        <li class="flex items-center py-3">
-                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Select Plan:') }}
-                            </span>
-                            <div class="input-area">
-                                <select class="form-control" id="rule_id_{{ $schema->id }}" name="rule_id" required>
-                                    @foreach($schema->forexSchemaPhase1->forexSchemaPhaseRules as $rule)
-                                        <option value="{{ the_hash($rule->id) }}">{{ $rule->amount }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </li>
+{{--                        <li class="flex items-center py-3">--}}
+{{--                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">--}}
+{{--                                {{ __('Select Plan:') }}--}}
+{{--                            </span>--}}
+{{--                            <div class="input-area">--}}
+{{--                                <select class="form-control" id="rule_id_{{ $schema->id }}" name="rule_id" required>--}}
+{{--                                    @foreach($schema->forexSchemaPhase1->forexSchemaPhaseRules as $rule)--}}
+{{--                                        <option value="{{ the_hash($rule->id) }}">{{ $rule->amount }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+{{--                        </li>--}}
                     </ul>
-                    <button type="button" class="btn inline-flex justify-center btn-primary w-full mt-5 create-account-btn" data-schema-id="{{ $schema->id }}">
+                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                         {{ __('Create Account') }}
-                    </button>
+                    </a>
                 </div>
             </div>
         @endforeach

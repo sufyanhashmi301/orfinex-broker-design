@@ -13,6 +13,8 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\RiskProfileTag;
 use App\Services\ForexApiService;
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use App\Traits\ForexApiTrait;
 
@@ -334,6 +336,48 @@ if (!function_exists('getSettingCreatedAt')) {
     }
 }
 
+if (!function_exists('percentage_calc')) {
+    /**
+     * @param @what
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function percentage_calc($percent, $amount)
+    {
+        $scale = 2;
+        $amount = (BigDecimal::of($amount)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of($percent))->dividedBy(100, $scale, RoundingMode::CEILING) : 0;
+
+        return is_object($amount) ? (string)$amount : $amount;
+
+    }
+
+}
+if (!function_exists('base_currency')) {
+    /**
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function base_currency()
+    {
+        return setting('site_currency', 'global');
+    }
+}
+if (!function_exists('percentage_of_total_calc')) {
+    /**
+     * @param @what
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function percentage_of_total_calc($amount, $total)
+    {
+        $scale = 2;
+        $percentage = (BigDecimal::of($total)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of(100))->dividedBy($total, $scale, RoundingMode::CEILING) : 0;
+        return is_object($percentage) ? (string)$percentage : $percentage;
+
+    }
+
+}
+
 
 
 if (!function_exists('oldSetting')) {
@@ -435,6 +479,21 @@ if (!function_exists('getTimezone')) {
         return array_values(Arr::sort($timeZones, function ($value) {
             return $value['name'];
         }));
+    }
+}
+
+if (!function_exists('to_minus')) {
+    /**
+     * @param $amount1
+     * @param $amount2
+     * @return mixed
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function to_minus($amount1, $amount2)
+    {
+        $total = BigDecimal::of($amount1)->minus(BigDecimal::of($amount2));
+        return is_object($total) ? (string)$total : $total;
     }
 }
 
@@ -1258,4 +1317,69 @@ if (!function_exists('getColorFromSettings')) {
         return hexToRgb($hexColor);
     }
 }
+
+if (!function_exists("generate_dummy_password")) {
+    /**
+     * @param object $method
+     * @return array
+     * @version 1.0.0
+     * @since 1.1.3
+     */
+    function generate_dummy_password($length = 12) {
+        $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $special = '!@#$%^&*()-_?';
+        $digits = '0123456789';
+
+        $password = '';
+
+        // Ensure at least one lowercase letter
+        $password .= $lowercase[rand(0, strlen($lowercase) - 1)];
+
+        // Ensure at least one uppercase letter
+        $password .= $uppercase[rand(0, strlen($uppercase) - 1)];
+
+        // Ensure at least one special character
+        $password .= $special[rand(0, strlen($special) - 1)];
+
+        // Ensure at least one digit
+        $password .= $digits[rand(0, strlen($digits) - 1)];
+
+        // Fill the rest of the password with random characters
+        for ($i = 4; $i < $length; $i++) {
+            $allCharacters = $lowercase . $uppercase . $special . $digits;
+            $password .= $allCharacters[rand(0, strlen($allCharacters) - 1)];
+        }
+
+        // Shuffle the password to ensure randomness
+        $password = str_shuffle($password);
+
+        return $password;
+    }
+}
+
+if (!function_exists('generate_unique_ivx')) {
+    /**
+     * @param $$model
+     * @param $column
+     * @since 1.0
+     * @version 1.0.0
+     */
+    function generate_unique_ivx($model, $column): string
+    {
+        $lastEntry = $model::orderBy('id', 'desc')->latest()->first();
+        $nextID = (isset($lastEntry->id)) ? sprintf('%04s', ($lastEntry->id + 1)) : sprintf('%04s', 1);
+
+        $increment = (int)(mt_rand(10, 99) . substr(time(), -2) . $nextID);
+        $duplicate = $model::where($column, $increment)->first();
+
+        if (blank($duplicate)) {
+            return $increment;
+        } else {
+            return generate_unique_ivx($model, $column);
+        }
+    }
+}
+
+
 

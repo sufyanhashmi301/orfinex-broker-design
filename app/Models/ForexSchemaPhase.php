@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use App\Enums\FundedSchemeTypes;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -60,4 +61,23 @@ class ForexSchemaPhase extends Model
 	{
 		return $this->hasMany(ForexSchemaPhaseRule::class);
 	}
+    public function getFundedTypeAttribute()
+    {
+        // Get the type from the related scheme model
+        $type = data_get($this, 'type');
+
+        // Check against defined constants in the FundedSchemeTypes interface
+        switch ($type) {
+            case FundedSchemeTypes::CHALLENGE_PHASE:
+                return 'Challenge Phase';  // Customize the string as needed
+            case FundedSchemeTypes::FUNDED_PHASE:
+                return 'Funded Phase';     // Customize the string as needed
+            case FundedSchemeTypes::DIRECT_FUNDING:
+                return 'Direct Funding';   // Customize the string as needed
+            default:
+                // Default to capitalizing the first letter of the type if not matched
+                return ucfirst($type);
+        }
+    }
+
 }

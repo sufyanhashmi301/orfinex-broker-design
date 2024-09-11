@@ -22,11 +22,21 @@
                     </ul>
                 </div>
             </div>--}}
-            @if(setting('is_webterminal','global'))
-                <a href="{{ route('webterminal') }}" class="block lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">
-                    <img src="{{ asset('frontend/images/trading.png') }}" class="dark:invert" alt="" style="height: 24px">
+
+            <div class="flex items-center md:space-x-4 space-x-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
+                <a href="index.html" class="mobile-logo xl:hidden inline-block">
+                    <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo h-10" alt="logo">
+                    <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo h-10" alt="logo">
                 </a>
-            @endif
+                <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
+                    <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
+                </button>
+                @if(setting('is_webterminal','global'))
+                    <a href="{{ route('webterminal') }}" class="flex items-center xl:text-sm text-lg xl:text-slate-400 text-slate-800 dark:text-slate-300 px-1 rtl:space-x-reverse search-modal">
+                        <img src="{{ asset('frontend/images/trading.png') }}" class="dark:invert" alt="" style="height: 24px">
+                    </a>
+                @endif
+            </div>
             <!-- end vertcial -->
 
             <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">

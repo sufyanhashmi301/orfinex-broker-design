@@ -691,7 +691,7 @@ class PricingInvestmentProcessor
             "email" => $invest->user->email,
             "agent" => 0,
             "account" => "",
-            "company" => env('APP_NAME', 'Company'),
+            "company" => setting('site_title', 'global'),
             "language" => 0,
             "phonePassword" => 'SNNH@2024@bol',
             "status" => "RE",
@@ -1031,7 +1031,7 @@ class PricingInvestmentProcessor
 
     public function approveInvestment(ForexSchemaInvestment $invest, $remarks = null, $note = null)
     {
-        dd($invest);
+//        dd($invest);
         $mt5Login = $this->createForexAccountForPricing($invest);
 //        $mt5Login = 877021;
 

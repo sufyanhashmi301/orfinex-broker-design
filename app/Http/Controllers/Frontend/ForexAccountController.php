@@ -315,7 +315,7 @@ class ForexAccountController extends GatewayController
             "email" => $user->email,
             "agent" => 0,
             "account" => "",
-            "company" => env('APP_NAME', 'Company'),
+            "company" => setting('site_title', 'global'),
             "language" => 0,
             "phonePassword" => 'SNNH@2024@bol',
             "status" => "RE",

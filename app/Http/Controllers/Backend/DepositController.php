@@ -10,6 +10,7 @@ use App\Exports\DepositsExport;
 use App\Http\Controllers\Controller;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
+use App\Models\ForexSchemaInvestment;
 use App\Models\ForexSchemaPhaseRule;
 use App\Models\Gateway;
 use App\Models\Invest;
@@ -364,11 +365,10 @@ class DepositController extends Controller
     }
     public function approveInvestment($ivID)
     {
-        $ivInvestment = ForexSchemaPhaseRule::findOrFail($ivID);
+        $ivInvestment = ForexSchemaInvestment::findOrFail($ivID);
 //        dd($ivInvestment);
         if (filled($ivInvestment)) {
-
-//            try {
+            try {
 //            $this->wrapInTransaction(function ($ivInvestment){
                 $this->investment->approveSubscription($ivInvestment, '', '');
 //                    try {
@@ -379,9 +379,9 @@ class DepositController extends Controller
 //                    }
 //            }, $ivInvestment);
             return true;
-//            } catch (\Exception $e) {
-//                throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
-//            }
+            } catch (\Exception $e) {
+                throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
+            }
         }
         throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
     }

@@ -8,8 +8,7 @@
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
-                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt=""
-                         class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">

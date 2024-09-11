@@ -158,6 +158,9 @@
                 </div>
             </div>
             @include('frontend::user.include.__recent_transaction')
+            @include('frontend::user.include.__pending_challenge')
+            @include('frontend::user.include.__active_challenge')
+            @include('frontend::user.include.__violated_challenge')
         </div>
 
          {{--for mobile--}}

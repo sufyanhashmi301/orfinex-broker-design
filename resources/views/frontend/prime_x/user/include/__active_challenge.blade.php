@@ -1,3 +1,4 @@
+@if(!blank($activePlans = data_get($investments, 'active', [])))
 <div class="card mb-3">
     <header class="card-header noborder">
         <h4 class="card-title">{{ __('Active Challenge (3)') }}</h4>
@@ -17,20 +18,23 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @foreach($activePlans as $plan)
                             <tr>
-                                <td class="table-td">{{ __('Beginner') }}</td>
-                                <td class="table-td">{{ __('$1,000') }}</td>
-                                <td class="table-td">{{ __('2024-06-24') }}</td>
-                                <td class="table-td">{{ __('$1,000') }}</td>
+                                <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
+                                <td class="table-td">{{ data_get($plan,'amount_allotted')}}</td>
+                                <td class="table-td">{{ data_get($plan,'start_date') ?? 'N/A'}}</td>
+                                <td class="table-td">{{ data_get($plan,'profit')}}</td>
                                 <td class="table-td">
-                                    <a href="" class="inline-flex justify-center">
+                                    <a href="{{route('user.invest.details',the_hash($plan->id))}}" class="inline-flex justify-center">
                                         <span class="flex items-center">
                                             <span>{{ __('Fund Matrics') }}</span>
-                                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
+                                                          icon="lucide:chevron-right"></iconify-icon>
                                         </span>
                                     </a>
                                 </td>
                             </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -38,3 +42,4 @@
         </div>
     </div>
 </div>
+@endif

@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\InvestmentStatus;
 use App\Enums\InvestStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\DepositMethod;
+use App\Models\ForexSchemaInvestment;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Schema;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Auth;
+use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Nette\Schema\ValidationException;
 use Txn;
 
 class InvestController extends GatewayController
@@ -146,6 +150,91 @@ class InvestController extends GatewayController
         return redirect()->route('user.invest-logs');
     }
 
+    public function showPlans(Request $request, $ucode = null)
+    {
+//        dd($request->all(),$ucode);
+        $invest = ForexSchemaInvestment::find(get_hash($ucode));
+        if (blank($invest)) {
+//            throw ValidationException::withMessages(['invest' => 'Invalid Funded!']);
+        }
+//        dd($invest);
+
+//        $balance = user_balance(AccType('main'));
+
+        // All Scheme Listing
+        $plans = $this->getSchemes();
+
+        if (empty($plans)) {
+//            $errors = MsgState::of('no-plan', 'invest');
+//            return view("investment.user.pricing.invest.errors", $errors);
+        }
+        $type = $request->funded_main_type;
+        $subType = $request->funded_sub_type;
+        $stage = $request->funded_stage;
+//        dd($type,$subType,$stage);
+
+        return view("investment.user.pricing.invest", compact('plans','invest','type','subType','stage','ucode'));
+    }
+    public function investmentDetails($id)
+    {
+        $invest = ForexSchemaInvestment::find(get_hash($id));
+//        dd($invest);
+        if (blank($invest)) {
+            notify()->error(__('Investment not found! Try Again'), 'Error');
+            return redirect()->back();
+//            throw ValidationException::withMessages(['invest' => 'Invalid Funded!']);
+        }
+        if ($invest->status == InvestmentStatus::ACTIVE) {
+            $response = $this->syncPricingAccount($invest->login);
+            $invest = $invest->fresh();
+
+            $growthPercentage = percentage_of_total_calc($invest->profit, $invest->amount_allotted);
+
+            $todayDrawddown = 0;
+            if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {
+                $todayDrawddown = to_minus($invest->snap_equity, $invest->current_equity);
+            }
+            $remainingLoss = to_minus($invest->daily_drawdown_limit, $todayDrawddown);
+
+            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage"));
+        }
+
+        $plans = PricingScheme::where('status', 'active')->get();
+
+        return view("investment.user.pricing.plan", compact("invest", "plans"));
+    }
+
+    public function syncPricingAccount($login)
+    {
+        $getUserResponse = get_mt5_account($login);
+//        if () {
+            $this->updatePricingInvestmentAccount($getUserResponse);
+//        }else{
+//            $invest = ForexSchemaInvestment::where('login',$login)->first();
+//            $invest->status = PricingInvestmentStatus::VIOLATED;
+//            $invest->violated_at = Carbon::now();
+//            $invest->save();
+//        }
+    }
+    public function updatePricingInvestmentAccount($getUserResponse)
+    {
+        $resData = $getUserResponse;
+//        dd($resData);
+        if ($getUserResponse) {
+            $pricingInvestment = ForexSchemaInvestment::where('login', $resData->Login)->first();
+//            $pricingInvestment->leverage = $resData->Leverage;
+            $pricingInvestment->current_balance = $resData->Balance;
+            $pricingInvestment->current_equity = $resData->Equity;
+
+            $profit = 0;
+            if(to_minus($resData->Equity,$pricingInvestment->amount_allotted) > 0){
+                $profit = to_minus($resData->Equity,$pricingInvestment->amount_allotted);
+            }
+            $pricingInvestment->profit = $profit;
+//            $pricingInvestment->group = $resData->Group;
+            $pricingInvestment->save();
+        }
+    }
     public function investLogs(Request $request)
     {
 

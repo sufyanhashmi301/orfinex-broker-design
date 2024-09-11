@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\InvestmentStatus;
 use App\Jobs\AgentReferralJob;
 use App\Models\Banner;
 use App\Models\ForexAccount;
+use App\Models\ForexSchemaInvestment;
 use App\Traits\ForexApiTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -58,6 +60,16 @@ class DashboardController extends Controller
         $getReferral = $user->getReferrals()->first();
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         $banners = Banner::where('status', 1)->get();
-        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode', 'banners'));
+
+        $investments = ForexSchemaInvestment::whereIn('status', [
+            InvestmentStatus::PENDING,
+            InvestmentStatus::ACTIVE,
+            InvestmentStatus::COMPLETED,
+            InvestmentStatus::VIOLATED
+        ])->where('user_id', $user->id)
+            ->orderBy('id', 'desc')->get();
+        $investments = $investments->groupBy('status');
+
+        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode', 'banners', 'investments'));
     }
 }

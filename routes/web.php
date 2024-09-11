@@ -100,6 +100,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     });
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');
+    Route::get('/invest/{ucode?}', [InvestController::class, 'showPlans'])->name('invest');
+    Route::get('/fund/plan/{id}', [InvestController::class, 'investmentDetails'])->name('invest.details');
     Route::get('invest-logs', [InvestController::class, 'investLogs'])->name('invest-logs');
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
     Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
@@ -345,7 +347,7 @@ Route::get('user/partner/clients', function () {
 });
 
 Route::get('user/active-plans', function () {
-    return view('frontend::fund_board.active_plan');
+    return view('frontend::fund_board.active_plan_design');
 })->name('user.activePlan');
 
 Route::get('user/contracts', function () {

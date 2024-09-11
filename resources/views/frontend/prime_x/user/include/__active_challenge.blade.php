@@ -22,7 +22,7 @@
                             <tr>
                                 <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
                                 <td class="table-td">{{ data_get($plan,'amount_allotted')}}</td>
-                                <td class="table-td">{{ data_get($plan,'start_date') ?? 'N/A'}}</td>
+                                <td class="table-td">{{ data_get($plan,'term_start') ?? 'N/A'}}</td>
                                 <td class="table-td">{{ data_get($plan,'profit')}}</td>
                                 <td class="table-td">
                                     <a href="{{route('user.invest.details',the_hash($plan->id))}}" class="inline-flex justify-center">

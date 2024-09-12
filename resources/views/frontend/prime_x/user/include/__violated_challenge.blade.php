@@ -1,7 +1,7 @@
 @if(!blank($drawdownPlans = data_get($investments, 'violated', [])))
     <div class="card mb-3">
         <header class="card-header noborder">
-            <h4 class="card-title">{{ __('Violated Challenge (3)') }}</h4>
+            <h4 class="card-title">{{ __('Violated Challenge (:count)',['count'=> count($drawdownPlans) ]) }}</h4>
         </header>
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">
@@ -19,7 +19,6 @@
                             </thead>
                             <tbody>
                             @foreach($drawdownPlans as $plan)
-
                                 <tr>
                                     <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
                                     <td class="table-td">{{ data_get($plan,'amount_allotted')}}</td>

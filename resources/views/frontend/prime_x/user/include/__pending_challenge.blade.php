@@ -1,7 +1,7 @@
 @if(!blank($pendingPlans = data_get($investments, 'pending', [])))
     <div class="card mb-3">
         <header class="card-header noborder">
-            <h4 class="card-title">{{ __('Pending Challenge (3)') }}</h4>
+            <h4 class="card-title">{{ __('Pending Challenge (:count)',['count'=> count($pendingPlans) ]) }}</h4>
         </header>
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">

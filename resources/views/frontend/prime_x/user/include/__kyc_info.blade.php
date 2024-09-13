@@ -29,7 +29,7 @@
             </div>
             <div class="flex-0 text-xl cursor-pointer text-danger-500">
                 @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
-                    <a href="{{ route('user.kyc') }}" class="btn inline-flex justify-center btn-dark btn-sm">
+                    <a href="{{ route('user.kyc') }}" class="btn loaderBtn inline-flex justify-center btn-dark btn-sm">
                         <span>{{ __('Submit Now') }}</span>
                     </a>
                     <a href="" class="btn inline-flex justify-center btn-outline-dark btn-sm" type="button"

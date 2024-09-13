@@ -3,13 +3,13 @@
 @include('frontend::include.__head')
 <body class="font-inter dashcode-app" id="body_class">
     @include('notify::components.notify')
-    <div id="page-loader">
+    <div id="page-loader" style="display: none;">
         <div class="dot bg-primary"></div>
         <div class="dot bg-primary"></div>
         <div class="dot bg-primary"></div>
     </div>
     <!--Full Layout-->
-    <main class="app-wrapper" id="content-wrapper" style="display: none;">
+    <main class="app-wrapper">
 
         <div class="sidebar-wrapper group dark:shadow-slate-700">
             @include('frontend::include.__user_side_nav')

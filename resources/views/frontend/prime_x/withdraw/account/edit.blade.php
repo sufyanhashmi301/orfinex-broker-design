@@ -6,7 +6,7 @@
 
     <div class="flex justify-end flex-wrap items-center mb-5">
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary inline-flex items-center">
+            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
                 {{ __('Withdraw Accounts') }}
             </a>
         </div>
@@ -16,8 +16,7 @@
             <div class="card">
                 <div class="card-body p-6">
                     <div class="progress-steps-form">
-                        <form action="{{ route('user.withdraw.account.update',$withdrawAccount->id) }}" method="post"
-                              enctype="multipart/form-data">
+                        <form action="{{ route('user.withdraw.account.update',$withdrawAccount->id) }}" method="post" enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
 

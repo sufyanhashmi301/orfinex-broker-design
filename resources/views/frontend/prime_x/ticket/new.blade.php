@@ -47,7 +47,7 @@
                 <div class="card-header noborder">
                     <h4 class="card-title">{{ __('Add Ticket') }}</h4>
                     <div>
-                        <a href="{{ route('user.ticket.index') }}" class="btn btn-primary inline-flex items-center justify-center">
+                        <a href="{{ route('user.ticket.index') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
                             {{ __('All Tickets') }}
                         </a>
                     </div>

@@ -194,7 +194,7 @@
                                         @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
                                     </ul>
                                 </div>
-                                <a href="{{route('user.kyc.automatic')}}" class="btn btn-primary block-btn mt-auto">
+                                <a href="{{route('user.kyc.automatic')}}" class="btn btn-primary loaderBtn block-btn mt-auto">
                                     {{ __('Go to Sumsub') }}
                                 </a>
                             </div>
@@ -221,7 +221,7 @@
                                         <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
 
                                     @else
-                                        <a href="{{ route('user.kyc.basic') }}" class="btn btn-primary block-btn mt-auto">
+                                        <a href="{{ route('user.kyc.basic') }}" class="btn btn-primary loaderBtn block-btn mt-auto">
                                             {{ __('Go to Manual Submission') }}
                                         </a>
                                     @endif

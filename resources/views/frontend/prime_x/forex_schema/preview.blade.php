@@ -53,13 +53,13 @@
                                                 {{ $index == 0 ? 'checked' : '' }}>
                                             <span
                                                 class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                            @if($rule->discount > 0)
-                                                <strike>${{ $rule->amount ?? '' }}</strike> /
-                                                <span
-                                                    class="dark:text-white">${{ $rule->amount - $rule->discount ?? '' }}</span>
-                                            @else
-                                                <span class="dark:text-white">${{ $rule->amount ?? '' }}</span>
-                                            @endif
+{{--                                            @if($rule->discount > 0)--}}
+{{--                                                <strike>${{ $rule->amount ?? '' }}</strike> /--}}
+{{--                                                <span--}}
+{{--                                                    class="dark:text-white">${{ $rule->amount - $rule->discount ?? '' }}</span>--}}
+{{--                                            @else--}}
+                                                <span class="dark:text-white">${{ $rule->allotted_funds ?? '' }}</span>
+{{--                                            @endif--}}
                                         </label>
                                     </div>
                                 @endforeach
@@ -189,21 +189,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{-- Payment Gateway --}}
-                        <div class="input-area relative">
-                            <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">{{ __('Payment Gateway') }}</p>
-                                <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">{{ __('Select your source to pay for service charges.') }}</p>
-                            </div>
-                            <div class="grid grid-cols-1 gap-5 mb-5">
-                                <div class="input-group select2-lg">
-                                    <select name="account_from" class="select2 form-control !text-lg w-full">
-                                        <option value="" class="py-2" selected=""></option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </form>
                 </div>
             </div>

@@ -32,6 +32,10 @@
             --tw-text-opacity: 1;
             color: rgba({{ implode(' ', getColorFromSettings('active_menu_color')) }} / var(--tw-text-opacity));
         }
+        #page-loader .dot {
+            --tw-bg-opacity: 1;
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+        }
     </style>
 
     @yield('style')

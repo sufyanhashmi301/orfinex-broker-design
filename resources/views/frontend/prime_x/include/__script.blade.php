@@ -37,6 +37,23 @@
 @yield('script')
 @stack('script')
 <script>
+    document.onreadystatechange = function () {
+        var state = document.readyState;
+        if (state === 'interactive') {
+            document.getElementById('content-wrapper').style.display = 'none';
+        } else if (state === 'complete') {
+            setTimeout(function() {
+                document.getElementById('page-loader').style.display = 'none';
+                var contents = document.getElementById('content-wrapper');
+                contents.style.display = 'block';
+                setTimeout(function() {
+                    contents.classList.add('show');
+                    document.body.style.overflow = 'auto'; // Re-enable scrolling
+                }, 50); // Small delay to ensure display block is applied
+            }, 1000); // Adjust delay as needed
+        }
+    }
+    
     $(document).ready(function () {
         function calculateHeights() {
             // Store heights in variables, checking if elements exist

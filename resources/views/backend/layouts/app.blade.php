@@ -3,8 +3,13 @@
 @include('backend.include.__head')
 
 <body class="font-inter dashcode-app" id="body_class">
+    <div id="page-loader">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
     <!--Full Layout-->
-    <main class="app-wrapper">
+    <main class="app-wrapper" id="content-wrapper" style="display: none;">
 
         <x:notify-messages/>
 

@@ -80,26 +80,23 @@
                                 <span>{{$account->currency}}</span>
                             </p>
                             <div class="action-btns flex items-center gap-3">
-                                <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark mt-0">
-                                <span class="flex items-center">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                                  icon="octicon:download-16"></iconify-icon>
-                                    <span>{{ __('Deposit') }}</span>
-                                </span>
+                                <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark loaderBtn mt-0">
+                                    <span class="flex items-center">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>
+                                        <span>{{ __('Deposit') }}</span>
+                                    </span>
                                 </a>
-                                <a href="{{route('user.withdraw.view')}}" class="btn btn-sm btn-outline-dark mt-0">
-                                <span class="flex items-center">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                                  icon="octicon:upload-16"></iconify-icon>
-                                    <span>{{ __('Withdraw') }}</span>
-                                </span>
+                                <a href="{{route('user.withdraw.view')}}" class="btn btn-sm btn-outline-dark loaderBtn mt-0">
+                                    <span class="flex items-center">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:upload-16"></iconify-icon>
+                                        <span>{{ __('Withdraw') }}</span>
+                                    </span>
                                 </a>
                                 <a href="javascript:;" class="btn btn-sm btn-dark mt-0">
-                                <span class="flex items-center">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                                  icon="tabler:chart-candle"></iconify-icon>
-                                    <span>{{ __('Trade') }}</span>
-                                </span>
+                                    <span class="flex items-center">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="tabler:chart-candle"></iconify-icon>
+                                        <span>{{ __('Trade') }}</span>
+                                    </span>
                                 </a>
                                 @include('frontend::.user.forex.dropdown-menu')
                             </div>

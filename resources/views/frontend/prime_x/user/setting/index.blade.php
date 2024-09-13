@@ -6,29 +6,29 @@
     <div class="flex justify-between flex-wrap items-center mb-5">
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
             <li class="nav-item">
-                <a href="{{ route('user.setting.profile') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.setting.profile') }}">
+                <a href="{{ route('user.setting.profile') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.profile') }}">
                     Profile
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('user.setting.security') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.setting.security') }}">
+                <a href="{{ route('user.setting.security') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.security') }}">
                     Security
                 </a>
             </li>
             @if(setting('kyc_verification','permission'))
             <li class="nav-item">
-                <a href="{{ route('user.kyc') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.kyc') }}">
+                <a href="{{ route('user.kyc') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.kyc') }}">
                     KYC
                 </a>
             </li>
             @endif
             <li class="nav-item">
-                <a href="{{ route('user.setting.communication') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.setting.communication') }}">
+                <a href="{{ route('user.setting.communication') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.communication') }}">
                     Communication
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('user.agreements') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.agreements') }}">
+                <a href="{{ route('user.agreements') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.agreements') }}">
                     Agreements
                 </a>
             </li>
@@ -38,7 +38,7 @@
 
     <!-- Modal for Edit Phone -->
     @include('frontend::.user.setting.profile.modal.__edit_phone')
-    
+
     <!-- Modal for Edit Email -->
     @include('frontend::.user.setting.profile.modal.__edit_address')
 

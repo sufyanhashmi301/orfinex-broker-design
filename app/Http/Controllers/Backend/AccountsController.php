@@ -68,23 +68,30 @@ class   AccountsController extends Controller
         $realForexAccounts = ForexAccount::where('account_type', $type)
             ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
 //dd($realForexAccounts);
+        $withBalance = 0.0;
+        $withoutBalance = 0.0;
         try {
-            $withBalance = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $realForexAccounts)
-                ->where('Balance', '>', 0)->count();
+            if($realForexAccounts) {
+                $withBalance = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->whereIn('Login', $realForexAccounts)
+                    ->where('Balance', '>', 0)->count();
+            }
         } catch (\Exception $e) {
             \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-            $withBalance = 0.0;
+
         }
+
         try {
-            $withoutBalance = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $realForexAccounts)
-                ->where('Balance', 0)->count();
+            if($realForexAccounts) {
+                $withoutBalance = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->whereIn('Login', $realForexAccounts)
+                    ->where('Balance', 0)->count();
+            }
         } catch (\Exception $e) {
             \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-            $withoutBalance = 0.0;
+
         }
         $unActiveAccounts = ForexAccount::where('account_type', $type)->where('status', '!=', ForexAccountStatus::Ongoing)->count();
 

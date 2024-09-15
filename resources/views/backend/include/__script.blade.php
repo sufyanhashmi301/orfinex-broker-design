@@ -20,22 +20,41 @@
 @yield('script')
 @stack('single-script')
 <script>
-    document.onreadystatechange = function () {
-        var state = document.readyState;
-        if (state === 'interactive') {
-            document.getElementById('content-wrapper').style.display = 'none';
-        } else if (state === 'complete') {
-            setTimeout(function() {
-                document.getElementById('page-loader').style.display = 'none';
-                var contents = document.getElementById('content-wrapper');
-                contents.style.display = 'block';
-                setTimeout(function() {
-                    contents.classList.add('show');
-                    document.body.style.overflow = 'auto'; // Re-enable scrolling
-                }, 50); // Small delay to ensure display block is applied
-            }, 1000); // Adjust delay as needed
+
+    function removeLoader(loader) {
+        if (loader) {
+            loader.parentElement.removeChild(loader);
         }
     }
+
+    window.addEventListener('beforeunload', (event) => {
+        const loader = document.querySelector('.page-loader');
+        if (loader) {
+            loader.classList.remove('loader-hidden');
+        }
+    });
+
+    // Hide loader when the page is fully loaded
+    window.addEventListener('load', () => {
+        const loader = document.querySelector('.page-loader');
+        if (loader) {
+            loader.classList.add('loader-hidden');
+
+            const transitionDuration = parseFloat(getComputedStyle(loader).transitionDuration) * 1000;
+            const removalTimeout = transitionDuration || 300;
+
+            const transitionEndHandler = () => {
+                loader.removeEventListener('transitionend', transitionEndHandler);
+                removeLoader(loader);
+            };
+
+            loader.addEventListener('transitionend', transitionEndHandler);
+
+            setTimeout(() => {
+                removeLoader(loader);
+            }, removalTimeout);
+        }
+    });
 
     $(document).ready(function () {
         function calculateHeights() {

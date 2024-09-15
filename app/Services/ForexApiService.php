@@ -199,7 +199,8 @@ class ForexApiService
         $params = ['group' => $group];
         return $this->get($endpoint, $params);
     }
-// Summary of Positions by Client API
+
+    // Summary of Positions by Client API
     public function getClientPositionSummary($login)
     {
         $endpoint = 'Position/summary';
@@ -207,7 +208,7 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
-// Summary of Positions by Group API
+    // Summary of Positions by Group API
     public function getGroupPositionSummary($group)
     {
         $endpoint = 'Position/summarygroup';

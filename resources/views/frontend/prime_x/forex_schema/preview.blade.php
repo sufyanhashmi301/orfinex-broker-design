@@ -30,8 +30,7 @@
         <div class="lg:col-span-8 col-span-12">
             <div class="card">
                 <div class="card-body p-6">
-                    <form action="{{ route('user.forex-account-create-now') }}" method="post"
-                          enctype="multipart/form-data" id="payment-form">
+                    <form action="{{ route('user.forex-account-create-now') }}" method="post" enctype="multipart/form-data" id="payment-form" class="space-y-6">
                         @csrf
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
@@ -189,7 +188,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>

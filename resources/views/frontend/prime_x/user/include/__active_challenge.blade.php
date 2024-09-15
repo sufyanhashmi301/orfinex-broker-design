@@ -42,4 +42,15 @@
         </div>
     </div>
 </div>
+@else
+    <div class="card mb-3">
+        <div class="card-body p-6">
+            <div class="flex items-center justify-center flex-col gap-3">
+                <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
+                <p class="text-lg text-slate-600 dark:text-slate-100">
+                    {{ __("You don't have active Challenge yet.") }}
+                </p>
+            </div>
+        </div>
+    </div>
 @endif

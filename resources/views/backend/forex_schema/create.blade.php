@@ -167,45 +167,45 @@
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Type Spread:') }}</label>
+                        <label class="form-label" for="">{{ __('Alloted Fund:') }}</label>
                         <input
                             type="text"
                             class="form-control"
-                            placeholder="Account Type Spread"
+                            placeholder="$100,000"
                             name="spread"
                             value="{{ old('spread') }}"
                             required
                         />
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Account Type Commission:') }}</label>
+                        <label class="form-label" for="">{{ __('Profit Target:') }}</label>
                         <input
                             type="text"
                             class="form-control"
-                            placeholder="Account Type Commission"
+                            placeholder="$10,000"
                             name="commission"
                             value="{{ old('commission') }}"
                             required
                         />
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Leverage:') }}</label>
+                        <label class="form-label" for="">{{ __('Daily Max Loss:') }}</label>
                         <input
                             type="text"
                             name="leverage"
                             class="form-control"
-                            placeholder="leverage e.g 10,20,50"
+                            placeholder="$5,000"
                             value="{{ old('leverage') }}"
                             required
                         />
                     </div>
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('First Min Deposit:') }}</label>
+                        <label class="form-label" for="">{{ __('Maximum Loss:') }}</label>
                         <input
                             type="text"
                             name="first_min_deposit"
                             class="form-control"
-                            placeholder="Min deposit"
+                            placeholder="$10,000"
                             value="{{ old('first_min_deposit') }}"
                         />
                     </div>

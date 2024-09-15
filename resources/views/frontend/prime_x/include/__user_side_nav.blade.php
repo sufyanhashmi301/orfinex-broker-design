@@ -69,6 +69,18 @@
             </a>
         </li>
 
+
+        @if(setting('is_webterminal','global'))
+            <li>
+                <a href="{{ route('webterminal') }}" class="navItem {{ isActive('webterminal') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="tabler:chart-candle"></iconify-icon>
+                    <span>{{ __('Trading Platform') }}</span>
+                </span>
+                </a>
+            </li>
+        @endif
+
         <li>
             <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
                 <span class="flex items-center">
@@ -78,40 +90,42 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ route('user.wallet.index') }}" class="navItem {{ isActive('user.wallet*') }}">
+        @if(setting('kyc_verification','permission'))
+            <li>
+                <a href="{{ route('user.kyc') }}" class="navItem {{ isActive('user.kyc') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="solar:wallet-linear"></iconify-icon>
-                    <span>{{ __('Wallets') }}</span>
+                    <iconify-icon class="nav-icon" icon="mdi:user-check-outline"></iconify-icon>
+                    <span>{{ __('Verification') }}</span>
                 </span>
-            </a>
-        </li>
+                </a>
+            </li>
+        @endif
 
-        <li>
+        {{--<li>
             <a href="{{ route('user.deposit.amount') }}"
                class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
-                    <span>{{ __('Deposit') }}</span>
+                    <span>{{ __('Payments') }}</span>
                 </span>
             </a>
-        </li>
-
-        <li>
-            <a href="{{ route('user.transfer') }}" class="navItem {{ isActive('user.transfer') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
-                    <span>{{ __('Transfer') }}</span>
-                </span>
-            </a>
-        </li>
+        </li>--}}
 
         <li>
             <a href="{{ route('user.withdraw.view') }}"
                class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
-                    <span>{{ __('Withdraw') }}</span>
+                    <span>{{ __('Payout') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.certificates') }}" class="navItem {{ isActive('user.certificates') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
+                    <span>{{ __('Certificates') }}</span>
                 </span>
             </a>
         </li>
@@ -126,10 +140,19 @@
         </li>
 
         <li>
-            <a href="{{ route('user.certificates') }}" class="navItem {{ isActive('user.certificates') }}">
+            <a href="{{ route('user.leaderboard') }}" class="navItem {{ isActive('user.leaderboard') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
-                    <span>{{ __('Certificates') }}</span>
+                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>
+                    <span>{{ __('Leaderboard') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.utilities') }}" class="navItem {{ isActive('user.utilities') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="solar:share-circle-linear"></iconify-icon>
+                    <span>{{ __('Utilities') }}</span>
                 </span>
             </a>
         </li>

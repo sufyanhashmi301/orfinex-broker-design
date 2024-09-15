@@ -44,6 +44,78 @@
 
     <div class="md:block hidden desktop-screen-show">
         @include('frontend::user.include.__user_card')
+
+        <div class="grid md:grid-cols-2 grid-cols-1 gap-3 mb-3">
+            <div class="card border dark:border-slate-700">
+                <div class="card-body p-6">
+                    <div class="mb-5">
+                        <h4 class="mb-1">{{ __('Free Trail') }}</h4>
+                        <p class="text-sm text-success-500 mb-2">
+                            {{ __('Enhance Your Trading Skills') }}
+                        </p>
+                        <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">
+                            {{ __('Experience risk-free trading and hone your skills without any financial commitment.') }}
+                        </p>
+                    </div>
+                    <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Not eligible for a live trading account') }}
+                        </li>
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('14-day trial period') }}
+                        </li>
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Access to basic account analysis tools') }}
+                        </li>
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Limited app usage') }}
+                        </li>
+                    </ul>
+                    <a href="javascript:;" class="btn inline-flex justify-center btn-dark w-full mt-5" type="button" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
+                        {{ __('Start Free Trial') }}
+                    </a>
+                </div>
+            </div>
+            <div class="card border dark:border-slate-700">
+                <div class="card-body p-6">
+                    <div class="mb-5">
+                        <h4 class="mb-1">{{ setting('site_title', 'global') }} {{ __('Challenge') }}</h4>
+                        <p class="text-sm text-success-500 mb-2">
+                            {{ __('Trade with up to $100,000 in Funding') }}
+                        </p>
+                        <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">
+                            {{ __('Showcase your trading proficiency by completing the evaluation and qualify for a funded account.') }}
+                        </p>
+                    </div>
+                    <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Receive funding up to $100,000') }}
+                        </li>
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Prove your trading expertise') }}
+                        </li>
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Full account performance analysis') }}
+                        </li>
+                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
+                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
+                            {{ __('Access to premium apps and tools') }}
+                        </li>
+                    </ul>
+                    <a href="javascript:;" class="btn inline-flex justify-center btn-primary w-full mt-5">
+                        {{ __('Start Challenge') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
             <a href="{{ route('user.deposit.amount') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
@@ -58,8 +130,7 @@
             </a>
             <a href="{{ route('user.withdraw.view') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div
-                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -69,8 +140,7 @@
             </a>
             <a href="{{ route('user.transfer') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div
-                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="lucide:trophy"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -80,8 +150,7 @@
             </a>
             <a href="{{ route('user.forex-account-logs') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div
-                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="uil:chart-line"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -91,8 +160,7 @@
             </a>
             <a href="{{ route('user.kyc') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div
-                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -174,11 +242,9 @@
             </div>
         </div>
         @include('frontend::user.include.__recent_transaction')
-        @if(count($investments) > 0)
-            @include('frontend::user.include.__pending_challenge')
-            @include('frontend::user.include.__active_challenge')
-            @include('frontend::user.include.__violated_challenge')
-        @endif
+        @include('frontend::user.include.__pending_challenge')
+        @include('frontend::user.include.__active_challenge')
+        @include('frontend::user.include.__violated_challenge')
     </div>
 
     {{--for mobile--}}
@@ -186,6 +252,7 @@
         @include('frontend::user.mobile_screen_include.dashboard.__index')
     </div>
 
+    @include('frontend::user.include.__coming_soon')
 
 @endsection
 @section('script')

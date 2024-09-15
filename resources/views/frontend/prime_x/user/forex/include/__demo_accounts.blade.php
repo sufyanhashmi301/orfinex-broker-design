@@ -3,7 +3,7 @@
         <div class="flex items-center justify-center flex-col gap-3">
             <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
             <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
-                You don't have any Demo account.
+                {{ __("You don't have any Funded account.") }}
             </p>
         </div>
     </div>

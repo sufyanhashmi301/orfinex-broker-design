@@ -1,18 +1,25 @@
-@extends('frontend::user.setting.index')
+@extends('frontend::layouts.user')
 @section('title')
     {{ __('KYC') }}
 @endsection
-@section('settings-content')
-    <div class="card">
+@section('content')
+    <div class="card mb-6">
         <div class="card-body p-6">
-            <div class="mb-10">
-                <h4 class="card-title mb-2">{{ __('Verification Center') }}</h4>
-                <p class="block font-normal text-sm text-slate-500">
-                    {{ __('Ensure Trust and Security: Complete your KYC to access all features.') }}
-                </p>
+            <div class="flex items-center justify-between mb-10">
+                <div>
+                    <h4 class="card-title mb-2">
+                        {{ setting('site_title', 'global') }} {{ __('Verification Center') }}
+                    </h4>
+                    <p class="block font-normal text-sm text-slate-500">
+                        {{ __('Ensure Trust and Security: Complete your KYC to access all features.') }}
+                    </p>
+                </div>
+                <a href="{{ route('user.setting.profile') }}" class="btn btn-primary inline-flex items-center justify-center">
+                    {{ __('Go to Profile') }}
+                </a>
             </div>
             @if($totalActiveLevels > 1)
-                <div class="max-w-5xl mx-auto mb-6">
+                <div class="max-w-5xl mx-auto">
                     <ul class="relative w-full m-0 flex list-none justify-between overflow-hidden p-0 transition-[height] duration-200 ease-in-out">
                         <!--First item-->
                         <li class="w-[4.5rem] flex-auto">
@@ -86,6 +93,11 @@
                     </ul>
                 </div>
             @endif
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-6">
             <div class="grid grid-cols-1 md:grid-cols-3  gap-5">
                 @foreach($kycLevels as $kycLevel)
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)

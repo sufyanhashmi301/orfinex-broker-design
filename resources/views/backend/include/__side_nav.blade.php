@@ -137,13 +137,13 @@
                             </a>
                         </li>
                     @endcan
-                    @can('schema-edit')
+                    {{--@can('schema-edit')
                         <li>
                             <a href="{{route('admin.ibAccountType.index')}}" class="{{ isActive('admin.ibAccountType*') }}">
                                 {{ __('IB Account Type') }}
                             </a>
                         </li>
-                    @endcan
+                    @endcan--}}
 
                     {{--                        @can('schema-edit')--}}
 {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
@@ -216,7 +216,7 @@
                 </li>
             @endcanany
 
-            @canany(['ib-list','ib-action','ib-form-manage'])
+            {{--@canany(['ib-list','ib-action','ib-form-manage'])
                 <li class="{{ isActive(['admin.ib*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -264,7 +264,7 @@
                         @endcan
                     </ul>
                 </li>
-            @endcanany
+            @endcanany--}}
         @endcanany
 
         {{-- *************************************************************  Transactions *********************************************************--}}

@@ -9,19 +9,19 @@
                 <a href="#tabs-realAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary active"
                     id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"
-                    aria-controls="tabs-realAccounts" aria-selected="true">{{ __('Real') }}</a>
+                    aria-controls="tabs-realAccounts" aria-selected="true">{{ __('Challenge') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="#tabs-demoAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary"
                     id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"
-                    aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Demo') }}</a>
+                    aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Funded') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="#tabs-archivedAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary"
                     id="tabs-archivedAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-archivedAccounts" role="tab"
-                    aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Archived') }}</a>
+                    aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated') }}</a>
             </li>
         </ul>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -45,7 +45,7 @@
             <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-primary btn-sm">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
-                    <span>{{ __('Open New Account') }}</span>
+                    <span>{{ __('Start Challenge') }}</span>
                 </span>
             </a>
         </div>

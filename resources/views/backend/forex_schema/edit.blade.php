@@ -127,22 +127,22 @@
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
-                        <label class="form-label">{{ __('Account Type Spread:') }}</label>
+                        <label class="form-label">{{ __('Alloted Fund:') }}</label>
                         <input type="text" name="spread" class="form-control" placeholder="Account Type Spread"
                                value="{{ $schema->spread }}" required/>
                     </div>
                     <div class="input-area">
-                        <label class="form-label">{{ __('Account Type Commission:') }}</label>
+                        <label class="form-label">{{ __('Profit Target:') }}</label>
                         <input type="text" name="commission" class="form-control" placeholder="Account Type Commission"
                                value="{{ $schema->commission }}" required/>
                     </div>
                     <div class="input-area">
-                        <label class="form-label">{{ __('Leverage:') }}</label>
+                        <label class="form-label">{{ __('Daily Max Loss:') }}</label>
                         <input type="text" name="leverage" class="form-control" placeholder="leverage e.g 10,20,50"
                                value="{{ $schema->leverage }}" required/>
                     </div>
                     <div class="input-area">
-                        <label class="form-label">{{ __('First Min Deposit:') }}</label>
+                        <label class="form-label">{{ __('Maximum Loss:') }}</label>
                         <input type="text" name="first_min_deposit" class="form-control" placeholder="Min deposit"
                                value="{{ $schema->first_min_deposit }}"/>
                     </div>

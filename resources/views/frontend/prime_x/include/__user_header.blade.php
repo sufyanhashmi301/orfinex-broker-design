@@ -31,11 +31,6 @@
                 <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
                     <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
-                @if(setting('is_webterminal','global'))
-                    <a href="{{ route('webterminal') }}" class="flex items-center xl:text-sm text-lg xl:text-slate-400 text-slate-800 dark:text-slate-300 px-1 rtl:space-x-reverse search-modal">
-                        <img src="{{ asset('frontend/images/trading.png') }}" class="dark:invert" alt="" style="height: 24px">
-                    </a>
-                @endif
             </div>
             <!-- end vertcial -->
 

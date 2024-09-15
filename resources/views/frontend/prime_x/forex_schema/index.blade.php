@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-5">
         <h4 class="font-medium text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-            {{ __('Open New Account') }}
+            {{ __('Start Challenge') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <a href="{{ route('user.forex-account-logs') }}" class="btn btn-primary inline-flex items-center justify-center">{{ __('My Accounts') }}</a>
@@ -16,7 +16,7 @@
         @foreach($schemas as $schema)
             <div class="card relative border dark:border-slate-700">
                 <div class="card-body p-6">
-                    <div class="">
+                    <div class="mb-5">
                         <div class="flex items-center justify-between mb-1">
                             <h4>{{ $schema->title }}</h4>
                             @if($schema->badge)
@@ -33,7 +33,7 @@
                     <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                         <li class="flex items-center py-3">
                             <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Initial Deposit') }}
+                                {{ __('Alloted Fund') }}
                             </span>
                             <span class="flex-1 text-right">
                                 <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
@@ -43,7 +43,7 @@
                         </li>
                         <li class="flex items-center py-3">
                             <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Spread') }}
+                                {{ __('Profit Target') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
                                 {{ $schema->spread ? $schema->spread : 'NA' }}
@@ -51,27 +51,23 @@
                         </li>
                         <li class="flex items-center py-3">
                             <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Commission') }}
+                                {{ __('Daily Max Loss') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
                                 {{ $schema->commission ? $schema->commission : 'NA' }}
                             </span>
                         </li>
-{{--                        <li class="flex items-center py-3">--}}
-{{--                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">--}}
-{{--                                {{ __('Select Plan:') }}--}}
-{{--                            </span>--}}
-{{--                            <div class="input-area">--}}
-{{--                                <select class="form-control" id="rule_id_{{ $schema->id }}" name="rule_id" required>--}}
-{{--                                    @foreach($schema->forexSchemaPhase1->forexSchemaPhaseRules as $rule)--}}
-{{--                                        <option value="{{ the_hash($rule->id) }}">{{ $rule->amount }}</option>--}}
-{{--                                    @endforeach--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
-{{--                        </li>--}}
+                        <li class="flex items-center py-3">
+                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+                                {{ __('Maximum Loss') }}
+                            </span>
+                            <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
+                                {{ $schema->commission ? $schema->commission : 'NA' }}
+                            </span>
+                        </li>
                     </ul>
-                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
-                        {{ __('Create Account') }}
+                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-5">
+                        {{ __('Start Now') }}
                     </a>
                 </div>
             </div>

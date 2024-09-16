@@ -466,13 +466,13 @@ if (!function_exists('getLocation')) {
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
-            return $value['code'] == $location['countryCode'];
+            return $value['country_code'] == $location['countryCode'];
         });
 //dd($location,$currentCountry);
         $location = [
             'country_code' => $currentCountry['code'] ?? '00',
             'name' => $currentCountry['name'] ?? 'Not found',
-            'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
+            'dial_code' => $currentCountry['dial_code'] ?? '+971',
             'ip' => $location['query'] ?? [],
         ];
 //dd( new \Illuminate\Support\Fluent($location));

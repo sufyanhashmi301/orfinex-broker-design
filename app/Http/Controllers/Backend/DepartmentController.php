@@ -28,7 +28,9 @@ class DepartmentController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.departments.include.__name')
-                ->addColumn('parent_category', 'backend.departments.include.__category')
+                ->addColumn('parent_category', function ($department) {
+                    return $department->parent->name ?? '-';
+                })
                 ->addColumn('status', 'backend.departments.include.__status')
                 ->addColumn('action', 'backend.departments.include.__action')
                 ->rawColumns(['name','status', 'parent_category', 'action'])

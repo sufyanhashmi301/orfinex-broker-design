@@ -179,6 +179,21 @@
                                     </a>
                                 </li>
                             @endcan
+                            <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-kyc-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-kyc"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-kyc"
+                                    aria-selected="true"
+                                >
+                                    {{ __('KYC') }}
+                                </a>
+                            </li>
                             @can('investment-list')
                                 <li class="nav-item" role="presentation">
                                     <a
@@ -311,6 +326,9 @@
                 @can('investment-list')
                     @include('backend.user.include.__accounts')
                 @endcan
+
+                <!-- KYC Tab -->
+                @include('backend.user.include.__kycTab')
 
                 <!-- IB -->
                 @can('IB-List')

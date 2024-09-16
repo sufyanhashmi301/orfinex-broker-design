@@ -2,7 +2,7 @@
 @section('title')
     {{ __('MetaTrader API Settings') }}
 @endsection
-@section('platform-content')
+@section('platform-api-content')
     <div class="card">
         <div class="card-body p-6">
             <form action="{{ route('admin.settings.update') }}" method="post">
@@ -147,7 +147,7 @@
     </div>
 
 @endsection
-@section('setting-script')
+@section('platform-script')
     <script>
         $(document).ready(function() {
             $('#demoServerToggle').change(function() {

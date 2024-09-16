@@ -27,21 +27,24 @@ class DesignationController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.designations.include.__name')
+                ->addColumn('parent_category', function ($designation) {
+                    return $designation->parent->name ?? '-';
+                })
                 ->addColumn('status', 'backend.designations.include.__status')
                 ->addColumn('action', 'backend.designations.include.__action')
-                ->rawColumns(['name','status', 'action'])
+                ->rawColumns(['name','status', 'parent_category', 'action'])
                 ->make(true);
         }
 
         return view('backend.designations.index');
-        
+
     }
 
     public function create()
     {
         $designations = Designation::where('parent_id',null)->get();
         return response()->json(['designations'=>$designations]);
-        
+
     }
 
     public function store(StoreDesignationRequest $request)
@@ -51,7 +54,7 @@ class DesignationController extends Controller
         $this->designationService->create($data);
         notify()->success(__('Designation created successfully.'));
         return redirect()->route('admin.designations.index');
-        
+
     }
 
     public function show(Designation $designation)
@@ -71,7 +74,7 @@ class DesignationController extends Controller
     }
 
     public function update(UpdateDesignationRequest $request, Designation $designation)
-    { 
+    {
         $data = $request->validated();
         if ($designation->children()->exists() && !is_null($data['parent_id'])) {
             notify()->error(__('Cannot reassign this designation as it has child records.'));
@@ -81,7 +84,7 @@ class DesignationController extends Controller
         $this->designationService->update($designation, $data);
         notify()->success(__('Designation updated successfully.'));
         return redirect()->route('admin.designations.index');
-        
+
     }
 
     public function destroy(Designation $designation)
@@ -97,6 +100,6 @@ class DesignationController extends Controller
         $this->designationService->delete($designation);
         notify()->success(__('Designation deleted successfully.'));
         return redirect()->route('admin.designations.index');
-        
+
     }
 }

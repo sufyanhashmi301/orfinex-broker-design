@@ -268,6 +268,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
 //===============================  site Settings ==================================
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
+        Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');

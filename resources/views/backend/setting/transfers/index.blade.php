@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.payment.index')
 @section('title')
     {{ __("Transfer's Settings") }}
 @endsection
-@section('setting-content')
+@section('payment-content')
     <?php
 
         $type = request()->query('type');

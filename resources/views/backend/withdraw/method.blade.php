@@ -1,4 +1,4 @@
-@extends('backend.withdraw.index')
+@extends('backend.setting.payment.withdraw.index')
 @section('title')
     {{ __('Withdraw Methods') }}
 @endsection
@@ -17,7 +17,7 @@
         </div>
     </div>
 @endsection
-@section('withdraw_content')
+@section('withdraw-content')
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach( $withdrawMethods as $method)
             @php

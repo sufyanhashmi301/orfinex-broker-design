@@ -29,10 +29,10 @@
                             <small class="dark:text-slate-300 mt-1">{{ __('The name you want to update to remember.') }}</small>
                         </div>
                         <div class="action-btns mt-4">
-                            <button type="submit" class="btn btn-dark mr-2" id="submit-name">
+                            <button type="submit" class="btn btn-primary mr-2" id="submit-name">
                                 {{ __('Rename Account') }}
                             </button>
-                            <a href="#" class="btn btn-danger inline-flex" data-bs-dismiss="modal" aria-label="Close">
+                            <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">
                                 {{ __('Close') }}
                             </a>
                         </div>

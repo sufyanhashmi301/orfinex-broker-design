@@ -1,4 +1,4 @@
-@extends('backend.deposit.index')
+@extends('backend.setting.payment.deposit.index')
 @section('title')
     {{ __(ucwords($type).' Deposit Method') }}
 @endsection
@@ -17,7 +17,7 @@
         </div>
     </div>
 @endsection
-@section('deposit_content')
+@section('deposit-content')
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($depositMethods as $method)
             <div class="card lg:h-full border dark:border-slate-700 trading-account-card">

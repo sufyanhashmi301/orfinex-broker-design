@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.website.index')
 @section('title')
     {{ __('Currency Settings') }}
 @endsection
-@section('setting-content')
+@section('website-content')
     <?php
         $section = 'site_maintenance';
         $fields = config('setting.site_maintenance');
@@ -61,8 +61,8 @@
                             </div>
                             <input type="{{$field['type']}}" name="{{ $field['name'] }}"
                                 class="form-control @if($errors->has($field['name'])) has-error @endif"
-                                placeholder="Label" 
-                                value="{{oldSetting($field['name'],$section)}}" 
+                                placeholder="Label"
+                                value="{{oldSetting($field['name'],$section)}}"
                                 required=""
                             >
                         </div>

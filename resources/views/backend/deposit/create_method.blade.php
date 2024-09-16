@@ -1,4 +1,4 @@
-@extends('backend.deposit.index')
+@extends('backend.setting.payment.deposit.index')
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
@@ -9,7 +9,7 @@
         </h4>
     </div>
 @endsection
-@section('deposit_content')
+@section('deposit-content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
@@ -106,7 +106,7 @@
                                 <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
                                     {{'1 '.' '.$currency. ' ='}}
                                 </span>
-                                <input type="text" class="form-control !pl-16.5" name="rate"/>
+                                <input type="text" class="form-control !pl-16.5 !pr-9" name="rate"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected"></span>
                             </div>
                         </div>
@@ -197,7 +197,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('payment-script')
     <script>
         (function ($) {
             var i = 0;

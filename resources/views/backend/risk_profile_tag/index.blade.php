@@ -86,7 +86,7 @@
     @include('backend.risk_profile_tag.modal.__delete_tag')
 
 @endsection
-@section('setting-script')
+@section('user-management-script')
     <script>
         $('.deleteRiskProfileTag').on('click',function (e) {
             "use strict";

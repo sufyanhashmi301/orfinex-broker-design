@@ -344,7 +344,17 @@ Route::get('user/partner/clients', function () {
     return view('frontend::partner.clients');
 });
 
+Route::get('user/notify/success', function () {
+    return view('frontend::common.success');
+});
 
+Route::get('user/notify/canceled', function () {
+    return view('frontend::common.canceled');
+});
+
+Route::get('user/notify/failed', function () {
+    return view('frontend::common.error');
+});
 
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');

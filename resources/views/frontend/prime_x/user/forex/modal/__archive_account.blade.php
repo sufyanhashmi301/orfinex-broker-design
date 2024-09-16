@@ -11,10 +11,10 @@
                     <p class="dark:text-slate-300">{{ __("If you archive this account you can't update info/use") }}</p>
                     <div class="action-btns mt-5">
                         <input type="hidden" class="update-archive-login" name="login">
-                        <button type="button" class="btn btn-dark mr-2 dropdown-update-archive">
+                        <button type="button" class="btn btn-primary mr-2 dropdown-update-archive">
                             {{ __('Archive Account') }}
                         </button>
-                        <a href="#" class="btn btn-danger inline-flex" data-bs-dismiss="modal" aria-label="Close">
+                        <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">
                             {{ __('Close') }}
                         </a>
                     </div>

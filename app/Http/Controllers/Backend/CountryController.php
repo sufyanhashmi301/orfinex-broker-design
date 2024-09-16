@@ -16,7 +16,7 @@ class CountryController extends Controller
      */
     public function index()
     {
-        $countries = Country::orderBy('name','asc')->get();
+        $countries = Country::orderBy('name','asc')->paginate(10);
 
         return view('backend.setting.country.all', compact('countries'));
     }

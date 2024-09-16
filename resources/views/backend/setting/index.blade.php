@@ -15,6 +15,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.country.all') }}" class="navItem {{ isActive('admin.country.all') }}">
+                {{ __('Country') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
                 {{ __('Site Settings') }}
             </a>

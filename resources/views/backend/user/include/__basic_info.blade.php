@@ -105,19 +105,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="input-area relative">
-                        <label for="kyc_status" class="form-label">{{ __('Kyc Level:') }}</label>
-                        <select name="kyc" id="kyc" class="form-control">
-                            <option value="">Select</option>
-                            @foreach (App\Enums\KYCStatus::cases() as $status)
-                                <option value="{{ $status->value }}" {{ (isset($user->kyc) && $user->kyc == $status->value) ? 'selected' : '' }}>
-                                    {{ __(ucwords(str_replace('_', ' ', strtolower($status->name)))) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
 
                     <div class="input-area relative text-right lg:col-span-3">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

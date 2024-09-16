@@ -33,6 +33,10 @@ return new class extends Migration
             $table->tinyInteger('status')->default(0);
             $table->text('country')->nullable();
             $table->text('tags')->nullable();
+            $table->string('upto_allotted_fund')->nullable();
+            $table->string('upto_profit_target')->nullable();
+            $table->string('upto_daily_max_loss')->nullable();
+            $table->string('upto_maximum_loss')->nullable();
             $table->timestamps();
         });
 

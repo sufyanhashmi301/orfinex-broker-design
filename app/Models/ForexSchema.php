@@ -74,7 +74,11 @@ class ForexSchema extends Model
 		'is_refundable',
 		'status',
 		'country',
-		'tags'
+		'tags',
+        'upto_allotted_fund',
+        'upto_profit_target',
+        'upto_daily_max_loss',
+        'upto_maximum_loss'
 	];
 
     public function forexAccounts()

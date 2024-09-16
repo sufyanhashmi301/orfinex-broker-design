@@ -33,11 +33,11 @@
                     <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                         <li class="flex items-center py-3">
                             <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Alloted Fund') }}
+                                {{ __('Allotted Fund') }}
                             </span>
                             <span class="flex-1 text-right">
                                 <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
-                                    {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit  : $currencySymbol . 0 }}
+                                   ${{ $schema->upto_allotted_fund }}
                                 </span>
                             </span>
                         </li>
@@ -46,7 +46,7 @@
                                 {{ __('Profit Target') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ $schema->spread ? $schema->spread : 'NA' }}
+                               ${{ $schema->upto_profit_target }}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -54,7 +54,7 @@
                                 {{ __('Daily Max Loss') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ $schema->commission ? $schema->commission : 'NA' }}
+                             ${{ $schema->upto_daily_max_loss }}
                             </span>
                         </li>
                         <li class="flex items-center py-3">
@@ -62,7 +62,7 @@
                                 {{ __('Maximum Loss') }}
                             </span>
                             <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ $schema->commission ? $schema->commission : 'NA' }}
+                               ${{ $schema->upto_maximum_loss }}
                             </span>
                         </li>
                     </ul>

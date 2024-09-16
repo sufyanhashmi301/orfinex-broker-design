@@ -157,23 +157,54 @@
                             value="{{ old('end_range') }}"
                         />
                     </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Leverage:') }}</label>
+                        <input
+                            type="text"
+                            name="leverage"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Leverage"
+                            value="{{ old('leverage') }}"
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Commission:') }}</label>
+                        <input
+                            type="text"
+                            name="commission"
+                            class="form-control"
+                            placeholder="Commission"
+                            value="{{ old('commission') }}"
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Spread:') }}</label>
+                        <input
+                            type="text"
+                            name="spread"
+                            class="form-control"
+                            placeholder="Spread"
+                            value="{{ old('spread') }}"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
-            {{ __('Key Features') }}
+            {{ __('Key Features(Upto)') }}
         </h4>
         <div class="card mb-6">
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
-                        <label class="form-label" for="">{{ __('Alloted Fund:') }}</label>
+                        <label class="form-label" for="">{{ __('Allotted Fund:') }}</label>
                         <input
                             type="text"
                             class="form-control"
                             placeholder="$100,000"
-                            name="spread"
-                            value="{{ old('spread') }}"
+                            name="upto_allotted_fund"
+                            value="{{ old('upto_allotted_fund') }}"
                             required
                         />
                     </div>
@@ -183,8 +214,8 @@
                             type="text"
                             class="form-control"
                             placeholder="$10,000"
-                            name="commission"
-                            value="{{ old('commission') }}"
+                            name="upto_profit_target"
+                            value="{{ old('upto_profit_target') }}"
                             required
                         />
                     </div>
@@ -192,10 +223,10 @@
                         <label class="form-label" for="">{{ __('Daily Max Loss:') }}</label>
                         <input
                             type="text"
-                            name="leverage"
+                            name="upto_daily_max_loss"
                             class="form-control"
-                            placeholder="$5,000"
-                            value="{{ old('leverage') }}"
+                            placeholder="100"
+                            value="{{ old('upto_daily_max_loss') }}"
                             required
                         />
                     </div>
@@ -203,10 +234,10 @@
                         <label class="form-label" for="">{{ __('Maximum Loss:') }}</label>
                         <input
                             type="text"
-                            name="first_min_deposit"
+                            name="upto_maximum_loss"
                             class="form-control"
                             placeholder="$10,000"
-                            value="{{ old('first_min_deposit') }}"
+                            value="{{ old('upto_maximum_loss') }}"
                         />
                     </div>
                 </div>

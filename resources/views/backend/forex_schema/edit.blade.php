@@ -116,35 +116,50 @@
                         <input type="text" name="end_range" class="form-control" placeholder="End Range"
                                value="{{ $schema->end_range }}"/>
                     </div>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Leverage:') }}</label>
+                        <input type="text" name="leverage" class="form-control" placeholder="leverage e.g 100"
+                               value="{{ $schema->leverage }}" required/>
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Spread:') }}</label>
+                        <input type="text" name="spread" class="form-control" placeholder="Account Type Spread"
+                               value="{{ $schema->spread }}" required/>
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label">{{ __('Commission:') }}</label>
+                        <input type="text" name="commission" class="form-control" placeholder="Account Type Commission"
+                               value="{{ $schema->commission }}" required/>
+                    </div>
                 </div>
             </div>
         </div>
 
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-3">
-            {{ __('Key Features') }}
+            {{ __('Key Features (Upto)') }}
         </h4>
         <div class="card mb-6">
             <div class="card-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="input-area">
-                        <label class="form-label">{{ __('Alloted Fund:') }}</label>
-                        <input type="text" name="spread" class="form-control" placeholder="Account Type Spread"
-                               value="{{ $schema->spread }}" required/>
+                        <label class="form-label">{{ __('Allotted Fund:') }}</label>
+                        <input type="text" name="upto_allotted_fund" class="form-control" placeholder="10000"
+                               value="{{ $schema->upto_allotted_fund }}" required/>
                     </div>
                     <div class="input-area">
                         <label class="form-label">{{ __('Profit Target:') }}</label>
-                        <input type="text" name="commission" class="form-control" placeholder="Account Type Commission"
-                               value="{{ $schema->commission }}" required/>
+                        <input type="text" name="upto_profit_target" class="form-control" placeholder="200"
+                               value="{{ $schema->upto_profit_target }}" required/>
                     </div>
                     <div class="input-area">
                         <label class="form-label">{{ __('Daily Max Loss:') }}</label>
-                        <input type="text" name="leverage" class="form-control" placeholder="leverage e.g 10,20,50"
-                               value="{{ $schema->leverage }}" required/>
+                        <input type="text" name="upto_daily_max_loss" class="form-control" placeholder="100"
+                               value="{{ $schema->upto_daily_max_loss }}" required/>
                     </div>
                     <div class="input-area">
                         <label class="form-label">{{ __('Maximum Loss:') }}</label>
-                        <input type="text" name="first_min_deposit" class="form-control" placeholder="Min deposit"
-                               value="{{ $schema->first_min_deposit }}"/>
+                        <input type="text" name="upto_maximum_loss" class="form-control" placeholder="500"
+                               value="{{ $schema->upto_maximum_loss }}"/>
                     </div>
                 </div>
             </div>

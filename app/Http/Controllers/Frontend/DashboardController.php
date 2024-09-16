@@ -32,19 +32,19 @@ class DashboardController extends Controller
 
         $dataCount = [
             'total_transaction' => $transactions->count(),
-            'total_deposit' => $user->totalDeposit(),
-            'total_investment' => $user->totalInvestment(),
-            'total_profit' => $user->totalProfit(),
+//            'total_deposit' => $user->totalDeposit(),
+//            'total_investment' => $user->totalInvestment(),
+//            'total_profit' => $user->totalProfit(),
             'profit_last_7_days' => $user->totalProfit(7),
-            'total_withdraw' => $user->totalWithdraw(),
-            'total_transfer' => $user->totalTransfer(),
-            'total_referral_profit' => $user->totalReferralProfit(),
-            'total_referral' => $referral->relationships()->count(),
-
-            'deposit_bonus' => $user->totalDepositBonus(),
-            'investment_bonus' => $user->totalInvestBonus(),
-            'rank_achieved' => $user->rankAchieved(),
-            'total_ticket' => $user->ticket->count(),
+//            'total_withdraw' => $user->totalWithdraw(),
+//            'total_transfer' => $user->totalTransfer(),
+//            'total_referral_profit' => $user->totalReferralProfit(),
+//            'total_referral' => $referral->relationships()->count(),
+//
+//            'deposit_bonus' => $user->totalDepositBonus(),
+//            'investment_bonus' => $user->totalInvestBonus(),
+//            'rank_achieved' => $user->rankAchieved(),
+//            'total_ticket' => $user->ticket->count(),
             'total_forex_balance' => mt5_total_balance($user->id),
             'total_forex_equity' => mt5_total_equity($user->id),
         ];

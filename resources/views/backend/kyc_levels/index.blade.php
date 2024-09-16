@@ -27,7 +27,9 @@
                             @foreach($kycLevels as $kyc)
                                 <tr>
                                     <td class="table-td">
+                                        <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="onTop">
                                         <strong>{{ $kyc->name }}</strong>
+                                        </a>
                                     </td>
                                     <td class="table-td">
                                         @if( $kyc->status)

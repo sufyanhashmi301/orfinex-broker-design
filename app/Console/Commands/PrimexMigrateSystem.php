@@ -25,7 +25,7 @@ class PrimexMigrateSystem extends Command
     {
         // Disable foreign key checks and truncate tables
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('risk_profile_tags_users')->truncate();
+        DB::table('risk_profile_tag_user')->truncate();
         DB::table('accounts')->truncate();
         DB::table('ledgers')->truncate();
         DB::table('users')->truncate();

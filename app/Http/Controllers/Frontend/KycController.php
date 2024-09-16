@@ -27,7 +27,7 @@ class KycController extends Controller
     {
         $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true)->get();
         $totalActiveLevels = $kycLevels->count();
-//        dd($totalActiveLevels);
+    //    dd($totalActiveLevels);
         $level1Settings = KycSubLevel::where('kyc_level_id', 1)
             ->get();
         $level2Settings = KycSubLevel::where('kyc_level_id', 2)
@@ -41,9 +41,9 @@ class KycController extends Controller
         $user = Auth::user();
         $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
-            if ($user->email_verified_at == null) {
+            if ($user->email_verified_at == null) { 
                 notify()->error('kindly complete the level 1 first');
-                return redirect()->back();
+                return redirect()->back();     
             }
         }
         $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();

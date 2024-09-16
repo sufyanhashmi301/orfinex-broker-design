@@ -34,6 +34,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'last_name',
         'country',
         'phone',
+        'phone_verified_at',
         'username',
         'email',
         'email_verified_at',
@@ -96,7 +97,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     ];
     public function riskProfileTags()
     {
-        return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tags_users');
+        return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tag_user');
     }
     public function getUpdatedAtAttribute(): string
     {

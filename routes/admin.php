@@ -90,6 +90,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
+        Route::post('store', 'store')->name('store');
 
     });
 
@@ -443,3 +444,4 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+;

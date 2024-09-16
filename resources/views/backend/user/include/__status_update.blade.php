@@ -79,28 +79,45 @@
                 @endif
             </li>
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('Risk Profile') }}</span>
+                <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
                 <span class="flex items-center gap-2">
-                     @if($user->riskProfileTags->isEmpty())
+                    @if($user->riskProfileTags->isEmpty())
                         {{ __('N/A') }}
                     @else
-                        @foreach($user->riskProfileTags as $tag)
-                            <span>{{$tag->name}}</span>
-                        @endforeach
+                        {{ $user->riskProfileTags->pluck('name')->implode(', ') }}
                     @endif
                 </span>
             </li>
+            
 
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC Level') }}</span>
                 <span>
-                    @if (isset($user->kyc))
-                        {{ __(ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)))) }}
-                    @else
-                        {{ __('N/A') }}
-                    @endif
+                    @php
+                        $displayName = 'N/A';
+            
+                        if (isset($user->status)) {
+                            // Check if the status value is a KYC Status value
+                            if (Str::startsWith($user->status, 'status_')) {
+                                // Extract the status value
+                                $statusValue = str_replace('status_', '', $user->status);
+            
+                                // Convert status value to the corresponding KYCStatus enum case
+                                $statusEnum = App\Enums\KYCStatus::from($statusValue);
+                                $displayName = $statusEnum ? __(ucwords(str_replace('_', ' ', strtolower($statusEnum->name)))) : __('N/A');
+                            } else {
+                                // Otherwise, treat it as a KYC Level ID
+                                $kycLevel = App\Models\KycLevel::find($user->status);
+                                $displayName = $kycLevel ? __($kycLevel->name) : __('N/A');
+                            }
+                        }
+                    @endphp
+                    {{ $displayName }}
                 </span>
             </li>
+            
+            
+            
 
 
         </ul>

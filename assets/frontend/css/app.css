@@ -17202,3 +17202,62 @@ ul.custom-list ul li{
     padding-left: 8px;
     padding-right: 10px;
 }
+
+#page-loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dark #page-loader {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#page-loader .dot {
+    width: 15px;
+    height: 15px;
+    margin: 0 5px;
+    border-radius: 50%;
+    animation: pulse 1s infinite ease-in-out;
+}
+
+#page-loader .dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#page-loader .dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#content-wrapper {
+    /* Hide content initially */
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+
+#content-wrapper.show {
+    opacity: 1;
+}

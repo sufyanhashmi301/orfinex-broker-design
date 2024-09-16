@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex justify-end flex-wrap items-center mb-5">
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.ticket.new') }}" class="btn btn-primary inline-flex items-center">
+            <a href="{{ route('user.ticket.new') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
                 {{ __('Create Ticket') }}
             </a>
         </div>
@@ -66,7 +66,7 @@
                                                         data-bs-original-title="Complete Ticket">
                                                             <iconify-icon icon="heroicons:check-16-solid"></iconify-icon>
                                                         </a>
-                                                        <a href="{{ route('user.ticket.show',$ticket->uuid) }}" class="action-btn"
+                                                        <a href="{{ route('user.ticket.show',$ticket->uuid) }}" class="action-btn loaderBtn"
                                                         data-bs-toggle="tooltip" title="Show Ticket"
                                                         data-bs-original-title="Show Ticket">
                                                             <iconify-icon icon="heroicons:eye"></iconify-icon>
@@ -75,7 +75,7 @@
                                                         <a href="#" class="action-btn cancel disabled">
                                                             <iconify-icon icon="heroicons:check-16-solid"></iconify-icon>
                                                         </a>
-                                                        <a href="{{ route('user.ticket.show',$ticket->uuid) }}" class="action-btn"
+                                                        <a href="{{ route('user.ticket.show',$ticket->uuid) }}" class="action-btn loaderBtn"
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="Re-open the Ticket">
                                                             <iconify-icon icon="heroicons:book-open"></iconify-icon>

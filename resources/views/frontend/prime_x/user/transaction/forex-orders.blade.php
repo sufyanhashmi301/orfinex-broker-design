@@ -33,7 +33,7 @@
             <p class="text-lg text-slate-600 dark:text-slate-100 my-3">
                 {{ __('Kindly select the account to view the orders or') }}
             </p>
-            <a href="{{ route('user.deposit.amount') }}" class="btn btn-primary inline-flex items-center justify-center min-w-[170px]">
+            <a href="{{ route('user.deposit.amount') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center min-w-[170px]">
                 {{ __('Deposit Now') }}
             </a>
         </div>

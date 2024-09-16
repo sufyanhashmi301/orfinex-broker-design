@@ -42,7 +42,7 @@
                     </button>
                 </div>
             </div>
-            <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-primary btn-sm">
+            <a href="{{route('user.schema')}}" class="btn loaderBtn inline-flex justify-center btn-primary btn-sm">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
                     <span>{{ __('Open New Account') }}</span>

@@ -4,32 +4,32 @@
     role="tabpanel"
     aria-labelledby="ib-info-tab"
 >
-    <div class="card">
+    <div class="card basicTable_wrapper">
         <div class="card-header noborder">
             <h4 class="card-title">{{ __('IB Account') }}</h4>
             <div class="flex flex-wrap flex-md-nowrap align-items-stretch gap-2 mb-2 mb-md-0">
                 <span data-bs-toggle="modal" data-bs-target="#addIBModal">
                     <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                        Add New IB
+                        {{ __('Add New IB') }}
                     </a>
                 </span>
                 <span data-bs-toggle="modal" data-bs-target="#updateIBModal">
                     <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                        Update IB
+                        {{ __('Update IB') }}
                     </a>
                 </span>
                 <span data-bs-toggle="modal" data-bs-target="#addMIBModal">
                     <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                        Add New Multi IB
+                        {{ __('Add New Multi IB') }}
                     </a>
                 </span>
                 <span data-bs-toggle="modal" data-bs-target="#updateMIBModal">
                     <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                        Update Multi IB
+                        {{ __('Update Multi IB') }}
                     </a>
                 </span>
             </div>

@@ -6,7 +6,7 @@
 
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-   
+
 <div
     class="tab-pane space-y-5 fade show active"
     id="pills-informations"
@@ -31,22 +31,20 @@
                                name="last_name">
                     </div>
                     <div class="input-area relative">
-                        <label for="country" class="form-label">{{ __('Country:') }}</label>
-                        <select class="select2 form-control w-full" name="country" id="country" placeholder="Select Country">
-                            @foreach($countries as $country)
-                                <option value="{{ $country['name'] }}" 
-                                    @selected($user->country == $country['name'])>
-                                    {{ $country['name'] }}
-                                </option>
+
+                        <label for="" class="form-label">{{ __('Country:') }}</label>
+                        <select class=" form-control w-full" name="country" placeholder="Countries" >
+                            @foreach( getCountries() as $country)
+                                <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
                             @endforeach
                         </select>
                     </div>
-                    
+
                     <!-- Include jQuery and select2 -->
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
                     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-                    
+
                     <!-- Initialize select2 -->
                     <script>
                         $(document).ready(function() {
@@ -55,8 +53,8 @@
                             });
                         });
                     </script>
-                    
-                    
+
+
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Phone:') }}</label>
                         <input type="text" name="phone" class="form-control" value="{{ safe($user->phone) }}" >
@@ -126,18 +124,18 @@
                         <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
                         <select name="status" id="status" class="form-control">
                             <option value="">{{ __('Select') }}</option>
-                    
+
                             {{-- Loop through KYC Levels --}}
                             @foreach($kycLevels as $level)
-                                <option value="{{ $level->id }}" 
+                                <option value="{{ $level->id }}"
                                     {{ isset($user) && $user->status == $level->id ? 'selected' : '' }}>
                                     {{ $level->name }}
                                 </option>
                             @endforeach
-                    
+
                             {{-- Loop through KYC Statuses --}}
                             @foreach(App\Enums\KYCStatus::cases() as $status)
-                                <option value="status_  {{ $status->value }}" 
+                                <option value="status_  {{ $status->value }}"
                                     {{ isset($user) && $user->status == $status->value ? 'selected' : '' }}>
                                     {{ $status->name }}
                                 </option>
@@ -155,24 +153,25 @@
                             @endforeach
                         </select>
                     </div>
-                
-                    
-                    
-                    
+<<<<<<< HEAD
+
+
+
+
                     <div class="input-area relative">
                         <label for="risk_profile_tags" class="form-label">{{ __('Risk Profile Tags:') }}</label>
                         <select name="risk_profile_tags[]" class="select2 form-control w-full" multiple="multiple" data-placeholder="Select Tags" id="riskProfileTagsSelect">
                             @foreach($riskProfileTags as $tag)
-                                <option value="{{ $tag->id }}" 
-                                    @if($user->riskProfileTags->pluck('id')->contains($tag->id)) 
-                                        selected 
+                                <option value="{{ $tag->id }}"
+                                    @if($user->riskProfileTags->pluck('id')->contains($tag->id))
+                                        selected
                                     @endif>
                                     {{ $tag->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
-                    
+
                     <script>
                         $(document).ready(function() {
                             $('#riskProfileTagsSelect').select2({
@@ -181,8 +180,12 @@
                             });
                         });
                     </script>
-                    
+
    <div class="input-area relative text-right lg:col-span-3">
+=======
+
+                    <div class="input-area relative text-right lg:col-span-3">
+>>>>>>> naeem_new_design
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}
                         </button>

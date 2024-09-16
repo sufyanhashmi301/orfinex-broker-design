@@ -38,6 +38,18 @@
 @stack('script')
 <script>
     $(document).ready(function () {
+        // Show loader when any sidebar menu item is clicked
+        $('.loaderBtn').on('click', function (e) {
+            $('#page-loader').show();  // Show the loader
+        });
+
+        // Hide loader when the page has fully loaded
+        $(window).on('load', function () {
+            $('#page-loader').hide();  // Hide the loader
+        });
+    });
+
+    $(document).ready(function () {
         function calculateHeights() {
             // Store heights in variables, checking if elements exist
             var headerHeight = $('#app_header').length ? $('#app_header').outerHeight() : 0;

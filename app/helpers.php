@@ -383,14 +383,9 @@ if (!function_exists('getCountries')) {
 
     function getCountries()
     {
-        $countries = json_decode(file_get_contents(resource_path() . '/json/CountryCodes.json'), true);
+        $countries = \App\Models\Country::where('status',1)->get();
 
-        $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
-
-        $filteredCountries = collect($countries)->reject(function ($country) use ($excludedCountries) {
-            return in_array($country["name"], $excludedCountries);
-        })->values();
-        return $filteredCountries;
+        return $countries;
     }
 }
 if (!function_exists('getCountryCode')) {
@@ -471,13 +466,13 @@ if (!function_exists('getLocation')) {
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
-            return $value['code'] == $location['countryCode'];
+            return $value['country_code'] == $location['countryCode'];
         });
 //dd($location,$currentCountry);
         $location = [
             'country_code' => $currentCountry['code'] ?? '00',
             'name' => $currentCountry['name'] ?? 'Not found',
-            'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
+            'dial_code' => $currentCountry['dial_code'] ?? '+971',
             'ip' => $location['query'] ?? [],
         ];
 //dd( new \Illuminate\Support\Fluent($location));
@@ -981,15 +976,18 @@ if (!function_exists('get_mt5_account')) {
      */
     function get_mt5_account($login)
     {
-        try {
-            return DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-            return null;
+        if(isset($login) && $login > 0) {
+            try {
+                return DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+            } catch (\Exception $e) {
+                \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+                return null;
+            }
         }
+        return null;
     }
 }
 if (!function_exists('get_mt5_account_balance')) {
@@ -1003,6 +1001,7 @@ if (!function_exists('get_mt5_account_balance')) {
      */
     function get_mt5_account_balance($login)
     {
+        if(isset($login) && $login > 0) {
         try {
             $mt5Account = DB::connection('mt5_db')
                 ->table('mt5_accounts')
@@ -1013,6 +1012,8 @@ if (!function_exists('get_mt5_account_balance')) {
             \Log::error('MT5 DB connection failed when retrieving balance: ' . $e->getMessage());
             return 0.0;
         }
+    }
+        return 0.0;
     }
 }
 
@@ -1027,16 +1028,19 @@ if (!function_exists('get_mt5_account_equity')) {
      */
     function get_mt5_account_equity($login)
     {
-        try {
-            $mt5Account = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-            return $mt5Account ? $mt5Account->Equity : 0.0;
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
-            return 0.0;
+        if(isset($login) && $login > 0) {
+            try {
+                $mt5Account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+                return $mt5Account ? $mt5Account->Equity : 0.0;
+            } catch (\Exception $e) {
+                \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
+                return 0.0;
+            }
         }
+        return 0.0;
     }
 }
 

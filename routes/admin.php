@@ -67,7 +67,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //Route::group(['middleware' => [ '2fa']], function () {
-Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function () {
+Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])->group(function () {
 //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 

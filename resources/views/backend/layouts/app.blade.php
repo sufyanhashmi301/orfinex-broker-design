@@ -3,6 +3,11 @@
 @include('backend.include.__head')
 
 <body class="font-inter dashcode-app" id="body_class">
+    <div class="page-loader">
+        <div class="dot bg-primary-500"></div>
+        <div class="dot bg-primary-500"></div>
+        <div class="dot bg-primary-500"></div>
+    </div>
     <!--Full Layout-->
     <main class="app-wrapper">
 

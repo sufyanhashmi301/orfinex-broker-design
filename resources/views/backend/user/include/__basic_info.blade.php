@@ -23,8 +23,7 @@
                     </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Country:') }}</label>
-                        {{-- <input type="text" class="form-control" value="{{$user->country}}" disabled> --}}
-                        <select class="select2 form-control w-full" name="country" placeholder="Countries" >
+                        <select class=" form-control w-full" name="country" placeholder="Countries" >
                             @foreach( getCountries() as $country)
                                 <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
                             @endforeach

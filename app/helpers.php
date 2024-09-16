@@ -383,14 +383,9 @@ if (!function_exists('getCountries')) {
 
     function getCountries()
     {
-        $countries = json_decode(file_get_contents(resource_path() . '/json/CountryCodes.json'), true);
+        $countries = \App\Models\Country::where('status',1)->get();
 
-        $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
-
-        $filteredCountries = collect($countries)->reject(function ($country) use ($excludedCountries) {
-            return in_array($country["name"], $excludedCountries);
-        })->values();
-        return $filteredCountries;
+        return $countries;
     }
 }
 if (!function_exists('getCountryCode')) {

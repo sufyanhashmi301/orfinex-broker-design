@@ -6,7 +6,7 @@ use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
-use App\Models\Kyclevel;
+use App\Models\KycLevel;
 use App\Models\Kyclevelsetting;
 use App\Models\KycSubLevel;
 use App\Models\User;
@@ -70,7 +70,7 @@ class KycController extends Controller
 //
 //            return redirect()->back();
 //        }
-//        $kycLevel = Kyclevel::where('slug','level-2')->first();
+//        $kycLevel = KycLevel::where('slug','level-2')->first();
 //        $data = [
 //            'kyc_level_id' => $kycLevel->id,
 //            'name' => $input['name'],
@@ -104,7 +104,7 @@ class KycController extends Controller
 
             return redirect()->back();
         }
-        $kycLevel = Kyclevel::where('slug',KycLevelSlug::LEVEL2)->first();
+        $kycLevel = KycLevel::where('slug',KycLevelSlug::LEVEL2)->first();
         $data = [
             'kyc_sub_level_id' => get_hash($input['kyc_sub_level_id']),
             'name' => $input['name'],
@@ -132,7 +132,7 @@ class KycController extends Controller
 
             return redirect()->back();
         }
-        $kycLevel = Kyclevel::where('slug',KycLevelSlug::LEVEL3)->first();
+        $kycLevel = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $data = [
             'kyc_level_id' => $kycLevel->id,
             'name' => $input['name'],
@@ -159,7 +159,7 @@ class KycController extends Controller
      */
     public function create()
     {
-        $levels = Kyclevel::orderBy('id','desc')->get();
+        $levels = KycLevel::orderBy('id','desc')->get();
         return view('backend.kyc.create',get_defined_vars());
     }
 
@@ -316,7 +316,7 @@ class KycController extends Controller
 
         $input = $request->all();
         $user = User::find($input['id']);
-        $kycLevel3Status = Kyclevel::where('slug',KycLevelSlug::LEVEL3)->first();
+        $kycLevel3Status = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
         if($kycLevel3Status->status==1){

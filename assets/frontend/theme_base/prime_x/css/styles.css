@@ -3,22 +3,29 @@
 }
 .navItem.active, .dark .navItem.active {
   color: #121212;
-  background-color: rgba(254, 208, 0, 0.35);
+  --tw-border-opacity: 1;
+  background-color: rgb(254 208 0 / var(--tw-border-opacity));
   border-left-color: #FED000;
 }
 
 .sidebar-menu > li.active > a {
     color: #121212;
     background-color: rgba(254, 208, 0, 0.35);
-    border-left-color: #FED000; 
+    border-left-color: #FED000;
+}
+.sidebar-menu > li.active > a {
+    --tw-border-opacity: 1;
+    background-color: rgb(254 208 0 / var(--tw-border-opacity));
 }
 
 .bg-primary {
-    background-color: #FED000;
+    --tw-bg-opacity: 1;
+    background-color: rgb(254 208 0 / var(--tw-bg-opacity));
 }
 
 .text-primary {
-    color: #FED000;
+    --tw-text-opacity: 1;
+    color: rgb(254 208 0 / var(--tw-text-opacity));
 }
 
 .border-primary {
@@ -127,8 +134,19 @@
 }
 
 .dark .select2-selection {
-    --tw-bg-opacity: 1;
-    background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+    /*--tw-bg-opacity: 1;*/
+    /*background-color: rgb(15 23 42 / var(--tw-bg-opacity));*/
     --tw-text-opacity: 1;
     color: rgb(203 213 225 / var(--tw-text-opacity));
+}
+.dashcode-data-table .dataTables_empty {
+    text-align: center;
+}
+.dark .dataTables_empty{
+    color: #cbd5e1;
+}
+
+.dataTables_wrapper, .basicTable_wrapper {
+    display: flex;
+    flex-direction: column;
 }

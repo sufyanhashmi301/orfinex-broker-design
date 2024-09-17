@@ -14,11 +14,12 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
                 @if(setting('aml_policy_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/shield.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="solar:shield-minimalistic-linear"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                            AML Policy <br>
+                            {{ __('AML Policy') }}
+                            <br>
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
@@ -31,8 +32,8 @@
                 @endif
                 @if(setting('client_agreement_link','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/like-shapes.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="icon-park-outline:agreement"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             Client Agreement <br>
@@ -48,8 +49,8 @@
                 @endif
                 @if(setting('complaints_handling_policy_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/document-text.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="bx:support"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             Complaints Handling Policy <br>
@@ -65,11 +66,12 @@
                 @endif
                 @if(setting('cookies_policy_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/shield.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="solar:shield-minimalistic-linear"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                            Cookies Policy <br>
+                            {{ __('Cookies Policy') }}
+                            <br>
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
@@ -82,8 +84,8 @@
                 @endif
                 @if(setting('IB_partner_agreement_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/shield.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="mdi:family-tree"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             IB Partner Agreement <br>
@@ -99,8 +101,8 @@
                 @endif
                 @if(setting('order_execution_policy_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/document-copy.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="fluent:document-copy-20-regular"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             Order Execution Policy <br>
@@ -116,8 +118,8 @@
                 @endif
                 @if(setting('privacy_policy_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/document.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="solar:clipboard-linear"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             Privacy Policy <br>
@@ -133,8 +135,8 @@
                 @endif
                 @if(setting('risk_disclosure_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/warning-2.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="tabler:info-hexagon"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             Risk Disclosure <br>
@@ -150,8 +152,8 @@
                 @endif
                 @if(setting('US_clients_policy_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
-                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
-                            <img src="{{ asset('frontend/images/icon/document-cloud.svg') }}" alt="">
+                        <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                            <iconify-icon class="dark:text-white" icon="la:flag-usa"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
                             US Clients Policy <br>

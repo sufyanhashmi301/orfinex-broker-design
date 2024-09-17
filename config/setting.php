@@ -1075,6 +1075,52 @@ return [
             ],
         ],
     ],
+    'mt5_db_credentials' => [
+        'title' => 'MySQL Database Credentials',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'database_host', // unique name for field
+                'label' => 'Database Host', // label for field
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'integer', // data type, string, int, boolean
+                'name' => 'database_port', // unique name for field
+                'label' => 'Database Port', // label for field
+                'rules' => 'required|integer|min:1024|max:65535', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'database_name', // unique name for field
+                'label' => 'Database Name', // label for field
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'database_username', // unique name for field
+                'label' => 'Database Username', // label for field
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'password', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'database_password', // unique name for field
+                'label' => 'Database Password', // label for field
+                'rules' => 'sometimes|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+        ],
+    ],
+
 
     'site_maintenance' => [
         'title' => 'Site Maintenance',
@@ -1159,7 +1205,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'disclaimer', // unique name for field
                 'label' => 'Disclaimer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
+                'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
@@ -1167,7 +1213,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_disclaimer', // unique name for field
                 'label' => 'Disclaimer Email', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
+                'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
@@ -1175,7 +1221,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'footer_content', // unique name for field
                 'label' => 'Footer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
+                'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
@@ -1183,7 +1229,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_footer', // unique name for field
                 'label' => 'Footer Email', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
+                'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
@@ -1191,7 +1237,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'risk_warning', // unique name for field
                 'label' => 'Risk Warning', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
+                'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
@@ -1199,7 +1245,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'email_risk_warning', // unique name for field
                 'label' => 'Risk Warning Email', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
+                'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
         ],

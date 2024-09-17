@@ -18,7 +18,7 @@ class CountriesTableSeeder extends Seeder
         $countries = [
 
             [
-                'country_id' => 716,
+                'dial_code' => 716,
                 'name' => 'Zimbabwe',
                 'country_code' => '716',
                 'ISO_3166_2' => 'ZW',
@@ -27,7 +27,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 894,
+                'dial_code' => 894,
                 'name' => 'Zambia',
                 'country_code' => '894',
                 'ISO_3166_2' => 'ZM',
@@ -36,7 +36,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 887,
+                'dial_code' => 887,
                 'name' => 'Yemen',
                 'country_code' => '887',
                 'ISO_3166_2' => 'YE',
@@ -45,7 +45,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 732,
+                'dial_code' => 732,
                 'name' => 'Western Sahara',
                 'country_code' => '732',
                 'ISO_3166_2' => 'EH',
@@ -54,7 +54,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 876,
+                'dial_code' => 876,
                 'name' => 'Wallis and Futuna',
                 'country_code' => '876',
                 'ISO_3166_2' => 'WF',
@@ -63,7 +63,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 850,
+                'dial_code' => 850,
                 'name' => 'Virgin Islands U.S.',
                 'country_code' => '850',
                 'ISO_3166_2' => 'VI',
@@ -72,7 +72,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 92,
+                'dial_code' => 92,
                 'name' => 'Virgin Islands British',
                 'country_code' => '92',
                 'ISO_3166_2' => 'VG',
@@ -81,7 +81,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 704,
+                'dial_code' => 704,
                 'name' => 'Viet Nam',
                 'country_code' => '704',
                 'ISO_3166_2' => 'VN',
@@ -90,7 +90,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 862,
+                'dial_code' => 862,
                 'name' => 'Venezuela Bolivarian Republic of',
                 'country_code' => '862',
                 'ISO_3166_2' => 'VE',
@@ -99,7 +99,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 548,
+                'dial_code' => 548,
                 'name' => 'Vanuatu',
                 'country_code' => '548',
                 'ISO_3166_2' => 'VU',
@@ -108,7 +108,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 860,
+                'dial_code' => 860,
                 'name' => 'Uzbekistan',
                 'country_code' => '860',
                 'ISO_3166_2' => 'UZ',
@@ -117,7 +117,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 858,
+                'dial_code' => 858,
                 'name' => 'Uruguay',
                 'country_code' => '858',
                 'ISO_3166_2' => 'UY',
@@ -126,7 +126,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 581,
+                'dial_code' => 581,
                 'name' => 'United States Minor Outlying Islands',
                 'country_code' => '581',
                 'ISO_3166_2' => 'UM',
@@ -135,7 +135,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 840,
+                'dial_code' => 840,
                 'name' => 'United States',
                 'country_code' => '840',
                 'ISO_3166_2' => 'US',
@@ -144,7 +144,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 826,
+                'dial_code' => 826,
                 'name' => 'United Kingdom',
                 'country_code' => '826',
                 'ISO_3166_2' => 'GB',
@@ -153,7 +153,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 784,
+                'dial_code' => 784,
                 'name' => 'United Arab Emirates',
                 'country_code' => '784',
                 'ISO_3166_2' => 'AE',
@@ -162,7 +162,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 804,
+                'dial_code' => 804,
                 'name' => 'Ukraine',
                 'country_code' => '804',
                 'ISO_3166_2' => 'UA',
@@ -171,7 +171,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 800,
+                'dial_code' => 800,
                 'name' => 'Uganda',
                 'country_code' => '800',
                 'ISO_3166_2' => 'UG',
@@ -180,7 +180,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 798,
+                'dial_code' => 798,
                 'name' => 'Tuvalu',
                 'country_code' => '798',
                 'ISO_3166_2' => 'TV',
@@ -189,7 +189,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 796,
+                'dial_code' => 796,
                 'name' => 'Turks and Caicos Islands',
                 'country_code' => '796',
                 'ISO_3166_2' => 'TC',
@@ -198,7 +198,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 795,
+                'dial_code' => 795,
                 'name' => 'Turkmenistan',
                 'country_code' => '795',
                 'ISO_3166_2' => 'TM',
@@ -207,7 +207,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 792,
+                'dial_code' => 792,
                 'name' => 'Turkey',
                 'country_code' => '792',
                 'ISO_3166_2' => 'TR',
@@ -216,7 +216,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 788,
+                'dial_code' => 788,
                 'name' => 'Tunisia',
                 'country_code' => '788',
                 'ISO_3166_2' => 'TN',
@@ -225,7 +225,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 780,
+                'dial_code' => 780,
                 'name' => 'Trinidad and Tobago',
                 'country_code' => '780',
                 'ISO_3166_2' => 'TT',
@@ -234,7 +234,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 776,
+                'dial_code' => 776,
                 'name' => 'Tonga',
                 'country_code' => '776',
                 'ISO_3166_2' => 'TO',
@@ -243,7 +243,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 772,
+                'dial_code' => 772,
                 'name' => 'Tokelau',
                 'country_code' => '772',
                 'ISO_3166_2' => 'TK',
@@ -252,7 +252,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 768,
+                'dial_code' => 768,
                 'name' => 'Togo',
                 'country_code' => '768',
                 'ISO_3166_2' => 'TG',
@@ -261,7 +261,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 626,
+                'dial_code' => 626,
                 'name' => 'Timor-Leste',
                 'country_code' => '626',
                 'ISO_3166_2' => 'TL',
@@ -270,7 +270,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 764,
+                'dial_code' => 764,
                 'name' => 'Thailand',
                 'country_code' => '764',
                 'ISO_3166_2' => 'TH',
@@ -279,7 +279,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 834,
+                'dial_code' => 834,
                 'name' => 'Tanzania United Republic of',
                 'country_code' => '834',
                 'ISO_3166_2' => 'TZ',
@@ -288,7 +288,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 762,
+                'dial_code' => 762,
                 'name' => 'Tajikistan',
                 'country_code' => '762',
                 'ISO_3166_2' => 'TJ',
@@ -297,7 +297,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 158,
+                'dial_code' => 158,
                 'name' => 'Taiwan Province of China',
                 'country_code' => '158',
                 'ISO_3166_2' => 'TW',
@@ -306,7 +306,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 760,
+                'dial_code' => 760,
                 'name' => 'Syrian Arab Republic',
                 'country_code' => '760',
                 'ISO_3166_2' => 'SY',
@@ -315,7 +315,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 756,
+                'dial_code' => 756,
                 'name' => 'Switzerland',
                 'country_code' => '756',
                 'ISO_3166_2' => 'CH',
@@ -324,7 +324,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 752,
+                'dial_code' => 752,
                 'name' => 'Sweden',
                 'country_code' => '752',
                 'ISO_3166_2' => 'SE',
@@ -333,7 +333,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 748,
+                'dial_code' => 748,
                 'name' => 'Swaziland',
                 'country_code' => '748',
                 'ISO_3166_2' => 'SZ',
@@ -342,7 +342,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 744,
+                'dial_code' => 744,
                 'name' => 'Svalbard and Jan Mayen',
                 'country_code' => '744',
                 'ISO_3166_2' => 'SJ',
@@ -351,7 +351,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 740,
+                'dial_code' => 740,
                 'name' => 'Suriname',
                 'country_code' => '740',
                 'ISO_3166_2' => 'SR',
@@ -360,7 +360,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 729,
+                'dial_code' => 729,
                 'name' => 'Sudan',
                 'country_code' => '729',
                 'ISO_3166_2' => 'SD',
@@ -369,7 +369,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 144,
+                'dial_code' => 144,
                 'name' => 'Sri Lanka',
                 'country_code' => '144',
                 'ISO_3166_2' => 'LK',
@@ -378,7 +378,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 724,
+                'dial_code' => 724,
                 'name' => 'Spain',
                 'country_code' => '724',
                 'ISO_3166_2' => 'ES',
@@ -387,7 +387,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 728,
+                'dial_code' => 728,
                 'name' => 'South Sudan',
                 'country_code' => '728',
                 'ISO_3166_2' => 'SS',
@@ -396,7 +396,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 239,
+                'dial_code' => 239,
                 'name' => 'South Georgia and the South Sandwich Islands',
                 'country_code' => '239',
                 'ISO_3166_2' => 'GS',
@@ -405,7 +405,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 710,
+                'dial_code' => 710,
                 'name' => 'South Africa',
                 'country_code' => '710',
                 'ISO_3166_2' => 'ZA',
@@ -414,7 +414,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 706,
+                'dial_code' => 706,
                 'name' => 'Somalia',
                 'country_code' => '706',
                 'ISO_3166_2' => 'SO',
@@ -423,7 +423,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 90,
+                'dial_code' => 90,
                 'name' => 'Solomon Islands',
                 'country_code' => '90',
                 'ISO_3166_2' => 'SB',
@@ -432,7 +432,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 705,
+                'dial_code' => 705,
                 'name' => 'Slovenia',
                 'country_code' => '705',
                 'ISO_3166_2' => 'SI',
@@ -441,7 +441,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 703,
+                'dial_code' => 703,
                 'name' => 'Slovakia',
                 'country_code' => '703',
                 'ISO_3166_2' => 'SK',
@@ -450,7 +450,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 534,
+                'dial_code' => 534,
                 'name' => 'Sint Maarten (Dutch part)',
                 'country_code' => '534',
                 'ISO_3166_2' => 'SX',
@@ -459,7 +459,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 702,
+                'dial_code' => 702,
                 'name' => 'Singapore',
                 'country_code' => '702',
                 'ISO_3166_2' => 'SG',
@@ -468,7 +468,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 694,
+                'dial_code' => 694,
                 'name' => 'Sierra Leone',
                 'country_code' => '694',
                 'ISO_3166_2' => 'SL',
@@ -477,7 +477,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 690,
+                'dial_code' => 690,
                 'name' => 'Seychelles',
                 'country_code' => '690',
                 'ISO_3166_2' => 'SC',
@@ -486,7 +486,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 688,
+                'dial_code' => 688,
                 'name' => 'Serbia',
                 'country_code' => '688',
                 'ISO_3166_2' => 'RS',
@@ -495,7 +495,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 686,
+                'dial_code' => 686,
                 'name' => 'Senegal',
                 'country_code' => '686',
                 'ISO_3166_2' => 'SN',
@@ -504,7 +504,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 682,
+                'dial_code' => 682,
                 'name' => 'Saudi Arabia',
                 'country_code' => '682',
                 'ISO_3166_2' => 'SA',
@@ -513,7 +513,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 678,
+                'dial_code' => 678,
                 'name' => 'Sao Tome and Principe',
                 'country_code' => '678',
                 'ISO_3166_2' => 'ST',
@@ -522,7 +522,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 674,
+                'dial_code' => 674,
                 'name' => 'San Marino',
                 'country_code' => '674',
                 'ISO_3166_2' => 'SM',
@@ -531,7 +531,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 882,
+                'dial_code' => 882,
                 'name' => 'Samoa',
                 'country_code' => '882',
                 'ISO_3166_2' => 'WS',
@@ -540,7 +540,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 670,
+                'dial_code' => 670,
                 'name' => 'Saint Vincent and the Grenadines',
                 'country_code' => '670',
                 'ISO_3166_2' => 'VC',
@@ -549,7 +549,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 666,
+                'dial_code' => 666,
                 'name' => 'Saint Pierre and Miquelon',
                 'country_code' => '666',
                 'ISO_3166_2' => 'PM',
@@ -558,7 +558,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 663,
+                'dial_code' => 663,
                 'name' => 'Saint Martin (French part)',
                 'country_code' => '663',
                 'ISO_3166_2' => 'MF',
@@ -567,7 +567,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 662,
+                'dial_code' => 662,
                 'name' => 'Saint Lucia',
                 'country_code' => '662',
                 'ISO_3166_2' => 'LC',
@@ -576,7 +576,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 659,
+                'dial_code' => 659,
                 'name' => 'Saint Kitts and Nevis',
                 'country_code' => '659',
                 'ISO_3166_2' => 'KN',
@@ -585,7 +585,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 654,
+                'dial_code' => 654,
                 'name' => 'Saint Helena Ascension and Tristan da Cunha',
                 'country_code' => '654',
                 'ISO_3166_2' => 'SH',
@@ -594,7 +594,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 652,
+                'dial_code' => 652,
                 'name' => 'Saint Barthelemy',
                 'country_code' => '652',
                 'ISO_3166_2' => 'BL',
@@ -603,7 +603,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 646,
+                'dial_code' => 646,
                 'name' => 'Rwanda',
                 'country_code' => '646',
                 'ISO_3166_2' => 'RW',
@@ -612,7 +612,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 643,
+                'dial_code' => 643,
                 'name' => 'Russian Federation',
                 'country_code' => '643',
                 'ISO_3166_2' => 'RU',
@@ -621,7 +621,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 642,
+                'dial_code' => 642,
                 'name' => 'Romania',
                 'country_code' => '642',
                 'ISO_3166_2' => 'RO',
@@ -630,7 +630,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 638,
+                'dial_code' => 638,
                 'name' => 'Reunion',
                 'country_code' => '638',
                 'ISO_3166_2' => 'RE',
@@ -639,7 +639,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 634,
+                'dial_code' => 634,
                 'name' => 'Qatar',
                 'country_code' => '634',
                 'ISO_3166_2' => 'QA',
@@ -648,7 +648,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 630,
+                'dial_code' => 630,
                 'name' => 'Puerto Rico',
                 'country_code' => '630',
                 'ISO_3166_2' => 'PR',
@@ -657,7 +657,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 620,
+                'dial_code' => 620,
                 'name' => 'Portugal',
                 'country_code' => '620',
                 'ISO_3166_2' => 'PT',
@@ -666,7 +666,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 616,
+                'dial_code' => 616,
                 'name' => 'Poland',
                 'country_code' => '616',
                 'ISO_3166_2' => 'PL',
@@ -675,7 +675,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 612,
+                'dial_code' => 612,
                 'name' => 'Pitcairn',
                 'country_code' => '612',
                 'ISO_3166_2' => 'PN',
@@ -684,7 +684,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 608,
+                'dial_code' => 608,
                 'name' => 'Philippines',
                 'country_code' => '608',
                 'ISO_3166_2' => 'PH',
@@ -693,7 +693,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 604,
+                'dial_code' => 604,
                 'name' => 'Peru',
                 'country_code' => '604',
                 'ISO_3166_2' => 'PE',
@@ -702,7 +702,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 600,
+                'dial_code' => 600,
                 'name' => 'Paraguay',
                 'country_code' => '600',
                 'ISO_3166_2' => 'PY',
@@ -711,7 +711,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 598,
+                'dial_code' => 598,
                 'name' => 'Papua New Guinea',
                 'country_code' => '598',
                 'ISO_3166_2' => 'PG',
@@ -720,7 +720,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 591,
+                'dial_code' => 591,
                 'name' => 'Panama',
                 'country_code' => '591',
                 'ISO_3166_2' => 'PA',
@@ -729,7 +729,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 275,
+                'dial_code' => 275,
                 'name' => 'Palestinian Territory Occupied',
                 'country_code' => '275',
                 'ISO_3166_2' => 'PS',
@@ -738,7 +738,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 585,
+                'dial_code' => 585,
                 'name' => 'Palau',
                 'country_code' => '585',
                 'ISO_3166_2' => 'PW',
@@ -747,7 +747,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 586,
+                'dial_code' => 586,
                 'name' => 'Pakistan',
                 'country_code' => '586',
                 'ISO_3166_2' => 'PK',
@@ -756,7 +756,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 512,
+                'dial_code' => 512,
                 'name' => 'Oman',
                 'country_code' => '512',
                 'ISO_3166_2' => 'OM',
@@ -765,7 +765,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 578,
+                'dial_code' => 578,
                 'name' => 'Norway',
                 'country_code' => '578',
                 'ISO_3166_2' => 'NO',
@@ -774,7 +774,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 580,
+                'dial_code' => 580,
                 'name' => 'Northern Mariana Islands',
                 'country_code' => '580',
                 'ISO_3166_2' => 'MP',
@@ -783,7 +783,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 574,
+                'dial_code' => 574,
                 'name' => 'Norfolk Island',
                 'country_code' => '574',
                 'ISO_3166_2' => 'NF',
@@ -792,7 +792,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 570,
+                'dial_code' => 570,
                 'name' => 'Niue',
                 'country_code' => '570',
                 'ISO_3166_2' => 'NU',
@@ -801,7 +801,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 566,
+                'dial_code' => 566,
                 'name' => 'Nigeria',
                 'country_code' => '566',
                 'ISO_3166_2' => 'NG',
@@ -810,7 +810,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 562,
+                'dial_code' => 562,
                 'name' => 'Niger',
                 'country_code' => '562',
                 'ISO_3166_2' => 'NE',
@@ -819,7 +819,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 558,
+                'dial_code' => 558,
                 'name' => 'Nicaragua',
                 'country_code' => '558',
                 'ISO_3166_2' => 'NI',
@@ -828,7 +828,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 554,
+                'dial_code' => 554,
                 'name' => 'New Zealand',
                 'country_code' => '554',
                 'ISO_3166_2' => 'NZ',
@@ -837,7 +837,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 540,
+                'dial_code' => 540,
                 'name' => 'New Caledonia',
                 'country_code' => '540',
                 'ISO_3166_2' => 'NC',
@@ -846,7 +846,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 528,
+                'dial_code' => 528,
                 'name' => 'Netherlands',
                 'country_code' => '528',
                 'ISO_3166_2' => 'NL',
@@ -855,7 +855,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 524,
+                'dial_code' => 524,
                 'name' => 'Nepal',
                 'country_code' => '524',
                 'ISO_3166_2' => 'NP',
@@ -864,7 +864,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 520,
+                'dial_code' => 520,
                 'name' => 'Nauru',
                 'country_code' => '520',
                 'ISO_3166_2' => 'NR',
@@ -873,7 +873,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 516,
+                'dial_code' => 516,
                 'name' => 'Namibia',
                 'country_code' => '516',
                 'ISO_3166_2' => 'NA',
@@ -882,7 +882,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 104,
+                'dial_code' => 104,
                 'name' => 'Myanmar',
                 'country_code' => '104',
                 'ISO_3166_2' => 'MM',
@@ -891,7 +891,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 508,
+                'dial_code' => 508,
                 'name' => 'Mozambique',
                 'country_code' => '508',
                 'ISO_3166_2' => 'MZ',
@@ -900,7 +900,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 504,
+                'dial_code' => 504,
                 'name' => 'Morocco',
                 'country_code' => '504',
                 'ISO_3166_2' => 'MA',
@@ -909,7 +909,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 500,
+                'dial_code' => 500,
                 'name' => 'Montserrat',
                 'country_code' => '500',
                 'ISO_3166_2' => 'MS',
@@ -918,7 +918,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 499,
+                'dial_code' => 499,
                 'name' => 'Montenegro',
                 'country_code' => '499',
                 'ISO_3166_2' => 'ME',
@@ -927,7 +927,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 496,
+                'dial_code' => 496,
                 'name' => 'Mongolia',
                 'country_code' => '496',
                 'ISO_3166_2' => 'MN',
@@ -936,7 +936,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 492,
+                'dial_code' => 492,
                 'name' => 'Monaco',
                 'country_code' => '492',
                 'ISO_3166_2' => 'MC',
@@ -945,7 +945,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 498,
+                'dial_code' => 498,
                 'name' => 'Moldova Republic of',
                 'country_code' => '498',
                 'ISO_3166_2' => 'MD',
@@ -954,7 +954,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 583,
+                'dial_code' => 583,
                 'name' => 'Micronesia Federated States of',
                 'country_code' => '583',
                 'ISO_3166_2' => 'FM',
@@ -963,7 +963,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 484,
+                'dial_code' => 484,
                 'name' => 'Mexico',
                 'country_code' => '484',
                 'ISO_3166_2' => 'MX',
@@ -972,7 +972,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 175,
+                'dial_code' => 175,
                 'name' => 'Mayotte',
                 'country_code' => '175',
                 'ISO_3166_2' => 'YT',
@@ -981,7 +981,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 480,
+                'dial_code' => 480,
                 'name' => 'Mauritius',
                 'country_code' => '480',
                 'ISO_3166_2' => 'MU',
@@ -990,7 +990,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 478,
+                'dial_code' => 478,
                 'name' => 'Mauritania',
                 'country_code' => '478',
                 'ISO_3166_2' => 'MR',
@@ -999,7 +999,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 474,
+                'dial_code' => 474,
                 'name' => 'Martinique',
                 'country_code' => '474',
                 'ISO_3166_2' => 'MQ',
@@ -1008,7 +1008,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 584,
+                'dial_code' => 584,
                 'name' => 'Marshall Islands',
                 'country_code' => '584',
                 'ISO_3166_2' => 'MH',
@@ -1017,7 +1017,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 470,
+                'dial_code' => 470,
                 'name' => 'Malta',
                 'country_code' => '470',
                 'ISO_3166_2' => 'MT',
@@ -1026,7 +1026,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 466,
+                'dial_code' => 466,
                 'name' => 'Mali',
                 'country_code' => '466',
                 'ISO_3166_2' => 'ML',
@@ -1035,7 +1035,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 462,
+                'dial_code' => 462,
                 'name' => 'Maldives',
                 'country_code' => '462',
                 'ISO_3166_2' => 'MV',
@@ -1044,7 +1044,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 458,
+                'dial_code' => 458,
                 'name' => 'Malaysia',
                 'country_code' => '458',
                 'ISO_3166_2' => 'MY',
@@ -1053,7 +1053,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 454,
+                'dial_code' => 454,
                 'name' => 'Malawi',
                 'country_code' => '454',
                 'ISO_3166_2' => 'MW',
@@ -1062,7 +1062,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 450,
+                'dial_code' => 450,
                 'name' => 'Madagascar',
                 'country_code' => '450',
                 'ISO_3166_2' => 'MG',
@@ -1071,7 +1071,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 807,
+                'dial_code' => 807,
                 'name' => 'Macedonia the former Yugoslav Republic of',
                 'country_code' => '807',
                 'ISO_3166_2' => 'MK',
@@ -1080,7 +1080,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 446,
+                'dial_code' => 446,
                 'name' => 'Macao',
                 'country_code' => '446',
                 'ISO_3166_2' => 'MO',
@@ -1089,7 +1089,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 442,
+                'dial_code' => 442,
                 'name' => 'Luxembourg',
                 'country_code' => '442',
                 'ISO_3166_2' => 'LU',
@@ -1098,7 +1098,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 440,
+                'dial_code' => 440,
                 'name' => 'Lithuania',
                 'country_code' => '440',
                 'ISO_3166_2' => 'LT',
@@ -1107,7 +1107,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 438,
+                'dial_code' => 438,
                 'name' => 'Liechtenstein',
                 'country_code' => '438',
                 'ISO_3166_2' => 'LI',
@@ -1116,7 +1116,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 434,
+                'dial_code' => 434,
                 'name' => 'Libya',
                 'country_code' => '434',
                 'ISO_3166_2' => 'LY',
@@ -1125,7 +1125,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 430,
+                'dial_code' => 430,
                 'name' => 'Liberia',
                 'country_code' => '430',
                 'ISO_3166_2' => 'LR',
@@ -1134,7 +1134,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 426,
+                'dial_code' => 426,
                 'name' => 'Lesotho',
                 'country_code' => '426',
                 'ISO_3166_2' => 'LS',
@@ -1143,7 +1143,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 422,
+                'dial_code' => 422,
                 'name' => 'Lebanon',
                 'country_code' => '422',
                 'ISO_3166_2' => 'LB',
@@ -1152,7 +1152,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 428,
+                'dial_code' => 428,
                 'name' => 'Latvia',
                 'country_code' => '428',
                 'ISO_3166_2' => 'LV',
@@ -1161,7 +1161,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 418,
+                'dial_code' => 418,
                 'name' => 'Lao Peoples Democratic Republic',
                 'country_code' => '418',
                 'ISO_3166_2' => 'LA',
@@ -1170,7 +1170,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 417,
+                'dial_code' => 417,
                 'name' => 'Kyrgyzstan',
                 'country_code' => '417',
                 'ISO_3166_2' => 'KG',
@@ -1179,7 +1179,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 414,
+                'dial_code' => 414,
                 'name' => 'Kuwait',
                 'country_code' => '414',
                 'ISO_3166_2' => 'KW',
@@ -1188,7 +1188,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 410,
+                'dial_code' => 410,
                 'name' => 'Republic of',
                 'country_code' => '410',
                 'ISO_3166_2' => 'KR',
@@ -1197,7 +1197,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 408,
+                'dial_code' => 408,
                 'name' => 'Democratic Peoples Republic of',
                 'country_code' => '408',
                 'ISO_3166_2' => 'KP',
@@ -1206,7 +1206,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 296,
+                'dial_code' => 296,
                 'name' => 'Kiribati',
                 'country_code' => '296',
                 'ISO_3166_2' => 'KI',
@@ -1215,7 +1215,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 404,
+                'dial_code' => 404,
                 'name' => 'Kenya',
                 'country_code' => '404',
                 'ISO_3166_2' => 'KE',
@@ -1224,7 +1224,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 398,
+                'dial_code' => 398,
                 'name' => 'Kazakhstan',
                 'country_code' => '398',
                 'ISO_3166_2' => 'KZ',
@@ -1233,7 +1233,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 400,
+                'dial_code' => 400,
                 'name' => 'Jordan',
                 'country_code' => '400',
                 'ISO_3166_2' => 'JO',
@@ -1242,7 +1242,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 832,
+                'dial_code' => 832,
                 'name' => 'Jersey',
                 'country_code' => '832',
                 'ISO_3166_2' => 'JE',
@@ -1251,7 +1251,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 392,
+                'dial_code' => 392,
                 'name' => 'Japan',
                 'country_code' => '392',
                 'ISO_3166_2' => 'JP',
@@ -1260,7 +1260,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 388,
+                'dial_code' => 388,
                 'name' => 'Jamaica',
                 'country_code' => '388',
                 'ISO_3166_2' => 'JM',
@@ -1269,7 +1269,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 380,
+                'dial_code' => 380,
                 'name' => 'Italy',
                 'country_code' => '380',
                 'ISO_3166_2' => 'IT',
@@ -1278,7 +1278,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 376,
+                'dial_code' => 376,
                 'name' => 'Israel',
                 'country_code' => '376',
                 'ISO_3166_2' => 'IL',
@@ -1287,7 +1287,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 833,
+                'dial_code' => 833,
                 'name' => 'Isle of Man',
                 'country_code' => '833',
                 'ISO_3166_2' => 'IM',
@@ -1296,7 +1296,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 372,
+                'dial_code' => 372,
                 'name' => 'Ireland',
                 'country_code' => '372',
                 'ISO_3166_2' => 'IE',
@@ -1305,7 +1305,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 368,
+                'dial_code' => 368,
                 'name' => 'Iraq',
                 'country_code' => '368',
                 'ISO_3166_2' => 'IQ',
@@ -1314,7 +1314,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 364,
+                'dial_code' => 364,
                 'name' => 'Iran Islamic Republic of',
                 'country_code' => ' 364',
                 'ISO_3166_2' => 'IR',
@@ -1323,7 +1323,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 360,
+                'dial_code' => 360,
                 'name' => 'Indonesia',
                 'country_code' => '360',
                 'ISO_3166_2' => 'ID',
@@ -1332,7 +1332,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 356,
+                'dial_code' => 356,
                 'name' => 'India',
                 'country_code' => '356',
                 'ISO_3166_2' => 'IN',
@@ -1341,7 +1341,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 352,
+                'dial_code' => 352,
                 'name' => 'Iceland',
                 'country_code' => '352',
                 'ISO_3166_2' => 'IS',
@@ -1350,7 +1350,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 348,
+                'dial_code' => 348,
                 'name' => 'Hungary',
                 'country_code' => '348',
                 'ISO_3166_2' => 'HU',
@@ -1359,7 +1359,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 344,
+                'dial_code' => 344,
                 'name' => 'Hong Kong',
                 'country_code' => '344',
                 'ISO_3166_2' => 'HK',
@@ -1368,7 +1368,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 340,
+                'dial_code' => 340,
                 'name' => 'Honduras',
                 'country_code' => '340',
                 'ISO_3166_2' => 'HN',
@@ -1377,7 +1377,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 336,
+                'dial_code' => 336,
                 'name' => 'Holy See (Vatican City State)',
                 'country_code' => '336',
                 'ISO_3166_2' => 'VA',
@@ -1386,7 +1386,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 334,
+                'dial_code' => 334,
                 'name' => 'Heard Island and McDonald Islands',
                 'country_code' => '334',
                 'ISO_3166_2' => 'HM',
@@ -1395,7 +1395,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 332,
+                'dial_code' => 332,
                 'name' => 'Haiti',
                 'country_code' => '332',
                 'ISO_3166_2' => 'HT',
@@ -1404,7 +1404,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 328,
+                'dial_code' => 328,
                 'name' => 'Guyana',
                 'country_code' => '328',
                 'ISO_3166_2' => 'GY',
@@ -1413,7 +1413,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 624,
+                'dial_code' => 624,
                 'name' => 'Guinea-Bissau',
                 'country_code' => '624',
                 'ISO_3166_2' => 'GW',
@@ -1422,7 +1422,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 324,
+                'dial_code' => 324,
                 'name' => 'Guinea',
                 'country_code' => '324',
                 'ISO_3166_2' => 'GN',
@@ -1431,7 +1431,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 831,
+                'dial_code' => 831,
                 'name' => 'Guernsey',
                 'country_code' => '831',
                 'ISO_3166_2' => 'GG',
@@ -1440,7 +1440,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 320,
+                'dial_code' => 320,
                 'name' => 'Guatemala',
                 'country_code' => '320',
                 'ISO_3166_2' => 'GT',
@@ -1449,7 +1449,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 316,
+                'dial_code' => 316,
                 'name' => 'Guam',
                 'country_code' => '316',
                 'ISO_3166_2' => 'GU',
@@ -1458,7 +1458,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 312,
+                'dial_code' => 312,
                 'name' => 'Guadeloupe',
                 'country_code' => '312',
                 'ISO_3166_2' => 'GP',
@@ -1467,7 +1467,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 308,
+                'dial_code' => 308,
                 'name' => 'Grenada',
                 'country_code' => '308',
                 'ISO_3166_2' => 'GD',
@@ -1476,7 +1476,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 304,
+                'dial_code' => 304,
                 'name' => 'Greenland',
                 'country_code' => '304',
                 'ISO_3166_2' => 'GL',
@@ -1485,7 +1485,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 300,
+                'dial_code' => 300,
                 'name' => 'Greece',
                 'country_code' => '300',
                 'ISO_3166_2' => 'GR',
@@ -1494,7 +1494,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 292,
+                'dial_code' => 292,
                 'name' => 'Gibraltar',
                 'country_code' => '292',
                 'ISO_3166_2' => 'GI',
@@ -1503,7 +1503,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 288,
+                'dial_code' => 288,
                 'name' => 'Ghana',
                 'country_code' => '288',
                 'ISO_3166_2' => 'GH',
@@ -1512,7 +1512,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 276,
+                'dial_code' => 276,
                 'name' => 'Germany',
                 'country_code' => '276',
                 'ISO_3166_2' => 'DE',
@@ -1521,7 +1521,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 268,
+                'dial_code' => 268,
                 'name' => 'Georgia',
                 'country_code' => '268',
                 'ISO_3166_2' => 'GE',
@@ -1530,7 +1530,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 270,
+                'dial_code' => 270,
                 'name' => 'Gambia',
                 'country_code' => '270',
                 'ISO_3166_2' => 'GM',
@@ -1539,7 +1539,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 266,
+                'dial_code' => 266,
                 'name' => 'Gabon',
                 'country_code' => '266',
                 'ISO_3166_2' => 'GA',
@@ -1548,7 +1548,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 260,
+                'dial_code' => 260,
                 'name' => 'French Southern Territories',
                 'country_code' => '260',
                 'ISO_3166_2' => 'TF',
@@ -1557,7 +1557,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 258,
+                'dial_code' => 258,
                 'name' => 'French Polynesia',
                 'country_code' => '258',
                 'ISO_3166_2' => 'PF',
@@ -1566,7 +1566,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 254,
+                'dial_code' => 254,
                 'name' => 'French Guiana',
                 'country_code' => '254',
                 'ISO_3166_2' => 'GF',
@@ -1575,7 +1575,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 250,
+                'dial_code' => 250,
                 'name' => 'France',
                 'country_code' => '250',
                 'ISO_3166_2' => 'FR',
@@ -1584,7 +1584,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 246,
+                'dial_code' => 246,
                 'name' => 'Finland',
                 'country_code' => '246',
                 'ISO_3166_2' => 'FI',
@@ -1593,7 +1593,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 242,
+                'dial_code' => 242,
                 'name' => 'Fiji',
                 'country_code' => '242',
                 'ISO_3166_2' => 'FJ',
@@ -1602,7 +1602,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 234,
+                'dial_code' => 234,
                 'name' => 'Faroe Islands',
                 'country_code' => '234',
                 'ISO_3166_2' => 'FO',
@@ -1611,7 +1611,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 238,
+                'dial_code' => 238,
                 'name' => 'Falkland Islands (Malvinas)',
                 'country_code' => '238',
                 'ISO_3166_2' => 'FK',
@@ -1620,7 +1620,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 231,
+                'dial_code' => 231,
                 'name' => 'Ethiopia',
                 'country_code' => '231',
                 'ISO_3166_2' => 'ET',
@@ -1629,7 +1629,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 233,
+                'dial_code' => 233,
                 'name' => 'Estonia',
                 'country_code' => '233',
                 'ISO_3166_2' => 'EE',
@@ -1638,7 +1638,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 232,
+                'dial_code' => 232,
                 'name' => 'Eritrea',
                 'country_code' => '232',
                 'ISO_3166_2' => 'ER',
@@ -1647,7 +1647,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 226,
+                'dial_code' => 226,
                 'name' => 'Equatorial Guinea',
                 'country_code' => '226',
                 'ISO_3166_2' => 'GQ',
@@ -1656,7 +1656,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 222,
+                'dial_code' => 222,
                 'name' => 'El Salvador',
                 'country_code' => '222',
                 'ISO_3166_2' => 'SV',
@@ -1665,7 +1665,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 818,
+                'dial_code' => 818,
                 'name' => 'Egypt',
                 'country_code' => '818',
                 'ISO_3166_2' => 'EG',
@@ -1674,7 +1674,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 218,
+                'dial_code' => 218,
                 'name' => 'Ecuador',
                 'country_code' => '218',
                 'ISO_3166_2' => 'EC',
@@ -1683,7 +1683,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 214,
+                'dial_code' => 214,
                 'name' => 'Dominican Republic',
                 'country_code' => '214',
                 'ISO_3166_2' => 'DO',
@@ -1692,7 +1692,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 212,
+                'dial_code' => 212,
                 'name' => 'Dominica',
                 'country_code' => '212',
                 'ISO_3166_2' => 'DM',
@@ -1701,7 +1701,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 262,
+                'dial_code' => 262,
                 'name' => 'Djibouti',
                 'country_code' => '262',
                 'ISO_3166_2' => 'DJ',
@@ -1710,7 +1710,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 208,
+                'dial_code' => 208,
                 'name' => 'Denmark',
                 'country_code' => '208',
                 'ISO_3166_2' => 'DK',
@@ -1719,7 +1719,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 203,
+                'dial_code' => 203,
                 'name' => 'Czech Republic',
                 'country_code' => '203',
                 'ISO_3166_2' => 'CZ',
@@ -1728,7 +1728,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 196,
+                'dial_code' => 196,
                 'name' => 'Cyprus',
                 'country_code' => '196',
                 'ISO_3166_2' => 'CY',
@@ -1737,7 +1737,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 531,
+                'dial_code' => 531,
                 'name' => 'Curacao',
                 'country_code' => '531',
                 'ISO_3166_2' => 'CW',
@@ -1746,7 +1746,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 192,
+                'dial_code' => 192,
                 'name' => 'Cuba',
                 'country_code' => '192',
                 'ISO_3166_2' => 'CU',
@@ -1755,7 +1755,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 191,
+                'dial_code' => 191,
                 'name' => 'Croatia',
                 'country_code' => '191',
                 'ISO_3166_2' => 'HR',
@@ -1764,7 +1764,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 384,
+                'dial_code' => 384,
                 'name' => "Cote d'Ivoire",
                 'country_code' => '384',
                 'ISO_3166_2' => 'CI',
@@ -1773,7 +1773,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 188,
+                'dial_code' => 188,
                 'name' => 'Costa Rica',
                 'country_code' => '188',
                 'ISO_3166_2' => 'CR',
@@ -1782,7 +1782,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 184,
+                'dial_code' => 184,
                 'name' => 'Cook Islands',
                 'country_code' => '184',
                 'ISO_3166_2' => 'CK',
@@ -1791,7 +1791,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 180,
+                'dial_code' => 180,
                 'name' => 'Congo the Democratic Republic of the',
                 'country_code' => '180',
                 'ISO_3166_2' => 'CD',
@@ -1800,7 +1800,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 178,
+                'dial_code' => 178,
                 'name' => 'Congo',
                 'country_code' => '178',
                 'ISO_3166_2' => 'CG',
@@ -1809,7 +1809,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 174,
+                'dial_code' => 174,
                 'name' => 'Comoros',
                 'country_code' => '174',
                 'ISO_3166_2' => 'KM',
@@ -1818,7 +1818,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 170,
+                'dial_code' => 170,
                 'name' => 'Colombia',
                 'country_code' => '170',
                 'ISO_3166_2' => 'CO',
@@ -1827,7 +1827,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 166,
+                'dial_code' => 166,
                 'name' => 'Cocos(Keeling) Islands',
                 'country_code' => '166',
                 'ISO_3166_2' => 'CC',
@@ -1836,7 +1836,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 162,
+                'dial_code' => 162,
                 'name' => 'Christmas Island',
                 'country_code' => '162',
                 'ISO_3166_2' => 'CX',
@@ -1845,7 +1845,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 156,
+                'dial_code' => 156,
                 'name' => 'China',
                 'country_code' => '156',
                 'ISO_3166_2' => 'CN',
@@ -1854,7 +1854,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 152,
+                'dial_code' => 152,
                 'name' => 'Chile',
                 'country_code' => '152',
                 'ISO_3166_2' => 'CL',
@@ -1863,7 +1863,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 148,
+                'dial_code' => 148,
                 'name' => 'Chad',
                 'country_code' => '148',
                 'ISO_3166_2' => 'TD',
@@ -1872,7 +1872,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 140,
+                'dial_code' => 140,
                 'name' => 'Central African Republic',
                 'country_code' => '140',
                 'ISO_3166_2' => 'CF',
@@ -1881,7 +1881,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 136,
+                'dial_code' => 136,
                 'name' => 'Cayman Islands',
                 'country_code' => '136',
                 'ISO_3166_2' => 'KY',
@@ -1890,7 +1890,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 132,
+                'dial_code' => 132,
                 'name' => 'Cape Verde',
                 'country_code' => '132',
                 'ISO_3166_2' => 'CV',
@@ -1899,7 +1899,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 124,
+                'dial_code' => 124,
                 'name' => 'Canada',
                 'country_code' => '124',
                 'ISO_3166_2' => 'CA',
@@ -1908,7 +1908,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 120,
+                'dial_code' => 120,
                 'name' => 'Cameroon',
                 'country_code' => '120',
                 'ISO_3166_2' => 'CM',
@@ -1917,7 +1917,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 116,
+                'dial_code' => 116,
                 'name' => 'Cambodia',
                 'country_code' => '116',
                 'ISO_3166_2' => 'KH',
@@ -1926,7 +1926,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 108,
+                'dial_code' => 108,
                 'name' => 'Burundi',
                 'country_code' => '108',
                 'ISO_3166_2' => 'BI',
@@ -1935,7 +1935,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 854,
+                'dial_code' => 854,
                 'name' => 'Burkina Faso',
                 'country_code' => '854',
                 'ISO_3166_2' => 'BF',
@@ -1944,7 +1944,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 100,
+                'dial_code' => 100,
                 'name' => 'Bulgaria',
                 'country_code' => '100',
                 'ISO_3166_2' => 'BG',
@@ -1953,7 +1953,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 96,
+                'dial_code' => 96,
                 'name' => 'Brunei Darussalam',
                 'country_code' => '96',
                 'ISO_3166_2' => 'BN',
@@ -1962,7 +1962,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 86,
+                'dial_code' => 86,
                 'name' => 'British Indian Ocean Territory',
                 'country_code' => '86',
                 'ISO_3166_2' => 'IO',
@@ -1971,7 +1971,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 76,
+                'dial_code' => 76,
                 'name' => 'Brazil',
                 'country_code' => '76',
                 'ISO_3166_2' => 'BR',
@@ -1980,7 +1980,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 74,
+                'dial_code' => 74,
                 'name' => 'Bouvet Island',
                 'country_code' => '74',
                 'ISO_3166_2' => 'BV',
@@ -1989,7 +1989,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 72,
+                'dial_code' => 72,
                 'name' => 'Botswana',
                 'country_code' => '72',
                 'ISO_3166_2' => 'BW',
@@ -1998,7 +1998,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 70,
+                'dial_code' => 70,
                 'name' => 'Bosnia and Herzegovina',
                 'country_code' => '70',
                 'ISO_3166_2' => 'BA',
@@ -2007,7 +2007,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 535,
+                'dial_code' => 535,
                 'name' => 'Bonaire Sint Eustatius and Saba',
                 'country_code' => '535',
                 'ISO_3166_2' => 'BQ',
@@ -2016,7 +2016,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 68,
+                'dial_code' => 68,
                 'name' => 'Bolivia Plurinational State of',
                 'country_code' => '68',
                 'ISO_3166_2' => 'BO',
@@ -2025,7 +2025,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 64,
+                'dial_code' => 64,
                 'name' => 'Bhutan',
                 'country_code' => '64',
                 'ISO_3166_2' => 'BT',
@@ -2034,7 +2034,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 60,
+                'dial_code' => 60,
                 'name' => 'Bermuda',
                 'country_code' => '60',
                 'ISO_3166_2' => 'BM',
@@ -2043,7 +2043,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 204,
+                'dial_code' => 204,
                 'name' => 'Benin',
                 'country_code' => '204',
                 'ISO_3166_2' => 'BJ',
@@ -2052,7 +2052,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 84,
+                'dial_code' => 84,
                 'name' => 'Belize',
                 'country_code' => '84',
                 'ISO_3166_2' => 'BZ',
@@ -2061,7 +2061,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 56,
+                'dial_code' => 56,
                 'name' => 'Belgium',
                 'country_code' => '56',
                 'ISO_3166_2' => 'BE',
@@ -2070,7 +2070,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 112,
+                'dial_code' => 112,
                 'name' => 'Belarus',
                 'country_code' => '112',
                 'ISO_3166_2' => 'BY',
@@ -2079,7 +2079,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 52,
+                'dial_code' => 52,
                 'name' => 'Barbados',
                 'country_code' => '52',
                 'ISO_3166_2' => 'BB',
@@ -2088,7 +2088,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 50,
+                'dial_code' => 50,
                 'name' => 'Bangladesh',
                 'country_code' => '50',
                 'ISO_3166_2' => 'BD',
@@ -2097,7 +2097,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 48,
+                'dial_code' => 48,
                 'name' => 'Bahrain',
                 'country_code' => '48',
                 'ISO_3166_2' => 'BH',
@@ -2106,7 +2106,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 44,
+                'dial_code' => 44,
                 'name' => 'Bahamas',
                 'country_code' => '44',
                 'ISO_3166_2' => 'BS',
@@ -2115,7 +2115,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 31,
+                'dial_code' => 31,
                 'name' => 'Azerbaijan',
                 'country_code' => '31',
                 'ISO_3166_2' => 'AZ',
@@ -2124,7 +2124,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 40,
+                'dial_code' => 40,
                 'name' => 'Austria',
                 'country_code' => '40',
                 'ISO_3166_2' => 'AT',
@@ -2133,7 +2133,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 36,
+                'dial_code' => 36,
                 'name' => 'Australia',
                 'country_code' => '36',
                 'ISO_3166_2' => 'AU',
@@ -2142,7 +2142,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 533,
+                'dial_code' => 533,
                 'name' => 'Aruba',
                 'country_code' => '533',
                 'ISO_3166_2' => 'AW',
@@ -2151,7 +2151,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 51,
+                'dial_code' => 51,
                 'name' => 'Armenia',
                 'country_code' => '51',
                 'ISO_3166_2' => 'AM',
@@ -2160,7 +2160,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 32,
+                'dial_code' => 32,
                 'name' => 'Argentina',
                 'country_code' => '32',
                 'ISO_3166_2' => 'AR',
@@ -2169,7 +2169,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 28,
+                'dial_code' => 28,
                 'name' => 'Antigua and Barbuda',
                 'country_code' => '28',
                 'ISO_3166_2' => 'AG',
@@ -2178,7 +2178,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 10,
+                'dial_code' => 10,
                 'name' => 'Antarctica',
                 'country_code' => '10',
                 'ISO_3166_2' => 'AQ',
@@ -2187,7 +2187,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 660,
+                'dial_code' => 660,
                 'name' => 'Anguilla',
                 'country_code' => '660',
                 'ISO_3166_2' => 'AI',
@@ -2196,7 +2196,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 24,
+                'dial_code' => 24,
                 'name' => 'Angola',
                 'country_code' => '24',
                 'ISO_3166_2' => 'AO',
@@ -2205,7 +2205,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 20,
+                'dial_code' => 20,
                 'name' => 'Andorra',
                 'country_code' => '20',
                 'ISO_3166_2' => 'AD',
@@ -2214,7 +2214,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 16,
+                'dial_code' => 16,
                 'name' => 'American Samoa',
                 'country_code' => '16',
                 'ISO_3166_2' => 'as',
@@ -2223,7 +2223,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 12,
+                'dial_code' => 12,
                 'name' => 'Algeria',
                 'country_code' => '12',
                 'ISO_3166_2' => 'DZ',
@@ -2232,7 +2232,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 8,
+                'dial_code' => 8,
                 'name' => 'Albania',
                 'country_code' => '8',
                 'ISO_3166_2' => 'AL',
@@ -2241,7 +2241,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 248,
+                'dial_code' => 248,
                 'name' => 'Aland Islands',
                 'country_code' => '248',
                 'ISO_3166_2' => 'AX',
@@ -2250,7 +2250,7 @@ class CountriesTableSeeder extends Seeder
                 'status' => 1,
             ],
             [
-                'country_id' => 4,
+                'dial_code' => 4,
                 'name' => 'Afghanistan',
                 'country_code' => '4',
                 'ISO_3166_2' => 'AF',

@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex justify-end flex-wrap items-center mb-5">
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary inline-flex items-center">
+            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center">
                 {{ __('Add Withdraw Account') }}
             </a>
         </div>
@@ -98,7 +98,7 @@
                                            class="form-control !text-lg withdrawAmount" placeholder="Enter Amount"
                                            aria-describedby="basic-addon1">
                                     <span
-                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center"
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center"
                                         id="basic-addon1">
                                         {{ $currency }}
                                     </span>
@@ -141,7 +141,7 @@
                                 </tbody>
                             </table>
                             <div class="buttons border-t border-slate-100 dark:border-slate-700 mt-4 pt-4">
-                                <button type="submit" class="btn w-full inline-flex justify-center btn-dark">
+                                <button type="submit" class="btn w-full inline-flex justify-center btn-primary">
                                     {{ __('Withdraw Money') }}
                                 </button>
                             </div>

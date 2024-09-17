@@ -13,7 +13,7 @@
             <!-- User Status Update End-->
             </div>
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
-                <div class="flex justify-between flex-wrap items-center mb-6">
+                <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
                     <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Tag') }}
@@ -27,279 +27,295 @@
                         </button>
                     </div>
                 </div>
-                <div class="card overflow-hidden mb-5">
-                    <div class="card-body py-1">
-                        <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
-                            <div class="bg-white dark:bg-slate-800 p-4">
-                                <div class="text-center space-y-2">
-                                    <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Total Deposit') }}
-                                    </p>
-                                    <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                        {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                    </h6>
-                                    <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                        <span class="text-success-500">
-                                            {{ __('+452%') }}
-                                        </span>
-                                        {{ __('in last 7 days') }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="bg-white dark:bg-slate-800 p-4">
-                                <div class="text-center space-y-2">
-                                    <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Total Withdraw') }}
-                                    </p>
-                                    <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                        {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                    </h6>
-                                    <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                        <span class="text-success-500">
-                                            {{ __('+452%') }}
-                                        </span>
-                                        {{ __('in last 7 days') }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="bg-white dark:bg-slate-800 p-4">
-                                <div class="text-center space-y-2">
-                                    <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Net Deposits') }}
-                                    </p>
-                                    <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                        {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                    </h6>
-                                    <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                        <span class="text-success-500">
-                                            {{ __('+452%') }}
-                                        </span>
-                                        {{ __('in last 7 days') }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid md:grid-cols-3 grid-cols-1 gap-4 mb-5">
-                    <!-- BEGIN: Group Chart -->
-                    <div class="card">
-                        <div class="card-body pt-4 pb-3 px-4">
-                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                <div class="flex-none">
-                                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
-                                        <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                <div class="innerMenu">
+                    <div class="card overflow-hidden mb-5">
+                        <div class="card-body py-1">
+                            <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
+                                <div class="bg-white dark:bg-slate-800 p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Total Deposit') }}
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                        </h6>
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
+                                            <span class="text-success-500">
+                                                {{ __('+452%') }}
+                                            </span>
+                                            {{ __('in last 7 days') }}
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="flex-1">
-                                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Used Margin') }}
+                                <div class="bg-white dark:bg-slate-800 p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Total Withdraw') }}
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                        </h6>
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
+                                            <span class="text-success-500">
+                                                {{ __('+452%') }}
+                                            </span>
+                                            {{ __('in last 7 days') }}
+                                        </p>
                                     </div>
-                                    <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                        {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                </div>
+                                <div class="bg-white dark:bg-slate-800 p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Net Deposits') }}
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                        </h6>
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
+                                            <span class="text-success-500">
+                                                {{ __('+452%') }}
+                                            </span>
+                                            {{ __('in last 7 days') }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body pt-4 pb-3 px-4">
-                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                <div class="flex-none">
-                                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
-                                        <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                    <div class="grid md:grid-cols-3 grid-cols-1 gap-4 mb-5">
+                        <!-- BEGIN: Group Chart -->
+                        <div class="card">
+                            <div class="card-body pt-4 pb-3 px-4">
+                                <div class="flex space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-none">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                            <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Free Margin') }}
-                                    </div>
-                                    <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                        {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body pt-4 pb-3 px-4">
-                            <div class="flex space-x-3 rtl:space-x-reverse">
-                                <div class="flex-none">
-                                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
-                                        <iconify-icon icon="mdi:currency-usd"></iconify-icon>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                        {{ __('Wallet Balance') }}
-                                    </div>
-                                    <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                        $0
+                                    <div class="flex-1">
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Used Margin') }}
+                                        </div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="card">
+                            <div class="card-body pt-4 pb-3 px-4">
+                                <div class="flex space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-none">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                            <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Free Margin') }}
+                                        </div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body pt-4 pb-3 px-4">
+                                <div class="flex space-x-3 rtl:space-x-reverse">
+                                    <div class="flex-none">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                            <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Wallet Balance') }}
+                                        </div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                            $0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: Group Chart -->
                     </div>
-                    <!-- END: Group Chart -->
-                </div>
-                <div class="site-tab-bars card p-3 mb-5">
-                    <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 gap-3 menu-open" id="pills-tab" role="tablist">
-                        @canany(['customer-basic-manage','customer-change-password'])
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
-                                    id="pills-informations-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-informations"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-informations"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Overview') }}
-                                </a>
-                            </li>
-                        @endcanany
-                        @can('investment-list')
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-transfer-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-transfer"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-transfer"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Accounts') }}
-                                </a>
-                            </li>
-                        @endcan
-                        @can('investment-list')
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-transfer-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#ib-info"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="ib-info"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Partner') }}
-                                </a>
-                            </li>
-                        @endcan
-
-                        @can('transaction-list')
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-transactions-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-transactions"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-transactions"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Transactions') }}
-                                </a>
-                            </li>
-                        @endcan
-
-                        @if(setting('site_referral','global') == 'level')
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-direct-referral-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-direct-referral"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-transfer"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Direct Referrals') }}
-                                </a>
-                            </li>
-                        @endif
-                        @if(setting('site_referral','global') == 'level')
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-ticket-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-tree"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-transfer"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Network') }}
-                                </a>
-                            </li>
-                        @endif
-
-
-                        @canany(['support-ticket-list','support-ticket-action'])
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-ticket-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-ticket"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-transfer"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Ticket') }}
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a
-                                    href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                    id="pills-ticket-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-note"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-transfer"
-                                    aria-selected="true"
-                                >
-                                    {{ __('Add Note') }}
-                                </a>
-                            </li>
+                    <div class="site-tab-bars card p-3 mb-5">
+                        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 gap-3 menu-open" id="pills-tab" role="tablist">
+                            @canany(['customer-basic-manage','customer-change-password'])
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
+                                        id="pills-informations-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-informations"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-informations"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Overview') }}
+                                    </a>
+                                </li>
+                            @endcanany
+                            @can('investment-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-security-tab"
+                                        id="pills-transfer-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#pills-security"
+                                        data-bs-target="#pills-transfer"
                                         type="button"
                                         role="tab"
-                                        aria-controls="pills-security"
+                                        aria-controls="pills-transfer"
                                         aria-selected="true"
                                     >
-                                        {{ __('Security') }}
+                                        {{ __('Accounts') }}
                                     </a>
                                 </li>
-                        @endcanany
-                    </ul>
-                </div>
+                            @endcan
+                            <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-kyc-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-kyc"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-kyc"
+                                    aria-selected="true"
+                                >
+                                    {{ __('KYC') }}
+                                </a>
+                            </li>
+                            @can('investment-list')
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-transfer-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#ib-info"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="ib-info"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Partner') }}
+                                    </a>
+                                </li>
+                            @endcan
 
+                            @can('transaction-list')
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-transactions-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-transactions"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-transactions"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Transactions') }}
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @if(setting('site_referral','global') == 'level')
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-direct-referral-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-direct-referral"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-transfer"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Direct Referrals') }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if(setting('site_referral','global') == 'level')
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-ticket-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-tree"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-transfer"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Network') }}
+                                    </a>
+                                </li>
+                            @endif
+
+
+                            @canany(['support-ticket-list','support-ticket-action'])
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-ticket-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-ticket"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-transfer"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Ticket') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-ticket-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-note"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-transfer"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Add Note') }}
+                                    </a>
+                                </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a
+                                            href=""
+                                            class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                            id="pills-security-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#pills-security"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="pills-security"
+                                            aria-selected="true"
+                                        >
+                                            {{ __('Security') }}
+                                        </a>
+                                    </li>
+                            @endcanany
+                        </ul>
+                    </div>
+                </div>
                 <div class="tab-content" id="pills-tabContent">
                     <!-- basic Info -->
                 @canany(['customer-basic-manage','customer-change-password'])
@@ -310,6 +326,9 @@
                 @can('investment-list')
                     @include('backend.user.include.__accounts')
                 @endcan
+
+                <!-- KYC Tab -->
+                @include('backend.user.include.__kycTab')
 
                 <!-- IB -->
                 @can('IB-List')
@@ -360,6 +379,9 @@
         @include('backend.user.include.__mail_send',['name' => $user->first_name.' '.$user->last_name, 'id' => $user->id])
     @endcan
     <!-- Modal for Send Email-->
+
+    {{-- Modal for User KYC Verification --}}
+    @include('backend.user.include.__user_kyc_verification_modal')
 
     {{-- Modal for add Forex Account --}}
     @include('backend.user.include.__forex_account')

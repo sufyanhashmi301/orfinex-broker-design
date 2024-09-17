@@ -8,7 +8,7 @@
     <!-- Login Section -->
     <div class="h-screen md:flex">
         <div class="hidden w-1/2 overflow-hidden md:block p-3">
-            <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url({{ asset('frontend/images/primex_login_bg.png') }})">
+            <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url('https://cdn.brokeret.com/crm-assets/login-image/c19.png')">
                 <div class="mx-auto max-w-xs text-center">
                     <a href="{{ route('home')}}" class="">
                         <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="">
@@ -23,7 +23,7 @@
                         <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-[56px]">
                     </a>
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-700">Sign In</h2>
+                <h2 class="text-2xl font-semibold text-gray-700">{{ __('Sign In') }}</h2>
                 <div class="">
                     @if ($errors->any())
                         <div class="alert alert-warning alert-dismissible fade show mt-2 text-sm" role="alert">
@@ -74,14 +74,14 @@
                                 </a>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-dark block w-full text-center">
+                        <button type="submit" class="btn btn-primary block w-full text-center">
                             {{ __('Account Login') }}
                         </button>
                     </form>
                     <!-- END: Login Form -->
                     <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
                         <div class="absolute inline-block bg-white dark:bg-slate-800 dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
-                            Don't have an account?
+                            {{ __("Don't have an account?") }}
                         </div>
                     </div>
                     <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-6 uppercase text-sm text-center">

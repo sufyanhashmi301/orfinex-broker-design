@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\StatusController;
 use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\Frontend\UserController;
+use App\Http\Controllers\Frontend\WalletController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\TransferController;
@@ -54,7 +55,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa', 'isActive','payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -129,6 +130,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         Route::get('log', 'sendMoneyLog')->name('log');
     });
 
+    //User Wallet Management
+    Route::resource('wallet', WalletController::class);
+
     //wallet exchange
     Route::get('wallet-exchange', [UserController::class, 'walletExchange'])->name('wallet-exchange');
     Route::post('wallet-exchange-now', [UserController::class, 'walletExchangeNow'])->name('wallet-exchange-now');
@@ -191,6 +195,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
         })->name('communication');
 
     });
+
+
 });
 
 //translate
@@ -338,8 +344,16 @@ Route::get('user/partner/clients', function () {
     return view('frontend::partner.clients');
 });
 
-Route::get('user/wallets', function () {
-    return view('frontend::wallets.index');
+Route::get('user/notify/success', function () {
+    return view('frontend::common.success');
+});
+
+Route::get('user/notify/canceled', function () {
+    return view('frontend::common.canceled');
+});
+
+Route::get('user/notify/failed', function () {
+    return view('frontend::common.error');
 });
 
 Route::get('user/webterminal', function () {

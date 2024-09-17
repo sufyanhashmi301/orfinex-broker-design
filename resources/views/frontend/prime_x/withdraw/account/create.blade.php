@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex justify-end flex-wrap items-center mb-5">
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary inline-flex items-center">
+            <a href="{{ route('user.withdraw.account.index') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
                 {{ __('Withdraw Accounts') }}
             </a>
         </div>
@@ -35,9 +35,9 @@
                                 </div>
                             </div>
                             <div class="buttons text-right mt-4">
-                                <button type="submit" class="btn inline-flex justify-center btn-dark">
+                                <button type="submit" class="btn inline-flex justify-center btn-primary">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:check"></iconify-icon>
                                     {{ __('Add New Withdraw Account') }}
-                                    <i class="anticon anticon-double-right"></i>
                                 </button>
                             </div>
                         </form>

@@ -1,9 +1,9 @@
-@extends('backend.setting.index')
+@extends('backend.setting.communication.index')
 @section('title')
     {{ __('Notification Settings') }}
 @endsection
 
-@section('setting-content')
+@section('communication-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Notification Tune Settings') }}
@@ -60,7 +60,7 @@
     </div>
 
 @endsection
-@section('setting-script')
+@section('communication-script')
 <script>
     (function ($) {
         'use strict';

@@ -10,7 +10,7 @@
                 </li>
             @else
                 <li class="inline-block">
-                    <a class="flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="previous">
+                    <a class="loaderBtn flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="previous">
                         <iconify-icon icon="ic:round-keyboard-arrow-left"></iconify-icon>
                     </a>
                 </li>
@@ -38,7 +38,7 @@
                             </li>
                         @else
                             <li class="inline-block">
-                                <a class="flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $url }}">
+                                <a class="loaderBtn flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $url }}">
                                     {{ $page }}
                                 </a>
                             </li>
@@ -50,7 +50,7 @@
 
             @if ($paginator->hasMorePages())
                 <li class="inline-block">
-                    <a class="flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $paginator->nextPageUrl() }}" rel="next"
+                    <a class="loaderBtn flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $paginator->nextPageUrl() }}" rel="next"
                        aria-label="@lang('pagination.next')">
                        <iconify-icon icon="ic:round-keyboard-arrow-right"></iconify-icon>
                     </a>

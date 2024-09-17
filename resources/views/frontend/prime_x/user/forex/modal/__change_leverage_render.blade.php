@@ -10,24 +10,25 @@
                     <option value="{{$leverage}}" @if($leverage == $forexTrading->leverage) selected @endif>1:{{$leverage}}</option>
                 @endforeach
             </select>
-            <small class="mt-1">The leverage range you want to adjust in account.</small>
+            <small class="dark:text-slate-300 mt-1">
+                {{ __('Choose the leverage ratio you want to adjust for this account.') }}
+            </small>
         </div>
     </div>
     <div class="flex items-center mt-4">
-        <button type="submit" class="btn btn-dark mr-2" id="submit-leverage">
+        <button type="submit" class="btn btn-primary mr-2" id="submit-leverage">
             <i icon-name="check"></i>
             {{ __('Set Leverage') }}
         </button>
-        <a href="#" class="btn btn-danger inline-flex" data-bs-dismiss="modal" aria-label="Close">
+        <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">
             <i icon-name="x"></i>
             {{ __('Close') }}
         </a>
     </div>
-    <div class="divider border-b my-5"></div>
+    <div class="divider border-b dark:border-slate-700 my-5"></div>
     <div class="flex">
-        <p class="text-xs mb-0">
-            Leverage of 1:2000 is only available when your equity is less than 5,000 USD. Your actual leverage could be lower depending on
-            <a href="#" class="text-gray">various conditions</a>.
+        <p class="text-xs text-slate-400 dark:text-slate-300 mb-0">
+            {{ __('Disclaimer: The leverage you select is subject to market conditions and internal policies of '. setting('site_title', 'global') .'. Please be aware that leverage can increase both gains and losses. '. setting('site_title', 'global') .' will not be held responsible for any risks or financial losses incurred through leverage adjustments.') }}
         </p>
     </div>
 </form>

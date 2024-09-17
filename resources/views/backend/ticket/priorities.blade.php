@@ -10,10 +10,10 @@
 @endsection
 @section('ticket-content')
     <div class="card">
-        <div class="card-body p-6 pt-3">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
+                    <div class="overflow-hidden basicTable_wrapper">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
@@ -48,6 +48,26 @@
                             @endforeach
                             </tbody>
                         </table>
+                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">
+                            <div>
+                                @php
+                                    $from = $priorities->firstItem(); // The starting item number on the current page
+                                    $to = $priorities->lastItem(); // The ending item number on the current page
+                                    $total = $priorities->total(); // The total number of items
+                                @endphp
+
+                                <p class="text-sm text-gray-700">
+                                    Showing
+                                    <span class="font-medium">{{ $from }}</span>
+                                    to
+                                    <span class="font-medium">{{ $to }}</span>
+                                    of
+                                    <span class="font-medium">{{ $total }}</span>
+                                    results
+                                </p>
+                            </div>
+                            {{ $priorities->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

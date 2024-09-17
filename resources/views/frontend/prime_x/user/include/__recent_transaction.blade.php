@@ -1,15 +1,24 @@
 <div class="col-span-12">
     <div class="card">
+        <header class="card-header noborder">
+            <h4 class="card-title">{{ __('Recent Transactions') }}</h4>
+            <div>
+                <a href="{{ route('user.transactions') }}" class="btn-link loaderBtn inline-flex items-center">
+                    {{ __('See All Transactions') }}
+                    <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
+                </a>
+            </div>
+        </header>
         <div class="card-body p-6 pt-0">
             <!-- BEGIN: Company Table -->
             @if(count($recentTransactions) == 0)
                 <div class="flex items-center justify-center flex-col gap-3">
                     <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
                     <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                        You don't have any transaction yet.
+                        {{ __("You don't have any transaction yet.") }}
                     </p>
                     <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                        Deposit Now
+                        {{ __('Deposit Now') }}
                     </a>
                 </div>
             @else

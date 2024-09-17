@@ -91,6 +91,7 @@ class AppController extends Controller
 
     public function profileUpdate(Request $request)
     {
+        dd($request->all());
         $user = \Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -104,8 +105,6 @@ class AppController extends Controller
         }
         auth()->user()->update([
             'avatar' => $request->hasFile('avatar') ? self::imageUploadTrait($request->avatar, $user->avatar) : $user->avatar,
-            'name' => $request->name,
-            'email' => $request->email,
             'phone' => $request->phone,
         ]);
         notify()->success('Profile Update Successfully');

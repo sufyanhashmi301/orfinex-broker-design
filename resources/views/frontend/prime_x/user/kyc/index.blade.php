@@ -3,8 +3,6 @@
     {{ __('KYC') }}
 @endsection
 @section('settings-content')
-
-
     <div class="card">
         <div class="card-body p-6">
             <div class="mb-10">
@@ -93,9 +91,10 @@
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)
                         <div
                             class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                            <span class="badge bg-primary text-slate-900 capitalize">Automated</span>
-                            <p class="text-base font-normal text-slate-500 dark:text-slate-300">Verify your details
-                                please</p>
+                            <span class="badge bg-primary text-slate-900 capitalize">{{ __('Automated') }}</span>
+                            <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                {{ __('Verify your details please') }}
+                            </p>
                             @php
                                 $phoneSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::PHONE)->first();
                                 $emailSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::EMAIL)->first();
@@ -107,11 +106,9 @@
                                         <input type="text" class="form-control form-control-lg !pr-32"
                                                value="{{ $user->phone }}"
                                                disabled>
-                                        <span
-                                            class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                    <a href="javascript:;"
-                                       class="py-1 px-2 bg-slate-200 text-sm rounded inline-flex items-center">
-                                        Verify Now
+                                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                    <a href="javascript:;" class="py-1 px-2 bg-slate-200 text-sm rounded inline-flex items-center">
+                                        {{ __('Verify Now') }}
                                     </a>
                                 </span>
                                     </div>
@@ -123,49 +120,43 @@
                                         <input type="text" class="form-control form-control-lg !pr-32"
                                                value="{{ $user->email }}"
                                                disabled>
-                                        <span
-                                            class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                @if($user->email_verified_at != null)
+                                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                            @if($user->email_verified_at != null)
                                                 <span class="flex items-center text-sm">
-                                        Verified
-                                        <iconify-icon class="text-base ml-1" icon="bxs:badge-check"
-                                                      style="color: #FED000;"></iconify-icon>
-                                    </span>
+                                                    {{ __('Verified') }}
+                                                    <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
+                                                </span>
                                             @else
                                                 <button type="button"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#emailVerifyModal"
                                                         class="py-1 px-2 bg-slate-200 text-sm rounded inline-flex items-center">
-                                        Verify Now
-                                    </button>
+                                                    {{ __('Verify Now') }}
+                                                </button>
                                             @endif
-                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             @endif
 
                             <div>
-                                <p class="text-slate-900 dark:text-white mb-2">Privileges and Benefit</p>
+                                <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Access to client's area.</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __("Access to client's area.") }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Open demo accounts.</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Open demo accounts.') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Trade on demo accounts.</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Trade on demo accounts.') }}</span>
                                     </li>
                                 </ul>
                             </div>
-                            <a href="javascript:;"
-                               class="btn @if($user->email_verified_at != null) btn-primary @else btn-dark @endif block-btn mt-auto">
+                            <a href="javascript:;" class="btn btn-primary @if($user->email_verified_at != null) cursor-not-allowed @endif block-btn mt-auto">
                                 @if($user->email_verified_at != null)
                                     {{ __('Completed') }}
                                 @else
@@ -182,12 +173,13 @@
                         @if($automaticSubLevel && $automaticSubLevel->status)
                             <div
                                 class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                <span class="badge bg-primary text-slate-900 capitalize">Automated</span>
+                                <span class="badge bg-primary text-slate-900 capitalize">{{ __('Automated') }}</span>
                                 <p class="text-base font-normal text-slate-500 dark:text-slate-300">
-                                    Provide a document confirming your name
+                                    {{ __('Provide a document confirming your name') }}
                                 </p>
-                                <h4 class="text-2xl text-slate-900 dark:text-white">2 - Verify your identity using
-                                    Sumsub</h4>
+                                <h4 class="text-2xl text-slate-900 dark:text-white">
+                                    {{ __('2 - Verify your identity using Sumsub') }}
+                                </h4>
                                 {{--                    <div class="input-area w-full">--}}
                                 {{--                        <div class="relative">--}}
                                 {{--                            <input type="text" class="form-control form-control-lg !pr-9" placeholder="+971509760755">--}}
@@ -197,38 +189,41 @@
                                 {{--                        </div>--}}
                                 {{--                    </div>--}}
                                 <div>
-                                    <p class="text-slate-900 dark:text-white mb-2">Privileges and Benefit</p>
+                                    <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                     <ul class="space-y-2 mb-10">
                                         @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
                                     </ul>
                                 </div>
-                                <a href="{{route('user.kyc.automatic')}}" class="btn btn-dark block-btn mt-auto">Go to
-                                    Sumsub</a>
+                                <a href="{{route('user.kyc.automatic')}}" class="btn btn-primary loaderBtn block-btn mt-auto">
+                                    {{ __('Go to Sumsub') }}
+                                </a>
                             </div>
                         @endif
                             @if($manualSubLevel && $manualSubLevel->status)
                                 <div
                                     class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                    <span class="badge bg-primary text-slate-900 capitalize">Manual</span>
+                                    <span class="badge bg-primary text-slate-900 capitalize">{{ __('Manual') }}</span>
                                     <p class="text-base font-normal text-slate-500 dark:text-slate-300">
-                                        Provide a document confirming your name
+                                        {{ __('Provide a document confirming your name') }}
                                     </p>
-                                    <h4 class="text-2xl text-slate-900 dark:text-white">2 - Verify your identity
-                                        manually</h4>
+                                    <h4 class="text-2xl text-slate-900 dark:text-white">
+                                        {{ __('2 - Verify your identity manually') }}
+                                    </h4>
                                     <div>
-                                        <p class="text-slate-900 dark:text-white mb-2">Privileges and Benefit</p>
+                                        <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                         <ul class="space-y-2 mb-10">
-                                          @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
-                                           </ul>
+                                            @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
+                                        </ul>
                                     </div>
                                     @if($user->is_level_2_completed==1)
-                                        <a href="#" class="btn btn-dark btn-primary block-btn mt-auto">Completed</a>
+                                        <a href="#" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
                                     @elseif($user->kyc == 2)
-                                        <a href="#" class="btn btn-light block-btn mt-auto">Pending</a>
+                                        <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
 
                                     @else
-                                        <a href="{{ route('user.kyc.basic') }}" class="btn btn-dark block-btn mt-auto">Go
-                                            to Manual Submission</a>
+                                        <a href="{{ route('user.kyc.basic') }}" class="btn btn-primary loaderBtn block-btn mt-auto">
+                                            {{ __('Go to Manual Submission') }}
+                                        </a>
                                     @endif
                                 </div>
                             @endif
@@ -237,62 +232,55 @@
 
                         <div
                             class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                            <span class="badge bg-primary text-slate-900 capitalize">Semi-Automated</span>
+                            <span class="badge bg-primary text-slate-900 capitalize">{{ __('Semi-Automated') }}</span>
                             <p class="text-base font-normal text-slate-500 dark:text-slate-300">
-                                You will need to provide proof of your place of residence
+                                {{ __('You will need to provide proof of your place of residence') }}
                             </p>
-                            <h4 class="text-2xl text-slate-500 dark:text-white">3 - Verify residential address</h4>
+                            <h4 class="text-2xl text-slate-500 dark:text-white">
+                                {{ __('3 - Verify residential address') }}
+                            </h4>
                             <div class="input-area w-full">
                                 <div class="relative">
-                                    <input type="text" class="form-control form-control-lg !pr-9"
-                                           placeholder="Add profile information">
-                                    <span
-                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                <iconify-icon icon="lucide:folder-open"></iconify-icon>
-                            </span>
+                                    <input type="text" class="form-control form-control-lg !pr-9" placeholder="Add profile information">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                        <iconify-icon icon="lucide:folder-open"></iconify-icon>
+                                    </span>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-slate-900 dark:text-white mb-2">Privileges and Benefit</p>
+                                <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Access to client's area.</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __("Access to client's area.") }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Open demo & real accounts.</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Open demo & real accounts.') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Trade on demo accounts</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Trade on demo accounts') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Trade on Real Accounts.</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Trade on Real Accounts.') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Deposit money in real accounts</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Deposit money in real accounts') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Withdrawal money from real accounts</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Withdrawal money from real accounts') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]"
-                                                      icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">Priority Customer Support</span>
+                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <span class="text-slate-500">{{ __('Priority Customer Support') }}</span>
                                     </li>
                                 </ul>
                             </div>
-                            <a href="" class="btn btn-light block-btn mt-auto">Complete step 2 to continue</a>
+                            <a href="" class="btn btn-light block-btn mt-auto">{{ __('Complete step 2 to continue') }}</a>
                         </div>
                     @endif
                 @endforeach

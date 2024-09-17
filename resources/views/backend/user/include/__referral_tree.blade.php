@@ -4,7 +4,7 @@
     role="tabpanel"
     aria-labelledby="pills-transactions-tab"
 >
-    <div class="card">
+    <div class="card basicTable_wrapper">
         <div class="card-header">
             <h4 class="card-title">{{ __('Referral Tree') }}</h4>
         </div>

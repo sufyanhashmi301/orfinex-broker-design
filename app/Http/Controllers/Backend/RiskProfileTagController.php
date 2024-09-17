@@ -43,7 +43,7 @@ class RiskProfileTagController extends Controller
      */
     public function index()
     {
-        $riskProfileTags = RiskProfileTag::all();
+        $riskProfileTags = RiskProfileTag::paginate(10);
 
         return view('backend.risk_profile_tag.index', compact('riskProfileTags'));
     }
@@ -137,7 +137,7 @@ class RiskProfileTagController extends Controller
         $validator = Validator::make($input, [
             'risk_profile_tag_id' => [
                 'required',
-                Rule::unique('risk_profile_tags_users')
+                Rule::unique('risk_profile_tag_user')
                     ->where('user_id', $id)
                     ->where('risk_profile_tag_id', $request->input('risk_profile_tag_id')),
             ],

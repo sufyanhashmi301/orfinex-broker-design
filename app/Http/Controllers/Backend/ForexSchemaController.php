@@ -43,7 +43,7 @@ class ForexSchemaController extends Controller
     public function index()
     {
 
-        $schemas = ForexSchema::orderBy('priority','asc')->get();
+        $schemas = ForexSchema::orderBy('priority','asc')->paginate(10);
 
         return view('backend.forex_schema.index', compact('schemas'));
     }
@@ -77,8 +77,10 @@ class ForexSchemaController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'leverage' => 'required',
-            'real_swap_free' => 'required',
-            'demo_swap_free' => 'required',
+            'real_swap_free' => 'required_without_all:real_islamic,demo_swap_free,demo_islamic',
+            'real_islamic' => 'required_without_all:real_swap_free,demo_swap_free,demo_islamic',
+            'demo_swap_free' => 'required_without_all:real_swap_free,real_islamic,demo_islamic',
+            'demo_islamic' => 'required_without_all:real_swap_free,real_islamic,demo_swap_free',
             'commission' => 'required',
             'spread' => 'required',
             'is_withdraw' => 'required',
@@ -88,6 +90,11 @@ class ForexSchemaController extends Controller
             'priority' => 'required|integer',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
+        ], [
+            'real_swap_free.required_without_all' => 'At least one field must be filled of groups.',
+            'real_islamic.required_without_all' => 'At least one field must be filled of groups.',
+            'demo_swap_free.required_without_all' => 'At least one field must be filled of groups.',
+            'demo_islamic.required_without_all' => 'At least one field must be filled of groups.',
         ]);
 
         if ($validator->fails()) {
@@ -113,7 +120,8 @@ class ForexSchemaController extends Controller
             'demo_swap_free' => $input['demo_swap_free'],
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
-            'country' => isset($input['country']) ? $input['country'] : ['All'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+            'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
             'is_withdraw' => $input['is_withdraw'],
             'is_internal_transfer' => $input['is_internal_transfer'],
             'is_external_transfer' => $input['is_external_transfer'],
@@ -123,6 +131,7 @@ class ForexSchemaController extends Controller
             'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
             'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon']) : null,
         ];
+//        dd($finalData);
         ForexSchema::create($finalData);
         notify()->success('schema created successfully');
         return redirect()->route('admin.accountType.index');
@@ -151,6 +160,10 @@ class ForexSchemaController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
+            'real_swap_free' => 'required_without_all:real_islamic,demo_swap_free,demo_islamic',
+            'real_islamic' => 'required_without_all:real_swap_free,demo_swap_free,demo_islamic',
+            'demo_swap_free' => 'required_without_all:real_swap_free,real_islamic,demo_islamic',
+            'demo_islamic' => 'required_without_all:real_swap_free,real_islamic,demo_swap_free',
             'leverage' => 'required',
             'commission' => 'required',
             'spread' => 'required',
@@ -162,6 +175,11 @@ class ForexSchemaController extends Controller
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
 
+        ], [
+            'real_swap_free.required_without_all' => 'At least one field must be filled of groups.',
+            'real_islamic.required_without_all' => 'At least one field must be filled of groups.',
+            'demo_swap_free.required_without_all' => 'At least one field must be filled of groups.',
+            'demo_islamic.required_without_all' => 'At least one field must be filled of groups.',
         ]);
 
         if ($validator->fails()) {
@@ -187,7 +205,7 @@ class ForexSchemaController extends Controller
             'demo_swap_free' => $input['demo_swap_free'],
             'demo_islamic' => $input['demo_islamic'],
             'desc' => $input['desc'],
-            'country' => isset($input['country']) ? $input['country'] : ['All'],
+            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
             'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
             'is_withdraw' => $input['is_withdraw'],
             'is_internal_transfer' => $input['is_internal_transfer'],

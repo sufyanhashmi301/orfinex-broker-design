@@ -175,6 +175,11 @@
                                 {{ __('Demo Accounts') }}
                             </a>
                         </li>
+                        <li>
+                            <a href="{{route('admin.change-leverage')}}" class="{{ isActive('admin.change-leverage') }}">
+                                {{ __('Change Leverage') }}
+                            </a>
+                        </li>
                     </ul>
 
                 </li>
@@ -281,17 +286,6 @@
         'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
         'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
             @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
-                @can('automatic-gateway-manage')
-                    <li class="">
-                        <a href="{{ route('admin.gateway.automatic') }}" class="navItem {{ isActive('admin.gateway*') }}">
-                            <span class="flex items-center">
-                                <iconify-icon class="nav-icon" icon="lucide:door-open"></iconify-icon>
-                                <span>{{ __('Automatic Gateways') }}</span>
-                            </span>
-                        </a>
-                    </li>
-                @endcan
-
                 <li class="{{ isActive(['admin.deposit*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -301,22 +295,6 @@
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
                     <ul class="sidebar-submenu">
-                        @can('automatic-gateway-manage')
-                            <li class="">
-                                <a href="{{ route('admin.deposit.method.list','auto') }}" class="{{ isActive('admin.deposit.method.list','auto') }}">
-                                    {{ __('Automatic Methods') }}
-                                </a>
-                            </li>
-                        @endcan
-
-                        @can('manual-gateway-manage')
-                            <li class="">
-                                <a href="{{route('admin.deposit.method.list','manual')}}" class="{{ isActive('admin.deposit.method.list','manual') }}">
-                                    {{ __('Manual Methods') }}
-                                </a>
-                            </li>
-                        @endcan
-
                         @canany(['deposit-list','deposit-action'])
                             <li class="">
                                 <a href="{{ route('admin.deposit.manual.pending') }}" class="{{ isActive('admin.deposit.manual.pending') }}">
@@ -343,19 +321,6 @@
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
                     <ul class="sidebar-submenu">
-                        @can('withdraw-method-manage')
-                            <li class="">
-                                <a href="{{ route('admin.withdraw.method.list','auto') }}" class="{{ isActive('admin.withdraw.method.list','auto')  }}">
-                                    {{ __('Automatic Methods') }}
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{route('admin.withdraw.method.list','manual')}}" class="{{ isActive('admin.withdraw.method.list','manual') }}">
-                                    {{ __('Manual Methods') }}
-                                </a>
-                            </li>
-
-                        @endcan
                         @canany(['withdraw-list','withdraw-action'])
                             <li class="">
                                 <a href="{{ route('admin.withdraw.pending') }}" class="{{ isActive('admin.withdraw.pending')  }}">
@@ -382,33 +347,6 @@
             @endcanany
 
         @endcanany
-
-        @can('email-template')
-        <li class="{{ isActive(['admin.theme*']) }}">
-            <a href="javascript:void(0);" class="navItem">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:layout-template"></iconify-icon>
-                    <span>{{ __('Templates') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{ route('admin.email-template') }}" class="{{ isActive('admin.email-template') }}">
-                        {{ __('Email') }}
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="{{ route('admin.template.sms.index') }}" class="{{ isActive('admin.template.sms.index') }}">
-                        {{ __('SMS') }}
-                    </a>
-                </li>
-
-
-            </ul>
-        </li>
-        @endcan
 
 
         {{-- ************************************************************* Others *********************************************************--}}
@@ -501,7 +439,7 @@
         @canany(['site-setting','email-setting','plugin-setting','page-manage'])
             @canany(['site-setting','email-setting','plugin-setting'])
                 <li class="mt-auto">
-                    <a href="{{ route('admin.settings.company') }}" class="navItem {{ isActive(['admin.settings*']) }}">
+                    <a href="{{ route('admin.settings.index') }}" class="navItem {{ isActive(['admin.settings*']) }}">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
                             <span>{{ __('Settings') }}</span>

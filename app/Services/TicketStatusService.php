@@ -13,7 +13,7 @@ class TicketStatusService
 
     public function getAll()
     {
-        return TicketStatus::all();
+        return TicketStatus::paginate(10);
     }
 
     public function getById(int $id): TicketStatus

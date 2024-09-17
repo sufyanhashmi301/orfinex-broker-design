@@ -8,13 +8,13 @@
         {{ __('Open New Account') }}
     </h4>
     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-sm btn-outline-secondary">My Accounts</a>
+        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">{{ __('My Accounts') }}</a>
         {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">Get Bonus</a> --}}
     </div>
 </div>
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
     @foreach($schemas as $schema)
-    <div class="card relative border bg-white dark:bg-slate-800 dark:border-slate-700">
+    <div class="card relative border dark:border-slate-700">
         <div class="card-body p-6">
             <div class="">
                 <div class="flex items-center justify-between mb-1">
@@ -30,7 +30,7 @@
                 </p>
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{$schema->desc }}</p>
             </div>
-            <ul class="bg-slate-50 dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
+            <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                 <li class="flex items-center py-3">
                     <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
                         {{ __('Initial Deposit') }}
@@ -58,7 +58,7 @@
                     </span>
                 </li>
             </ul>
-            <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-5">
+            <a href="{{route('user.schema.preview',$schema->id)}}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-5">
                 {{ __('Create Account') }}
             </a>
         </div>

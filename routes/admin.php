@@ -51,9 +51,9 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\Mt5DealController;
-use App\Http\Controllers\Backend\DashboardBannerController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
+use App\Http\Controllers\Backend\BannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,7 +67,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //Route::group(['middleware' => [ '2fa']], function () {
-Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function () {
+Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])->group(function () {
 //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -90,6 +90,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
+        Route::post('store', 'store')->name('store');
 
     });
 
@@ -170,6 +171,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
 
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
@@ -267,6 +269,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 //===============================  site Settings ==================================
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
+        Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
@@ -300,6 +303,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
         Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+        Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
     });
 
@@ -323,12 +327,14 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
 
     Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
 
     Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
         Route::group(['prefix' => 'sms', 'as' => 'sms.', 'controller' => SmsController::class], function () {
             Route::get('/', 'template')->name('index');
+            Route::get('user', 'userTemplate')->name('user-template');
             Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
             Route::post('template-update', 'update_template')->name('template-update');
 
@@ -434,7 +440,9 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+;

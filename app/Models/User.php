@@ -34,6 +34,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'last_name',
         'country',
         'phone',
+        'phone_verified_at',
         'username',
         'email',
         'email_verified_at',
@@ -96,7 +97,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     ];
     public function riskProfileTags()
     {
-        return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tags_users');
+        return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tag_user');
     }
     public function getUpdatedAtAttribute(): string
     {
@@ -206,6 +207,14 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(Transaction::class, 'user_id');
     }
+    public function metaTransaction()
+    {
+        return $this->hasMany(MetaTransaction::class, 'user_id');
+    }
+    public function metaDeals()
+    {
+        return $this->hasMany(MetaDeal::class, 'user_id');
+    }
     public function realTradingAccounts()
     {
         return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
@@ -229,21 +238,50 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             return ReferralLink::getReferral($this, $program);
         });
     }
+    public function getReferral()
+    {
+        return $this->hasOne(ReferralLink::class, 'user_id');
+
+    }
 
     public function referrals()
     {
         return $this->hasMany(User::class, 'ref_id');
     }
 
-    public function totalDeposit()
+    public function totalDeposit($days = null)
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Deposit)
                 ->orWhere('type', TxnType::ManualDeposit);
-        })->sum('amount');
-
+        });
+        if (null != $days) {
+            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('amount');
         return round($sum, 2);
     }
+    public function totalRebateMeta($days = null)
+    {
+        $sum = $this->metaTransaction()->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::MultiLevelBonus);
+        });
+        if (null != $days) {
+            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('amount');
+        return round($sum, 2);
+    }
+    public function totalVolumeMeta($days = null)
+    {
+        $sum = $this->metaDeals();
+        if (null != $days) {
+            $sum->where('time', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('volume');
+        return round($sum, 2);
+    }
+
 
     public function totalInvestment()
     {
@@ -277,13 +315,16 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return round($sum, 2);
     }
 
-    public function totalWithdraw()
+    public function totalWithdraw($days = null)
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Withdraw)
                 ->orWhere('type', TxnType::WithdrawAuto);
-        })->sum('amount');
-
+        });
+        if (null != $days) {
+            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('amount');
         return round($sum, 2);
     }
 

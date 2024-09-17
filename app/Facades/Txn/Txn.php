@@ -6,10 +6,13 @@ use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\LevelReferral;
 use App\Models\MetaTransaction;
+use App\Models\OldTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -81,6 +84,38 @@ class Txn
         $transaction->target_type = $targetType;
         $transaction->is_level = $isLevel;
         $transaction->status = $status;
+        $transaction->save();
+
+        return $transaction;
+    }
+    public function newOld($amount, $charge, $final_amount, $method, $description, string|TxnType $type, string|TxnStatus $status = TxnStatus::Pending, $payCurrency = null, $payAmount = null, $userID = null, $relatedUserID = null, $relatedModel = 'User', array $manualFieldData = [], string $approvalCause = 'none', $targetId = null, $targetType = null, $isLevel = false, $createdAt): OldTransaction
+    {
+
+        // Convert formatted strings to float
+        $formattedAmount = floatval(str_replace(',', '', $amount));
+        $formattedFinalAmount = floatval(str_replace(',', '', $final_amount));
+        $formattedPayAmount = floatval(str_replace(',', '', $payAmount));
+
+        $transaction = new OldTransaction();
+        $transaction->user_id = $userID ?? Auth::user()->id;
+        $transaction->from_user_id = $relatedUserID;
+        $transaction->from_model = $relatedModel;
+        $transaction->tnx = 'TRX' . strtoupper(Str::random(10));
+        $transaction->description = $description;
+        $transaction->amount = $formattedAmount;  // Use the formatted value for amount
+        $transaction->type = $type;
+        $transaction->charge = $charge;
+        $transaction->final_amount = $formattedFinalAmount;  // Use the formatted value for final amount
+        $transaction->method = $method;
+        $transaction->pay_currency = $payCurrency;
+        $transaction->pay_amount = $formattedPayAmount;  // Use the formatted value for pay amount
+        $transaction->manual_field_data = json_encode($manualFieldData);
+        $transaction->approval_cause = $approvalCause;
+        $transaction->target_id = $targetId;
+        $transaction->target_type = $targetType;
+        $transaction->is_level = $isLevel;
+        $transaction->status = $status;
+        $transaction->created_at = $createdAt;
         $transaction->save();
 
         return $transaction;

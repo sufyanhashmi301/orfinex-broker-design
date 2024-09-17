@@ -1,7 +1,7 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="accountRename" tabindex="-1" aria-labelledby="accountRename" aria-hidden="true">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-            <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+            <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize" id="modalTitle">
@@ -26,20 +26,20 @@
                         <label class="form-label" for="">{{ __('New nickname:') }}</label>
                         <div class="input-form-group">
                             <input type="text" class="form-control" name="nickname" id="update-name-modal-name" >
-                            <small class="mt-1">The name you want to update to remember.</small>
+                            <small class="dark:text-slate-300 mt-1">{{ __('The name you want to update to remember.') }}</small>
                         </div>
                         <div class="action-btns mt-4">
-                            <button type="submit" class="btn btn-dark mr-2" id="submit-name">
+                            <button type="submit" class="btn btn-primary mr-2" id="submit-name">
                                 {{ __('Rename Account') }}
                             </button>
-                            <a href="#" class="btn btn-danger inline-flex" data-bs-dismiss="modal" aria-label="Close">
+                            <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">
                                 {{ __('Close') }}
                             </a>
                         </div>
-                        <div class="divider border-b my-5"></div>
+                        <div class="divider border-b dark:border-slate-700 my-5"></div>
                         <div class="flex">
-                            <p class="text-xs mb-0">
-                                If you have multiple accounts, you can give each one a unique name to make navigation easier.
+                            <p class="text-xs dark:text-slate-300 mb-0">
+                                {{ __('If you have multiple accounts, you can give each one a unique name to make navigation easier.') }}
                             </p>
                         </div>
                     </form>

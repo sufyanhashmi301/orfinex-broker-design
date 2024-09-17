@@ -11,7 +11,7 @@
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($realForexAccounts as $account)
         <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
-            <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
+            <div class="card-body rounded-md p-6">
                 <div class="grid-view-layout">
                     <div class="flex justify-between items-center mb-4">
                         <h5 class="mb-0 dark:text-white">{{$account->account_name}}</h5>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="list-view-layout">
                     <div class="flex items-center">
-                        <span class="badge bg-primary-500 text-primary-900 bg-opacity-30 capitalize">
+                        <span class="badge bg-primary text-primary-900 bg-opacity-30 capitalize">
                             {{ucfirst(data_get($account,'account_type'))}}
                         </span>
                         <span class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mx-1">MT5</span>
@@ -79,13 +79,13 @@
                             <span>{{$account->currency}}</span>
                         </p>
                         <div class="action-btns flex items-center gap-3">
-                            <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark mt-0">
+                            <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark loaderBtn mt-0">
                                 <span class="flex items-center">
                                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>
                                     <span>{{ __('Deposit') }}</span>
                                 </span>
                             </a>
-                            <a href="{{route('user.withdraw.view')}}" class="btn btn-sm btn-outline-dark mt-0">
+                            <a href="{{route('user.withdraw.view')}}" class="btn btn-sm btn-outline-dark loaderBtn mt-0">
                                 <span class="flex items-center">
                                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:upload-16"></iconify-icon>
                                     <span>{{ __('Withdraw') }}</span>

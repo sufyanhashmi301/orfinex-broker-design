@@ -36,7 +36,7 @@
                             <input type="password" name="new_confirm_password" class="form-control !text-lg">
                         </div>
                         <div class="text-right">
-                            <button type="submit" class="btn btn-dark">{{ __('Change Password') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ __('Change Password') }}</button>
                         </div>
                     </form>
                 </div>

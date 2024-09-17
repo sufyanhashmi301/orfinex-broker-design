@@ -49,7 +49,7 @@ class KYCLevelsController extends Controller
      */
     public function index(Request $request)
     {
-        $kycLevels = Kyclevel::all();
+        $kycLevels = Kyclevel::paginate(10);
         return view('backend.kyc_levels.index', compact('kycLevels'));
     }
 
@@ -153,13 +153,16 @@ class KYCLevelsController extends Controller
         $kycLevel->update();
 
 //        dd($request->all());
-        if($request->level2_setting==\App\Enums\KycType::MANUAL){
+        if($request->level2_setting== \App\Enums\KycType::MANUAL){
             KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>1]);
             KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>0]);  }
-        if($request->level2_setting==\App\Enums\KycType::AUTOMATIC){
+        if($request->level2_setting == \App\Enums\KycType::AUTOMATIC){
+//            dd($request->level2_setting);
             KycSubLevel::where('name',\App\Enums\KycType::MANUAL)->update(['status'=>0]);
+//            dd(KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->first());
             KycSubLevel::where('name',\App\Enums\KycType::AUTOMATIC)->update(['status'=>1]);
         }
+//        dd('ss');
         notify()->success(__('KYC level settings updated Successfully'));
         return redirect()->back()->with('success', __('KYC level settings updated successfully.'));
     }

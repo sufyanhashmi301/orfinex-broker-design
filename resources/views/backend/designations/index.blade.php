@@ -11,9 +11,9 @@
 @section('company-content')
 
     <div class="card">
-        <div class="card-body px-6 pt-3">
+        <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8  hidden"></span>
+                <span class=" col-span-8 hidden"></span>
                 <span class="  col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
@@ -21,6 +21,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Parent Category') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -32,6 +33,10 @@
                     </div>
                 </div>
             </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
     <!-- Modal for Delete deleteDepartment -->
@@ -40,7 +45,7 @@
     @include('backend.designations.include.__delete')
     <!-- Modal for Delete deleteDepartment-->
 @endsection
-@section('setting-script')
+@section('organization-script')
     <script>
         (function ($) {
             "use strict";
@@ -48,7 +53,7 @@
             .on('processing.dt', function (e, settings, processing) {
                 $('#processingIndicator').css('display', processing ? 'block' : 'none');
             }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5'lip>",
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 searching: false,
                 lengthChange: false,
                 info: true,
@@ -67,6 +72,7 @@
                 ajax: "{{ route('admin.designations.index') }}",
                 columns: [
                     {data: 'name', name: 'name',orderable : false},
+                    {data: 'parent_category', name: 'parent_category',orderable : false},
                     {data: 'status', name: 'status',orderable : false},
                     {data: 'action', name: 'action',orderable : false},
                 ]

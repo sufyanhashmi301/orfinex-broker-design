@@ -3,7 +3,7 @@
         @if($user->kyc == \App\Enums\KYCStatus::Pending->value)
             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="material-symbols:fingerprint"></iconify-icon>
             {{ __('KYC Pending') }}
-        @elseif($user->kyc != \App\Enums\KYCStatus::Verified->value)
+        @elseif($user->kyc != \App\Enums\KYCStatus::Basic_Verified->value)
             <i icon-name="fingerprint" class="kyc-star"></i>
             {{ __('Please Verify Your Identity') }} <a
                 href="{{ route('user.kyc') }}">{{ __('Submit Now') }}</a>

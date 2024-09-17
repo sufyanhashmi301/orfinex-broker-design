@@ -22,11 +22,11 @@
                         <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-[56px]">
                     </a>
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-700">Password Reset</h2>
-                <div class="font-normal text-sm text-slate-500 dark:text-slate-400 text-center px-2 bg-slate-100 dark:bg-slate-600 rounded py-3 mb-4 mt-3">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-1">{{ __('Password Reset') }}</h2>
+                <div class="text-slate-500 dark:text-slate-400 text-sm">
                     {{ __('Enter your Email and instructions will be sent to you!') }}
                 </div>
-                <div class="">
+                <div class="mt-5">
                     @if ($errors->any())
                         <div class="alert alert-warning alert-dismissible fade show mt-2 text-sm" role="alert">
                             <div class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -73,7 +73,7 @@
                                 />
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-dark block w-full text-center">
+                        <button type="submit" class="btn btn-primary block w-full text-center">
                             {{ __('Email Password Reset Link') }}
                         </button>
                     </form>

@@ -12,7 +12,7 @@
 @endsection
 @section('country-content')
     <div class="card">
-        <div class="card-body px-6 pb-6 pt-3">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
@@ -93,7 +93,7 @@
     </div>
 
 @endsection
-@section('script')
+@section('organization-script')
     <script>
         $(document).ready(function () {
             $('body').on('click','.delete-btn', function () {
@@ -119,5 +119,4 @@
             });
         });
     </script>
-
 @endsection

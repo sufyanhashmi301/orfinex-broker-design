@@ -3,7 +3,7 @@
     {{ __('Login') }}
 @endsection
 @section('auth-content')
-    
+
 <div class="max-w-sm w-full space-y-10">
     <div class="text-center">
         <a href="{{ route('home')}}" class="inline-block">

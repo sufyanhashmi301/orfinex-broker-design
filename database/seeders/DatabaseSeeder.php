@@ -22,7 +22,17 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         //$this->call(AdminSeeder::class);
-        $this->call(PermissionSeeder::class);
+//        $this->call(PermissionSeeder::class);
         //$this->call(GatewaySeeder::class);
+
+        $this->call(CountriesTableSeeder::class);
+        $this->call(BannerSeeder::class);
+        $this->call(KYCLevelSeeder::class);
+        $this->call(KycSubLevelsTableSeeder::class);
+        $this->call(KycsTableSeeder::class);
+        $this->call(UpdateGatewayLogoSeeder::class);
+        $this->call(EmploymentSeeder::class);
+
+
     }
 }

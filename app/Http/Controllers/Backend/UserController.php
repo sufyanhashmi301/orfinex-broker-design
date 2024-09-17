@@ -14,11 +14,11 @@ use App\Jobs\AgentReferralJob;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
+use App\Models\KycLevel;
 use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\KycLevel;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
@@ -47,7 +47,7 @@ use App\Rules\Recaptcha;
 
 class UserController extends Controller
 {
-    use NotifyTrait, ForexApiTrait;
+    use NotifyTrait;
     protected $forexApiService;
     /**
      * Display a listing of the resource.

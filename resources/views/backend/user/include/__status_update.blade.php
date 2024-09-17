@@ -79,26 +79,33 @@
                 @endif
             </li>
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('Risk Profile') }}</span>
+                <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
                 <span class="flex items-center gap-2">
-                     @if($user->riskProfileTags->isEmpty())
+                    @if($user->riskProfileTags->isEmpty())
                         {{ __('N/A') }}
                     @else
-                        @foreach($user->riskProfileTags as $tag)
-                            <span>{{$tag->name}}</span>
-                        @endforeach
+                        {{ $user->riskProfileTags->pluck('name')->implode(', ') }}
                     @endif
                 </span>
             </li>
 
+
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC Level') }}</span>
                 <span>
-                    @if (isset($user->kyc))
-                        {{ __(ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)))) }}
-                    @else
-                        {{ __('N/A') }}
-                    @endif
+                    @php
+                        $displayName = 'N/A';
+
+                        if (isset($user->kyc) && in_array($user->kyc,[4,5])) {
+                             $displayName =  ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)));
+                            } else {
+                                // Otherwise, treat it as a KYC Level ID
+                                $kycLevel = App\Models\KycLevel::find($user->kyc);
+                                $displayName = $kycLevel ? __($kycLevel->name) : __('N/A');
+                            }
+
+                    @endphp
+                    {{ $displayName }}
                 </span>
             </li>
 

@@ -88,36 +88,26 @@
                     @endif
                 </span>
             </li>
-            
+
 
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC Level') }}</span>
                 <span>
                     @php
                         $displayName = 'N/A';
-            
-                        if (isset($user->status)) {
-                            // Check if the status value is a KYC Status value
-                            if (Str::startsWith($user->status, 'status_')) {
-                                // Extract the status value
-                                $statusValue = str_replace('status_', '', $user->status);
-            
-                                // Convert status value to the corresponding KYCStatus enum case
-                                $statusEnum = App\Enums\KYCStatus::from($statusValue);
-                                $displayName = $statusEnum ? __(ucwords(str_replace('_', ' ', strtolower($statusEnum->name)))) : __('N/A');
+
+                        if (isset($user->kyc) && in_array($user->kyc,[4,5])) {
+                             $displayName =  ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)));
                             } else {
                                 // Otherwise, treat it as a KYC Level ID
-                                $kycLevel = App\Models\KycLevel::find($user->status);
+                                $kycLevel = App\Models\KycLevel::find($user->kyc);
                                 $displayName = $kycLevel ? __($kycLevel->name) : __('N/A');
                             }
-                        }
+
                     @endphp
                     {{ $displayName }}
                 </span>
             </li>
-            
-            
-            
 
 
         </ul>

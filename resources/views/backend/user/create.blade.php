@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('New Customer') }}    
+    {{ __('New Customer') }}
 @endsection
 @section('content')
 @if($errors->any())
@@ -33,7 +33,7 @@
                             </label>
                             <input type="text" name="last_name" class="form-control" placeholder="" required>
                         </div>
-                    
+
                         @if(getPageSetting('country_show'))
                             <div class="input-area relative">
                                 <label class="form-label">
@@ -89,17 +89,17 @@
                             <label class="form-label">
                                 {{ __('Date Of Birth') }}
                             </label>
-                            <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', isset($user) ? $user->date_of_birth : '') }}">
+                            <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth') }}">
                         </div>
-                        
-                        
+
+
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('City') }}
                             </label>
                             <input type="text" name="city" class="form-control" placeholder="">
                         </div>
-                        
+
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Zip Code') }}
@@ -214,28 +214,26 @@
                     <div class="card-body space-y-5 p-6">
                         <div class="input-area relative">
                             <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
-                            <select name="status" id="status" class="form-control">
+                            <select name="kyc" id="status" class="form-control">
                                 <option value="">{{ __('Select') }}</option>
-                        
+
                                 {{-- Loop through KYC Levels --}}
                                 @foreach($kycLevels as $level)
-                                    <option value="{{ $level->id }}" 
-                                        {{ (isset($user) && $user->status == $level->id) ? 'selected' : '' }}>
+                                    <option value="{{ $level->id }}">
                                         {{ $level->name }}
                                     </option>
                                 @endforeach
-                        
+
                                 {{-- Loop through KYC Statuses (Enum) --}}
                                 @foreach(App\Enums\KYCStatus::cases() as $status)
-                                    <option value="status_{{ $status->value }}" 
-                                        {{ (isset($user) && 'status_' . $user->status == 'status_' . $status->value) ? 'selected' : '' }}>
+                                    <option value="kyc_{{ $status->value }}">
                                         {{ $status->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        
-                        
+
+
                         <div class="input-area relative">
                             <label for="" class="form-label">
                                 {{ __('Verified By') }}
@@ -281,7 +279,7 @@
                                         name="icon"
                                         id="front-page"
                                         accept=".gif, .jpg, .png"
-                                        
+
                                     />
                                     <label for="front-page">
                                         <img
@@ -300,7 +298,7 @@
                                         name="icon"
                                         id="back-page"
                                         accept=".gif, .jpg, .png"
-                                        
+
                                     />
                                     <label for="back-page">
                                         <img
@@ -318,7 +316,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="mt-10">
         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
             {{ __('Add New Customer') }}

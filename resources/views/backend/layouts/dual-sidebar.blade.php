@@ -32,7 +32,9 @@
                             <div id="content_layout">
                                 <div>
                                     @include('backend.include.__submenu')
-                                    @yield('content')
+                                    <div class="transition-all duration-150 ltr:ml-[200px] rtl:mr-[200px] p-6">
+                                        @yield('content')
+                                    </div>
                                 </div>
                             </div>
                         </div>

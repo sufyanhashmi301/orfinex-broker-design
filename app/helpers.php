@@ -468,7 +468,7 @@ if (!function_exists('getLocation')) {
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['country_code'] == $location['countryCode'];
         });
-//dd($location,$currentCountry);
+//dd($location,$currentCountry,getCountries());
         $location = [
             'country_code' => $currentCountry['code'] ?? '00',
             'name' => $currentCountry['name'] ?? 'Not found',
@@ -1055,8 +1055,29 @@ if (!function_exists('mt5_total_balance')) {
      * @version 1.0.0
      * @since 1.0
      */
+
+
     function mt5_total_balance($user_id)
     {
+        // Define a cache key for the database connection status
+        $cacheKey = 'mt5_db_connection_status';
+
+        // Check if the database is marked as unavailable
+        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
+            // Return 0 immediately without attempting to connect
+            return 0;
+        }
+
+        // Attempt to establish a database connection
+        try {
+            DB::connection('mt5_db')->getPdo();
+        } catch (\PDOException $e) {
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+            Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
+            return 0;
+        }
+
+        // Proceed with your query since the connection is established
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)
@@ -1076,12 +1097,9 @@ if (!function_exists('mt5_total_balance')) {
                 ->sum('Balance');
 
             return $totalBalance;
-
         } catch (\Exception $e) {
-            // Log the error message for debugging
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-
-            // Return 0 in case of any failure
+            // Handle other exceptions if necessary
+            \Log::error('An error occurred: ' . $e->getMessage());
             return 0;
         }
     }
@@ -1098,6 +1116,22 @@ if (!function_exists('mt5_total_equity')) {
      */
     function mt5_total_equity($user_id)
     {
+        $cacheKey = 'mt5_db_connection_status';
+
+        // Check if the database is marked as unavailable
+        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
+            // Return 0 immediately without attempting to connect
+            return 0;
+        }
+
+        // Attempt to establish a database connection
+        try {
+            DB::connection('mt5_db')->getPdo();
+        } catch (\PDOException $e) {
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+            Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
+            return 0;
+        }
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)

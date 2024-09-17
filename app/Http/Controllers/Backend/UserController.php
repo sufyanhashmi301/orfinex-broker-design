@@ -45,7 +45,7 @@ use App\Models\Ranking;
 use App\Rules\Recaptcha;
 
 class UserController extends Controller
-{  
+{
     use NotifyTrait, ForexApiTrait;
     protected $forexApiService;
     /**
@@ -343,12 +343,12 @@ class UserController extends Controller
     {
         // Fetch the user
         $user = User::findOrFail($id);
-    
+
         // Get setting-based flags
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');
-    
+
         // Validation
         $validator = Validator::make($request->all(), [
             'first_name' => ['required', 'string', 'max:255'],
@@ -365,13 +365,13 @@ class UserController extends Controller
             'risk_profile_tags' => 'sometimes|array',
             'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
             'comment' => 'nullable|string|max:500',
-            'status' => [
+            'kyc' => [
                 'nullable',
                 function ($attribute, $value, $fail) {
                     // Handle KYC Levels or KYC Status enum values
-                    if (Str::startsWith($value, 'status_')) {
-                        $statusValue = str_replace('status_', '', $value);
-                        if (!in_array($statusValue, array_column(KYCStatus::cases(), 'value'))) {
+                    if (Str::startsWith($value, 'kyc_')) {
+                        $kycValue = str_replace('kyc_', '', $value);
+                        if (!in_array($kycValue, array_column(KYCStatus::cases(), 'value'))) {
                             $fail('The selected KYC status is invalid.');
                         }
                     } elseif (!KycLevel::where('id', $value)->exists()) {
@@ -382,12 +382,12 @@ class UserController extends Controller
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'date_of_birth' => 'nullable|date',
         ]);
-    
+
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back()->withInput();
         }
-    
+
         // Collect input data
         $input = $request->only([
             'first_name',
@@ -401,20 +401,12 @@ class UserController extends Controller
             'city',
             'zip_code',
             'address',
-            'status',
+            'kyc',
             'risk_profile_tags',
             'comment',
             'password',
         ]);
-    
-        // Handle the status value (KYC Level or KYC Status)
-        $status = $input['status'];
-        if (Str::startsWith($status, 'status_')) {
-            $status = str_replace('status_', '', $status); // KYC Status
-        }
-    
-        // Update basic user details
-        $user->update([
+        $data = [
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'country' => $input['country'] ?? $user->country,
@@ -427,27 +419,41 @@ class UserController extends Controller
             'address' => $input['address'] ?? $user->address,
             'comment' => $input['comment'] ?? $user->comment,
             'date_of_birth' => $input['date_of_birth'] ?: null, // Set to null if empty
-            'status' => $status ?? $user->status,
             'email_verified_at' => $request->has('is_email_verified') ? now() : $user->email_verified_at,
-        ]);
-    
+        ];
+        // Handle the status value (KYC Level or KYC Status)
+        $kyc = $input['kyc'];
+        if(!empty($kyc)) {
+            if (Str::startsWith($kyc, 'kyc_')) {
+                $kyc = str_replace('kyc_', '', $kyc); // KYC Status
+            }
+        }else{
+            $kyc = 0;
+        }
+        if($kyc == 1){
+
+        }
+//
+        // Update basic user details
+        $user->update();
+
         // Update password if provided
         if (!empty($input['password'])) {
             $user->password = Hash::make($input['password']);
             $user->save();
         }
-    
+
         // Sync risk profile tags using pivot table
         if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
             $user->riskProfileTags()->sync($input['risk_profile_tags']);
         }
-    
+
         // Redirect with success message
         notify()->success('User Info Updated Successfully', 'success');
         return redirect()->back();
     }
-    
-    
+
+
     /**
      * @return RedirectResponse
      */
@@ -679,7 +685,7 @@ class UserController extends Controller
     $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
 
     // Assuming this function returns an array of countries
-    $countries = getCountries(); 
+    $countries = getCountries();
     $kycLevels = KycLevel::where('status', 1)->get();
     $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
 // dd($kycLevels);
@@ -715,12 +721,12 @@ public function store(Request $request)
             'risk_profile_tags' => 'array|nullable',
             'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
             'comment' => 'nullable|string|max:500',
-            'status' => [
+            'kyc' => [
                 'nullable',
                 function ($attribute, $value, $fail) {
                     // Handle KYC Levels or KYC Status enum values
-                    if (Str::startsWith($value, 'status_')) {
-                        $statusValue = str_replace('status_', '', $value);
+                    if (Str::startsWith($value, 'kyc_')) {
+                        $statusValue = str_replace('kyc_', '', $value);
                         if (!in_array((int) $statusValue, array_column(KYCStatus::cases(), 'value'))) {
                             $fail('The selected KYC status is invalid.');
                         }
@@ -749,7 +755,7 @@ public function store(Request $request)
         'city',
         'zip_code',
         'address',
-        'status',
+        'kyc',
         'risk_profile_tags',
         'comment',
         'password',
@@ -772,11 +778,11 @@ public function store(Request $request)
     $rank = Ranking::find(1);
 
     // Handle the status value
-    $status = $input['status'];
-    if (Str::startsWith($status, 'status_')) {
-        $status = (int) str_replace('status_', '', $status); // Remove the prefix and convert to integer
+    $kyc = $input['kyc'];
+    if (Str::startsWith($kyc, 'kyc_')) {
+        $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
     } else {
-        $status = (int) $status; // Ensure it's an integer for KYC Level ID
+        $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
     }
 
     // Create the user with exception handling
@@ -798,7 +804,7 @@ public function store(Request $request)
             'password' => Hash::make($input['password']),
             'date_of_birth' => $input['date_of_birth'],
             'email_verified_at' => $request->has('is_email_verified') ? now() : null,
-            'status' => $status,
+            'kyc' => $kyc,
         ]);
 
         // Handle risk profile tags
@@ -809,7 +815,7 @@ public function store(Request $request)
     } catch (\Exception $e) {
         return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
     }
-
+    notify()->success('Customer created successfully', 'success');
     // Redirect to the user index with success message
     return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
 }

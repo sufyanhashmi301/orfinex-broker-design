@@ -2,7 +2,7 @@
 @section('title')
     {{ __('MetaTrader API Settings') }}
 @endsection
-@section('platform-content')
+@section('platform-api-content')
     <?php
         $section = 'webterminal';
         $fields = config('setting.webterminal');

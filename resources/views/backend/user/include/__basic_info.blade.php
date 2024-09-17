@@ -120,23 +120,25 @@
                     </div>
 
                     @endif
+{{--                    {{dd($kycLevels, $user->kyc)}}--}}
                     <div class="input-area relative">
                         <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
-                        <select name="status" id="status" class="form-control">
+                        <select name="kyc" id="status" class="form-control">
                             <option value="">{{ __('Select') }}</option>
 
+
                             {{-- Loop through KYC Levels --}}
-                            @foreach($kycLevels as $level)
+                            @foreach($kycLevels as $index=>$level)
                                 <option value="{{ $level->id }}"
-                                    {{ isset($user) && $user->status == $level->id ? 'selected' : '' }}>
+                                    {{ $user->kyc == $level->id ? 'selected' : '' }}>
                                     {{ $level->name }}
                                 </option>
                             @endforeach
 
                             {{-- Loop through KYC Statuses --}}
                             @foreach(App\Enums\KYCStatus::cases() as $status)
-                                <option value="status_  {{ $status->value }}"
-                                    {{ isset($user) && $user->status == $status->value ? 'selected' : '' }}>
+                                <option value="kyc_{{ $status->value }}"
+                                    {{ isset($user) && $user->kyc == $status->value ? 'selected' : '' }}>
                                     {{ $status->name }}
                                 </option>
                             @endforeach
@@ -153,11 +155,6 @@
                             @endforeach
                         </select>
                     </div>
-<<<<<<< HEAD
-
-
-
-
                     <div class="input-area relative">
                         <label for="risk_profile_tags" class="form-label">{{ __('Risk Profile Tags:') }}</label>
                         <select name="risk_profile_tags[]" class="select2 form-control w-full" multiple="multiple" data-placeholder="Select Tags" id="riskProfileTagsSelect">
@@ -180,12 +177,8 @@
                             });
                         });
                     </script>
-
-   <div class="input-area relative text-right lg:col-span-3">
-=======
-
                     <div class="input-area relative text-right lg:col-span-3">
->>>>>>> naeem_new_design
+
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}
                         </button>

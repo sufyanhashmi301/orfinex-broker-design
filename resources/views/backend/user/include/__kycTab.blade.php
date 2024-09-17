@@ -14,7 +14,7 @@
                     <div class="input-area relative">
                         <label for="kyc_status" class="form-label">
                             {{ __('Current KYC Level: ') }}
-                            @if (isset($user->kyc))
+                            @if (isset($user->kyc) && in_array($user->kyc,[4,5]))
                                 {{ __(ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)))) }}
                             @else
                                 {{ __('N/A') }}

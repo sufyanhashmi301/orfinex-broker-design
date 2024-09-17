@@ -1,17 +1,16 @@
 @php
         $balance=0;
-try {
-
-        $account = DB::connection('mt5_db')
-                    ->table('mt5_accounts')
-                    ->where('Login', $login)
-                    ->first();
-        if($account){
-            $balance = $account->Balance;
-        }
-        } catch (\Exception $e) {
-        $balance=0;
-}
+{{--try {--}}
+{{--        $account = DB::connection('mt5_db')--}}
+{{--                    ->table('mt5_accounts')--}}
+{{--                    ->where('Login', $login)--}}
+{{--                    ->first();--}}
+{{--        if($account){--}}
+{{--            $balance = $account->Balance;--}}
+{{--        }--}}
+{{--        } catch (\Exception $e) {--}}
+{{--        $balance=0;--}}
+{{--}--}}
 @endphp
 <strong
     class="green-color">{{ $balance.' '.$currency }}</strong>

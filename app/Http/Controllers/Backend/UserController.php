@@ -24,6 +24,7 @@ use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
 use App\Models\Kyc;
+use Carbon\Carbon;
 use DataTables;
 use Exception;
 use Hash;
@@ -431,11 +432,21 @@ class UserController extends Controller
             $kyc = 0;
         }
         if($kyc == 1){
-
+            $data['email_verified_at'] = Carbon::now();
+            $data['kyc'] = 1;
         }
+        if($kyc == 2){
+            $data['email_verified_at'] = Carbon::now();
+            $data['kyc'] = 2;
+        }
+        if($kyc == 3){
+            $data['email_verified_at'] = Carbon::now();
+            $data['kyc'] = 3;
+        }
+//        dd($kyc);
 //
         // Update basic user details
-        $user->update();
+        $user->update($data);
 
         // Update password if provided
         if (!empty($input['password'])) {

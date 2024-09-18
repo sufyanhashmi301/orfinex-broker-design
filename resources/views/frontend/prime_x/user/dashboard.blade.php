@@ -17,9 +17,11 @@
                         </div>
                         @if($banners->count() <= 2)
                             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                                <a href="{{ $banner->button_link }}" class="btn btn-dark loaderBtn inline-flex items-center justify-center">
-                                    {{ $banner->button_text }}
-                                </a>
+                                @if(!empty($banner->button_link) && !empty($banner->button_text))
+                                    <a href="{{ $banner->button_link }}" class="btn btn-dark loaderBtn inline-flex items-center justify-center">
+                                        {{ $banner->button_text }}
+                                    </a>
+                                @endif
                                 <a href="{{ $banner->primary_link }}" class="btn loaderBtn inline-flex items-center justify-center dark:text-white">
                                     <span class="flex items-center">
                                         <span>{{ __('Learn More') }}</span>

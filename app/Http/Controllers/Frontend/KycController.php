@@ -41,7 +41,7 @@ class KycController extends Controller
         $user = Auth::user();
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
-            if ($user->email_verified_at == null) {
+            if ($user->kyc != 1) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }

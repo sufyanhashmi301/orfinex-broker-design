@@ -19,7 +19,7 @@
                             <div
                                 class="flex items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-3px after:w-full after:flex-1 @if($user->email_verified_at != null) after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
                                 <div>
-                                    @if($user->email_verified_at != null)
+                                    @if($user->kyc >= \App\Enums\KYCStatus::Level1->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
@@ -45,7 +45,7 @@
                             <div
                                 class="flex items-center leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 @if($user->kyc == 1) before:bg-primary @else before:bg-[#e0e0e0] @endif before:content-[''] @if($totalActiveLevels > 2)after:ml-2 after:h-3px after:w-full after:flex-1 after:bg-[#e0e0e0] after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b] @endif">
                                 <div>
-                                    @if($user->kyc == 1)
+                                    @if($user->kyc == \App\Enums\KYCStatus::Level2->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
@@ -100,14 +100,16 @@
                                 $emailSubLevel = $kycLevel->kyc_sub_levels()->where('name', \App\Enums\KycType::EMAIL)->first();
                             @endphp
                             <h4 class="text-2xl text-slate-900 dark:text-white">{{ __('1 - Confirm ') }} @if($emailSubLevel && $emailSubLevel->status) {{__('Email')}}  @endif @if($kycLevel->kyc_sub_levels()->where('status', true)->count()>1) {{__(' and ')}} @endif @if($phoneSubLevel && $phoneSubLevel->status) {{__('Phone')}}  @endif</h4>
-                            @if($phoneSubLevel && $phoneSubLevel->status)
+                                @if($phoneSubLevel && $phoneSubLevel->status)
                                 <div class="input-area w-full">
                                     <div class="relative">
                                         <input type="text" class="form-control form-control-lg !pr-32"
                                                value="{{ $user->phone }}"
                                                disabled>
-                                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                    <a href="javascript:;" class="py-1 px-2 bg-slate-200 text-sm rounded inline-flex items-center">
+                                        <span
+                                            class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                    <a href="javascript:;"
+                                       class="py-1 px-2 bg-slate-200 text-sm rounded inline-flex items-center">
                                         {{ __('Verify Now') }}
                                     </a>
                                 </span>
@@ -120,11 +122,13 @@
                                         <input type="text" class="form-control form-control-lg !pr-32"
                                                value="{{ $user->email }}"
                                                disabled>
-                                        <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                        <span
+                                            class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                                             @if($user->email_verified_at != null)
                                                 <span class="flex items-center text-sm">
                                                     {{ __('Verified') }}
-                                                    <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
+                                                    <iconify-icon class="text-base ml-1" icon="bxs:badge-check"
+                                                                  style="color: #FED000;"></iconify-icon>
                                                 </span>
                                             @else
                                                 <button type="button"
@@ -143,24 +147,28 @@
                                 <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __("Access to client's area.") }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Open demo accounts.') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Trade on demo accounts.') }}</span>
                                     </li>
                                 </ul>
                             </div>
-                            <a href="javascript:;" class="btn btn-primary @if($user->email_verified_at != null) cursor-not-allowed @endif block-btn mt-auto">
-                                @if($user->email_verified_at != null)
+                            <a href="javascript:;"
+                               class="btn btn-primary @if($user->kyc == \App\Enums\KYCStatus::Level1->value) cursor-not-allowed @endif block-btn mt-auto">
+                                @if($user->kyc >= \App\Enums\KYCStatus::Level1->value)
                                     {{ __('Completed') }}
                                 @else
-                                    {{ __('Verify Your Email') }}
+                                    {{ __('Verify Your Level 1') }}
                                 @endif
                             </a>
                         </div>
@@ -194,39 +202,53 @@
                                         @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
                                     </ul>
                                 </div>
-                                <a href="{{route('user.kyc.automatic')}}" class="btn btn-primary loaderBtn block-btn mt-auto">
-                                    {{ __('Go to Sumsub') }}
-                                </a>
+                                @if($user->kyc==\App\Enums\KYCStatus::Level2->value)
+                                    <a href="#"
+                                       class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
+                                @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
+                                    <a href=""
+                                       class="btn btn-light block-btn mt-auto">{{ __('Complete step 1 to continue') }}</a>
+                                @else
+                                    <a href="{{route('user.kyc.automatic')}}"
+                                       class="btn btn-primary loaderBtn block-btn mt-auto">
+                                        {{ __('Go to Sumsub') }}
+                                    </a>
+                                @endif
                             </div>
                         @endif
-                            @if($manualSubLevel && $manualSubLevel->status)
-                                <div
-                                    class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                    <span class="badge bg-primary text-slate-900 capitalize">{{ __('Manual') }}</span>
-                                    <p class="text-base font-normal text-slate-500 dark:text-slate-300">
-                                        {{ __('Provide a document confirming your name') }}
-                                    </p>
-                                    <h4 class="text-2xl text-slate-900 dark:text-white">
-                                        {{ __('2 - Verify your identity manually') }}
-                                    </h4>
-                                    <div>
-                                        <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
-                                        <ul class="space-y-2 mb-10">
-                                            @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
-                                        </ul>
-                                    </div>
-                                    @if($user->is_level_2_completed==1)
-                                        <a href="#" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
-                                    @elseif($user->kyc == 2)
-                                        <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
-
-                                    @else
-                                        <a href="{{ route('user.kyc.basic') }}" class="btn btn-primary loaderBtn block-btn mt-auto">
-                                            {{ __('Go to Manual Submission') }}
-                                        </a>
-                                    @endif
+                        @if($manualSubLevel && $manualSubLevel->status)
+                            <div
+                                class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
+                                <span class="badge bg-primary text-slate-900 capitalize">{{ __('Manual') }}</span>
+                                <p class="text-base font-normal text-slate-500 dark:text-slate-300">
+                                    {{ __('Provide a document confirming your name') }}
+                                </p>
+                                <h4 class="text-2xl text-slate-900 dark:text-white">
+                                    {{ __('2 - Verify your identity manually') }}
+                                </h4>
+                                <div>
+                                    <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
+                                    <ul class="space-y-2 mb-10">
+                                        @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
+                                    </ul>
                                 </div>
-                            @endif
+                                @if($user->kyc==\App\Enums\KYCStatus::Level2->value)
+                                    <a href="#"
+                                       class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
+                                @elseif($user->kyc == \App\Enums\KYCStatus::Pending->value)
+                                    <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
+
+                                @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
+                                    <a href=""
+                                       class="btn btn-light block-btn mt-auto">{{ __('Complete step 1 to continue') }}</a>
+                                @else
+                                    <a href="{{ route('user.kyc.basic') }}"
+                                       class="btn btn-primary loaderBtn block-btn mt-auto">
+                                        {{ __('Go to Manual Submission') }}
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
                     @endif
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL3)
 
@@ -241,8 +263,10 @@
                             </h4>
                             <div class="input-area w-full">
                                 <div class="relative">
-                                    <input type="text" class="form-control form-control-lg !pr-9" placeholder="Add profile information">
-                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
+                                    <input type="text" class="form-control form-control-lg !pr-9"
+                                           placeholder="Add profile information">
+                                    <span
+                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                                         <iconify-icon icon="lucide:folder-open"></iconify-icon>
                                     </span>
                                 </div>
@@ -251,36 +275,52 @@
                                 <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __("Access to client's area.") }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Open demo & real accounts.') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Trade on demo accounts') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Trade on Real Accounts.') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Deposit money in real accounts') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
-                                        <span class="text-slate-500">{{ __('Withdrawal money from real accounts') }}</span>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
+                                        <span
+                                            class="text-slate-500">{{ __('Withdrawal money from real accounts') }}</span>
                                     </li>
                                     <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse">
-                                        <iconify-icon class="text-primary relative top-[1px]" icon="lucide:check"></iconify-icon>
+                                        <iconify-icon class="text-primary relative top-[1px]"
+                                                      icon="lucide:check"></iconify-icon>
                                         <span class="text-slate-500">{{ __('Priority Customer Support') }}</span>
                                     </li>
                                 </ul>
                             </div>
-                            <a href="" class="btn btn-light block-btn mt-auto">{{ __('Complete step 2 to continue') }}</a>
+                            @if($user->kyc==\App\Enums\KYCStatus::Level3->value)
+                                <a href="#" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
+                            @elseif($user->kyc == \App\Enums\KYCStatus::PendingLevel3->value)
+                                <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
+
+                            @elseif($user->kyc < \App\Enums\KYCStatus::Level2->value)
+                                <a href=""
+                                   class="btn btn-light block-btn mt-auto">{{ __('Complete step 2 to continue') }}</a>
+                            @endif
                         </div>
                     @endif
                 @endforeach

@@ -9,6 +9,11 @@ class KycsTableSeeder extends Seeder
 {
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('kycs')->truncate();
+        // DB::table('kyc_level_settings')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // Retrieve the ID of the 'Manual' and 'Level3' sub-levels from kyc_sub_levels table
         $manualSubLevel = DB::table('kyc_sub_levels')->where('name', \App\Enums\KycType::MANUAL)->first();
         $level3SubLevel = DB::table('kyc_sub_levels')->where('name', 'Proof of Documents')->first();

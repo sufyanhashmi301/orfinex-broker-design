@@ -1,15 +1,14 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.user_management.index')
 @section('title')
     {{ __('KYC Levels') }}
 @endsection
-@section('content')
+@section('user-management-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('KYC Levels') }}
         </h4>
 
     </div>
-    @include('backend.kyc.include.__menu')
     <div class="card">
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
@@ -125,7 +124,7 @@
     </div>
     <!-- Modal for Delete deleteKycType-->
 @endsection
-@section('script')
+@section('user-management-script')
     <script>
         $('.deleteKyc').on('click',function (e) {
             "use strict";

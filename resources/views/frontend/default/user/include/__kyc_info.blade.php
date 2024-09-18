@@ -1,4 +1,4 @@
-@if($user->kyc != \App\Enums\KYCStatus::Basic_Verified->value)
+@if($user->kyc != \App\Enums\KYCStatus::Level1->value)
 <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md bg-warning-500 bg-opacity-[14%] text-white mb-5" role="alert">
     <div class="flex items-center space-x-3 rtl:space-x-reverse">
         <iconify-icon class="text-2xl flex-0 text-warning-500" icon="typcn:warning"></iconify-icon>

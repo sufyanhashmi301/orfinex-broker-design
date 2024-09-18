@@ -23,7 +23,7 @@
         @endforeach
     </ul>
 
-    @if($kycStatus !== \App\Enums\KYCStatus::Basic_Verified->value)
+    @if($kycStatus !== \App\Enums\KYCStatus::Level1->value)
         <form action="{{ route('admin.kyc.action.level3.now') }}" method="post" class="space-y-5">
             @csrf
             <input type="hidden" name="id" value="{{ $id }}">
@@ -37,7 +37,7 @@
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                     {{ __('Approve') }}
                 </button>
-                @if($kycStatus !== \App\Enums\KYCStatus::Failed->value)
+                @if($kycStatus !== \App\Enums\KYCStatus::Rejected->value)
                     <button type="submit" name="status" value="3" class="btn btn-danger inline-flex items-center justify-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                         {{ __('Reject') }}

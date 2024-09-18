@@ -13,6 +13,11 @@
             </li>
         @endcan
         <li>
+            <a href="{{ route('admin.ticket.statuses.index') }}" class="navItem" class="navItem {{ isActive('admin.ticket*') }}">
+                {{ __('Support Center')}}
+            </a>
+        </li>
+        <li>
             <a href="" class="navItem" class="navItem">
                 {{ __('Multi-Factor Auth')}}
             </a>

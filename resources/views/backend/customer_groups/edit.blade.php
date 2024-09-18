@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-right p-5">
+                <div class="text-right py-5">
                     <button class="btn btn-dark inline-flex items-center justify-center" type="submit">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Edit Group') }}

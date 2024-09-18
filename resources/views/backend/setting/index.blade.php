@@ -56,6 +56,11 @@
                             </a>
                         </li>
                     @endcanany
+                    <li>
+                        <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('KYC & Compliance') }}
+                        </a>
+                    </li>
                     @canany(['ranking-list','ranking-create','ranking-edit'])
                         <li>
                             <a href="{{ route('admin.ranking.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -126,6 +131,11 @@
                     <li>
                         <a href="{{ route('admin.settings.site') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Site Settings') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.banners') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Banner') }}
                         </a>
                     </li>
                     <li>
@@ -225,6 +235,11 @@
                             {{ __('Multi-Factor Auth')}}
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.ticket.statuses.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Support Center')}}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -234,6 +249,5 @@
     <script>
         new SimpleBar($("#sidebar_subMenus, #scrollModal")[0]);
     </script>
-
     @yield('setting-script')
 @endsection

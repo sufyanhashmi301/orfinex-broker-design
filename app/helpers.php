@@ -85,6 +85,35 @@ if (!function_exists('get_user_account')) {
         return $account;
     }
 }
+if (!function_exists('get_all_wallets')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_all_wallets($userId,$balance = null)
+    {
+        // Attempt to retrieve the account.
+        $accounts = Account::where('user_id', $userId);
+        if($balance){
+            $accounts->where('balance',$balance);
+        }
+        if($count = $accounts->count() ==  0){
+            get_user_account($userId);
+            $accounts = Account::where('user_id', $userId);
+            if($balance){
+                $accounts->where('balance',$balance);
+            }
+        }
+        $accounts = $accounts->get();
+
+        return $accounts;
+    }
+}
 
 /**
  * Generates a unique 10-character alphanumeric ID.
@@ -1129,7 +1158,7 @@ if (!function_exists('mt5_total_equity')) {
             DB::connection('mt5_db')->getPdo();
         } catch (\PDOException $e) {
             \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-            Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
+            Cache::put($cacheKey, 'down', now()->addMinutes(10)); // Adjust the duration as needed
             return 0;
         }
         try {
@@ -1173,6 +1202,7 @@ if (!function_exists('mt5_total_credit')) {
      */
     function mt5_total_credit($user_id)
     {
+
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)

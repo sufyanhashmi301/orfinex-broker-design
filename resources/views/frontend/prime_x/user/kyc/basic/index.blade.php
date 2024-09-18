@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    @if($user->kyc == \App\Models\KycLevel::find(1)->id)
+    @if($user->kyc ==  \App\Enums\KYCStatus::Pending->value)
         <div class="card py-10 px-10">
             <div class="flex items-center justify-center flex-col gap-3">
                 <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
@@ -14,7 +14,7 @@
                 </p>
             </div>
         </div>
-    @elseif($user->kyc == \App\Models\KycLevel::find(2)->id)
+    @elseif($user->kyc ==  \App\Enums\KYCStatus::Level2->value)
         <div class="card py-10 px-10">
             <div class="flex items-center justify-center flex-col gap-3">
                 <iconify-icon class="text-success-500" icon="solar:user-check-bold" style="font-size: 52px;"></iconify-icon>

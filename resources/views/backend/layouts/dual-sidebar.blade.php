@@ -4,9 +4,9 @@
 
 <body class="font-inter dashcode-app" id="body_class">
     <div class="page-loader">
-        <div class="dot bg-primary-500"></div>
-        <div class="dot bg-primary-500"></div>
-        <div class="dot bg-primary-500"></div>
+        <div class="dot bg-primary"></div>
+        <div class="dot bg-primary"></div>
+        <div class="dot bg-primary"></div>
     </div>
     <!--Full Layout-->
     <main class="app-wrapper">
@@ -50,7 +50,7 @@
                         </div>
                         <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
                             Powered by
-                            <a href="https://brokeret.com/" target="_blank" class="text-primary-500 font-semibold">
+                            <a href="https://brokeret.com/" target="_blank" class="text-primary font-semibold">
                                 Brokeret
                             </a>
                         </div>

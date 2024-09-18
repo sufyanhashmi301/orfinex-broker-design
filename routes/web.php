@@ -326,7 +326,7 @@ Route::get('user/follower_access', function () {
 })->name('user.follower_access')->middleware('secure_header');
 
 Route::get('user/ratings', function () {
-    return view('frontend.prime_x.copy_trading.ratings');
+    return view('frontend::copy_trading.ratings');
 })->name('user.ratings')->middleware('secure_header');
 
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);

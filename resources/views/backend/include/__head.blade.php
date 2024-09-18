@@ -24,7 +24,14 @@
             --tw-ring-opacity: 1;
             --tw-ring-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-ring-opacity));
         }
-
+        .bg-primary {
+            --tw-bg-opacity: 1;
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+        }
+        .text-primary {
+            --tw-text-opacity: 1;
+            color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-text-opacity));
+        }
         .sidebar-menu .navItem.active, .dark .sidebar-menu .navItem.active, .sidebar-menu>li.active>a {
             --tw-bg-opacity: 1;
             background-color: rgba({{ implode(' ', getColorFromSettings('active_menu_bg')) }} / var(--tw-bg-opacity));

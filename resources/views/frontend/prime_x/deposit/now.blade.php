@@ -8,6 +8,7 @@
                     <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Enter your deposit details.') }}
                     </h4>
+
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
                             <div class="input-area relative">
@@ -17,6 +18,9 @@
                                         <option selected disabled>--{{ __('Select Account') }}--</option>
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
+                                        @endforeach
+                                        @foreach(get_all_wallets(auth()->user()->id,\App\Enums\AccountBalanceType::MAIN) as $wallet)
+                                            <option value="{{ $wallet->id }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $wallet->wallet_id }} - {{ w2n($wallet->balance) }} ({{ $wallet->amount }} {{$currency}})</option>
                                         @endforeach
                                     </select>
                                 </div>

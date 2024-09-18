@@ -223,9 +223,9 @@ class DepositController extends Controller
 
     public function history(Request $request)
     {
-        
+
         $filters = $request->only(['email', 'status',  'created_at']);
-      
+
         if ($request->ajax()) {
             $data = Transaction::where(function ($query) {
                 $query->where('type', TxnType::ManualDeposit)
@@ -321,7 +321,7 @@ class DepositController extends Controller
 
 
                 }
-            Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+            .::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
 
             $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
@@ -347,7 +347,7 @@ class DepositController extends Controller
 
     public function export(Request $request)
     {
-       
+
         return Excel::download(new DepositsExport($request), 'deposits.xlsx');
     }
     public function view($id)

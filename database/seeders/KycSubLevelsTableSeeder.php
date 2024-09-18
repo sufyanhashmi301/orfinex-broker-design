@@ -11,6 +11,10 @@ class KycSubLevelsTableSeeder extends Seeder
 {
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('kyc_sub_levels')->truncate();
+        // DB::table('kyc_level_settings')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         // Retrieve the ID of Level 1, Level 2, and Level 3 from the kyc_levels table
         $level1 = DB::table('kyc_levels')->where('slug', KycLevelSlug::LEVEL1)->first()->id;
         $level2 = DB::table('kyc_levels')->where('slug', KycLevelSlug::LEVEL2)->first()->id;

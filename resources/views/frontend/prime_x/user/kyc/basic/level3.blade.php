@@ -4,7 +4,7 @@
 @endsection
 @section('content')
 
-    @if($user->is_level_3_completed==1)
+    @if($user->kyc ==\App\Enums\KYCStatus::Level3->value)
         <div class="card py-10 px-10">
             <div class="flex items-center justify-center flex-col gap-3">
                 <iconify-icon class="text-success-500" icon="solar:user-check-bold" style="font-size: 52px;"></iconify-icon>

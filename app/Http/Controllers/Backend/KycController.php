@@ -226,9 +226,8 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('is_level_3_completed', 0)
-            ->where('kyc_credential_level3','!=',NULL)
-            ->where('kyc_level3', KYCStatus::Pending->value)
+            $data = User::where('kyc_level3_credential','!=',NULL)
+            ->where('kyc', KYCStatus::PendingLevel3->value)
             ->latest('updated_at');
             //->get();
 
@@ -292,11 +291,11 @@ class KycController extends Controller
     public function depositActionLevel3($id)
     {
         $user = User::find($id);
-        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        $kycCredential = json_decode($user->kyc_level3_credential, true);
         unset($kycCredential['kyc_type_of_name']);
         unset($kycCredential['kyc_time_of_time']);
 
-        $kycStatus = $user->kyc_level3;
+        $kycStatus = $user->kyc;
 
         return view('backend.kyc.include.__kyc_data_level3', compact('kycCredential', 'id', 'kycStatus'))->render();
     }
@@ -336,19 +335,14 @@ class KycController extends Controller
     }
     public function actionLevel3Now(Request $request)
     {
-
         $input = $request->all();
-
         $user = User::find($input['id']);
-        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        $kycCredential = json_decode($user->kyc_level3_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
         $user->update([
             'kyc' => $input['status'],
-            'kyc_credential_level3' => $kycCredential,
-            'is_level_3_completed' => $input['status'] == 1 ? 1 : 0,
-            'kyc_level3' => $input['status'],
+            'kyc_level3_credential' => $kycCredential,
         ]);
-
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[email]]' => $user->email,

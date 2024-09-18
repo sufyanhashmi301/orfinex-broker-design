@@ -56,6 +56,11 @@ class EmailTemplateController extends Controller
         return view('backend.email.user_template');
     }
 
+    public function create()
+    {
+        return view('backend.email.create');
+    }
+
     public function edit($id)
     {
         $template = EmailTemplate::find($id);

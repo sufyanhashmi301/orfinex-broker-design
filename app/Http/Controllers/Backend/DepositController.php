@@ -321,7 +321,7 @@ class DepositController extends Controller
 
 
                 }
-            .::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+            Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
 
             $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);

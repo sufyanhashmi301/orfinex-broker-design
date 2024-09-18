@@ -440,6 +440,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
     Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
 

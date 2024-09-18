@@ -209,6 +209,7 @@ class SettingController extends Controller
     public function  webterminalSetting(){
         return view('backend.setting.platform_api.webterminal');
     }
+
     public function testDatabaseConnection(Request $request)
     {
         $credentials = [

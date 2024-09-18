@@ -89,12 +89,6 @@
                             </a>
                         </li>
                     @endcanany
-
-                    <li>
-                        <a href="{{ route('admin.kyclevels.index') }}" class="{{ isActive('admin.kyclevels*') }}">
-                            {{ __('KYC Levels') }}
-                        </a>
-                    </li>
                 </ul>
             </li>
         @endcanany
@@ -362,7 +356,7 @@
         @endcanany
         @canany(['support-ticket-list','support-ticket-action'])
             <li class="">
-                <a href="{{ route('admin.ticket.index') }}" class="navItem {{ isActive('admin.ticket*') }}">
+                <a href="{{ route('admin.ticket.index') }}" class="navItem {{ isActive('admin.ticket.index') }} || {{ isActive('admin.ticket.show*') }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:wrench"></iconify-icon>
                         <span>{{ __('Support Tickets') }}</span>

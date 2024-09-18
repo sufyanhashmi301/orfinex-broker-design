@@ -11,6 +11,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.banners') }}" class="navItem {{ isActive('admin.banners') }}">
+                {{ __('Banner') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.settings.gdpr') }}" class="navItem {{ isActive('admin.settings.gdpr') }}">
                 {{ __('GDPR')}}
             </a>

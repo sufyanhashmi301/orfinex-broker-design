@@ -437,11 +437,11 @@ class UserController extends Controller
         }
         if($kyc == 2){
             $data['email_verified_at'] = Carbon::now();
-            $data['kyc'] = 2;
+            $data['kyc'] = 4;
         }
         if($kyc == 3){
             $data['email_verified_at'] = Carbon::now();
-            $data['kyc'] = 3;
+            $data['kyc'] = 7;
         }
 //        dd($kyc);
 //

@@ -122,8 +122,8 @@ class KycController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-
             'name' => 'required|unique:kycs,name',
+            'kyc_sub_level_id' => 'required',
             'status' => 'required',
             'fields' => 'required',
         ]);
@@ -134,20 +134,12 @@ class KycController extends Controller
         }
         $kycLevel = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $data = [
-            'kyc_level_id' => $kycLevel->id,
+            'kyc_sub_level_id' => get_hash($input['kyc_sub_level_id']),
             'name' => $input['name'],
             'status' => $input['status'],
             'fields' => json_encode($input['fields']),
         ];
-
         $kyc = Kyc::create($data);
-        $kycSettings = new Kyclevelsetting();
-        $kycSettings->title = $input['name'];
-        $kycSettings->unique_code = 'manual';
-        $kycSettings->kyc_level_id = $kycLevel->id;
-        $kycSettings->kyc_id = $kyc->id;
-        $kycSettings->status = true;
-        $kycSettings->save();
         notify()->success($kyc->name.' '.__(' KYC Created'));
 
         return redirect()->back();
@@ -267,7 +259,7 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('kyc', KYCStatus::Failed->value)->latest();
+            $data = User::where('kyc', KYCStatus::Rejected->value)->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -314,25 +306,16 @@ class KycController extends Controller
     public function actionNow(Request $request)
     {
 
+//        dd($request->all());
         $input = $request->all();
         $user = User::find($input['id']);
-        $kycLevel3Status = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
+//        $kycLevel3Status = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
-        if($kycLevel3Status->status==1){
-            $user->update([
-
-               'kyc_credential' => $kycCredential,
-               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
-           ]);
-        }else{
             $user->update([
                 'kyc' => $input['status'],
                'kyc_credential' => $kycCredential,
-               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
            ]);
-        }
-
 
         $shortcodes = [
             '[[full_name]]' => $user->full_name,

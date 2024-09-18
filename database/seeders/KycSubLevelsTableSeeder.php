@@ -35,7 +35,6 @@ class KycSubLevelsTableSeeder extends Seeder
         // Default values for Level 3
         $defaultValuesLevel3 = [
             ['name' => 'Proof of Documents', 'description' => 'Proof of documents verification sub-level'],
-            ['name' => 'Address', 'description' => 'Address verification sub-level'],
         ];
 
         // Insert Level 1 sub-levels into kyc_sub_levels table

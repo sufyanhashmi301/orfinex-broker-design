@@ -327,6 +327,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
 
     Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template/create', [EmailTemplateController::class, 'create'])->name('email-template-create');
     Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');

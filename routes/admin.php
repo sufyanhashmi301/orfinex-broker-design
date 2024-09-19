@@ -92,6 +92,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
+        Route::post('kyc/{id}', 'kyc')->name('kyc');
 
     });
 

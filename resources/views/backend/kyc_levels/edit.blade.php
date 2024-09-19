@@ -80,6 +80,7 @@
                         <div class="role-cat-items relative space-y-5">
                             @foreach($kycSubLevels as $kycSubLevel)
 
+
                                 @if($kycLevel->slug==\App\Enums\KycLevelSlug::LEVEL1)
                                     <div
                                         class="single-gateway flex items-center justify-between border rounded py-3 px-4">
@@ -117,6 +118,7 @@
                                             </div>
                                         </div>
                                     </div>
+
 
                                 @elseif($kycLevel->slug==\App\Enums\KycLevelSlug::LEVEL2 && $level2Show)
                                     @php
@@ -172,8 +174,6 @@
                                             @endforeach
                                         </div>
                                     </div>
-
-
                                     <!-- Manual Content -->
                                     <div id="manualContent"
                                          class="space-y-5  hidden ">
@@ -185,7 +185,7 @@
                                                 {{ __('Add New') }}
                                             </a>
                                         </div>
-                                        @foreach($manulKycs as $kyc)
+                                        @foreach($level2ManualKycs as $kyc)
                                             {{--                                        @if($kycSubLevel->name == \App\Enums\KycType::MANUAL)--}}
                                             <div
                                                 class="single-gateway flex items-center justify-between border rounded py-3 px-4">
@@ -227,7 +227,6 @@
                                             {{--                                        @endif--}}
                                         @endforeach
                                     </div>
-
                                     <!-- Automatic Content -->
                                     <div id="automaticContent"
                                          class="hidden">
@@ -268,6 +267,61 @@
                                             </div>
                                         </div>
                                     </div>
+                                @elseif($kycLevel->slug==\App\Enums\KycLevelSlug::LEVEL3 )
+
+                                    <!-- Manual Content -->
+                                    <div id="manualContent1"
+                                         class="space-y-5  ">
+                                        <div class="absolute right-0 top-3">
+                                            <a data-bs-toggle="modal" data-bs-target="#addKycLevel3Formmodal"
+                                               class="btn btn-dark btn-sm inline-flex items-center justify-center adds-new-form">
+                                                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2"
+                                                              icon="lucide:plus"></iconify-icon>
+                                                {{ __('Add New') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                        @foreach($level3ManualKycs as $kyc)
+                                            <div
+                                                class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                                <div class="gateway-name flex items-center gap-2">
+                                                    <div class="gateway-icon mr-1">
+                                                        <iconify-icon class="text-3xl"
+                                                                      icon="mdi:id-card-outline"></iconify-icon>
+                                                    </div>
+                                                    <div class="gateway-title">
+                                                        <h4 class="text-base">
+                                                            {{ ucwords($kyc->name)}}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <div class="gateway-right flex items-center gap-2">
+                                                    <div class="gateway-status">
+                                                        @if($kyc->status)
+                                                            <div
+                                                                class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                                                {{ __('Active') }}
+                                                            </div>
+                                                        @else
+                                                            <div
+                                                                class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                                                {{ __('Deactivated') }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="gateway-edit">
+                                                        <a type="button" class="action-btn cursor-pointer editLevel2"
+                                                           data-id="{{ $kyc->id }}"
+                                                           data-status="{{ $kyc->status }}"
+                                                           data-route="{{ route('admin.kyc.editKycLevel2', $kyc->id) }}">
+                                                            <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{--                                        @endif--}}
+                                        @endforeach
+
                                 @endif
                             @endforeach
                         </div>

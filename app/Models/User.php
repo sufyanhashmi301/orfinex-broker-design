@@ -53,6 +53,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'is_multi_ib',
         'kyc',
         'kyc_credential',
+        'kyc_level3_credential',
         'kyc_token',
         'kyc_created_at',
         'risk_profile_tags',
@@ -63,9 +64,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'transfer_status',
         'ref_id',
         'password',
-        'is_level_1_completed',
-        'is_level_2_completed',
-        'is_level_3_completed',
         'notes',
     ];
 
@@ -128,8 +126,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     }
     public function getKycTypeLevel3Attribute(): string
     {
-        if (isset($this->attributes['kyc_credential_level3']) && !empty($this->attributes['kyc_credential_level3'])) {
-            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+        if (isset($this->attributes['kyc_level3_credential']) && !empty($this->attributes['kyc_level3_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_level3_credential'], true);
             if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
                 return $kycCredential['kyc_type_of_name'];
             }
@@ -150,8 +148,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     }
     public function getKycTimeLevel3Attribute(): string
     {
-        if (isset($this->attributes['kyc_credential_level3'])) {
-            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+        if (isset($this->attributes['kyc_level3_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_level3_credential'], true);
             if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
                 return $kycCredential['kyc_time_of_time'];
             }

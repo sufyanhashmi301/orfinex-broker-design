@@ -40,8 +40,9 @@ class KycController extends Controller
     {
         $user = Auth::user();
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
+//       dd($user->kyc );
         if ($checkLevel1) {
-            if ($user->email_verified_at == null) {
+            if ($user->kyc <= 1) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }
@@ -53,7 +54,7 @@ class KycController extends Controller
 
     public function kycLevel3()
     {
-        $kycs = Kyc::where('status', true)->where('kyc_level_id', 3)->get();
+        $kycs = Kyc::where('status', true)->where('kyc_sub_level_id', 5)->get();
 
         return view('frontend::user.kyc.basic.level3', compact('kycs'));
     }
@@ -124,7 +125,7 @@ class KycController extends Controller
         $user = \Auth::user();
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
-            if ($user->email_verified_at == null) {
+            if (!isset($user->kyc ) && $user->kyc < KYCStatus::Level1->value) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }
@@ -148,7 +149,7 @@ class KycController extends Controller
 
         $user->update([
             'kyc_credential' => json_encode($kycCredential),
-            'kyc' => 2,
+            'kyc' => KYCStatus::Pending->value,
         ]);
 //        DB::table('user_kycs')->insert([
 //            'user_id' => $user->id,
@@ -161,15 +162,15 @@ class KycController extends Controller
 //            'updated_at' => now(),
 //        ]);
         // Data to insert into the pivot table
-        $pivotData = [
-            'kyc_credentials' => json_encode($kycCredential),
-            'status' => 2,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ];
-
-// Insert data into the pivot table
-        $user->kycs()->attach($kyc->id, $pivotData);
+//        $pivotData = [
+//            'kyc_credentials' => json_encode($kycCredential),
+//            'status' => 2,
+//            'created_at' => Carbon::now(),
+//            'updated_at' => Carbon::now(),
+//        ];
+//
+//// Insert data into the pivot table
+//        $user->kycs()->attach($kyc->id, $pivotData);
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[email]]' => $user->email,
@@ -204,20 +205,20 @@ class KycController extends Controller
         $user = \Auth::user();
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->first();
         if ($checkLevel1->status == 1) {
-            if ($user->email_verified_at == null) {
+            if (!isset($user->kyc) && $user->kyc < KYCStatus::Level1->value) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }
         }
         $checkLevel2 = KycLevel::where('slug', KycLevelSlug::LEVEL2)->first();
         if ($checkLevel2->status == 1) {
-            if ($user->is_level_2_completed == 0) {
+            if ($user->kyc < KYCStatus::Level2->value) {
                 notify()->error('kindly complete the level 2 first');
                 return redirect()->back();
             }
         }
-        if ($user->kyc_credential_level3) {
-            foreach (json_decode($user->kyc_credential_level3, true) as $key => $value) {
+        if ($user->kyc_level3_credential) {
+            foreach (json_decode($user->kyc_level3_credential, true) as $key => $value) {
                 self::delete($value);
             }
         }
@@ -233,19 +234,8 @@ class KycController extends Controller
             }
         }
         $user->update([
-            'kyc_credential_level3' => json_encode($kycCredential),
-            'kyc_level3' => KYCStatus::Pending,
-        ]);
-        $kycSettingsId = Kyclevelsetting::where('kyc_id', $input['kyc_id'])->first();
-        DB::table('user_kycs')->insert([
-            'user_id' => $user->id,
-            'kyclevel_id' => $kyc->kyc_level_id,
-            'kyclevelsetting_id' => $kycSettingsId->id,
-            'kyc_credential' => json_encode($kycCredential),
-            'kyc' => KYCStatus::Pending,
-            'is_level_2_completed' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'kyc_level3_credential' => json_encode($kycCredential),
+            'kyc' => KYCStatus::PendingLevel3,
         ]);
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
@@ -255,7 +245,6 @@ class KycController extends Controller
             '[[kyc_type]]' => $kyc->name,
             '[[status]]' => 'Pending',
         ];
-
         $this->mailNotify(setting('site_email', 'global'), 'kyc_request', $shortcodes);
         $this->pushNotify('kyc_request', $shortcodes, route('admin.kyc.pending'), $user->id);
         notify()->success(__(' KYC Updated'));

@@ -1,5 +1,5 @@
 @switch($kyc)
-    @case(1)
+    @case(4)
         <div class="site-badge success">{{ __('Verified') }}</div>
         @break
     @case(2)

@@ -37,7 +37,6 @@ class ResetData extends Command
     public function handle()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('risk_profile_tag_user')->truncate();
         DB::table('admins')->truncate();
         DB::table('users')->truncate();
         DB::table('accounts')->truncate();
@@ -55,13 +54,13 @@ class ResetData extends Command
         DB::table('employments')->truncate();
         DB::table('ledgers')->truncate();
         DB::table('ib_questions')->truncate();
-        DB::table('ib_question_answers ')->truncate();
-        DB::table('ib_schemas ')->truncate();
-        DB::table('ib_transactions ')->truncate();
-        DB::table('kyc_levels ')->truncate();
-        DB::table('kyc_sub_levels ')->truncate();
-        DB::table('kyc_user ')->truncate();
-        DB::table('kycs ')->truncate();
+        DB::table('ib_question_answers')->truncate();
+        DB::table('ib_schemas')->truncate();
+        DB::table('ib_transactions')->truncate();
+        DB::table('kyc_levels')->truncate();
+        DB::table('kyc_sub_levels')->truncate();
+        DB::table('kyc_user')->truncate();
+        DB::table('kycs')->truncate();
         DB::table('black_list_countries')->truncate();
         DB::table('admin_login_activities')->truncate();
         DB::table('login_activities')->truncate();

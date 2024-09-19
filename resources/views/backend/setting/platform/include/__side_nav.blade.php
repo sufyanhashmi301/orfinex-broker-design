@@ -6,6 +6,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.platformGroups') }}" class="navItem {{ isActive('admin.platformGroups') }}">
+                {{ __('Platform Groups') }}
+            </a>
+        </li>
+        <li>
             <a href="{{route('admin.settings.copyTrading')}}" class="navItem {{isActive('admin.settings.copyTrading')}}">
                 {{ __('Copy Trading')}}
             </a>

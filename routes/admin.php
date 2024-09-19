@@ -54,6 +54,7 @@ use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -447,4 +448,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
+Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
 ;

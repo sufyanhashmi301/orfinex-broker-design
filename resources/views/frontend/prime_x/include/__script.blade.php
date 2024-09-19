@@ -57,8 +57,6 @@
         // $(window).resize(calculateHeights);
     });
 </script>
-
-
 @php
     $googleAnalytics = plugin_active('Google Analytics');
     $tawkChat = plugin_active('Tawk Chat');

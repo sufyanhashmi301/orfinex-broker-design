@@ -3,7 +3,7 @@
     {{ __('Schema Logs') }}
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap items-center gap-5 mb-5">
+    <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">
                 <a href="#tabs-realAccounts"

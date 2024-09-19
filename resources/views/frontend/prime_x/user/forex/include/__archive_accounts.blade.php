@@ -1,5 +1,5 @@
 @if(count($archiveForexAccounts) == 0)
-    <div class="card py-10 px-10">
+    <div class="card basicTable_wrapper items-center justify-center py-10 px-10">
         <div class="flex items-center justify-center flex-col gap-3">
             <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
             <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">

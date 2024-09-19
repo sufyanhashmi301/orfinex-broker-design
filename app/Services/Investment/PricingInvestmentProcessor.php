@@ -673,19 +673,21 @@ class PricingInvestmentProcessor
 
         $group = $invest->forexSchemaPhaseRule->forexSchemaPhase->group;
 //        dd($group);
-        if (setting('is_forex_group_range', 'global')){
-            $forexAccount = ForexSchemaInvestment::where('forex_schema_id',$invest->forexSchemaPhaseRule->id)->orderBY('login','desc')->first();
+        $login = 0;
+//        if (setting('is_forex_group_range', 'global')){
+            $forexAccount = ForexSchemaInvestment::where('forex_schema_phase_rule_id',$invest->forexSchemaPhaseRule->id)->orderBY('login','desc')->first();
             if($forexAccount) {
-                if($forexAccount->login >= $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->end_range){
+                if(isset($forexAccount->login) && $forexAccount->login >= $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->end_range){
                     $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
                     notify()->error($message, 'Error');
                     return redirect()->back();
+                }else{
+                    $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
                 }
-                $login = $forexAccount->login++;
             }else{
                 $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
             }
-        }
+//        }
 
         $data = [
             "login" => $login,

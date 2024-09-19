@@ -673,9 +673,22 @@ class PricingInvestmentProcessor
 
         $group = $invest->forexSchemaPhaseRule->forexSchemaPhase->group;
 //        dd($group);
+        if (setting('is_forex_group_range', 'global')){
+            $forexAccount = ForexSchemaInvestment::where('forex_schema_id',$invest->forexSchemaPhaseRule->id)->orderBY('login','desc')->first();
+            if($forexAccount) {
+                if($forexAccount->login >= $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->end_range){
+                    $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
+                    notify()->error($message, 'Error');
+                    return redirect()->back();
+                }
+                $login = $forexAccount->login++;
+            }else{
+                $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
+            }
+        }
 
         $data = [
-            "login" => 0,
+            "login" => $login,
             "group" => $group,
             "firstName" => $invest->user->first_name,
             "middleName" => "",
@@ -1033,6 +1046,7 @@ class PricingInvestmentProcessor
     {
 //        dd($invest);
         $mt5Login = $this->createForexAccountForPricing($invest);
+
 //        $mt5Login = 877021;
 
         $deposit = $this->DepositForexAccountForPricing($mt5Login, $invest);

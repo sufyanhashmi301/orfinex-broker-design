@@ -59,6 +59,7 @@ class MultiLevelIBController extends Controller
 //            'total_forex_balance' => mt5_total_balance($user->id),
 //            'total_forex_equity' => mt5_total_equity($user->id),
         ];
+
         return view('frontend::partner.dashboard', get_defined_vars());
 
     }
@@ -110,8 +111,6 @@ class MultiLevelIBController extends Controller
         // Return the rendered view as JSON
         return response()->json(['html' => $html]);
     }
-
-
     /**
      * Show the form for creating a new resource.
      *

@@ -169,6 +169,11 @@
                             {{ __('Copy Trading') }}
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Platform Groups') }}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

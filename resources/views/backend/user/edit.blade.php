@@ -3,6 +3,40 @@
     {{ __('Customer Details') }}
 @endsection
 @section('content')
+    @php
+
+        // Initialize the array to store statuses to exclude
+        $excludedStatuses = [];
+
+        // Mapping KYC Level IDs to corresponding KYCStatus values with their dynamic labels
+        $statusLabels = [
+            1 => ['statuses' => [\App\Enums\KYCStatus::Level1->value]],
+            2 => [
+                'statuses' => [
+                    \App\Enums\KYCStatus::Level2->value,
+                    \App\Enums\KYCStatus::Pending->value,
+                    \App\Enums\KYCStatus::Rejected->value
+                ],
+                'additionalLabels' => [
+                    \App\Enums\KYCStatus::Pending->value => 'pending',
+                    \App\Enums\KYCStatus::Rejected->value => 'reject'
+                ]
+            ],
+            3 => [
+                'statuses' => [
+                    \App\Enums\KYCStatus::Level3->value,
+                    \App\Enums\KYCStatus::PendingLevel3->value,
+                    \App\Enums\KYCStatus::RejectLevel3->value
+                ],
+                'additionalLabels' => [
+                    \App\Enums\KYCStatus::PendingLevel3->value => 'pending',
+                    \App\Enums\KYCStatus::RejectLevel3->value => 'reject'
+                ]
+            ]
+        ];
+    @endphp
+
+
     <div class="space-y-5 profile-page">
         <div class="grid grid-cols-12 gap-6">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -412,6 +446,12 @@
     {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
 
     <script>
+        $(document).ready(function() {
+            $("select.select2").select2({
+                tags: true
+            })
+        });
+
         function confirmDelete(tagId,tagName) {
             $('#risk_profile_tag_id').val(tagId)
             $('#risk_profile_tag_name').text(tagName)

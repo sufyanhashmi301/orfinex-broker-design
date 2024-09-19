@@ -54,6 +54,7 @@ use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -91,6 +92,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
+        Route::post('kyc/{id}', 'kyc')->name('kyc');
 
     });
 
@@ -327,6 +329,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
 
     Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template/create', [EmailTemplateController::class, 'create'])->name('email-template-create');
     Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
@@ -446,4 +449,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
+Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
 ;

@@ -366,20 +366,6 @@ class UserController extends Controller
             'risk_profile_tags' => 'sometimes|array',
             'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
             'comment' => 'nullable|string|max:500',
-            'kyc' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    // Handle KYC Levels or KYC Status enum values
-                    if (Str::startsWith($value, 'kyc_')) {
-                        $kycValue = str_replace('kyc_', '', $value);
-                        if (!in_array($kycValue, array_column(KYCStatus::cases(), 'value'))) {
-                            $fail('The selected KYC status is invalid.');
-                        }
-                    } elseif (!KycLevel::where('id', $value)->exists()) {
-                        $fail('The selected KYC level is invalid.');
-                    }
-                },
-            ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'date_of_birth' => 'nullable|date',
         ]);
@@ -402,7 +388,6 @@ class UserController extends Controller
             'city',
             'zip_code',
             'address',
-            'kyc',
             'risk_profile_tags',
             'comment',
             'password',
@@ -422,29 +407,6 @@ class UserController extends Controller
             'date_of_birth' => $input['date_of_birth'] ?: null, // Set to null if empty
             'email_verified_at' => $request->has('is_email_verified') ? now() : $user->email_verified_at,
         ];
-        // Handle the status value (KYC Level or KYC Status)
-        $kyc = $input['kyc'];
-        if(!empty($kyc)) {
-            if (Str::startsWith($kyc, 'kyc_')) {
-                $kyc = str_replace('kyc_', '', $kyc); // KYC Status
-            }
-        }else{
-            $kyc = 0;
-        }
-        if($kyc == 1){
-            $data['email_verified_at'] = Carbon::now();
-            $data['kyc'] = 1;
-        }
-        if($kyc == 2){
-            $data['email_verified_at'] = Carbon::now();
-            $data['kyc'] = 4;
-        }
-        if($kyc == 3){
-            $data['email_verified_at'] = Carbon::now();
-            $data['kyc'] = 7;
-        }
-//        dd($kyc);
-//
         // Update basic user details
         $user->update($data);
 
@@ -461,6 +423,29 @@ class UserController extends Controller
 
         // Redirect with success message
         notify()->success('User Info Updated Successfully', 'success');
+        return redirect()->back();
+    }
+    public function kyc( Request $request,$id)
+    {
+//        dd($request->all());
+        // Fetch the user
+        $user = User::findOrFail($id);
+
+        $kyc = $request->kyc;
+
+        if(empty($kyc)) {
+            $kyc = 0;
+            $data['email_verified_at'] = null;
+        }
+        if($kyc >= KYCStatus::Level1->value){
+            $data['email_verified_at'] = Carbon::now();
+        }
+        $data['kyc'] = $kyc;
+        // Update basic user details
+        $user->update($data);
+
+        // Redirect with success message
+        notify()->success('User Kyc Updated Successfully', 'success');
         return redirect()->back();
     }
 

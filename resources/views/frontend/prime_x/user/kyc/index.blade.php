@@ -43,9 +43,9 @@
                         <!--Second item-->
                         <li class="w-[4.5rem] flex-auto">
                             <div
-                                class="flex items-center leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 @if($user->kyc == 1) before:bg-primary @else before:bg-[#e0e0e0] @endif before:content-[''] @if($totalActiveLevels > 2)after:ml-2 after:h-3px after:w-full after:flex-1 after:bg-[#e0e0e0] after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b] @endif">
+                                class="flex items-center leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 @if($user->kyc > \App\Enums\KYCStatus::Level1->value) before:bg-primary @else before:bg-[#e0e0e0] @endif before:content-[''] @if($totalActiveLevels > 2)after:ml-2 after:h-3px after:w-full after:flex-1 @if($user->kyc > \App\Enums\KYCStatus::Level2->value) after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b] @endif">
                                 <div>
-                                    @if($user->kyc == \App\Enums\KYCStatus::Level2->value)
+                                    @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
@@ -70,14 +70,25 @@
                         <!--Third item-->
                             <li class="w-[4.5rem] flex-auto">
                                 <div
-                                    class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                                    class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 @if($user->kyc > \App\Enums\KYCStatus::Level2->value) before:bg-primary @else before:bg-[#e0e0e0] @endif dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+
                                     <div>
+                                        @if($user->kyc == \App\Enums\KYCStatus::Level3->value)
+                                            <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                      d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z"
+                                                      fill="white"/>
+                                            </svg>
+                                        @else
                                         <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
                                             <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000"
                                                     stroke-width="4"/>
                                             <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                            @endif
                                         </svg>
                                     </div>
                                 </div>
@@ -108,7 +119,7 @@
                                                disabled>
                                         <span
                                             class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                    <a href="javascript:;"
+                                    <a href="javascript:void(0);"
                                        class="py-1 px-2 bg-slate-200 text-sm rounded inline-flex items-center">
                                         {{ __('Verify Now') }}
                                     </a>
@@ -163,7 +174,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <a href="javascript:;"
+                            <a href="javascript:void(0);"
                                class="btn btn-primary @if($user->kyc == \App\Enums\KYCStatus::Level1->value) cursor-not-allowed @endif block-btn mt-auto">
                                 @if($user->kyc >= \App\Enums\KYCStatus::Level1->value)
                                     {{ __('Completed') }}
@@ -202,11 +213,11 @@
                                         @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
                                     </ul>
                                 </div>
-                                @if($user->kyc==\App\Enums\KYCStatus::Level2->value)
-                                    <a href="#"
+                                @if($user->kyc>=\App\Enums\KYCStatus::Level2->value)
+                                    <a href="javascript:void(0);"
                                        class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
                                 @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
-                                    <a href=""
+                                    <a href="javascript:void(0);"
                                        class="btn btn-light block-btn mt-auto">{{ __('Complete step 1 to continue') }}</a>
                                 @else
                                     <a href="{{route('user.kyc.automatic')}}"
@@ -232,14 +243,14 @@
                                         @include('frontend.prime_x.user.kyc.include.__level_2_benefits')
                                     </ul>
                                 </div>
-                                @if($user->kyc==\App\Enums\KYCStatus::Level2->value)
-                                    <a href="#"
+                                @if($user->kyc >=\App\Enums\KYCStatus::Level2->value)
+                                    <a href="javascript:void(0);"
                                        class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
                                 @elseif($user->kyc == \App\Enums\KYCStatus::Pending->value)
-                                    <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
+                                    <a href="javascript:void(0);" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
 
                                 @elseif(!isset($user->kyc) || $user->kyc < \App\Enums\KYCStatus::Level1->value)
-                                    <a href=""
+                                    <a href="javascript:void(0);"
                                        class="btn btn-light block-btn mt-auto">{{ __('Complete step 1 to continue') }}</a>
                                 @else
                                     <a href="{{ route('user.kyc.basic') }}"
@@ -261,16 +272,16 @@
                             <h4 class="text-2xl text-slate-500 dark:text-white">
                                 {{ __('3 - Verify residential address') }}
                             </h4>
-                            <div class="input-area w-full">
-                                <div class="relative">
-                                    <input type="text" class="form-control form-control-lg !pr-9"
-                                           placeholder="Add profile information">
-                                    <span
-                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                        <iconify-icon icon="lucide:folder-open"></iconify-icon>
-                                    </span>
-                                </div>
-                            </div>
+{{--                            <div class="input-area w-full">--}}
+{{--                                <div class="relative">--}}
+{{--                                    <input type="text" class="form-control form-control-lg !pr-9"--}}
+{{--                                           placeholder="Add profile information">--}}
+{{--                                    <span--}}
+{{--                                        class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">--}}
+{{--                                        <iconify-icon icon="lucide:folder-open"></iconify-icon>--}}
+{{--                                    </span>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div>
                                 <p class="text-slate-900 dark:text-white mb-2">{{ __('Privileges and Benefit') }}</p>
                                 <ul class="space-y-2 mb-10">
@@ -313,13 +324,18 @@
                                 </ul>
                             </div>
                             @if($user->kyc==\App\Enums\KYCStatus::Level3->value)
-                                <a href="#" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
+                                <a href="javascript:void(0);" class="btn btn-dark btn-primary block-btn mt-auto">{{ __('Completed') }}</a>
                             @elseif($user->kyc == \App\Enums\KYCStatus::PendingLevel3->value)
-                                <a href="#" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
+                                <a href="javascript:void(0);" class="btn btn-light block-btn mt-auto">{{ __('Pending') }}</a>
 
                             @elseif($user->kyc < \App\Enums\KYCStatus::Level2->value)
-                                <a href=""
+                                <a href="javascript:void(0);"
                                    class="btn btn-light block-btn mt-auto">{{ __('Complete step 2 to continue') }}</a>
+                            @else
+                                <a href="{{ route('user.kyc.level3') }}"
+                                   class="btn btn-primary loaderBtn block-btn mt-auto">
+                                    {{ __('Go to Manual Submission') }}
+                                </a>
                             @endif
                         </div>
                     @endif

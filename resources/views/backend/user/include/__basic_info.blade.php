@@ -1,11 +1,4 @@
-<!-- Include jQuery if not already included -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Include Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
-
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <div
     class="tab-pane space-y-5 fade show active"
@@ -33,26 +26,13 @@
                     <div class="input-area relative">
 
                         <label for="" class="form-label">{{ __('Country:') }}</label>
-                        <select class=" form-control w-full" name="country" placeholder="Countries" >
+                        <select class="select2 form-control w-full" name="country" placeholder="Countries" >
                             @foreach( getCountries() as $country)
                                 <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <!-- Include jQuery and select2 -->
-                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
-                    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-
-                    <!-- Initialize select2 -->
-                    <script>
-                        $(document).ready(function() {
-                            $('#country').select2({
-                                placeholder: "Select Country"
-                            });
-                        });
-                    </script>
 
 
                     <div class="input-area relative">
@@ -120,30 +100,6 @@
                     </div>
 
                     @endif
-{{--                    {{dd($kycLevels, $user->kyc)}}--}}
-                    <div class="input-area relative">
-                        <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
-                        <select name="kyc" id="status" class="form-control">
-                            <option value="">{{ __('Select') }}</option>
-
-
-                            {{-- Loop through KYC Levels --}}
-                            @foreach($kycLevels as $index=>$level)
-                                <option value="{{ $level->id }}"
-                                    {{ $user->kyc == $level->id ? 'selected' : '' }}>
-                                    {{ $level->name }}
-                                </option>
-                            @endforeach
-
-                            {{-- Loop through KYC Statuses --}}
-                            @foreach(App\Enums\KYCStatus::cases() as $status)
-                                <option value="kyc_{{ $status->value }}"
-                                    {{ isset($user) && $user->kyc == $status->value ? 'selected' : '' }}>
-                                    {{ $status->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Assign Group:') }}</label>
                         <select name="group_id" class="form-control">
@@ -168,17 +124,7 @@
                             @endforeach
                         </select>
                     </div>
-
-                    <script>
-                        $(document).ready(function() {
-                            $('#riskProfileTagsSelect').select2({
-                                placeholder: "Select Tags",
-                                allowClear: true  // This allows the user to clear the selection
-                            });
-                        });
-                    </script>
                     <div class="input-area relative text-right lg:col-span-3">
-
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}
                         </button>

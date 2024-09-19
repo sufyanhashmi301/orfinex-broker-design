@@ -10,25 +10,43 @@
         </div>
         <div class="card-body p-6 pt-3">
             <div class="max-w-2xl w-full mx-auto">
-                <form action="" method="post" class="space-y-5">
+                <form action="{{route('admin.user.kyc',['id'=>$user->id])}}" method="post">
+                    @csrf
                     <div class="input-area relative">
-                        <label for="kyc_status" class="form-label">
-                            {{ __('Current KYC Level: ') }}
-                            @if (isset($user->kyc) && in_array($user->kyc,[4,5]))
-                                {{ __(ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)))) }}
-                            @else
-                                {{ __('N/A') }}
-                            @endif
-                        </label>
-                        <select name="kyc" id="kyc" class="form-control">
-                            <option value="">Select</option>
-                            @foreach (App\Enums\KYCStatus::cases() as $status)
-                                <option value="{{ $status->value }}" {{ (isset($user->kyc) && $user->kyc == $status->value) ? 'selected' : '' }}>
-                                    {{ __(ucwords(str_replace('_', ' ', strtolower($status->name)))) }}
-                                </option>
+{{--                        <label for="kyc_status" class="form-label">--}}
+{{--                            {{ __('Current KYC Level: ') }}--}}
+{{--                            @if (isset($user->kyc) && in_array($user->kyc,[4,5]))--}}
+{{--                                {{ __(ucwords(str_replace('_', ' ', strtolower(App\Enums\KYCStatus::from($user->kyc)->name)))) }}--}}
+{{--                            @else--}}
+{{--                                {{ __('N/A') }}--}}
+{{--                            @endif--}}
+{{--                        </label>--}}
+                        {{-- Dropdown to show KYC statuses --}}
+                        <select name="kyc" class="select2 form-control w-full">
+                            @foreach($kycLevels as $kycLevel)
+                                {{-- Get the status mapping for each enabled KYC Level --}}
+                                @if(isset($statusLabels[$kycLevel->id]))
+                                    @foreach($statusLabels[$kycLevel->id]['statuses'] as $statusValue)
+                                        @php
+                                            $status = \App\Enums\KYCStatus::from($statusValue);
+                                            $label = $kycLevel->name; // Get the dynamic name from the KycLevel model
+
+                                            // Override label for Pending/Reject statuses with dynamic level name
+                                            if (isset($statusLabels[$kycLevel->id]['additionalLabels'][$statusValue])) {
+                                                $label = strtolower($statusLabels[$kycLevel->id]['additionalLabels'][$statusValue]) . '-' . str_replace(' ', '-', strtolower($kycLevel->name));
+                                            }
+                                        @endphp
+
+                                        <option value="{{ $status->value }}"
+                                            {{ isset($user) && $user->kyc == $status->value ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                @endif
                             @endforeach
                         </select>
                     </div>
+                    <br>
                     <div class="input-area relative text-right">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}

@@ -22,7 +22,7 @@
 {{--                            @endif--}}
 {{--                        </label>--}}
                         {{-- Dropdown to show KYC statuses --}}
-                        <select name="kyc" class="form-control">
+                        <select name="kyc" class="select2 form-control w-full">
                             @foreach($kycLevels as $kycLevel)
                                 {{-- Get the status mapping for each enabled KYC Level --}}
                                 @if(isset($statusLabels[$kycLevel->id]))

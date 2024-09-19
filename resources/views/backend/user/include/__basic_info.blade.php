@@ -26,7 +26,7 @@
                     <div class="input-area relative">
 
                         <label for="" class="form-label">{{ __('Country:') }}</label>
-                        <select class=" form-control w-full" name="country" placeholder="Countries" >
+                        <select class="select2 form-control w-full" name="country" placeholder="Countries" >
                             @foreach( getCountries() as $country)
                                 <option value="{{$country['name']}}" @selected( null != $user->country && in_array($country['name'],[$user->country]))>{{$country['name']}}</option>
                             @endforeach
@@ -124,17 +124,7 @@
                             @endforeach
                         </select>
                     </div>
-
-                    <script>
-                        $(document).ready(function() {
-                            $('#riskProfileTagsSelect').select2({
-                                placeholder: "Select Tags",
-                                allowClear: true  // This allows the user to clear the selection
-                            });
-                        });
-                    </script>
                     <div class="input-area relative text-right lg:col-span-3">
-
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             {{ __('Save Changes') }}
                         </button>

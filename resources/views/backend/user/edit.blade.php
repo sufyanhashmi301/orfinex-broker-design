@@ -446,6 +446,12 @@
     {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
 
     <script>
+        $(document).ready(function() {
+            $("select.select2").select2({
+                tags: true
+            })
+        });
+
         function confirmDelete(tagId,tagName) {
             $('#risk_profile_tag_id').val(tagId)
             $('#risk_profile_tag_name').text(tagName)

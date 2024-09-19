@@ -21,13 +21,11 @@
                                class="btn btn-dark inline-flex items-center justify-center">
                                 {{ $banner->button_text }}
                             </a>
-                            <a href="{{ $banner->primary_link }}"
-                               class="btn inline-flex items-center justify-center dark:text-white">
-                                    <span class="flex items-center">
-                                        <span>{{ __('Learn More') }}</span>
-                                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
-                                                      icon="lucide:chevron-right"></iconify-icon>
-                                    </span>
+                            <a href="{{ $banner->primary_link }}" class="btn inline-flex items-center justify-center dark:text-white">
+                                <span class="flex items-center">
+                                    <span>{{ __('Learn More') }}</span>
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                </span>
                             </a>
                         </div>
                     @else
@@ -138,7 +136,7 @@
                     </div>
                 </div>
             </a>
-            <a href="{{ route('user.transfer') }}" class="card">
+            <a href="{{ route('user.leaderboard') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="lucide:trophy"></iconify-icon>

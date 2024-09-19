@@ -189,7 +189,7 @@
         {{-- *************************************************************  Advertisement Management *********************************************************--}}
         @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
 
-            @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
+            {{--@canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
                 <li class="{{ isActive(['admin.referral*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -214,7 +214,7 @@
 
                     </ul>
                 </li>
-            @endcanany
+            @endcanany--}}
 
             {{--@canany(['ib-list','ib-action','ib-form-manage'])
                 <li class="{{ isActive(['admin.ib*']) }}">
@@ -475,7 +475,7 @@
             </ul>
         </li>
 
-        <li class="">
+        {{--<li class="">
             <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="mdi:partnership"></iconify-icon>
@@ -500,7 +500,7 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li>--}}
 
 {{-- ************************************************************* Site  Settings *********************************************************--}}
         @canany(['site-setting','email-setting','plugin-setting','page-manage'])

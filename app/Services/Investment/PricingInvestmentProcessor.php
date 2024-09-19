@@ -1065,7 +1065,6 @@ class PricingInvestmentProcessor
             $invest->term_start = $termStart;
 //        $invest->term_end = $termEnd;
             $invest->save();
-
             //referral Bonus
 //            $this->fundedBonus($invest);
 

@@ -193,7 +193,7 @@ class ForexAccountController extends GatewayController
 
 //        return $this->wrapInTransaction(function ($subscription,$rule) {
         $invest = $this->investment->confirmSubscription($subscription);
-        dd($invest);
+//        dd($invest);
 //            event(new FundedEvent($invest));
 //            if ($rule->approval == FundedApproval::AUTO) {
 //                $this->investment->approveSubscription($invest, 'auto-approved');

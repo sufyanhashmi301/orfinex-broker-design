@@ -181,7 +181,7 @@
 
         @if(setting('sign_up_referral','permission'))
             <li>
-                <a href="{{ route('user.referral') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
+                <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
                         <span>{{ __('Partner Area') }}</span>

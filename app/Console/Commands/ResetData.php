@@ -97,15 +97,16 @@ class ResetData extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $rank = Ranking::find(1);
+        $sitename = 'banexcapital';
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
             'first_name' => 'user',
-            'last_name' => 'banexcapital',
+            'last_name' => $sitename,
             'username' =>  'user' . rand(10000, 99999),
             'country' => 'United Arab Emirates',
             'phone' =>  '+971',
-            'email' => 'user@banexcapital.com',
+            'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make(12345678),
             'kyc' => 0,
         ];
@@ -114,7 +115,7 @@ class ResetData extends Command
         $superAdmin = Admin::create([
             'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
             'name' => 'Super Admin',
-            'email' => 'admin@banexcapital.com',
+            'email' => 'admin@'.$sitename.'.com',
             'password' => Hash::make(12345678),
         ]);
         $data = [

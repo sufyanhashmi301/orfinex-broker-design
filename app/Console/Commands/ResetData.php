@@ -114,8 +114,11 @@ class ResetData extends Command
         $superAdmin = Admin::create([
             'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
             'name' => 'Super Admin',
+            'first_name' => 'Super',
+            'last_name' => 'Admin',
             'email' => 'admin@'.$sitename.'.com',
             'password' => Hash::make(12345678),
+            'role' => 1,
         ]);
         $data = [
             'icon' => 'user-plus',

@@ -37,7 +37,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('23,25.00 USD') }}
+                                {{ __('0.00 USD') }}
                             </h6>
                             <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
                                 +452%
@@ -55,7 +55,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('73,45.00 USD') }}
+                                {{ __('0.00 USD') }}
                             </h6>
                             <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
                                 +452%

@@ -45,6 +45,7 @@ return new class extends Migration
                 'department_id',
                 'designation_id',
                 'role',
+                'first_name',
                 'last_name',
                 'work_phone',
                 'employment_type',

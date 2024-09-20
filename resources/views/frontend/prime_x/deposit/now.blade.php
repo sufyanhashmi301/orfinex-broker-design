@@ -19,9 +19,9 @@
                                         @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
-                                        @foreach(get_all_wallets(auth()->user()->id,\App\Enums\AccountBalanceType::MAIN) as $wallet)
-                                            <option value="{{ $wallet->id }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $wallet->wallet_id }} - {{ w2n($wallet->balance) }} ({{ $wallet->amount }} {{$currency}})</option>
-                                        @endforeach
+                                        {{--mail wallet--}}
+                                        @include('frontend::wallet.include.__main-wallet-dropdown')
+
                                     </select>
                                 </div>
                             </div>

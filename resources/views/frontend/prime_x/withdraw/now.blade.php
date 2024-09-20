@@ -52,19 +52,16 @@
                                                 disabled>
                                             --{{ __('Select Account') }}--
                                         </option>
+                                        {{-- Forex Accounts --}}
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}" data-type="forex"
+                                            <option value="{{ the_hash($forexAccount->login) }}" data-type="forex"
                                                     class="inline-block font-Inter font-normal text-sm text-slate-600">
                                                 {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
-                                                ({{ get_mt5_account_equity($forexAccount->login)  }} {{$currency}})
+                                                ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})
                                             </option>
                                         @endforeach
-                                        @if(auth()->user()->is_multi_ib == 1 && isset(auth()->user()->multi_ib_login))
-                                            @include('frontend::common.include.__mib_dropdown' )
-                                        @endif
-                                        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
-                                            @include('frontend::common.include.__ib_dropdown' )
-                                        @endif
+                                        {{--mail wallet--}}
+                                        @include('frontend::wallet.include.__main-wallet-dropdown')
                                     </select>
                                 </div>
                             </div>

@@ -4,13 +4,16 @@ namespace App\Facades\Txn;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Enums\TxnTargetType;
 use App\Models\LevelReferral;
 use App\Models\MetaTransaction;
 use App\Models\OldTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\ForexApiService;
+use App\Services\WalletService;
 use App\Traits\ForexApiTrait;
+use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +62,7 @@ class Txn
 
         return $transaction;
     }
+
     public function newMeta($amount, $charge, $final_amount, $method, $description, string|TxnType $type, string|TxnStatus $status = TxnStatus::Pending, $payCurrency = null, $payAmount = null, $userID = null, $relatedUserID = null, $relatedModel = 'User', array $manualFieldData = [], string $approvalCause = 'none', $targetId = null, $targetType = null, $isLevel = false): MetaTransaction
     {
         if ($type == 'withdraw') {
@@ -88,6 +92,7 @@ class Txn
 
         return $transaction;
     }
+
     public function newOld($amount, $charge, $final_amount, $method, $description, string|TxnType $type, string|TxnStatus $status = TxnStatus::Pending, $payCurrency = null, $payAmount = null, $userID = null, $relatedUserID = null, $relatedModel = 'User', array $manualFieldData = [], string $approvalCause = 'none', $targetId = null, $targetType = null, $isLevel = false, $createdAt): OldTransaction
     {
 
@@ -132,6 +137,7 @@ class Txn
     public function update($tnx, $status, $userId = null, $approvalCause = 'none')
     {
         $transaction = Transaction::tnx($tnx);
+//        dd($transaction);
 
         $uId = $userId == null ? auth()->user()->id : $userId;
 
@@ -140,8 +146,8 @@ class Txn
 
         if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
 //            dd($transaction);
-            if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
+            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexDeposit->value) {
+                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
                 $data = [
                     'login' => $transaction->target_id,
                     'Amount' => $transaction->final_amount,
@@ -152,12 +158,18 @@ class Txn
                 $forexApiService->balanceOperation($data);
 //                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
                 first_min_deposit($transaction->target_id);
-            } else {
-                $amount = $transaction->amount;
-                $user->increment('balance', $amount);
-            }
+            }elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
+                $userAccount = get_user_account($transaction->user_id);
+                $wallet = new WalletService();
+                $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
+                $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
 
-            //level referral
+                if ($transaction->target_type == TxnTargetType::Wallet->value) {
+                    $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
+                    $userAccount->save();
+                }
+            }
+                //level referral
 //            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {
 //                if(!isset($transaction->user->multi_ib_login)) {
 //                    createMultiIBAccount($transaction->user);
@@ -165,20 +177,25 @@ class Txn
 //                $level = LevelReferral::where('type', 'deposit')->max('the_order') + 1;
 //                creditReferralBonus($transaction->user, 'deposit', $transaction->amount, $level);
 //            }
-        }
+            }
+//            dd('ss');
 //        dd($status,$status == TxnStatus::Success,$transaction->type,TxnType::ManualDeposit, $transaction->type == TxnType::ManualDeposit);
-        if (isset($transaction->target_id) && $transaction->target_type == 'withdraw_deposit') {
-            $this->WithdrawDeposit($transaction);
-        }
+            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                $withdraw = $this->forexWithdraw($transaction);
+                if (!$withdraw) {
+                    return false;
+                }
+            }
 
-        $data = [
-            'status' => $status,
-            'approval_cause' => $approvalCause,
-        ];
+            $data = [
+                'status' => $status,
+                'approval_cause' => $approvalCause,
+            ];
 
-        return $transaction->update($data);
+            return $transaction->update($data);
 
     }
+
     public function updateMeta($tnx, $status, $userId = null, $approvalCause = 'none')
     {
         $transaction = MetaTransaction::tnx($tnx);
@@ -191,7 +208,7 @@ class Txn
         if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
 //            dd($transaction);
             if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
+                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
                 $data = [
                     'login' => $transaction->target_id,
                     'Amount' => $transaction->final_amount,
@@ -218,7 +235,7 @@ class Txn
         }
 //        dd($status,$status == TxnStatus::Success,$transaction->type,TxnType::ManualDeposit, $transaction->type == TxnType::ManualDeposit);
         if (isset($transaction->target_id) && $transaction->target_type == 'withdraw_deposit') {
-            $this->WithdrawDeposit($transaction);
+            $this->forexWithdraw($transaction);
         }
 
         $data = [
@@ -258,21 +275,22 @@ class Txn
 ////        }
 //
 //    }
-    public function WithdrawDeposit($tnx)
+    public function forexWithdraw($transaction)
     {
-        $withdrawUrl = config('forextrading.withdrawUrl');
-        $auth = config('forextrading.auth');
 
-        $dataArray = [
-            'Login' => $tnx->target_id,
-            'Withdraw' => $tnx->final_amount,
-            'Comment' => "Withdraw/" . $tnx->final_amount
+        $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+        $data = [
+            'login' => $transaction->target_id,
+            'Amount' => $transaction->total,
+            'type' => 2,//withdraw
+            'TransactionComments' => $comment
         ];
-//        dd($userAccount,$dataArray);
-        $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
-//        dd($userAccount,$withdrawResponse);
-        if ($withdrawResponse ? $withdrawResponse->status() == 200 && $withdrawResponse->object()->data == 0 : false) {
+        $forexApiService = new ForexApiService();
+        $withdrawResponse = $forexApiService->balanceOperation($data);
+        if ($withdrawResponse['success']) {
             return true;
+        } else {
+            return false;
         }
 
     }

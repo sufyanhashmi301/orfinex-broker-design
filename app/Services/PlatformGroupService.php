@@ -23,6 +23,7 @@ class PlatformGroupService
         }
 
         $group = new PlatformGroup();
+        $group->risk_book_id = 0;
         $group->group_id = $data->Group_ID;
         $group->group = $data->Group;
         $group->currency = $data->Currency;

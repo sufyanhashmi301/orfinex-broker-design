@@ -22,4 +22,10 @@ class PlatformGroup extends Model
         'currencyDigits',
         'status'
     ];
+
+    public function riskBook()
+    {
+        return $this->belongsTo(RiskBook::class, 'risk_book_id');
+    }
+
 }

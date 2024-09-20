@@ -446,10 +446,16 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
     Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
+    Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
+    Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');
+    Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
+    Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
+    Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
+    Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
+
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 
-Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
-Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
+
 ;

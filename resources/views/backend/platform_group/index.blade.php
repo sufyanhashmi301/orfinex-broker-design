@@ -7,6 +7,20 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a href="{{route('admin.platform.riskBook')}}" class="btn btn-white inline-flex items-center justify-center">
+                {{ __('All Risk Book') }}
+            </a>
+        </div>
+    </div>
+    <div class="innerMenu card p-6 mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active">
+                    {{ __('Meta Trader 5') }}
+                </a>
+            </li>
+        </ul>
     </div>
     <div class="card">
         <div class="card-body relative px-6 pt-3">
@@ -48,6 +62,10 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal for Assign Risk Book -->
+    @include('backend.platform_group.modal.__create')
+
 @endsection
 @section('platform-script')
     <script>

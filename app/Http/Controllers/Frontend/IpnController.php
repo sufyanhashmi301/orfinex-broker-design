@@ -49,10 +49,9 @@ class IpnController extends Controller
 
         // Get all the input data from the request
         $input = $request->all();
-        dd($input);
 
         // Extract the order ID and webhook type from the request
-        $orderId = $input['data']['order_id'] ?? null;
+        $orderId = get_hash($input['data']['order_id']) ?? null;
         $webhookType = $input['webhook']['type'] ?? null;
 
         // Check if order_id is present

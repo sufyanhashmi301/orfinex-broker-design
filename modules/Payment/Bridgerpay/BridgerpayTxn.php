@@ -37,32 +37,13 @@ class BridgerpayTxn extends BaseTxn
     }
     public function deposit()
     {
-//        dd($this->redirectUrl);
-//        dd([
-//            'cashier_key' => $this->cashierKey,
-//            'order_id' => $this->txn,
-//            'currency' => $this->currency,
-//            'country' => $this->userCountryCode,
-//            'first_name' => $this->firstName,
-//            'last_name' =>  $this->lastName,
-//            'email' => $this->userEmail,
-//            'language' => 'en',
-//            'state' => null,
-//            'address' => $this->userAddress,
-//            'city' =>  $this->userCity,
-//            'zip_code' => $this->userAddress,
-//            'theme' => 'bright',
-//            'amount' => $this->amount,
-//            'phone' => $this->userPhone,
-//            'paywith_max_instances_limit' => 3
-//        ]);
-//        dd($this->userCountry,(int) $this->amount);
+
         $token = $this->authenticate();
 
         $response = $this->client->request('POST', $this->baseUrl.'/v2/cashier/session/create/' . $this->apiKey, [
             'body' => json_encode([
                 'cashier_key' => $this->cashierKey,
-                'order_id' => $this->txn,
+                'order_id' => the_hash($this->txn),
                 'currency' => $this->currency,
                 'country' => $this->userCountryCode,
                 'first_name' => $this->firstName,

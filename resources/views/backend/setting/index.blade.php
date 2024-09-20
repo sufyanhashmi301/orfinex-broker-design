@@ -211,6 +211,14 @@
                             </span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.platform.riskBook') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Risk Book') }}
+                            <span class="bg-success-500 text-success-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

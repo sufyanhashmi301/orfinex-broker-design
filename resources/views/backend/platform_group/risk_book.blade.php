@@ -19,20 +19,18 @@
         </ul>
     </div>
     <div class="card">
-        <div class="card-body relative px-6 pt-3">
-            <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8  hidden"></span>
-                <span class="  col-span-4 hidden"></span>
+        <div class="card-body px-6 pt-3">
+            <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="riskBook-dataTable">
+                    <div class="overflow-hidden basicTable_wrapper">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
-                            <tr>
-                                <th scope="col" class="table-th">{{ __('ID') }}</th>
-                                <th scope="col" class="table-th">{{ __('Risk Book') }}</th>
-                                <th scope="col" class="table-th">{{ __('Groups') }}</th>
-                                <th scope="col" class="table-th">{{ __('Action') }}</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('ID') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Risk Book') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Groups') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                 @foreach ($riskBooks as $riskBook)
@@ -49,9 +47,11 @@
                                             </ul>
                                         </td>
                                         <td class="table-td">
-                                            <a href="javascript:;" data-id="{{ $riskBook->id }}" class="action-btn editRiskBook">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </a>
+                                            @if($riskBook->name != 'Un-Assigned')
+                                                <a href="javascript:;" data-id="{{ $riskBook->id }}" class="action-btn editRiskBook">
+                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -72,7 +72,6 @@
 
         $(document).on('click', '.editRiskBook', function() {
             var riskBookId = $(this).data('id');
-            alert(riskBookId);
 
             var url = '{{ route('admin.riskBook.show', ':id') }}'.replace(':id', riskBookId);
 
@@ -80,9 +79,16 @@
                 url: url,
                 method: 'GET',
                 success: function(data) {
-                    $('#riskBookId').val(data.id);
-                    $('#riskBookName').val(data.name);
+                    $('#id').val(data.risk_book.id);
+                    $('#riskBookId').val(data.risk_book.name);
+                    $('#groupSelect').empty();
 
+                    data.all_groups.forEach(function(group) {
+                        const selected = data.selected_group_ids.includes(group.id) ? 'selected' : '';
+                        $('#groupSelect').append(`<option value="${group.id}" ${selected}>${group.group}</option>`);
+                    });
+
+                    $('#updateRiskBookForm').attr('action', '{{ route('admin.riskBook.update', ':id') }}'.replace(':id', riskBookId));
                     $('#editRiskBookModal').modal('show');
                 },
                 error: function(err) {

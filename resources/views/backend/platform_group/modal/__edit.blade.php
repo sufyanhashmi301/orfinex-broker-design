@@ -20,9 +20,20 @@
                     </button>
                 </div>
                 <div class="p-6 pt-3">
-                    <form action="{{ route('admin.riskBook.update', 'risk_book_id') }}" method="post" id="updateRiskBookForm">
+                    <form action="{{ route('admin.riskBook.update', 'id') }}" method="post" id="updateRiskBookForm">
                         @csrf
-                        <input type="hidden" name="id" id="riskBookId">
+                        <input type="hidden" name="id" id="id">
+                        <div class="input-area relative mb-5">
+                            <label for="" class="form-label">{{ __('Risk Book') }}</label>
+                            <input type="text" id="riskBookId" class="form-control" readonly>
+                        </div>
+                        <div class="input-area relative">
+                            <label for="" class="form-label">{{ __('Select Groups') }}</label>
+                            <select id="groupSelect" name="group_ids[]" class="select2 form-control w-full" multiple>
+                                <!-- Options will be populated by AJAX -->
+                            </select>
+                        </div>
+
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>

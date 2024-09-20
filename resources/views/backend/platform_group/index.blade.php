@@ -11,10 +11,6 @@
             <a href="{{route('admin.platform.riskBook')}}" class="btn btn-white inline-flex items-center justify-center">
                 {{ __('All Risk Book') }}
             </a>
-            <a href="javascript:;" class="btn btn-dark inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#assignRiskBookModal">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                {{ __('Risk Book') }}
-            </a>
         </div>
     </div>
     <div class="innerMenu card p-6 mb-5">

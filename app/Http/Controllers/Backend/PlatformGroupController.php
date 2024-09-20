@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\PlatformGroup;
+use App\Models\RiskBook;
 use App\Services\PlatformGroupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,9 @@ class PlatformGroupController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('backend.platform_group.index');
+        $groups = PlatformGroup::where('status',true)->get();
+        $riskBooks = RiskBook::get();
+        return view('backend.platform_group.index', compact('groups', 'riskBooks'));
     }
 
     public function store(Request $request)
@@ -55,5 +58,56 @@ class PlatformGroupController extends Controller
         }
 
     }
+
+    public function assignRiskBook(Request $request)
+    {
+        $request->validate([
+            'risk_book_id' => 'required|exists:risk_books,id',
+            'group_ids' => 'required|array',
+            'group_ids.*' => 'exists:groups,id',
+        ]);
+
+        $riskBookId = $request->risk_book_id;
+        $groupIds = $request->group_ids;
+
+        PlatformGroup::whereIn('id', $groupIds)->update(['risk_book_id' => $riskBookId]);
+
+        notify()->success(__('Risk Book assigned successfully!'));
+        return redirect()->route('admin.platformGroups');
+    }
+
+    public function getRiskBook()
+    {
+        $riskBooks = RiskBook::with('groups')->get();
+        return view('backend.platform_group.risk_book', compact('riskBooks'));
+    }
+
+    public function riskBookShow($id)
+    {
+        $riskBook = PlatformGroup::where('risk_book_id', $id)->get();
+        return response()->json($riskBook);
+    }
+
+    public function updateRiskBook(Request $request, $id)
+    {
+        PlatformGroup::where('risk_book_id', $id)->update(['risk_book_id' => null]);
+
+        $request->validate([
+            'risk_book_id' => 'required|exists:risk_books,id',
+            'group_ids' => 'required|array',
+            'group_ids.*' => 'exists:groups,id',
+        ]);
+
+        $riskBookId = $request->risk_book_id;
+        $groupIds = $request->group_ids;
+
+        PlatformGroup::whereIn('id', $groupIds)->update(['risk_book_id' => $riskBookId]);
+
+        notify()->success(__('Risk Book Updated successfully!'));
+        return redirect()->route('admin.platform.riskBook');
+
+    }
+
+
 
 }

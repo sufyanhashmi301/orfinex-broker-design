@@ -68,6 +68,7 @@ class SymbolGroupController extends Controller
             'allSymbols' => $allSymbols
         ]);
     }
+
     public function show(SymbolGroup $symbolGroup)
     {
         return response()->json($symbolGroup);

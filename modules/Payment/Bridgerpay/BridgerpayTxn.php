@@ -22,6 +22,7 @@ class BridgerpayTxn extends BaseTxn
         $credentials = gateway_info('bridgerpay');
 //        dd($credentials,$credentials->API_LOCATION);
         $this->redirectUrl = $credentials->REDIRECT_URL ?? '';
+
         $this->baseUrl = $credentials->API_LOCATION ?? 'https://api.bridgerpay.com';
         $this->apiKey = $credentials->API_KEY;
         $this->cashierKey = $credentials->CASHIER_KEY;
@@ -36,6 +37,7 @@ class BridgerpayTxn extends BaseTxn
     }
     public function deposit()
     {
+//        dd($this->redirectUrl);
 //        dd([
 //            'cashier_key' => $this->cashierKey,
 //            'order_id' => $this->txn,
@@ -85,19 +87,6 @@ class BridgerpayTxn extends BaseTxn
         $data = json_decode($response->getBody()->getContents(), true);
         $cashierKey =  $this->cashierKey;
         $cashierToken =  $data['result']['cashier_token'];
-//        $data = [
-////            'key' => $this->razorpayKey,
-//            'amount' => $this->amount,
-//            'button_text' => 'Pay ' . $this->amount . ' INR',
-//            'name' => $this->siteName,
-//            'description' => $this->siteName,
-//            'image' => asset(setting('site_logo','global')),
-//            'prefill_name' => $this->userName,
-//            'prefill_email' => $this->userEmail,
-//            'theme_color' => '#ff7529',
-//            'txn' => $this->txn,
-//        ];
-//        dd($data);
 
         return view('gateway.bridgerpay',compact('cashierKey', 'cashierToken'));
     }

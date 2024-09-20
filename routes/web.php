@@ -217,6 +217,7 @@ Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as
 Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::class], function () {
     Route::post('coinpayments', 'coinpaymentsIpn')->name('coinpayments');
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
+    Route::get('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');
     Route::post('cryptomus', 'cryptomusIpn')->name('cryptomus');
     Route::get('paypal', 'paypalIpn')->name('paypal');
     Route::post('mollie', 'mollieIpn')->name('mollie');

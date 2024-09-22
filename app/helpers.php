@@ -1040,6 +1040,7 @@ if (!function_exists('get_mt5_account')) {
      */
     function get_mt5_account($login)
     {
+        return 0;
         try {
             return DB::connection('mt5_db')
                 ->table('mt5_accounts')
@@ -1062,6 +1063,7 @@ if (!function_exists('get_mt5_account_balance')) {
      */
     function get_mt5_account_balance($login)
     {
+        return 0;
         try {
             $mt5Account = DB::connection('mt5_db')
                 ->table('mt5_accounts')
@@ -1112,6 +1114,7 @@ if (!function_exists('mt5_total_balance')) {
      */
     function mt5_total_balance($user_id)
     {
+        return 0;
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)
@@ -1153,6 +1156,7 @@ if (!function_exists('mt5_total_equity')) {
      */
     function mt5_total_equity($user_id)
     {
+        return 0;
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)
@@ -1194,6 +1198,7 @@ if (!function_exists('mt5_total_credit')) {
      */
     function mt5_total_credit($user_id)
     {
+        return 0;
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)

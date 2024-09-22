@@ -192,8 +192,8 @@ class InvestController extends GatewayController
             $growthPercentage = percentage_of_total_calc($invest->profit, $invest->amount_allotted);
             $forexApi = new ForexApiService();
             $data = [
-//                'login'=>$invest->login
-                'login'=>555561
+                'login'=>$invest->login
+//                'login'=>555561
             ];
             $todayScore = $forexApi->getTodayRiskScore($data);
             $weeklyScore = $forexApi->getWeekRiskScore($data);

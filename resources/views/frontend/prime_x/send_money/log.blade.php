@@ -2,6 +2,7 @@
 @section('title')
     {{ __('Send Money Logs') }}
 @endsection
+@php use App\Enums\TxnStatus; use App\Enums\TxnType; @endphp
 @section('content')
     <div class="space-y-5">
         <div class="card desktop-screen-show md:block hidden">
@@ -53,7 +54,35 @@
                                                 <div class="flex items-center">
                                                     <div class="flex-none">
                                                         <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
-                                                            <iconify-icon icon="fluent:arrow-reply-32-regular"></iconify-icon>
+{{--                                                            <iconify-icon icon="fluent:arrow-reply-32-regular"></iconify-icon>--}}
+                                                            @switch($raw->type->value)
+                                                                @case('send_money')
+                                                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                                @break
+                                                                @case('send_money_internal')
+                                                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                                @break
+                                                                @case('receive_money')
+                                                                <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                                @break
+                                                                @case('send_money_internal')
+                                                                <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                                @break
+                                                                @case('deposit')
+                                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                                @break
+                                                                @case('manual_deposit')
+                                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                                @break
+                                                                @case('investment')
+                                                                <iconify-icon icon="fluent:arrow-swap-24-regular"></iconify-icon>
+                                                                @break
+                                                                @case('withdraw')
+                                                                <iconify-icon icon="akar-icons:arrow-back"></iconify-icon>
+                                                                @break
+                                                                @default()
+                                                                <iconify-icon icon="lucide:backpack"></iconify-icon>
+                                                            @endswitch
                                                         </div>
                                                     </div>
                                                     <div class="flex-1 text-start">
@@ -75,12 +104,14 @@
                                             </td>
                                             <td class="table-td">
                                                 <span class="font-medium">
-                                                    -{{$raw->amount.' '.$currency }}
+{{--                                                    -{{$raw->amount.' '.$currency }}--}}
+                                          <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'red-color' : 'green-color'}}">{{ (in_array($raw->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ? '-': '+' ).$raw->amount.' '.$raw->currency }}</strong>
+
                                                 </span>
                                             </td>
                                             <td class="table-td">
                                                 <span class="font-medium">
-                                                    -{{ $raw->charge }} {{ $currency }}
+                                          <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'red-color' : 'green-color'}}">{{ $raw->charge.' '.$raw->currency }}</strong>
                                                 </span>
                                             </td>
                                             <td class="table-td">

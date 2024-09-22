@@ -44,6 +44,53 @@ class IpnController extends Controller
         }
     }
 
+    public function bridgerpayIpn(Request $request)
+    {
+
+        // Get all the input data from the request
+        $input = $request->all();
+
+        // Extract the order ID and webhook type from the request
+        $orderId = get_hash($input['data']['order_id']) ?? null;
+        $webhookType = $input['webhook']['type'] ?? null;
+
+        // Check if order_id is present
+        if (!$orderId) {
+            return redirect()
+                ->route('user.deposit.now')
+                ->with('error', 'Invalid order ID.');
+        }
+
+        // Handle different webhook types (approved, declined)
+        switch ($webhookType) {
+            case 'approved':
+                // Call the payment success method
+                self::paymentSuccess($orderId);
+
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('success', 'Payment approved and processed successfully.');
+
+            case 'declined':
+
+                $txnInfo = Transaction::tnx($orderId);
+                $txnInfo->update([
+                'status' => TxnStatus::Failed,
+//            ]);
+                // Log or handle the declined payment
+                $declineReason = $input['data']['charge']['attributes']['decline_reason'] ?? 'Unknown reason';
+
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('error', "Payment declined. Reason: $declineReason.");
+
+            default:
+                return redirect()
+                    ->route('user.deposit.now')
+                    ->with('error', 'Unknown error.');
+        }
+    }
+
     public function cryptomusIpn(Request $request)
     {
         $data = $request->all();

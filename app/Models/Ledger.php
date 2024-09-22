@@ -12,7 +12,7 @@ class Ledger extends Model
      * @var string[]
      */
     protected $fillable = [
-        'meta_transaction_id',
+        'transaction_id',
         'account_id',
         'debit',
         'credit',

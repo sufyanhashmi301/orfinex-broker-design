@@ -30,6 +30,7 @@ class ForexLoginBelongsToUser implements Rule
      */
     public function passes($attribute, $value)
     {
+        $value = get_hash($value);
         $this->loginValue = $value;
         $user = Auth::user();
         $status = false;

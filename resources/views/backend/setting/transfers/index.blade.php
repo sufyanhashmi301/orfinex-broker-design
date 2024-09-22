@@ -8,7 +8,9 @@
         $type = request()->query('type');
 
         $section = $type;
+//        dd($section);
         $fields = config("setting.$section");
+//        dd($fields);
 
     ?>
 

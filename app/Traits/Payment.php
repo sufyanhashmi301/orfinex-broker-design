@@ -195,9 +195,9 @@ trait Payment
 
         } else {
 
-            $txnInfo->update([
-                'status' => TxnStatus::Success,
-            ]);
+//            $txnInfo->update([
+//                'status' => TxnStatus::Success,
+//            ]);
             Txn::update($ref, TxnStatus::Success, $txnInfo->user_id);
 
 //            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {

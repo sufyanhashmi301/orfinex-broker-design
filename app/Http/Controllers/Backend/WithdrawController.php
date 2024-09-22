@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Enums\TxnTargetType;
 use App\Exports\PendingWithdrawsExport;
 use App\Exports\WithdrawsExport;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,7 @@ use App\Models\User;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
 use App\Services\ForexApiService;
+use App\Services\WalletService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -316,64 +318,71 @@ class WithdrawController extends Controller
         $user = User::find($transaction->user_id);
 //dd($input);
         if (isset($input['approve'])) {
-            if (setting('withdraw_deduction', 'features')) {//on approval from admin
-                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-                notify()->success('Approve successfully');
-            }else{ //on request
-                $balance = $this->forexApiService->getValidatedBalance([
-                    'login' => $transaction->target_id
-                ]);
-                $totalAmount = BigDecimal::of($transaction->amount);
-                if ($totalAmount->compareTo($balance) > 0) {
-                    notify()->error(__('Insufficient Balance in Your Account'), 'Error');
-                    return redirect()->back();
-                }
-                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
-                $data = [
-                    'login' => $transaction->target_id,
-                    'Amount' => $totalAmount,
-                    'type' => 2,//withdraw
-                    'TransactionComments' => $comment
-                ];
-                $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                if ($withdrawResponse['success']) {
-                    Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-                    notify()->success('Approve successfully');
-                } else {
-                    notify()->error(__('Something went wrong! Please try again!'), 'Error');
-                    return redirect()->back();
-                }
-            }
-            } elseif (isset($input['reject'])) {
-//            dd(!setting('withdraw_deduction', 'features'));
-            if (setting('withdraw_deduction', 'features')) {
-                if (isset($transaction->target_id) && $transaction->target_type == 'forex_withdraw') {
-                    $comment = "wd/reject/" . substr($transaction->tnx, -7);
-                    $data = [
-                        'login' => $transaction->target_id,
-                        'Amount' => $transaction->final_amount,
-                        'type' => 1,//deposit
-                        'TransactionComments' => $comment
-                    ];
-                    $this->forexApiService->balanceOperation($data);
-                } else {
-                    $user->increment('balance', $transaction->final_amount);
-                }
-            }
+//            if (setting('withdraw_deduction', 'features')) {//on approval from admin
+//                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+//                notify()->success('Approve successfully');
+//            }else{ //on request
+//                $balance = $this->forexApiService->getValidatedBalance([
+//                    'login' => $transaction->target_id
+//                ]);
+//                $totalAmount = BigDecimal::of($transaction->amount);
+//                if ($totalAmount->compareTo($balance) > 0) {
+//                    notify()->error(__('Insufficient Balance in Your Account'), 'Error');
+//                    return redirect()->back();
+//                }
+//                $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
+//                $data = [
+//                    'login' => $transaction->target_id,
+//                    'Amount' => $totalAmount,
+//                    'type' => 2,//withdraw
+//                    'TransactionComments' => $comment
+//                ];
+//                $withdrawResponse = $this->forexApiService->balanceOperation($data);
+//                if ($withdrawResponse['success']) {
+                    $txn = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                  if($txn)
+                        notify()->success('Approve successfully');
+//                } else {
+//                    notify()->error(__('Something went wrong! Please try again!'), 'Error');
+//                    return redirect()->back();
+//                }
+//            }
+        } elseif (isset($input['reject'])) {
 
-                Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
-            if (setting('withdraw_deduction', 'features')) {
+            // Fetch deduction status from transaction
+            $manualFieldData = json_decode($transaction->manual_field_data, true);
+            $deductionStatus = isset($manualFieldData['Deduction Status']['value']) ? $manualFieldData['Deduction Status']['value'] : 'Not Deducted';
+
+            // If deduction was applied, create a refund transaction
+            if ($deductionStatus === 'Deducted') {
                 $newTransaction = $transaction->replicate();
                 $newTransaction->type = TxnType::Refund;
-                $newTransaction->status = TxnStatus::Success;
+                $newTransaction->status = TxnStatus::None;
                 $newTransaction['method'] = 'system';
                 $newTransaction->tnx = 'TRX' . strtoupper(Str::random(10));
                 $newTransaction->save();
-            }
-                notify()->success('Reject successfully');
+                $newTransaction->refresh();
+                // If deduction was applied, reverse the payment
+                if ($deductionStatus === 'Deducted') {
+                    if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                        // Reverse deduction for Forex account
+                        $this->reverseForexWithdrawal($newTransaction);
+                    } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value) {
+                        // Reverse deduction for Wallet account
+//                    dd($transaction);
+                        $this->reverseWalletWithdrawal($newTransaction);
+                    }
+    }
+                Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+
             }
 
-            $shortcodes = [
+            Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
+
+            notify()->success('Reject successfully');
+        }
+
+        $shortcodes = [
                 '[[full_name]]' => $user->full_name,
                 '[[txn]]' => $transaction->tnx,
                 '[[method_name]]' => $transaction->method,
@@ -391,7 +400,45 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
 
-        public
+    private function reverseForexWithdrawal($transaction)
+    {
+        // Reversal logic for Forex account
+        $comment = "wd/reject/" . substr($transaction->tnx, -7);
+        $data = [
+            'login' => $transaction->target_id,
+            'Amount' => $transaction->final_amount,
+            'type' => 1, // Deposit back to account
+            'TransactionComments' => $comment
+        ];
+
+        $withdrawResponse = $this->forexApiService->balanceOperation($data);
+
+        if (!$withdrawResponse['success']) {
+            notify()->error(__('Failed to reverse Forex withdrawal. Please check the Forex API.'), 'Error');
+        }
+    }
+    private function reverseWalletWithdrawal($transaction)
+    {
+        // Reverse deduction for Wallet
+        $userAccount = get_user_account_by_wallet_id($transaction->target_id);
+//        dd($userAccount);
+        $walletService = new WalletService();
+        $ledgerBalance = $walletService->getLedgerBalance($userAccount->id);
+
+        try {
+            // Add back the amount to the ledger (credit)
+            $walletService->createCreditLedgerEntry($transaction, $ledgerBalance);
+
+            // Add the amount back to the user's wallet
+            $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->final_amount));
+            $userAccount->save();
+        } catch (\Exception $e) {
+            notify()->error(__('Failed to reverse Wallet withdrawal: ') . $e->getMessage(), 'Error');
+        }
+    }
+
+
+    public
         function schedule()
         {
             $schedules = WithdrawalSchedule::all();
@@ -416,12 +463,12 @@ class WithdrawController extends Controller
         }
         public function export(Request $request)
         {
-        
+
             return Excel::download(new WithdrawsExport($request), 'withdraws.xlsx');
         }
         public function pendingExport(Request $request)
         {
-        
+
             return Excel::download(new PendingWithdrawsExport($request), 'pendingwithdraws.xlsx');
         }
     }

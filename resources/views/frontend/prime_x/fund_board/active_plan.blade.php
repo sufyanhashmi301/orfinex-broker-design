@@ -234,13 +234,22 @@
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                     <span>{{ __('Max Loss Limit:') }}</span>
                     <span class="text-slate-900 font-medium">
-                            {{ $invest->daily_drawdown_limit }} {{base_currency()}}
+                    {{ number_format($todayScore['result']['net_Profit'], 2) ?? 'N/A' }} {{ base_currency() }}
+
                         </span>
                 </li>
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                     <span>{{ __('Today’s Permitted Loss:') }}</span>
                     <span class="text-slate-900 font-medium">
-                            {{ $invest->max_drawdown_limit}} {{base_currency()}}
+                            {{ $invest->max_drawdown_limit }} {{ base_currency() }}
+                        </span>
+                </li>
+                <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    <span>{{ __('Today’s Permitted Loss:') }}</span>
+                    <span class="text-slate-900 font-medium">
+                        <?php $loss = number_format($todayScore['result']['net_Profit'], 2) ?? 0;
+                        ?>
+                            {{ $invest->max_drawdown_limit + $loss}} {{ base_currency() }}
                         </span>
                 </li>
             </ul>
@@ -257,15 +266,21 @@
             </div>
             <ul class="space-y-3">
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                    <span>{{ __('Max Loss Limit:') }}</span>
+                    <span>{{ __('Total Loss Limit:') }}</span>
                     <span class="text-slate-900 font-medium">
-                            {{ $invest->max_drawdown_limit }} {{base_currency()}}
+                            {{ $todayScore['result']['total_Losses'] ?? 'N/A' }} {{base_currency()}}
                         </span>
                 </li>
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                     <span>{{ __('Today’s Permitted Loss:') }}</span>
                     <span class="text-slate-900 font-medium">
                             {{ $invest->max_drawdown_limit}} {{base_currency()}}
+                        </span>
+                </li>
+                <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    <span>{{ __('Total Permitted Loss:') }}</span>
+                    <span class="text-slate-900 font-medium">
+                            {{ $invest->max_drawdown_limit + $todayScore['result']['total_Losses'] ?? 0 }} {{base_currency()}}
                         </span>
                 </li>
             </ul>
@@ -277,17 +292,21 @@
                         <span class="text-slate-600 text-sm">{{ __('Passed') }}</span>
                     </span>
                 <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                    {{ __('Minimum Trading Days') }}
+                    {{ __('Minimum Trades') }}
                 </h5>
             </div>
             <ul class="space-y-3">
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                    <span>{{ __('Max Loss Limit:') }}</span>
-                    <span class="text-slate-900 font-medium">{{ $invest->max_drawdown_limit }} {{base_currency()}}</span>
+                    <span>{{ __("Today's Trade:") }}</span>
+                    <span class="text-slate-900 font-medium">{{ $todayScore['result']['total_Trades'] ?? 'N/A' }} </span>
                 </li>
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                    <span>{{ __('Today’s Permitted Loss:') }}</span>
-                    <span class="text-slate-900 font-medium">{{ $invest->max_drawdown_limit }} {{base_currency()}}</span>
+                    <span>{{ __('Total Permitted Trade:') }}</span>
+                    <span class="text-slate-900 font-medium">20</span>
+                </li>
+                <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    <span>{{ __('Today’s Permitted Trades:') }}</span>
+                    <span class="text-slate-900 font-medium">{{20 - $todayScore['result']['total_Trades'] ?? 0 }}</span>
                 </li>
             </ul>
         </div>
@@ -305,13 +324,19 @@
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                     <span>{{ __('Max Loss Limit:') }}</span>
                     <span class="text-slate-900 font-medium">
-                            {{ $invest->max_drawdown_limit }} {{base_currency()}}
+                            {{ number_format($todayScore['result']['net_Profit'], 2) ?? 'N/A' }} {{base_currency()}}
                         </span>
                 </li>
                 <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                     <span>{{ __('Today’s Permitted Loss:') }}</span>
                     <span class="text-slate-900 font-medium">
                             {{ $invest->max_drawdown_limit }} {{base_currency()}}
+                        </span>
+                </li>
+                <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    <span>{{ __('Total Permitted Loss:') }}</span>
+                    <span class="text-slate-900 font-medium">
+                            {{ $invest->max_drawdown_limit + number_format($todayScore['result']['net_Profit'], 2) ?? 0 }} {{base_currency()}}
                         </span>
                 </li>
             </ul>
@@ -381,7 +406,7 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Average Holding Time') }}</span>
                         <span class="text-slate-900 font-medium">
-                {{ number_format($todayScore['result']['avg_Holding_Time'], 2) ?? 'N/A' }} seconds
+                {{ number_format(abs($todayScore['result']['avg_Holding_Time']), 2) ?? 'N/A' }} seconds
             </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">

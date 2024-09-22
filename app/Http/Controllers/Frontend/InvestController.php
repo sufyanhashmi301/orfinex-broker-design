@@ -192,11 +192,12 @@ class InvestController extends GatewayController
             $growthPercentage = percentage_of_total_calc($invest->profit, $invest->amount_allotted);
             $forexApi = new ForexApiService();
             $data = [
-                'login'=>$invest->login
+//                'login'=>$invest->login
+                'login'=>555561
             ];
             $todayScore = $forexApi->getTodayRiskScore($data);
             $weeklyScore = $forexApi->getWeekRiskScore($data);
-//            dd($weeklyScore);
+//            dd($todayScore);
             $todayDrawddown = 0;
             if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {
                 $todayDrawddown = to_minus($invest->snap_equity, $invest->current_equity);

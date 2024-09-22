@@ -266,11 +266,13 @@ class WithdrawController extends Controller
         $targetType = TxnTargetType::Wallet->value;  // Default to wallet
 
     // Determine whether the target is a Forex account or wallet
-    $isForexAccount = $request->has('forex') || $request->input('data-type') == 'forex';
+    $accountType = $input['account_type'] ?? 'wallet';
+    $isForexAccount = $accountType === 'forex';
 
     // Add conditional validation based on the account type
     $validator = Validator::make($input, [
         'target_id' => ['required'],
+        'account_type' => ['required'],
         'withdraw_account' => ['required'],
         'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
     ], [
@@ -278,8 +280,9 @@ class WithdrawController extends Controller
     ]);
 
     if ($validator->fails()) {
+        // Send back validation errors with old input
         notify()->error($validator->errors()->first(), 'Error');
-        return redirect()->back();
+        return redirect()->back()->withInput();  // Passes the old input back to the form
     }
 
     $user = Auth::user();
@@ -292,12 +295,11 @@ class WithdrawController extends Controller
         $currencySymbol = setting('currency_symbol', 'global');
         $message = 'Please withdraw the amount within the range ' . $currencySymbol . $withdrawMethod->min_withdraw . ' to ' . $currencySymbol . $withdrawMethod->max_withdraw;
         notify()->error($message, 'Error');
-        return redirect()->back();
+        return redirect()->back()->withInput();  // Passes the old input back to the form
     }
 
     $charge = $withdrawMethod->charge_type == 'percentage' ? (($withdrawMethod->charge / 100) * $amount) : $withdrawMethod->charge;
     $totalAmount = BigDecimal::of($amount)->abs();
-    $totalAmount = $totalAmount->toFloat();
     $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate);
     $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
 
@@ -311,17 +313,29 @@ class WithdrawController extends Controller
 
         if (!$forexAccount) {
             notify()->error(__('The selected Forex account does not belong to you.'), 'Error');
-            return redirect()->back();
+            return redirect()->back()->withInput();
+        }
+
+        $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+        if ($totalAmount->compareTo($balance) > 0) {
+            notify()->error(__('Insufficient Balance in Your Forex Account'), 'Error');
+            return redirect()->back()->withInput();
         }
 
         // Set the transaction target type to Forex
         $targetType = TxnTargetType::ForexWithdraw->value;
     } else {
         // Validate wallet ownership
-        $wallet = get_user_account_by_wallet_id($targetId,$user->id);
+        $wallet = get_user_account_by_wallet_id($targetId, $user->id);
         if (!$wallet) {
             notify()->error(__('The selected wallet does not belong to you.'), 'Error');
-            return redirect()->back();
+            return redirect()->back()->withInput();
+        }
+
+        $balance = BigDecimal::of($wallet->amount);
+        if ($totalAmount->compareTo($balance) > 0) {
+            notify()->error(__('Insufficient Balance in Your Wallet'), 'Error');
+            return redirect()->back()->withInput();
         }
 
         // Set the transaction target type to Wallet
@@ -359,7 +373,7 @@ class WithdrawController extends Controller
             } else {
                 // Mark the transaction as failed if deduction fails
                 Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
-                return redirect()->back();
+                return redirect()->back()->withInput();
             }
         } else {
             // Wallet deduction logic
@@ -383,26 +397,24 @@ class WithdrawController extends Controller
         Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
     }
 
-   // Ensure $txnInfo->manual_field_data is decoded as an array
-$manualFieldData = json_decode($txnInfo->manual_field_data, true);
+    // Ensure $txnInfo->manual_field_data is decoded as an array
+    $manualFieldData = json_decode($txnInfo->manual_field_data, true);
 
-// If manual_field_data is null or not an array, initialize it as an empty array
-if (is_null($manualFieldData) || !is_array($manualFieldData)) {
-    $manualFieldData = [];
-}
+    // If manual_field_data is null or not an array, initialize it as an empty array
+    if (is_null($manualFieldData) || !is_array($manualFieldData)) {
+        $manualFieldData = [];
+    }
 
-// Add the 'Deduction Status' field to the array, formatted like the other fields
-$manualFieldData['Deduction Status'] = [
-    'type' => 'text',
-    'validation' => 'optional',
-    'value' => $isDeducted ? 'Deducted' : 'Not Deducted'
-];
+    // Add the 'Deduction Status' field to the array, formatted like the other fields
+    $manualFieldData['Deduction Status'] = [
+        'type' => 'text',
+        'validation' => 'optional',
+        'value' => $isDeducted ? 'Deducted' : 'Not Deducted'
+    ];
 
-// Re-encode and save the updated manual_field_data
-$txnInfo->manual_field_data = json_encode($manualFieldData);
-$txnInfo->save();
-
-
+    // Re-encode and save the updated manual_field_data
+    $txnInfo->manual_field_data = json_encode($manualFieldData);
+    $txnInfo->save();
 
     // Handle automatic withdrawals
     if ($withdrawMethod->type == 'auto') {
@@ -440,6 +452,7 @@ $txnInfo->save();
 
     return redirect()->route('user.notify');
 }
+
 
 
 

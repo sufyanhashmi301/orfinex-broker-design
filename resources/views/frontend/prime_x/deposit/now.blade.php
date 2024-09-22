@@ -20,7 +20,7 @@
                                             <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
                                         {{--mail wallet--}}
-                                        @include('frontend::wallet.include.__main-wallet-dropdown')
+                                        @include('frontend::wallet.include.__main-wallet-dropdown', ['target_id_name' => 'target_id'])
 
                                     </select>
                                 </div>

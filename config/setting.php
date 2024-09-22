@@ -920,6 +920,71 @@ return [
             ],
         ],
     ],
+    'internal' => [
+        'title' => 'Site Fee, Limit and Bonus Settings',
+        'elements' => [
+
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'internal_min_send', // unique name for field
+                'label' => 'Internal Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'internal_max_send', // unique name for field
+                'label' => 'Internal Maximum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'internal_send_charge_type', // unique name for field
+                'label' => 'Internal Transfer Type', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'internal_send_charge', // unique name for field
+                'label' => 'Internal Transfer Charge', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'wallet_exchange_charge_type', // unique name for field
+                'label' => 'Wallet Exchange Charge Type', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'wallet_exchange_charge', // unique name for field
+                'label' => 'Wallet Exchange Charge', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'internal_send_daily_limit', // unique name for field
+                'label' => 'Transfers Per Day', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 6, // default value if you want
+            ],
+        ],
+    ],
     'features' => [
         'title' => 'Features Settings',
         'elements' => [

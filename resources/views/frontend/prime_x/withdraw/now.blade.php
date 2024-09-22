@@ -31,8 +31,10 @@
         </div>
     </div>
     <div class="progress-steps-form">
-        <form action="{{ route('user.withdraw.now') }}" method="post">
+        <form action="{{ route('user.withdraw.now') }}" method="post" id="withdrawForm">
             @csrf
+            <input type="hidden" name="account_type" value="{{ old('account_type') }}">
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
@@ -54,14 +56,16 @@
                                         </option>
                                         {{-- Forex Accounts --}}
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ the_hash($forexAccount->login) }}" data-type="forex"
+                                            <option value="{{ the_hash($forexAccount->login) }}"
+                                                    data-type="forex"
+                                                    {{ old('target_id') == the_hash($forexAccount->login) ? 'selected' : '' }}
                                                     class="inline-block font-Inter font-normal text-sm text-slate-600">
                                                 {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
                                                 ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})
                                             </option>
                                         @endforeach
-                                        {{--mail wallet--}}
-                                        @include('frontend::wallet.include.__main-wallet-dropdown')
+                                        {{-- Wallet Accounts --}}
+                                        @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
                                     </select>
                                 </div>
                             </div>
@@ -79,6 +83,7 @@
                                         </option>
                                         @foreach($accounts as $account)
                                             <option value="{{ $account->id }}"
+                                                    {{ old('withdraw_account') == $account->id ? 'selected' : '' }}
                                                     class="inline-block font-Inter font-normal text-sm text-slate-600">
                                                 {{ $account->method_name }}
                                             </option>
@@ -92,7 +97,9 @@
                                 <div class="relative">
                                     <input type="text" name="amount" id="amount"
                                            oninput="this.value = validateDouble(this.value)"
-                                           class="form-control !text-lg withdrawAmount" placeholder="Enter Amount"
+                                           class="form-control !text-lg withdrawAmount"
+                                           placeholder="Enter Amount"
+                                           value="{{ old('amount') }}"
                                            aria-describedby="basic-addon1">
                                     <span
                                         class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center"
@@ -131,7 +138,7 @@
                                         <strong>{{ __('Withdraw Amount') }}</strong>
                                     </td>
                                     <td class="dark:text-slate-300">
-                                        <span class="withdrawAmount"></span>
+                                        <span class="withdrawAmount">{{ old('amount') }}</span>
                                         {{$currency}}
                                     </td>
                                 </tr>
@@ -154,11 +161,22 @@
     <script>
         "use strict";
         var info = [];
-        var currency = @json($currency)
+        var currency = @json($currency);
+
+        // Capture the selected account and append the `data-type` to the form
+        $("#tradingAccount").on('change', function (e) {
+            e.preventDefault();
+
+            // Get the selected option and its data-type attribute
+            var selectedOption = $(this).find('option:selected');
+            var dataType = selectedOption.data('type'); // Get the data-type (e.g., forex or wallet)
+
+            // Append the data-type to a hidden input field in the form
+            $('input[name="account_type"]').val(dataType);
+        });
 
         $("#withdrawAccountId").on('change', function (e) {
             e.preventDefault();
-            console.log('account')
             $('.selectDetailsTbody').children().not(':first', ':second').remove();
             var accountId = $(this).val()
             var amount = $('.withdrawAmount').val();
@@ -192,7 +210,6 @@
         $("#amount").on('keyup', function (e) {
             "use strict"
             e.preventDefault();
-            console.log('amount')
             var amount = $(this).val()
             var charge = info.charge_type === 'percentage' ? calPercentage(amount, info.charge) : info.charge
             $('.withdrawAmount').text(amount)
@@ -206,7 +223,6 @@
         $("#converted-amount").on('keyup', function (e) {
             "use strict"
             e.preventDefault();
-            console.log('converted-amount')
             var converted_amount = $(this).val();
             var amount = parseFloat((converted_amount / info.rate).toFixed(4)).toString();
             $('#amount').val(amount);

@@ -104,7 +104,7 @@ class WalletService
             $ledger->account_id = $account->id;
 
             // Deduct the amount from the ledger balance
-            $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->amount));
+            $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->final_amount));
 
             // Ensure that balance does not go below zero
             if ($balance->isLessThan(BigDecimal::of(0.00))) {

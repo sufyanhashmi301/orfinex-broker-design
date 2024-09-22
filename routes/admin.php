@@ -431,6 +431,11 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         return view('backend.setting.platform_api.db-synchronization');
     })->name('platform_api.db-synchronization');
 
+
+    Route::get('announcements', function () {
+        return view('backend.announcements.index');
+    })->name('announcements');
+
     Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');

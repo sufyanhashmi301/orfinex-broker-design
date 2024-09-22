@@ -270,6 +270,36 @@
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
                     <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="mdi:database-cog-outline"></iconify-icon>
+                        {{ __('Data Management') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li>
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Import')}}
+                            <span class="bg-secondary-500 text-secondary-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Export')}}
+                            <span class="bg-secondary-500 text-secondary-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:layout-list"></iconify-icon>
                         {{ __('Misc') }}
                     </span>

@@ -1088,6 +1088,7 @@ if (!function_exists('get_mt5_account_equity')) {
      */
     function get_mt5_account_equity($login)
     {
+        return 0;
         try {
             $mt5Account = DB::connection('mt5_db')
                 ->table('mt5_accounts')
@@ -1241,6 +1242,7 @@ if (!function_exists('mt5_update_balance')) {
      */
     function mt5_update_balance($login, $balance)
     {
+        return true;
         try {
             // Update the balance and equity for the given login
             $updated = DB::connection('mt5_db')

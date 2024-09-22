@@ -11,6 +11,7 @@ use App\Models\ForexSchemaInvestment;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Schema;
+use App\Services\ForexApiService;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Auth;
@@ -189,14 +190,20 @@ class InvestController extends GatewayController
             $invest = $invest->fresh();
 
             $growthPercentage = percentage_of_total_calc($invest->profit, $invest->amount_allotted);
-
+            $forexApi = new ForexApiService();
+            $data = [
+                'login'=>$invest->login
+            ];
+            $todayScore = $forexApi->getTodayRiskScore($data);
+            $weeklyScore = $forexApi->getWeekRiskScore($data);
+//            dd($weeklyScore);
             $todayDrawddown = 0;
             if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {
                 $todayDrawddown = to_minus($invest->snap_equity, $invest->current_equity);
             }
             $remainingLoss = to_minus($invest->daily_drawdown_limit, $todayDrawddown);
 
-            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage"));
+            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage", "todayScore", "weeklyScore"));
         }
 
         $plans = PricingScheme::where('status', 'active')->get();

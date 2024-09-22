@@ -328,127 +328,191 @@
     <div class="card-body p-6">
         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
             <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
+                <h5>Today's Trades</h5>
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Total Trades') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('75') }}
-                            </span>
+                {{ $todayScore['result']['total_Trades'] ?? 'N/A' }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Profit Trades') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('12') }}
-                            </span>
+                {{ $todayScore['result']['total_Profit'] ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Loss Trades') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('23') }}
-                            </span>
+                {{ $todayScore['result']['total_Losses'] ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Long Trades') }}</span>
+                        <span>{{ __('Highest Profit Trade') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('1521') }}
-                            </span>
+                {{ number_format($todayScore['result']['highest_Profit_Trade'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Short Trades') }}</span>
+                        <span>{{ __('Highest Loss Trade') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('24') }}
-                            </span>
-                    </li>
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Gross Profit') }}</span>
-                        <span class="text-slate-900 font-medium">
-                                {{ $invest->profit}} {{base_currency()}}
-                            </span>
-                    </li>
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Gross Loss') }}</span>
-                        <span class="text-slate-900 font-medium">
-                                {{ __('$231,000') }}
-                            </span>
+                {{ number_format($todayScore['result']['highest_Lost_Trade'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Total Net Profit') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ $invest->profit }} {{base_currency()}}
-                            </span>
-                    </li>
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Profit Factor') }}</span>
-                        <span class="text-slate-900 font-medium">
-                                {{ __('1.6') }}
-                            </span>
+                {{ number_format($todayScore['result']['net_Profit'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Win Rate') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('24.5%') }}
-                            </span>
+                {{ number_format($todayScore['result']['win_Rate'] * 100, 2) ?? 'N/A' }}%
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Loss Rate') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['loss_Rate'] * 100, 2) ?? 'N/A' }}%
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Average Holding Time') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['avg_Holding_Time'], 2) ?? 'N/A' }} seconds
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Total Deposits') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['total_Deposits'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Total Withdrawals') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['total_Withdrawals'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Withdrawal Rate') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['withdrawal_Rate'], 2) ?? 'N/A' }}%
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Risk-Reward Ratio') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['risk_Reward_Ratio'], 2) ?? 'N/A' }}
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Capital Retention Ratio') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($todayScore['result']['captial_Retention_Ratio'], 2) ?? 'N/A' }}%
+            </span>
                     </li>
                 </ul>
             </div>
+
             <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
+                <h5>Weekly Trades</h5>
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Best Profit') }}</span>
+                        <span>{{ __('Best Profit (Highest Profit Trade)') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('$231,000') }}
-                            </span>
+                {{ number_format($weeklyScore['result']['highest_Profit_Trade'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Biggest Loss') }}</span>
+                        <span>{{ __('Biggest Loss (Highest Lost Trade)') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('-42.3') }}
-                            </span>
+                {{ number_format($weeklyScore['result']['highest_Lost_Trade'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Largest Pip Win') }}</span>
+                        <span>{{ __('Total Trades') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('12.22') }}
-                            </span>
+                {{ $weeklyScore['result']['total_Trades'] ?? 'N/A' }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Largest Pip Loss') }}</span>
+                        <span>{{ __('Total Profit') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('-2.3') }}
-                            </span>
+                {{ number_format($weeklyScore['result']['total_Profit'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Avg. Profit') }}</span>
+                        <span>{{ __('Total Losses') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ $invest->profit }} {{ base_currency()}}
-                            </span>
+                {{ number_format($weeklyScore['result']['total_Losses'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Avg. Loss') }}</span>
+                        <span>{{ __('PnL Ratio') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ $invest->max_drawdown_limit }}
-                            </span>
+                {{ number_format($weeklyScore['result']['pnL_Ratio'], 2) ?? 'N/A' }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Expectancy') }}</span>
+                        <span>{{ __('Avg. Trade Profit per Loss') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ $invest->profit }} {{base_currency()}}
-                            </span>
+                {{ number_format($weeklyScore['result']['avg_Trade_Profit_Per_Loss'], 2) ?? 'N/A' }}
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Avg. Trade Size') }}</span>
+                        <span>{{ __('Win Rate') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('2.32') }}
-                            </span>
+                {{ number_format($weeklyScore['result']['win_Rate'] * 100, 2) ?? 'N/A' }}%
+            </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Avg. Trade Duration') }}</span>
+                        <span>{{ __('Loss Rate') }}</span>
                         <span class="text-slate-900 font-medium">
-                                {{ __('00:23:22') }}
-                            </span>
+                {{ number_format($weeklyScore['result']['loss_Rate'] * 100, 2) ?? 'N/A' }}%
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Average Holding Time') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($weeklyScore['result']['avg_Holding_Time'], 2) ?? 'N/A' }} seconds
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Total Deposits') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($weeklyScore['result']['total_Deposits'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Total Withdrawals') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($weeklyScore['result']['total_Withdrawals'], 2) ?? 'N/A' }} {{ base_currency() }}
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Withdrawal Rate') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($weeklyScore['result']['withdrawal_Rate'], 2) ?? 'N/A' }}%
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Risk-Reward Ratio') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($weeklyScore['result']['risk_Reward_Ratio'], 2) ?? 'N/A' }}
+            </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Capital Retention Ratio') }}</span>
+                        <span class="text-slate-900 font-medium">
+                {{ number_format($weeklyScore['result']['captial_Retention_Ratio'], 2) ?? 'N/A' }}%
+            </span>
                     </li>
                 </ul>
             </div>
+
         </div>
     </div>
 </div>

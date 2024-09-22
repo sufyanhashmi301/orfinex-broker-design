@@ -214,9 +214,9 @@ class InvestController extends GatewayController
 
     public function syncPricingAccount($login)
     {
-        $getUserResponse = get_mt5_account($login);
+//        $getUserResponse = get_mt5_account($login);
 //        if () {
-            $this->updatePricingInvestmentAccount($getUserResponse);
+//            $this->updatePricingInvestmentAccount($getUserResponse);
 //        }else{
 //            $invest = ForexSchemaInvestment::where('login',$login)->first();
 //            $invest->status = PricingInvestmentStatus::VIOLATED;

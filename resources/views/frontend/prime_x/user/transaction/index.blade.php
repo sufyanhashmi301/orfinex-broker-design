@@ -9,13 +9,13 @@
         <div class="card desktop-screen-show md:block hidden">
             <div class="card-body p-6 pb-0">
                 @if(count($transactions) == 0)
-                    <div class="flex items-center justify-center flex-col">
-                        <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                            {{ __("You don't have any transaction yet.") }}
-                        </p>
-                        <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                            {{ __('Deposit Now') }}
-                        </a>
+                    <div class="basicTable_wrapper items-center justify-center pb-6">
+                        <div class="flex items-center justify-center flex-col gap-3">
+                            <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
+                            <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
+                                {{ __("You don't have any transaction yet.") }}
+                            </p>
+                        </div>
                     </div>
                 @else
                     <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">

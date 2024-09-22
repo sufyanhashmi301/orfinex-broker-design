@@ -38,7 +38,7 @@
                             </p>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                                 @foreach($schema->forexSchemaPhase1->forexSchemaPhaseRules as $index => $rule)
-                                    <div class="warning-radio">
+                                    <div class="success-radio">
                                         <label
                                             class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                             <input type="radio" class="hidden priceInput" name="rule_id"
@@ -122,7 +122,7 @@
                                 <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">{{ __('Platform') }}</p>
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">{{ __('Please select your trading platform.') }}</p>
                             </div>
-                            <div class="warning-radio">
+                            <div class="success-radio">
                                 <label
                                     class="flex items-center cursor-pointer rounded border dark:border-slate-700 px-3 py-4">
                                     <input type="radio" class="hidden priceInput" name="platform" value="" checked>
@@ -144,7 +144,7 @@
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">{{ __('Tailor your account to suit your trading style and preference.') }}</p>
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                <div class="checkbox-area warning-checkbox">
+                                <div class="checkbox-area success-checkbox">
                                     <label
                                         class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout"
@@ -165,7 +165,7 @@
                 </span>
                                     </label>
                                 </div>
-                                <div class="checkbox-area warning-checkbox">
+                                <div class="checkbox-area success-checkbox">
                                     <label
                                         class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="checkbox" class="hidden addon-checkbox" name="swap_free"
@@ -215,24 +215,78 @@
                 </div>
                 <div class="order__discount-code space-y-4 mb-10">
                     <ul class="space-y-3 mb-5">
-                        <li>
-                            <a href="" class="inline-flex items-center justify-between text-sm w-full">
-                                <span class="underline">{{ __('Terms and Condition') }}</span>
-                                <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="" class="inline-flex items-center justify-between text-sm w-full">
-                                <span class="underline">{{ __('Privacy Policy') }}</span>
-                                <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="" class="inline-flex items-center justify-between text-sm w-full">
-                                <span class="underline">{{ __('Customer Agreement') }}</span>
-                                <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                            </a>
-                        </li>
+                        @if(setting('aml_policy_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('aml_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('AML Policy') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('privacy_policy_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('privacy_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('Privacy Policy') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('client_agreement_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('client_agreement_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('Client Agreement') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('complaints_handling_policy_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('complaints_handling_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('Complaints Handling Policy') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('cookies_policy_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('cookies_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('Cookies Policy') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('IB_partner_agreement_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('IB_partner_agreement_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('IB Partner Agreement') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('order_execution_policy_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('order_execution_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('Order Execution Policy') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('risk_disclosure_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('risk_disclosure_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('Risk Disclosure') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
+                        @if(setting('US_clients_policy_show','document_links',false))
+                            <li>
+                                <a href="{{ setting('US_clients_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
+                                    <span class="underline">{{ __('US Clients Policy') }}</span>
+                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                     <div class="form-group text-start">
                         <div class="flex w-full items-start">

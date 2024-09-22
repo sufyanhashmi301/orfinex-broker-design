@@ -29,7 +29,7 @@
                                     @if($user->email_verified_at != null)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
+                                            <circle cx="9.5" cy="9.5" r="9.5" fill="#0ebe3b"/>
                                             <path fill-rule="evenodd" clip-rule="evenodd"
                                                   d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z"
                                                   fill="white"/>
@@ -37,10 +37,10 @@
                                     @else
                                         <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
-                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000"
+                                            <circle cx="14" cy="13.5" r="9" stroke="#0ebe3b"/>
+                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#0ebe3b"
                                                     stroke-width="4"/>
-                                            <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                            <circle cx="14" cy="13.5" r="3.5" fill="#0ebe3b"/>
                                         </svg>
                                     @endif
                                 </div>
@@ -55,7 +55,7 @@
                                     @if($user->kyc == 1)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
+                                            <circle cx="9.5" cy="9.5" r="9.5" fill="#0ebe3b"/>
                                             <path fill-rule="evenodd" clip-rule="evenodd"
                                                   d="M15.6628 6.08736C15.8906 6.31516 15.8906 6.68451 15.6628 6.91232L8.6628 13.9123C8.435 14.1401 8.06565 14.1401 7.83785 13.9123L4.33785 10.4123C4.11004 10.1845 4.11004 9.81516 4.33785 9.58736C4.56565 9.35955 4.935 9.35955 5.1628 9.58736L8.25033 12.6749L14.8378 6.08736C15.0657 5.85955 15.435 5.85955 15.6628 6.08736Z"
                                                   fill="white"/>
@@ -63,10 +63,10 @@
                                     @else
                                         <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
-                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000"
+                                            <circle cx="14" cy="13.5" r="9" stroke="#0ebe3b"/>
+                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#0ebe3b"
                                                     stroke-width="4"/>
-                                            <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                            <circle cx="14" cy="13.5" r="3.5" fill="#0ebe3b"/>
                                         </svg>
                                     @endif
                                 </div>
@@ -76,15 +76,14 @@
                     @if($totalActiveLevels == 3)
                         <!--Third item-->
                             <li class="w-[4.5rem] flex-auto">
-                                <div
-                                    class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                                <div class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
                                     <div>
                                         <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
-                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000"
+                                            <circle cx="14" cy="13.5" r="9" stroke="#0ebe3b"/>
+                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#0ebe3b"
                                                     stroke-width="4"/>
-                                            <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                            <circle cx="14" cy="13.5" r="3.5" fill="#0ebe3b"/>
                                         </svg>
                                     </div>
                                 </div>
@@ -136,7 +135,7 @@
                                             @if($user->email_verified_at != null)
                                                 <span class="flex items-center text-sm">
                                                     {{ __('Verified') }}
-                                                    <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
+                                                    <iconify-icon class="text-base text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
                                                 </span>
                                             @else
                                                 <button type="button"

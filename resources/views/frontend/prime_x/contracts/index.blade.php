@@ -41,7 +41,7 @@
             <h4 class="text-xl text-slate-900 dark:text-white">
                 {{ __("No active or pending contracts") }}
             </h4>
-            <a href="" class="btn btn-dark inline-flex items-center justify-center">
+            <a href="" class="btn btn-primary inline-flex items-center justify-center">
                 {{ __('Start a new challenge') }}
             </a>
         </div>

@@ -12,7 +12,7 @@
                         <span class="text-xl text-slate-900 dark:text-white">{{auth()->user()->full_name}}</span><br>
                         <span class="flex items-center text-slate-400 text-sm font-normal">
                             {{ $user->rank->ranking }}
-                            <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
+                            <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #0ebe3b;"></iconify-icon>
                         </span>
                     </div>
                 </div>

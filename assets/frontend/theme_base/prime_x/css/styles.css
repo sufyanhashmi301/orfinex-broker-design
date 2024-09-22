@@ -35,7 +35,7 @@
 .btn-primary {
     --tw-ring-color: rgb(254 208 0 / var(--tw-ring-opacity));
     background-color: #FED000;
-    color: #121212;
+    /*color: #121212;*/
 }
 
 .form-control-lg {

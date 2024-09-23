@@ -56,6 +56,11 @@ class IpnController extends Controller
 
         // Check if order_id is present
         if (!$orderId) {
+            $txnInfo = Transaction::tnx($orderId);
+            $txnInfo->update([
+                'status' => TxnStatus::Failed,
+                'approval_cause' => 'invalid order ID',
+            ]);
             return redirect()
                 ->route('user.deposit.now')
                 ->with('error', 'Invalid order ID.');
@@ -76,7 +81,9 @@ class IpnController extends Controller
                 $txnInfo = Transaction::tnx($orderId);
                 $txnInfo->update([
                 'status' => TxnStatus::Failed,
-//            ]);
+                    'approval_cause' => 'invalid declined',
+
+                ]);
                 // Log or handle the declined payment
                 $declineReason = $input['data']['charge']['attributes']['decline_reason'] ?? 'Unknown reason';
 
@@ -85,6 +92,12 @@ class IpnController extends Controller
                     ->with('error', "Payment declined. Reason: $declineReason.");
 
             default:
+                $txnInfo = Transaction::tnx($orderId);
+                $txnInfo->update([
+                    'status' => TxnStatus::Failed,
+                    'approval_cause' => 'default declined',
+
+                ]);
                 return redirect()
                     ->route('user.deposit.now')
                     ->with('error', 'Unknown error.');

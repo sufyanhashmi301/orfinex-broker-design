@@ -66,7 +66,7 @@
                             </span>
                         </li>
                     </ul>
-                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-5">
+                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                         {{ __('Start Now') }}
                     </a>
                 </div>

@@ -9,13 +9,13 @@
                 <a href="#tabs-realAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary active"
                     id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"
-                    aria-controls="tabs-realAccounts" aria-selected="true">{{ __('Challenge') }}</a>
+                    aria-controls="tabs-realAccounts" aria-selected="true">{{ __('Active') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="#tabs-demoAccounts"
                     class="btn btn-sm inline-flex justify-center btn-outline-primary"
                     id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"
-                    aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Funded') }}</a>
+                    aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="#tabs-archivedAccounts"
@@ -66,40 +66,10 @@
         </div>
     </div>
 
-    <!-- Modal for Account details -->
-    @include('frontend::.user.forex.modal.__trade')
-
-    <!-- Modal for Account details -->
-    @include('frontend::.user.forex.modal.__account_details')
-
-    <!-- Modal for Account leverage -->
-    @include('frontend::.user.forex.modal.__change_leverage')
-
-    <!-- Modal for Demo deposit -->
-    @include('frontend::.user.forex.modal.__deposit_demo_account')
-
-    <!-- Modal for Account rename -->
-    @include('frontend::.user.forex.modal.__account_rename')
-
-
-    <!-- Modal for Account password -->
-    @include('frontend::.user.forex.modal.__change_account_password')
-
-
-    <!-- Modal for Account invest password -->
-    @include('frontend::.user.forex.modal.__change_investor_password')
-
-
-    <!-- Modal for Account archive -->
-    @include('frontend::.user.forex.modal.__archive_account')
-
-    <!-- Modal for Account unarchive -->
-    @include('frontend::.user.forex.modal.__unarchive_account')
 
 @endsection
 
 @section('script')
-    @include('frontend::.user.forex.fx-js')
     <script>
         // grid or list view
         $('.list-view-btn').click(function () {

@@ -9,9 +9,9 @@
             <p class="text-sm mb-3 dark:text-white">{{$notify['p']}}</p>
             <p class="text-sm mb-3 dark:text-white">{{ $notify['strong'] }}</p>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-center items-center">
-                <a href="{{ $notify['action'] }}" class="btn btn-dark inline-flex justify-center">
+                <a href="{{ route('user.dashboard') }}" class="btn btn-primary inline-flex justify-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                    <span>{{ $notify['a'] }}</span>
+                    <span>{{ __('Go To Dashboard') }}</span>
                 </a>
                 @if(setting('trust_pilot_review_show','platform_links',false))
                     <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">

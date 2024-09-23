@@ -47,7 +47,7 @@
     <div class="card p-6 mb-6">
         <div class="grid md:grid-cols-3 grid-cols-1 gap-7">
             <div class="card h-[350px] rounded-xl overflow-hidden">
-                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/certificate-image.jpg') }}')">
+                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/gmf-certificate-image.png') }}')">
                     <div class="absolute w-full h-full top-0 bg-slate-900 bg-opacity-30"></div>
                     <div class="flex flex-col items-center w-full z-10 space-y-5">
                         <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="card h-[350px] rounded-xl overflow-hidden">
-                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/certificate-image.jpg') }}')">
+                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/gmf-certificate-image.png') }}')">
                     <div class="absolute w-full h-full top-0 bg-slate-900 bg-opacity-30"></div>
                     <div class="flex flex-col items-center w-full z-10 space-y-5">
                         <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="card h-[350px] rounded-xl overflow-hidden">
-                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/certificate-image.jpg') }}')">
+                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/gmf-certificate-image.png') }}')">
                     <div class="absolute w-full h-full top-0 bg-slate-900 bg-opacity-30"></div>
                     <div class="flex flex-col items-center w-full z-10 space-y-5">
                         <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -89,7 +89,7 @@
                 </div>
             </div>
             <div class="card h-[350px] rounded-xl overflow-hidden">
-                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/certificate-image.jpg') }}')">
+                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/gmf-certificate-image.png') }}')">
                     <div class="absolute w-full h-full top-0 bg-slate-900 bg-opacity-30"></div>
                     <div class="flex flex-col items-center w-full z-10 space-y-5">
                         <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="card h-[350px] rounded-xl overflow-hidden">
-                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/certificate-image.jpg') }}')">
+                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/gmf-certificate-image.png') }}')">
                     <div class="absolute w-full h-full top-0 bg-slate-900 bg-opacity-30"></div>
                     <div class="flex flex-col items-center w-full z-10 space-y-5">
                         <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -117,7 +117,7 @@
                 </div>
             </div>
             <div class="card h-[350px] rounded-xl overflow-hidden">
-                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/certificate-image.jpg') }}')">
+                <div class="card-body relative h-full bg-no-repeat bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('frontend/images/gmf-certificate-image.png') }}')">
                     <div class="absolute w-full h-full top-0 bg-slate-900 bg-opacity-30"></div>
                     <div class="flex flex-col items-center w-full z-10 space-y-5">
                         <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg">

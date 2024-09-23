@@ -39,8 +39,8 @@
                 <div class="md:block hidden w-full">
                     <button class="text-slate-800 dark:text-white focus:ring-0 focus:outline-none font-medium rounded-lg text-sm text-center inline-flex items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="flex-none text-slate-600 dark:text-white text-base font-medium items-center lg:flex hidden overflow-hidden text-ellipsis whitespace-nowrap ltr:mr-[10px] rtl:ml-[10px]">
-                            <div class="text-right">
-                                <span>{{auth()->user()->full_name}}</span><br>
+                            <div class="text-right" style="line-height: 1">
+                                <span class="block">{{auth()->user()->full_name}}</span>
                                 <span class="flex items-center justify-end text-slate-400 text-sm font-normal">
                                     {{ $user->rank->ranking }}
                                     <iconify-icon class="text-base text-primary ml-1" icon="bxs:badge-check"></iconify-icon>

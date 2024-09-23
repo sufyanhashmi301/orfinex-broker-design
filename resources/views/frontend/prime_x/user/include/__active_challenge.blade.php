@@ -10,10 +10,12 @@
                     <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                         <thead>
                             <tr>
-                                <th scope="col" class="table-th">{{ __('Fund Title') }}</th>
-                                <th scope="col" class="table-th">{{ __('Prize') }}</th>
+                                <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                <th scope="col" class="table-th">{{ __('Fund') }}</th>
                                 <th scope="col" class="table-th">{{ __('Activation Date') }}</th>
-                                <th scope="col" class="table-th">{{ __('Returned Until Now') }}</th>
+                                <th scope="col" class="table-th">{{ __('Daily Drawdown') }}</th>
+                                <th scope="col" class="table-th">{{ __('Max Drawdown') }}</th>
+                                <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
                                 <th scope="col" class="table-th">{{ __('Detail') }}</th>
                             </tr>
                         </thead>
@@ -23,6 +25,8 @@
                                 <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
                                 <td class="table-td">{{ data_get($plan,'amount_allotted')}}</td>
                                 <td class="table-td">{{ data_get($plan,'term_start') ?? 'N/A'}}</td>
+                                <td class="table-td">{{ data_get($plan,'daily_drawdown_limit') }}</td>
+                                <td class="table-td">{{ data_get($plan,'max_drawdown_limit') }}</td>
                                 <td class="table-td">{{ data_get($plan,'profit')}}</td>
                                 <td class="table-td">
                                     <a href="{{route('user.invest.details',the_hash($plan->id))}}" class="inline-flex justify-center">

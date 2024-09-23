@@ -115,7 +115,7 @@
         </div>
 
         <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
-            <a href="{{ route('user.deposit.amount') }}" class="card">
+            <a href="javascript:;" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
                     <div
                         class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">

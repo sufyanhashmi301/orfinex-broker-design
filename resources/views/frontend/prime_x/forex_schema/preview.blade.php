@@ -71,45 +71,36 @@
                                 {{ __('Rules') }}
                             </p>
                             <div class="grid md:grid-cols-3 grid-cols-1 gap-5">
-                                <div
-                                    class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
+                                <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
                                     <span class="leading-none">
                                         <span class="leading-none dark:text-white text-sm font-medium block mb-1">
                                             {{ __('Daily DD') }}
                                         </span>
-                                        <small
-                                            class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
                                     </span>
-                                    <span
-                                        class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize daily-dd">
+                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize daily-dd">
                                         {{ '' }}
                                     </span>
                                 </div>
-                                <div
-                                    class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
+                                <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
                                     <span class="leading-none">
                                         <span class="leading-none dark:text-white text-sm font-medium block mb-1">
                                             {{ __('Max DD') }}
                                         </span>
-                                        <small
-                                            class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
                                     </span>
-                                    <span
-                                        class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize max-dd">
+                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize max-dd">
                                         {{ '' }}
                                     </span>
                                 </div>
-                                <div
-                                    class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
+                                <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
                                     <span class="leading-none">
                                         <span class="leading-none dark:text-white text-sm font-medium block mb-1">
                                             {{ __('Profit Target') }}
                                         </span>
-                                        <small
-                                            class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
                                     </span>
-                                    <span
-                                        class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize profit-target">
+                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize profit-target">
                                         {{ '' }}
                                     </span>
                                 </div>
@@ -123,15 +114,12 @@
                                 <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">{{ __('Please select your trading platform.') }}</p>
                             </div>
                             <div class="success-radio">
-                                <label
-                                    class="flex items-center cursor-pointer rounded border dark:border-slate-700 px-3 py-4">
+                                <label class="flex items-center cursor-pointer rounded border dark:border-slate-700 px-3 py-4">
                                     <input type="radio" class="hidden priceInput" name="platform" value="" checked>
-                                    <span
-                                        class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                    <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
                                     <span class="flex-1 inline-flex items-center">
                                         <img src="{{ asset('frontend/images/mt-5-logo.png') }}" class="h-5" alt="">
-                                        <span
-                                            class="text-sm font-normal text-slate-600 dark:text-slate-400 ml-2">{{ __('Best for Web Trading') }}</span>
+                                        <span class="text-sm font-normal text-slate-600 dark:text-slate-400 ml-2">{{ __('Best for Web Trading') }}</span>
                                     </span>
                                 </label>
                             </div>
@@ -145,45 +133,33 @@
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                                 <div class="checkbox-area success-checkbox">
-                                    <label
-                                        class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout"
-                                               id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked">
-                                        <span
-                                            class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                    <img src="{{ asset('images/icon/ck-white.svg') }}" alt=""
-                         class="h-[10px] w-[10px] block m-auto opacity-0">
-                </span>
+                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
+                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout" id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked">
+                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                        </span>
                                         <span class="flex-1 inline-flex justify-between items-center">
-                    <span class="leading-none">
-                        <span
-                            class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span>
-                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>
-                    </span>
-                    <span
-                        class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span>
-                </span>
+                                            <span class="leading-none">
+                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span>
+                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>
+                                            </span>
+                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span>
+                                        </span>
                                     </label>
                                 </div>
                                 <div class="checkbox-area success-checkbox">
-                                    <label
-                                        class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free"
-                                               id="swap_free" data-price="10" value="{{the_hash(10)}}">
-                                        <span
-                                            class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                    <img src="{{ asset('images/icon/ck-white.svg') }}" alt=""
-                         class="h-[10px] w-[10px] block m-auto opacity-0">
-                </span>
+                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
+                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free" id="swap_free" data-price="10" value="{{the_hash(10)}}">
+                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                        </span>
                                         <span class="flex-1 inline-flex justify-between items-center">
-                    <span class="leading-none">
-                        <span
-                            class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span>
-                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>
-                    </span>
-                    <span
-                        class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span>
-                </span>
+                                            <span class="leading-none">
+                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span>
+                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>
+                                            </span>
+                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span>
+                                        </span>
                                     </label>
                                 </div>
                             </div>
@@ -302,7 +278,7 @@
                     </div>
                 </div>
                 <a href="javascript:;"
-                   class="btn btn-dark inline-flex items-center justify-center w-full proceed-payment">
+                   class="btn btn-primary inline-flex items-center justify-center w-full proceed-payment">
                     {{ __('Proceed With Payment') }}
                 </a>
 

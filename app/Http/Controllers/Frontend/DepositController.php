@@ -108,6 +108,7 @@ class DepositController extends GatewayController
 
     // Check if the selected target is a forex account
     $forexAccount = ForexAccount::where('login', $targetId)->first();
+//    dd($forexAccount);
 
     if ($forexAccount) {
         // It's a Forex account, handle the Forex-specific validation

@@ -46,7 +46,6 @@ class IpnController extends Controller
 
     public function bridgerpayIpn(Request $request)
     {
-
         // Get all the input data from the request
         $input = $request->all();
 

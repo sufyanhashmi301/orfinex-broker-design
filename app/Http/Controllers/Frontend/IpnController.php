@@ -53,12 +53,14 @@ class IpnController extends Controller
         // Extract the order ID and webhook type from the request
         $orderId = $input['data']['order_id'] ?? null;
         $webhookType = $input['webhook']['type'] ?? null;
-
+        $txnInfo = Transaction::tnx($orderId);
+        $txnInfo->update([
+            'approval_cause' => 'received',
+        ]);
         // Check if order_id is present
         if (!$orderId) {
             $txnInfo = Transaction::tnx($orderId);
             $txnInfo->update([
-                'status' => TxnStatus::Failed,
                 'approval_cause' => 'invalid order ID',
             ]);
             return redirect()

@@ -454,7 +454,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -471,7 +470,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -488,7 +486,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -505,7 +502,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -522,7 +518,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -539,7 +534,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -556,7 +550,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -573,7 +566,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -615,7 +607,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -632,7 +623,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -649,7 +639,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -666,7 +655,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -683,7 +671,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -748,7 +735,6 @@ return [
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
             ],
-
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -852,7 +838,6 @@ return [
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
-
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -869,7 +854,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
-
             [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
@@ -923,8 +907,14 @@ return [
     'internal' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
-
-
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_internal_transfer', // unique name for field
+                'label' => 'Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
             [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
@@ -957,7 +947,88 @@ return [
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 90000, // default value if you want
             ],
-
+            [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'internal_send_daily_limit', // unique name for field
+                'label' => 'Transfers Per Day', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 6, // default value if you want
+            ],
+        ],
+    ],
+    'external' => [
+        'title' => 'Site Fee, Limit and Bonus Settings',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_external_transfer', // unique name for field
+                'label' => 'Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_external_transfer_auto_approve', // unique name for field
+                'label' => 'Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'is_external_transfer_purpose', // unique name for field
+                'label' => 'Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'external_min_send', // unique name for field
+                'label' => 'External Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'external_max_send', // unique name for field
+                'label' => 'External Maximum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'external_send_charge_type', // unique name for field
+                'label' => 'External Transfer Type', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'external_transfer_charge', // unique name for field
+                'label' => 'External Transfer Charge', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'external_send_daily_limit', // unique name for field
+                'label' => 'Transfers Per Day', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 6, // default value if you want
+            ],
+        ],
+    ],
+    'transfer_misc' => [
+        'title' => 'Site Fee, Limit and Bonus Settings',
+        'elements' => [
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
@@ -977,9 +1048,41 @@ return [
 
             [
                 'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'referral_bonus', // unique name for field
+                'label' => 'Referral Bonus', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 20, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'signup_bonus', // unique name for field
+                'label' => 'Sign Up Bonus', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 20, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
                 'data' => 'int', // data type, string, int, boolean
-                'name' => 'internal_send_daily_limit', // unique name for field
-                'label' => 'Transfers Per Day', // you know what label it is
+                'name' => 'wallet_exchange_day_limit', // unique name for field
+                'label' => 'Wallet Exchange Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 10, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'withdraw_day_limit', // unique name for field
+                'label' => 'Withdraw Day Limit', // you know what label it is
+                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
+                'value' => 11, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'investment_cancellation_daily_limit', // unique name for field
+                'label' => 'Investment Cancellation Daily Limit', // you know what label it is
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 6, // default value if you want
             ],

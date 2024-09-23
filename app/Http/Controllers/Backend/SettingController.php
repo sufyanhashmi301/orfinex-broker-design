@@ -107,7 +107,7 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-         dd($request->all());
+//         dd($request->all());
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
 //        dd($request->all(),$rules, $section);

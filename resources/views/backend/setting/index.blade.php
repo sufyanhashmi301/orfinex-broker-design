@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="grid md:grid-cols-5 sm:grid-cols-2 grid-cols-1 gap-5">
+    <div class="grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">

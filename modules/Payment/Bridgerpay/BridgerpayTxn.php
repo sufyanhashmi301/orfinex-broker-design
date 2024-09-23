@@ -60,7 +60,7 @@ class BridgerpayTxn extends BaseTxn
         $response = $this->client->request('POST', $this->baseUrl.'/v2/cashier/session/create/' . $this->apiKey, [
             'body' => json_encode([
                 'cashier_key' => $this->cashierKey,
-                'order_id' => the_hash($this->txn),
+                'order_id' => $this->txn,
                 'currency' => $this->currency,
                 'country' => $this->userCountryCode,
                 'first_name' => $this->firstName,

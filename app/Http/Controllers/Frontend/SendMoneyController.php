@@ -17,6 +17,7 @@ use App\Traits\NotifyTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Session;
 use Txn;
@@ -240,7 +241,7 @@ class SendMoneyController extends Controller
     {
         // Check if the user has the permission to transfer
         if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
-            abort('403', 'Send Money Disabled Now');
+            abort(403, 'Send Money Disabled Now');
         }
 
         // Validate inputs
@@ -259,102 +260,106 @@ class SendMoneyController extends Controller
             return redirect()->back();
         }
 
-        $input = $request->all();
-        $targetId = get_hash($input['target_id']);
-        $receiverAccount = $input['receiver_account'];
-        $amount = (float) $input['amount'];
+        // Begin a database transaction
+        \DB::beginTransaction();
 
-        // Determine account type of sender (forex or wallet)
-        $targetType = $request->input('target_type'); // 'forex' or 'wallet'
-//        dd($targetType);
+        try {
+            $input = $request->all();
+            $targetId = get_hash($input['target_id']);
+            $receiverAccount = $input['receiver_account'];
+            $amount = (float)$input['amount'];
+            $targetType = $request->input('target_type'); // 'forex' or 'wallet'
 
-        // Validate based on sender's account type
-        if ($targetType == 'forex') {
-            // Forex account validation
-            $fromForexAccount = ForexAccount::where('login', $targetId)
-                ->where('user_id', \Auth::id())
-                ->first();
-            if (!$fromForexAccount) {
-                notify()->error(__('The selected Forex account does not belong to you.'), 'Error');
-                return redirect()->back();
+            // Validate sender's account based on target type
+            if ($targetType === 'forex') {
+                $fromForexAccount = ForexAccount::where('login', $targetId)->where('user_id', \Auth::id())->first();
+                if (!$fromForexAccount) {
+                    throw new \Exception(__('The selected Forex account does not belong to you.'));
+                }
+                $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
+//                dd($balance);
+            } elseif ($targetType === 'wallet') {
+                $wallet = get_user_account_by_wallet_id($targetId, \Auth::id());
+                if (!$wallet) {
+                    throw new \Exception(__('The selected Wallet account does not belong to you.'));
+                }
+                $balance = BigDecimal::of($wallet->amount);
             }
-            $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
-        } else if ($targetType == 'wallet') {
-            // Wallet validation
-            $wallet = get_user_account_by_wallet_id($targetId, \Auth::id());
-            if (!$wallet) {
-                notify()->error(__('The selected Wallet account does not belong to you.'), 'Error');
-                return redirect()->back();
+
+            // Validate amount range
+            $min = setting('min_send', 'fee');
+            $max = setting('max_send', 'fee');
+            if ($amount < $min || $amount > $max) {
+                throw new \Exception(__('Please send an amount within the range ') . setting('currency_symbol', 'global') . $min . ' - ' . $max);
             }
-            $balance = BigDecimal::of($wallet->amount);
+
+            // Calculate charge and total amount
+            $charge = $this->calculateChargeExternal($amount);
+            $totalAmount = $amount + $charge;
+
+            // Check if sender's balance is sufficient
+            if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
+                throw new \Exception(__("Insufficient funds in your account."));
+            }
+
+            // Validate receiver's Forex account
+            $toUserForexAccount = ForexAccount::where('login', $receiverAccount)->first();
+            if (!$toUserForexAccount) {
+                throw new \Exception(__('Receiver Forex account is invalid or inactive.'));
+            }
+            $toUser = $toUserForexAccount->user;
+
+            // Create transaction entries with TxnStatus::None
+            $sendDescription = 'Transfer Money to ' . $toUser->username . '-' . $receiverAccount;
+            $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoney, TxnStatus::None, null, null, \Auth::id(), $toUser->id, 'User', [], $input['note'], $targetId, $targetType);
+
+            $receiveDescription = 'Transfer Money from ' . \Auth::user()->username . '-' . $targetId;
+            $txnInfoReceiver = Txn::new($amount, 0, $amount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::None, null, null, $toUser->id, \Auth::id(), 'User', [], $input['note'], $receiverAccount, 'forex');
+
+            // Handle Forex-to-Forex or Wallet-to-Forex transfers
+            if ($targetType == 'forex') {
+                $this->forexToForexTransfer($targetId, $receiverAccount, $totalAmount, $txnInfoSender);
+            } elseif ($targetType == 'wallet') {
+                $this->walletToForexTransfer($wallet, $targetId, $receiverAccount, $totalAmount, $txnInfoSender, $txnInfoReceiver);
+            }
+
+            // Update transaction status to success
+            Txn::update($txnInfoSender->tnx, TxnStatus::Success, \Auth::id(), 'Transfer Successful');
+            Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id, 'Transfer Successful');
+
+            // Update MT5 balances for Forex accounts
+            if ($targetType == 'forex') {
+                mt5_update_balance($targetId, $this->forexApiService->getValidatedBalance(['login' => $targetId]));
+            }
+            mt5_update_balance($receiverAccount, $this->forexApiService->getValidatedBalance(['login' => $receiverAccount]));
+
+            // Commit the transaction
+            \DB::commit();
+
+            // Notify the user of success
+            notify()->success(__('Successfully Sent Money'), 'Success');
+
+            // Send Email Notifications
+            $this->sendEmailNotificationExternal($txnInfoSender, $toUser, $receiverAccount);
+
+            return redirect()->route('user.notify');
+
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of failure
+            \DB::rollBack();
+
+            // If there's a failure, reverse the payment if applicable
+//            if (isset($wallet)) {
+//                $this->reverseWalletPayment($wallet, $totalAmount, $txnInfoSender);
+//            }
+
+            // Log the error and notify the user
+            Log::error('Transaction failed: ' . $e->getMessage());
+//            dd($e->getMessage());
+            notify()->error($e->getMessage(), 'Error');
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        // Validate min and max range
-        $min = setting('min_send', 'fee');
-        $max = setting('max_send', 'fee');
-        if ($amount < $min || $amount > $max) {
-            $currencySymbol = setting('currency_symbol', 'global');
-            $message = 'Please send an amount within the range ' . $currencySymbol . $min . ' to ' . $currencySymbol . $max;
-            notify()->error($message, 'Error');
-            return redirect()->back();
-        }
-
-        // Calculate charge for the transaction
-        $charge = $this->calculateChargeExternal($amount);
-
-        $totalAmount = $amount + $charge;
-
-        // Check if sender's balance is sufficient
-        if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
-            notify()->error(__("Insufficient funds in your account"), 'Error');
-            return redirect()->back();
-        }
-
-        // Validate the receiver's Forex account
-        $toUserForexAccount = ForexAccount::where('login', $receiverAccount)->first();
-        if (!$toUserForexAccount) {
-            notify()->error(__('Receiver Forex account is invalid or inactive'), 'Error');
-            return redirect()->back();
-        }
-        $toUser = $toUserForexAccount->user;
-
-        // Create transaction entries with `TxnStatus::None`
-        $sendDescription = 'Transfer Money to ' . $toUser->username . '-' . $receiverAccount;
-        $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
-            TxnType::SendMoney, TxnStatus::None, null, null, \Auth::id(), $toUser->id, 'User', [],
-            $input['note'], $targetId, $targetType);
-
-        $receiveDescription = 'Transfer Money from ' . \Auth::user()->username . '-' . $targetId;
-        $txnInfoReceiver = Txn::new($amount, 0, $amount, 'system', $receiveDescription,
-            TxnType::ReceiveMoney, TxnStatus::None, null, null, $toUser->id, \Auth::id(), 'User', [],
-            $input['note'], $receiverAccount, 'forex');
-
-        // Handle Forex-to-Forex or Wallet-to-Forex transfers
-        if ($targetType == 'forex') {
-            // Forex-to-Forex transfer
-            $this->forexToForexTransfer($targetId, $receiverAccount, $totalAmount, $txnInfoSender);
-        } else if ($targetType == 'wallet') {
-            // Wallet-to-Forex transfer
-            $this->walletToForexTransfer($wallet, $targetId, $receiverAccount, $totalAmount, $txnInfoSender, $txnInfoReceiver);
-        }
-
-        // Update the transactions to TxnStatus::Success after ledger updates
-        Txn::update($txnInfoSender->tnx, TxnStatus::Success, \Auth::id(), 'Transfer Successful');
-        Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id, 'Transfer Successful');
-
-        // Update MT5 balances for Forex accounts
-        if ($targetType == 'forex') {
-            mt5_update_balance($targetId, $this->forexApiService->getValidatedBalance(['login' => $targetId]));
-        }
-        mt5_update_balance($receiverAccount, $this->forexApiService->getValidatedBalance(['login' => $receiverAccount]));
-
-        // Notify user
-        notify()->success('Successfully Sent Money', 'success');
-
-        // Email Notifications
-        $this->sendEmailNotificationExternal($txnInfoSender, $toUser, $receiverAccount);
-
-        return redirect()->route('user.notify');
     }
     private function calculateChargeExternal($amount)
     {
@@ -381,22 +386,81 @@ class SendMoneyController extends Controller
     }
     private function walletToForexTransfer($wallet, $targetId, $receiverAccount, $totalAmount, $txnInfoSender, $txnInfoReceiver)
     {
-        // Debit from Wallet
+//        try {
+            // Start a database transaction to ensure all or nothing execution
+            \DB::beginTransaction();
+
+            // Get the ledger balance before debiting
+            $ledgerBalance = $this->walletService->getLedgerBalance($wallet->id);
+
+            // Check if the ledgerBalance retrieval was successful
+            if (!$ledgerBalance) {
+                throw new \Exception(__('Failed to retrieve wallet balance: '));
+            }
+
+            // Create a debit ledger entry and reduce wallet balance
+            $this->walletService->createDebitLedgerEntry($txnInfoSender, $ledgerBalance);
+            $wallet->amount = BigDecimal::of($wallet->amount)->minus(BigDecimal::of($totalAmount));
+            $wallet->save();
+
+            // Prepare data for Forex deposit
+            $comment = 'ext/W/' . substr($txnInfoReceiver->tnx, -7);
+            $depositData = [
+                'login' => $receiverAccount,
+                'Amount' => $totalAmount - $txnInfoSender->charge,
+                'type' => 1, // Deposit into Forex
+                'TransactionComments' => $comment
+            ];
+//            dd($depositData);
+
+            // Perform the Forex deposit
+            $depositResponse = $this->forexApiService->balanceOperation($depositData);
+//dd($depositResponse);
+            // Check if the Forex deposit operation was successful
+            if (!$depositResponse['success'] || $depositResponse['result']['responseCode'] != 10009) {
+                $responseMessage = $depositResponse['messages'][0] ?? __('Forex Deposit Failed');
+                throw new \Exception(__('Forex Deposit Failed: ') . $responseMessage);
+            }
+
+            // Commit the transaction after successful Forex deposit
+            \DB::commit();
+
+            // Notify the user of the success
+            notify()->success(__('Deposit into Forex account successful!'), 'Success');
+
+//        } catch (\Exception $e) {
+//            // Rollback the transaction on failure
+//            \DB::rollBack();
+//
+//            // Reverse the wallet debit if Forex deposit fails
+//            $this->reverseWalletPayment($wallet, $totalAmount, $txnInfoSender);
+//
+//            // Log the error and notify the user
+//            Log::error('Forex Deposit Failed', [
+//                'message' => $e->getMessage(),
+//                'depositData' => $depositData ?? [],
+//                'response' => $depositResponse ?? null,
+//            ]);
+//
+//            // Notify the user with the exact error message
+//            notify()->error($e->getMessage(), 'Error');
+//
+//            // Redirect back with error
+//            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+//        }
+    }
+    private function reverseWalletPayment($wallet, $totalAmount, $txnInfoSender)
+    {
+        // Reverse wallet payment if a failure occurs
         $ledgerBalance = $this->walletService->getLedgerBalance($wallet->id);
-        $this->walletService->createDebitLedgerEntry($txnInfoSender, $ledgerBalance);
-        $wallet->amount = BigDecimal::of($wallet->amount)->minus(BigDecimal::of($totalAmount));
+        $this->walletService->createCreditLedgerEntry($txnInfoSender, $ledgerBalance);
+
+        // Update the wallet balance
+        $wallet->amount = BigDecimal::of($wallet->amount)->plus(BigDecimal::of($totalAmount));
         $wallet->save();
 
-        // Deposit to Forex
-        $comment = 'ext/W/' . substr($txnInfoReceiver->tnx, -7);
-        $depositData = [
-            'login' => $receiverAccount,
-            'Amount' => $totalAmount - $txnInfoSender->charge,
-            'type' => 1, // Deposit into Forex
-            'TransactionComments' => $comment
-        ];
-//        dd($depositData);
-        dd($this->forexApiService->balanceOperation($depositData));
+        // Notify user of reversal
+        notify()->error(__('Transaction failed. Wallet payment has been reversed.'), 'Error');
     }
     private function sendEmailNotificationExternal($txnInfoSender, $toUser, $receiverAccount)
     {
@@ -428,7 +492,6 @@ class SendMoneyController extends Controller
         // Send email notifications
         $this->mailNotify($txnInfoSender->user->email, 'external_transfer_sender', $shortcodes);
     }
-
 
     //internal transfer
     public function sendMoneyInternal()
@@ -464,6 +527,7 @@ class SendMoneyController extends Controller
         return view('frontend::send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
 //        return view('frontend::send_money.internal-now', compact('isStepOne', 'isStepTwo', 'forexAccounts'));
     }
+
     public function sendMoneyInternalNow(Request $request)
     {
         if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
@@ -522,7 +586,7 @@ class SendMoneyController extends Controller
             }
             $balance = BigDecimal::of($wallet->amount);
         }
-//dd($targetType);
+
         $totalAmount = $amount + $this->calculateCharge($amount);
 
         // ** Check if the sender has sufficient funds **

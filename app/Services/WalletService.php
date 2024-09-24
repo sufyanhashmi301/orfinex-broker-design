@@ -105,7 +105,7 @@ class WalletService
 
             // Deduct the amount from the ledger balance
             $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->final_amount));
-
+//dd($balance);
             // Ensure that balance does not go below zero
             if ($balance->isLessThan(BigDecimal::of(0.00))) {
                 throw new \Exception(__("Unprocessable transaction. Insufficient balance."));

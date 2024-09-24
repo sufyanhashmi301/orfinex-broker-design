@@ -35,7 +35,7 @@
                             <div class="input-area relative mb-5">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Account To:') }}</label>
                                 <div class="relative">
-                                    <input type="text" name="receiver_account" required class="form-control !text-lg userAccountCheck"
+                                    <input type="text" name="receiver_account" oninput="this.value = validateDouble(this.value)" required class="form-control !text-lg userAccountCheck"
                                            placeholder="Receiver Account">
                                 </div>
                                 <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max notifyUser"></div>

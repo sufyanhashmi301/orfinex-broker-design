@@ -1,0 +1,32 @@
+@extends('frontend::layouts.user')
+@section('style')
+    <style>
+        .page-content {
+            padding: 0 !important;
+        }
+    </style>
+@endsection
+@section('content')
+    <div class="relative">
+        <div class="absolute left-0">
+            <ul class="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none border-b-0 pl-0 mb-4">
+                <li class="nav-item">
+                    <a href="{{ route('user.follower_access') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.follower_access') }}">
+                        {{ __('Follower Access') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('user.provider_access') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.provider_access') }}">
+                        {{ __('Provider Access') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('user.ratings') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-4 pb-2 my-2 hover:border-transparent focus:border-transparent dark:text-slate-300 {{ isActive('user.ratings') }}">
+                        {{ __('Ratings') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        @yield('copy-trading-content')
+    </div>
+@endsection

@@ -301,7 +301,7 @@
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:arrow-down-circle"></iconify-icon>
-                            <span>{{ __('Deposits') }}</span>
+                            <span>{{ __('Payments') }}</span>
                         </span>
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
@@ -325,12 +325,12 @@
                         @canany(['deposit-list','deposit-action'])
                             <li class="">
                                 <a href="{{ route('admin.deposit.manual.pending') }}" class="{{ isActive('admin.deposit.manual.pending') }}">
-                                    {{ __('Pending Manual Deposits') }}
+                                    {{ __('Pending Manual Payments') }}
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ route('admin.deposit.history') }}" class="{{ isActive('admin.deposit.history') }}">
-                                    {{ __('Deposit History') }}
+                                    {{ __('Payment History') }}
                                 </a>
                             </li>
                         @endcanany
@@ -343,7 +343,7 @@
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:landmark"></iconify-icon>
-                            <span>{{ __('Withdraw') }}</span>
+                            <span>{{ __('Payout') }}</span>
                         </span>
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>

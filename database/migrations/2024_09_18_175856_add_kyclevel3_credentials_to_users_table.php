@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->text('kyc_level3_credential')->nullable()->after('kyc_credential');
-            $table->dropColumn('is_level_1_completed');
-            $table->dropColumn('is_level_2_completed');
-            $table->dropColumn('is_level_3_completed');
+//            $table->dropColumn('is_level_1_completed');
+//            $table->dropColumn('is_level_2_completed');
+//            $table->dropColumn('is_level_3_completed');
 
         });
     }
@@ -31,9 +31,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['kyc_level3_credential']);
-            $table->tinyInteger('is_level_1_completed'); // Adjust the column type if necessary
-            $table->tinyInteger('is_level_2_completed'); // Adjust the column type if necessary
-            $table->tinyInteger('is_level_3_completed'); // Adjust the column type if necessary
+//            $table->tinyInteger('is_level_1_completed'); // Adjust the column type if necessary
+//            $table->tinyInteger('is_level_2_completed'); // Adjust the column type if necessary
+//            $table->tinyInteger('is_level_3_completed'); // Adjust the column type if necessary
 
         });
     }

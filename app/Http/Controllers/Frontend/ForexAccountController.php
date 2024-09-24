@@ -98,7 +98,7 @@ class ForexAccountController extends GatewayController
             return redirect()->back();
         }
 
-        $login = 0;
+        $login = 311112;
         //Start/End Range of create forex account on MT5
         if (setting('is_forex_group_range', 'global')) {
             $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();

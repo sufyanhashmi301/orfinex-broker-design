@@ -13,6 +13,7 @@ enum TxnType: string
     case ManualDeposit = 'manual_deposit';
     case SendMoney = 'send_money';
     case SendMoneyInternal = 'send_money_internal';
+    case ReceiveMoneyInternal = 'receive_money_internal';
     case Exchange = 'exchange';
     case Referral = 'referral';
     case SignupBonus = 'signup_bonus';
@@ -37,6 +38,7 @@ enum TxnType: string
             self::ManualDeposit => 'Manual Deposit',
             self::SendMoney => 'Send Money',
             self::SendMoneyInternal => 'Send Money Internal',
+            self::ReceiveMoneyInternal => 'Receive Money Internal',
             self::Exchange => 'Exchange',
             self::Referral => 'Referral',
             self::SignupBonus => 'Signup Bonus',

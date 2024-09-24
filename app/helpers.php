@@ -85,6 +85,27 @@ if (!function_exists('get_user_account')) {
         return $account;
     }
 }
+if (!function_exists('get_user_account_by_wallet_id')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_user_account_by_wallet_id($walletId, $userId=null)
+    {
+        // Attempt to retrieve the account.
+        $account = Account::where('wallet_id', $walletId);
+        if($userId)
+            $account->where('user_id', $userId);
+
+        $account = $account->first();
+        return $account;
+    }
+}
 if (!function_exists('get_all_wallets')) {
 
     /**

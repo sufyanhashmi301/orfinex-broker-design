@@ -22,10 +22,32 @@
                     </ul>
                 </div>
             </div>--}}
-            @if(setting('is_webterminal','global'))
-                <a href="{{ route('webterminal') }}" class="block loaderBtn lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">
-                    <img src="{{ asset('frontend/images/trading.png') }}" class="dark:invert" alt="" style="height: 24px">
-                </a>
+            @if(Route::is(['user.follower_access', 'user.provider_access', 'user.ratings']))
+                <div class="copy-trading__menu">
+                    <ul class="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none border-b-0 pl-0">
+                        <li class="nav-item">
+                            <a href="{{ route('user.follower_access') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize px-4 dark:text-slate-300 {{ isActive('user.follower_access') }}">
+                                {{ __('Follower Access') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('user.provider_access') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize px-4 dark:text-slate-300 {{ isActive('user.provider_access') }}">
+                                {{ __('Provider Access') }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('user.ratings') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize px-4 dark:text-slate-300 {{ isActive('user.ratings') }}">
+                                {{ __('Ratings') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            @else
+                @if(setting('is_webterminal','global'))
+                    <a href="{{ route('webterminal') }}" class="block loaderBtn lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">
+                        <img src="{{ asset('frontend/images/trading.png') }}" class="dark:invert" alt="" style="height: 24px">
+                    </a>
+                @endif
             @endif
             <!-- end vertcial -->
 

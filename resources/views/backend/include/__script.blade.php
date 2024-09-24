@@ -20,6 +20,42 @@
 @yield('script')
 @stack('single-script')
 <script>
+
+    function removeLoader(loader) {
+        if (loader) {
+            loader.parentElement.removeChild(loader);
+        }
+    }
+
+    window.addEventListener('beforeunload', (event) => {
+        const loader = document.querySelector('.page-loader');
+        if (loader) {
+            loader.classList.remove('loader-hidden');
+        }
+    });
+
+    // Hide loader when the page is fully loaded
+    window.addEventListener('load', () => {
+        const loader = document.querySelector('.page-loader');
+        if (loader) {
+            loader.classList.add('loader-hidden');
+
+            const transitionDuration = parseFloat(getComputedStyle(loader).transitionDuration) * 1000;
+            const removalTimeout = transitionDuration || 300;
+
+            const transitionEndHandler = () => {
+                loader.removeEventListener('transitionend', transitionEndHandler);
+                removeLoader(loader);
+            };
+
+            loader.addEventListener('transitionend', transitionEndHandler);
+
+            setTimeout(() => {
+                removeLoader(loader);
+            }, removalTimeout);
+        }
+    });
+
     $(document).ready(function () {
         function calculateHeights() {
             // Store heights in variables, checking if elements exist

@@ -93,7 +93,7 @@
     </div>
 
 @endsection
-@section('script')
+@section('organization-script')
     <script>
         $(document).ready(function () {
             $('body').on('click','.delete-btn', function () {
@@ -119,5 +119,4 @@
             });
         });
     </script>
-
 @endsection

@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.payment.index')
 @section('title')
     {{ __('Currency Settings') }}
 @endsection
-@section('setting-content')
+@section('payment-content')
     <?php
         $section = 'currency_setting';
         $fields = config('setting.currency_setting');
@@ -189,7 +189,7 @@
         </div>
     </div>
 @endsection
-@push('single-script')
+@push('payment-script')
     <script>
     (function($) {
         'use strict';

@@ -22,26 +22,30 @@ class DepartmentController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Department::latest('updated_at');
+            //$data = Department::latest('updated_at');
+            $data = Department::with('parent')->latest('updated_at');
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.departments.include.__name')
+                ->addColumn('parent_category', function ($department) {
+                    return $department->parent->name ?? '-';
+                })
                 ->addColumn('status', 'backend.departments.include.__status')
                 ->addColumn('action', 'backend.departments.include.__action')
-                ->rawColumns(['name','status', 'action'])
+                ->rawColumns(['name','status', 'parent_category', 'action'])
                 ->make(true);
         }
 
         return view('backend.departments.index');
-       
+
     }
 
     public function create()
     {
         $departments = Department::where('parent_id',null)->get();
         return response()->json(['departments'=>$departments]);
-        
+
     }
 
     public function store(StoreDepartmentRequest $request)
@@ -51,7 +55,7 @@ class DepartmentController extends Controller
         $this->departmentService->create($data);
         notify()->success(__('Department created successfully.'));
         return redirect()->route('admin.departments.index');
-        
+
     }
 
     public function show(Department $department)
@@ -67,13 +71,13 @@ class DepartmentController extends Controller
             ->whereNotIn('id', $descendants)
             ->get();
             return view('backend.departments.include.__edit_form', compact('departments', 'department'))->render();
-       
+
     }
 
     public function update(UpdateDepartmentRequest $request, Department $department)
-    { 
+    {
         $data = $request->validated();
-      
+
         if ($department->children()->exists() && $data['parent_id'] !== "") {
             notify()->error(__('Cannot reassign this department as it has child records.'));
             return redirect()->back();
@@ -82,7 +86,7 @@ class DepartmentController extends Controller
         $this->departmentService->update($department, $data);
         notify()->success(__('Department updated successfully.'));
         return redirect()->route('admin.departments.index');
-        
+
     }
 
     public function destroy(Department $department)
@@ -98,6 +102,6 @@ class DepartmentController extends Controller
         $this->departmentService->delete($department);
         notify()->success(__('Department deleted successfully.'));
         return redirect()->route('admin.departments.index');
-        
+
     }
 }

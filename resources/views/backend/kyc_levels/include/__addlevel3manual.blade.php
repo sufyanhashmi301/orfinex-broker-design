@@ -16,7 +16,7 @@
 
                     <form action="{{ route('admin.kyc.storeLevel3') }}" method="post" class="space-y-4">
                         @csrf
-
+                        <input type="hidden" name="kyc_sub_level_id" value="{{the_hash(5)}}">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Name:') }}</label>
                             <input type="text" name="name" value="{{ old('name') }}" class="form-control"

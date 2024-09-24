@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.user_management.index')
 @section('title')
     {{ __('Create Group') }}
 @endsection
-@section('setting-content')
+@section('user-management-content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Edit Group') }}
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-right p-5">
+                <div class="text-right py-5">
                     <button class="btn btn-dark inline-flex items-center justify-center" type="submit">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                         {{ __('Edit Group') }}

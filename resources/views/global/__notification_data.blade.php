@@ -10,7 +10,7 @@ rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-togg
             {{ __('Notifications') }}
         </h3>
         @if(count($notifications)>0)
-        <a class="text-xs font-Inter font-normal underline text-slate-500 dark:text-white"
+        <a class="loaderBtn text-xs font-Inter font-normal underline text-slate-500 dark:text-white"
             href="{{ route($notifications->first()->for.'.notification.all') }}">
             {{ __('See All') }}
         </a>
@@ -21,13 +21,10 @@ rounded-full text-[20px] flex flex-col items-center justify-center" data-bs-togg
         {{--        {{dd($notifications)}}--}}
         @foreach($notifications as $notification)
             <div class="single-noti text-slate-600 dark:text-slate-300 block w-full px-4 py-2 text-sm">
-                <a href="{{ route($notification->for.'.read-notification', $notification->id) }}"
-                   class="flex ltr:text-left rtl:text-right" @class(['read' => $notification->read ])>
+                <a href="{{ route($notification->for.'.read-notification', $notification->id) }}" class="loaderBtn flex ltr:text-left rtl:text-right" @class(['read' => $notification->read ])>
                 <div class="icon flex-none ltr:mr-3 rtl:ml-3">
                     <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
-                        <iconify-icon class="text-slate-800 dark:text-white text-lg"
-                                      icon-name="{{ $notification->icon }}"
-                                      icon="lucide:{{ $notification->icon }}"></iconify-icon>
+                        <iconify-icon class="text-slate-800 dark:text-white text-lg" icon-name="{{ $notification->icon }}" icon="lucide:{{ $notification->icon }}"></iconify-icon>
                     </div>
                 </div>
                 <div class="content flex-1">

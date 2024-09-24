@@ -5,6 +5,7 @@
         <form action="{{ route('user.send-money.internal-now') }}" method="post">
             @csrf
             <input type="hidden" name="target_type" id="selectedAccountType" value="">
+            <input type="hidden" name="receiver_type" id="selectedReceiverAccountType" value="">
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
@@ -16,15 +17,13 @@
                             <div class="input-area relative mb-5">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Account From:') }}</label>
                                 <div class="input-group select2-lg">
-                                    <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
+                                    <select id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                                         <option selected disabled>--{{ __('Select Account') }}--</option>
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
+                                            <option value="{{ the_hash($forexAccount->login) }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
-                                        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ib_login))
-                                            @include('frontend::common.include.__ib_dropdown' )
-                                        @endif
-                                        <option  value="profit_wallet" data-type="wallet" class="inline-block font-Inter font-normal text-sm text-slate-600" >{{ __('Profit Wallet').' ('. $user->profit_balance.' '.$currency .')' }}</option>
+                                        @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
+
                                     </select>
                                 </div>
                             </div>
@@ -32,11 +31,12 @@
                             <div class="input-area relative mb-5">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Account To:') }}</label>
                                 <div class="input-group select2-lg">
-                                    <select  id="receiverTradingAccount" name="receiver_account" class="select2 form-control !text-lg w-full mt-2 py-2">
+                                    <select id="receiverTradingAccount" name="receiver_account" class="select2 form-control !text-lg w-full mt-2 py-2">
                                         <option selected disabled>--{{ __('Select Account') }}--</option>
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
+                                            <option value="{{ the_hash($forexAccount->login) }}" data-type="forex">{{ $forexAccount->login }} - {{ $forexAccount->account_name }}({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
+                                        @include('frontend::wallet.include.__specific-wallet-dropdown', ['target_id_name' => 'receiver_account', 'wallet_type' => \App\Enums\AccountBalanceType::MAIN])
                                     </select>
                                 </div>
                             </div>
@@ -118,6 +118,20 @@
 @section('script')
 
     <script>
+
+        $('#tradingAccount').on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            var selectedAccountType = selectedOption.data('type');
+            $('#selectedAccountType').val(selectedAccountType);  // Set the selected account type
+        });
+
+        $('#receiverTradingAccount').on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            var selectedReceiverAccountType = selectedOption.data('type');
+            $('#selectedReceiverAccountType').val(selectedReceiverAccountType);  // Set the selected receiver account type
+        });
+
+
         $('.userAccountCheck').on('change',function (e) {
             "use strict"
             var account = $(this).val();

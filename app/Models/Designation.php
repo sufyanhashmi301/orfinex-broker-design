@@ -12,7 +12,7 @@ class Designation extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Designation::class, 'parent_id');
+        return $this->belongsTo(Designation::class, 'parent_id', 'id');
     }
 
     public function children()

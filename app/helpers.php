@@ -85,6 +85,56 @@ if (!function_exists('get_user_account')) {
         return $account;
     }
 }
+if (!function_exists('get_user_account_by_wallet_id')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_user_account_by_wallet_id($walletId, $userId=null)
+    {
+        // Attempt to retrieve the account.
+        $account = Account::where('wallet_id', $walletId);
+        if($userId)
+            $account->where('user_id', $userId);
+
+        $account = $account->first();
+        return $account;
+    }
+}
+if (!function_exists('get_all_wallets')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function get_all_wallets($userId,$balance = null)
+    {
+        // Attempt to retrieve the account.
+        $accounts = Account::where('user_id', $userId);
+        if($balance){
+            $accounts->where('balance',$balance);
+        }
+        if($count = $accounts->count() ==  0){
+            get_user_account($userId);
+            $accounts = Account::where('user_id', $userId);
+            if($balance){
+                $accounts->where('balance',$balance);
+            }
+        }
+        $accounts = $accounts->get();
+
+        return $accounts;
+    }
+}
 
 /**
  * Generates a unique 10-character alphanumeric ID.
@@ -383,14 +433,9 @@ if (!function_exists('getCountries')) {
 
     function getCountries()
     {
-        $countries = json_decode(file_get_contents(resource_path() . '/json/CountryCodes.json'), true);
+        $countries = \App\Models\Country::where('status',1)->get();
 
-        $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
-
-        $filteredCountries = collect($countries)->reject(function ($country) use ($excludedCountries) {
-            return in_array($country["name"], $excludedCountries);
-        })->values();
-        return $filteredCountries;
+        return $countries;
     }
 }
 if (!function_exists('getCountryCode')) {
@@ -471,13 +516,13 @@ if (!function_exists('getLocation')) {
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
-            return $value['code'] == $location['countryCode'];
+            return $value['country_code'] == $location['countryCode'];
         });
-//dd($location,$currentCountry);
+//dd($location,$currentCountry,getCountries());
         $location = [
             'country_code' => $currentCountry['code'] ?? '00',
             'name' => $currentCountry['name'] ?? 'Not found',
-            'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
+            'dial_code' => $currentCountry['dial_code'] ?? '+971',
             'ip' => $location['query'] ?? [],
         ];
 //dd( new \Illuminate\Support\Fluent($location));
@@ -981,15 +1026,18 @@ if (!function_exists('get_mt5_account')) {
      */
     function get_mt5_account($login)
     {
-        try {
-            return DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-            return null;
+        if(isset($login) && $login > 0) {
+            try {
+                return DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+            } catch (\Exception $e) {
+                \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
+                return null;
+            }
         }
+        return null;
     }
 }
 if (!function_exists('get_mt5_account_balance')) {
@@ -1003,6 +1051,7 @@ if (!function_exists('get_mt5_account_balance')) {
      */
     function get_mt5_account_balance($login)
     {
+        if(isset($login) && $login > 0) {
         try {
             $mt5Account = DB::connection('mt5_db')
                 ->table('mt5_accounts')
@@ -1013,6 +1062,8 @@ if (!function_exists('get_mt5_account_balance')) {
             \Log::error('MT5 DB connection failed when retrieving balance: ' . $e->getMessage());
             return 0.0;
         }
+    }
+        return 0.0;
     }
 }
 
@@ -1027,16 +1078,19 @@ if (!function_exists('get_mt5_account_equity')) {
      */
     function get_mt5_account_equity($login)
     {
-        try {
-            $mt5Account = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-            return $mt5Account ? $mt5Account->Equity : 0.0;
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
-            return 0.0;
+        if(isset($login) && $login > 0) {
+            try {
+                $mt5Account = DB::connection('mt5_db')
+                    ->table('mt5_accounts')
+                    ->where('Login', $login)
+                    ->first();
+                return $mt5Account ? $mt5Account->Equity : 0.0;
+            } catch (\Exception $e) {
+                \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
+                return 0.0;
+            }
         }
+        return 0.0;
     }
 }
 
@@ -1051,8 +1105,29 @@ if (!function_exists('mt5_total_balance')) {
      * @version 1.0.0
      * @since 1.0
      */
+
+
     function mt5_total_balance($user_id)
     {
+        // Define a cache key for the database connection status
+        $cacheKey = 'mt5_db_connection_status';
+
+        // Check if the database is marked as unavailable
+        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
+            // Return 0 immediately without attempting to connect
+            return 0;
+        }
+
+        // Attempt to establish a database connection
+        try {
+            DB::connection('mt5_db')->getPdo();
+        } catch (\PDOException $e) {
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+            Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
+            return 0;
+        }
+
+        // Proceed with your query since the connection is established
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)
@@ -1072,12 +1147,9 @@ if (!function_exists('mt5_total_balance')) {
                 ->sum('Balance');
 
             return $totalBalance;
-
         } catch (\Exception $e) {
-            // Log the error message for debugging
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-
-            // Return 0 in case of any failure
+            // Handle other exceptions if necessary
+            \Log::error('An error occurred: ' . $e->getMessage());
             return 0;
         }
     }
@@ -1094,6 +1166,22 @@ if (!function_exists('mt5_total_equity')) {
      */
     function mt5_total_equity($user_id)
     {
+        $cacheKey = 'mt5_db_connection_status';
+
+        // Check if the database is marked as unavailable
+        if (Cache::has($cacheKey) && Cache::get($cacheKey) === 'down') {
+            // Return 0 immediately without attempting to connect
+            return 0;
+        }
+
+        // Attempt to establish a database connection
+        try {
+            DB::connection('mt5_db')->getPdo();
+        } catch (\PDOException $e) {
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+            Cache::put($cacheKey, 'down', now()->addMinutes(10)); // Adjust the duration as needed
+            return 0;
+        }
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)
@@ -1135,6 +1223,7 @@ if (!function_exists('mt5_total_credit')) {
      */
     function mt5_total_credit($user_id)
     {
+
         try {
             // Fetch the forex account logins for the user
             $forexAccounts = ForexAccount::where('user_id', $user_id)

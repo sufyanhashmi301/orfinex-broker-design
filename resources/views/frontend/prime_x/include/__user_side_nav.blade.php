@@ -1,6 +1,6 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
-    <a href="{{route('home')}}" class="items-center md:flex hidden">
+    <a href="{{route('home')}}" class="loaderBtn items-center md:flex hidden">
         <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
         <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
     </a>
@@ -36,7 +36,7 @@
     </button>
 
     <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
-        <a href="{{ route('user.ranking-badge') }}" class="inline-flex btn btn-outline-dark btn-sm">
+        <a href="{{ route('user.ranking-badge') }}" class="loaderBtn inline-flex btn btn-outline-dark btn-sm">
             {{ __('Ranking Badge') }}
         </a>
         <form method="POST" action="{{ route('logout') }}" id="logout-form">
@@ -50,10 +50,10 @@
     </div>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
         <li>
-            <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
+            <a href="{{route('user.dashboard')}}" class="navItem loaderBtn {{ isActive('user.dashboard') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:home"></iconify-icon>
                     <span>{{ __('Dashboard') }}</span>
@@ -62,7 +62,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.wallet.index') }}" class="navItem {{ isActive('user.wallet*') }}">
+            <a href="{{ route('user.wallet.index') }}" class="navItem loaderBtn {{ isActive('user.wallet*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="solar:wallet-linear"></iconify-icon>
                     <span>{{ __('Wallets') }}</span>
@@ -71,7 +71,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.forex-account-logs') }}" class="navItem {{ isActive('user.forex*') }}">
+            <a href="{{ route('user.forex-account-logs') }}" class="navItem loaderBtn {{ isActive('user.forex*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
                     <span>{{ __('My Accounts') }}</span>
@@ -80,7 +80,7 @@
         </li>
 
         <li>
-            <a href="{{route('user.schema')}}" class="navItem {{ isActive('user.schema*') }}">
+            <a href="{{route('user.schema')}}" class="navItem loaderBtn {{ isActive('user.schema*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
                     <span>{{ __('New Account') }}</span>
@@ -89,8 +89,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.deposit.amount') }}"
-               class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
+            <a href="{{ route('user.deposit.amount') }}" class="navItem loaderBtn @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
                     <span>{{ __('Deposit') }}</span>
@@ -99,7 +98,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.transfer') }}" class="navItem {{ isActive('user.transfer') }}">
+            <a href="{{ route('user.transfer') }}" class="navItem loaderBtn {{ isActive('user.transfer') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
                     <span>{{ __('Transfer') }}</span>
@@ -108,8 +107,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.withdraw.view') }}"
-               class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+            <a href="{{ route('user.withdraw.view') }}" class="navItem loaderBtn @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
                     <span>{{ __('Withdraw') }}</span>
@@ -117,32 +115,14 @@
             </a>
         </li>
         @if(setting('copy_trading', 'features'))
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-              <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="solar:graph-up-broken"></iconify-icon>
-                <span>{{ __('Copy Trading') }}</span>
-              </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('user.follower_access') }}" class="{{ isActive('user.follower_access') }}">
-                        {{ __('Follower Access') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.provider_access') }}" class="{{ isActive('user.provider_access') }}">
-                        {{ __('Provider Access') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.ratings') }}" class="{{ isActive('user.ratings') }}">
-                        {{ __('Ratings') }}
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li>
+                <a href="{{ route('user.follower_access') }}" class="navItem loaderBtn {{ isActive('user.follower_access') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="solar:graph-up-broken"></iconify-icon>
+                    <span>{{ __('Copy Trading') }}</span>
+                </span>
+                </a>
+            </li>
         @endif
         <li class="">
             <a href="javascript:void(0);" class="navItem">
@@ -154,27 +134,27 @@
             </a>
             <ul class="sidebar-submenu">
                 <li>
-                    <a href="{{ route('user.transactions') }}" class="{{ isActive('user.transactions') }}">
+                    <a href="{{ route('user.transactions') }}" class="loaderBtn {{ isActive('user.transactions') }}">
                         {{ __('All History') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('user.deposit.log') }}" class="{{ isActive('user.deposit.log') }}">
+                    <a href="{{ route('user.deposit.log') }}" class="loaderBtn {{ isActive('user.deposit.log') }}">
                         {{ __('Deposits') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('user.withdraw.log') }}" class="{{ isActive('user.withdraw.log') }}">
+                    <a href="{{ route('user.withdraw.log') }}" class="loaderBtn {{ isActive('user.withdraw.log') }}">
                         {{ __('Withdrawals') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">
+                    <a href="{{ route('user.send-money.log') }}" class="loaderBtn {{ isActive('user.send-money.log') }}">
                         {{ __('Transfer Log') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
+                    <a href="{{ route('user.forex.transactions') }}" class="loaderBtn {{ isActive('user.forex.transactions') }}">
                         {{ __('Accounts History') }}
                     </a>
                 </li>
@@ -183,7 +163,7 @@
 
         @if(setting('sign_up_referral','permission'))
             <li>
-                <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">
+                <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
                         <span>{{ __('Partner Area') }}</span>
@@ -193,7 +173,7 @@
         @endif
 
         <li>
-            <a href="{{ route('user.setting.profile') }}" class="navItem {{ isActive('user.setting*') }}">
+            <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn {{ isActive('user.setting*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
                     <span>{{ __('Settings') }}</span>
@@ -201,7 +181,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('user.ticket.index') }}" class="navItem {{ isActive('user.ticket*') }}">
+            <a href="{{ route('user.ticket.index') }}" class="navItem loaderBtn {{ isActive('user.ticket*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:support"></iconify-icon>
                     <span>{{ __('Support Tickets') }}</span>
@@ -210,16 +190,14 @@
         </li>
 
         <li>
-            <a href="javascript:;" id="themeMood" class="navItem">
+            <a href="javascript:;" id="themeMood" class="navItem loaderBtn">
                 <span class="dark:flex items-center hidden">
-                    <iconify-icon class="nav-icon" id="sunIcon"
-                                  icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
-                    <span>Light Mode</span>
+                    <iconify-icon class="nav-icon" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    <span>{{ __('Light Mode') }}</span>
                 </span>
                 <span class="dark:hidden flex items-center">
-                    <iconify-icon class="nav-icon" id="moonIcon"
-                                  icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
-                    <span>Dark Mode</span>
+                    <iconify-icon class="nav-icon" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                    <span>{{ __('Dark Mode') }}</span>
                 </span>
             </a>
         </li>

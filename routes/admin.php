@@ -54,6 +54,7 @@ use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,7 +68,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //Route::group(['middleware' => [ '2fa']], function () {
-Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function () {
+Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])->group(function () {
 //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -90,6 +91,8 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
+        Route::post('store', 'store')->name('store');
+        Route::post('kyc/{id}', 'kyc')->name('kyc');
 
     });
 
@@ -268,6 +271,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 //===============================  site Settings ==================================
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
+        Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
@@ -325,6 +329,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('language-sync-missing', [LanguageController::class, 'syncMissing'])->name('language-sync-missing');
 
     Route::get('email-template', [EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('email-template/create', [EmailTemplateController::class, 'create'])->name('email-template-create');
     Route::get('email-template/user', [EmailTemplateController::class, 'userTemplate'])->name('email-template.user');
     Route::get('email-template-edit/{id}', [EmailTemplateController::class, 'edit'])->name('email-template-edit');
     Route::post('email-template-update', [EmailTemplateController::class, 'update'])->name('email-template-update');
@@ -426,6 +431,11 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.setting.platform_api.db-synchronization');
     })->name('platform_api.db-synchronization');
 
+
+    Route::get('announcements', function () {
+        return view('backend.announcements.index');
+    })->name('announcements');
+
     Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
@@ -438,8 +448,19 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
     Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
+
+    Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
+    Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');
+    Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
+    Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
+    Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
+    Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
 
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+
+;

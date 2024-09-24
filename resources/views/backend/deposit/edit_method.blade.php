@@ -1,4 +1,4 @@
-@extends('backend.deposit.index')
+@extends('backend.setting.payment.deposit.index')
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
@@ -11,7 +11,7 @@
 
 @endsection
 
-@section('deposit_content')
+@section('deposit-content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
@@ -265,7 +265,7 @@
     </div>
 @endsection
 
-@section('script')
+@section('payment-script')
     <script>
 
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));

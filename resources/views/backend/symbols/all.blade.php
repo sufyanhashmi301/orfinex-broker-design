@@ -12,6 +12,49 @@
         {{ __('Symbol Groups') }}
     </a>
 @endsection
+@section('filters')
+    <form id="filter-form" method="POST" action="">
+        @csrf
+        <div class="flex justify-between flex-wrap items-center">
+            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Symbol Name">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="contact_size" id="contact_size" class="form-control h-full" placeholder="Contact Size">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="path" id="path" class="form-control h-full" placeholder="Path">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a status') }}">
+                        <option value="1">{{ __('Enabled') }}</option>
+                        <option value="0">{{ __('Disabled') }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="input-area relative">
+                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+@endsection
 @section('symbol-groups-content')
     <div class="card">
         <div class="card-body relative px-6 pt-3">
@@ -54,7 +97,7 @@
     </div>
 
 @endsection
-@section('script')
+@section('symbol-groups-script')
     <script>
         (function ($) {
             "use strict";
@@ -65,6 +108,7 @@
                 dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 searching: false,
                 lengthChange: false,
+                pageLength: 250,
                 info: true,
                 language: {
                     lengthMenu: "Show _MENU_ entries",

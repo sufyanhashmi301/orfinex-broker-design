@@ -33,6 +33,11 @@ class SettingController extends Controller
 
     }
 
+    public static function index()
+    {
+        return view('backend.setting.index');
+    }
+
     /**
      * @return Application|Factory|View
      */
@@ -204,6 +209,7 @@ class SettingController extends Controller
     public function  webterminalSetting(){
         return view('backend.setting.platform_api.webterminal');
     }
+
     public function testDatabaseConnection(Request $request)
     {
         $credentials = [

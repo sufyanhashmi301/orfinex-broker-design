@@ -79,7 +79,7 @@
     </div>
 @include('backend.customer_groups.include.__delete')
 @endsection
-@section('setting-script')
+@section('user-management-script')
     <script>
         $('.deleteCustomerGroup').on('click',function (e) {
             "use strict";

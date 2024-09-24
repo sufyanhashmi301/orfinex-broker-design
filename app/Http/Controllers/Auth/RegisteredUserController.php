@@ -130,6 +130,7 @@ class RegisteredUserController extends Controller
         $googleReCaptcha = plugin_active('Google reCaptcha');
 //        dd('s');
         $location = getLocation();
+//        dd($location);
 
         return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data'));
     }

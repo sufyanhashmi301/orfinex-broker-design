@@ -55,7 +55,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa', 'isActive','payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -217,6 +217,7 @@ Route::group(['controller' => StatusController::class, 'prefix' => 'status', 'as
 Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::class], function () {
     Route::post('coinpayments', 'coinpaymentsIpn')->name('coinpayments');
     Route::post('nowpayments', 'nowpaymentsIpn')->name('nowpayments');
+    Route::post('bridgerpay', 'bridgerpayIpn')->name('bridgerpay');
     Route::post('cryptomus', 'cryptomusIpn')->name('cryptomus');
     Route::get('paypal', 'paypalIpn')->name('paypal');
     Route::post('mollie', 'mollieIpn')->name('mollie');
@@ -326,7 +327,7 @@ Route::get('user/follower_access', function () {
 })->name('user.follower_access')->middleware('secure_header');
 
 Route::get('user/ratings', function () {
-    return view('frontend.prime_x.copy_trading.ratings');
+    return view('frontend::copy_trading.ratings');
 })->name('user.ratings')->middleware('secure_header');
 
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
@@ -344,7 +345,17 @@ Route::get('user/partner/clients', function () {
     return view('frontend::partner.clients');
 });
 
+Route::get('user/notify/success', function () {
+    return view('frontend::common.success');
+});
 
+Route::get('user/notify/canceled', function () {
+    return view('frontend::common.canceled');
+});
+
+Route::get('user/notify/failed', function () {
+    return view('frontend::common.error');
+});
 
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');

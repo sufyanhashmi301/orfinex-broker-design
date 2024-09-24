@@ -6,7 +6,7 @@ use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
-use App\Models\Kyclevel;
+use App\Models\KycLevel;
 use App\Models\Kyclevelsetting;
 use App\Models\KycSubLevel;
 use App\Models\User;
@@ -70,7 +70,7 @@ class KycController extends Controller
 //
 //            return redirect()->back();
 //        }
-//        $kycLevel = Kyclevel::where('slug','level-2')->first();
+//        $kycLevel = KycLevel::where('slug','level-2')->first();
 //        $data = [
 //            'kyc_level_id' => $kycLevel->id,
 //            'name' => $input['name'],
@@ -104,7 +104,7 @@ class KycController extends Controller
 
             return redirect()->back();
         }
-        $kycLevel = Kyclevel::where('slug',KycLevelSlug::LEVEL2)->first();
+        $kycLevel = KycLevel::where('slug',KycLevelSlug::LEVEL2)->first();
         $data = [
             'kyc_sub_level_id' => get_hash($input['kyc_sub_level_id']),
             'name' => $input['name'],
@@ -122,8 +122,8 @@ class KycController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-
             'name' => 'required|unique:kycs,name',
+            'kyc_sub_level_id' => 'required',
             'status' => 'required',
             'fields' => 'required',
         ]);
@@ -132,22 +132,14 @@ class KycController extends Controller
 
             return redirect()->back();
         }
-        $kycLevel = Kyclevel::where('slug',KycLevelSlug::LEVEL3)->first();
+        $kycLevel = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $data = [
-            'kyc_level_id' => $kycLevel->id,
+            'kyc_sub_level_id' => get_hash($input['kyc_sub_level_id']),
             'name' => $input['name'],
             'status' => $input['status'],
             'fields' => json_encode($input['fields']),
         ];
-
         $kyc = Kyc::create($data);
-        $kycSettings = new Kyclevelsetting();
-        $kycSettings->title = $input['name'];
-        $kycSettings->unique_code = 'manual';
-        $kycSettings->kyc_level_id = $kycLevel->id;
-        $kycSettings->kyc_id = $kyc->id;
-        $kycSettings->status = true;
-        $kycSettings->save();
         notify()->success($kyc->name.' '.__(' KYC Created'));
 
         return redirect()->back();
@@ -159,7 +151,7 @@ class KycController extends Controller
      */
     public function create()
     {
-        $levels = Kyclevel::orderBy('id','desc')->get();
+        $levels = KycLevel::orderBy('id','desc')->get();
         return view('backend.kyc.create',get_defined_vars());
     }
 
@@ -234,9 +226,8 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('is_level_3_completed', 0)
-            ->where('kyc_credential_level3','!=',NULL)
-            ->where('kyc_level3', KYCStatus::Pending->value)
+            $data = User::where('kyc_level3_credential','!=',NULL)
+            ->where('kyc', KYCStatus::PendingLevel3->value)
             ->latest('updated_at');
             //->get();
 
@@ -267,7 +258,7 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = User::where('kyc', KYCStatus::Failed->value)->latest();
+            $data = User::where('kyc', KYCStatus::Rejected->value)->latest();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -300,11 +291,11 @@ class KycController extends Controller
     public function depositActionLevel3($id)
     {
         $user = User::find($id);
-        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        $kycCredential = json_decode($user->kyc_level3_credential, true);
         unset($kycCredential['kyc_type_of_name']);
         unset($kycCredential['kyc_time_of_time']);
 
-        $kycStatus = $user->kyc_level3;
+        $kycStatus = $user->kyc;
 
         return view('backend.kyc.include.__kyc_data_level3', compact('kycCredential', 'id', 'kycStatus'))->render();
     }
@@ -314,25 +305,16 @@ class KycController extends Controller
     public function actionNow(Request $request)
     {
 
+//        dd($request->all());
         $input = $request->all();
         $user = User::find($input['id']);
-        $kycLevel3Status = Kyclevel::where('slug',KycLevelSlug::LEVEL3)->first();
+//        $kycLevel3Status = KycLevel::where('slug',KycLevelSlug::LEVEL3)->first();
         $kycCredential = json_decode($user->kyc_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
-        if($kycLevel3Status->status==1){
-            $user->update([
-
-               'kyc_credential' => $kycCredential,
-               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
-           ]);
-        }else{
             $user->update([
                 'kyc' => $input['status'],
                'kyc_credential' => $kycCredential,
-               'is_level_2_completed' => $input['status'] == 1 ? 1 : 0,
            ]);
-        }
-
 
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
@@ -353,19 +335,14 @@ class KycController extends Controller
     }
     public function actionLevel3Now(Request $request)
     {
-
         $input = $request->all();
-
         $user = User::find($input['id']);
-        $kycCredential = json_decode($user->kyc_credential_level3, true);
+        $kycCredential = json_decode($user->kyc_level3_credential, true);
         $kycCredential = array_merge($kycCredential, ['Action Message' => $input['message']]);
         $user->update([
             'kyc' => $input['status'],
-            'kyc_credential_level3' => $kycCredential,
-            'is_level_3_completed' => $input['status'] == 1 ? 1 : 0,
-            'kyc_level3' => $input['status'],
+            'kyc_level3_credential' => $kycCredential,
         ]);
-
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[email]]' => $user->email,

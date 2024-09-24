@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RiskProfileTagsUser extends Model
 {
-	protected $table = 'risk_profile_tags_users';
+	protected $table = 'risk_profile_tag_user';
 
 	protected $casts = [
 		'user_id' => 'int',

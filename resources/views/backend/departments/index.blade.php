@@ -21,6 +21,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Parent Category') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -44,7 +45,7 @@
     @include('backend.departments.include.__edit')
     <!-- Modal for Delete deleteDepartment-->
 @endsection
-@section('setting-script')
+@section('organization-script')
     <script>
         (function ($) {
             "use strict";
@@ -72,6 +73,7 @@
                 ajax: "{{ route('admin.departments.index') }}",
                 columns: [
                     {data: 'name', name: 'name',orderable : false},
+                    {data: 'parent_category', name: 'parent_category',orderable : false},
                     {data: 'status', name: 'status',orderable : false},
                     {data: 'action', name: 'action',orderable : false},
                 ]

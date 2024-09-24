@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
-use App\Models\Kyclevel;
+use App\Models\KycLevel;
 use App\Models\Kyclevelsetting;
 use App\Models\KycSubLevel;
 use App\Models\Plugin;
@@ -49,7 +49,7 @@ class KYCLevelsController extends Controller
      */
     public function index(Request $request)
     {
-        $kycLevels = Kyclevel::paginate(10);
+        $kycLevels = KycLevel::paginate(10);
         return view('backend.kyc_levels.index', compact('kycLevels'));
     }
 
@@ -109,14 +109,17 @@ class KYCLevelsController extends Controller
      */
     public function edit($id)
     {
-        $kycLevel = Kyclevel::find($id);
+        $kycLevel = KycLevel::find($id);
         $kycSubLevels = KycSubLevel::with('kycs')
             ->where('kyc_level_id', $id)
 //            ->where('status', true)
             ->get();
 //        if($kycLevel=='level-2' && $kycSubLevels['name'] == 'Automatic')
         $level2Show = true;
-        $manulKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+//        dd($level2Show);
+        $level2ManualKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+        $level3ManualKycs = Kyc::where('kyc_sub_level_id', 5)->get();
+//        dd($level3ManualKycs);
         $sumsub = Plugin::findOrFail(8);
         return view('backend.kyc_levels.edit', get_defined_vars());
 

@@ -11,7 +11,7 @@ class BannerController extends Controller
     public function index()
     {
         $banners = Banner::all();
-        return view('backend.theme.template', compact('banners'));
+        return view('backend.setting.banner.index', compact('banners'));
     }
 
     public function update(Request $request, $id)

@@ -19,21 +19,18 @@
                         </span>
                     </div>
                     <div class="dropdown relative">
-                        <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                            <span
-                                class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
+                        <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
                                 <iconify-icon icon="bi:three-dots-vertical"></iconify-icon>
                             </span>
                         </button>
-                        <ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                        {{--<ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
                             <li>
-                                <a href=""
-                                   class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-account-info">
+                                <a href="" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-account-info">
                                     {{ __('Submenu') }}
                                 </a>
                             </li>
-                        </ul>
+                        </ul>--}}
                     </div>
                 </div>
                 <div class="mb-5">
@@ -45,23 +42,17 @@
                     </div>
                 </div>
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.deposit.amount')}}">
-                    <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                    <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                          icon="hugeicons:credit-card-pos"></iconify-icon>
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="hugeicons:credit-card-pos"></iconify-icon>
                             <span>{{ __('Deposit') }}</span>
                         </span>
-                    </button>
                     </a>
-                    <a href="{{route('user.withdraw.view')}}">
-                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                    <a href="{{route('user.withdraw.view')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                          icon="mingcute:refund-dollar-line"></iconify-icon>
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mingcute:refund-dollar-line"></iconify-icon>
                             <span>{{ __('Withdraw') }}</span>
                         </span>
-                        </button>
                     </a>
                 </div>
             </div>
@@ -78,51 +69,40 @@
                         </span>
                     </div>
                     <div class="dropdown relative">
-                        <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                            <span
-                                class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
+                        <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
                                 <iconify-icon icon="bi:three-dots-vertical"></iconify-icon>
                             </span>
                         </button>
-                        <ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                        {{--<ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
                             <li>
-                                <a href=""
-                                   class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-account-info">
+                                <a href="" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-account-info">
                                     {{ __('Submenu') }}
                                 </a>
                             </li>
-                        </ul>
+                        </ul>--}}
                     </div>
                 </div>
                 <div class="mb-5">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                         IB-{{ data_get($ibWallet,'wallet_id') }}
-
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
                         {{ data_get($ibWallet,'amount') }} {{$currency}}
-
                     </div>
                 </div>
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.deposit.amount')}}">
-                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                    <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                          icon="hugeicons:credit-card-pos"></iconify-icon>
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="hugeicons:credit-card-pos"></iconify-icon>
                             <span>{{ __('Deposit') }}</span>
                         </span>
-                        </button>
                     </a>
-                    <a href="{{route('user.withdraw.view')}}">
-                        <button class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                    <a href="{{route('user.withdraw.view')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                          icon="mingcute:refund-dollar-line"></iconify-icon>
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mingcute:refund-dollar-line"></iconify-icon>
                             <span>{{ __('Withdraw') }}</span>
                         </span>
-                        </button>
                     </a>
                 </div>
             </div>
@@ -130,7 +110,7 @@
         <div class="card border border-dashed h-full border-slate-200 dark:border-slate-700 p-6 mb-6">
             <div class="card-body h-full flex flex-col items-center justify-center gap-5">
                 <iconify-icon class="text-2xl" icon="ic:outline-dashboard-customize"></iconify-icon>
-                <a href="" class="btn-link">
+                <a href="" class="btn-link loaderBtn">
                     {{ __('Open Additional Acocunt') }}
                 </a>
             </div>
@@ -176,10 +156,9 @@
                                     </div>
                                 </td>
                                 <td class="table-td">
-                                        <span
-                                            class="inline-block px-3 text-center mx-auto py-1 rounded-full bg-warning-500">
-                                            {{ __('Done') }}
-                                        </span>
+                                    <span class="inline-block px-3 text-center mx-auto py-1 rounded-full bg-warning-500">
+                                        {{ __('Done') }}
+                                    </span>
                                 </td>
                                 <td class="table-td">{{ __('1.5%') }}</td>
                                 <td class="table-td">{{ __('10,000 USD') }}</td>

@@ -17,6 +17,11 @@ class Account extends Model
         'amount',
     ];
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class)->withDefault();
+    }
 	/**
      * @param $name
      * @param $echo

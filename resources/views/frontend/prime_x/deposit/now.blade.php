@@ -8,6 +8,7 @@
                     <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Enter your deposit details.') }}
                     </h4>
+
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
                             <div class="input-area relative">
@@ -16,8 +17,11 @@
                                     <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">
                                         <option selected disabled>--{{ __('Select Account') }}--</option>
                                         @foreach($forexAccounts as $forexAccount)
-                                            <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
+                                            <option value="{{the_hash($forexAccount->login) }}" data-type="forex" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>
                                         @endforeach
+                                        {{--mail wallet--}}
+                                        @include('frontend::wallet.include.__specific-wallet-dropdown', ['target_id_name' => 'target_id', 'wallet_type' => \App\Enums\AccountBalanceType::MAIN])
+
                                     </select>
                                 </div>
                             </div>
@@ -140,7 +144,12 @@
 @endsection
 @section('script')
     <script>
-
+        // Capture the account type (forex or wallet) when the user selects an account
+        $('#tradingAccount').on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            var selectedAccountType = selectedOption.data('type');
+            $('#selectedAccountType').val(selectedAccountType);  // Set the selected account type
+        });
         var globalData;
         var currency = @json($currency)
 

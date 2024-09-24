@@ -3,6 +3,7 @@
     {{ __('Partner Dashboard') }}
 @endsection
 @section('content')
+
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-700 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
             {{ __('Account Details') }}
@@ -36,7 +37,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('23,25.00 USD') }}
+                                {{ __('0.00 USD') }}
                             </h6>
                             <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
                                 +452%
@@ -54,7 +55,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('73,45.00 USD') }}
+                                {{ __('0.00 USD') }}
                             </h6>
                             <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
                                 +452%
@@ -106,7 +107,7 @@
                                 {{ __('Sales: 75%') }}
                             </span>
                         </div>
-                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
+                        <div class="bg-slate-100 darmaxLevelOrderk:bg-slate-900 p-2 rounded text-center">
                             <span class="text-slate-600 dark:text-slate-300 text-sm block">
                                 {{ __('Referral: 75%') }}
                             </span>
@@ -206,12 +207,14 @@
                     </div>
                 </div>
             </div>
+{{--            {{dd($maxLevelOrder)}}--}}
             <div class="py-6">
                 <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
                     <div class="input-area relative min-w-[184px]">
                         <select name="level_order" class="select2 form-control w-full">
-                            @for ($i = 0; $i <= $maxLevelOrder; $i++)
+
+                            @for ($i = 0; $i <= $maxLevelOrderCount; $i++)
                                 <option value="{{ $i }}">{{ __('Level ' . $i) }}</option>
                             @endfor
                         </select>

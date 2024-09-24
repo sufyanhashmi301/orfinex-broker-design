@@ -172,6 +172,58 @@ class ForexApiService
         return BigDecimal::of(0);
     }
 
+
+    // Risk Score APIs
+    public function getTotalRiskScore($data)
+    {
+        $endpoint = 'Risk/total/score';
+        return $this->post($endpoint, $data);
+    }
+
+    public function getWeekRiskScore($data)
+    {
+        $endpoint = 'Risk/week/score';
+        return $this->post($endpoint, $data);
+    }
+
+    public function getTodayRiskScore($data)
+    {
+        $endpoint = 'Risk/today/score';
+        return $this->post($endpoint, $data);
+    }
+
+    // Positions APIs
+    public function getPositionsByGroup($group)
+    {
+        $endpoint = 'Position/list/group';
+        $params = ['group' => $group];
+        return $this->get($endpoint, $params);
+    }
+
+    // Summary of Positions by Client API
+    public function getClientPositionSummary($login)
+    {
+        $endpoint = 'Position/summary';
+        $data = ['login' => $login];
+        return $this->post($endpoint, $data);
+    }
+
+    // Summary of Positions by Group API
+    public function getGroupPositionSummary($group)
+    {
+        $endpoint = 'Position/summarygroup';
+        $data = ['group' => $group];
+        return $this->post($endpoint, $data);
+    }
+// Positions by Days API
+    public function getPositionsByDays($days)
+    {
+        $endpoint = 'Position/list/positionDays';
+        $data = ['Days' => $days];
+        return $this->post($endpoint, $data);
+    }
+
+
     protected function getByBody($endpoint, $params = [])
     {
         try {

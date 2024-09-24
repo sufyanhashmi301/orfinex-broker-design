@@ -15,10 +15,10 @@ class CreateLedgersTable extends Migration
     {
         Schema::create('ledgers', function (Blueprint $table) {
             $table->id();  // Automatically creates an 'id' column as primary key.
-            $table->unsignedBigInteger('transaction_id');  // Assuming 'transaction_id' is a foreign key.
+            $table->unsignedBigInteger('transaction_id')->unique();  // Assuming 'transaction_id' is a foreign key.
             $table->unsignedBigInteger('account_id');  // Assuming 'account_id' is a foreign key.
-            $table->double('debit');  // Assuming 'debit' may need to store monetary values.
-            $table->double('credit');  // Assuming 'credit' may need to store monetary values.
+            $table->double('debit')->nullable();  // Assuming 'debit' may need to store monetary values.
+            $table->double('credit')->nullable();  // Assuming 'credit' may need to store monetary values.
             $table->double('balance');  // Assuming 'balance' may need to store monetary values.
             $table->timestamps();  // Automatically creates 'created_at' and 'updated_at' columns.
         });

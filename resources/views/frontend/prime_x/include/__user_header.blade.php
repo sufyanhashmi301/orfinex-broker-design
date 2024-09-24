@@ -22,26 +22,33 @@
                     </ul>
                 </div>
             </div>--}}
+            <div class="flex items-center md:space-x-4 space-x-2 mr-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
+                <a href="index.html" class="mobile-logo xl:hidden inline-block active">
+                    <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo" alt="logo">
+                    <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo" alt="logo">
+                </a>
+                <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
+                    <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
+                </button>
+            </div>
             @if(Route::is(['user.follower_access', 'user.provider_access', 'user.ratings']))
-                <div class="copy-trading__menu">
-                    <ul class="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none border-b-0 pl-0">
-                        <li class="nav-item">
-                            <a href="{{ route('user.follower_access') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize px-4 dark:text-slate-300 {{ isActive('user.follower_access') }}">
-                                {{ __('Follower Access') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('user.provider_access') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize px-4 dark:text-slate-300 {{ isActive('user.provider_access') }}">
-                                {{ __('Provider Access') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('user.ratings') }}" class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize px-4 dark:text-slate-300 {{ isActive('user.ratings') }}">
-                                {{ __('Ratings') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
+                    <li class="nav-item">
+                        <a href="{{ route('user.follower_access') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.follower_access') }}">
+                            {{ __('Follower Access') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('user.provider_access') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.provider_access') }}">
+                            {{ __('Provider Access') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('user.ratings') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.ratings') }}">
+                            {{ __('Ratings') }}
+                        </a>
+                    </li>
+                </ul>
             @else
                 @if(setting('is_webterminal','global'))
                     <a href="{{ route('webterminal') }}" class="block loaderBtn lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">

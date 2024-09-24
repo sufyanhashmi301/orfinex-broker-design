@@ -6,6 +6,11 @@
     {{ __('Platform API Settings') }}
 @endsection
 @section('setting-content')
+    <?php
+    $section = 'platform_api';
+    $fields = config('setting.platform_api');
+    //   dd($fields);
+    ?>
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
@@ -13,9 +18,9 @@
     </div>
     <div class="card">
         <div class="card-body p-6">
-            <form action="{{ route('admin.settings.update') }}" method="post">
-                @csrf
-                <input type="hidden" name="section" value="platform_api">
+            @include('backend.setting.site_setting.include.form.__open_action')
+
+{{--            <input type="hidden" name="section" value="platform_api">--}}
                 <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('MT5 Server APi URL - Primary') }}</label>

@@ -1,11 +1,17 @@
 @switch($status)
     @case('pending')
-        <div class="site-badge pending">{{ __('Pending') }}</div>
+        <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">
+            {{ __('Pending') }}
+        </div>
         @break
     @case('success')
-        <div class="site-badge success">{{ __('Success') }}</div>
+        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+            {{ __('Success') }}
+        </div>
         @break
     @case('failed')
-        <div class="site-badge danger">{{ __('Cancelled') }}</div>
+        <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+            {{ __('Cancelled') }}
+        </div>
         @break
 @endswitch

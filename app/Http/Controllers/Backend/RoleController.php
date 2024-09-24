@@ -34,7 +34,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::all();
+        $roles = Role::paginate(10);
 
         return view('backend.roles.index', compact('roles'));
     }
@@ -122,6 +122,19 @@ class RoleController extends Controller
 
         $role->syncPermissions($request->input('permission'));
         notify()->success('Role updated successfully');
+
+        return redirect()->back();
+    }
+    public function destroy($id)
+    {
+        $role = Role::findOrFail($id);
+        if ($role->users()->exists()) {
+            notify()->error('Cannot delete role because there are users associated with it.');
+            return redirect()->back();
+        }
+        $role->delete();
+
+        notify()->success('role deleted successfully');
 
         return redirect()->back();
     }

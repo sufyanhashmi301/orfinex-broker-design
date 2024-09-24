@@ -31,7 +31,7 @@ class RankingController extends Controller
      */
     public function index()
     {
-        $rankings = Ranking::all();
+        $rankings = Ranking::paginate(10);
 
         return view('backend.ranking.index', compact('rankings'));
     }

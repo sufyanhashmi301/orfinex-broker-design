@@ -1,108 +1,88 @@
 @extends('backend.theme.index')
-@section('theme-title')
+@section('title')
     {{ __('Global Settings') }}
 @endsection
 @section('theme-content')
-    <div class="col-xl-8 col-lg-8 col-md-12 col-12">
-        <div class="site-card">
-            <div class="site-card-header">
-                <h3 class="title">{{ __('Global Settings') }}</h3>
-            </div>
-            <div class="site-card-body">
-                <form action="">
-                    <div class="site-input-groups row">
-                        <label for="" class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
-                            {{ __('App Title') }}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="info" icon-name="info" data-bs-toggle="tooltip" title="" data-bs-original-title="Site Title will show on Breadcrumb" class="lucide lucide-info">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M12 16v-4"></path>
-                                <path d="M12 8h.01"></path>
-                            </svg>
-                        </label>
-                        <div class="col-xl-8 col-lg-8 col-md-9 col-12">
-                            <input type="text" name="title" class="box-input" placeholder="App title">
-                        </div>
+    <?php
+        $section = 'theme';
+        $fields = config('setting.theme');
+        //   dd($fields);
+    ?>
+
+    <div class="card">
+        <div class="card-body p-6">
+            <div class="space-y-5">
+                @include('backend.setting.site_setting.include.form.__open_action')
+                    <div class="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-7">
+                        @foreach( $fields['elements'] as $key => $field)
+                            @if($field['type'] == 'file')
+                                <div class="lg:col-span-2">
+                                    <div class="input-area">
+                                        <label class="form-label">
+                                            <div class="flex items-center">
+                                                {!! __($field['label']) !!}
+                                            </div>
+                                        </label>
+                                        <div class="wrap-custom-file {{ $errors->has($field['name']) ? 'has-error' : '' }}">
+                                            <input
+                                                type="{{$field['type']}}"
+                                                name="{{$field['name']}}"
+                                                id="{{$field['name']}}"
+                                                value="{{ oldSetting($field['name'],$section) }}"
+                                                accept=".jpeg, .jpg, .png"
+                                            />
+                                            <label for="{{ __($field['name']) }}" class="file-ok"
+                                                style="background-image: url( {{asset(oldSetting($field['name'],$section)) }} )">
+                                                <img
+                                                    class="upload-icon"
+                                                    src="{{ asset('global/materials/upload.svg') }}"
+                                                    alt=""
+                                                />
+                                                <span>
+                                                    <div class="flex items-center">
+                                                        Upload {!! __($field['label']) !!}
+                                                    </div>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($field['type'] == 'color')
+                                <div class="lg:col-span-3">
+                                    <div class="input-area">
+                                        <label for="" class="form-label">
+                                            {{ __($field['label']) }}
+                                        </label>
+                                        <div class="relative">
+                                            <input type="" name="" class="form-control" value="{{ oldSetting($field['name'],$section) }}">
+                                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
+                                                <input
+                                                    type="{{$field['type']}}"
+                                                    name="{{$field['name']}}"
+                                                    value="{{ oldSetting($field['name'],$section) }}"
+                                                />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="lg:col-span-6">
+                                    <div class="input-area">
+                                        <label for="" class="form-label">
+                                            {{ __($field['label']) }}
+                                        </label>
+                                        <input
+                                            type="{{$field['type']}}"
+                                            name="{{$field['name']}}"
+                                            class=" form-control {{ $errors->has($field['name']) ? 'has-error' : '' }}"
+                                            value="{{ oldSetting($field['name'],$section) }}"
+                                        />
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
-                    <div class="site-input-groups row">
-                        <div class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
-                            {{ __('Site Logo (Dark)') }}
-                        </div>
-                        <div class="col-xl-8 col-lg-8 col-md-9 col-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_logo" id="site_logo" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_logo" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="site-input-groups row">
-                        <div class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
-                            {{ __('Site Logo (Light)') }}
-                        </div>
-                        <div class="col-xl-8 col-lg-8 col-md-9 col-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_logo_light" id="site_logo_light" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_logo_light" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="site-input-groups row">
-                        <div class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
-                            {{ __('Site Favicon') }}
-                        </div>
-                        <div class="col-xl-8 col-lg-8 col-md-9 col-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_favicon" id="site_favicon" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_favicon" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="site-input-groups row">
-                        <div class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
-                            {{ __('Admin Login Cover') }}
-                        </div>
-                        <div class="col-xl-8 col-lg-8 col-md-9 col-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="admin_login_cover" id="admin_login_cover" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="admin_login_cover" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="site-input-groups row">
-                        <div class="col-xl-4 col-lg-4 col-md-3 col-12 col-label">
-                            {{ __('Site Link Thumbnail') }}
-                        </div>
-                        <div class="col-xl-8 col-lg-8 col-md-9 col-12">
-                            <div class="wrap-custom-file">
-                                <input type="file" name="site_link_thumbnail" id="site_link_thumbnail" value="" accept=".jpeg, .jpg, .png" />
-                                <label for="site_link_thumbnail" class="file-ok" style="background-image: url()">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
-                                    <span>{{ __('upload') }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="offset-sm-4 col-sm-8">
-                            <button type="submit" class="site-btn-sm primary-btn w-100">
-                                Save Changes
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                @include('backend.setting.site_setting.include.form.__close_action')
             </div>
         </div>
     </div>

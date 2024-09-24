@@ -56,7 +56,7 @@
             </div>
 
             <div class="text-sm font-medium bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-300 py-2 text-center absolute ltr:-right-[43px] rtl:-left-[43px] top-6 px-10 transform ltr:rotate-[45deg] rtl:-rotate-45">
-                Coming Soon
+                Advance KYC
             </div>
 
             <header class="mb-6">
@@ -77,8 +77,11 @@
                     Elevate your access to major operations like External Transfers and Withdrawals with our Advanced KYC process.
                 </p>
                 <div>
-                    <a href="{{route('user.kyc.advance')}}" class="btn block-btn text-slate-100 border-slate-300 border ">
-                        Coming Soon
+{{--                    <a href="{{route('user.kyc.advance')}}" class="btn block-btn text-slate-100 border-slate-300 border ">--}}
+{{--                        Coming Soon--}}
+{{--                    </a>--}}
+                    <a href="{{route('user.kyc.advance')}}" class="btn block-btn btn-dark">
+                        Submit Now
                     </a>
                 </div>
             </div>

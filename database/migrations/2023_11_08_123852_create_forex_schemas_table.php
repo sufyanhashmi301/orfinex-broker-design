@@ -18,22 +18,28 @@ return new class extends Migration
             $table->string('icon')->nullable();
             $table->string('title');
             $table->text('desc')->nullable();
+            $table->integer('priority');
             $table->string('badge')->nullable();
+            $table->string('spread')->nullable();
+            $table->string('commission')->nullable();
             $table->string('leverage');
             $table->double('first_min_deposit')->nullable();
-            $table->string('real_swap_free')->nullable();
-            $table->string('real_islamic')->nullable();
-            $table->string('demo_swap_free')->nullable();
-            $table->string('demo_islamic')->nullable();
-            $table->tinyInteger('is_withdraw')->default(0);
-            $table->tinyInteger('is_ib_partner')->default(0);
-            $table->tinyInteger('is_internal_transfer')->default(0);
-            $table->tinyInteger('is_external_transfer')->default(0);
-            $table->tinyInteger('is_bonus')->default(0);
+            $table->integer('account_limit')->default(1);
+            $table->bigInteger('start_range')->nullable();
+            $table->bigInteger('end_range')->nullable();
+            $table->tinyInteger('is_weekend_holding')->default(0);
+            $table->tinyInteger('is_scalable')->default(0);
+            $table->tinyInteger('is_refundable')->default(0);
             $table->tinyInteger('status')->default(0);
             $table->text('country')->nullable();
+            $table->text('tags')->nullable();
+            $table->string('upto_allotted_fund')->nullable();
+            $table->string('upto_profit_target')->nullable();
+            $table->string('upto_daily_max_loss')->nullable();
+            $table->string('upto_maximum_loss')->nullable();
             $table->timestamps();
         });
+
     }
 
     /**

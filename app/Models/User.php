@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Traits\UserFilterable;
 use Carbon\Carbon;
 use Coderflex\LaravelTicket\Concerns\HasTickets;
 use Coderflex\LaravelTicket\Contracts\CanUseTickets;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,9 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasTickets;
-
-    protected $primaryKey = 'id'; // Ensure that the primary key is set to 'id'
+    use HasApiTokens, HasFactory, Notifiable, HasTickets,UserFilterable;
 
     /**
      * The attributes that are mass assignable.
@@ -42,6 +42,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'city',
         'zip_code',
         'address',
+        'comment',
         'balance',
         'profit_balance',
         'status',
@@ -52,7 +53,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'kyc',
         'kyc_credential',
         'kyc_token',
-        'applicant_id',
         'kyc_created_at',
         'risk_profile_tags',
         'google2fa_secret',
@@ -62,6 +62,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'transfer_status',
         'ref_id',
         'password',
+        'is_level_1_completed',
+        'is_level_2_completed',
+        'is_level_3_completed',
+        'notes',
     ];
 
     protected $appends = [
@@ -107,17 +111,53 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return ucwords("{$firstName} {$lastName}");
 //        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
     }
-
+    public function kycs()
+    {
+        return $this->belongsToMany(Kyc::class);
+    }
     public function getKycTypeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_type_of_name'] ?? '';
+        if (isset($this->attributes['kyc_credential']) && !empty($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
+        return '';
     }
+    public function getKycTypeLevel3Attribute(): string
+    {
+        if (isset($this->attributes['kyc_credential_level3']) && !empty($this->attributes['kyc_credential_level3'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
+                return $kycCredential['kyc_type_of_name'];
+            }
+        }
 
+        return '';
+    }
     public function getKycTimeAttribute(): string
     {
-        return json_decode($this->attributes['kyc_credential'], true)['kyc_time_of_time'] ?? '';
-    }
+        if (isset($this->attributes['kyc_credential'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
 
+        return '';
+    }
+    public function getKycTimeLevel3Attribute(): string
+    {
+        if (isset($this->attributes['kyc_credential_level3'])) {
+            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
+            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
+                return $kycCredential['kyc_time_of_time'];
+            }
+        }
+
+        return '';
+    }
     public function getTotalProfitAttribute(): string
     {
         return $this->totalProfit();
@@ -138,6 +178,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function ibQuestionAnswers()
     {
         return $this->hasOne(IbQuestionAnswer::class);
+    }
+    public function referralRelationship()
+    {
+        return $this->hasOne(ReferralRelationship::class,'user_id');
     }
 
     public function totalProfit($days = null)
@@ -162,13 +206,15 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(Transaction::class, 'user_id');
     }
-    public function realTradingAccounts()
+    public function metaTransaction()
     {
-        return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing);
-
+        return $this->hasMany(MetaTransaction::class, 'user_id');
     }
-    public function demoTradingAccounts()
+    public function metaDeals()
+    {
+        return $this->hasMany(MetaDeal::class, 'user_id');
+    }
+    public function realTradingAccounts()
     {
         return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
             ->where('status', ForexAccountStatus::Ongoing);
@@ -191,29 +237,51 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             return ReferralLink::getReferral($this, $program);
         });
     }
+    public function getReferral()
+    {
+        return $this->hasOne(ReferralLink::class, 'user_id');
+
+    }
 
     public function referrals()
     {
         return $this->hasMany(User::class, 'ref_id');
     }
 
-    public function totalDeposit()
+    public function totalDeposit($days = null)
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Deposit)
                 ->orWhere('type', TxnType::ManualDeposit);
-        })->sum('amount');
-
+        });
+        if (null != $days) {
+            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('amount');
         return round($sum, 2);
     }
-    public function totalIBWithdraw()
+    public function totalRebateMeta($days = null)
     {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::IB);
-        })->sum('amount');
-
+        $sum = $this->metaTransaction()->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::MultiLevelBonus);
+        });
+        if (null != $days) {
+            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('amount');
         return round($sum, 2);
     }
+    public function totalVolumeMeta($days = null)
+    {
+        $sum = $this->metaDeals();
+        if (null != $days) {
+            $sum->where('time', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('volume');
+        return round($sum, 2);
+    }
+
+
     public function totalInvestment()
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
@@ -246,13 +314,16 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return round($sum, 2);
     }
 
-    public function totalWithdraw()
+    public function totalWithdraw($days = null)
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Withdraw)
                 ->orWhere('type', TxnType::WithdrawAuto);
-        })->sum('amount');
-
+        });
+        if (null != $days) {
+            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $sum = $sum->sum('amount');
         return round($sum, 2);
     }
 
@@ -307,5 +378,43 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             get: fn ($value) => $value != null ? decrypt($value) : $value,
             set: fn ($value) => encrypt($value),
         );
+    }
+    public function customerGroups()
+    {
+        return $this->belongsToMany(CustomerGroup::class,'customer_group_has_customers');
+    }
+    public function scopeApplyFilters(Builder $query, $filters)
+    {
+        if (!empty($filters['global_search'])) {
+            $search = $filters['global_search'];
+            $query->where(function($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['phone'])) {
+            $query->where('phone', 'like', "%" . $filters['phone'] . "%");
+        }
+
+        if (!empty($filters['country'])) {
+            $query->where('country', 'like', "%" . $filters['country'] . "%");
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['created_at'])) {
+            $query->whereDate('created_at', $filters['created_at']);
+        }
+
+        if (!empty($filters['tag'])) {
+            $query->where('comment', 'like', "%" . $filters['tag'] . "%");
+        }
+
+        return $query;
     }
 }

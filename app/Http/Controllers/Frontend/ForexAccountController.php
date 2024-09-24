@@ -2,368 +2,211 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Enums\IBStatus;
-use App\Enums\InvestStatus;
-use App\Enums\ForexAccountStatus;
-
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Models\DepositMethod;
-use App\Models\ForexAccount;
-use App\Models\ForexSchema;
-use App\Models\Invest;
-use App\Models\LevelReferral;
-use App\Models\Schema;
-use App\Models\User;
-use App\Rules\ForexLoginBelongsToUser;
-use App\Rules\ForexLoginBelongsToUserGeneral;
-use App\Traits\ForexApiTrait;
-use App\Traits\ImageUpload;
-use App\Traits\NotifyTrait;
-use Auth;
-use Carbon\Carbon;
-use DataTables;
+use App\Http\Controllers\Controller;
+use Brick\Math\BigDecimal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Txn;
+use App\Models\ForexAccount;
+use App\Enums\InvestmentStatus;
+use App\Models\ForexSchemaInvestment;
+use App\Models\ForexSchemaPhaseRule;
+use App\Services\ForexApiService;
+use App\Services\ForexSchemaInvestormService;
 
 class ForexAccountController extends GatewayController
 {
-    use ImageUpload, NotifyTrait,ForexApiTrait;
+    protected $forexApiService;
+    private $investment;
+
+    public function __construct(ForexApiService $forexApiService, ForexSchemaInvestormService $investment)
+    {
+        $this->forexApiService = $forexApiService;
+        $this->investment = $investment;
+    }
 
     public function forexAccountCreateNow(Request $request)
     {
+//        dd($request->all());
+        $currency = setting('site_currency', 'global');
 
-        $validator = Validator::make($request->all(), [
-            'schema_id' => 'required',
-            'main_password' => ['required',
-                'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),-.?":{}|<>])[A-Za-z\d!@#$%^&*(),-.?":{}|<>]+$/',
-            ],
-            'group' => 'required',
-            'leverage' => 'required',
-            'account_name' => 'required',
-        ],[
-            'main_password.required' => __('The main password field is required.'),
-            'main_password.min' => __('The main password must be at least 8 characters long.'),
-            'main_password.regex' => __('The main password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.'),
+        $input = $request->validate([
+            'rule_id' => 'required|exists:forex_schema_phase_rules,id',
+//            'leverage' => 'required',
+//            'amount' => 'required|numeric|not_in:0',
+//            'account_from' => 'required',
+//            'profit_share_user' => 'required',
+//            'profit_share_admin' => 'required',
+//            'payouts' => 'required',
+//            'leverage_amount' => 'nullable',
+//            'days_to_pass' => 'nullable',
+//            'profit_split_amount' => 'nullable',
+            'weekly_payout' => 'nullable',
+            'swap_free' => 'nullable',
+        ],
+            [
+                'rule_id.required' => __("Please choose an funded plan."),
+                'amount.*' => __("Please select payment plan."),
+            ]);
 
-            'leverage.not_regex' => __('Kindly select a valid leverage.'),
-        ]);
+        $rule = ForexSchemaPhaseRule::find($input['rule_id']);
+//        dd($rule);
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
-        }
-
-        $input = $request->all();
-
-        $user = Auth::user();
-        $schema = ForexSchema::find($input['schema_id']);
-
-        $group = $schema[$request->group];
-//        $group = 'real\Standard';
-
-        $server = config('forextrading.server');
-        $password = $request->main_password;
-
-//        $dataArray = array(
-        if(url('/') == 'http://brokerdemo.brokeret.com') {
-            $data['Name'] = auth()->user()->full_name . '-demo';
-        }else{
-            $data['Name'] = auth()->user()->full_name;
-        }
-        $data['Leverage'] = $request->leverage;
-        $data['Group'] = $group;
-        $data['MasterPassword'] = $password;
-        $data['InvestorPassword'] = 'SNNH@2024@bol';
-        $data['Email'] = auth()->user()->email;
-        $data['Phone'] = auth()->user()->phone;
-        $data['Country'] = auth()->user()->country;
-        $data['Login'] = 0;
-        $data['Language'] = 0;
-        $data['Rights'] = 'USER_RIGHT_ALL';
-        $data['Status'] = 'YES';
-
-        $URL = config('forextrading.createUserUrl');
-//        dd($data);
-        $response = $this->sendApiPostRequest($URL, $data);
-//        dd($response->object());
-//        if ($response->serverError() || $response->failed()) {
-//            notify()->error('Some error occurred! please try again', 'Error');
-//            return redirect()->route('user.schema.preview', $schema->id);
+        $input['currency'] = $currency;
+        $input['account_type'] = 'normal';
+//        dd($input);
+        // Payment Source
+//        $account = 'unknown';
+        $amount = ($rule->amount) ? (float)$rule->amount : 0;
+//        if($rule->discount > 0) {
+//            // Amount & Balance
+//            $amount = ($rule->discount) ? (float)$rule->discount : 0;
 //        }
-        if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
-            $resData = $response->object();
-//            dd($response,$response->data[0]->Login);
-            if ($resData->Login) {
-                $accountData = $request->all();
 
-                $accountData['forex_schema_id'] = $schema->id;
-                $accountData['login'] = $resData->Login;
-                $accountData['account_name'] = $request->account_name;
-                $accountData['account_type'] = implode('_', array_slice(explode('_', $request->group), 0, 1));
-                $accountData['user_id'] = auth()->user()->id;
-                $accountData['currency'] = setting('site_currency', 'global');
-//                $accountData['invest_password'] = $investPassword;
-//                $accountData['phone_password'] = $resData->PhonePassword;
-                $accountData['group'] = $data['Group'];
-                $accountData['leverage'] = $data['Leverage'];
-                $accountData['status'] = ForexAccountStatus::Ongoing;
-                $accountData['server'] = $server;
-                $accountData['created_by'] = auth()->user()->id;
-                $accountData['first_min_deposit_paid'] = 0;
-                $accountData['trading_platform'] = config('forextrading.tradingPlatform');
-                $forexTrading = ForexAccount::create($accountData);
+        $discount = $rule->discount;
+//        dd($request->get('discount'),$discount);
+//        $leverage_amount = isset($request['leverage_amount']) ? (float)percentage_calc(get_hash($request['leverage_amount']),$amount): 0;
+//        $days_to_pass_amount = isset($request['day_to_pass']) ? (float)percentage_calc(get_hash($request['day_to_pass']),$amount) : 0;
+//        $profit_split_amount = isset($request['profit_split_amount']) ? (float)percentage_calc(get_hash($request['profit_split_amount']),$amount) : 0;
+        $weekly_payout_amount = isset($request['weekly_payout']) ? (float)(percentage_calc(get_hash($request['weekly_payout']), $amount)) : 0;
+//        dd($request['weekly_payout'],$weekly_payout_amount);
+        $swap_free_amount = isset($request['swap_free']) ? (float)(percentage_calc(get_hash($request['swap_free']), $amount)) : 0;
+//        dd( isset($request['swap_free']),get_hash($request['swap_free']),$swap_free_amount);
+        $totalAmount = BigDecimal::of($amount)->plus($weekly_payout_amount)->plus($swap_free_amount);
+        $payableAmount = to_minus($totalAmount, $discount);
 
-                if($user->ref_id) {
-                    $referrer = User::find($user->ref_id);
-                    if($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)){
-                         $this->updateAgent($resData->Login, $referrer->ib_login);
-                    }
-                }
-//                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
-//                    event(new NewForexAccountEvent($forexTrading));
+//        $actualWithdraw = $payableAmount;
+//        dd($totalAmount,$discount,$swap_free_amount);
 
-
-
-//                $shortcodes = [
-//                    '[[full_name]]' => $tnxInfo->user->full_name,
-//                    '[[txn]]' => $tnxInfo->tnx,
-//                    '[[plan_name]]' => $tnxInfo->invest->schema->name,
-//                    '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-//                    '[[site_title]]' => setting('site_title', 'global'),
-//                    '[[site_url]]' => route('home'),
-//                ];
+//        $input['bank'] = [];
+//        if($request->payment_type == 'wallets') {
+//            $accountFrom = explode('_', $request->get('account_from'));
 //
-//                $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
-//                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
-//                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
+//        }
+//        elseif($request->payment_type == 'banks'){
+//            $accountFrom = explode('_', $request->get('account_from_banks'));
+//            $bank = Bank::find(get_hash($accountFrom[1]));
+//            $input['bank'] = $bank->toArray();
+//        }
+//        dd($input['bank']);
+//        $type = get_hash($accountFrom[0]);
+//        $source = get_hash($accountFrom[1]);
+//        dd($source);
 
-                notify()->success('Successfully Created Forex Account', 'success');
-                return redirect()->route('user.forex-account-logs');
-            }
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
+//        if ($type == 'wallets') {
+//            $accountName = w2n($source);
+////            $source = AccountBalanceType::MAIN;
+//            $accountId = $source;
+//            $balance = getAccountBalance($source, true);
+//            $fx = null;
+//        }
+//        else if($type == 'forex') {
+//            $forexTrading = ForexTrading::find($source);
+////            dd($forexTrading);
+//            $accountName = $forexTrading->account_name;
+//            $source = $forexTrading->login;
+//            $accountId = $forexTrading->id;
+//            $login = $forexTrading->login;
+////            dd($login);
+//            $balance = $this->getForexAccountBalance($login);
+//            $fx = $forexTrading;
+//            if ($fx->currency == 'USC') {
+//                $scale = (is_crypto($fx->currency)) ? dp_calc('crypto') : dp_calc('fiat');
+////                $amount = BigDecimal::of($amount)->dividedBy(100, $scale, RoundingMode::HALF_DOWN);
+//                $payableAmount = round($payableAmount * 100, $scale);
+//            }
+//        }
 
+//        if(in_array($type,['wallets','forex'])) {
+//            if (empty($payableAmount)) {
+//                throw ValidationException::withMessages([
+//                    'amount' => __('Sorry, the funded amount is not valid.')
+//                ]);
+//            } elseif (empty($balance)) {
+//                throw ValidationException::withMessages([
+//                    'account' => __('Sorry, not enough balance in selected account.')
+//                ]);
+//            }
+//            if (BigDecimal::of($payableAmount)->compareTo($balance) > 0) {
+//                throw ValidationException::withMessages(['amount' => ['title' => __('Insufficient balance!'), 'message' => __('The amount exceeds your available funds.')]]);
+//
+//            }
+//        }
+        // Funded Plan
+//        if (blank($rule) || (!blank($rule) && $rule->status != PricingInvestmentStatus::ACTIVE)) {
+//            throw ValidationException::withMessages(['plan' => __('The selected plan may not available or invalid.')]);
+//        }
+
+//        $input['source'] = $source;
+        $input['max_drawdown_limit'] = $rule->max_drawdown_limit;
+        $input['daily_drawdown_limit'] = $rule->daily_drawdown_limit;
+        $input['profit_share_user'] = 50;
+        $input['profit_share_admin'] = 50;
+        $input['leverage'] = $rule->forexSchemaPhase->forexSchema->leverage;
+//        $input['type'] = $type;
+
+//        if($days_to_pass_amount > 0){
+//            $input['days_to_pass'] ='unlimited';
+//        }
+//        if($profit_split_amount > 0){
+//            $input['profit_share_user'] = 90;
+//            $input['profit_share_admin'] = 10;
+//        }
+        if ($weekly_payout_amount > 0) {
+            $input['payouts'] = 'weekly';
+        }
+        if ($swap_free_amount > 0) {
+//            $input['payouts'] ='weekly';
+        }
+//        dd($input);
+        $subscription = $this->investment->processSubscriptionDetails($input, $rule, $amount, $discount, $weekly_payout_amount, $swap_free_amount);
+//        dd($subscription);
+
+        if (empty($subscription)) {
+            throw ValidationException::withMessages(["scheme" => __("Sorry unable process subscription")]);
         }
 
-            notify()->error('Some error occurred! please try again', 'Error');
-            return redirect()->route('user.schema.preview', $schema->id);
+//        return $this->wrapInTransaction(function ($subscription,$rule) {
+        $invest = $this->investment->confirmSubscription($subscription);
+//        dd($invest);
+//            event(new FundedEvent($invest));
+//            if ($rule->approval == FundedApproval::AUTO) {
+//                $this->investment->approveSubscription($invest, 'auto-approved');
+//                $invest->fresh();
+//            }
 
-//        $periodHours = $schema->schedule->time;
-//        $profitClearHours = $schema->profitWithdrawSchedule->time;
-//        $nextProfitTime = Carbon::now()->addHour($periodHours);
-//        $nextProfitClearTime = Carbon::now()->addHour($profitClearHours);
-//        $siteName = setting('site_title', 'global');
-//        $data = [
-//            'user_id' => $user->id,
-//            'schema_id' => $schema->id,
-//            'invest_amount' => $investAmount,
-//            'next_profit_time' => $nextProfitTime,
-//            'next_profit_clear_time' => $nextProfitClearTime,
-//            'profit_clear_hours' => $profitClearHours,
-//            'capital_back' => $schema->capital_back,
-//            'min_interest' => $schema->min_return_interest,
-//            'interest' => $schema->return_interest,
-//            'interest_type' => $schema->interest_type,
-//            'return_type' => $schema->return_type,
-//            'number_of_period' => $schema->number_of_period,
-//            'period_hours' => $periodHours,
-//            'wallet' => $input['wallet'],
-//            'status' => InvestStatus::Ongoing,
-//        ];
+//            try {
+//                ProcessEmail::dispatch('investment-placed-customer', data_get($invest, 'user'), null, $invest);
+//                ProcessEmail::dispatch('investment-placed-admin', data_get($invest, 'user'), null, $invest);
+//            } catch (\Exception $e) {
+//                save_mailer_log($e, 'investment-placed');
+//            }
 
+//            return ['append'=> view("investment.user.pricing.invest.success", compact('invest'))->render()];
+//       return response()->json(['append'=>$append]);
+//        }, $subscription,$rule);
 
-        return redirect()->route('user.forex-account-logs');
-    }
+//        notify()->error('Some error occurred! please try again', 'Error');
+//        if ($invest) {
+        return redirect()->route('user.deposit.amount',['id'=> the_hash($invest->pvx)]);
+//        }
+        notify()->error('Some error occurred! please try again', 'Error');
 
-    public function userAccountExist($account)
-    {
-//        dd($account);
-        $forexAccount = ForexAccount::where('login', $account)->where('status',ForexAccountStatus::Ongoing)->first();
+        return redirect()->back();
 
-        if ($forexAccount) {
-            $data = 'Name: '.$forexAccount->user->first_name.' '.$forexAccount->user->last_name;
-        } else {
-            $data = 'Account Not Found';
-        }
-
-        return $data;
     }
 
     public function forexAccountLogs(Request $request)
     {
+        $user = auth()->user();
 
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
-        $realForexAccounts = ForexAccount::realActiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-        $demoForexAccounts = ForexAccount::demoActiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-        $archiveForexAccounts = ForexAccount::archiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
+        $investments = ForexSchemaInvestment::whereIn('status', [
+            InvestmentStatus::PENDING,
+            InvestmentStatus::ACTIVE,
+            InvestmentStatus::COMPLETED,
+            InvestmentStatus::VIOLATED
+        ])->where('user_id', $user->id)
+            ->orderBy('id', 'desc')->get();
+        $investments = $investments->groupBy('status');
 
-        return view('frontend::user.forex.log',compact('realForexAccounts','demoForexAccounts','archiveForexAccounts'));
-    }
-    public function testForexAccount(Request $request)
-    {
-        dd($this->getUserInfoApi(88876));
-//        $this->getPositionList(9996792);
-//        $this->getPositionListGroup(9996792);
-//        $this->getOrderOpenUser(9996792);
-//        $this->getDealListUser(9997821);
-//        $this->getUserAccountBalance(9996792);
-//        $this->dealerCreditUrl(9996792,1,2);
-
-//        $clientIp = request()->ip();
-//        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
-        $realForexAccounts = ForexAccount::realActiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-        $demoForexAccounts = ForexAccount::demoActiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-        $archiveForexAccounts = ForexAccount::archiveAccount()
-            ->orderBy('balance','desc')
-            ->get();
-
-        return view('frontend::user.forex.log',compact('realForexAccounts','demoForexAccounts','archiveForexAccounts'));
-    }
-
-    public function getLeverage(Request $request)
-    {
-//        dd($request->all());
-        $request->validate([
-            'id' => 'required',
-        ]);
-        $forexTrading = ForexAccount::find($request->id);
-//        dd($forexTrading);
-
-        return view('frontend::user.forex.modal.__change_leverage_render', compact('forexTrading'))->render();
-
-    }
-
-    public function updateAccountInfo(Request $request)
-    {
-//        dd($request->all());
-        $request->validate([
-            'login' => ['required','integer', new ForexLoginBelongsToUserGeneral],
-            'leverage' => 'sometimes|nullable|numeric|gt:0',
-//            'password' => 'sometimes|nullable|'.Password::min(8)->mixedCase(),
-            'main_password' => ['sometimes',
-                'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),-.?":{}|<>])[A-Za-z\d!@#$%^&*(),-.?":{}|<>]+$/',
-            ],
-            'invest_password' => ['sometimes',
-                'min:8',     // Minimum length requirement
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),-.?":{}|<>])[A-Za-z\d!@#$%^&*(),-.?":{}|<>]+$/',
-            ],
-        ]);
-//        dd('s');
-        $updateUserUrl = config('forextrading.updateUserUrl');
-
-        $dataArray = [];
-        $dataArray['Login'] = $request->login;
-
-        if ($request->leverage) {
-            $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
-//            dd($updateUserApiResponse->object(),$request->login, $request->leverage);
-            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
-                return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
-            } else {
-                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
-            }
-        }
-
-//        if ($request->name) {
-//            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
-//            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
-//
-//        }
-        if ($request->main_password) {
-            $dataArray['MainPassword'] = $request->main_password;
-            $updateUserApiResponse = $this->updateMainPassword($request->login, $request->main_password);
-//        dd($updateUserApiResponse->object());
-            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
-                return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
-            } else {
-                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
-            }
-        }
-        if ($request->invest_password) {
-            $updateUserApiResponse = $this->updateInvestorPassword($request->login, $request->invest_password);
-//        dd($updateUserApiResponse->object());
-            if ($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0) {
-                return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
-            } else {
-                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
-            }
-//            $dataArray['InvestPassword'] = $request->password;
-        }
-        if ($request->archive) {
-//            $updateUserApiResponse = $this->disableAccount($request->login);
-//        dd($updateUserApiResponse->object());
-//            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
-                ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
-                return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
-//            } else {
-//                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
-//            }
-        }
-        if ($request->reactive) {
-//            dd($request->all());
-//            $updateUserApiResponse = $this->enableAccount($request->login);
-////        dd($updateUserApiResponse->object());
-//            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
-                ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
-                return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
-//            } else {
-//                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again'), 'reload' => false]);
-//            }
-        }
-//        $dataArray['Email'] = 'sufyan@gmail.com';
-//        $dataArray['status'] = 'RE';
-        $updateUserApiResponse = $this->sendApiPostRequest($updateUserUrl, $dataArray);
-//        dd($updateUserApiResponse->object()->data);
-        if (($updateUserApiResponse->status() == 200 && $updateUserApiResponse->object() == 0)) {
-//            $getUserResponse = $this->getUserApi($request->login);
-//            if ($getUserResponse->status() == 200) {
-//                $this->updateUserAccount($getUserResponse);
-//            }
-            return response()->json(['success' => __('Successfully updated.'), 'reload' => true]);
-        } else {
-            notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');
-
-        }
-
-    }
-
-    public function getAccount($login)
-    {
-//        dd($login);
-        $resposne = $this->getUserApi($login);
-//        $resposne = $this->getUserInfoApi($login);
-//        $resposne = $this->getMT5GroupList();
-//        $resposne = $this->getRoiApi($login);
-//        dd($resposne->object());
-
-    }
-
-    public function investCancel(Request $request)
-    {
-//        dd($login);
-//        $resposne = $this->getUserInfoApi($login);
-//        dd($resposne->object());
-
+        return view('frontend::user.forex.log', compact('investments'));
     }
 }

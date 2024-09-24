@@ -3,71 +3,90 @@
     {{ __('All IB Members') }}
 @endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title">{{ __('All IB Members') }}</h2>
-                        </div>
+    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('All IB Members') }}
+        </h4>
+    </div>
+
+    @include('backend.ib.include.__menu')
+
+    <div class="card">
+        <div class="card-body relative px-6 pt-3">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class="col-span-8 hidden"></span>
+                <span class="col-span-4 hidden"></span>
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Username') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-card">
-                        <div class="site-card-body table-responsive">
-                            <div class="site-datatable">
-                                <table id="dataTable" class="display data-table">
-                                    <thead>
-                                    <tr>
-                                        <th>{{ __('Avatar') }}</th>
-                                        <th>{{ __('Username') }}</th>
-                                        <th>{{ __('Email') }}</th>
-                                        <th>{{ __('KYC') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Action') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Modal for confirm IB -->
-                {{--                @can('customer-mail-send')--}}
-                @include('backend.ib.modal.__ib_confirm')
-                {{--                @endcan--}}
-                <!-- Modal for confirm IB -->
-                    <!-- Modal for reject IB -->
-                {{--                @can('customer-mail-send')--}}
-                @include('backend.ib.modal.__ib_reject')
-                {{--                @endcan--}}
-                <!-- Modal for reject IB-->
-                    <!-- Modal for view IB Detail-->
-                {{--                @can('customer-mail-send')--}}
-                @include('backend.ib.modal.__ib_detail')
-                {{--                @endcan--}}
-                <!-- Modal for view IB Detail-->
-                </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
         </div>
     </div>
+    <!-- Modal for confirm IB -->
+    {{--@can('customer-mail-send')--}}
+    @include('backend.ib.modal.__ib_confirm')
+    {{--@endcan--}}
+    <!-- Modal for confirm IB -->
+    <!-- Modal for reject IB -->
+    {{--@can('customer-mail-send')--}}
+    @include('backend.ib.modal.__ib_reject')
+    {{--@endcan--}}
+    <!-- Modal for reject IB-->
+    <!-- Modal for view IB Detail-->
+    {{--@can('customer-mail-send')--}}
+    @include('backend.ib.modal.__ib_detail')
+    {{--@endcan--}}
+    <!-- Modal for view IB Detail-->
 @endsection
 
 @section('script')
     <script>
         (function ($) {
             "use strict";
+            var table = $('#dataTable').DataTable();
+            table.destroy();
 
-            var table = $('#dataTable').DataTable({
+            var table = $('#dataTable')
+            .on('processing.dt', function (e, settings, processing) {
+                $('#processingIndicator').css('display', processing ? 'block' : 'none');
+            }).DataTable({
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 processing: true,
+                searching: false,
+                lengthChange: false,
+                info: true,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:",
+                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
+                },
                 serverSide: true,
+                autoWidth: false,
                 ajax: "{{ route('admin.ib.all.list') }}",
                 columns: [
                     {data: 'avatar', name: 'avatar'},
@@ -78,7 +97,6 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
-
 
             $('#dataTable').on('click', '.detail-btn', function () {
                 console.log('view');

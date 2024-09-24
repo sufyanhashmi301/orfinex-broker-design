@@ -3,6 +3,8 @@
 namespace App\Console;
 
 use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
+use App\Console\Commands\FetchInvestmentDailyScore;
+use App\Console\Commands\FetchWeeklyTradeStats;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\ResetData;
@@ -19,6 +21,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+//        $schedule->command('investments:fetch-daily-score')->daily();
+//        $schedule->command('trade:fetch-weekly-stats')->weekly();
+
 //        if(url('/') == 'http://brokerdemo.brokeret.com') {
 //            $schedule->command('reset:data')->daily();
 //        }
@@ -47,10 +52,8 @@ class Kernel extends ConsoleKernel
     }
 
     protected $commands = [
-        SynchroniseMissingTranslationKeys::class,
-        CreateForexAccountsFromMysqlToMT5::class,
-        ResetData::class,
-        IBProfitRecord::class,
-        MultiIbBonus::class,
+
+        FetchWeeklyTradeStats::class,
+        FetchInvestmentDailyScore::class,
     ];
 }

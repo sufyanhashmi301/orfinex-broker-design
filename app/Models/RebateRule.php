@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * Created by Reliese Model.
+ */
+
+namespace App\Models;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class RebateRule
+ *
+ * @property int $id
+ * @property string $title
+ * @property int $rule_type_id
+ * @property float $rebate_amount
+ * @property int $per_lot
+ * @property bool $status
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property Collection|MultiLevel[] $multi_levels
+ * @property Collection|SymbolGroup[] $symbol_groups
+ *
+ * @package App\Models
+ */
+class RebateRule extends Model
+{
+	protected $table = 'rebate_rules';
+
+	protected $casts = [
+		'rule_type_id' => 'int',
+		'rebate_amount' => 'float',
+		'per_lot' => 'int',
+		'status' => 'bool'
+	];
+
+	protected $fillable = [
+		'title',
+		'rule_type_id',
+		'rebate_amount',
+		'per_lot',
+		'status'
+	];
+
+	public function multiLevels()
+	{
+		return $this->belongsToMany(MultiLevel::class)
+					->withTimestamps();
+	}
+
+	public function symbolGroups()
+	{
+		return $this->belongsToMany(SymbolGroup::class)
+					->withPivot('id')
+					->withTimestamps();
+	}
+}

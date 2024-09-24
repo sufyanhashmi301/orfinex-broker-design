@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\IBMiddleware;
+use App\Http\Middleware\SecureHeaders1Middleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -79,6 +80,9 @@ class Kernel extends HttpKernel
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,
         'IB' => IBMiddleware::class,
+        'set.session.lifetime' => \App\Http\Middleware\SetSessionLifetime::class,
+        'secure_header' => SecureHeaders1Middleware::class,
+
 
     ];
 }

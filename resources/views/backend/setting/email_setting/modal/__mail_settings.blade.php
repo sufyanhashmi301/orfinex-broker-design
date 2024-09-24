@@ -16,10 +16,10 @@
                 <form action="{{ route('admin.settings.update') }}" method="post">
                     @csrf
                     <input type="hidden" name="section" value="mail">
+                    <input type="hidden" name="mailing_driver" value="{{ setting('mailing_driver','mail') }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="input-area">
-                            <label for=""
-                                class="form-label form-label">{{ __('Email From Name') }}</label>
+                            <label for="" class="form-label form-label">{{ __('Email From Name') }}</label>
                             <input
                                 type="text"
                                 class="form-control"
@@ -29,8 +29,7 @@
                             />
                         </div>
                         <div class="input-area">
-                            <label for=""
-                                class="form-label form-label">{{ __('Email From Address') }}</label>
+                            <label for="" class="form-label form-label">{{ __('Email From Address') }}</label>
                             <input
                                 type="email"
                                 class="form-control"

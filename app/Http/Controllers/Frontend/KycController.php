@@ -6,7 +6,7 @@ use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
-use App\Models\Kyclevel;
+use App\Models\KycLevel;
 use App\Models\KycSubLevel;
 use App\Models\Userkyc;
 use App\Traits\ImageUpload;
@@ -39,7 +39,7 @@ class KycController extends Controller
     public function basicKyc()
     {
         $user = Auth::user();
-        $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
+        $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
             if ($user->email_verified_at == null) {
                 notify()->error('kindly complete the level 1 first');
@@ -122,7 +122,7 @@ class KycController extends Controller
 
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
         $user = \Auth::user();
-        $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
+        $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
             if ($user->email_verified_at == null) {
                 notify()->error('kindly complete the level 1 first');
@@ -202,14 +202,14 @@ class KycController extends Controller
         $kyc = Kyc::find($input['kyc_id']);
         $kycCredential = array_merge($input['kyc_credential'], ['kyc_type_of_name' => $kyc->name, 'kyc_time_of_time' => now()]);
         $user = \Auth::user();
-        $checkLevel1 = Kyclevel::where('slug', KycLevelSlug::LEVEL1)->first();
+        $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->first();
         if ($checkLevel1->status == 1) {
             if ($user->email_verified_at == null) {
                 notify()->error('kindly complete the level 1 first');
                 return redirect()->back();
             }
         }
-        $checkLevel2 = Kyclevel::where('slug', KycLevelSlug::LEVEL2)->first();
+        $checkLevel2 = KycLevel::where('slug', KycLevelSlug::LEVEL2)->first();
         if ($checkLevel2->status == 1) {
             if ($user->is_level_2_completed == 0) {
                 notify()->error('kindly complete the level 2 first');

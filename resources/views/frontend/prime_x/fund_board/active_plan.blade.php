@@ -271,13 +271,13 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Today’s Permitted Loss:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $invest->max_drawdown_limit}} {{base_currency()}}
+                            {{ $invest->daily_drawdown_limit}} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $invest->max_drawdown_limit + $todayScore['result']['total_Losses'] ?? 0 }} {{base_currency()}}
+                            {{ $invest->daily_drawdown_limit + $todayScore['result']['total_Losses'] ?? 0 }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>
@@ -612,7 +612,8 @@
                         {{ __('Profit Split') }}
                     </div>
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{data_get($invest,'profit_share_user')}} / {{data_get($invest,'profit_share_admin')}}
+{{--                        {{data_get($invest,'profit_share_user')}} / {{data_get($invest,'profit_share_admin')}}--}}
+                        80 / 20
                     </h4>
                 </div>
             </div>
@@ -663,49 +664,49 @@
         </div>
     </div>
 
-    <div class="flex justify-between flex-wrap items-center mb-3">
-        <h4 class="font-medium text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
-            {{ __("Today’s Performance") }}
-        </h4>
-    </div>
-    <div class="card mb-6">
-        <div class="card-body p-6">
-            <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">
-                <div class="card border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
-                        {{ __('Previous Day Balance') }}
-                    </div>
-                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{$invest->snap_balance}} {{ base_currency()}}
-                    </h4>
-                </div>
-                <div class="card border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
-                        {{ __('Current Equity') }}
-                    </div>
-                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ $invest->current_equity}} {{ base_currency()}}
-                    </h4>
-                </div>
-                <div class="card border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
-                        {{ __('Today’s Draw Down') }}
-                    </div>
-                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ $todayDrawddown }} {{ base_currency()}}
-                    </h4>
-                </div>
-                <div class="card border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
-                        {{ __('Remaining Draw Down') }}
-                    </div>
-                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ $remainingLoss}} {{base_currency()}}
-                    </h4>
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="flex justify-between flex-wrap items-center mb-3">--}}
+{{--        <h4 class="font-medium text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">--}}
+{{--            {{ __("Today’s Performance") }}--}}
+{{--        </h4>--}}
+{{--    </div>--}}
+{{--    <div class="card mb-6">--}}
+{{--        <div class="card-body p-6">--}}
+{{--            <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">--}}
+{{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
+{{--                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">--}}
+{{--                        {{ __('Previous Day Balance') }}--}}
+{{--                    </div>--}}
+{{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
+{{--                        {{$invest->snap_balance}} {{ base_currency()}}--}}
+{{--                    </h4>--}}
+{{--                </div>--}}
+{{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
+{{--                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">--}}
+{{--                        {{ __('Current Equity') }}--}}
+{{--                    </div>--}}
+{{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
+{{--                        {{ $invest->current_equity}} {{ base_currency()}}--}}
+{{--                    </h4>--}}
+{{--                </div>--}}
+{{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
+{{--                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">--}}
+{{--                        {{ __('Today’s Draw Down') }}--}}
+{{--                    </div>--}}
+{{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
+{{--                        {{ $todayDrawddown }} {{ base_currency()}}--}}
+{{--                    </h4>--}}
+{{--                </div>--}}
+{{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
+{{--                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">--}}
+{{--                        {{ __('Remaining Draw Down') }}--}}
+{{--                    </div>--}}
+{{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
+{{--                        {{ $remainingLoss}} {{base_currency()}}--}}
+{{--                    </h4>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     @include('frontend::fund_board.modal.__login_credentials')
 

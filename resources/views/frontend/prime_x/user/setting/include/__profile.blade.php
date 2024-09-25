@@ -9,7 +9,7 @@
                 </div>
                 <div class="flex-1 text-start">
                     <div class="text-left">
-                        <span class="text-xl text-slate-900 dark:text-white">{{auth()->user()->full_name}}</span><br>
+                        <span class="md:text-xl text-lg text-slate-900 dark:text-white">{{auth()->user()->full_name}}</span><br>
                         <span class="flex items-center text-slate-400 text-sm font-normal">
                             {{ $user->rank->ranking }}
                             <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #0ebe3b;"></iconify-icon>
@@ -17,31 +17,11 @@
                     </div>
                 </div>
             </div>
-            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
-                    <p class="text-xl text-slate-900 dark:text-white mb-2">
-                        ${{auth()->user()->totalForexBalance()}}
-                    </p>
-                    <p class="text-base text-slate-600">
-                        {{ __('Balance') }}
-                    </p>
-                </div>
-                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
-                    <p class="text-xl text-slate-900 dark:text-white mb-2">
-                        ${{auth()->user()->totalForexEquity()}}
-                    </p>
-                    <p class="text-base text-slate-600">
-                        {{ __('Equity') }}
-                    </p>
-                </div>
-                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
-                    <p class="text-xl text-slate-900 dark:text-white mb-2">
-                        0
-                    </p>
-                    <p class="text-base text-slate-600">
-                        {{ __('Rewards') }}
-                    </p>
-                </div>
+            <div class="md:block hidden sm:space-x-4 space-x-2">
+                <a href="{{ route('user.kyc') }}" class="btn btn-primary inline-flex items-center justify-center">
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="mdi:user-check-outline"></iconify-icon>
+                    <span class="text-sm">{{ __('Verification') }}</span>
+                </a>
             </div>
         </div>
     </div>

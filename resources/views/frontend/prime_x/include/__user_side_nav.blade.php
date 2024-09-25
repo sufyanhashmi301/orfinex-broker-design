@@ -171,11 +171,11 @@
                         {{ __('All History') }}
                     </a>
                 </li>
-                <li>
+                {{--<li>
                     <a href="{{ route('user.deposit.log') }}" class="{{ isActive('user.deposit.log') }}">
                         {{ __('Deposits') }}
                     </a>
-                </li>
+                </li>--}}
                 <li>
                     <a href="{{ route('user.withdraw.log') }}" class="{{ isActive('user.withdraw.log') }}">
                         {{ __('Withdrawals') }}
@@ -186,11 +186,11 @@
                         {{ __('Transfer Log') }}
                     </a>
                 </li>
-                <li>
+                {{--<li>
                     <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
                         {{ __('Accounts History') }}
                     </a>
-                </li>
+                </li>--}}
             </ul>
         </li>
 

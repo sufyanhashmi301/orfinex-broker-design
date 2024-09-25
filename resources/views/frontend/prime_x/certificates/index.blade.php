@@ -14,34 +14,40 @@
         </div>
     </div>
 
-    <div class="flex justify-between flex-wrap items-center mb-3">
-        <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary active">
-                    All
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    Challenges
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    Payout
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    Max Allocation
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    Lifetime Payout
-                </a>
-            </li>
-        </ul>
+    <div class="overflow-x-auto">
+        <div class="inline-block min-w-full align-middle">
+            <div class="overflow-hidden ">
+                <div class="flex justify-between flex-wrap items-center mb-3">
+                    <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
+                        <li class="nav-item">
+                            <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary !text-nowrap active">
+                                All
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary !text-nowrap">
+                                Challenges
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary !text-nowrap">
+                                Payout
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary !text-nowrap">
+                                Max Allocation
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary !text-nowrap">
+                                Lifetime Payout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card p-6 mb-6">

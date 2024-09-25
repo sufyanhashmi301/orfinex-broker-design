@@ -198,14 +198,15 @@ class InvestController extends GatewayController
             $todayScore = $forexApi->getTodayRiskScore($data);
             $weeklyScore = $forexApi->getWeekRiskScore($data);
             $totalScore = $forexApi->getTotalRiskScore($data);
-//            dd($todayScore);
+            $totalBalance = $forexApi->getBalance($data);
+//            dd($totalBalance);
             $todayDrawddown = 0;
             if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {
                 $todayDrawddown = to_minus($invest->snap_equity, $invest->current_equity);
             }
             $remainingLoss = to_minus($invest->daily_drawdown_limit, $todayDrawddown);
 
-            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage", "todayScore", "weeklyScore", "totalScore"));
+            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage", "todayScore", "weeklyScore", "totalScore", "totalBalance"));
         }
 
         $plans = PricingScheme::where('status', 'active')->get();

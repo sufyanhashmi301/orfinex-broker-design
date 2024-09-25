@@ -1,77 +1,82 @@
-<div class="user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg bg-[#ff0000]">
+<div class="card user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg">
     <div class="flex items-center">
         <div class="flex-none">
-            <div class="lg:h-10 lg:w-10 h-9 w-9 rounded-full ltr:mr-[10px] rtl:ml-[10px]">
-                <img src="{{ asset($user->avatar ?? 'global/materials/user.png') }}" class="block w-full h-full object-cover rounded-full" alt=""/>
+            <div class="h-10 w-10 rounded-full flex-1 border-2" style="border-color: #0ebe3b;">
+                <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
             </div>
         </div>
-        <div class="flex-1 text-start">
-            <h4 class="text-sm font-medium text-slate-50 whitespace-nowrap">
-                {{ __('Hi') }}, {{ $user->full_name }}
+        <div class="flex-1 text-start ml-2">
+            <h4 class="text-sm font-medium dark:text-white whitespace-nowrap">
+                {{ $user->full_name }}
             </h4>
-            <div class="text-xs font-normal text-slate-50 dark:text-slate-50">
-                {{ $user->rank->ranking_name }} - <span>{{ $user->rank->ranking }}</span>
+            <div class="flex items-center text-slate-400 dark:text-slate-50 text-xs font-normal">
+                {{ $user->rank->ranking }}
+                <iconify-icon class="text-base text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
             </div>
         </div>
     </div>
-    <div class="lg:h-6 lg:w-6 h-6 w-6 rounded-full ltr:mr-[10px] rtl:ml-[10px]">
-        <img src="{{ asset( $user->rank->icon) }}" class="block w-full h-full object-cover rounded-full" alt=""/>
+    <div class="ltr:mr-[10px] rtl:ml-[10px]">
+        @auth
+            @php
+                $userId = auth()->id();
+                $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
+                $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
+                $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
+            @endphp
+            <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" icon="heroicons-outline:bell"></iconify-icon>
+            </a>
+        @endauth
     </div>
 </div>
-<div class="user-wallets-mobile">
-    <img src="{{ asset('frontend/materials/wallet-shadow.png') }}" alt="" class="wallet-shadow">
-    <div class="head">{{ __('All Wallets in') }} {{ $currency }}</div>
-    <div class="one">
-        <div class="balance">
-            <span class="symbol">{{ $currencySymbol }}</span>
-            {{$dataCount['total_forex_balance']}}
-        </div>
-        <div class="wallet">{{ __('Balance') }}</div>
-    </div>
-    <div class="one p-wal">
-        <div class="balance">
-            <span class="symbol">{{ $currencySymbol }}</span>
-            {{$dataCount['total_forex_equity']}}
-        </div>
-        <div class="wallet">{{ __('Equity') }}</div>
-    </div>
-    <div class="one p-wal">
-        <div class="balance">
-            <span class="symbol">{{ $currencySymbol }}</span>
-            0
-        </div>
-        <div class="wallet">{{ __('Success Points') }}</div>
-    </div>
-    <div class="info">
-        <i icon-name="info"></i>{{ __('You Earned') }} {{ $dataCount['profit_last_7_days'] }} {{ $currency }} {{ __('This Week') }}
-    </div>
-</div>
-
-<div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">
-    <a href="{{ route('user.deposit.amount') }}" class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
-        <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:download"></iconify-icon> 
-        </div>
-        <span class="text-sm">{{ __('Deposit') }}</span>
+<div class="mb-3">
+    <a href="{{ route('user.schema') }}" class="btn inline-flex justify-center btn-primary w-full">
+        {{ __('Start Challenge') }}
     </a>
-    <a href="{{ route('user.schema') }}" class=" bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+</div>
+<p class="text-slate-400 dark:text-slate-50 text-sm mb-1">{{ __('Actions') }}</p>
+<div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">
+    <a href="javascript:;" class="card rounded-md p-4 text-center">
         <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:box"></iconify-icon>  
+            <iconify-icon icon="heroicons-outline:download"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Payment') }}</span>
+    </a>
+    <a href="{{ route('user.withdraw.view') }}" class="card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Payout') }}</span>
+    </a>
+    <a href="{{ route('user.leaderboard') }}" class="card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="lucide:trophy"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Leaderboard') }}</span>
+    </a>
+    <a href="{{ route('user.forex-account-logs') }}" class="card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="uil:chart-line"></iconify-icon>
         </div>
         <span class="text-sm">{{ __('Accounts') }}</span>
     </a>
-    <a href="{{ route('user.withdraw.view') }}" class=" bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+    <a href="{{ route('user.kyc') }}" class="card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:send"></iconify-icon>  
+            <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
         </div>
-        <span class="text-sm">{{ __('Withdraw') }}</span>
+        <span class="text-sm">{{ __('Verification') }}</span>
+    </a>
+    <a href="{{ route('user.ticket.index') }}" class="card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="heroicons-outline:support"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Support') }}</span>
     </a>
 </div>
-
-<div class="space-y-3">
-
+{{--<div class="space-y-3">--}}
+<div>
     <!-- all navigation -->
-    @include('frontend::user.mobile_screen_include.dashboard.__navigations')
+    {{-- @include('frontend::user.mobile_screen_include.dashboard.__navigations') --}}
 
     <!-- all Statistic -->
     {{-- @include('frontend::user.mobile_screen_include.dashboard.__statistic') --}}

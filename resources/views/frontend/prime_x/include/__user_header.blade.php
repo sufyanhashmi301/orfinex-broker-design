@@ -24,7 +24,7 @@
             </div>--}}
 
             <div class="flex items-center md:space-x-4 space-x-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
-                <a href="index.html" class="mobile-logo xl:hidden inline-block">
+                <a href="{{ route('user.dashboard') }}" class="mobile-logo xl:hidden inline-block">
                     <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo h-10" alt="logo">
                     <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo h-10" alt="logo">
                 </a>

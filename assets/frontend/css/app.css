@@ -7492,6 +7492,9 @@ textarea.form-control.is-invalid{
 .text-opacity-70{
   --tw-text-opacity: 0.7;
 }
+.\!text-nowrap	{
+  text-wrap: nowrap !important;
+}
 .underline{
   text-decoration-line: underline;
 }
@@ -15786,6 +15789,9 @@ ul.custom-list ul li{
   .sm\:max-w-\[604px\]{
     max-width: 604px;
   }
+  .sm\:w-auto {
+    width: auto;
+  }
   .sm\:w-full{
     width: 100%;
   }
@@ -15940,6 +15946,9 @@ ul.custom-list ul li{
   }
   .md\:min-h-\[300px\]{
     min-height: 300px;
+  }
+  .md\:w-auto {
+    width: auto;
   }
   .md\:w-\[calc\(100\%-320px\)\]{
     width: calc(100% - 320px);

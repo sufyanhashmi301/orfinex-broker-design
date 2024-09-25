@@ -180,7 +180,7 @@
                         {{ __('Profit/Loss') }}
                     </div>
                     @php
-                        $profit = $totalBalance['result']['profit'];
+                        $profit = $totalBalance['result']['balance'] - $invest->amount_allotted;
                     @endphp
                     @if ($profit < 0)
                         <h4 class="text-base font-medium text-danger-500 whitespace-nowrap">{{ $profit }} {{ base_currency() }}</h4>

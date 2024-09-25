@@ -139,60 +139,60 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ route('user.leaderboard') }}" class="navItem {{ isActive('user.leaderboard') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>
-                    <span>{{ __('Leaderboard') }}</span>
-                </span>
-            </a>
-        </li>
+{{--        <li>--}}
+{{--            <a href="{{ route('user.leaderboard') }}" class="navItem {{ isActive('user.leaderboard') }}">--}}
+{{--                <span class="flex items-center">--}}
+{{--                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>--}}
+{{--                    <span>{{ __('Leaderboard') }}</span>--}}
+{{--                </span>--}}
+{{--            </a>--}}
+{{--        </li>--}}
 
-        <li>
-            <a href="{{ route('user.utilities') }}" class="navItem {{ isActive('user.utilities') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="solar:share-circle-linear"></iconify-icon>
-                    <span>{{ __('Utilities') }}</span>
-                </span>
-            </a>
-        </li>
+{{--        <li>--}}
+{{--            <a href="{{ route('user.utilities') }}" class="navItem {{ isActive('user.utilities') }}">--}}
+{{--                <span class="flex items-center">--}}
+{{--                    <iconify-icon class="nav-icon" icon="solar:share-circle-linear"></iconify-icon>--}}
+{{--                    <span>{{ __('Utilities') }}</span>--}}
+{{--                </span>--}}
+{{--            </a>--}}
+{{--        </li>--}}
 
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-              <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
-                <span>{{ __('History') }}</span>
-              </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('user.transactions') }}" class="{{ isActive('user.transactions') }}">
-                        {{ __('All History') }}
-                    </a>
-                </li>
-                {{--<li>
-                    <a href="{{ route('user.deposit.log') }}" class="{{ isActive('user.deposit.log') }}">
-                        {{ __('Deposits') }}
-                    </a>
-                </li>--}}
-                <li>
-                    <a href="{{ route('user.withdraw.log') }}" class="{{ isActive('user.withdraw.log') }}">
-                        {{ __('Withdrawals') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">
-                        {{ __('Transfer Log') }}
-                    </a>
-                </li>
-                {{--<li>
-                    <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">
-                        {{ __('Accounts History') }}
-                    </a>
-                </li>--}}
-            </ul>
-        </li>
+{{--        <li class="">--}}
+{{--            <a href="javascript:void(0);" class="navItem">--}}
+{{--              <span class="flex items-center">--}}
+{{--                <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>--}}
+{{--                <span>{{ __('History') }}</span>--}}
+{{--              </span>--}}
+{{--                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>--}}
+{{--            </a>--}}
+{{--            <ul class="sidebar-submenu">--}}
+{{--                <li>--}}
+{{--                    <a href="{{ route('user.transactions') }}" class="{{ isActive('user.transactions') }}">--}}
+{{--                        {{ __('All History') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--                --}}{{--<li>--}}
+{{--                    <a href="{{ route('user.deposit.log') }}" class="{{ isActive('user.deposit.log') }}">--}}
+{{--                        {{ __('Deposits') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--                <li>--}}
+{{--                    <a href="{{ route('user.withdraw.log') }}" class="{{ isActive('user.withdraw.log') }}">--}}
+{{--                        {{ __('Withdrawals') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--                <li>--}}
+{{--                    <a href="{{ route('user.send-money.log') }}" class="{{ isActive('user.send-money.log') }}">--}}
+{{--                        {{ __('Transfer Log') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--                --}}{{--<li>--}}
+{{--                    <a href="{{ route('user.forex.transactions') }}" class="{{ isActive('user.forex.transactions') }}">--}}
+{{--                        {{ __('Accounts History') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--            </ul>--}}
+{{--        </li>--}}
 
         <li>
             <a href="{{ route('user.setting.profile') }}" class="navItem {{ isActive('user.setting*') }}">

@@ -76,7 +76,7 @@
                             </div>
                             <div class="flex-1 text-start">
                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                    {{ __('44%') }}
+                                    {{ __('N/A') }}
                                 </h4>
                                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
                                     {{ __('Account Growth') }}

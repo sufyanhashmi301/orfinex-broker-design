@@ -532,7 +532,15 @@ class IBController extends Controller
             $resResult = $response['result'];
             $mt5Login = $resResult['login'];
             if ($mt5Login && $resResult['responseCode'] == 0) {
+                $rightData =  [
+                    "login" => $mt5Login,
+                    "rights" => 'USER_RIGHT_ENABLED',
+
+                ];
+                $this->forexApiService->setUserRights($rightData);
+
                 return $mt5Login;
+
             }
             return false;
         }

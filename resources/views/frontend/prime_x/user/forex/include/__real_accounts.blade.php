@@ -8,6 +8,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Login') }}</th>
                                     <th scope="col" class="table-th">{{ __('Fund') }}</th>
                                     <th scope="col" class="table-th">{{ __('Activation Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('Daily Drawdown') }}</th>
@@ -20,11 +21,12 @@
                             @foreach($activePlans as $plan)
                                 <tr>
                                     <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
+                                    <td class="table-td">{{ data_get($plan,'login')}}</td>
                                     <td class="table-td">{{ data_get($plan,'amount_allotted')}}</td>
                                     <td class="table-td">{{ data_get($plan,'term_start') ?? 'N/A'}}</td>
                                     <td class="table-td">{{ data_get($plan,'daily_drawdown_limit') }}</td>
                                     <td class="table-td">{{ data_get($plan,'max_drawdown_limit') }}</td>
-                                    <td class="table-td">{{ data_get($plan,'profit')}}</td>
+                                    <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule,'profit_target')}}</td>
                                     <td class="table-td">
                                         <a href="{{route('user.invest.details',the_hash($plan->id))}}" class="inline-flex justify-center">
                                         <span class="flex items-center">

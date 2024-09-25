@@ -27,7 +27,7 @@
                                     <td class="table-td">{{ data_get($plan,'term_start') ?? 'N/A'}}</td>
                                     <td class="table-td">{{ data_get($plan,'daily_drawdown_limit') }}</td>
                                     <td class="table-td">{{ data_get($plan,'max_drawdown_limit') }}</td>
-                                    <td class="table-td">{{ data_get($plan,'profit')}}</td>
+                                    <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule,'profit_target')}}</td>
                                     <td class="table-td">
                                         <a href="{{route('user.invest.details',$plan->id)}}" class="inline-flex justify-center">
                                         <span class="flex items-center">

@@ -181,6 +181,7 @@
                     </div>
                     @php
                         $profit = $totalBalance['result']['balance'] - $invest->amount_allotted;
+                        $profit = number_format($profit, 2);
                     @endphp
                     @if ($profit < 0)
                         <h4 class="text-base font-medium text-danger-500 whitespace-nowrap">{{ $profit }} {{ base_currency() }}</h4>

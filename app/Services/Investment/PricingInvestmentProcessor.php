@@ -722,6 +722,12 @@ class PricingInvestmentProcessor
             $mt5Login = $resResult['login'];
 //            dd($response,$response->data[0]->Login);
             if ($mt5Login && $resResult['responseCode'] == 0) {
+                $rightData =  [
+                    "login" => $mt5Login,
+                    "rights" => 'USER_RIGHT_ENABLED',
+
+                ];
+                $forexApiService->setUserRights($rightData);
 
                 $invest->main_password = $password;
                 $invest->save();

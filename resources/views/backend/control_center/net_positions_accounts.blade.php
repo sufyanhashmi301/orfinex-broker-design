@@ -3,6 +3,10 @@
     {{ __('Net Positions - Accounts') }}
 @endsection
 @section('content')
+    @php
+        use App\Models\ForexSchemaInvestment;
+        $logins = ForexSchemaInvestment::all();
+    @endphp
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
@@ -14,8 +18,11 @@
                 <label for="login" class="form-label !w-auto min-w-max">{{ __('Select Login:') }}</label>
                 <select id="login" class="form-control w-full">
                     <option value="" disabled selected>Select login</option>
-                    <option value="685889">{{ __('685889') }}</option>
-                    <option value="192119">{{ __('192119') }}</option>
+                    @foreach ($logins as $login)
+                        @if($login->login)
+                            <option value="{{ $login->login }}">{{ $login->login }}</option>
+                        @endif
+                    @endforeach
                 </select>
             </div>
             <button id="fetch-positions" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
@@ -25,11 +32,13 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-body px-6 pt-3">
-            <div class="overflow-x-auto -mx-6">
+        <div class="card-body relative px-6 pt-3">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class="col-span-8 hidden"></span>
+                <span class="col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden basicTable_wrapper">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                    <div class="overflow-hidden">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="positions-table">
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Symbol') }}</th>
@@ -39,14 +48,13 @@
                                     <th scope="col" class="table-th">{{ __('Profit') }}</th>
                                 </tr>
                             </thead>
-                            <tbody id="table-body">
-                                <tr>
-                                    <td colspan="6" class="text-center text-sm p-5">Please select login to see positions.</td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+            <div id="processingIndicator" class="text-center hidden">
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
             </div>
         </div>
     </div>
@@ -54,36 +62,54 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            const positionsTable = $('#positions-table').DataTable({
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                processing: true,
+                searching: false,
+                lengthChange: false,
+                info: true,
+                autoWidth: false,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:",
+                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
+                },
+                data: [], // Start with an empty data array
+                columns: [
+                    { data: 'symbol', name: 'symbol' },
+                    { data: 'volumeBuyClients', name: 'volumeBuyClients' },
+                    { data: 'volumeSellClients', name: 'volumeSellClients' },
+                    { data: 'volumeNet', name: 'volumeNet' },
+                    { data: 'profitClients', name: 'profitClients' },
+                ]
+            });
+
             $('#fetch-positions').click(function() {
-                var login = $('#login').val();
+                const login = $('#login').val();
+
+                $('#processingIndicator').removeClass('hidden');
+                positionsTable.clear();
+
                 $.ajax({
-                    url: '{{ route("admin.positions.account") }}',
+                    url: '{{ route('admin.positions.account') }}',
                     type: 'POST',
                     data: {
                         login: login,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(data) {
-                        $('#table-body').empty(); // Clear previous data
-                        console.log(data);
-                        if (data.success && data.result.length > 0) {
-                            $.each(data.result, function(index, position) {
-                                $('#table-body').append(
-                                    `<tr>
-                                        <td class="table-td">${position.symbol}</td>
-                                        <td class="table-td">${position.volumeBuyClients}</td>
-                                        <td class="table-td">${position.volumeSellClients}</td>
-                                        <td class="table-td">${position.volumeNet}</td>
-                                        <td class="table-td">${position.profitClients}</td>
-                                    </tr>`
-                                );
-                            });
-                        } else {
-                            $('#table-body').append('<tr><td colspan="14" class="text-center">No positions found.</td></tr>');
-                        }
+                        positionsTable.rows.add(data.data).draw();
                     },
-                    error: function(xhr) {
-                        console.error(xhr);
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + error);
+                    },
+                    complete: function() {
+                        $('#processingIndicator').addClass('hidden');
                     }
                 });
             });

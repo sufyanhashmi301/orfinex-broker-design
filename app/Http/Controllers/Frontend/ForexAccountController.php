@@ -153,6 +153,13 @@ class ForexAccountController extends GatewayController
             $mt5Login = $resResult['login'];
 //            dd($response,$response->data[0]->Login);
             if ($mt5Login && $resResult['responseCode'] == 0) {
+                $rightData =  [
+                    "login" => $login,
+                    "rights" => 'USER_RIGHT_ENABLED',
+
+                ];
+                $this->forexApiService->setUserRights($rightData);
+
                 $accountData = $request->all();
 
                 $accountData['forex_schema_id'] = $schema->id;

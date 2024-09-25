@@ -322,7 +322,7 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Max Profit Target:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{$invest->max_drawdown_limit  }} {{base_currency()}}
+                            {{ data_get($invest->forexSchemaPhaseRule,'profit_target') }} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
@@ -334,7 +334,7 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Profit Target:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $invest->max_drawdown_limit + number_format($todayScore['result']['net_Profit'], 2) ?? 0 }} {{base_currency()}}
+                            {{ data_get($invest->forexSchemaPhaseRule,'profit_target')  + number_format($todayScore['result']['net_Profit'], 2) ?? 0 }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>

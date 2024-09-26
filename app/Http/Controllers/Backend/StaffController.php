@@ -61,7 +61,7 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-
+        // Validate the input
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -70,24 +70,41 @@ class StaffController extends Controller
             'password' => 'required|same:confirm-password',
             'role' => ['required', Rule::notIn('Super-Admin')],
             'status' => 'boolean',
+            'department_id' => 'nullable|integer',
+            'designation_id' => 'nullable|integer',
+            'date_of_joining' => 'nullable|date',
+            'work_phone' => 'nullable|string',
+            'phone' => 'nullable|string',
         ]);
 
+        // If validation fails, return error
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
+        // Get the validated input
         $input = $request->all();
 
+        // Convert empty fields to null if necessary
         $input['password'] = Hash::make($input['password']);
+        $input['department_id'] = $input['department_id'] ?: null;
+        $input['designation_id'] = $input['designation_id'] ?: null;
+        $input['date_of_joining'] = $input['date_of_joining'] ?: null;
+        $input['work_phone'] = $input['work_phone'] ?: null;
+        $input['phone'] = $input['phone'] ?: null;
 
+        // Create the new admin record
         $admin = Admin::create($input);
         $admin->assignRole($request->input('role'));
+
+        // Notify success
         notify()->success('Staff created successfully');
 
+        // Redirect to the staff index page
         return redirect()->route('admin.staff.index');
     }
+
 
     /**
      * Show the form for editing the specified resource.

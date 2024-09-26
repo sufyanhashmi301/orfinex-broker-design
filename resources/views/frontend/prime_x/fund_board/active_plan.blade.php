@@ -716,15 +716,6 @@
 @endsection
 @section('script')
     <script !src="">
-        function togglePassword() {
-            $('.toggle-password').click(function () {
-                const input = $($(this).attr('toggle'));
-                const type = input.attr('type') === 'password' ? 'text' : 'password';
-                input.attr('type', type);
-                $(this).find('i').toggleClass('fa-eye fa-eye-slash');
-            });
-        }
-
         function copyText() {
             $('.copy-button').on('click', function() {
                 const targetId = $(this).data('target');
@@ -755,8 +746,6 @@
                 }, 500);
             }
         }
-
-        togglePassword();
         copyText();
 
         $(document).ready(function() {
@@ -789,7 +778,6 @@
         });
 
         $('#loginCredentialsModal').on('shown.bs.modal', function() {
-            togglePassword();
             copyText();
         });
 

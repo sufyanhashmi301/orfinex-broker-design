@@ -32,18 +32,18 @@
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Master Password') }}</label>
                         <div class="relative">
-                            <input class="form-control !pr-9" type="password" id="passwordModal" value="{{data_get($invest,'main_password')}}" readonly>
-                            <button class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password dark:text-slate-200" toggle="#passwordModal">
-                                <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
+                            <input class="form-control !pr-9" value="{{ data_get($invest,'main_password') }}" id="copyModalPassword" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyModalPassword">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>
                         </div>
                     </div>
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Read-only Password') }}</label>
                         <div class="relative">
-                            <input class="form-control !pr-9" type="password" id="masterPassModal" value="" readonly>
-                            <button class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password dark:text-slate-200" toggle="#masterPassModal">
-                                <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
+                            <input class="form-control !pr-9" type="text" id="masterPassModal" value="" readonly>
+                            <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="masterPassModal">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>
                         </div>
                     </div>

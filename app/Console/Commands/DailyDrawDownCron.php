@@ -75,8 +75,8 @@ class DailyDrawDownCron extends Command
                 $investment = $this->updateMaxBalance($resData, $investment);
                 $todayScore =  $this->forexApiService->getTodayRiskScore($response);
                 $this->profitTarget($todayScore, $investment);
-//                $this->checkMaxDrawdown($resData, $investment);
-//                $this->checkDailyDrawdown($resData, $investment);
+                $this->checkMaxDrawdown($resData, $investment);
+                $this->checkDailyDrawdown($resData, $investment);
                 if (!isset($investment->equity_cal_at) || Carbon::parse($investment->equity_cal_at) < Carbon::now()->subDay()) {
                     //2023-06-22 00:10:53 < 2023-05-22 00:11:53
                      $this->updateSnapShot($resData, $investment);

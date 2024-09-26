@@ -50,7 +50,7 @@
     </div>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
         <li>
             <a href="{{route('user.dashboard')}}" class="navItem loaderBtn {{ isActive('user.dashboard') }}">
@@ -115,32 +115,14 @@
             </a>
         </li>
         @if(setting('copy_trading', 'features'))
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-              <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="solar:graph-up-broken"></iconify-icon>
-                <span>{{ __('Copy Trading') }}</span>
-              </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('user.follower_access') }}" class="loaderBtn {{ isActive('user.follower_access') }}">
-                        {{ __('Follower Access') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.provider_access') }}" class="loaderBtn {{ isActive('user.provider_access') }}">
-                        {{ __('Provider Access') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.ratings') }}" class="loaderBtn {{ isActive('user.ratings') }}">
-                        {{ __('Ratings') }}
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li>
+                <a href="{{ route('user.follower_access') }}" class="navItem loaderBtn {{ isActive('user.follower_access') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="solar:graph-up-broken"></iconify-icon>
+                    <span>{{ __('Copy Trading') }}</span>
+                </span>
+                </a>
+            </li>
         @endif
         <li class="">
             <a href="javascript:void(0);" class="navItem">
@@ -181,7 +163,7 @@
 
         @if(setting('sign_up_referral','permission'))
             <li>
-                <a href="{{ route('user.referral') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
+                <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
                         <span>{{ __('Partner Area') }}</span>

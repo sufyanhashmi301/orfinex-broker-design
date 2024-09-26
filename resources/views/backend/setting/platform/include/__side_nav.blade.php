@@ -11,6 +11,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.platform.riskBook') }}" class="navItem {{ isActive('admin.platform.riskBook') }}">
+                {{ __('Risk Book') }}
+            </a>
+        </li>
+        <li>
             <a href="{{route('admin.settings.copyTrading')}}" class="navItem {{isActive('admin.settings.copyTrading')}}">
                 {{ __('Copy Trading')}}
             </a>

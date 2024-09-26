@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('risk_book_id')->constrained();
             $table->unsignedBigInteger('group_id');
             $table->string('group');
             $table->string('currency');

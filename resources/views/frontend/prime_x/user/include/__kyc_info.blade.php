@@ -15,7 +15,7 @@
 }
 
 @endphp
-@if($totalActiveLevels > 0 && $completedSteps < $totalActiveLevels)
+@if($totalActiveLevels > 0 && $user->kyc < \App\Enums\KYCStatus::Level2->value)
     <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md border mb-3"
          style="background-color: rgba(254, 208, 0, 0.3); border-color: #FED000;" role="alert">
         <div class="flex flex-wrap items-center space-x-3 space-y-3 rtl:space-x-reverse">
@@ -26,8 +26,10 @@
                         {{ __('Steps Completed: ') }}{{$completedSteps}}{{__('/')}}{{$totalActiveLevels}}
                     </p>
                     @if($user->kyc == \App\Enums\KYCStatus::Pending->value)
-                        <strong>{{ __('KYC Pending of Level 2') }}</strong>
-                    @else
+                        <strong>{{ __('Your KYC for Level 2 is pending. Please contact support :support to resolve your KYC status.',['support'=> setting('support_email', 'global')]) }}</strong>
+                    @elseif($user->kyc == \App\Enums\KYCStatus::Rejected->value)
+                        <strong>{{ __('Your KYC for Level 2 has been rejected by the admin. Please contact support :support to resolve your KYC status.',['support'=> setting('support_email', 'global')]) }}</strong>
+                    @elseif($user->kyc <= \App\Enums\KYCStatus::Level1->value)
                         {{ __('You need to submit your KYC and Other Documents before proceed to the system.') }}
                     @endif
                 </div>

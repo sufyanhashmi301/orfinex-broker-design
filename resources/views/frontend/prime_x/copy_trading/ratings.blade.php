@@ -1,17 +1,10 @@
-@extends('frontend::layouts.user')
+@extends('frontend::copy_trading.index')
 @section('title')
     {{ __('Ratings') }}
 @endsection
-@section('style')
-    <style>
-        .page-content {
-            padding: 0 !important;
-        }
-    </style>
-@endsection
-@section('content')
+@section('copy-trading-content')
     @if(setting('copy_trading_ratings','platform_links',false))
-        <iframe id="widgetFrame" style="min-width: 100%;"
+        <iframe id="widgetFrame" class="w-full h-screen" style="min-width: 100%;"
                 src="{{setting('copy_trading_ratings','platform_links','javascript:void(0);')}}"
                 scrolling="no" frameborder="0"
                 onload="iFrameResize({heightCalculationMethod: 'max', checkOrigin: false }, '#widgetFrame')"></iframe>

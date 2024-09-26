@@ -83,7 +83,13 @@ class DepositController extends GatewayController
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
-
+        $user = \Auth::user();
+        // Check deposit amount against the gateway's limits
+        if (!isset($user->country)) {
+            $message = 'Kindly choose the country from your profile for proceed to payment!';
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
         $input = $request->all();
         $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
         $amount = $input['amount'];
@@ -97,11 +103,12 @@ class DepositController extends GatewayController
         }
 
         // Determine whether it's a forex account or a wallet
-        $targetId = $input['target_id'];
+        $targetId = get_hash($input['target_id']);
         $targetType = TxnTargetType::ForexDeposit->value; // Default to forex_deposit
 
     // Check if the selected target is a forex account
     $forexAccount = ForexAccount::where('login', $targetId)->first();
+//    dd($forexAccount);
 
     if ($forexAccount) {
         // It's a Forex account, handle the Forex-specific validation
@@ -115,16 +122,14 @@ class DepositController extends GatewayController
         }
     } else {
         // If it's not a Forex account, it must be a wallet, so change target type to wallet
-        $wallet = Account::find($targetId);
-        $targetId = $wallet->wallet_id;
-        if ($wallet) {
+        $account = get_user_account_by_wallet_id($targetId,$user->id);
+        if ($account) {
             $targetType = TxnTargetType::Wallet->value;
         } else {
             notify()->error(__('The selected account does not exist'), 'Error');
             return redirect()->back();
         }
     }
-
     // Proceed with transaction
     $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
     $finalAmount = (float)$amount + (float)$charge;

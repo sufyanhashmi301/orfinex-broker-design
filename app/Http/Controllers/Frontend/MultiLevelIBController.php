@@ -40,7 +40,7 @@ class MultiLevelIBController extends Controller
             ->groupBy('forex_scheme_id','type')
             ->orderByDesc('count')
             ->first();
-        $maxLevelOrder = $maxLevelOrder->count;
+        $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->count : 0;
         $getReferral = $user->getReferrals()->first();
         $levelOrder = 0;
         $dataCount = [

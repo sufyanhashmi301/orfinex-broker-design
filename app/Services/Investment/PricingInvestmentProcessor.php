@@ -692,13 +692,14 @@ class PricingInvestmentProcessor
                     notify()->error($message, 'Error');
                     return redirect()->back();
                 }elseif(isset($latestInvestments->login)) {
-                    $login = $latestInvestments->login++;
+                    $login = ++$latestInvestments->login;
+//                    dd($login,$latestInvestments->login);
                     }
             }else{
                 $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
             }
 //        }
-
+//dd($login);
         $data = [
             "login" => $login,
             "group" => $group,

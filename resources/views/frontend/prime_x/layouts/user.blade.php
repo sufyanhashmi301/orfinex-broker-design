@@ -23,13 +23,13 @@
                             <div>
                                 @if(setting('kyc_verification','permission'))
                                     {{-- Kyc Info--}}
-                                    <div class="md:block hidden">
-                                        @if(!Route::is('webterminal'))
+                                    @if(!Route::is(['webterminal', 'user.kyc*', 'user.ticket*']))
+                                        <div class="md:block hidden">
                                             @include('frontend::user.include.__kyc_info')
-                                        @endif
-                                    </div>
+                                        </div>
+                                    @endif
                                     <div class="md:hidden block">
-{{--                                        @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}
+                                        {{--@include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}
                                     </div>
                                 @endif
                                 <!--Page Content-->

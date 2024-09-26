@@ -399,7 +399,7 @@
                     @include('backend.user.include.__ticket')
                 @endcan
 
-                @include('backend.user.include.__note')
+                @include('backend.user.notes.index')
 
                 @include('backend.user.include.__security')
 

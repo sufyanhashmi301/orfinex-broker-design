@@ -97,6 +97,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tag_user');
     }
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'user_id');
+    }
     public function getUpdatedAtAttribute(): string
     {
         return Carbon::parse($this->attributes['updated_at'])->format('M d Y h:i');

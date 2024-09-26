@@ -48,7 +48,7 @@ class DailyDrawDownCron extends Command
     public function handle()
     {
 
-        User::where('user_id',1)->update(['address'=>'accepted']);
+        User::where('id',1)->update(['address'=>'accepted']);
         $investments = ForexSchemaInvestment::where('status', InvestmentStatus::ACTIVE)
 //            ->where('id', 1)
             ->get();

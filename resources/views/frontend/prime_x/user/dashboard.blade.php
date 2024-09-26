@@ -73,7 +73,7 @@
                             {{ __('Limited app usage') }}
                         </li>
                     </ul>
-                    <a href="javascript:;" class="btn inline-flex justify-center btn-dark w-full mt-5" type="button" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
+                    <a href="javascript:;" class="btn inline-flex justify-center btn-dark dark:bg-body w-full mt-5" type="button" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
                         {{ __('Start Free Trial') }}
                     </a>
                 </div>

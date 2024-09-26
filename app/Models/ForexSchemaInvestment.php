@@ -151,14 +151,20 @@ class ForexSchemaInvestment extends Model
 		'snap_balance',
 		'snap_equity',
 		'snap_floating',
+		'equity_cal_at',
 		'max_balance',
 		'main_password',
 		'invest_password',
 		'phone_password',
 		'status',
+		'qualify_stage',
 		'drawdown_reason',
+		'violated_at',
 		'pay_from',
-		'pay_detail'
+		'pay_detail',
+		'daily_score_record_at',
+		'weekly_score_record_at',
+		'total_score_record_at',
 	];
 
 

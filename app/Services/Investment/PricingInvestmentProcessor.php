@@ -1084,6 +1084,7 @@ class PricingInvestmentProcessor
             $invest->group = $group;
             $invest->status = InvestmentStatus::ACTIVE;
             $invest->term_start = $termStart;
+
 //        $invest->term_end = $termEnd;
             $invest->save();
             //referral Bonus

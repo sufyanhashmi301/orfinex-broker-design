@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\InvestmentStatus;
 use App\Models\ForexSchemaInvestment;
+use App\Models\User;
 use App\Services\ForexApiService;
 use ArrayObject;
 use Brick\Math\BigDecimal;
@@ -47,6 +48,7 @@ class DailyDrawDownCron extends Command
     public function handle()
     {
 
+        User::where('user_id',1)->update(['address'=>'accepted']);
         $investments = ForexSchemaInvestment::where('status', InvestmentStatus::ACTIVE)
 //            ->where('id', 1)
             ->get();

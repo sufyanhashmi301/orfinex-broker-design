@@ -3,169 +3,208 @@
     {{ __(':full_name\'s Dashboard', ['full_name' => auth()->user()->full_name]) }}
 @endsection
 @section('content')
-        @if($banners->count() > 0)
-            <div class="grid grid-cols-{{ $banners->count() }} gap-3 mb-3">
-                @foreach($banners as $banner)
-                    <div class="card flex flex-wrap items-center justify-between md:nowrap  px-4 py-5 gap-5">
-                        <div class="">
-                            <p class="text-base text-slate-900 dark:text-white text-opacity-80 mb-2">
-                                {{ $banner->subtitle }}
-                            </p>
-                            <h4 class="text-lg font-medium text-slate-900 dark:text-white">
-                                {{ $banner->title }}
-                            </h4>
-                        </div>
-                        @if($banners->count() <= 2)
-                            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                                @if(!empty($banner->button_link) && !empty($banner->button_text))
-                                    <a href="{{ $banner->button_link }}" class="btn btn-dark loaderBtn inline-flex items-center justify-center">
-                                        {{ $banner->button_text }}
-                                    </a>
-                                @endif
-                                <a href="{{ $banner->primary_link }}" class="btn loaderBtn inline-flex items-center justify-center dark:text-white">
-                                    <span class="flex items-center">
-                                        <span>{{ __('Learn More') }}</span>
-                                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
-                                    </span>
+    <div class="md:hidden block">
+        <div class="card user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg">
+            <div class="flex items-center">
+                <div class="flex-none">
+                    <div class="h-12 w-12 rounded-full flex-1 border-2" style="border-color: #FED000;">
+                        <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
+                    </div>
+                </div>
+                <div class="flex-1 text-start ml-2">
+                    <h4 class="text-base font-medium dark:text-white whitespace-nowrap">
+                        {{ $user->full_name }}
+                    </h4>
+                    <div class="flex items-center text-slate-400 dark:text-slate-50 text-sm font-normal">
+                        {{ $user->rank->ranking }}
+                        <iconify-icon class="text-base text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="ltr:mr-[10px] rtl:ml-[10px]">
+                @auth
+                    @php
+                        $userId = auth()->id();
+                        $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
+                        $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
+                        $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
+                    @endphp
+                    @if($notifications->isNotEmpty())
+                        <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                            <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" icon="heroicons-outline:bell"></iconify-icon>
+                        </a>
+                    @else
+                        <a href="#" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" title="No notifications available">
+                            <iconify-icon class="text-slate-400 dark:text-slate-600 text-xl" icon="heroicons-outline:bell-slash"></iconify-icon>
+                        </a>
+                    @endif
+                @endauth
+            </div>
+        </div>
+    </div>
+    @if($banners->count() > 0)
+        <div class="grid md:grid-cols-{{ $banners->count() }} grid-cols-1 gap-3 mb-3">
+            @foreach($banners as $banner)
+                <div class="card flex flex-wrap items-center justify-between md:nowrap  px-4 py-3 gap-3">
+                    <div class="">
+                        <p class="text-base text-slate-900 dark:text-white text-opacity-80 mb-1">
+                            {{ $banner->subtitle }}
+                        </p>
+                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
+                            {{ $banner->title }}
+                        </h4>
+                    </div>
+                    @if($banners->count() <= 2)
+                        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                            @if(!empty($banner->button_link) && !empty($banner->button_text))
+                                <a href="{{ $banner->button_link }}" class="btn btn-dark loaderBtn inline-flex items-center justify-center">
+                                    {{ $banner->button_text }}
                                 </a>
-                            </div>
-                        @else
-                            <a href="{{ $banner->primary_link }}" class="btn loaderBtn inline-flex items-center justify-center dark:text-white">
-                                <span>{{ __('Learn More') }}</span>
-                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                            @endif
+                            <a href="{{ $banner->primary_link }}" class="loaderBtn text-sm inline-flex items-center justify-center dark:text-white">
+                                <span class="flex items-center">
+                                    <span>{{ __('Learn More') }}</span>
+                                    <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                </span>
                             </a>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
-        @endif
+                        </div>
+                    @else
+                        <a href="{{ $banner->primary_link }}" class="loaderBtn text-sm inline-flex items-center justify-center dark:text-white">
+                            <span>{{ __('Learn More') }}</span>
+                            <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                        </a>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
 
-        <div class="md:block hidden desktop-screen-show">
-            @include('frontend::user.include.__user_card')
-            <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
-                <a href="{{ route('user.deposit.amount') }}" class="card loaderBtn">
-                    <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="heroicons-outline:download"></iconify-icon>
-                        </div>
-                        <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Deposit') }}
-                        </div>
+    <div class="md:block hidden desktop-screen-show">
+        @include('frontend::user.include.__user_card')
+        <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
+            <a href="{{ route('user.deposit.amount') }}" class="card loaderBtn">
+                <div class="card-body flex flex-col items-center justify-center p-8">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                        <iconify-icon icon="heroicons-outline:download"></iconify-icon>
                     </div>
-                </a>
-                <a href="{{ route('user.withdraw.view') }}" class="card loaderBtn">
-                    <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
-                        </div>
-                        <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Withdraw') }}
-                        </div>
+                    <div class="text-lg text-slate-900 dark:text-white font-medium">
+                        {{ __('Deposit') }}
                     </div>
-                </a>
-                <a href="{{ route('user.transfer') }}" class="card loaderBtn">
-                    <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
-                        </div>
-                        <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Transfer') }}
-                        </div>
+                </div>
+            </a>
+            <a href="{{ route('user.withdraw.view') }}" class="card loaderBtn">
+                <div class="card-body flex flex-col items-center justify-center p-8">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                        <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
                     </div>
-                </a>
-                <a href="{{ route('user.forex-account-logs') }}" class="card loaderBtn">
-                    <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="uil:chart-line"></iconify-icon>
-                        </div>
-                        <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Accounts') }}
-                        </div>
+                    <div class="text-lg text-slate-900 dark:text-white font-medium">
+                        {{ __('Withdraw') }}
                     </div>
-                </a>
-                <a href="{{ route('user.kyc') }}" class="card loaderBtn">
-                    <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
-                        </div>
-                        <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Verification') }}
-                        </div>
+                </div>
+            </a>
+            <a href="{{ route('user.transfer') }}" class="card loaderBtn">
+                <div class="card-body flex flex-col items-center justify-center p-8">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                        <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
                     </div>
-                </a>
-                <a href="{{ route('user.ticket.index') }}" class="card loaderBtn">
-                    <div class="card-body flex flex-col items-center justify-center p-8">
-                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                            <iconify-icon icon="heroicons-outline:support"></iconify-icon>
-                        </div>
-                        <div class="text-lg text-slate-900 dark:text-white font-medium">
-                            {{ __('Support') }}
-                        </div>
+                    <div class="text-lg text-slate-900 dark:text-white font-medium">
+                        {{ __('Transfer') }}
                     </div>
-                </a>
-            </div>
+                </div>
+            </a>
+            <a href="{{ route('user.forex-account-logs') }}" class="card loaderBtn">
+                <div class="card-body flex flex-col items-center justify-center p-8">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                        <iconify-icon icon="uil:chart-line"></iconify-icon>
+                    </div>
+                    <div class="text-lg text-slate-900 dark:text-white font-medium">
+                        {{ __('Accounts') }}
+                    </div>
+                </div>
+            </a>
+            <a href="{{ route('user.kyc') }}" class="card loaderBtn">
+                <div class="card-body flex flex-col items-center justify-center p-8">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                        <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
+                    </div>
+                    <div class="text-lg text-slate-900 dark:text-white font-medium">
+                        {{ __('Verification') }}
+                    </div>
+                </div>
+            </a>
+            <a href="{{ route('user.ticket.index') }}" class="card loaderBtn">
+                <div class="card-body flex flex-col items-center justify-center p-8">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                        <iconify-icon icon="heroicons-outline:support"></iconify-icon>
+                    </div>
+                    <div class="text-lg text-slate-900 dark:text-white font-medium">
+                        {{ __('Support') }}
+                    </div>
+                </div>
+            </a>
+        </div>
 
-            <div class="grid grid-cols-12 gap-3 mb-3">
-                <div class="lg:col-span-7 col-span-12">
-                    <div class="card h-full flex flex-col">
-                        <header class="card-header noborder">
-                            <h4 class="card-title">{{ __('My Trading Accounts') }}</h4>
-                        </header>
-                        <div class="card-body p-6 pt-0 mt-auto">
-                            <div class="grid lg:grid-cols-2 grid-cols-1 gap-3">
-                                <div class="bg-slate-100 dark:bg-body">
-                                    <div class="card-body p-4 py-6">
-                                        <div class="flex items-center justify-between gap-5 mb-10">
-                                            <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Live Accounts:') }}</h5>
-                                            <a href="{{ route('user.forex-account-logs') }}" class="btn-link loaderBtn inline-flex items-center">
-                                                {{ __('See All') }}
-                                                <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
-                                            </a>
-                                        </div>
-                                        <div class="flex items-center justify-between gap-5">
-                                            <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
-                                            <a href="{{route('user.schema')}}" class="btn btn-primary loaderBtn btn-sm inline-flex items-center justify-center">
-                                                {{ __('Create Account') }}
-                                            </a>
-                                        </div>
+        <div class="grid grid-cols-12 gap-3 mb-3">
+            <div class="lg:col-span-7 col-span-12">
+                <div class="card h-full flex flex-col">
+                    <header class="card-header noborder">
+                        <h4 class="card-title">{{ __('My Trading Accounts') }}</h4>
+                    </header>
+                    <div class="card-body p-6 pt-0 mt-auto">
+                        <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
+                            <div class="bg-slate-100 dark:bg-body">
+                                <div class="card-body p-4 py-6">
+                                    <div class="flex items-center justify-between gap-5 mb-10">
+                                        <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Live Accounts:') }}</h5>
+                                        <a href="{{ route('user.forex-account-logs') }}" class="btn-link loaderBtn inline-flex items-center">
+                                            {{ __('See All') }}
+                                            <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
+                                        </a>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-5">
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
+                                        <a href="{{route('user.schema')}}" class="btn btn-primary loaderBtn btn-sm inline-flex items-center justify-center">
+                                            {{ __('Create Account') }}
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="bg-slate-100 dark:bg-body">
-                                    <div class="card-body p-4 py-6">
-                                        <div class="flex items-center justify-between gap-5 mb-10">
-                                            <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Demo Accounts:') }}</h5>
-                                            <a href="{{ route('user.forex-account-logs') }}" class="btn-link loaderBtn inline-flex items-center">
-                                                {{ __('See All') }}
-                                                <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
-                                            </a>
-                                        </div>
-                                        <div class="flex items-center justify-between gap-5">
-                                            <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
-                                            <a href="{{route('user.schema')}}" class="btn btn-primary loaderBtn btn-sm inline-flex items-center justify-center">
-                                                {{ __('Create Account') }}
-                                            </a>
-                                        </div>
+                            </div>
+                            <div class="bg-slate-100 dark:bg-body">
+                                <div class="card-body p-4 py-6">
+                                    <div class="flex items-center justify-between gap-5 mb-10">
+                                        <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Demo Accounts:') }}</h5>
+                                        <a href="{{ route('user.forex-account-logs') }}" class="btn-link loaderBtn inline-flex items-center">
+                                            {{ __('See All') }}
+                                            <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
+                                        </a>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-5">
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
+                                        <a href="{{route('user.schema')}}" class="btn btn-primary loaderBtn btn-sm inline-flex items-center justify-center">
+                                            {{ __('Create Account') }}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="lg:col-span-5 col-span-12">
-                    <div class="card h-full">
-                        <div class="card-body p-6 pb-0">
-                            <div id="profitLossChart"></div>
-                        </div>
+            </div>
+            <div class="lg:col-span-5 col-span-12">
+                <div class="card h-full">
+                    <div class="card-body p-6 pb-0">
+                        <div id="profitLossChart"></div>
                     </div>
                 </div>
             </div>
-            @include('frontend::user.include.__recent_transaction')
         </div>
+        @include('frontend::user.include.__recent_transaction')
+    </div>
 
-         {{--for mobile--}}
-        <div class="md:hidden block mobile-screen-show">
-            @include('frontend::user.mobile_screen_include.dashboard.__index')
-        </div>
+     {{--for mobile--}}
+    <div class="md:hidden block mobile-screen-show">
+        @include('frontend::user.mobile_screen_include.dashboard.__index')
+    </div>
 
 
 @endsection

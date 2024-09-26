@@ -70,7 +70,7 @@
                                     </label>
                                 </div>
                                 <label class="form-label pt-0 !mb-0" style="width:auto">
-                                    {{ __('Request Swap-Free Option (Islamic Account)') }}
+                                    {{ __('Swap-Free Account') }}
                                 </label>
                             </div>
                         </div>

@@ -369,7 +369,21 @@
                 right: 0,
                 bottom: 0,
                 left: 0
-            }
+            },
+            responsive: [
+                {
+                    breakpoint: 1000,
+                    options: {
+                        chart: {
+                            width: '100%',
+                            height: 350,
+                        },
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            ]
         }
 
         var chart = new ApexCharts(document.querySelector("#registredActiveCleints"), options);

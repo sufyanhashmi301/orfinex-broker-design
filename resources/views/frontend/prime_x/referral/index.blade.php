@@ -9,28 +9,34 @@
             @include('frontend::referral.include.__dashboard')
             @include('frontend::referral.modal.__qr_code')
         @elseif(auth()->user()->ib_status == \App\Enums\IBStatus::PENDING)
-            <div class="card">
+            <div class="card basicTable_wrapper items-center justify-center">
                 <div class="card-body p-6">
-                    <div class="progress-steps-form">
-                        <div class="transaction-status text-center px-7 py-12">
-                            <div
-                                class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                    <div class="max-w-2xl progress-steps-form">
+                        <div class="transaction-status text-center">
+                            <div class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
                                 <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
                             </div>
-                            <h2 class="text-3xl dark:text-white my-5">Partner Request Pending</h2>
+                            <h2 class="text-3xl dark:text-white my-5">{{ __('Partner Request Pending') }}</h2>
                             <p class="text-sm mb-3 dark:text-white">
-                                Your partnership request is under review and we'll confirm with you shortly. Stay tuned!
+                                {{ __("Your partnership request is under review and we'll confirm with you shortly. Stay tuned!") }}
                             </p>
-                            <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
-                                <span>Read Partner Agreement</span>
-                            </a>
-                            <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
-                                <span>Read Our Reviews on Trustpilot</span>
-                            </a>
+                            <div class="flex flex-wrap items-center justify-center gap-3">
+                                <a href="{{setting('IB_partner_agreement_link','document_links',false)}}" target="_blank" class="btn btn-light inline-flex items-center justify-center mr-2">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
+                                    <span>{{ __('Read Partner Agreement') }}</span>
+                                </a>
+                                <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
+                                    <span>{{ __('Read Our Reviews on Trustpilot') }}</span>
+                                </a>
+                            </div>
                             <div class="mt-5">
-                                <p class="text-sm dark:text-slate-300">If you face any issue, please visit our <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">Customer Support</a> or Email us at <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.</p>
+                                <p class="text-sm dark:text-slate-300">
+                                    {{ __('If you face any issue, please visit our') }}
+                                    <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" class="btn-link">{{ __('Customer Support') }}</a>
+                                    {{ __('or Email us at') }}
+                                    <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">{{ setting('support_email','global')}}</a>.
+                                </p>
                             </div>
                         </div>
                     </div>

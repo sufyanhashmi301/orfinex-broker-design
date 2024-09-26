@@ -1,9 +1,5 @@
+<p class="text-slate-400 dark:text-slate-50 text-sm mb-1">{{ __('Recent Transactions') }}</p>
 <div class="card all-feature-mobile mb-3 mobile-screen-show">
-    <div class="card-header">
-        <h4 class="card-title">
-            {{ __('Recent Transactions') }}
-        </h4>
-    </div>
     <div class="card-body p-3">
         <div class="all-feature-mobile mobile-transactions mb-3 mobile-screen-show">
             <div class="contents space-y-3">
@@ -18,11 +14,10 @@
                         </div>
                         <div class="transaction-right text-right">
                             <div class="transaction-amount {{ txn_type($transaction->type->value,['add','sub']) }} mb-1 dark:text-white">
-                                {{txn_type($transaction->type->value,['+','-']).$transaction->amount .' '.$currency}}</div>
+                                {{txn_type($transaction->type->value,['+','-']).$transaction->amount .' '.$currency}}
+                            </div>
                             <div class="transaction-fee sub mb-1 dark:text-white">-{{  $transaction->charge.' '. $currency .' '.__('Fee') }} </div>
                             <div class="transaction-gateway mb-1 dark:text-white">{{ $transaction->method }}</div>
-        
-        
                             @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
                                 <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)

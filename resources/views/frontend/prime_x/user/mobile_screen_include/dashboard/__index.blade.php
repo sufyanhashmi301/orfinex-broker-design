@@ -1,81 +1,52 @@
-<div class="user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg bg-[#ff0000]">
-    <div class="flex items-center">
-        <div class="flex-none">
-            <div class="lg:h-10 lg:w-10 h-9 w-9 rounded-full ltr:mr-[10px] rtl:ml-[10px]">
-                <img src="{{ asset($user->avatar ?? 'global/materials/user.png') }}" class="block w-full h-full object-cover rounded-full" alt=""/>
-            </div>
-        </div>
-        <div class="flex-1 text-start">
-            <h4 class="text-sm font-medium text-slate-50 whitespace-nowrap">
-                {{ __('Hi') }}, {{ $user->full_name }}
-            </h4>
-            <div class="text-xs font-normal text-slate-50 dark:text-slate-50">
-                {{ $user->rank->ranking_name }} - <span>{{ $user->rank->ranking }}</span>
-            </div>
-        </div>
-    </div>
-    <div class="lg:h-6 lg:w-6 h-6 w-6 rounded-full ltr:mr-[10px] rtl:ml-[10px]">
-        <img src="{{ asset( $user->rank->icon) }}" class="block w-full h-full object-cover rounded-full" alt=""/>
-    </div>
-</div>
-<div class="user-wallets-mobile">
-    <img src="{{ asset('frontend/materials/wallet-shadow.png') }}" alt="" class="wallet-shadow">
-    <div class="head">{{ __('All Wallets in') }} {{ $currency }}</div>
-    <div class="one">
-        <div class="balance">
-            <span class="symbol">{{ $currencySymbol }}</span>
-            {{$dataCount['total_forex_balance']}}
-        </div>
-        <div class="wallet">{{ __('Balance') }}</div>
-    </div>
-    <div class="one p-wal">
-        <div class="balance">
-            <span class="symbol">{{ $currencySymbol }}</span>
-            {{$dataCount['total_forex_equity']}}
-        </div>
-        <div class="wallet">{{ __('Equity') }}</div>
-    </div>
-    <div class="one p-wal">
-        <div class="balance">
-            <span class="symbol">{{ $currencySymbol }}</span>
-            0
-        </div>
-        <div class="wallet">{{ __('Success Points') }}</div>
-    </div>
-    <div class="info">
-        <i icon-name="info"></i>{{ __('You Earned') }} {{ $dataCount['profit_last_7_days'] }} {{ $currency }} {{ __('This Week') }}
-    </div>
-</div>
-
+<p class="text-slate-400 dark:text-slate-50 text-sm mb-1">{{ __('Actions') }}</p>
 <div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">
-    <a href="{{ route('user.deposit.amount') }}" class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+    <a href="{{ route('user.deposit.amount') }}" class="card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:download"></iconify-icon> 
+            <iconify-icon icon="heroicons-outline:download"></iconify-icon>
         </div>
         <span class="text-sm">{{ __('Deposit') }}</span>
     </a>
-    <a href="{{ route('user.schema') }}" class=" bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+    <a href="{{ route('user.withdraw.view') }}" class=" card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:box"></iconify-icon>  
-        </div>
-        <span class="text-sm">{{ __('Accounts') }}</span>
-    </a>
-    <a href="{{ route('user.withdraw.view') }}" class=" bg-success-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
-        <div class="mx-auto text-2xl">
-            <iconify-icon icon="lucide:send"></iconify-icon>  
+            <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
         </div>
         <span class="text-sm">{{ __('Withdraw') }}</span>
     </a>
+    <a href="{{ route('user.transfer') }}" class=" card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="akar-icons:arrow-repeat"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Transfer') }}</span>
+    </a>
+    <a href="{{ route('user.forex-account-logs') }}" class="card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="uil:chart-line"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Accounts') }}</span>
+    </a>
+    <a href="{{ route('user.kyc') }}" class=" card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Verification') }}</span>
+    </a>
+    <a href="{{ route('user.ticket.index') }}" class=" card rounded-md p-4 px-2 text-center">
+        <div class="mx-auto text-2xl">
+            <iconify-icon icon="heroicons-outline:support"></iconify-icon>
+        </div>
+        <span class="text-sm">{{ __('Support') }}</span>
+    </a>
 </div>
 
-<div class="space-y-3">
+<!-- Recent Transactions -->
+@include('frontend::user.mobile_screen_include.dashboard.__transactions')
+
+{{--<div class="space-y-3">
 
     <!-- all navigation -->
     @include('frontend::user.mobile_screen_include.dashboard.__navigations')
 
     <!-- all Statistic -->
-    {{-- @include('frontend::user.mobile_screen_include.dashboard.__statistic') --}}
+    @include('frontend::user.mobile_screen_include.dashboard.__statistic')
 
-    <!-- Recent Transactions -->
-    @include('frontend::user.mobile_screen_include.dashboard.__transactions')
-</div>
+</div>--}}

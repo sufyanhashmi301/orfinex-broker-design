@@ -55,5 +55,9 @@ class Admin extends Authenticatable
     {
         return $this->belongsTo(Designation::class, 'designation_id');
     }
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'admin_id');
+    }
 
 }

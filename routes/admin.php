@@ -56,6 +56,7 @@ use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\NoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,11 +91,22 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
-        Route::post('note/create/{id}', 'createNote')->name('note.add');
+        // Route::post('note/create/{id}', 'createNote')->name('note.ssadd');
+        // Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
         Route::post('kyc/{id}', 'kyc')->name('kyc');
 
     });
+     
+    Route::group(['prefix' => 'user/note', 'as' => 'user.note.', 'controller' => NoteController::class], function () {
+        Route::get('data/{id}', 'index')->name('data');
+        Route::post('create/{id}', 'create')->name('add');
+        Route::put('edit/{id}', 'update')->name('edit');
+        Route::delete('delete/{id}', 'destroy')->name('delete');
+    });
+    
+    
+    
 
     Route::resource('kyc-form', KycController::class);
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {

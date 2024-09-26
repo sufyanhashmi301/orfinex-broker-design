@@ -693,6 +693,10 @@ class PricingInvestmentProcessor
                     return redirect()->back();
                 }elseif(isset($latestInvestments->login)) {
                     $login = ++$latestInvestments->login;
+                    $investment = ForexSchemaInvestment::where('login',$login)->exists();
+                    if($investment){
+                        ++$login;
+                    }
 //                    dd($login,$latestInvestments->login);
                     }
             }else{

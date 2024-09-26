@@ -107,7 +107,7 @@
                             {{ __('Access to premium apps and tools') }}
                         </li>
                     </ul>
-                    <a href="javascript:;" class="btn inline-flex justify-center btn-primary w-full mt-5">
+                    <a href="{{ route('user.schema') }}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                         {{ __('Start Challenge') }}
                     </a>
                 </div>

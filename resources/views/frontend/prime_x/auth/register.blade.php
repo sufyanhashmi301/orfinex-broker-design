@@ -129,7 +129,7 @@
         <!-- END: Login Form -->
         <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
             <div class="absolute inline-block bg-white dark:bg-slate-800 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 dark:text-slate-400font-normal">
-                {{ __('Already have an account?') }}
+                {{ __('Or') }}
             </div>
         </div>
         <div class="md:max-w-[345px] mt-6 mx-auto font-normal text-slate-500 text-center dark:text-slate-400mt-12 uppercase text-sm">

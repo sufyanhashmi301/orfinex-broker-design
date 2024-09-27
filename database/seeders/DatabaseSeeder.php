@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
         $this->call(KycsTableSeeder::class);
         $this->call(UpdateGatewayLogoSeeder::class);
         $this->call(EmploymentSeeder::class);
+        $this->call(RiskBookSeeder::class);
+        $this->call(Match2PayGatewaySeeder::class);
 
 
     }

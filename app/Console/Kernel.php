@@ -21,21 +21,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('investments:fetch-daily-score')->daily();
-//        $schedule->command('trade:fetch-weekly-stats')->weekly();
+        $schedule->command('investments:fetch-daily-score')->dailyAt('23:50');
+//        $schedule->command('trade:fetch-weekly-stats')->weeklyOn(1, '23:50');
 
-//        if(url('/') == 'http://brokerdemo.brokeret.com') {
-//            $schedule->command('reset:data')->daily();
-//        }
-//        $schedule->command('ib:record')->dailyAt('00:10');
-//        $schedule->command('multiIB:Bonus')->dailyAt('00:30');
+        $schedule->command('daily:drawdown')->everyFiveMinutes();
 
-//        $schedule->command('ib:record')->everyMinute();
-//        $schedule->command('forex:create-accounts-from-mysql-to-mt5')->everyTwoMinutes();
-//        $schedule->command('multiIB:Bonus')->everyMinute();
-//        $schedule->command('queue:work --stop-when-empty')
-//            ->everyMinute()
-//            ->withoutOverlapping();
     }
 
     /**
@@ -53,6 +43,7 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
 
+        FetchWeeklyTradeStats::class,
         FetchWeeklyTradeStats::class,
         FetchInvestmentDailyScore::class,
     ];

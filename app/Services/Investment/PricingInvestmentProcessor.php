@@ -673,22 +673,37 @@ class PricingInvestmentProcessor
 
         $group = $invest->forexSchemaPhaseRule->forexSchemaPhase->group;
 //        dd($group);
+        $schema = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema;
+//        dd($schema);
+        $phaseIds = $schema->forexSchemaPhases->pluck('id');
+
+
+        $latestInvestments = ForexSchemaInvestment::whereHas('forexSchemaPhaseRule', function($query) use ($phaseIds) {
+            $query->whereIn('forex_schema_phase_id', $phaseIds);
+        })->whereIn('status', [InvestmentStatus::ACTIVE,InvestmentStatus::VIOLATED])
+            ->latest('id')->first();
+//        dd($schema,$phaseIds,$latestInvestments);
         $login = 0;
 //        if (setting('is_forex_group_range', 'global')){
-            $forexAccount = ForexSchemaInvestment::where('forex_schema_phase_rule_id',$invest->forexSchemaPhaseRule->id)->orderBY('login','desc')->first();
-            if($forexAccount) {
-                if(isset($forexAccount->login) && $forexAccount->login >= $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->end_range){
+//            $forexAccount = ForexSchemaInvestment::where('forex_schema_phase_rule_id',$invest->forexSchemaPhaseRule->id)->orderBY('login','desc')->first();
+            if($latestInvestments) {
+                if(isset($latestInvestments->login) && $latestInvestments->login >= $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->end_range){
                     $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.',['title'=> $schema->title]);
                     notify()->error($message, 'Error');
                     return redirect()->back();
-                }else{
-                    $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
-                }
+                }elseif(isset($latestInvestments->login)) {
+                    $login = ++$latestInvestments->login;
+                    $investment = ForexSchemaInvestment::where('login',$login)->exists();
+                    if($investment){
+                        ++$login;
+                    }
+//                    dd($login,$latestInvestments->login);
+                    }
             }else{
                 $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
             }
 //        }
-
+//dd($login);
         $data = [
             "login" => $login,
             "group" => $group,
@@ -1069,6 +1084,7 @@ class PricingInvestmentProcessor
             $invest->group = $group;
             $invest->status = InvestmentStatus::ACTIVE;
             $invest->term_start = $termStart;
+
 //        $invest->term_end = $termEnd;
             $invest->save();
             //referral Bonus

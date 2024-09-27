@@ -41,7 +41,8 @@
                                     </td>
                                     <td class="table-td">{{ $transaction->target_id }}</td>
                                     <td class="table-td">
-                                        <div class="flex items-center">
+                                        {{$transaction->method}}
+                                        {{--<div class="flex items-center">
                                             <div class="flex-none">
                                                 <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
                                                     <img src="{{ asset('frontend/images/logo/BinancePay.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
@@ -52,7 +53,7 @@
                                                     {{$transaction->method}}
                                                 </h4>
                                             </div>
-                                        </div>
+                                        </div>--}}
                                     </td>
                                     <td class="table-td">
                                         @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)

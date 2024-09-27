@@ -134,34 +134,49 @@
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                                 <div class="checkbox-area success-checkbox">
                                     <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout" id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked">
+                                        <input type="checkbox" class="hidden addon-checkbox" name="" id="no-addons" data-price="0"  checked="checked">
                                         <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                             <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
                                         </span>
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="leading-none">
-                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span>
-                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>
+                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('No addons') }}</span>
+                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('No available') }}</small>
                                             </span>
-                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span>
+                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
                                         </span>
                                     </label>
                                 </div>
-                                <div class="checkbox-area success-checkbox">
-                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free" id="swap_free" data-price="10" value="{{the_hash(10)}}">
-                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
-                                        </span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="leading-none">
-                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span>
-                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>
-                                            </span>
-                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span>
-                                        </span>
-                                    </label>
-                                </div>
+{{--                                <div class="checkbox-area success-checkbox">--}}
+{{--                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">--}}
+{{--                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout" id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked">--}}
+{{--                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">--}}
+{{--                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">--}}
+{{--                                        </span>--}}
+{{--                                        <span class="flex-1 inline-flex justify-between items-center">--}}
+{{--                                            <span class="leading-none">--}}
+{{--                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span>--}}
+{{--                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>--}}
+{{--                                            </span>--}}
+{{--                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span>--}}
+{{--                                        </span>--}}
+{{--                                    </label>--}}
+{{--                                </div>--}}
+{{--                                <div class="checkbox-area success-checkbox">--}}
+{{--                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">--}}
+{{--                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free" id="swap_free" data-price="10" value="{{the_hash(10)}}">--}}
+{{--                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">--}}
+{{--                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">--}}
+{{--                                        </span>--}}
+{{--                                        <span class="flex-1 inline-flex justify-between items-center">--}}
+{{--                                            <span class="leading-none">--}}
+{{--                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span>--}}
+{{--                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>--}}
+{{--                                            </span>--}}
+{{--                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span>--}}
+{{--                                        </span>--}}
+{{--                                    </label>--}}
+{{--                                </div>--}}
                             </div>
                         </div>
 

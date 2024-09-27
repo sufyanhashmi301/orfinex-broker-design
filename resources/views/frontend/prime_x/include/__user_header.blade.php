@@ -23,7 +23,7 @@
                 </div>
             </div>--}}
             <div class="flex items-center md:space-x-4 space-x-2 mr-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
-                <a href="index.html" class="mobile-logo xl:hidden inline-block active">
+                <a href="{{ route('user.dashboard') }}" class="mobile-logo xl:hidden inline-block active">
                     <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo" alt="logo">
                     <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo" alt="logo">
                 </a>
@@ -32,23 +32,29 @@
                 </button>
             </div>
             @if(Route::is(['user.follower_access', 'user.provider_access', 'user.ratings']))
-                <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
-                    <li class="nav-item">
-                        <a href="{{ route('user.follower_access') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.follower_access') }}">
-                            {{ __('Follower Access') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('user.provider_access') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.provider_access') }}">
-                            {{ __('Provider Access') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('user.ratings') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.ratings') }}">
-                            {{ __('Ratings') }}
-                        </a>
-                    </li>
-                </ul>
+                <div class="overflow-x-auto">
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden">
+                            <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
+                                <li class="nav-item">
+                                    <a href="{{ route('user.follower_access') }}" class="btn btn-sm !text-nowrap inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.follower_access') }}">
+                                        {{ __('Follower Access') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('user.provider_access') }}" class="btn btn-sm !text-nowrap inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.provider_access') }}">
+                                        {{ __('Provider Access') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('user.ratings') }}" class="btn btn-sm !text-nowrap inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.ratings') }}">
+                                        {{ __('Ratings') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             @else
                 @if(setting('is_webterminal','global'))
                     <a href="{{ route('webterminal') }}" class="block loaderBtn lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 rounded flex flex-col items-center justify-center">

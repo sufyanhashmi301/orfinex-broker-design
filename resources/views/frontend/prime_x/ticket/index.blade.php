@@ -37,7 +37,7 @@
                                                         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
                                                             {{ $ticket->title }}
                                                         </h4>
-                                                        <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                        <div class="text-xs !text-nowrap font-normal text-slate-600 dark:text-slate-400">
                                                             {{ __('Created ').$ticket->created_at }}
                                                         </div>
                                                     </div>

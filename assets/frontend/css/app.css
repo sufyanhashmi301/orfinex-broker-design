@@ -5728,6 +5728,9 @@ textarea.form-control.is-invalid{
 .break-all{
   word-break: break-all;
 }
+.\!text-nowrap {
+  text-wrap: nowrap !important;
+}
 .rounded-md{
   border-radius: 0.375rem;
 }

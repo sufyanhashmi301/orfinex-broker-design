@@ -24,6 +24,7 @@ use Payment\Coinremitter\CoinremitterTxn;
 use Payment\Cryptomus\CryptomusTxn;
 use Payment\Flutterwave\FlutterwaveTxn;
 use Payment\Instamojo\InstamojoTxn;
+use Payment\Match2pay\Match2payTxn;
 use Payment\Mollie\MollieTxn;
 use Payment\Monnify\MonnifyTxn;
 use Payment\Nowpayments\NowpaymentsTxn;
@@ -244,8 +245,9 @@ trait Payment
             'razorpay' => RazorpayTxn::class,
             'twocheckout' => TwocheckoutTxn::class,
             'bridgerpay' => BridgerpayTxn::class,
+            'match2pay' => Match2payTxn::class,
         ];
-
+//dd($gateway,$gatewayMap,$txnInfo);
         if (array_key_exists($gateway, $gatewayMap)) {
             return app($gatewayMap[$gateway], ['txnInfo' => $txnInfo]);
         }

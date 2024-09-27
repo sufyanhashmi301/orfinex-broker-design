@@ -179,13 +179,14 @@
                         <span class="price-display">{{ '' }}</span>
                     </li>
                     <li class="flex items-center justify-between text-base">
-                        <span>{{ __('Discount') }}</span>
-                        <span class="discount-display">{{ '' }}</span>
-                    </li>
-                    <li class="flex items-center justify-between text-base">
                         <span>{{ __('Addons') }}</span>
                         <span class="addons-display">{{ '' }}</span>
                     </li>
+                    <li class="flex items-center justify-between text-base">
+                        <span>{{ __('Discount') }}</span>
+                        <span class="discount-display">{{ '' }}</span>
+                    </li>
+
                 </ul>
                 <div class="pricing-amount py-5 border-b dark:border-slate-700 mb-5">
                     <div class="amount flex items-center justify-between text-slate-900 dark:text-white">
@@ -320,7 +321,7 @@
                 let checkedInput = $('input[name="rule_id"]:checked');
                 let basePrice = parseFloat(checkedInput.data('price')) || 0;
                 let discount = parseFloat(checkedInput.data('discount')) || 0;
-                let addonPrice =  0;
+                let addon =  0;
                 let total = basePrice - discount;
 
                 let dailyDD = checkedInput.data('daily-dd') || '';
@@ -330,13 +331,14 @@
                 // Calculate percentage addon prices from checked checkboxes
                 $('.addon-checkbox:checked').each(function () {
                      addonPrice = parseFloat($(this).data('price')) || 0;
-                    total += basePrice * (addonPrice / 100); // Add percentage to total
-                });
+                    addon += basePrice * (addonPrice / 100); // Add percentage to total
 
+                });
+                total +=addon;
                 // Update values in multiple places using classes
                 $('.price-display').text('$' + basePrice.toFixed(2));
                 $('.discount-display').text('$' + discount.toFixed(2));
-                $('.addons-display').text('$' + addonPrice.toFixed(2));
+                $('.addons-display').text('$' + addon.toFixed(2));
                 $('.total-display').text('$' + total.toFixed(2));
                 $('.daily-dd').text(dailyDD);
                 $('.max-dd').text(maxDD);

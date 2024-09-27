@@ -39,7 +39,7 @@ class Match2PayGatewaySeeder extends Seeder
        }else{
            DB::table('gateways')->where('gateway_code','match2pay')->update([
 
-//                   'credentials' => json_encode($match2payCredentials),
+                   'credentials' => json_encode($match2payCredentials),
                    'supported_currencies' => json_encode($match2payCurrencies),
 
 

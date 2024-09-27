@@ -1,8 +1,8 @@
-@extends('backend.setting.index')
+@extends('backend.setting.payment.index')
 @section('title')
     {{ __('Currency Settings') }}
 @endsection
-@section('setting-content')
+@section('payment-content')
     <?php
         $section = 'currency_setting';
         $fields = config('setting.currency_setting');
@@ -189,45 +189,45 @@
         </div>
     </div>
 @endsection
-@push('single-script')
+@section('payment-script')
     <script>
-    (function($) {
-        'use strict';
-        var currencyType ='{{ setting('site_currency_type','global') }}'
+        (function($) {
+            'use strict';
+            var currencyType ='{{ setting('site_currency_type','global') }}'
 
-        function siteCurrency(currencyType) {
-            var currencyData = JSON.parse(@json(getJsonData('currency')));
-            $('.site-currency-'+currencyType).select2({
-                data: currencyData[currencyType]
-            });
-        }
-
-        $('.site-currency-type').on('change',function () {
-               currencyType = $(this).val();
-               currencyShow(currencyType)
-        });
-
-        function currencyShow(currencyType){
-            if (currencyType === 'fiat'){
-                $('.currency-fiat').removeClass('hidden')
-                $('.currency-crypto').addClass('hidden')
-
-                $('.site-currency-fiat').attr('name','site_currency');
-                $('.site-currency-crypto').attr('name','');
-
-            }else {
-                $('.currency-crypto').removeClass('hidden')
-                $('.currency-fiat').addClass('hidden')
-
-                $('.site-currency-crypto').attr('name','site_currency');
-                $('.site-currency-fiat').attr('name','');
+            function siteCurrency(currencyType) {
+                var currencyData = JSON.parse(@json(getJsonData('currency')));
+                $('.site-currency-'+currencyType).select2({
+                    data: currencyData[currencyType]
+                });
             }
-        }
 
-        siteCurrency('fiat')
-        siteCurrency('crypto')
-        currencyShow(currencyType)
+            $('.site-currency-type').on('change',function () {
+                   currencyType = $(this).val();
+                   currencyShow(currencyType)
+            });
 
-    })(jQuery);
+            function currencyShow(currencyType){
+                if (currencyType === 'fiat'){
+                    $('.currency-fiat').removeClass('hidden')
+                    $('.currency-crypto').addClass('hidden')
+
+                    $('.site-currency-fiat').attr('name','site_currency');
+                    $('.site-currency-crypto').attr('name','');
+
+                }else {
+                    $('.currency-crypto').removeClass('hidden')
+                    $('.currency-fiat').addClass('hidden')
+
+                    $('.site-currency-crypto').attr('name','site_currency');
+                    $('.site-currency-fiat').attr('name','');
+                }
+            }
+
+            siteCurrency('fiat')
+            siteCurrency('crypto')
+            currencyShow(currencyType)
+
+        })(jQuery);
     </script>
-@endpush
+@endsection

@@ -44,7 +44,7 @@
     @include('backend.departments.include.__edit')
     <!-- Modal for Delete deleteDepartment-->
 @endsection
-@section('setting-script')
+@section('organization-script')
     <script>
         (function ($) {
             "use strict";

@@ -1,4 +1,4 @@
-@extends('backend.deposit.index')
+@extends('backend.setting.payment.deposit.index')
 @section('title')
     {{ __(ucwords($type).' Method') }}
 @endsection
@@ -9,7 +9,7 @@
         </h4>
     </div>
 @endsection
-@section('deposit_content')
+@section('deposit-content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">

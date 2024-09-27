@@ -147,16 +147,16 @@ if (!function_exists('user_balance')) {
 //    }
 //}
 //
-//if (!function_exists('base_currency')) {
-//    /**
-//     * @version 1.0.0
-//     * @since 1.0
-//     */
-//    function base_currency()
-//    {
-//        return sys_settings('base_currency', 'USD');
-//    }
-//}
+if (!function_exists('base_currency')) {
+    /**
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function base_currency()
+    {
+        return sys_settings('base_currency', 'USD');
+    }
+}
 //
 //if (!function_exists('secondary_currency')) {
 //    /**

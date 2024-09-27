@@ -68,15 +68,17 @@
                         {{-- Added display elements for Daily DD, Max DD, and Profit Target --}}
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
-                                {{ __('Rules') }}
+                                {{ __('Trading Rules') }}
                             </p>
                             <div class="grid md:grid-cols-3 grid-cols-1 gap-5">
                                 <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
                                     <span class="leading-none">
                                         <span class="leading-none dark:text-white text-sm font-medium block mb-1">
-                                            {{ __('Daily DD') }}
+                                            {{ __('Daily Drawdown') }}
                                         </span>
-                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                        <small class="leading-none dark:text-slate-100 text-xs">
+                                            {{ __('Max loss per day') }}
+                                        </small>
                                     </span>
                                     <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize daily-dd">
                                         {{ '' }}
@@ -85,9 +87,11 @@
                                 <div class="flex justify-between items-center rounded border dark:border-slate-700 px-3 py-4">
                                     <span class="leading-none">
                                         <span class="leading-none dark:text-white text-sm font-medium block mb-1">
-                                            {{ __('Max DD') }}
+                                            {{ __('Max Drawdown') }}
                                         </span>
-                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                        <small class="leading-none dark:text-slate-100 text-xs">
+                                            {{ __('Maximum allowable loss on the account') }}
+                                        </small>
                                     </span>
                                     <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize max-dd">
                                         {{ '' }}
@@ -98,7 +102,9 @@
                                         <span class="leading-none dark:text-white text-sm font-medium block mb-1">
                                             {{ __('Profit Target') }}
                                         </span>
-                                        <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of monthly') }}</small>
+                                        <small class="leading-none dark:text-slate-100 text-xs">
+                                            {{ __('Required profit to achieve') }}
+                                        </small>
                                     </span>
                                     <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize profit-target">
                                         {{ '' }}
@@ -134,34 +140,49 @@
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                                 <div class="checkbox-area success-checkbox">
                                     <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout" id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked">
+                                        <input type="checkbox" class="hidden addon-checkbox" name="" id="no-addons" data-price="0"  checked="checked">
                                         <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                             <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
                                         </span>
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="leading-none">
-                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span>
-                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>
+                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('No addons') }}</span>
+                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('No available') }}</small>
                                             </span>
-                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span>
+                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
                                         </span>
                                     </label>
                                 </div>
-                                <div class="checkbox-area success-checkbox">
-                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free" id="swap_free" data-price="10" value="{{the_hash(10)}}">
-                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
-                                        </span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="leading-none">
-                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span>
-                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>
-                                            </span>
-                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span>
-                                        </span>
-                                    </label>
-                                </div>
+{{--                                <div class="checkbox-area success-checkbox">--}}
+{{--                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">--}}
+{{--                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout" id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked">--}}
+{{--                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">--}}
+{{--                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">--}}
+{{--                                        </span>--}}
+{{--                                        <span class="flex-1 inline-flex justify-between items-center">--}}
+{{--                                            <span class="leading-none">--}}
+{{--                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span>--}}
+{{--                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small>--}}
+{{--                                            </span>--}}
+{{--                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span>--}}
+{{--                                        </span>--}}
+{{--                                    </label>--}}
+{{--                                </div>--}}
+{{--                                <div class="checkbox-area success-checkbox">--}}
+{{--                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">--}}
+{{--                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free" id="swap_free" data-price="10" value="{{the_hash(10)}}">--}}
+{{--                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">--}}
+{{--                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">--}}
+{{--                                        </span>--}}
+{{--                                        <span class="flex-1 inline-flex justify-between items-center">--}}
+{{--                                            <span class="leading-none">--}}
+{{--                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span>--}}
+{{--                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small>--}}
+{{--                                            </span>--}}
+{{--                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span>--}}
+{{--                                        </span>--}}
+{{--                                    </label>--}}
+{{--                                </div>--}}
                             </div>
                         </div>
 
@@ -195,11 +216,17 @@
                     </div>
                 </div>
                 <div class="order__discount-code space-y-4 mb-10">
+                    <p class="text-sm font-medium dark:text-slate-100 mb-1">
+                        {{ __('Please review the following policies before proceeding:') }}
+                    </p>
                     <ul class="space-y-3 mb-5">
                         @if(setting('aml_policy_show','document_links',false))
                             <li>
                                 <a href="{{ setting('aml_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('AML Policy') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('AML Policy') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -207,7 +234,10 @@
                         @if(setting('privacy_policy_show','document_links',false))
                             <li>
                                 <a href="{{ setting('privacy_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('Privacy Policy') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('Privacy Policy') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -215,7 +245,10 @@
                         @if(setting('client_agreement_show','document_links',false))
                             <li>
                                 <a href="{{ setting('client_agreement_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('Client Agreement') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('Client Agreement') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -223,7 +256,10 @@
                         @if(setting('complaints_handling_policy_show','document_links',false))
                             <li>
                                 <a href="{{ setting('complaints_handling_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('Complaints Handling Policy') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('Complaints Handling Policy') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -231,7 +267,10 @@
                         @if(setting('cookies_policy_show','document_links',false))
                             <li>
                                 <a href="{{ setting('cookies_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('Cookies Policy') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('Cookies Policy') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -239,7 +278,10 @@
                         @if(setting('IB_partner_agreement_show','document_links',false))
                             <li>
                                 <a href="{{ setting('IB_partner_agreement_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('IB Partner Agreement') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('IB Partner Agreement') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -247,7 +289,10 @@
                         @if(setting('order_execution_policy_show','document_links',false))
                             <li>
                                 <a href="{{ setting('order_execution_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('Order Execution Policy') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('Order Execution Policy') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -255,7 +300,10 @@
                         @if(setting('risk_disclosure_show','document_links',false))
                             <li>
                                 <a href="{{ setting('risk_disclosure_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('Risk Disclosure') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('Risk Disclosure') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -263,7 +311,10 @@
                         @if(setting('US_clients_policy_show','document_links',false))
                             <li>
                                 <a href="{{ setting('US_clients_policy_link', 'document_links', 'javascript:void(0);')}}" class="inline-flex items-center justify-between text-sm w-full">
-                                    <span class="underline">{{ __('US Clients Policy') }}</span>
+                                    <div class="flex items-center">
+                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                        <span class="underline">{{ __('US Clients Policy') }}</span>
+                                    </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
@@ -274,7 +325,7 @@
                             <input type="checkbox" name="confirmation" class="custom-control-input mt-1"
                                    id="checkbox-terms" required="">
                             <label class="custom-control-label text-xs dark:text-slate-100 ml-2" for="checkbox-terms">
-                                {{ __('By confirming the order: I declare that i have read and agree with Terms & Conditions By confirming the order: I declare that i have read and agree with Terms & Conditions.') }}
+                                {{ __('By confirming this order, I declare that I have read and agree to the Terms & Conditions. By proceeding, I acknowledge understanding and acceptance of all the policies listed.') }}
                             </label>
                         </div>
                         <span class="text-sm text-primary hidden" id="term-validation">

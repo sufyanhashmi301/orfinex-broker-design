@@ -269,6 +269,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 //===============================  site Settings ==================================
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
+        Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
@@ -439,6 +440,7 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
     Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
     Route::post('/positions/active', [PositionController::class, 'getGroupPosition'])->name('positions.group');

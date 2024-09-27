@@ -145,7 +145,6 @@
                 $('#editKeyword').modal('toggle')
             })
 
-
         })(jQuery);
     </script>
 @endsection

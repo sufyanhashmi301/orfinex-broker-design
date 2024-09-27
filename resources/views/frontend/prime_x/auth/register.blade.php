@@ -3,7 +3,7 @@
     {{ __('Sign Up') }}
 @endsection
 @section('description')
-    {{ __('Register now to access competitive options and advanced tools.') }}
+    {{ __('Register to Access Funded Trading Accounts and Professional Tools.') }}
 @endsection
 @section('content')
     <div class="">

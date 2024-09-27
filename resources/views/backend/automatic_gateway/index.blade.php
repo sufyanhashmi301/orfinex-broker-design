@@ -1,8 +1,8 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.payment.index')
 @section('title')
     {{ __('Automatic Payment Gateway') }}
 @endsection
-@section('content')
+@section('payment-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Automatic Payment Gateway') }}

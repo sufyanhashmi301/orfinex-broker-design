@@ -1,4 +1,4 @@
-@extends('backend.layouts.app')
+@extends('backend.setting.user_management.index')
 @section('title')
     {{ __('Update KYC Level') }}
 @endsection
@@ -283,7 +283,7 @@
     @include('backend.kyc_levels.include.__addlevel3manual')
 @endsection
 
-@section('script')
+@section('user-management-script')
     <script>
         $(document).ready(function () {
             function toggleSettings() {

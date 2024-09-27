@@ -1,24 +1,13 @@
-@extends('backend.ticket.index')
+@extends('backend.layouts.app')
 @section('title')
     {{ __('All Support Tickets') }}
 @endsection
-@section('header-btn')
-    <div class="input-area relative w-1/5" style="padding-left: 3rem;">
-        <label for="" class="inline-inputLabel text-sm">{{ __('Filter:') }}</label>
-        <select class="form-control !bg-transparent">
-            <option selected="">All</option>
-            <option>...</option>
-        </select>
+@section('content')
+    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            @yield('title')
+        </h4>
     </div>
-    <div class="input-area relative w-1/5" style="padding-left: 3rem;">
-        <label for="" class="inline-inputLabel text-sm">{{ __('Sort:') }}</label>
-        <select class="form-control !bg-transparent">
-            <option selected="">Choose...</option>
-            <option>...</option>
-        </select>
-    </div>
-@endsection
-@section('ticket-content')
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">

@@ -1,8 +1,7 @@
-@extends('backend.withdraw.index')
+@extends('backend.setting.payment.withdraw.index')
 @section('title')
     {{ __('New Withdraw Method') }}
 @endsection
-
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -10,11 +9,7 @@
         </h4>
     </div>
 @endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
-
-@endsection
-@section('withdraw_content')
+@section('withdraw-content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
@@ -48,9 +43,7 @@
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
                                     <label class="form-label" for="">{{ __('Automatic Gateway:') }}</label>
-                                    <select name="gateway_id"
-                                            class="form-control w-100"
-                                            id="gateway-select">
+                                    <select name="gateway_id" class="select2 form-control w-full" id="gateway-select">
                                         <option>{{ __('Select Gateway') }}</option>
                                         @foreach($gateways as $gateway)
                                             <option data-currencies="{{ $gateway->supported_currencies }}"
@@ -62,11 +55,8 @@
                             </div>
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
-                                    <label class="form-label"
-                                        for="">{{ __('Gateway Supported Currency:') }}</label>
-                                    <select name="currency" class="form-control w-100" id="currency">
-
-                                    </select>
+                                    <label class="form-label" for="">{{ __('Gateway Supported Currency:') }}</label>
+                                    <select name="currency" class="select2 form-control w-full" id="currency"></select>
                                 </div>
                             </div>
                         @endif
@@ -167,10 +157,10 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="xl:col-span-6 col-span-12">
+                        <div class="col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Manage Country" multiple>
+                                <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country" multiple>
                                     @foreach( getCountries() as $country)
                                         <option  value="{{ $country['name'] }}">
                                             {{ $country['name']  }}
@@ -200,8 +190,8 @@
 
 {{--                        </div>--}}
                         <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area flex items-center justify-between">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
+                            <div class="input-area flex items-center space-x-7">
+                                <label class="form-label !w-auto" for="">{{ __('Status:') }}</label>
                                 <div class="form-switch ps-0">
                                     <input
                                         class="form-check-input"
@@ -246,7 +236,6 @@
     </div>
 @endsection
 @section('script')
-    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
     <script>
 
 

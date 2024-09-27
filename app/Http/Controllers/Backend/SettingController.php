@@ -33,6 +33,11 @@ class SettingController extends Controller
 
     }
 
+    public static function index()
+    {
+        return view('backend.setting.index');
+    }
+
     /**
      * @return Application|Factory|View
      */

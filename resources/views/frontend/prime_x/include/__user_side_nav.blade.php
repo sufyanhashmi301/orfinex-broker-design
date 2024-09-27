@@ -139,23 +139,23 @@
             </a>
         </li>
 
-{{--        <li>--}}
-{{--            <a href="{{ route('user.leaderboard') }}" class="navItem {{ isActive('user.leaderboard') }}">--}}
-{{--                <span class="flex items-center">--}}
-{{--                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>--}}
-{{--                    <span>{{ __('Leaderboard') }}</span>--}}
-{{--                </span>--}}
-{{--            </a>--}}
-{{--        </li>--}}
+        <li>
+            <a href="{{ route('user.leaderboard') }}" class="navItem {{ isActive('user.leaderboard') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>
+                    <span>{{ __('Leaderboard') }}</span>
+                </span>
+            </a>
+        </li>
 
-{{--        <li>--}}
-{{--            <a href="{{ route('user.utilities') }}" class="navItem {{ isActive('user.utilities') }}">--}}
-{{--                <span class="flex items-center">--}}
-{{--                    <iconify-icon class="nav-icon" icon="solar:share-circle-linear"></iconify-icon>--}}
-{{--                    <span>{{ __('Utilities') }}</span>--}}
-{{--                </span>--}}
-{{--            </a>--}}
-{{--        </li>--}}
+        <li>
+            <a href="{{ route('user.utilities') }}" class="navItem {{ isActive('user.utilities') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="solar:share-circle-linear"></iconify-icon>
+                    <span>{{ __('Utilities') }}</span>
+                </span>
+            </a>
+        </li>
 
 {{--        <li class="">--}}
 {{--            <a href="javascript:void(0);" class="navItem">--}}

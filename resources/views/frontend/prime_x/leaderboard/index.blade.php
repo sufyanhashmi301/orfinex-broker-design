@@ -180,5 +180,12 @@
             </div>
         </div>
     </div>
-
+    @include('frontend::utilities.__comingSoon_modal')
+@endsection
+@section('script')
+    <script>
+        $( document ).ready(function() {
+            $('#comingSoonModal').modal('show');
+        });
+    </script>
 @endsection

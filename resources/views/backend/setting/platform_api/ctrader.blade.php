@@ -2,7 +2,7 @@
 @section('title')
     {{ __('CTrader API Settings') }}
 @endsection
-@section('platform-content')
+@section('platform-api-content')
     <div class="card">
         <div class="card-body p-6">
             <form action="" method="" enctype="multipart/form-data">

@@ -3,7 +3,7 @@
     {{ __('Sign In') }}
 @endsection
 @section('description')
-    {{ __('Sign in to access your account and manage your settings.') }}
+    {{ __('Sign in to access your account.') }}
 @endsection
 @section('content')
     <div class="">

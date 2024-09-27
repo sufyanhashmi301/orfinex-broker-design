@@ -1,4 +1,4 @@
-@extends('backend.withdraw.index')
+@extends('backend.setting.payment.withdraw.index')
 @section('title')
     {{ __('Edit Withdraw Method') }}
 @endsection
@@ -9,11 +9,7 @@
         </h4>
     </div>
 @endsection
-@section('style')
-    <link rel="stylesheet" href="{{ asset('backend/css/choices.min.css') }}" >
-
-@endsection
-@section('withdraw_content')
+@section('withdraw-content')
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
@@ -58,9 +54,8 @@
                         @if($type == 'auto')
                             <div class="xl:col-span-6 col-span-12">
                                 <div class="input-area">
-                                    <label class="form-label"
-                                        for="">{{ __('Gateway Supported Currency:') }}</label>
-                                    <select name="currency" class="form-control w-100" id="currency">
+                                    <label class="form-label" for="">{{ __('Gateway Supported Currency:') }}</label>
+                                    <select name="currency" class="select2 form-control w-full" id="currency">
                                         @foreach(json_decode($supported_currencies) as $currency)
                                             <option
                                                 value="{{ $currency }}" @selected($currency == $withdrawMethod->currency )>{{ $currency }} </option>
@@ -169,7 +164,7 @@
                         <div class="col-span-12">
                             <div class="input-area">
                                 <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
-                                <select id="choices-multiple-remove-button" name="country[]" placeholder="Countries" multiple>
+                                <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
                                     @foreach(getCountries() as $country)
                                         <option value="{{ $country['name'] }}"
                                                 @if(!is_null($withdrawMethod->country) && in_array($country['name'], is_array($withdrawMethod->country) ? $withdrawMethod->country : json_decode($withdrawMethod->country, true)))
@@ -186,31 +181,30 @@
                             </div>
                         </div>
                         <div class="xl:col-span-6 col-span-12">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Status:') }}</label>
-                                <div class="switch-field flex overflow-hidden same-type">
+                            <div class="input-area flex items-center space-x-7">
+                                <label class="form-label !w-auto" for="">{{ __('Status:') }}</label>
+                                <div class="form-switch ps-0">
                                     <input
-                                        type="radio"
-                                        id="radio-five"
-                                        name="status"
-                                        value="1"
-                                        @if($withdrawMethod->status) checked @endif
-                                    />
-                                    <label for="radio-five">{{ __('Active') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="radio-six"
-                                        name="status"
+                                        class="form-check-input"
+                                        type="hidden"
                                         value="0"
-                                        @if(!$withdrawMethod->status) checked @endif
+                                        name="status"
                                     />
-                                    <label for="radio-six">{{ __('Deactivate') }}</label>
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            name="status"
+                                            value="1"
+                                            class="sr-only peer"
+                                            @if($withdrawMethod->status) checked @endif
+                                        />
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </div>
 
                         </div>
-
-                    @if($type == 'manual')
+                        @if($type == 'manual')
                             <div class="col-span-12">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center mb-3">
                                     Add Field option
@@ -231,18 +225,14 @@
 
                                     <div class="xl:col-span-4 md:col-span-6 col-span-12">
                                         <div class="input-area">
-                                            <select name="fields[{{$key}}][type]"
-                                                    class="form-control w-100">
-                                                <option value="text"
-                                                        @if($value['type'] == 'text') selected @endif>Input
+                                            <select name="fields[{{$key}}][type]" class="select2 form-control w-full">
+                                                <option value="text" @if($value['type'] == 'text') selected @endif>Input
                                                     Text
                                                 </option>
-                                                <option value="textarea"
-                                                        @if($value['type'] == 'textarea') selected @endif>
+                                                <option value="textarea" @if($value['type'] == 'textarea') selected @endif>
                                                     Textarea
                                                 </option>
-                                                <option value="file"
-                                                        @if($value['type'] == 'file') selected @endif>File
+                                                <option value="file" @if($value['type'] == 'file') selected @endif>File
                                                     upload
                                                 </option>
                                             </select>
@@ -250,14 +240,11 @@
                                     </div>
                                     <div class="xl:col-span-3 md:col-span-6 col-span-12">
                                         <div class="input-area mb-0">
-                                            <select name="fields[{{ $key }}][validation]"
-                                                    class="form-control w-100">
-                                                <option value="required"
-                                                        @if($value['validation'] == 'required') selected @endif>
+                                            <select name="fields[{{ $key }}][validation]" class="select2 form-control w-full">
+                                                <option value="required" @if($value['validation'] == 'required') selected @endif>
                                                     Required
                                                 </option>
-                                                <option value="nullable"
-                                                        @if($value['validation'] == 'nullable') selected @endif>
+                                                <option value="nullable" @if($value['validation'] == 'nullable') selected @endif>
                                                     Optional
                                                 </option>
                                             </select>
@@ -295,8 +282,7 @@
     </div>
 @endsection
 
-@section('script')
-    <script src="{{ asset('backend/js/choices.min.js') }}"></script>
+@section('payment-script')
     <script>
 
 

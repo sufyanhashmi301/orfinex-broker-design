@@ -6,6 +6,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.platform_api.db-synchronization') }}" class="navItem {{ isActive(['admin.platform_api.db-synchronization', 'admin.platform_api.x9trader']) }}">
+                {{ __('DB Synchronization') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.platformGroups') }}" class="navItem {{ isActive('admin.platformGroups') }}">
                 {{ __('Platform Groups') }}
             </a>

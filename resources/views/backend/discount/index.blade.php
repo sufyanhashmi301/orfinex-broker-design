@@ -102,5 +102,30 @@
                 autoWidth: false,
             });
         })(jQuery);
+
+        $(document).ready(function() {
+            function toggleDiscountDiv() {
+                // Hide all discount type divs
+                $('.discount-type').addClass('hidden');
+
+                // Get the selected value from both dropdowns
+                const selectedValue1 = $('#discounttype').val();
+                const selectedValue2 = $('#discount_type').val();
+
+                // Show the corresponding div for the first dropdown
+                if (selectedValue1) {
+                    $('.discount-type[data-div="' + selectedValue1 + '"]').removeClass('hidden');
+                }
+
+                // Show the corresponding div for the second dropdown
+                if (selectedValue2) {
+                    $('.discount-type[data-div="' + selectedValue2 + '"]').removeClass('hidden');
+                }
+            }
+
+            // Attach the change event to both dropdowns
+            $('#discounttype, #discount_type').change(toggleDiscountDiv);
+        });
+
     </script>
 @endsection

@@ -32,27 +32,38 @@
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Type:') }}</label>
-                            <select name="type" class="form-control w-100">
-                                <option value="fixed">{{ __('Fixed') }}</option>
-                                <option value="percentage">{{ __('Percentage') }}</option>
+                            <select id="discount_type" class="form-control w-100">
+                                <option selected>{{ __('Select Type') }}</option>
+                                <option value="fixed_amount_1">{{ __('Fixed') }}</option>
+                                <option value="percentage_1">{{ __('Percentage') }}</option>
                             </select>
                         </div>
                         <div class="input-area">
-                            <label for="" class="form-label">{{ __('Value:') }}</label>
-                            <input
-                                type="text"
-                                name="value"
-                                class="form-control mb-0"
-                                placeholder="Value"
-                                required
-                            />
+                            <div class="discount-type hidden" data-div="fixed_amount_1">
+                                <label for="" class="form-label">{{ __('Value:') }}</label>
+                                <input
+                                    type="text"
+                                    name="fixed_amount"
+                                    class="form-control mb-0"
+                                    placeholder="Fixed Amount"
+                                />
+                            </div>
+                            <div class="discount-type hidden" data-div="percentage_1">
+                                <label for="" class="form-label">{{ __('Value:') }}</label>
+                                <input
+                                    type="text"
+                                    name="percentage"
+                                    class="form-control mb-0"
+                                    placeholder="Percentage"
+                                />
+                            </div>
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Applies To:') }}</label>
                             <select name="applies_to" class="form-control w-100">
-                                <option value="all customers">{{ __('All Customers') }}</option>
-                                <option value="challenge traders">{{ __('Challenge Traders') }}</option>
-                                <option value="funded traders">{{ __('Funded Traders') }}</option>
+                                <option value="all account type">{{ __('All Account Type') }}</option>
+                                <option value="challenge accounts only">{{ __('Challenge Accounts Only') }}</option>
+                                <option value="direct funded accounts only">{{ __('Direct Funded Accounts Only') }}</option>
                             </select>
                         </div>
 
@@ -70,7 +81,7 @@
                             <input
                                 type="text"
                                 name="applies_to"
-                                class="form-control flatpickr-input mb-0"
+                                class="form-control flatpickr flatpickr-input mb-0"
                                 placeholder="09/14/2024"
                                 required
                             />

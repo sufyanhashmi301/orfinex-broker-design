@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
     Route::get('forex-account-logs', [ForexAccountController::class, 'forexAccountLogs'])->name('forex-account-logs');
     Route::get('test', [ForexAccountController::class, 'testForexAccount'])->name('forex-account-test');
+    Route::post('verify-discount', [ForexAccountController::class, 'verifyDiscount'])->name('verify-discount');
     Route::get('invest-cancel/{id}', [ForexAccountController::class, 'investCancel'])->name('invest-cancel');
     Route::get('get/api/{id?}', [ForexAccountController::class, 'getAccount'])->name('get-account');
     Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {

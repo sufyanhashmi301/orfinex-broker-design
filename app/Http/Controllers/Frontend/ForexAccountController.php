@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Discount;
 use Brick\Math\BigDecimal;
 use Illuminate\Http\Request;
 use App\Models\ForexAccount;
@@ -209,4 +210,57 @@ class ForexAccountController extends GatewayController
 
         return view('frontend::user.forex.log', compact('investments'));
     }
+
+    public function verifyDiscount(Request $request)
+    {
+        $schemeType = $request->input('scheme_type'); // Retrieve the scheme type from the request
+        $userId = auth()->user()->id; // Get the current user's ID
+
+        $discountQuery = Discount::where('code', $request->input('code'))
+            ->where('status', true) // Check if the discount is active
+            ->where(function ($query) {
+                $query->where('expire_at', '>=', now()) // Check if the discount is not expired
+                ->orWhereNull('expire_at');      // Or no expiration date
+            });
+
+        // If scheme_type is nullable in the discounts table, the discount is for all schemes
+        // Otherwise, apply it to the specific scheme passed in the form
+        $discountQuery->where(function ($query) use ($schemeType) {
+            $query->where('scheme_type', $schemeType)
+                ->orWhereNull('scheme_type'); // Applies to all schemes if null
+        });
+
+        // Check if the discount is applied to all users or specific users
+        $discountQuery->where(function ($query) use ($userId) {
+            $query->where('applied_to', $userId) // Specific user
+            ->orWhereNull('applied_to');   // Or applicable to all users
+        });
+
+        $discount = $discountQuery->first();
+
+        if ($discount) {
+            // Check if the discount has reached its usage limit
+            if ($discount->used_count >= $discount->usage_limit) {
+                return response()->json(['valid' => false, 'message' => __('This discount code has reached its usage limit.')]);
+            }
+
+            // Determine the type of discount (percentage or fixed)
+            $discountAmount = 0;
+            if ($discount->type === 'percentage') {
+                $discountAmount = $discount->percentage;  // Percentage discount
+            } elseif ($discount->type === 'fixed') {
+                $discountAmount = $discount->fixed_amount;  // Fixed discount amount
+            }
+
+            return response()->json([
+                'valid' => true,
+                'discount_type' => $discount->type,
+                'discount_amount' => $discountAmount,
+                'message' => __('Discount applied successfully.')
+            ]);
+        }
+
+        return response()->json(['valid' => false, 'message' => __('Invalid or expired discount code.')]);
+    }
+
 }

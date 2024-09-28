@@ -194,6 +194,13 @@
         {{-- Price, Discount, and Total Section --}}
         <div class="lg:col-span-4 col-span-12">
             <div class="card order-info p-6 rounded-lg">
+                <div class="input-area">
+                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">{{ __('Discount Code') }}</p>
+                    <input type="text" id="discount-code" class="form-control" placeholder="{{ __('Enter discount code') }}">
+                    <button type="button" class="btn btn-primary mt-2" id="verify-discount">{{ __('Verify') }}</button>
+                    <p class="text-sm mt-2" id="discount-message"></p>
+                </div>
+
                 <ul class="space-y-3 border-b dark:border-slate-700 pb-5">
                     <li class="flex items-center justify-between text-base">
                         <span>{{ __('Price') }}</span>
@@ -396,7 +403,36 @@
                 $('.profit-target').text(profitTarget);
             }
         });
+        $('#verify-discount').on('click', function () {
+            let discountCode = $('#discount-code').val().trim();
 
+            if (!discountCode) {
+                $('#discount-message').text('{{ __("Please enter a discount code.") }}').css('color', 'red');
+                return;
+            }
+
+            // AJAX call to verify the discount code
+            $.ajax({
+                url: "{{ route('verify-discount') }}",  // Make sure this route exists
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    code: discountCode
+                },
+                success: function (response) {
+                    if (response.valid) {
+                        let discountPercentage = response.percentage;
+                        applyDiscount(discountPercentage);
+                        $('#discount-message').text('{{ __("Discount applied successfully.") }}').css('color', 'green');
+                    } else {
+                        $('#discount-message').text('{{ __("Invalid or inactive discount code.") }}').css('color', 'red');
+                    }
+                },
+                error: function () {
+                    $('#discount-message').text('{{ __("Error verifying discount code. Please try again.") }}').css('color', 'red');
+                }
+            });
+        });
 
     </script>
 @endsection

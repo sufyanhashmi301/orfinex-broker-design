@@ -80,9 +80,10 @@
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Equity') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Credit') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Challenges') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Funded') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Direct Funded') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Trial') }}</th>
                                     <th scope="col" class="table-th">{{ __('Country') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Profit') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
@@ -155,6 +156,7 @@
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
                     {data: 'equity', name: 'equity'},
+                    {data: 'credit', name: 'credit'},
                     {data: 'credit', name: 'credit'},
                     {data: 'country', name: 'country'},
                     // {data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},

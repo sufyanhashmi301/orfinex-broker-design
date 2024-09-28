@@ -428,6 +428,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.setting.platform_api.db-synchronization');
     })->name('platform_api.db-synchronization');
 
+    Route::get('settings/platform-api/x9trader', function () {
+        return view('backend.setting.platform_api.x9trader');
+    })->name('platform_api.x9trader');
+
     Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
@@ -464,6 +468,26 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('older-positions-days', function () {
         return view('backend.control_center.older_positions_days');
     })->name('olderPositionsDays');
+
+    Route::get('challenge-accounts', function () {
+        return view('backend.accounts.challenge_accounts');
+    })->name('accounts.challengeAccounts');
+
+    Route::get('funded-accounts', function () {
+        return view('backend.accounts.funded_accounts');
+    })->name('accounts.fundedAccounts');
+
+    Route::get('direct-funded-accounts', function () {
+        return view('backend.accounts.direct_funded_accounts');
+    })->name('accounts.directFundedAccounts');
+
+    Route::get('trial-accounts', function () {
+        return view('backend.accounts.trial_accounts');
+    })->name('accounts.trialAccounts');
+
+    Route::get('discount-codes', function () {
+        return view('backend.discount.index');
+    })->name('discountCodes');
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

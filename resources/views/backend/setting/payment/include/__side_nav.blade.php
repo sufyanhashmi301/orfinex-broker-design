@@ -7,12 +7,12 @@
         </li>
         <li>
             <a href="{{ route('admin.deposit.method.list','auto') }}" class="navItem {{ isActive('admin.deposit.method*') }}">
-                {{ __('Deposit Methods') }}
+                {{ __('Payment Methods') }}
             </a>
         </li>
         <li>
             <a href="{{ route('admin.withdraw.method.list','auto') }}" class="navItem {{ isActive('admin.withdraw.method*') }}">
-                {{ __('Withdraw Methods') }}
+                {{ __('Payout Methods') }}
             </a>
         </li>
         <li>

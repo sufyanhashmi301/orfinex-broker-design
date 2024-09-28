@@ -3,14 +3,22 @@
         @can('schema-edit')
             <li class="nav-item">
                 <a href="{{route('admin.accountType.index')}}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.accountType*') }}">
-                    {{ __('Account Type') }}
+                    {{ __('Challenge') }}
                 </a>
             </li>
-        @endcan
-        @can('schema-edit')
             <li class="nav-item">
-                <a href="{{route('admin.ibAccountType.index')}}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.ibAccountType*') }}">
-                    {{ __('IB Account Type') }}
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                    {{ __('Funded') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                    {{ __('Direct Funded') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                    {{ __('Trial') }}
                 </a>
             </li>
         @endcan

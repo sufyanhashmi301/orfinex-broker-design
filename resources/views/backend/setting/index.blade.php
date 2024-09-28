@@ -120,12 +120,12 @@
                             @endcan
                             <li>
                                 <a href="{{ route('admin.deposit.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                                    {{ __('Deposit Methods') }}
+                                    {{ __('Payment Methods') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('admin.withdraw.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                                    {{ __('Withdraw Methods') }}
+                                    {{ __('Payout Methods') }}
                                 </a>
                             </li>
                         @endcanany
@@ -196,6 +196,11 @@
                     <li>
                         <a href="{{ route('admin.settings.platform-api') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform API') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.platform_api.db-synchronization') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('DB Synchronization') }}
                         </a>
                     </li>
                     <li>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\CustomCssController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepositController;
+use App\Http\Controllers\Backend\DiscountController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\GatewayController;
 use App\Http\Controllers\Backend\IBSchemaController;
@@ -159,6 +160,12 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
+
+
+//===============================  Discounts Management ==================================
+    Route::resource('discounts', DiscountController::class);
+//    Route::get('/discounts/data', [DiscountController::class, 'index'])->name('discounts.data');
+
 
 //===============================  Profit Deduction Management ==================================
     Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');

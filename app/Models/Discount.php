@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Discount
- * 
+ *
  * @property int $id
  * @property string $code_name
  * @property string $code
@@ -38,7 +38,7 @@ class Discount extends Model
 		'used_count' => 'int',
 		'percentage' => 'float',
 		'fixed_amount' => 'float',
-		'expire_at' => 'datetime',
+		'expire_at' => 'date',
 		'status' => 'bool'
 	];
 

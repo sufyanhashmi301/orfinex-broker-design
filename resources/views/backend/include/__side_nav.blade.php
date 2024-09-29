@@ -121,6 +121,16 @@
                     @can('schema-edit')
                         <li>
                             <a href="{{route('admin.accountType.index')}}" class="{{ isActive('admin.accountType*') }}">
+                                {{ __('Account type') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.discounts.index')}}" class="{{ isActive('admin.discounts*') }}">
+                                {{ __('Discount') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.accountType.index')}}" class="">
                                 {{ __('Challenge') }}
                             </a>
                         </li>

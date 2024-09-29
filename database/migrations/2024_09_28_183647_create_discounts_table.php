@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('used_count')->default(0);  // Times this discount has been used
             $table->decimal('percentage', 5, 2)->nullable(); // Percentage discount, if applicable
             $table->decimal('fixed_amount', 10, 2)->nullable(); // Fixed discount amount, if applicable
-            $table->dateTime('expire_at')->nullable(); // Expiry date of the discount code
+            $table->date('expire_at')->nullable(); // Expiry date of the discount code
             $table->boolean('status')->default(true);  // Active or inactive status
             $table->timestamps();
         });

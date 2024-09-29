@@ -53,16 +53,40 @@ class ForexAccountController extends GatewayController
 
         $input['currency'] = $currency;
         $input['account_type'] = 'normal';
-//        dd($input);
-        // Payment Source
-//        $account = 'unknown';
+//        dd();
+
         $amount = ($rule->amount) ? (float)$rule->amount : 0;
 //        if($rule->discount > 0) {
 //            // Amount & Balance
 //            $amount = ($rule->discount) ? (float)$rule->discount : 0;
 //        }
+        $discountAmount = 0;
+        if ($request->discount_id) {
+            // Find the discount using the discount ID
+            $discount = Discount::find(get_hash($request->discount_id));
 
-        $discount = $rule->discount;
+            // If the discount exists and is valid
+            if ($discount) {
+                // Check if the discount type is percentage
+                if ($discount->type == 'percentage') {
+                    // Apply percentage discount
+                    $discountAmount = ($amount * $discount->percentage) / 100;
+
+                } // Check if the discount type is fixed
+                else if ($discount->type == 'fixed') {
+                    // Apply fixed discount
+                    $discountAmount = $discount->fixed_amount;
+                }
+                $finalAmount = $amount - $discountAmount;
+                // Ensure the final amount doesn't go below zero
+                if ($finalAmount < 0) {
+                    notify()->error('The selected amount is below then minimum amount! kindly contact to support', 'Error');
+                    return redirect()->back();
+                }
+            }
+        }
+        $discount = $rule->discount + $discountAmount;
+//        dd($discount);
 //        dd($request->get('discount'),$discount);
 //        $leverage_amount = isset($request['leverage_amount']) ? (float)percentage_calc(get_hash($request['leverage_amount']),$amount): 0;
 //        $days_to_pass_amount = isset($request['day_to_pass']) ? (float)percentage_calc(get_hash($request['day_to_pass']),$amount) : 0;
@@ -187,7 +211,7 @@ class ForexAccountController extends GatewayController
 
 //        notify()->error('Some error occurred! please try again', 'Error');
 //        if ($invest) {
-        return redirect()->route('user.deposit.amount',['id'=> the_hash($invest->pvx)]);
+        return redirect()->route('user.deposit.amount', ['id' => the_hash($invest->pvx)]);
 //        }
         notify()->error('Some error occurred! please try again', 'Error');
 
@@ -213,7 +237,7 @@ class ForexAccountController extends GatewayController
 
     public function verifyDiscount(Request $request)
     {
-        $schemeType = $request->input('scheme_type'); // Retrieve the scheme type from the request
+        $schemeType = get_hash($request->input('scheme_type')); // Retrieve the scheme type from the request
         $userId = auth()->user()->id; // Get the current user's ID
 
         $discountQuery = Discount::where('code', $request->input('code'))
@@ -225,16 +249,16 @@ class ForexAccountController extends GatewayController
 
         // If scheme_type is nullable in the discounts table, the discount is for all schemes
         // Otherwise, apply it to the specific scheme passed in the form
-        $discountQuery->where(function ($query) use ($schemeType) {
-            $query->where('scheme_type', $schemeType)
-                ->orWhereNull('scheme_type'); // Applies to all schemes if null
-        });
+//        $discountQuery->where(function ($query) use ($schemeType) {
+//            $query->where('scheme_type', $schemeType)
+//                ->orWhereNull('scheme_type'); // Applies to all schemes if null
+//        });
 
         // Check if the discount is applied to all users or specific users
-        $discountQuery->where(function ($query) use ($userId) {
-            $query->where('applied_to', $userId) // Specific user
-            ->orWhereNull('applied_to');   // Or applicable to all users
-        });
+//        $discountQuery->where(function ($query) use ($userId) {
+//            $query->where('applied_to', $userId) // Specific user
+//            ->orWhereNull('applied_to');   // Or applicable to all users
+//        });
 
         $discount = $discountQuery->first();
 
@@ -254,6 +278,7 @@ class ForexAccountController extends GatewayController
 
             return response()->json([
                 'valid' => true,
+                'discount_id' => the_hash($discount->id),
                 'discount_type' => $discount->type,
                 'discount_amount' => $discountAmount,
                 'message' => __('Discount applied successfully.')

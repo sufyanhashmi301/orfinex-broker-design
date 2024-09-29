@@ -15,21 +15,19 @@
                     </h4>
                 </div>
                 <p>
-                    {{ __('You want to Delete') }}
-                    <strong class="name"></strong> {{ __('Discount Code?') }}
+                    {{ __('You want to delete') }}
+                    <strong class="name"></strong> {{ __('discount code?') }}
                 </p>
-                <form method="post" id="discountCodeDeleteForm">
+                <form method="POST" id="discountCodeDeleteForm">
                     @method('DELETE')
                     @csrf
                     <div class="action-btns">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                            {{ __(' Confirm') }}
+                            {{ __('Confirm') }}
                         </button>
-                        <a href="" class="btn btn-outline-dark inline-flex items-center justify-center" type="button"
-                           class="btn-close"
-                           data-bs-dismiss="modal"
-                           aria-label="Close">
+                        <a href="javascript:void(0)" class="btn btn-outline-dark inline-flex items-center justify-center"
+                           data-bs-dismiss="modal" aria-label="Close">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
                             {{ __('Cancel') }}
                         </a>

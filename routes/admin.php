@@ -496,5 +496,9 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.discount.index');
     })->name('discountCodes');
 
+    Route::get('fraud-protection', function () {
+        return view('backend.fraud_protection.index');
+    })->name('fraudProtection');
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

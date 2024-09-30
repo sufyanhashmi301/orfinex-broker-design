@@ -66,7 +66,7 @@
             <li class="{{ isActive(['admin.kyc*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="lucide:check-square"></iconify-icon>
+                        <iconify-icon class="nav-icon" icon="mdi:user-check-outline"></iconify-icon>
                         <span>{{ __('Compliance & KYC') }}</span>
                     </span>
                     <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
@@ -118,16 +118,35 @@
                     <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
                 <ul class="sidebar-submenu">
-                    {{--                        @canany(['schema-list','schema-create','schema-edit'])--}}
-                    {{--                            <li class="side-nav-item {{ isActive('admin.schedule*') }}">--}}
-                    {{--                                <a href="{{route('admin.schedule.index')}}"><i--}}
-                    {{--                                        icon-name="alarm-check"></i><span>{{ __('Schedule') }}</span></a>--}}
-                    {{--                            </li>--}}
-                    {{--                        @endcanany--}}
                     @can('schema-edit')
                         <li>
                             <a href="{{route('admin.accountType.index')}}" class="{{ isActive('admin.accountType*') }}">
-                                {{ __('Account Type') }}
+                                {{ __('Account type') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.discounts.index')}}" class="{{ isActive('admin.discounts*') }}">
+                                {{ __('Discount') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.accountType.index')}}" class="">
+                                {{ __('Challenge') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.accountType.index')}}" class="">
+                                {{ __('Funded') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.accountType.index')}}" class="">
+                                {{ __('Direct Funded') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.accountType.index')}}" class="">
+                                {{ __('Trial') }}
                             </a>
                         </li>
                     @endcan
@@ -160,18 +179,23 @@
                     </a>
                     <ul class="sidebar-submenu">
                         <li>
-                            <a href="{{route('admin.forex-accounts',['type'=>'real'])}}" class="{{ isActive('admin.forex-accounts',['type'=>'real']) }}">
-                                {{ __('Live Accounts') }}
+                            <a href="{{route('admin.accounts.challengeAccounts')}}" class="{{ isActive('admin.accounts.challengeAccounts') }}">
+                                {{ __('Challenge Accounts') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.forex-accounts',['type'=>'demo'])}}" class="{{ isActive('admin.forex-accounts',['type'=>'demo']) }}">
-                                {{ __('Demo Accounts') }}
+                            <a href="{{ route('admin.accounts.fundedAccounts') }}" class="{{ isActive('admin.accounts.fundedAccounts') }}">
+                                {{ __('Funded Accounts') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.change-leverage')}}" class="{{ isActive('admin.change-leverage') }}">
-                                {{ __('Change Leverage') }}
+                            <a href="{{ route('admin.accounts.directFundedAccounts') }}" class="{{ isActive('admin.accounts.directFundedAccounts') }}">
+                                {{ __('Direct Funded Accounts') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.accounts.trialAccounts') }}" class="{{ isActive('admin.accounts.trialAccounts') }}">
+                                {{ __('Trial Accounts') }}
                             </a>
                         </li>
                     </ul>

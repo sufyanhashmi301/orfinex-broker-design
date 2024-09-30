@@ -33,50 +33,35 @@
                             <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
                                 <div class="bg-white dark:bg-slate-800 p-4">
                                     <div class="text-center space-y-2">
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Deposit') }}
+                                        <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Capital Allocated') }}
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="The total capital allocated to the trader for their funded account."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
                                 <div class="bg-white dark:bg-slate-800 p-4">
                                     <div class="text-center space-y-2">
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Withdraw') }}
+                                        <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Payouts') }}
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="The total profits paid out to the trader."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
                                 <div class="bg-white dark:bg-slate-800 p-4">
                                     <div class="text-center space-y-2">
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Net Deposits') }}
+                                        <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Net Capital') }}
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Net equity remaining after payouts and any trading gains or losses."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -93,8 +78,9 @@
                                         </div>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Used Margin') }}
+                                        <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Allocated Risk') }}
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Capital currently used in open trades."></iconify-icon>
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
@@ -112,8 +98,9 @@
                                         </div>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Free Margin') }}
+                                        <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Available Capital') }}
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Capital available to open new trades or manage existing positions."></iconify-icon>
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
@@ -131,8 +118,9 @@
                                         </div>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Wallet Balance') }}
+                                        <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Profit Wallet') }}
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Accumulated profits available for withdrawal or reinvestment."></iconify-icon>
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
                                             $0
@@ -167,35 +155,60 @@
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-transfer-tab"
+                                        id="pills-challenge-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#pills-transfer"
+                                        data-bs-target="#pills-challenge"
                                         type="button"
                                         role="tab"
-                                        aria-controls="pills-transfer"
-                                        aria-selected="true"
-                                    >
-                                        {{ __('Accounts') }}
+                                        aria-controls="pills-challenge"
+                                        aria-selected="true">
+                                        {{ __('Challenges') }}
                                     </a>
                                 </li>
-                            @endcan
-                            @can('investment-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-transfer-tab"
+                                        id="pills-funded-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#ib-info"
+                                        data-bs-target="#pills-funded"
                                         type="button"
                                         role="tab"
-                                        aria-controls="ib-info"
-                                        aria-selected="true"
-                                    >
-                                        {{ __('Partner') }}
+                                        aria-controls="pills-funded"
+                                        aria-selected="true">
+                                        {{ __('Funded') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-directFunded-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-directFunded"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-directFunded"
+                                        aria-selected="true">
+                                        {{ __('Direct Funded') }}
                                     </a>
                                 </li>
                             @endcan
+
+                            <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-performance-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-performance"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-performance"
+                                    aria-selected="true">
+                                    {{ __('Performance') }}
+                                </a>
+                            </li>
 
                             @can('transaction-list')
                                 <li class="nav-item" role="presentation">
@@ -228,7 +241,7 @@
                                         aria-controls="pills-transfer"
                                         aria-selected="true"
                                     >
-                                        {{ __('Direct Referrals') }}
+                                        {{ __('Referrals') }}
                                     </a>
                                 </li>
                             @endif
@@ -309,17 +322,13 @@
 
                 <!-- investments -->
                 @can('investment-list')
-                    @include('backend.user.include.__accounts')
+                    @include('backend.user.include.__challenge')
+                    @include('backend.user.include.__funded')
+                    @include('backend.user.include.__direct_funded')
                 @endcan
 
-                <!-- IB -->
-                @can('IB-List')
-                    @include('backend.user.include.__ib_info')
-                    @include('backend.user.include.__ib_add')
-                    @include('backend.user.include.__ib_update')
-                    @include('backend.user.include.__mib_add')
-                    @include('backend.user.include.__mib_update')
-                @endcan
+                <!-- Performance -->
+                @include('backend.user.include.__performance')
 
                 <!-- earnings -->
                 @can('profit-list')

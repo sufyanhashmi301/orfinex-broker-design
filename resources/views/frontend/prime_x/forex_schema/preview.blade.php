@@ -11,6 +11,20 @@
         .dark .select2-container--default .select2-selection--single {
             border-color: rgb(51 65 85)
         }
+        .input-group {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .input-group .form-control, .input-group .btn {
+            height: auto; /* Ensures same height */
+            flex: 1; /* Ensures both take the same space */
+        }
+
+        .input-group .btn {
+            margin-left: 10px; /* Add some spacing between the input and the button */
+        }
+
     </style>
 @endsection
 @section('content')
@@ -32,6 +46,8 @@
                 <div class="card-body p-6">
                     <form action="{{ route('user.forex-account-create-now') }}" method="post" enctype="multipart/form-data" id="payment-form" class="space-y-6">
                         @csrf
+                        <input type="hidden" id="scheme_type" value="{{the_hash($schema->forexSchemaPhase1->type)}}">
+                        <input type="hidden" id="discount-id" name="discount_id" >
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
                                 {{ __('Allocated Funds') }}
@@ -194,6 +210,17 @@
         {{-- Price, Discount, and Total Section --}}
         <div class="lg:col-span-4 col-span-12">
             <div class="card order-info p-6 rounded-lg">
+                <div class="input-area">
+                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">{{ __('Discount Code') }}</p>
+                    <div class="input-group">
+                        <input type="text" id="discount-code" class="form-control" placeholder="{{ __('Enter discount code') }}">
+                        <button type="button" class="btn btn-primary" id="verify-discount">{{ __('Verify') }}</button>
+                    </div>
+                    <p class="text-sm mt-2" id="discount-message"></p>
+                </div>
+
+
+
                 <ul class="space-y-3 border-b dark:border-slate-700 pb-5">
                     <li class="flex items-center justify-between text-base">
                         <span>{{ __('Price') }}</span>
@@ -206,6 +233,10 @@
                     <li class="flex items-center justify-between text-base">
                         <span>{{ __('Discount') }}</span>
                         <span class="discount-display">{{ '' }}</span>
+                    </li>
+                    <li class="flex items-center justify-between text-base">
+                        <span>{{ __('Coupon Discount') }}</span>
+                        <span class="coupon-discount-display">{{ '' }}</span>
                     </li>
 
                 </ul>
@@ -347,6 +378,9 @@
 @section('script')
     <script>
         $(document).ready(function () {
+            let discountAmount = 0;
+            let discountType = null; // This will store the type of discount ('percentage' or 'fixed')
+
             // Call to set initial values on page load
             updatePriceDisplay();
 
@@ -367,13 +401,49 @@
                     $('#term-validation').removeClass('hidden').css('color', 'red');
                 }
             });
+            $('#verify-discount').on('click', function () {
+                let discountCode = $('#discount-code').val().trim();
+                let schemeType = $('#scheme_type').val().trim();
 
+                if (!discountCode) {
+                    $('#discount-message').text('{{ __("Please enter a discount code.") }}').css('color', 'red');
+                    return;
+                }
+                // AJAX call to verify the discount code
+                $.ajax({
+                    url: "{{ route('user.verify-discount') }}", // Ensure this route exists
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        code: discountCode,
+                        scheme_type: schemeType
+                    },
+                    success: function (response) {
+                        if (response.valid) {
+                            discountAmount = response.discount_amount; // Store the discount amount
+                            discountType = response.discount_type; // Store the discount type ('percentage' or 'fixed')
+                            $('#discount-id').val(response.discount_id);
+                            $('#discount-message').text('{{ __("Discount applied successfully.") }}').css('color', 'green');
+                            updatePriceDisplay(); // Recalculate and update the total price
+                        } else {
+                            discountAmount = 0; // Reset discount if invalid
+                            discountType = null; // Reset discount type
+                            $('#discount-id').val('');
+                            $('#discount-message').text(response.message).css('color', 'red');
+                            updatePriceDisplay(); // Recalculate without discount
+                        }
+                    },
+                    error: function () {
+                        $('#discount-message').text('{{ __("Error verifying discount code. Please try again.") }}').css('color', 'red');
+                    }
+                });
+            });
             function updatePriceDisplay() {
                 let checkedInput = $('input[name="rule_id"]:checked');
                 let basePrice = parseFloat(checkedInput.data('price')) || 0;
-                let discount = parseFloat(checkedInput.data('discount')) || 0;
-                let addon =  0;
-                let total = basePrice - discount;
+                let ruleDiscount = parseFloat(checkedInput.data('discount')) || 0; // Discount directly from the rule
+                let addon = 0;
+                let total = basePrice - ruleDiscount;
 
                 let dailyDD = checkedInput.data('daily-dd') || '';
                 let maxDD = checkedInput.data('max-dd') || '';
@@ -381,21 +451,35 @@
 
                 // Calculate percentage addon prices from checked checkboxes
                 $('.addon-checkbox:checked').each(function () {
-                     addonPrice = parseFloat($(this).data('price')) || 0;
-                    addon += basePrice * (addonPrice / 100); // Add percentage to total
-
+                    let addonPrice = parseFloat($(this).data('price')) || 0;
+                    addon += basePrice * (addonPrice / 100); // Add percentage of the base price to the addon
                 });
-                total +=addon;
+
+                total += addon;
+
+                // Apply the discount if a valid discount is present
+                if (discountType === 'percentage') {
+                    total -= (basePrice * (discountAmount / 100)); // Apply percentage discount
+                } else if (discountType === 'fixed') {
+                    total -= discountAmount; // Apply fixed discount amount
+                }
+
+                // Ensure the total is not negative
+                total = total < 0 ? 0 : total;
+
                 // Update values in multiple places using classes
                 $('.price-display').text('$' + basePrice.toFixed(2));
-                $('.discount-display').text('$' + discount.toFixed(2));
+                $('.discount-display').text('$' +ruleDiscount.toFixed(2));
+                $('.coupon-discount-display').text(discountType === 'percentage' ? discountAmount + '%' : '$' + discountAmount.toFixed(2));
                 $('.addons-display').text('$' + addon.toFixed(2));
                 $('.total-display').text('$' + total.toFixed(2));
                 $('.daily-dd').text(dailyDD);
                 $('.max-dd').text(maxDD);
                 $('.profit-target').text(profitTarget);
             }
+
         });
+
 
 
     </script>

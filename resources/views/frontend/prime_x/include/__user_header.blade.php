@@ -24,8 +24,8 @@
             </div>--}}
             <div class="flex items-center md:space-x-4 space-x-2 mr-2 xl:space-x-0 rtl:space-x-reverse vertical-box">
                 <a href="{{ route('user.dashboard') }}" class="mobile-logo xl:hidden inline-block active">
-                    <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo" alt="logo">
-                    <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo" alt="logo">
+                    <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo h-12" alt="logo">
+                    <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo h-12" alt="logo">
                 </a>
                 <button class="smallDeviceMenuController hidden md:inline-block xl:hidden">
                     <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>

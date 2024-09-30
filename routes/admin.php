@@ -57,6 +57,7 @@ use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\NoteController;
+use App\Http\Controllers\Backend\SystemTagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,6 +125,9 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('all', 'kycAll')->name('all');
 
     });
+    // system tags route
+    Route::resource('system-tag', SystemTagController::class);
+
     Route::resource('risk-profile-tag', RiskProfileTagController::class);
     Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
         Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');

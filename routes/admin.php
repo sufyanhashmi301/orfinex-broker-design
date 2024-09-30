@@ -98,16 +98,16 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('kyc/{id}', 'kyc')->name('kyc');
 
     });
-     
+
     Route::group(['prefix' => 'user/note', 'as' => 'user.note.', 'controller' => NoteController::class], function () {
         Route::get('data/{id}', 'index')->name('data');
         Route::post('create/{id}', 'create')->name('add');
         Route::put('edit/{id}', 'update')->name('edit');
         Route::delete('delete/{id}', 'destroy')->name('delete');
     });
-    
-    
-    
+
+
+
 
     Route::resource('kyc-form', KycController::class);
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
@@ -447,6 +447,9 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         return view('backend.setting.platform_api.db-synchronization');
     })->name('platform_api.db-synchronization');
 
+    Route::get('settings/platform-api/x9trader', function () {
+        return view('backend.setting.platform_api.x9trader');
+    })->name('platform_api.x9trader');
 
     Route::get('announcements', function () {
         return view('backend.announcements.index');

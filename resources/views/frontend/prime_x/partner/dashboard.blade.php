@@ -11,7 +11,7 @@
     </div>
     <div class="grid grid-cols-12 gap-5 mb-6">
         <div class="lg:col-span-8 col-span-12 space-y-5">
-            <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+            <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
@@ -88,7 +88,7 @@
         </div>
         <div class="xl:col-span-4 col-span-12">
             <div class="card h-full">
-                <div class="card-body h-full flex flex-col p-6">
+                <div class="card-body h-full flex flex-col gap-3 p-6">
                     <p class="text-slate-900 dark:text-white text-sm font-medium mb-10">
                         {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
                     </p>
@@ -101,7 +101,7 @@
                     <a href="{{route('user.withdraw.view')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
                         {{ __('Withdraw') }}
                     </a>
-                    <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
                         <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
                             <span class="text-slate-600 dark:text-slate-300 text-sm block">
                                 {{ __('Sales: 75%') }}
@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-5 grid-cols-1 gap-5 mb-6">
+    <div class="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5 mb-6">
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
@@ -369,7 +369,22 @@
                 right: 0,
                 bottom: 0,
                 left: 0
-            }
+            },
+            responsive: [
+                {
+                    breakpoint: 1000,
+                    options: {
+                        chart: {
+                            width: '100%',
+                            height: 350,
+                        },
+                        legend: {
+                            position: "bottom",
+                            offsetY: 0,
+                        },
+                    }
+                }
+            ]
         }
 
         var chart = new ApexCharts(document.querySelector("#registredActiveCleints"), options);

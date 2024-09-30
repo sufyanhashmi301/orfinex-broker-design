@@ -199,6 +199,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.platform_api.db-synchronization') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('DB Synchronization') }}
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.settings.copyTrading') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Copy Trading') }}
                         </a>

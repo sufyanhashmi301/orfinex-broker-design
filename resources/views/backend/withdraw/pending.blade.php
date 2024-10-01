@@ -1,6 +1,6 @@
 @extends('backend.withdraw.index')
 @section('title')
-    {{ __('Pending Withdraws') }}
+    {{ __('Pending Payouts') }}
 @endsection
 @section('page-title')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">

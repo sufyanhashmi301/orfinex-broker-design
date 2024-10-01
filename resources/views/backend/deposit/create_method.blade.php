@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
+                            <label class="form-label" for="">{{ __('Minimum Payment:') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" name="minimum_deposit" class="form-control"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -133,7 +133,7 @@
 
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
+                            <label class="form-label" for="">{{ __('Maximum Payment:') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" name="maximum_deposit" class="form-control"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">

@@ -60,12 +60,6 @@
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
                 </a>
             </span>
-            <span class="toolbar onTop" data-tippy-theme="dark" data-tippy-content="KYC Verify">
-                <a href="javascript:void(0);" class="action-btn" type="button" data-bs-toggle="modal"
-                   data-bs-target="#KycVerifyModal">
-                    <iconify-icon icon="fluent:clipboard-task-add-24-regular"></iconify-icon>
-                </a>
-            </span>
         </div>
         <ul class="space-y-5 mb-4">
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
@@ -101,8 +95,6 @@
                     @endif
                 </span>
             </li>
-
-
         </ul>
         <div
             class="flex items-center justify-around border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">

@@ -1,6 +1,6 @@
 @extends('backend.setting.payment.withdraw.index')
 @section('title')
-    {{ __('New Withdraw Method') }}
+    {{ __('New Payout Method') }}
 @endsection
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -19,7 +19,7 @@
                     <div class="grid gird-cols-12 items-center gap-5">
                         <div class="col-span-12">
                             <div class="input-area max-w-xs">
-                                <label class="form-label" for="">{{ __('Add Withdraw Logo:') }}</label>
+                                <label class="form-label" for="">{{ __('Add Payout Logo:') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
@@ -119,7 +119,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Minimum Withdraw:') }}</label>
+                                <label class="form-label" for="">{{ __('Minimum Payout:') }}</label>
                                 <div class="joint-input relative">
                                     <input type="text" class="form-control" name="min_withdraw"/>
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
@@ -130,7 +130,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Maximum Withdraw:') }}</label>
+                                <label class="form-label" for="">{{ __('Maximum Payout:') }}</label>
                                 <div class="joint-input relative">
                                     <input type="text" class="form-control" name="max_withdraw"/>
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">

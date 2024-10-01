@@ -500,5 +500,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
 
+    Route::get('changelog', function () {
+        return view('backend.changelog.index');
+    })->name('changelog');
+
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

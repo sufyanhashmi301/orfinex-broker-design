@@ -76,6 +76,19 @@
     min-width: 110px;
 }
 
+.tableActionsDropdown {
+    align-items: stretch;
+}
+.dropdown .actionsDropdownBtn {
+    border-left: none;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+.groupButtons .btn {
+    min-width: unset;
+}
+
+
 .min-w-min {
     min-width: min-content;
 }

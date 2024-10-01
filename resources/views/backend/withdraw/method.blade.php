@@ -1,6 +1,6 @@
 @extends('backend.setting.payment.withdraw.index')
 @section('title')
-    {{ __('Withdraw Methods') }}
+    {{ __('Payout Methods') }}
 @endsection
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -40,7 +40,7 @@
                         <h4 class="text-base font-medium dark:text-white">{{$method->name}}</h4>
                         <ul class="divide-y divide-slate-100 dark:divide-slate-700 h-full">
                             <li class="flex items-center py-3">
-                                <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Minimum Withdraw:') }}</span>
+                                <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Minimum Payout:') }}</span>
                                 <span class="flex-1 text-right text-slate-600 dark:text-slate-300">{{ $method->min_withdraw .' '.$currency }}</span>
                             </li>
                         </ul>

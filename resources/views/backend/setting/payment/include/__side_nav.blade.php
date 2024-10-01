@@ -15,6 +15,11 @@
                 {{ __('Payout Methods') }}
             </a>
         </li>
+        <li class="">
+            <a href="{{ route('admin.withdraw.schedule') }}" class="navItem {{ isActive('admin.withdraw.schedule') }}">
+                {{ __('Payout Schedule') }}
+            </a>
+        </li>
         <li>
             <a href="{{ route('admin.settings.currency') }}" class="navItem {{ isActive('admin.settings.currency') }}">
                 {{ __('Currency')}}

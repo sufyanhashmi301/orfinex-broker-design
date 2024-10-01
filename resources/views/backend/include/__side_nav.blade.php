@@ -121,16 +121,6 @@
                     @can('schema-edit')
                         <li>
                             <a href="{{route('admin.accountType.index')}}" class="{{ isActive('admin.accountType*') }}">
-                                {{ __('Account type') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{route('admin.discounts.index')}}" class="{{ isActive('admin.discounts*') }}">
-                                {{ __('Discount') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{route('admin.accountType.index')}}" class="">
                                 {{ __('Challenge') }}
                             </a>
                         </li>
@@ -146,7 +136,7 @@
                         </li>
                         <li>
                             <a href="{{route('admin.accountType.index')}}" class="">
-                                {{ __('Trial') }}
+                                {{ __('Trial - Auto Expire') }}
                             </a>
                         </li>
                     @endcan
@@ -180,22 +170,22 @@
                     <ul class="sidebar-submenu">
                         <li>
                             <a href="{{route('admin.accounts.challengeAccounts')}}" class="{{ isActive('admin.accounts.challengeAccounts') }}">
-                                {{ __('Challenge Accounts') }}
+                                {{ __('Challenge') }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('admin.accounts.fundedAccounts') }}" class="{{ isActive('admin.accounts.fundedAccounts') }}">
-                                {{ __('Funded Accounts') }}
+                                {{ __('Funded') }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('admin.accounts.directFundedAccounts') }}" class="{{ isActive('admin.accounts.directFundedAccounts') }}">
-                                {{ __('Direct Funded Accounts') }}
+                                {{ __('Direct Funded') }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('admin.accounts.trialAccounts') }}" class="{{ isActive('admin.accounts.trialAccounts') }}">
-                                {{ __('Trial Accounts') }}
+                                {{ __('Trial') }}
                             </a>
                         </li>
                     </ul>
@@ -348,7 +338,7 @@
                         @canany(['deposit-list','deposit-action'])
                             <li class="">
                                 <a href="{{ route('admin.deposit.manual.pending') }}" class="{{ isActive('admin.deposit.manual.pending') }}">
-                                    {{ __('Pending Manual Payments') }}
+                                    {{ __('Pending Payments') }}
                                 </a>
                             </li>
                             <li class="">
@@ -378,13 +368,6 @@
                                 </a>
                             </li>
                         @endcanany
-                        @can('withdraw-schedule')
-                            <li class="">
-                                <a href="{{ route('admin.withdraw.schedule') }}" class="{{ isActive('admin.withdraw.schedule') }}">
-                                    {{ __('Payout Schedule') }}
-                                </a>
-                            </li>
-                        @endcan
                         @can('withdraw-list')
                             <li class="">
                                 <a href="{{ route('admin.withdraw.history') }}" class="{{ isActive('admin.withdraw.history') }}">
@@ -396,6 +379,15 @@
                 </li>
             @endcanany
         @endcanany
+
+        <li class="">
+            <a href="{{ route('admin.discounts.index') }}" class="navItem {{ isActive('admin.discounts.index') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="bxs:discount"></iconify-icon>
+                    <span>{{ __('Discount Codes') }}</span>
+                </span>
+            </a>
+        </li>
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])
@@ -430,31 +422,6 @@
                 </a>
             </li>
         @endcan --}}
-
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:power"></iconify-icon>
-                    <span>{{ __('System') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{ route('admin.clear-cache') }}" class="{{ isActive('admin.clear-cache') }}">
-                        {{ __('Clear Cache') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('admin.application-info') }}" class="{{ isActive('admin.application-info') }}">
-                        <span class="flex items-center">
-                            <span>{{ __('Application Details') }}</span>
-                            <span class="badge yellow-color">2.4</span>
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </li>
 
         {{--<li class="">
             <a href="javascript:void(0);" class="navItem">

@@ -1,6 +1,6 @@
 @extends('backend.withdraw.index')
 @section('title')
-    {{ __('Withdraw History') }}
+    {{ __('Payout History') }}
 @endsection
 @section('page-title')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">

@@ -8,7 +8,6 @@
             @yield('title')
         </h4>
     </div>
-
 @endsection
 @section('deposit-content')
     <div class="max-w-5xl mx-auto">
@@ -134,7 +133,7 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <label class="form-label" for="">{{ __('Minimum Deposit:') }}</label>
+                            <label class="form-label" for="">{{ __('Minimum Payment:') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" name="minimum_deposit" class="form-control" value="{{ $method->minimum_deposit }}"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
@@ -144,7 +143,7 @@
 
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">{{ __('Maximum Deposit:') }}</label>
+                            <label class="form-label" for="">{{ __('Maximum Payment:') }}</label>
                             <div class="joint-input relative">
                                 <input type="text" name="maximum_deposit" class="form-control" value="{{ $method->maximum_deposit }}"/>
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">

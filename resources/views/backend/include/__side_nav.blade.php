@@ -380,31 +380,6 @@
         <li class="">
             <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:power"></iconify-icon>
-                    <span>{{ __('System') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{ route('admin.clear-cache') }}" class="{{ isActive('admin.clear-cache') }}">
-                        {{ __('Clear Cache') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('admin.application-info') }}" class="{{ isActive('admin.application-info') }}">
-                        <span class="flex items-center">
-                            <span>{{ __('Application Details') }}</span>
-                            <span class="badge yellow-color">2.4</span>
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-                <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="mdi:partnership"></iconify-icon>
                     <span>{{ __('Partnership') }}</span>
                 </span>

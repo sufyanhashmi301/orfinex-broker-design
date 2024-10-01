@@ -478,6 +478,15 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
 
 
+    Route::get('fraud-protection', function () {
+        return view('backend.fraud_protection.index');
+    })->name('fraudProtection');
+
+    Route::get('changelog', function () {
+        return view('backend.system.changelog');
+    })->name('changelog');
+
+
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
 

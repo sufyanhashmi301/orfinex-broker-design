@@ -49,7 +49,7 @@
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Social Logins') }}
-                            <span class="bg-secondary-500 text-secondary-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('Coming Soon') }}
                             </span>
                         </a>
@@ -211,7 +211,7 @@
                     <li>
                         <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform Groups') }}
-                            <span class="bg-success-500 text-success-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -219,7 +219,7 @@
                     <li>
                         <a href="{{ route('admin.platform.riskBook') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Risk Book') }}
-                            <span class="bg-success-500 text-success-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -257,7 +257,7 @@
                         <li>
                             <a href="{{ route('admin.email-template') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Email Templates') }}
-                                <span class="bg-warning-500 text-warning-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                                <span class="badge-warning text-xs capitalize rounded-full px-2 py-1">
                                     {{ __('Updated') }}
                                 </span>
                             </a>
@@ -285,7 +285,7 @@
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Import')}}
-                            <span class="bg-secondary-500 text-secondary-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('Coming Soon') }}
                             </span>
                         </a>
@@ -293,8 +293,46 @@
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Export')}}
-                            <span class="bg-secondary-500 text-secondary-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="mdi:monitor-screenshot"></iconify-icon>
+                        {{ __('System') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li class="">
+                        <a href="{{ route('admin.clear-cache') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Clear Cache') }}
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.application-info') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Application Details') }}
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.changelog') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Changelog') }}
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('new') }}
                             </span>
                         </a>
                     </li>
@@ -327,7 +365,7 @@
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Multi-Factor Auth')}}
-                            <span class="bg-secondary-500 text-secondary-500 bg-opacity-30 text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('Coming Soon') }}
                             </span>
                         </a>
@@ -341,6 +379,22 @@
             </div>
         </div>
     </div>
+@endsection
+@section('style')
+    <style>
+        .badge-secondary {
+            background-color: rgba(205, 205, 205, 0.29);
+            color: #828289;
+        }
+        .badge-warning {
+            background-color: rgba(254, 208, 0, 0.52);
+            color: #5F4D00;
+        }
+        .badge-success {
+            background-color: rgba(0, 236, 66, 0.29);
+            color: #008133;
+        }
+    </style>
 @endsection
 @section('script')
     <script>

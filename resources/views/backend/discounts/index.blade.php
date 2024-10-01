@@ -41,6 +41,10 @@
                     </div>
                 </div>
             </div>
+            <div id="processingIndicator" class="text-center">
+                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+            </div>
         </div>
     </div>
 
@@ -60,10 +64,26 @@
     <script>
         (function ($) {
             "use strict";
-            var table = $('#dataTable').DataTable({
+            var table = $('#dataTable').on('processing.dt', function (e, settings, processing) {
+                $('#processingIndicator').css('display', processing ? 'block' : 'none');
+            }).DataTable({
                 dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
                 processing: true,
+                searching: false,
+                lengthChange: false,
+                info: true,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:",
+                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
+                },
                 serverSide: true,
+                autoWidth: false,
                 ajax: "{{ route('admin.discounts.index') }}",
                 columns: [
                     {data: 'code_name', name: 'code_name'},

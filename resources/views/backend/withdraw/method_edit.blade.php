@@ -1,6 +1,6 @@
 @extends('backend.setting.payment.withdraw.index')
 @section('title')
-    {{ __('Edit Withdraw Method') }}
+    {{ __('Edit Payout Method') }}
 @endsection
 @section('page-title')
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -116,7 +116,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Minimum Withdraw:') }}</label>
+                                <label class="form-label" for="">{{ __('Minimum Payout:') }}</label>
                                 <div class="joint-input relative">
                                     <input type="text" name="min_withdraw" class="form-control" value="{{ $withdrawMethod->min_withdraw }}"/>
                                     <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected">
@@ -128,7 +128,7 @@
                         </div>
                         <div class="xl:col-span-6 col-span-12">
                             <div class="input-area">
-                                <label class="form-label" for="">{{ __('Maximum Withdraw:') }}</label>
+                                <label class="form-label" for="">{{ __('Maximum Payout:') }}</label>
                                 <div class="joint-input relative">
                                     <input
                                         type="text"

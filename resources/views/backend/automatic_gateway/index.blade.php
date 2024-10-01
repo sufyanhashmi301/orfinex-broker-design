@@ -19,7 +19,7 @@
                                     <th scope="col" class="table-th">{{ __('Logo') }}</th>
                                     <th scope="col" class="table-th">{{ __('Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Supported Currency') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Withdraw Available') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Payout Available') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Manage') }}</th>
                                 </tr>

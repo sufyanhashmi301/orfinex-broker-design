@@ -295,21 +295,21 @@
                                         {{ __('Add Note') }}
                                     </a>
                                 </li>
-                                    <li class="nav-item" role="presentation">
-                                        <a
-                                            href=""
-                                            class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                            id="pills-security-tab"
-                                            data-bs-toggle="pill"
-                                            data-bs-target="#pills-security"
-                                            type="button"
-                                            role="tab"
-                                            aria-controls="pills-security"
-                                            aria-selected="true"
-                                        >
-                                            {{ __('Security') }}
-                                        </a>
-                                    </li>
+                                <li class="nav-item" role="presentation">
+                                    <a
+                                        href=""
+                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        id="pills-security-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-security"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="pills-security"
+                                        aria-selected="true"
+                                    >
+                                        {{ __('Security') }}
+                                    </a>
+                                </li>
                             @endcanany
                         </ul>
                     </div>
@@ -369,10 +369,6 @@
     @can('customer-mail-send')
         @include('backend.user.include.__mail_send',['name' => $user->first_name.' '.$user->last_name, 'id' => $user->id])
     @endcan
-    <!-- Modal for Send Email-->
-
-    {{-- Modal for User KYC Verification --}}
-    @include('backend.user.include.__user_kyc_verification_modal')
 
     {{-- Modal for add Forex Account --}}
     @include('backend.user.include.__forex_account')

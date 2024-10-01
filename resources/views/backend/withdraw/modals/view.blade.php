@@ -1,6 +1,6 @@
 <div class="flex items-center justify-between mb-5">
     <h3 class="text-xl font-medium dark:text-white capitalize">
-        {{ __('Withdraw') }}
+        {{ __('Payout') }}
     </h3>
     <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center
                 dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
@@ -17,7 +17,7 @@
 {{--        {{ __('Total amount') }}: <strong>{{ $data->final_amount. ' '.$currency }}</strong>--}}
 
     <div class="input-area">
-        <label class="form-label" for="">{{ __('Withdrawal Amount:') }}</label>
+        <label class="form-label" for="">{{ __('Payout Amount:') }}</label>
         <div class="joint-input relative">
             <input type="text" name="final_amount" id="amount"  value="{{$data->final_amount}}" oninput="this.value = validateDouble(this.value)"  class="form-control"/>
             <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1" id="currency">
@@ -41,7 +41,7 @@
     <br>
 
     <ul class="list-group mb-4">
-      
+
     @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
         @foreach( json_decode($data->manual_field_data) as $key => $value)
             <li class="list-group-item py-1 px-2 rounded border">
@@ -64,6 +64,6 @@
         <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
     </div>
 
-   
+
 
 </form>

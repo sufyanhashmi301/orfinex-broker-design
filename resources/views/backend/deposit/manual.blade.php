@@ -1,6 +1,6 @@
 @extends('backend.deposit.index')
 @section('title')
-    {{ __('Pending Manual Deposit') }}
+    {{ __('Pending Payments') }}
 @endsection
 @section('page-title')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">

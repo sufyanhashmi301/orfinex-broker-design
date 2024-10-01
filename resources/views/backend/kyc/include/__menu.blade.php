@@ -31,10 +31,5 @@
                 </a>
             </li>
         @endcanany
-        <li class="nav-item">
-            <a href="{{ route('admin.kyclevels.index') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.kyclevels*') }}">
-                {{ __('KYC Levels') }}
-            </a>
-        </li>
     </ul>
 </div>

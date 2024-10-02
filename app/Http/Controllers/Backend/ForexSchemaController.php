@@ -81,6 +81,7 @@ class ForexSchemaController extends Controller
 
 //        dd($request->all());
         $validator = Validator::make($request->all(), [
+            'trader_type' => 'required',
             'title' => 'required',
             'leverage' => 'required',
 //            'commission' => 'required',
@@ -122,6 +123,7 @@ class ForexSchemaController extends Controller
 //        dd($input);
 
         $finalData = [
+            'trader_type' => $input['trader_type'],
             'title' => $input['title'],
             'badge' => $input['badge'],
             'commission' => $input['commission'],

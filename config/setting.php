@@ -952,6 +952,7 @@ return [
                     'c_trader' => 'cTrader',
                     'all' => 'All',
                 ],
+
             ],
         ],
 

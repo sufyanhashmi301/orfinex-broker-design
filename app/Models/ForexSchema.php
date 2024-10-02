@@ -57,6 +57,7 @@ class ForexSchema extends Model
 	];
 
 	protected $fillable = [
+		'trader_type',
 		'icon',
 		'title',
 		'desc',
@@ -102,6 +103,10 @@ class ForexSchema extends Model
     public function scopeActive(Builder $query)
     {
         return $query->where('status', true);
+    }
+    public function scopeTraderType(Builder $query)
+    {
+        return $query->where('trader_type', setting('active_trader_type', 'features'));
     }
     public function scopeRelevantForUser(Builder $query, $country, array $tags)
     {

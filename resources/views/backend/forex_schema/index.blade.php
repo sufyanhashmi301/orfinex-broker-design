@@ -40,6 +40,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Icon') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Trader Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
@@ -60,8 +61,12 @@
                                         />
                                     </td>
                                     <td class="table-td">
+                                        {{$schema->trader_type}}
+                                    </td>
+                                    <td class="table-td">
                                         {{$schema->priority}}
                                     </td>
+
                                     <td class="table-td">
                                         {{$schema->title}}
                                     </td>

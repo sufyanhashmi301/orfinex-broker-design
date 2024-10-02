@@ -267,6 +267,7 @@ class PricingSubscription
 //        dd($this->getInput()['leverage']);
         return [
             "user_id" => data_get($this->user, 'id', auth()->user()->id),
+            "trader_type" => $this->scheme->forexSchemaPhase->forexSchema->trader_type,
             "forex_schema_phase_rule_id" => $this->scheme->id,
             "amount" => $this->getInvest(),
             "amount_allotted" => $this->scheme->allotted_funds,

@@ -90,6 +90,13 @@
             </div>
             <div class="card-body p-6 pt-0">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Active Trader Type') }}</label>
+                            <input type="text" name="trader_type" class="form-control"
+                                   placeholder="Platform Group" value="{{setting('active_trader_type', 'features')}}" readonly/>
+                        </div>
+
+
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Title:') }}</label>
                         <input
@@ -253,16 +260,29 @@
                     <h4 class="card-title">{{ __('Phase 1') }}</h4>
                 </div>
                 <div class="card-body p-6 pt-3 space-y-5">
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                        <input
-                            type="text"
-                            name="group"
-                            class="form-control"
-                            placeholder="Platform Group"
-                            value="{{ old('group') }}"
-                        />
-                    </div>
+                    @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Platform Group') }}</label>
+                            <input type="text" name="group" class="form-control"
+                                   placeholder="Platform Group" />
+                        </div>
+                    @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Platform Group: ') }}</label>
+                            <select name="group" class="select2 form-control w-full">
+                                <option
+                                    value="" >
+                                    {{ __('Select Group')}}
+                                </option>
+                                @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                    <option
+                                        value="{{$group->id}}" >
+                                        {{ $group->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
                     <div class="input-area !mb-7">
                         <div class="flex items-center space-x-7 flex-wrap">
                             <div class="primary-radio">

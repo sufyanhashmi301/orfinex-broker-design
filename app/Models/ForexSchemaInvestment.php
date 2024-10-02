@@ -113,6 +113,7 @@ class ForexSchemaInvestment extends Model
 
 	protected $fillable = [
 		'pvx',
+		'trader_type',
 		'user_id',
 		'forex_schema_phase_rule_id',
 		'account_name',
@@ -244,7 +245,10 @@ class ForexSchemaInvestment extends Model
         return $query->select($query->raw('SUM(payout_amount) as total_payout_amount'));
     }
 
-
+    public function scopeTraderType($query)
+    {
+        return $query->where('trader_type', setting('active_trader_type', 'features'));
+    }
     public function scopeLoggedUser($query)
     {
         return $query->where('user_id', auth()->user()->id);

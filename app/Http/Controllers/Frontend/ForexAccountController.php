@@ -223,7 +223,7 @@ class ForexAccountController extends GatewayController
     {
         $user = auth()->user();
 
-        $investments = ForexSchemaInvestment::whereIn('status', [
+        $investments = ForexSchemaInvestment::traderType()->whereIn('status', [
             InvestmentStatus::PENDING,
             InvestmentStatus::ACTIVE,
             InvestmentStatus::COMPLETED,

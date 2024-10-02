@@ -1107,6 +1107,20 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
             ],
+            [
+                'type' => 'radio', // Change type to 'radio'
+                'data' => 'string',
+                'name' => 'active_trader_type',
+                'label' => 'Trader Type',
+                'rules' => 'required', // Include options
+                'value' => 'all', // Default value
+                'options' => [
+                    'mt5' => 'MetaTrader 5',
+                    'x9' => 'X9',
+                    'c_trader' => 'cTrader',
+                    'all' => 'All',
+                ],
+            ],
         ],
 
     ],
@@ -1243,51 +1257,51 @@ return [
             ],
         ],
     ],
-    'x9_api' => [
-        'title' => 'X9trader API Settings',
-        'elements' => [
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'x9_name', // unique name for field
-                'label' => 'Name', // you know what label it is
-                'rules' => 'required|min:5|max:50', // validation rule of laravel
-                'value' => 'X9trader', // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'x9_demo_server_enable', // unique name for field
-                'label' => 'Demo Server Enable', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 0, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'x9_network_address', // unique name for field
-                'label' => 'Network Address', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'X9 Server', // default value if you want
-            ],
-            [
-                'type' => 'password', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'x9_API_access_key', // unique name for field
-                'label' => 'Login', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'x-access-token', // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'x9_status', // unique name for field
-                'label' => 'Status', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+        'x9_api' => [
+            'title' => 'X9trader API Settings',
+            'elements' => [
+                [
+                    'type' => 'text', // input fields type
+                    'data' => 'string', // data type, string, int, boolean
+                    'name' => 'x9_name', // unique name for field
+                    'label' => 'Name', // you know what label it is
+                    'rules' => 'required|min:5|max:50', // validation rule of laravel
+                    'value' => 'X9trader', // default value if you want
+                ],
+                [
+                    'type' => 'checkbox', // input fields type
+                    'data' => 'boolean', // data type, string, int, boolean
+                    'name' => 'x9_demo_server_enable', // unique name for field
+                    'label' => 'Demo Server Enable', // you know what label it is
+                    'rules' => 'required', // validation rule of laravel
+                    'value' => 0, // default value if you want
+                ],
+                [
+                    'type' => 'text', // input fields type
+                    'data' => 'string', // data type, string, int, boolean
+                    'name' => 'x9_network_address', // unique name for field
+                    'label' => 'Network Address', // you know what label it is
+                    'rules' => 'required', // validation rule of laravel
+                    'value' => 'X9 Server', // default value if you want
+                ],
+                [
+                    'type' => 'password', // input fields type
+                    'data' => 'string', // data type, string, int, boolean
+                    'name' => 'x9_API_access_key', // unique name for field
+                    'label' => 'Login', // you know what label it is
+                    'rules' => 'required', // validation rule of laravel
+                    'value' => 'x-access-token', // default value if you want
+                ],
+                [
+                    'type' => 'checkbox', // input fields type
+                    'data' => 'boolean', // data type, string, int, boolean
+                    'name' => 'x9_status', // unique name for field
+                    'label' => 'Status', // you know what label it is
+                    'rules' => 'required', // validation rule of laravel
+                    'value' => 1, // default value if you want
+                ],
             ],
         ],
-    ],
     'mt5_db_credentials' => [
         'title' => 'MySQL Database Credentials',
         'elements' => [
@@ -1378,6 +1392,7 @@ return [
             ],
         ],
     ],
+
     'site_maintenance' => [
         'title' => 'Site Maintenance',
         'elements' => [

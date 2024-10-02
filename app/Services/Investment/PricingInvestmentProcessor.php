@@ -7,6 +7,7 @@ use App\Enums\ForexTradingAccountTypesStatus;
 use App\Enums\ForexTradingStatus;
 use App\Enums\RefundType;
 use App\Enums\ActionType;
+use App\Enums\TraderType;
 use App\Enums\TxnType;
 use App\Enums\TxnStatus;
 use App\Enums\LedgerTnxType;
@@ -19,6 +20,7 @@ use App\Events\NewForexAccountEvent;
 
 use App\Models\AccountGroup;
 use App\Models\AccountType;
+use App\Models\Country;
 use App\Models\ForexSchemaInvestment;
 use App\Models\ForexSchemaPhaseRule;
 use App\Models\ForexTrading;
@@ -34,6 +36,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Services\ForexApiService;
 
+use App\Services\x9ApiService;
 use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -46,6 +49,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Framework\Constraint\Count;
 use Txn;
 
 class PricingInvestmentProcessor
@@ -675,6 +679,8 @@ class PricingInvestmentProcessor
 //        dd($group);
         $schema = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema;
 //        dd($schema);
+        $traderType = $invest->trader_type;
+
         $phaseIds = $schema->forexSchemaPhases->pluck('id');
 
 
@@ -683,7 +689,11 @@ class PricingInvestmentProcessor
         })->whereIn('status', [InvestmentStatus::ACTIVE,InvestmentStatus::VIOLATED])
             ->latest('id')->first();
 //        dd($schema,$phaseIds,$latestInvestments);
-        $login = 0;
+        if($traderType == TraderType::MT5) {
+            $login = 0;
+        }elseif($traderType == TraderType::X9) {
+            $login = 'default';
+        }
 //        if (setting('is_forex_group_range', 'global')){
 //            $forexAccount = ForexSchemaInvestment::where('forex_schema_phase_rule_id',$invest->forexSchemaPhaseRule->id)->orderBY('login','desc')->first();
             if($latestInvestments) {
@@ -703,7 +713,19 @@ class PricingInvestmentProcessor
                 $login = $invest->forexSchemaPhaseRule->forexSchemaPhase->forexSchema->start_range;
             }
 //        }
-//dd($login);
+//dd($traderType);
+        if($traderType == TraderType::MT5) {
+          return  $this->mt5CreateNewUser($invest,$login,$group,$password);
+        }elseif($traderType == TraderType::X9) {
+            return  $this->x9CreateNewUser($invest,$login,$group,$password);
+        }
+
+
+
+    }
+
+    public function mt5CreateNewUser($invest,$login,$group,$password)
+    {
         $data = [
             "login" => $login,
             "group" => $group,
@@ -754,10 +776,46 @@ class PricingInvestmentProcessor
 //            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
 
         }
+    }
+    public function x9CreateNewUser($invest,$login,$group,$password)
+    {
+//        Country::wheere()
+        $data = [
+            "preferred_login" => 'default',
+            "client_id" => null,
+            "client_group_type_id" => 2,
+            "client_group_id" => (int)$group,
+            "first_name" => $invest->user->first_name,
+            "middle_name" => null,
+            "last_name" => $invest->user->last_name,
+//            "leverage" => $invest->leverage,
 
+            "country_id" => 5,
+//            "city" => $invest->user->city,
+//            "state" => "",
+//            "zipCode" => $invest->user->zip_code,
+//            "address" => $invest->user->address,
+            "phone" => $invest->user->phone,
+            "email" => $invest->user->email,
+//            "agent" => 0,
+            "company" => setting('site_title', 'global'),
+            "master_password" => $password,
+            "investor_password" => 'SNNH@2024@bol'
+        ];
+//        dd($data);
+        $forexApiService = new x9ApiService();
+        $response = $forexApiService->createUser($data);
+//        dd($response);
+        if ($response['success']) {
+            $resResult = $response['result']['trading_account'];
+
+            $invest->main_password = $password;
+            $invest->save();
+            return $resResult['account_number'];
+        }
+        throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
 
     }
-
     public function checkGroup($invest)
     {
         $rule = ForexSchemaPhaseRule::find($invest->forex_schema_phase_rule_id);
@@ -765,7 +823,7 @@ class PricingInvestmentProcessor
         return $schemeGroup;
     }
 
-    public function DepositForexAccountForPricing($mt5Login, $invest)
+    public function mt5DepositForexAccountForPricing($mt5Login, $invest)
     {
         $actualDeposit = $invest->amount_allotted;
         if ($invest->currency == 'USC') {
@@ -783,6 +841,33 @@ class PricingInvestmentProcessor
 
 //dd($response,$response['result']['responseCode']);
         if ($response['success'] && $response['result']['responseCode'] == 10009) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+    public function x9DepositForexAccountForPricing($mt5Login, $invest)
+    {
+        $actualDeposit = $invest->amount_allotted;
+        if ($invest->currency == 'USC') {
+            $actualDeposit = $actualDeposit * 100;
+        }
+        $data = [
+            'login_id' => $mt5Login,
+            'operation_type' => 'balance',
+            'amount' => $actualDeposit,
+            'transaction_type' => 'deposit',//deposit
+            'comment' => 'Direct Funded Balance',
+            'operate_without_checking' => true
+        ];
+//        dd($data);
+        $forexApiService = new x9ApiService();
+        $response = $forexApiService->balanceOperation($data);
+//        dd($response);
+
+//dd($response,$response['result']['responseCode']);
+        if ($response['success'] && $response['result']['status'] == true) {
             return true;
         } else {
             return false;
@@ -1069,10 +1154,14 @@ class PricingInvestmentProcessor
     {
 //        dd($invest);
         $mt5Login = $this->createForexAccountForPricing($invest);
+//        $mt5Login = 11111127;
+        $traderType = $invest->trader_type;
 
-//        $mt5Login = 877021;
-
-        $deposit = $this->DepositForexAccountForPricing($mt5Login, $invest);
+        if($traderType == TraderType::MT5) {
+            $deposit = $this->mt5DepositForexAccountForPricing($mt5Login, $invest);
+        }elseif($traderType == TraderType::X9) {
+            $deposit = $this->x9DepositForexAccountForPricing($mt5Login, $invest);
+        }
 //        dd($deposit);
         if ($deposit) {
             $termStart = CarbonImmutable::now();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enums\InvestmentStatus;
 use App\Enums\InvestStatus;
+use App\Enums\TraderType;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\DepositMethod;
@@ -12,6 +13,7 @@ use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Schema;
 use App\Services\ForexApiService;
+use App\Services\x9ApiService;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Auth;
@@ -190,15 +192,34 @@ class InvestController extends GatewayController
             $invest = $invest->fresh();
 
             $growthPercentage = percentage_of_total_calc($invest->profit, $invest->amount_allotted);
-            $forexApi = new ForexApiService();
-            $data = [
-                'login'=>$invest->login
+
+            $traderType = $invest->trader_type;
+
+            if($traderType == TraderType::MT5) {
+                $forexApi = new ForexApiService();
+                $data = [
+                    'login'=>$invest->login
 //                'login'=>555561
-            ];
-            $todayScore = $forexApi->getTodayRiskScore($data);
-            $weeklyScore = $forexApi->getWeekRiskScore($data);
-            $totalScore = $forexApi->getTotalRiskScore($data);
-            $totalBalance = $forexApi->getBalance($data);
+                ];
+                $todayScore = $forexApi->getTodayRiskScore($data);
+                $weeklyScore = $forexApi->getWeekRiskScore($data);
+                $totalScore = $forexApi->getTotalRiskScore($data);
+                $totalBalance = $forexApi->getBalance($data);
+
+            }elseif($traderType == TraderType::X9) {
+                $forexApi = new x9ApiService();
+                $data = [
+                    'login_id'=>$invest->login
+//                'login'=>555561
+                ];
+                $todayScore['result'] = [];
+                $weeklyScore['result']= [];
+                $totalScore['result'] = [];
+                $totalBalance = $forexApi->getBalance($data);
+                $totalBalance['result'] = $totalBalance['result']['trading_account_details']['balance_details'];
+//                dd($totalBalance);
+            }
+
 //            dd($totalBalance);
             $todayDrawddown = 0;
             if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {

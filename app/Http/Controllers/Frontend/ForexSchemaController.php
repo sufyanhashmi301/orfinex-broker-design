@@ -19,7 +19,7 @@ class ForexSchemaController extends Controller
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $schemas = ForexSchema::active()  // Use the defined scope for active schemas
+        $schemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
         ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
         ->orderBy('priority', 'asc')
             ->get();

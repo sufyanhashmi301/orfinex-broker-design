@@ -61,7 +61,7 @@ class DashboardController extends Controller
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         $banners = Banner::where('status', 1)->get();
 
-        $investments = ForexSchemaInvestment::whereIn('status', [
+        $investments = ForexSchemaInvestment::traderType()->whereIn('status', [
             InvestmentStatus::PENDING,
             InvestmentStatus::ACTIVE,
             InvestmentStatus::COMPLETED,

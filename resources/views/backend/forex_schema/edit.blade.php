@@ -237,7 +237,7 @@
 {{--                                class="form-control"--}}
 {{--                                placeholder="Platform Group"--}}
 {{--                            />--}}
-{{--                        </div>--}}
+                        </div>
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">

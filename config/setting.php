@@ -945,12 +945,12 @@ return [
                 'name' => 'active_trader_type',
                 'label' => 'Trader Type',
                 'rules' => 'required', // Include options
-                'value' => 'all', // Default value
+                'value' => \App\Enums\TraderType::MT5, // Default value
                 'options' => [
-                    'mt5' => 'MetaTrader 5',
-                    'x9' => 'X9',
-                    'c_trader' => 'cTrader',
-                    'all' => 'All',
+                    'mt5' => \App\Enums\TraderType::MT5,
+                    'x9' => \App\Enums\TraderType::X9,
+                    'c_trader' => \App\Enums\TraderType::CTRADER,
+                    'all' => \App\Enums\TraderType::All,
                 ],
 
             ],
@@ -1040,7 +1040,7 @@ return [
                 'value' => 'http://11.222.333.444:1234', // default value if you want
             ],
             [
-                'type' => 'text', // input fields type
+                'type' => 'password', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'mt5_api_key_real', // unique name for field
                 'label' => 'Forex API key(real)', // you know what label it is
@@ -1065,7 +1065,7 @@ return [
                 'value' => 'http://11.222.333.444:1234', // default value if you want
             ],
             [
-                'type' => 'text', // input fields type
+                'type' => 'password', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'mt5_api_key_demo', // unique name for field
                 'label' => 'MT5 API key(demo)', // you know what label it is
@@ -1107,7 +1107,7 @@ return [
                 'name' => 'x9_demo_server_enable', // unique name for field
                 'label' => 'Demo Server Enable', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0, // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -1118,18 +1118,10 @@ return [
                 'value' => 'X9 Server', // default value if you want
             ],
             [
-                'type' => 'text', // input fields type
+                'type' => 'password', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'x9_login', // unique name for field
+                'name' => 'x9_API_access_key', // unique name for field
                 'label' => 'Login', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'x-access-token', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'x9_password', // unique name for field
-                'label' => 'Password', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'x-access-token', // default value if you want
             ],
@@ -1188,7 +1180,51 @@ return [
             ],
         ],
     ],
-
+    'x9_db_credentials' => [
+        'title' => 'X9 Database Credentials',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_database_host', // unique name for field
+                'label' => 'Database Host', // label for field
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'integer', // data type, string, int, boolean
+                'name' => 'x9_database_port', // unique name for field
+                'label' => 'Database Port', // label for field
+                'rules' => 'required|integer|min:1024|max:65535', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_database_name', // unique name for field
+                'label' => 'Database Name', // label for field
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_database_username', // unique name for field
+                'label' => 'Database Username', // label for field
+                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'password', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_database_password', // unique name for field
+                'label' => 'Database Password', // label for field
+                'rules' => 'sometimes|min:2|max:50', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+        ],
+    ],
     'site_maintenance' => [
         'title' => 'Site Maintenance',
         'elements' => [
@@ -1318,13 +1354,14 @@ return [
         ],
     ],
     'webterminal' => [
-        'title' => 'Webterminal Settings',
+        'title' => 'MT5 Web terminal Settings',
         'elements' => [
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'webterminal_src_light', // unique name for field
-                'label' => 'Web Terminal (Light)', // you know what label it is
+                'label' => 'Terminal URL (Light)', // you know what label it is
+                'description' => 'Provide the URL for the web terminal interface in light mode.',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -1332,7 +1369,8 @@ return [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'webterminal_src_dark', // unique name for field
-                'label' => 'Web Terminal (Dark)', // you know what label it is
+                'label' => 'Terminal URL (Dark)', // you know what label it is
+                'description' => 'Provide the URL for the web terminal interface in dark mode.',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -1340,7 +1378,8 @@ return [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'webterminal_width', // unique name for field
-                'label' => 'Web Terminal Width', // you know what label it is
+                'label' => 'Terminal Width', // you know what label it is
+                'description' => 'Specify the width of the web terminal as a percentage of its container.',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
@@ -1348,17 +1387,77 @@ return [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'webterminal_height', // unique name for field
-                'label' => 'Web Terminal Height', // you know what label it is
+                'label' => 'Terminal Height', // you know what label it is
+                'description' => 'Specify the height of the web terminal as a percentage of its container.',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'is_webterminal', // unique name for field
-                'label' => 'Status', // you know what label it is
+                'type' => 'select', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'webterminal_status', // unique name for field
+                'label' => 'Status', // label for the field
+                'description' => 'Enable or disable the current web terminal configuration.',
+                'rules' => 'required', // validation rule of Laravel
+                'options' => [ // options for the select box
+                    '1' => 'Enabled',
+                    '0' => 'Disabled',
+                ],
+                'value' => 0, // default value
+            ],
+        ],
+    ],
+    'x9_webterminal' => [
+        'title' => 'X9 Web terminal Settings',
+        'elements' => [
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_webterminal_src_light', // unique name for field
+                'label' => 'Terminal URL (Light)', // you know what label it is
+                'description' => 'Provide the URL for the web terminal interface in light mode.',
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_webterminal_src_dark', // unique name for field
+                'label' => 'Terminal URL (Dark)', // you know what label it is
+                'description' => 'Provide the URL for the web terminal interface in dark mode.',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_webterminal_width', // unique name for field
+                'label' => 'Terminal Width', // you know what label it is
+                'description' => 'Specify the width of the web terminal as a percentage of its container.',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_webterminal_height', // unique name for field
+                'label' => 'Terminal Height', // you know what label it is
+                'description' => 'Specify the height of the web terminal as a percentage of its container.',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'select', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'x9_webterminal_status', // unique name for field
+                'label' => 'Status', // label for the field
+                'description' => 'Enable or disable the current web terminal configuration.',
+                'rules' => 'required', // validation rule of Laravel
+                'options' => [ // options for the select box
+                    '1' => 'Enabled',
+                    '0' => 'Disabled',
+                ],
+                'value' => 0, // default value
             ],
         ],
     ],

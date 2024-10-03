@@ -279,7 +279,7 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + (isset($todayScore['result']['total_Losses']) ? $todayScore['result']['total_Losses'] : 0) : '0.00' }} {{base_currency()}}
+                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + $profit : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>

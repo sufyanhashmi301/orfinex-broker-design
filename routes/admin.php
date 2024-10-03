@@ -309,7 +309,8 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
         Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
-        Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+        Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
+        Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
     });
@@ -434,6 +435,10 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     Route::get('settings/platform-api/db-synchronization', function () {
         return view('backend.setting.platform_api.db-synchronization');
     })->name('platform_api.db-synchronization');
+
+    Route::get('settings/platform-api/db-x9trader', function () {
+        return view('backend.setting.platform_api.db-x9trader');
+    })->name('platform_api.dbX9trader');
 
     Route::get('settings/platform-api/x9trader', function () {
         return view('backend.setting.platform_api.x9trader');

@@ -21,8 +21,13 @@
             </a>
         </li>
         <li>
-            <a href="{{route('admin.settings.copyTrading')}}" class="navItem {{isActive('admin.settings.copyTrading')}}">
+            <a href="{{ route('admin.settings.copyTrading') }}" class="navItem {{ isActive('admin.settings.copyTrading') }}">
                 {{ __('Copy Trading')}}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.settings.webterminal.mt5') }}" class="navItem {{ isActive('admin.settings.webterminal.mt5') }}">
+                {{ __('Web Terminal')}}
             </a>
         </li>
     </ul>

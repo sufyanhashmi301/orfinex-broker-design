@@ -219,6 +219,11 @@
                     <li>
                         <a href="{{ route('admin.platform.riskBook') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Risk Book') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.webterminal.mt5') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Web Terminal') }}
                             <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('New') }}
                             </span>

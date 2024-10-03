@@ -43,6 +43,7 @@ class UpdateGatewayLogoSeeder extends Seeder
             ['gateway_code' => 'razorpay', 'logo' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/razorpay.svg'],
             ['gateway_code' => 'twocheckout', 'logo' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/2checkout.svg'],
             ['gateway_code' => 'bridgerpay', 'logo' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/bridgerpay.svg'],
+            ['gateway_code' => 'match2pay', 'logo' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/match2pay.svg'],
         ];
 
         foreach ($updates as $update) {

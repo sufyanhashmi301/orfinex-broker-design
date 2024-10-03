@@ -48,7 +48,7 @@
                             <div class="md:flex-1">
                                 <h4 class="card-title flex items-center">
                                     {{ $ticket->title.' - '.$ticket->uuid }}
-                                    <span class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl ml-2">
+                                    <span class="badge badge-primary bg-opacity-30 capitalize rounded-3xl ml-2">
                                         {{ __('Opened') }}
                                     </span>
                                 </h4>

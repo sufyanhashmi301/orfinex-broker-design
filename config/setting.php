@@ -88,7 +88,23 @@ return [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'active_menu_color', // unique name for field
-                'label' => 'Active menu text Color', // you know what label it is
+                'label' => 'Active menu text color', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_btn_bg', // unique name for field
+                'label' => 'Primary button bg', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_btn_color', // unique name for field
+                'label' => 'Primary button text color', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#ffffff', // default value if you want
             ],

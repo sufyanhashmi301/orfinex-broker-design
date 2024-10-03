@@ -73,12 +73,6 @@
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
                                 <div class="bg-white dark:bg-slate-800 p-4">
@@ -89,12 +83,6 @@
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
                                 <div class="bg-white dark:bg-slate-800 p-4">
@@ -105,12 +93,6 @@
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
                                         </h6>
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm">
-                                            <span class="text-success-500">
-                                                {{ __('+452%') }}
-                                            </span>
-                                            {{ __('in last 7 days') }}
-                                        </p>
                                     </div>
                                 </div>
                             </div>

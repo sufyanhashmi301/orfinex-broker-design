@@ -162,7 +162,9 @@
                                         </a>
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
-                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">
+                                            {{ $realForexAccountsCount }}
+                                        </h5>
                                         <a href="{{route('user.schema')}}" class="btn btn-primary loaderBtn btn-sm inline-flex items-center justify-center">
                                             {{ __('Create Account') }}
                                         </a>
@@ -179,7 +181,9 @@
                                         </a>
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
-                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">{{ __('12') }}</h5>
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">
+                                            {{ $demoForexAccountsCount }}
+                                        </h5>
                                         <a href="{{route('user.schema')}}" class="btn btn-primary loaderBtn btn-sm inline-flex items-center justify-center">
                                             {{ __('Create Account') }}
                                         </a>

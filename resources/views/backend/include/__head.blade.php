@@ -43,6 +43,10 @@
             --tw-bg-opacity: 1;
             background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
         }
+        .switch-field input:checked + label {
+            --tw-bg-opacity: 1;
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+        }
     </style>
 
     @yield('style')

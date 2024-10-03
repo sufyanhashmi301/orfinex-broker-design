@@ -217,29 +217,6 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('KYC Verification') }}</h5>
-                <div class="form-switch ps-0">
-                    <input
-                        class="form-check-input"
-                        type="hidden"
-                        value="0"
-                        name="kyc"
-                    />
-                    <label
-                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            name="kyc"
-                            value="1"
-                            @if($user->kyc == 1) checked @endif
-                            class="sr-only peer"
-                        />
-                        <span
-                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="input-area flex items-center justify-between">
                 <h5 class="form-label">{{ __('2FA Verification') }}</h5>
                 <div class="form-switch ps-0">
                     <input
@@ -263,7 +240,7 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('Deposit Status') }}</h5>
+                <h5 class="form-label">{{ __('Fund Deposit') }}</h5>
                 <div class="form-switch ps-0">
                     <input
                         class="form-check-input"
@@ -286,7 +263,7 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('Withdraw Status') }}</h5>
+                <h5 class="form-label">{{ __('Fund Withdraw') }}</h5>
                 <div class="form-switch ps-0">
                     <input
                         class="form-check-input"
@@ -309,7 +286,7 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('Send Money Status') }}</h5>
+                <h5 class="form-label">{{ __('Fund Transfer') }}</h5>
                 <div class="form-switch ps-0">
                     <input
                         class="form-check-input"

@@ -15,6 +15,7 @@ class RiskBookSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('risk_books')->truncate();
         DB::table('risk_books')->insert([
             [
                 'name' => 'A-Book',

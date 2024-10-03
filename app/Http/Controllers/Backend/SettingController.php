@@ -206,8 +206,12 @@ class SettingController extends Controller
         return view('backend.setting.copy_trading.brokeree');
     }
 
-    public function  webterminalSetting(){
-        return view('backend.setting.platform_api.webterminal');
+    public function  mt5WebterminalSetting(){
+        return view('backend.setting.platform_api.mt5-webterminal');
+    }
+
+    public function  x9WebterminalSetting(){
+        return view('backend.setting.platform_api.x9-webterminal');
     }
 
     public function testDatabaseConnection(Request $request)

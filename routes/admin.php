@@ -320,7 +320,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('company/permissions', 'companyPermissions')->name('company.permissions');
         Route::get('customer/permissions', 'customerPermissions')->name('customer.permissions');
 
-        Route::get('webterminal', 'webterminalSetting')->name('webterminal');
+        Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
+        Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
 
     });
@@ -447,6 +448,10 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         return view('backend.setting.platform_api.db-synchronization');
     })->name('platform_api.db-synchronization');
 
+    Route::get('settings/platform-api/db-x9trader', function () {
+        return view('backend.setting.platform_api.db-x9trader');
+    })->name('platform_api.dbX9trader');
+
     Route::get('settings/platform-api/x9trader', function () {
         return view('backend.setting.platform_api.x9trader');
     })->name('platform_api.x9trader');
@@ -476,6 +481,15 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
     Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
+
+
+    Route::get('fraud-protection', function () {
+        return view('backend.fraud_protection.index');
+    })->name('fraudProtection');
+
+    Route::get('changelog', function () {
+        return view('backend.system.changelog');
+    })->name('changelog');
 
 
 });

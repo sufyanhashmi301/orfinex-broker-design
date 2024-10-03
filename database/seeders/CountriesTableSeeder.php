@@ -15,6 +15,7 @@ class CountriesTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('countries')->truncate();
         $countries = [
 
             [

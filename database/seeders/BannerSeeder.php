@@ -15,6 +15,7 @@ class BannerSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('banners')->truncate();
         DB::table('banners')->insert([
             [
                 'title' => 'Start your free trail today.',

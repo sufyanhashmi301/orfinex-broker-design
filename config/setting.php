@@ -945,12 +945,12 @@ return [
                 'name' => 'active_trader_type',
                 'label' => 'Trader Type',
                 'rules' => 'required', // Include options
-                'value' => 'all', // Default value
+                'value' => \App\Enums\TraderType::MT5, // Default value
                 'options' => [
-                    'mt5' => 'MetaTrader 5',
-                    'x9' => 'X9',
-                    'c_trader' => 'cTrader',
-                    'all' => 'All',
+                    'mt5' => \App\Enums\TraderType::MT5,
+                    'x9' => \App\Enums\TraderType::X9,
+                    'c_trader' => \App\Enums\TraderType::CTRADER,
+                    'all' => \App\Enums\TraderType::All,
                 ],
 
             ],

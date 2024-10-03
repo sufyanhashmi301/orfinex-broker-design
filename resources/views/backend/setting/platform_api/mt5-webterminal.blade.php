@@ -35,7 +35,7 @@
                                 {{ __($field['label']) }}
                                 <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
                             </label>
-                            <select name="" class="form-control">
+                            <select name="{{ $field['name'] }}" class="form-control">
                                 @foreach ($field['options'] as $value => $label)
                                     <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach

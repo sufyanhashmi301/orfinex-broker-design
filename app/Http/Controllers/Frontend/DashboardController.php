@@ -49,6 +49,8 @@ class DashboardController extends Controller
             'total_forex_equity' => mt5_total_equity($user->id),
         ];
         $referral = $user->getReferrals()->first();
+        $realForexAccountsCount = ForexAccount::realActiveAccount()->count();
+        $demoForexAccountsCount = ForexAccount::demoActiveAccount()->count();
         $realForexAccounts = ForexAccount::realActiveAccount()
             ->orderBy('balance','desc')
             ->paginate(3)->withQueryString();
@@ -58,6 +60,6 @@ class DashboardController extends Controller
         $getReferral = $user->getReferrals()->first();
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         $banners = Banner::where('status', 1)->get();
-        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'qrCode', 'banners'));
+        return view('frontend::user.dashboard', compact('dataCount', 'recentTransactions', 'referral', 'realForexAccounts', 'demoForexAccounts', 'realForexAccountsCount', 'demoForexAccountsCount', 'qrCode', 'banners'));
     }
 }

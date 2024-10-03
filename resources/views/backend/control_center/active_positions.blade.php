@@ -4,8 +4,8 @@
 @endsection
 @section('content')
     @php
-        use App\Models\SymbolGroup;
-        $groups = SymbolGroup::all();
+        use App\Models\PlatformGroup;
+        $groups = PlatformGroup::all();
     @endphp
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -19,7 +19,7 @@
                 <select id="group" class="form-control w-full">
                     <option value="" disabled selected>Select a group</option>
                     @foreach ($groups as $group)
-                        <option value="{{ $group->title }}">{{ $group->title }}</option>
+                        <option value="{{ $group->group }}">{{ $group->group }}</option>
                     @endforeach
                 </select>
             </div>

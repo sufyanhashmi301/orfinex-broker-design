@@ -140,8 +140,8 @@ class IpnController extends Controller
                 // Handle pending payments
                 $txnInfo->update([
                     'status' => TxnStatus::Pending,
-                    'txid' => $txid,
-//                    'confirmations' => $confirmations,
+//                    'txid' => $txid,
+                    'manual_field_data' => $input,
                     'approval_cause' => 'Transaction is pending',
                 ]);
 
@@ -150,6 +150,11 @@ class IpnController extends Controller
 //                    ->with('info', 'Payment is pending. Please wait for confirmation.');
 
             case 'DONE':
+                $txnInfo->update([
+//                    'txid' => $txid,
+                    'manual_field_data' => $input,
+                    'approval_cause' => 'Transaction is Completed',
+                ]);
                 // Call the payment success method
                 self::paymentSuccess($paymentId);
 

@@ -24,13 +24,17 @@
     <style>
         .btn-primary {
             --tw-bg-opacity: 1;
-            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
             --tw-ring-opacity: 1;
-            --tw-ring-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-ring-opacity));
+            --tw-ring-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-ring-opacity));
+            --tw-text-opacity: 1;
+            color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
         }
         .bg-primary, .progress-steps .single-step.current .progress_bar, .after\:bg-primary:after, .before\:bg-primary:before {
             --tw-bg-opacity: 1;
             background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+            --tw-text-opacity: 1;
+            color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-text-opacity));
         }
         .text-primary {
             --tw-text-opacity: 1;
@@ -45,25 +49,25 @@
         }
         .grid-view-btn.active, .list-view-btn.active {
             --tw-bg-opacity: 1;
-            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
-            border-color:  rgba({{ implode(' ', getColorFromSettings('primary_color')) }});
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
+            border-color:  rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }});
             --tw-text-opacity: 1;
-            color: rgba({{ implode(' ', getColorFromSettings('active_menu_color')) }} / var(--tw-text-opacity));
+            color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
         }
         .outline-buttons .btn.active {
             --tw-bg-opacity: 1;
-            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
         }
         .custom-tabs .btn-outline-primary:hover {
             --tw-bg-opacity: 0.35;
-            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
         }
         .custom-tabs .btn.active {
             --tw-bg-opacity: 1;
-            background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
-            border-color:  rgba({{ implode(' ', getColorFromSettings('primary_color')) }});
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
+            border-color:  rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }});
             --tw-text-opacity: 1;
-            color: rgba({{ implode(' ', getColorFromSettings('active_menu_color')) }} / var(--tw-text-opacity));
+            color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
         }
         .border-primary {
             border-color:  rgba({{ implode(' ', getColorFromSettings('primary_color')) }});
@@ -71,6 +75,12 @@
         #page-loader .dot {
             --tw-bg-opacity: 1;
             background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+        }
+        .badge.badge-primary{
+            --tw-bg-opacity: 1;
+            background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-bg-opacity));
+            --tw-text-opacity: 1;
+            color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
         }
     </style>
     @stack('style')

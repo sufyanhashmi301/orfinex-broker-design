@@ -273,13 +273,13 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Overall Loss:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($todayScore['result']['total_Losses']) ? $todayScore['result']['total_Losses'] : '0.00' }} {{base_currency()}}
+                            {{ $profit }} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + (isset($todayScore['result']['total_Losses']) ? $todayScore['result']['total_Losses'] : 0) : '0.00' }} {{base_currency()}}
+                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + $profit : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>
@@ -296,16 +296,16 @@
                 </div>
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __("Today’s Trade:") }}</span>
-                        <span class="text-slate-900 font-medium">{{ isset($todayScore['result']['total_Trades']) ? $todayScore['result']['total_Trades'] / 2 : '0.00' }} </span>
+                        <span>{{ __("Current Trading Days:") }}</span>
+                        <span class="text-slate-900 font-medium">0 </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Total Permitted Trade:') }}</span>
-                        <span class="text-slate-900 font-medium">20</span>
+                        <span>{{ __('Minimum Trading Days:') }}</span>
+                        <span class="text-slate-900 font-medium">0</span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Remaining Trade Limit:') }}</span>
-                        <span class="text-slate-900 font-medium">{{20 - (isset($todayScore['result']['total_Trades']) ? $todayScore['result']['total_Trades'] / 2 : 0) }}</span>
+                        <span>{{ __('Remaining Trading Days:') }}</span>
+                        <span class="text-slate-900 font-medium">0</span>
                     </li>
                 </ul>
             </div>
@@ -357,7 +357,7 @@
                         <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                             <span>{{ __('Total Trades') }}</span>
                             <span class="text-slate-900 font-medium text-right">
-                                {{ isset($todayScore['result']['total_Trades']) ? $todayScore['result']['total_Trades'] : '0.00' }}
+                                {{ isset($todayScore['result']['total_Trades']) ? $todayScore['result']['total_Trades']/2 : '0.00' }}
                             </span>
                         </li>
                         <li class="flex items-center justify-between text-sm text-slate-500 gap-2">

@@ -88,7 +88,7 @@
         </div>
     </div>
 @endsection
-@section('setting-script')
+@section('website-script')
     <script>
         $(document).ready(function() {
             // Function to synchronize text and color inputs in the same group

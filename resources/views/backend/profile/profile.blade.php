@@ -14,6 +14,7 @@
                 <div class="profile-box">
                     <div class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
                         <span class="text-4xl">{{ $staff->first_name  . $staff->last_name }}</span>
+
                     </div>
                     <div class="text-center">
                         <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">

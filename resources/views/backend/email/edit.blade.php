@@ -17,6 +17,7 @@
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-4 col-span-12">
             <div class="card">
+
                 <div class="card-header noborder">
                     <div>
                         <h4 class="card-title mb-2">{{ __('Shortcut Glossary') }}</h4>
@@ -64,6 +65,7 @@
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

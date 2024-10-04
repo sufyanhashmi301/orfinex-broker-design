@@ -61,7 +61,7 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-
+        // Validate the input
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -70,24 +70,42 @@ class StaffController extends Controller
             'password' => 'required|same:confirm-password',
             'role' => ['required', Rule::notIn('Super-Admin')],
             'status' => 'boolean',
+            'department_id' => 'nullable|integer',
+            'designation_id' => 'nullable|integer',
+            'date_of_joining' => 'nullable|date',
+            'work_phone' => 'nullable|string',
+            'phone' => 'nullable|string',
         ]);
 
+        // If validation fails, return error
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
+        // Get the validated input
         $input = $request->all();
 
+        // Convert empty fields to null if necessary
         $input['password'] = Hash::make($input['password']);
+        $input['employee_id'] = $input['employee_id'] ?: null;
+        $input['department_id'] = $input['department_id'] ?: null;
+        $input['designation_id'] = $input['designation_id'] ?: null;
+        $input['date_of_joining'] = $input['date_of_joining'] ?: null;
+        $input['work_phone'] = $input['work_phone'] ?: null;
+        $input['phone'] = $input['phone'] ?: null;
 
+        // Create the new admin record
         $admin = Admin::create($input);
         $admin->assignRole($request->input('role'));
+
+        // Notify success
         notify()->success('Staff created successfully');
 
+        // Redirect to the staff index page
         return redirect()->route('admin.staff.index');
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -115,12 +133,12 @@ class StaffController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:admins,email,' . $id,
-            'password' => 'same:confirm-password',
-            'role' => ['required', Rule::notIn('Super-Admin')],
-            'status' => 'boolean',
-            'department' => 'nullable|exists:departments,id',
+            'name'        => 'required',
+            'email'       => 'required|email|unique:admins,email,' . $id,
+            'password'    => 'same:confirm-password',
+            'role'        => ['required', Rule::notIn('Super-Admin')],
+            'status'      => 'boolean',
+            'department'  => 'nullable|exists:departments,id',
             'designation' => 'nullable|exists:designations,id',
         ]);
 
@@ -129,8 +147,18 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
+        // Get all request inputs
         $input = $request->all();
 
+        // Map 'department' to 'department_id' and handle nullable values
+        $input['employee_id'] = $request->input('employee_id') ?: null;
+        $input['department_id'] = $request->input('department_id') ?: null;
+        $input['designation_id'] = $request->input('designation_id') ?: null;
+
+        // Remove 'department' and 'designation' from input to prevent mass assignment issues
+        unset($input['department'], $input['designation']);
+
+        // Handle password update
         if (!empty($input['password'])) {
             $input['password'] = Hash::make($input['password']);
         } else {
@@ -147,16 +175,28 @@ class StaffController extends Controller
         // Invalidate the user's session
         $this->invalidateUserSession($staff);
 
+//        dd($input);
+        // Update the admin record with correctly mapped input
         $staff->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
 
+        // Update role and relationships
+        DB::table('model_has_roles')->where('model_id', $id)->delete();
         $staff->assignRole($request->input('role'));
-        if($request->input('department')){
-            $staff->departments()->sync([$request->input('department')]);
-        }
-        if($request->input('designation')){
-            $staff->designations()->sync([$request->input('designation')]);
-        }
+
+        // Sync departments and designations if provided
+//        $department = $request->input('department');
+//        if (isset($department)) {
+//            $staff->departments()->sync([$department]);
+////        } else {
+////            $staff->departments()->detach();
+////        }
+//
+//        $designation = $request->input('designation');
+//        if (isset($designation)) {
+//            $staff->designations()->sync([$designation]);
+//        } else {
+//            $staff->designations()->detach();
+//        }
 
         notify()->success('Staff updated successfully');
         return redirect()->route('admin.staff.index');

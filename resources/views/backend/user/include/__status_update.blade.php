@@ -1,12 +1,9 @@
-<<<<<<< HEAD
+
 <div
     class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
     <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg"
          style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
-=======
-<div class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
-    <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg" style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
->>>>>>> 9c981db1 (staff design changes.)
+
     </div>
     <div class="profile-box">
         <div

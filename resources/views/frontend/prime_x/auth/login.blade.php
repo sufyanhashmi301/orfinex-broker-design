@@ -6,7 +6,6 @@
     {{ __('Sign in to access your account.') }}
 @endsection
 @section('content')
-<<<<<<< HEAD
     <div class="">
         @if ($errors->any())
             <div class="alert alert-warning alert-dismissible fade show mt-2 text-sm" role="alert">
@@ -21,17 +20,7 @@
                             <iconify-icon icon="line-md:close"></iconify-icon>
                         </button>
                     </div>
-=======
 
-    <!-- Login Section -->
-    <div class="h-screen md:flex">
-        <div class="hidden w-1/2 overflow-hidden md:block p-3">
-            <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url('https://cdn.brokeret.com/crm-assets/login-image/c19.png')">
-                <div class="mx-auto max-w-xs text-center">
-                    <a href="{{ route('home')}}" class="">
-                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="">
-                    </a>
->>>>>>> 9c981db1 (staff design changes.)
                 </div>
             </div>
         @endif

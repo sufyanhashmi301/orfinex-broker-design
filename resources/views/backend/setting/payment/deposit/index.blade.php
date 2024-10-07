@@ -13,7 +13,6 @@
                     </a>
                 </li>
             @endcan
-
             @can('manual-gateway-manage')
                 <li class="nav-item">
                     <a href="{{ route('admin.deposit.method.list','manual') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.method.list','manual') . isActive('admin.deposit.method.create','manual') . isActive('admin.deposit.method.edit','manual') }}">
@@ -21,6 +20,11 @@
                     </a>
                 </li>
             @endcan
+            <li class="nav-item">
+                <a href="{{ route('admin.deposit.miscSetting') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.miscSetting') }}">
+                    {{ __('Misc') }}
+                </a>
+            </li>
             <li class="nav-item !ml-auto">
                 <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                 <span class="flex items-center">

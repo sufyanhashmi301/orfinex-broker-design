@@ -514,6 +514,14 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         return view('backend.system.changelog');
     })->name('changelog');
 
+    Route::get('deposit/misc-setting', function () {
+        return view('backend.setting.payment.deposit.misc');
+    })->name('deposit.miscSetting');
+
+    Route::get('withdraw/misc-setting', function () {
+        return view('backend.setting.payment.deposit.misc');
+    })->name('withdraw.miscSetting');
+
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

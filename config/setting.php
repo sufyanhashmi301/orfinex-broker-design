@@ -769,7 +769,6 @@ return [
             ],
         ]
     ],
-
     'fee' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
@@ -954,6 +953,42 @@ return [
                 'label' => 'Transfers Per Day', // you know what label it is
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 6, // default value if you want
+            ],
+        ],
+    ],
+    'Deposit_settings' => [
+        'title' => 'Deposit Settings',
+        'elements' => [
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'pending_deposit_limit', // unique name for field
+                'label' => 'Pending Deposit Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 3, // default value if you want
+            ]
+        ],
+    ],
+    'forex_account_settings' => [
+        'title' => 'Forex Accounts Settings',
+        'elements' => [
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'forex_account_create_limit', // unique name for field
+                'label' => 'Pending Deposit Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 3, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'min_balance_to_create_forex_account', // unique name for field
+                'label' => 'Min Balance Required to open Forex Account', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 10, // default value if you want
             ],
         ],
     ],
@@ -1257,7 +1292,7 @@ return [
             ],
         ],
     ],
-        'x9_api' => [
+     'x9_api' => [
             'title' => 'X9trader API Settings',
             'elements' => [
                 [
@@ -1392,7 +1427,6 @@ return [
             ],
         ],
     ],
-
     'site_maintenance' => [
         'title' => 'Site Maintenance',
         'elements' => [
@@ -1430,7 +1464,6 @@ return [
             ],
         ],
     ],
-
     'gdpr' => [
         'title' => 'GDPR Settings',
         'elements' => [

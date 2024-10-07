@@ -84,6 +84,14 @@ class DepositController extends GatewayController
             return redirect()->back();
         }
         $user = \Auth::user();
+
+        // Check pending deposit request limits
+        if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'Deposit_settings')) {
+            $currencySymbol = setting('currency_symbol', 'global');
+            $message = __('You already have a pending deposit request. Please contact our support team at :support to resolve this issue and proceed with further deposits.', ['support' => setting('support_email', 'common_settings')]);
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
         // Check deposit amount against the gateway's limits
         if (!isset($user->country)) {
             $message = 'Kindly choose the country from your profile for proceed to payment!';

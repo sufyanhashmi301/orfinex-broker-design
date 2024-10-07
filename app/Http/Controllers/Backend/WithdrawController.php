@@ -317,6 +317,17 @@ class WithdrawController extends Controller
         $transaction = Transaction::find($id);
         $user = User::find($transaction->user_id);
 //dd($input);
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[txn]]' => $transaction->tnx,
+            '[[method_name]]' => $transaction->method,
+            '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[message]]' => $transaction->approval_cause,
+            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
+        ];
+
         if (isset($input['approve'])) {
 //            if (setting('withdraw_deduction', 'features')) {//on approval from admin
 //                Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
@@ -340,8 +351,10 @@ class WithdrawController extends Controller
 //                $withdrawResponse = $this->forexApiService->balanceOperation($data);
 //                if ($withdrawResponse['success']) {
                     $txn = Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-                  if($txn)
+                  if($txn) {
+                      $this->mailNotify($user->email, 'withdraw_request_user_approve', $shortcodes);
                         notify()->success('Approve successfully');
+                  }
 //                } else {
 //                    notify()->error(__('Something went wrong! Please try again!'), 'Error');
 //                    return redirect()->back();
@@ -373,8 +386,10 @@ class WithdrawController extends Controller
                         $this->reverseWalletWithdrawal($newTransaction);
                     }
     }
-                Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
-
+                $txn = Txn::update($newTransaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
+                if($txn) {
+                    $this->mailNotify($user->email, 'withdraw_request_user_reject', $shortcodes);
+                }
             }
 
             Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
@@ -382,18 +397,7 @@ class WithdrawController extends Controller
             notify()->success('Reject successfully');
         }
 
-        $shortcodes = [
-                '[[full_name]]' => $user->full_name,
-                '[[txn]]' => $transaction->tnx,
-                '[[method_name]]' => $transaction->method,
-                '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
-                '[[site_title]]' => setting('site_title', 'global'),
-                '[[site_url]]' => route('home'),
-                '[[message]]' => $transaction->approval_cause,
-                '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-            ];
 
-            $this->mailNotify($user->email, 'withdraw_request_user', $shortcodes);
             $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
             $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
 

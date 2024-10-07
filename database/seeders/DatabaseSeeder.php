@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EmploymentSeeder::class);
         $this->call(RiskBookSeeder::class);
         $this->call(Match2PayGatewaySeeder::class);
+        $this->call(EmailTemplatesSeeder::class);
 
 
     }

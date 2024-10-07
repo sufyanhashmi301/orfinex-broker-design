@@ -30,7 +30,7 @@ class Match2PayGatewaySeeder extends Seeder
            DB::table('gateways')->insert([
                    'gateway_code' => 'match2pay',
                    'name' => 'Match2Pay',
-                   'logo' => 'global/gateway/match2pay.png',
+                   'logo' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/match2pay.svg',
                    'status' => true,
                    'credentials' => json_encode($match2payCredentials),
                    'supported_currencies' => json_encode($match2payCurrencies),

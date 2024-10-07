@@ -88,6 +88,7 @@ class StaffController extends Controller
 
         // Convert empty fields to null if necessary
         $input['password'] = Hash::make($input['password']);
+        $input['employee_id'] = $input['employee_id'] ?: null;
         $input['department_id'] = $input['department_id'] ?: null;
         $input['designation_id'] = $input['designation_id'] ?: null;
         $input['date_of_joining'] = $input['date_of_joining'] ?: null;
@@ -150,6 +151,7 @@ class StaffController extends Controller
         $input = $request->all();
 
         // Map 'department' to 'department_id' and handle nullable values
+        $input['employee_id'] = $request->input('employee_id') ?: null;
         $input['department_id'] = $request->input('department_id') ?: null;
         $input['designation_id'] = $request->input('designation_id') ?: null;
 

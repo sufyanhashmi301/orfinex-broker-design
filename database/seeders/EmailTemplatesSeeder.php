@@ -9,6 +9,8 @@ class EmailTemplatesSeeder extends Seeder
 {
     public function run()
     {
+        DB::table('email_templates')->truncate();
+
         $templates = [
             [
                 'name' => 'User Mail Send',

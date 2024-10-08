@@ -64,6 +64,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'default_transaction_method', // unique name for field
                 'label' => 'Default Transaction Image', // you know what label it is
+                'description' => 'Recommended Size 160 x 40',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],

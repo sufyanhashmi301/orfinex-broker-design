@@ -54,24 +54,13 @@
                             </iconify-icon>
                         </label>
                         <div class="md:col-span-9 col-span-12">
-                            <div class="max-w-xs">
-                                <div class="switch-field flex overflow-hidden mb-0">
-                                    <input
-                                        type="radio"
-                                        id="template_status_enable"
-                                        name="status"
-                                        value="1"
-                                        @checked($template->status)
-                                    />
-                                    <label for="template_status_enable">{{ __('Enable') }}</label>
-                                    <input
-                                        type="radio"
-                                        id="template_status_disable"
-                                        name="status"
-                                        value="0"
-                                        @checked(!$template->status)
-                                    />
-                                    <label for="template_status_disable">{{ __('Disable') }}</label>
+                            <div class="input-area">
+                                <div class="form-switch ps-0">
+                                    <input type="hidden" value="0" name="status">
+                                    <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                        <input type="checkbox" name="status" value="1" class="sr-only peer" @checked($template->status)>
+                                        <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                    </label>
                                 </div>
                             </div>
                         </div>

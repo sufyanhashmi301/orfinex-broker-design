@@ -165,6 +165,14 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Colors Customize') }}
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.banners') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Banner') }}
                         </a>

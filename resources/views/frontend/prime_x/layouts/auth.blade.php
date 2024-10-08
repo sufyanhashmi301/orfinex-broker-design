@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('frontend::include.__head')
-<body class=" font-inter skin-default">
+<body class="font-inter dashcode-app" id="body_class">
 <x:notify-messages/>
 
 @yield('content')

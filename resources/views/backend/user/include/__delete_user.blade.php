@@ -16,10 +16,10 @@
                         {{ __('Are you sure?') }}
                     </h4>
                 </div>
-                <p>
+                <p class="dark:text-slate-300">
                     {{ __('Are you sure you want to delete this item?') }}
                 </p>
-                
+
                 <div class="action-btns text-center">
                     <form id="deleteForm" action="{{route('admin.user.destroy',$id)}}" method="POST" style="display: inline;">
                         @method('DELETE')

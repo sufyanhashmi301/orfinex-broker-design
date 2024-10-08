@@ -21,7 +21,7 @@
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($depositMethods as $method)
             <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
-                <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">
+                <div class="card-body rounded-md bg-white dark:bg-dark p-6">
                     <div class="grid-view-layout">
                         <div class="flex justify-between items-center mb-4">
                             <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($method->logo) }}" alt=""/>

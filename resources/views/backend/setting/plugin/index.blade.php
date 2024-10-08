@@ -21,19 +21,19 @@
     <div class="col-span-12">
         <div class="card">
             <div class="card-body p-6 space-y-4">
-                <p class="paragraph text-xs">
+                <p class="paragraph text-xs dark:text-slate-300">
                     <iconify-icon class="text-sm mr-2 text-warning-500" icon="lucide:info"></iconify-icon>{{ __('You can') }}
                     <strong>{{ __('Enable or Disable') }}</strong> {{ __('any of the plugin') }}
                 </p>
                 @foreach($plugins as $plugin)
-                    <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                    <div class="single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
                         <div class="gateway-name flex items-center gap-2">
                             <div class="gateway-icon mr-4">
                                 <img class="h-7" src="{{ asset($plugin->icon) }}" alt=""/>
                             </div>
                             <div class="gateway-title">
                                 <h4 class="text-sm">{{ $plugin->name }}</h4>
-                                <p class="text-xs">{{ $plugin->description }}</p>
+                                <p class="text-xs dark:text-slate-300">{{ $plugin->description }}</p>
                             </div>
                         </div>
                         <div class="gateway-right flex items-center gap-2">
@@ -49,7 +49,7 @@
                                 @endif
                             </div>
                             <div class="gateway-edit">
-                                <a type="button" class="action-btn cursor-pointer editPlugin" data-id="{{$plugin->id}}">
+                                <a type="button" class="action-btn cursor-pointer editPlugin dark:text-slate-300" data-id="{{$plugin->id}}">
                                     <iconify-icon icon="lucide:settings-2"></iconify-icon>
                                 </a>
                             </div>
@@ -64,7 +64,7 @@
     <!-- Modal for Edit Plugin -->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editPlugin" tabindex="-1" aria-labelledby="editPlugin" aria-hidden="true">
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                 <div class="modal-body popup-body">
                     <div class="popup-body-text p-6 pt-5 edit-plugin-section">
 

@@ -65,7 +65,7 @@
                     <div class="card overflow-hidden mb-5">
                         <div class="card-body py-1">
                             <div class="grid md:grid-cols-3 col-span-1 gap-px bg-slate-100 dark:bg-slate-700">
-                                <div class="bg-white dark:bg-slate-800 p-4">
+                                <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                             {{ __('Total Deposit') }}
@@ -75,7 +75,7 @@
                                         </h6>
                                     </div>
                                 </div>
-                                <div class="bg-white dark:bg-slate-800 p-4">
+                                <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                             {{ __('Total Withdraw') }}
@@ -85,7 +85,7 @@
                                         </h6>
                                     </div>
                                 </div>
-                                <div class="bg-white dark:bg-slate-800 p-4">
+                                <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                             {{ __('Net Deposits') }}
@@ -104,7 +104,7 @@
                             <div class="card-body pt-4 pb-3 px-4">
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
-                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-slate-300">
                                             <iconify-icon icon="mdi:currency-usd"></iconify-icon>
                                         </div>
                                     </div>
@@ -123,7 +123,7 @@
                             <div class="card-body pt-4 pb-3 px-4">
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
-                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-slate-300">
                                             <iconify-icon icon="mdi:currency-usd"></iconify-icon>
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@
                             <div class="card-body pt-4 pb-3 px-4">
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
-                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
+                                        <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body dark:text-slate-300">
                                             <iconify-icon icon="mdi:currency-usd"></iconify-icon>
                                         </div>
                                     </div>

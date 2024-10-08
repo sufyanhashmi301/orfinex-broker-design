@@ -17,68 +17,68 @@
     </div>
     <div class="innerMenu card p-4 mb-5">
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 gap-x-2">
-            <div class="position-relative bg-slate-50 dark:bg-slate-900 rounded p-4">
+            <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
                     <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     </div>
                     <div class="content">
-                        <p class="text-sm my-2">Total Accounts</p>
+                        <p class="text-sm dark:text-white my-2">Total Accounts</p>
                         <h4 class="count text-2xl font-bold mb-0">{{$data['TotalAccounts']}}</h4>
                     </div>
                 </div>
             </div>
-            <div class="position-relative bg-slate-50 dark:bg-slate-900 rounded p-4">
+            <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
                     <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     </div>
                     <div class="content">
-                        <p class="text-sm my-2">With Balance</p>
+                        <p class="text-sm dark:text-white my-2">With Balance</p>
                         <h4 class="count text-2xl font-bold mb-0">{{$data['withBalance']}}</h4>
                     </div>
                 </div>
             </div>
-            <div class="position-relative bg-slate-50 dark:bg-slate-900 rounded p-4">
+            <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
                     <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     </div>
                     <div class="content">
-                        <p class="text-sm my-2">With Bonus</p>
+                        <p class="text-sm dark:text-white my-2">With Bonus</p>
                         <h4 class="count text-2xl font-bold mb-0">0</h4>
                     </div>
                 </div>
             </div>
-            <div class="position-relative bg-slate-50 dark:bg-slate-900 rounded p-4">
+            <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
                     <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     </div>
                     <div class="content">
-                        <p class="text-sm my-2">Without Balance</p>
+                        <p class="text-sm dark:text-white my-2">Without Balance</p>
                         <h4 class="count text-2xl font-bold mb-0">{{$data['withoutBalance']}}</h4>
                     </div>
                 </div>
             </div>
-            <div class="position-relative bg-slate-50 dark:bg-slate-900 rounded p-4">
+            <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
                     <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     </div>
                     <div class="content">
-                        <p class="text-sm my-2">Without Bonus</p>
+                        <p class="text-sm dark:text-white my-2">Without Bonus</p>
                         <h4 class="count text-2xl font-bold mb-0">0</h4>
                     </div>
                 </div>
             </div>
-            <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
+            <div class="bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
                     <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
                     </div>
                     <div class="content">
-                        <p class="text-sm my-2">Inactive Accounts</p>
+                        <p class="text-sm dark:text-white my-2">Inactive Accounts</p>
                         <h4 class="count text-2xl font-bold mb-0">{{$data['unActiveAccounts']}}</h4>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
                                     <th scope="col" class="table-th">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
                             </tbody>
                         </table>

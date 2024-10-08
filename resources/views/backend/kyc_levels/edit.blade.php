@@ -83,10 +83,10 @@
                         <div class="role-cat-items relative space-y-5">
                             @foreach($kycSubLevels as $kycSubLevel)
                                 @if($kycLevel->slug==\App\Enums\KycLevelSlug::LEVEL1)
-                                    <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                    <div class="single-gateway flex items-center justify-between border rounded dark:border-slate-300 py-3 px-4">
                                         <div class="gateway-name flex items-center gap-2">
                                             <div class="gateway-icon mr-1">
-                                                <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
+                                                <iconify-icon class="text-3xl dark:text-slate-300" icon="mdi:id-card-outline"></iconify-icon>
                                             </div>
                                             <div class="gateway-title">
                                                 <h4 class="text-base">
@@ -107,7 +107,7 @@
                                                 @endif
                                             </div>
                                             <div class="gateway-edit">
-                                                <a type="button" class="action-btn cursor-pointer editLevel1"
+                                                <a type="button" class="action-btn cursor-pointer editLevel1 dark:text-slate-300"
                                                    data-id="{{ $kycSubLevel->id }}"
                                                    data-status="{{ $kycSubLevel->status }}">
                                                     <iconify-icon icon="lucide:settings-2"></iconify-icon>
@@ -178,10 +178,10 @@
                                         @foreach($level2ManualKycs as $kyc)
                                             {{--                                        @if($kycSubLevel->name == \App\Enums\KycType::MANUAL)--}}
                                             <div
-                                                class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                                class="single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
                                                 <div class="gateway-name flex items-center gap-2">
                                                     <div class="gateway-icon mr-1">
-                                                        <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
+                                                        <iconify-icon class="text-3xl dark:text-slate-300" icon="mdi:id-card-outline"></iconify-icon>
                                                     </div>
                                                     <div class="gateway-title">
                                                         <h4 class="text-base">
@@ -202,7 +202,7 @@
                                                         @endif
                                                     </div>
                                                     <div class="gateway-edit">
-                                                        <a type="button" class="action-btn cursor-pointer editLevel2"
+                                                        <a type="button" class="action-btn cursor-pointer editLevel2 dark:text-slate-300"
                                                            data-id="{{ $kyc->id }}"
                                                            data-status="{{ $kyc->status }}"
                                                            data-route="{{ route('admin.kyc.editKycLevel2', $kyc->id) }}">
@@ -251,10 +251,10 @@
                                     </div>
                                 @elseif($kycLevel->slug==\App\Enums\KycLevelSlug::LEVEL3 )
                                         @foreach($level3ManualKycs as $kyc)
-                                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
+                                            <div class="single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
                                                 <div class="gateway-name flex items-center gap-2">
                                                     <div class="gateway-icon mr-1">
-                                                        <iconify-icon class="text-3xl" icon="mdi:id-card-outline"></iconify-icon>
+                                                        <iconify-icon class="text-3xl dark:text-slate-300" icon="mdi:id-card-outline"></iconify-icon>
                                                     </div>
                                                     <div class="gateway-title">
                                                         <h4 class="text-base">
@@ -275,7 +275,7 @@
                                                         @endif
                                                     </div>
                                                     <div class="gateway-edit">
-                                                        <a type="button" class="action-btn cursor-pointer editLevel2"
+                                                        <a type="button" class="action-btn cursor-pointer editLevel2 dark:text-slate-300"
                                                            data-id="{{ $kyc->id }}"
                                                            data-status="{{ $kyc->status }}"
                                                            data-route="{{ route('admin.kyc.editKycLevel2', $kyc->id) }}">

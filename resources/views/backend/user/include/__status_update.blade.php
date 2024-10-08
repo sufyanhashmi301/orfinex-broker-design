@@ -1,11 +1,10 @@
-<div
-    class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
+<div class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-secondary lg:space-y-0 space-y-6 relative z-[1]">
     <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg"
          style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
     </div>
     <div class="profile-box">
         <div
-            class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
+            class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
             @if(null != $user->avatar)
                 <img
                     class="w-full h-full object-cover rounded-full"
@@ -33,7 +32,7 @@
         <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
             @can('customer-mail-send')
                 <span type="button" data-bs-toggle="modal" data-bs-target="#sendEmail">
-                    <a href="javascript:void(0);" class="toolTip onTop action-btn"
+                    <a href="javascript:void(0);" class="toolTip onTop action-btn dark:text-slate-300"
                        data-tippy-theme="dark" data-tippy-content="Send Email">
                         <iconify-icon icon="lucide:mail"></iconify-icon>
                     </a>
@@ -41,13 +40,13 @@
             @endcan
             @can('customer-login')
                 <a href="{{ route('admin.user.login',$user->id) }}" target="_blank"
-                   class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Login As User">
+                   class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark" data-tippy-content="Login As User">
                     <iconify-icon icon="lucide:user-plus"></iconify-icon>
                 </a>
             @endcan
             @can('customer-balance-add-or-subtract')
                 <span data-bs-toggle="modal" data-bs-target="#addSubBal">
-                    <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                    <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                        data-tippy-theme="dark" data-tippy-content="Add Funds">
                         <iconify-icon icon="lucide:wallet"></iconify-icon>
                     </a>
@@ -55,7 +54,7 @@
             @endcan
             {{--@can('Delete User')--}}
             <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
-                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                    data-tippy-theme="dark" data-tippy-content="Delete User">
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
                 </a>

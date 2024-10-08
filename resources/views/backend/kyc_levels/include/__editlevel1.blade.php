@@ -1,7 +1,7 @@
 <!-- resources/views/modals/edit-level1-modal.blade.php -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editLevel1Modal" tabindex="-1" aria-labelledby="editLevel1Modal" aria-hidden="true">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="popup-body-text p-6 pt-5 edit-plugin-section">
                     <div class="text-center mb-5">
@@ -21,14 +21,14 @@
                                         name="status"
                                         value="1"
                                     />
-                                    <label for="active-status">{{ __('Active') }}</label>
+                                    <label for="active-status" class="dark:text-white">{{ __('Active') }}</label>
                                     <input
                                         type="radio"
                                         id="deactivate-status"
                                         name="status"
                                         value="0"
                                     />
-                                    <label for="deactivate-status">{{ __('Deactivate') }}</label>
+                                    <label for="deactivate-status" class="dark:text-white">{{ __('Deactivate') }}</label>
                                 </div>
                             </div>
                         </div>

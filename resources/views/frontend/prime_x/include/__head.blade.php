@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/theme_base/prime_x/css/styles.css?var=1') }}"/>
+    @include('global.__styles')
     <!-- End : Theme CSS-->
     <script src="{{ asset('frontend/js/settings.js') }}" sync></script>
     <script src="https://static.sumsub.com/idensic/static/sns-websdk-builder.js"></script>

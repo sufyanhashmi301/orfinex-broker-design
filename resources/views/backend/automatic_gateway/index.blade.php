@@ -24,7 +24,7 @@
                                     <th scope="col" class="table-th">{{ __('Manage') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 @foreach($gateways as $gateway)
                                 <tr>
                                     <td class="table-td">

@@ -59,6 +59,14 @@ return [
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
+            [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'default_transaction_method', // unique name for field
+                'label' => 'Default Transaction Image', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
+                'value' => 'default/auth-bg.jpg', // default value if you want
+            ],
         ],
     ],
     'light_colors' => [

@@ -135,6 +135,59 @@ if (!function_exists('get_all_wallets')) {
         return $accounts;
     }
 }
+if (!function_exists('transaction_method_name')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function transaction_method_name($transaction)
+    {
+        if ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::DemoDeposit) {
+            return $transaction->depositMethod->name;
+        } elseif ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto) {
+            return $transaction->method;
+        }else{
+            return $transaction->method;
+        }
+    }
+}
+if (!function_exists('transaction_method_image')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function transaction_method_image($transaction)
+    {
+        // Check for deposit-related transaction types
+        if (in_array($transaction->type, [TxnType::Deposit, TxnType::ManualDeposit, TxnType::DemoDeposit])) {
+            // Check if depositMethod and depositMethod->icon are set, otherwise use the default image
+            return !empty($transaction->depositMethod) && !empty($transaction->depositMethod->icon)
+                ? $transaction->depositMethod->icon
+                : \setting('default_transaction_method', 'theme');
+        }
+        // Check for withdrawal-related transaction types
+        elseif (in_array($transaction->type, [TxnType::Withdraw, TxnType::WithdrawAuto])) {
+            // Use the method for withdrawal type
+            return !empty($transaction->withdrawMethod) && !empty($transaction->withdrawMethod->icon)
+                ? $transaction->withdrawMethod->icon
+                : \setting('default_transaction_method', 'theme');        }
+        // For any other transaction types, apply default image
+        else {
+            return \setting('default_transaction_method', 'theme');
+        }
+    }
+
+}
 
 /**
  * Generates a unique 10-character alphanumeric ID.

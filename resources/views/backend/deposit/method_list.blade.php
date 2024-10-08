@@ -24,7 +24,7 @@
                 <div class="card-body rounded-md bg-white dark:bg-dark p-6">
                     <div class="grid-view-layout">
                         <div class="flex justify-between items-center mb-4">
-                            <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($method->logo) }}" alt=""/>
+                            <img class="inline-block h-10" src="{{ asset($method->logo) }}" alt=""/>
                             <div class="dropdown relative">
                                 <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">

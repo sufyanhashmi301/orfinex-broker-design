@@ -40,10 +40,10 @@
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Description') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Method') }}</th>
                                             <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                             <th scope="col" class="table-th">{{ __('Fee') }}</th>
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Method') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -53,15 +53,42 @@
                                                 <div class="flex items-center">
                                                     <div class="flex-none">
                                                         <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
-                                                            <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                            @switch($raw->type->value)
+                                                                @case('send_money')
+                                                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                                @break
+                                                                @case('send_money_internal')
+                                                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                                @break
+                                                                @case('receive_money')
+                                                                <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                                @break
+                                                                @case('send_money_internal')
+                                                                <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                                @break
+                                                                @case('deposit')
+                                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                                @break
+                                                                @case('manual_deposit')
+                                                                <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                                @break
+                                                                @case('investment')
+                                                                <iconify-icon icon="fluent:arrow-swap-24-regular"></iconify-icon>
+                                                                @break
+                                                                @case('withdraw')
+                                                                <iconify-icon icon="akar-icons:arrow-back"></iconify-icon>
+                                                                @break
+                                                                @default()
+                                                                <iconify-icon icon="lucide:backpack"></iconify-icon>
+                                                            @endswitch
                                                         </div>
                                                     </div>
                                                     <div class="flex-1 text-start">
                                                         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
                                                             {{ $raw->description }} @if(!in_array($raw->approval_cause,['none',""]))
                                                                 <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $raw->approval_cause }}">
-                                                                    <i icon-name="mail"></i>
-                                                                </span>
+                                                                <i icon-name="mail"></i>
+                                                            </span>
                                                             @endif
                                                         </h4>
                                                         <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
@@ -72,6 +99,21 @@
                                             </td>
                                             <td class="table-td">
                                                 {{ $raw->tnx }}
+                                            </td>
+                                            <td class="table-td">
+                                                <div class="flex items-center">
+                                                    <div class="flex-none">
+                                                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                                            {{--                                                        @if($raw->depositMethod->title)--}}
+                                                            <img src="{{asset(transaction_method_image($raw))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-1 text-start">
+                                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                            {{transaction_method_name($raw)}}
+                                                        </h4>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td class="table-td">
                                                 <span class="font-medium">
@@ -105,9 +147,7 @@
                                                     </span>
                                                 </span>
                                             </td>
-                                            <td class="table-td">
-                                                {{ ucfirst($raw->method) }}
-                                            </td>
+
                                         </tr>
                                     @endforeach
                                     </tbody>

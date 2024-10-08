@@ -28,7 +28,7 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                             @foreach($kycs as $kyc)
                                 <tr>
                                     <td class="table-td">
@@ -72,8 +72,8 @@
         aria-hidden="true"
     >
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="relative rounded-lg shadow">
                     <div class="modal-body popup-body p-6 py-8 text-center space-y-5">
                         <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
                             <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
@@ -83,7 +83,7 @@
                                 {{ __('Are you sure?') }}
                             </h4>
                         </div>
-                        <p>
+                        <p class="dark:text-slate-300">
                             {{ __('You want to Delete') }} <strong
                                 class="name"></strong> {{ __('KYC Verification Type?') }}
                         </p>

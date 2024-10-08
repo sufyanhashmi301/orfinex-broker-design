@@ -189,7 +189,7 @@
         </div>
     </div>
 @endsection
-@push('payment-script')
+@section('payment-script')
     <script>
     (function($) {
         'use strict';
@@ -230,4 +230,4 @@
 
     })(jQuery);
     </script>
-@endpush
+@endsection

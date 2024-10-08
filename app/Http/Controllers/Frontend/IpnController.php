@@ -109,59 +109,88 @@ class IpnController extends Controller
         // Get all the input data from the request
         $input = $request->all();
 
-        // Extract the order ID and webhook type from the request
-        $orderId = $input['data']['order_id'] ?? null;
-        $webhookType = $input['webhook']['type'] ?? null;
-        $txnInfo = Transaction::tnx($orderId);
-        $txnInfo->update([
-            'approval_cause' => 'received',
-        ]);
-        // Check if order_id is present
-        if (!$orderId) {
-            $txnInfo = Transaction::tnx($orderId);
+        // Extract the payment ID from the Match2Pay request
+        $paymentId = $input['paymentId'] ?? null;
+        $cryptoTransactionInfo = $input['cryptoTransactionInfo'][0] ?? null; // Get the first transaction info
+
+        // Find the transaction in the database using the payment ID
+        $txnInfo = Transaction::tnx($paymentId);
+
+        // Check if the paymentId exists in the request
+        if (!$paymentId || !$txnInfo) {
+            // If not, update the transaction with an invalid status and redirect with an error
             $txnInfo->update([
-                'approval_cause' => 'invalid order ID',
+                'status' => TxnStatus::Failed,
+                'approval_cause' => 'Invalid payment ID',
             ]);
+
             return redirect()
                 ->route('user.deposit.now')
-                ->with('error', 'Invalid order ID.');
+                ->with('error', 'Invalid payment ID.');
         }
 
-        // Handle different webhook types (approved, declined)
-        switch ($webhookType) {
-            case 'approved':
+        // Extract relevant fields from the cryptoTransactionInfo
+        $status = $input['status'] ?? null;
+        $confirmations = $cryptoTransactionInfo['confirmations'] ?? null;
+        $txid = $cryptoTransactionInfo['txid'] ?? null;
+
+        // Handle different transaction statuses (PENDING, DONE, FAILED)
+        switch ($status) {
+            case 'PENDING':
+                // Handle pending payments
+                $txnInfo->update([
+                    'status' => TxnStatus::Pending,
+//                    'txid' => $txid,
+                    'manual_field_data' => $input,
+                    'approval_cause' => 'Transaction is pending',
+                ]);
+
+//                return redirect()
+//                    ->route('user.deposit.now')
+//                    ->with('info', 'Payment is pending. Please wait for confirmation.');
+
+            case 'DONE':
+                $txnInfo->update([
+//                    'txid' => $txid,
+                    'manual_field_data' => $input,
+                    'approval_cause' => 'Transaction is Completed',
+                ]);
                 // Call the payment success method
-                self::paymentSuccess($orderId);
+                self::paymentSuccess($paymentId);
+
+//                $txnInfo->update([
+//                    'status' => TxnStatus::Completed,
+//                    'txid' => $txid,
+//                    'confirmations' => $confirmations,
+//                    'approval_cause' => 'Transaction completed successfully',
+//                ]);
 
                 return redirect()
                     ->route('user.deposit.now')
                     ->with('success', 'Payment approved and processed successfully.');
 
-            case 'declined':
-
-                $txnInfo = Transaction::tnx($orderId);
+            case 'DECLINED':
+                // Handle declined payments
+                $declineReason = $cryptoTransactionInfo['decline_reason'] ?? 'Unknown reason';
                 $txnInfo->update([
-                'status' => TxnStatus::Failed,
-                    'approval_cause' => 'invalid declined',
-
+                    'status' => TxnStatus::Failed,
+                    'approval_cause' => 'Transaction declined: ' . $declineReason,
                 ]);
-                // Log or handle the declined payment
-                $declineReason = $input['data']['charge']['attributes']['decline_reason'] ?? 'Unknown reason';
 
                 return redirect()
                     ->route('user.deposit.now')
                     ->with('error', "Payment declined. Reason: $declineReason.");
 
             default:
-                $txnInfo = Transaction::tnx($orderId);
+                // Handle unknown or invalid statuses
                 $txnInfo->update([
                     'status' => TxnStatus::Failed,
-                    'approval_cause' => 'default declined',
-
+                    'approval_cause' => 'Unknown status received',
                 ]);
+
                 return redirect()
                     ->route('user.deposit.now')
-                    ->with('error', 'Unknown error.');
+                    ->with('error', 'Unknown error occurred during payment processing.');
         }
     }
 

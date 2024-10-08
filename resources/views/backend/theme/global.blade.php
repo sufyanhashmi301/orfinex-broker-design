@@ -20,7 +20,8 @@
                                     <div class="input-area">
                                         <label class="form-label">
                                             <div class="flex items-center">
-                                                {!! __($field['label']) !!}
+                                                {{  __($field['label']) }}
+                                                <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
                                             </div>
                                         </label>
                                         <div class="wrap-custom-file {{ $errors->has($field['name']) ? 'has-error' : '' }}">

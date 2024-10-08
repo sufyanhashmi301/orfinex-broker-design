@@ -67,7 +67,7 @@ class KycController extends Controller
         $user = \Auth::user();
         if (empty($user->kyc_token)) {
             $externalUserId = $user->id;
-            $levelName = 'Orfinex Verification';
+            $levelName = 'Kyc Verification';
 
             $testObject = new SumsubClient($SUMSUB_APP_TOKEN, $SUMSUB_SECRET_KEY);
 

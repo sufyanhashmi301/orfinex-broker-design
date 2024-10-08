@@ -1,4 +1,4 @@
-<div class="submenu-sidebar hidden xl:block">
+<div class="submenu-sidebar hidden xl:block dark:shadow-slate-700">
     <div class="border-b border-slate-100 dark:border-slate-700 py-3 px-2">
         <div class="input-area">
             <div class="relative group">
@@ -9,7 +9,7 @@
             </div>
         </div>
     </div>
-    <div class="sidebar-subMenus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_subMenus">
+    <div class="sidebar-subMenus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_subMenus">
         @yield('submenu')
     </div>
 </div>

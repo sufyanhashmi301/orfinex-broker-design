@@ -34,7 +34,7 @@
                             value="{{oldSetting($field['name'],$section)}}"
                             placeholder="URL"
                         />
-                        <span class="absolute left-0 top-1/2 px-3 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center">
+                        <span class="absolute left-0 top-1/2 px-3 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 dark:text-slate-300 flex items-center justify-center">
                             {{ __('URL') }}
                         </span>
                     @else

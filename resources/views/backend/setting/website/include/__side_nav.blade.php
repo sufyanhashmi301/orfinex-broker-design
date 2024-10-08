@@ -1,13 +1,18 @@
 @section('submenu')
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
         <li>
-            <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme*') }}">
+            <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme') }}">
                 {{ __('Theme')}}
             </a>
         </li>
         <li>
             <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
                 {{ __('Site Settings') }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="navItem {{ isActive('admin.theme.colors*') }}">
+                {{ __('Colors Customize') }}
             </a>
         </li>
         <li>

@@ -10,7 +10,7 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu flex flex-column">
         <li>
             <a href="{{route('admin.dashboard')}}" class="navItem {{ isActive('admin.dashboard') }}">
@@ -179,6 +179,38 @@
                 </li>
             @endcan
         @endcanany
+
+        <li class="">
+            <a href="javascript:void(0);" class="navItem">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="teenyicons:toggle-outline"></iconify-icon>
+                    <span>{{ __('Control Center') }}</span>
+                </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('admin.activePositions') }}" class="{{ isActive('admin.activePositions') }}">
+                        {{ __('Active Positions') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.netPositionsAccounts') }}" class="{{ isActive('admin.netPositionsAccounts') }}">
+                        {{ __('Net Positions - Accounts') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.netPositionsGroups') }}" class="{{ isActive('admin.netPositionsGroups') }}">
+                        {{ __('Net Positions - Groups') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.olderPositionsDays') }}" class="{{ isActive('admin.olderPositionsDays') }}">
+                        {{ __('Older Positions - Days') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         {{-- *************************************************************  Advertisement Management *********************************************************--}}
         @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])

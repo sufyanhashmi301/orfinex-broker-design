@@ -1,11 +1,10 @@
-<div
-    class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
+<div class="profiel-wrap px-[35px] pb-10 pt-10 rounded-lg bg-white dark:bg-secondary lg:space-y-0 space-y-6 relative z-[1]">
     <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg"
          style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
     </div>
     <div class="profile-box">
         <div
-            class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
+            class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
             @if(null != $user->avatar)
                 <img
                     class="w-full h-full object-cover rounded-full"
@@ -33,7 +32,7 @@
         <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
             @can('customer-mail-send')
                 <span type="button" data-bs-toggle="modal" data-bs-target="#sendEmail">
-                    <a href="javascript:void(0);" class="toolTip onTop action-btn"
+                    <a href="javascript:void(0);" class="toolTip onTop action-btn dark:text-slate-300"
                        data-tippy-theme="dark" data-tippy-content="Send Email">
                         <iconify-icon icon="lucide:mail"></iconify-icon>
                     </a>
@@ -41,13 +40,13 @@
             @endcan
             @can('customer-login')
                 <a href="{{ route('admin.user.login',$user->id) }}" target="_blank"
-                   class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Login As User">
+                   class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark" data-tippy-content="Login As User">
                     <iconify-icon icon="lucide:user-plus"></iconify-icon>
                 </a>
             @endcan
             @can('customer-balance-add-or-subtract')
                 <span data-bs-toggle="modal" data-bs-target="#addSubBal">
-                    <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                    <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                        data-tippy-theme="dark" data-tippy-content="Add Funds">
                         <iconify-icon icon="lucide:wallet"></iconify-icon>
                     </a>
@@ -55,7 +54,7 @@
             @endcan
             {{--@can('Delete User')--}}
             <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
-                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                    data-tippy-theme="dark" data-tippy-content="Delete User">
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
                 </a>
@@ -217,29 +216,6 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('KYC Verification') }}</h5>
-                <div class="form-switch ps-0">
-                    <input
-                        class="form-check-input"
-                        type="hidden"
-                        value="0"
-                        name="kyc"
-                    />
-                    <label
-                        class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            name="kyc"
-                            value="1"
-                            @if($user->kyc == 1) checked @endif
-                            class="sr-only peer"
-                        />
-                        <span
-                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="input-area flex items-center justify-between">
                 <h5 class="form-label">{{ __('2FA Verification') }}</h5>
                 <div class="form-switch ps-0">
                     <input
@@ -263,7 +239,7 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('Deposit Status') }}</h5>
+                <h5 class="form-label">{{ __('Fund Deposit') }}</h5>
                 <div class="form-switch ps-0">
                     <input
                         class="form-check-input"
@@ -286,7 +262,7 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('Withdraw Status') }}</h5>
+                <h5 class="form-label">{{ __('Fund Withdraw') }}</h5>
                 <div class="form-switch ps-0">
                     <input
                         class="form-check-input"
@@ -309,7 +285,7 @@
                 </div>
             </div>
             <div class="input-area flex items-center justify-between">
-                <h5 class="form-label">{{ __('Send Money Status') }}</h5>
+                <h5 class="form-label">{{ __('Fund Transfer') }}</h5>
                 <div class="form-switch ps-0">
                     <input
                         class="form-check-input"

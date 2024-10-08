@@ -54,6 +54,7 @@ use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\PositionController;
 use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\NoteController;
@@ -475,6 +476,28 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
     Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
+    Route::post('/positions/active', [PositionController::class, 'getGroupPosition'])->name('positions.group');
+    Route::post('/positions/days', [PositionController::class, 'positionByDays'])->name('positions.days');
+    Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
+    Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
+
+
+    Route::get('active-positions', function () {
+        return view('backend.control_center.active_positions');
+    })->name('activePositions');
+
+    Route::get('net-positions-accounts', function () {
+        return view('backend.control_center.net_positions_accounts');
+    })->name('netPositionsAccounts');
+
+    Route::get('net-positions-groups', function () {
+        return view('backend.control_center.net_positions_groups');
+    })->name('netPositionsGroups');
+
+    Route::get('older-positions-days', function () {
+        return view('backend.control_center.older_positions_days');
+    })->name('olderPositionsDays');
+
     Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
     Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');
     Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
@@ -490,6 +513,14 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('changelog', function () {
         return view('backend.system.changelog');
     })->name('changelog');
+
+    Route::get('deposit/misc-setting', function () {
+        return view('backend.setting.payment.deposit.misc');
+    })->name('deposit.miscSetting');
+
+    Route::get('withdraw/misc-setting', function () {
+        return view('backend.setting.payment.deposit.misc');
+    })->name('withdraw.miscSetting');
 
 
 });

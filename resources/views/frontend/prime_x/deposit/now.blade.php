@@ -144,6 +144,8 @@
 @endsection
 @section('script')
     <script>
+        let assetPath = '{{ asset('') }}/';
+
         // Capture the account type (forex or wallet) when the user selects an account
         $('#tradingAccount').on('change', function () {
             var selectedOption = $(this).find('option:selected');
@@ -163,7 +165,7 @@
             $.get(url, function (data) {
 
                 globalData = data;
-
+console.log(data,'data')
                 if (data.currency === currency){
                     $('.conversion').addClass('hidden');
                 }else {
@@ -177,7 +179,7 @@
 
 
                 $('.min-max').text('Minimum ' + data.minimum_deposit + ' ' + currency + ' and ' + 'Maximum ' + data.maximum_deposit + ' ' + currency)
-                $('#logo').html(`<img class="payment-method h-12" src='${data.gateway_logo}'>`);
+                $('#logo').html(`<img class="payment-method h-12" src='${assetPath + data.logo}'>`);
                 var amount = $('#amount').val()
 
                 if (Number(amount) > 0) {
@@ -188,8 +190,9 @@
                 }
 
                 if (data.credentials !== undefined) {
+                    console.log(data.credentials,'data.credentials')
                     $('.manual-row').append(data.credentials)
-                    imagePreview()
+                    // imagePreview()
                 }
 
             });

@@ -193,8 +193,20 @@
                         <input
                             type="text"
                             name="first_min_deposit"
+                            oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Min deposit"
+
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <input
+                            type="text"
+                            name="min_amount"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Min Amount"
 
                         />
                     </div>
@@ -211,13 +223,22 @@
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <input
-                                type="text"
-                                name="real_swap_free"
-                                class="form-control"
-                                placeholder="Platform Group"
-                            />
+                            <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                <option value="">{{ __('Select Group')}}</option>
+
+                            @foreach(\App\Models\PlatformGroup::all() as $group)
+                                <option value="{{$group->group}}">{{ $group->group}}</option>
+                                @endforeach
+                            </select>
                         </div>
+{{--                        <div class="input-area">--}}
+{{--                            <input--}}
+{{--                                type="text"--}}
+{{--                                name="real_swap_free"--}}
+{{--                                class="form-control"--}}
+{{--                                placeholder="Platform Group"--}}
+{{--                            />--}}
+{{--                        </div>--}}
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
@@ -264,12 +285,22 @@
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <input
-                                type="text"
-                                name="demo_swap_free"
-                                class="form-control"
-                                placeholder="Platform Group"
-                            />
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+
+                                @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}">{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+{{--                            <input--}}
+{{--                                type="text"--}}
+{{--                                name="demo_swap_free"--}}
+{{--                                class="form-control"--}}
+{{--                                placeholder="Platform Group"--}}
+{{--                            />--}}
                         </div>
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">

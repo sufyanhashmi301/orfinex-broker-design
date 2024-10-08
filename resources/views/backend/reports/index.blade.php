@@ -58,7 +58,7 @@
                                     <th scope="col" class="table-th">Date</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 <tr>
                                     <td class="table-td">
                                         <span class="fw-bold">NaeemAli9338</span>
@@ -200,5 +200,5 @@
     </div>
 
     @include('backend.reports.__configure_modal')
-    
+
 @endsection

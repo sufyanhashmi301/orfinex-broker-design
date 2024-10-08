@@ -6,18 +6,18 @@
      aria-hidden="true"
  >
      <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body p-6 py-8 text-center space-y-5">
                 <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
                     <iconify-icon class="text-4xl" icon="lucide:shield-question"></iconify-icon>
                 </div>
                 <div class="title">
                     <h4 class="text-xl font-medium dark:text-white capitalize">
-                        {{ __('Add IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span>    
+                        {{ __('Add IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span>
                     </h4>
                 </div>
-                <p>{{ __('Are you sure you want to add IB Account?') }}</p>
-                
+                <p class="dark:text-slate-300">{{ __('Are you sure you want to add IB Account?') }}</p>
+
                 <form id="addIBModalForm" action="{{ route('admin.ib.approve') }}" method="POST">
                     @csrf
                     <div class="action-btns text-center">

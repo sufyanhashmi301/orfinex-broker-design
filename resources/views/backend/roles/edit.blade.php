@@ -24,7 +24,7 @@
                     <input type="text" class="form-control" required="" name="name"
                            value="{{$role->name}}"/>
                 </div>
-                <div class="card border">
+                <div class="card border dark:border-slate-700">
                     <div class="card-header noborder">
                         <h3 class="card-title mb-0">{{ __('All Permissions') }}</h3>
                     </div>
@@ -40,7 +40,7 @@
                                     <div class="accordion-item">
                                         <h2 class="accordion-header text-lg" id="headingOne">
                                             <button
-                                                class="accordion-button @if(!$checked) collapsed @endif flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-x-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                                                class="accordion-button @if(!$checked) collapsed @endif flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-x-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-slate-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
                                                 type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#{{ str_replace(' ','',$category) }}"
                                                 aria-expanded="true"
@@ -57,13 +57,13 @@
                                             </button>
                                         </h2>
                                         <div id="{{str_replace(' ','',$category)}}"
-                                             class="accordion-collapse collapse @if($checked) show @endif p-5 p-5 border border-b-0 border-x-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900"
+                                             class="accordion-collapse collapse @if($checked) show @endif p-5 p-5 border border-b-0 border-x-0 border-gray-200 dark:border-slate-700 dark:bg-body"
                                              aria-labelledby="headingOne">
                                             <div class="accordion-body">
                                                 <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
                                                     @foreach($permission as $raw)
                                                     <div class="flex items-center justify-between p-5 border border-slate-100 dark:border-slate-700">
-                                                        <label class="switch-label text-sm" for="{{$raw->name}}">
+                                                        <label class="switch-label text-sm dark:text-slate-300" for="{{$raw->name}}">
                                                             {{ ucwords(str_replace('-', ' ', $raw->name)) }}
                                                         </label>
                                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">

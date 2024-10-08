@@ -89,16 +89,34 @@ class ForexAccountController extends GatewayController
         }
         $input = $request->all();
         $user = Auth::user();
+        $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);
         $accountType = $request->account_type;
-//        dd(ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count(),$accountType,$schema->account_limit);
+        $totalLimit = setting('forex_account_settings', 'forex_account_settings');
+        if($user->account_limit > $totalLimit){
+            $totalLimit = $user->account_limit;
+       }
+        //total account creation limit check
+        $totalForexAccounts = ForexAccount::where(['user_id' => $user->id, 'account_type' => $accountType])->count();
+        if ($totalForexAccounts >= $totalLimit) {
+            $message = __('Sorry, You have achieved your total account creation limit. Please contact support :support to increase your account limit.', ['title' => $schema->title,'support' => setting('support_email', 'common_settings')]);
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
+        //specific type account creation limit check
         if (ForexAccount::where(['user_id' => $user->id, 'forex_schema_id' => $schema->id, 'account_type' => $accountType])->count() >= $schema->account_limit) {
             $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.', ['title' => $schema->title]);
             notify()->error($message, 'Error');
             return redirect()->back();
         }
+       //minimum balance limit check
+        if ($schema->min_amount > $mainWalletBalance ) {
+            $message = __('We’re sorry, but a minimum balance of :limit in your main wallet is required to create a new Forex account. Please make the necessary deposit and try again.', ['limit' => $schema->min_amount.' '.base_currency()]);
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
 
-        $login = 311112;
+        $login = 0;
         //Start/End Range of create forex account on MT5
         if (setting('is_forex_group_range', 'global')) {
             $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
@@ -195,16 +213,15 @@ class ForexAccountController extends GatewayController
 //                    event(new NewForexAccountEvent($forexTrading));
 
 
-//                $shortcodes = [
-//                    '[[full_name]]' => $tnxInfo->user->full_name,
-//                    '[[txn]]' => $tnxInfo->tnx,
-//                    '[[plan_name]]' => $tnxInfo->invest->schema->name,
-//                    '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-//                    '[[site_title]]' => setting('site_title', 'global'),
-//                    '[[site_url]]' => route('home'),
-//                ];
+                $shortcodes = [
+                    '[[full_name]]' => $user->full_name,
+                    '[[login]]' => $mt5Login,
+                    '[[plan_name]]' => $schema->title,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
 //
-//                $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
+                $this->mailNotify($user->email, 'user_forex_account_creation', $shortcodes);
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 
@@ -362,6 +379,15 @@ class ForexAccountController extends GatewayController
 
             if ($updateUserApiResponse['success']) {
                 ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
+                $shortcodes = [
+                    '[[full_name]]' => auth()->user()->full_name,
+                    '[[login]]' => $request->login,
+                    '[[leverage]]' =>  $request->leverage,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+//
+                $this->mailNotify(auth()->user()->email, 'user_update_leverage', $shortcodes);
                 return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
             } else {
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
@@ -383,6 +409,16 @@ class ForexAccountController extends GatewayController
             ];
             $updateUserApiResponse = $this->forexApiService->resetMasterPassword($data);
             if ($updateUserApiResponse['success']) {
+                $shortcodes = [
+                    '[[full_name]]' => auth()->user()->full_name,
+                    '[[login]]' => $request->login,
+                    '[[password]]' =>  $request->main_password,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+//
+                $this->mailNotify(auth()->user()->email, 'user_update_master_password', $shortcodes);
+
                 return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
             } else {
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
@@ -397,6 +433,16 @@ class ForexAccountController extends GatewayController
             ];
             $updateUserApiResponse = $this->forexApiService->resetInvestorPassword($data);
             if ($updateUserApiResponse['success']) {
+                $shortcodes = [
+                    '[[full_name]]' => auth()->user()->full_name,
+                    '[[login]]' => $request->login,
+                    '[[password]]' =>  $request->invest_password,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+//
+                $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
+
                 return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
             } else {
                 return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
@@ -408,6 +454,17 @@ class ForexAccountController extends GatewayController
 //        dd($updateUserApiResponse->object());
 //            if (($updateUserApiResponse ? $updateUserApiResponse->status() == 200 && isset($updateUserApiResponse->object()->data->Login) : false)) {
             ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
+
+            $shortcodes = [
+                '[[full_name]]' => auth()->user()->full_name,
+                '[[login]]' => $request->login,
+                '[[password]]' =>  $request->invest_password,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+//
+            $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
+
             return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
 //            } else {
 //                notify()->error('Opps! We unable to process your request. Please reload the page and try again.', 'Error');

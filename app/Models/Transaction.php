@@ -88,6 +88,15 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class)->withDefault();
     }
+    public function depositMethod()
+    {
+        return $this->belongsTo(DepositMethod::class,'method','gateway_code');
+    }
+    public function withdrawMethod()
+    {
+        return $this->belongsTo(WithdrawMethod::class,'method','name');
+    }
+
 
     public function invest()
     {

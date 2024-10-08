@@ -30,7 +30,7 @@
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 @foreach($schedules as $schedule)
                                 <tr>
                                     <td class="table-td">{{++$loop->index}}</td>
@@ -65,7 +65,7 @@
     <!-- Modal for Edit Schedule -->
     @include('backend.schedule.modal.__edit_schedule')
     <!-- Modal for Edit Schedule-->
-    
+
 @endsection
 
 @section('script')

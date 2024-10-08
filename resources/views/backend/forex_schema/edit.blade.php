@@ -208,6 +208,18 @@
 
                         />
                     </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <input
+                            type="text"
+                            name="min_amount"
+                            value="{{$schema->min_amount}}"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Min Amount"
+
+                        />
+                    </div>
                 </div>
             </div>
         </div>

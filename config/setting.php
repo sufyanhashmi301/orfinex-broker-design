@@ -982,14 +982,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
             ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'min_balance_to_create_forex_account', // unique name for field
-                'label' => 'Min Balance Required to open Forex Account', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 10, // default value if you want
-            ],
         ],
     ],
     'external' => [

@@ -110,8 +110,8 @@ class ForexAccountController extends GatewayController
             return redirect()->back();
         }
        //minimum balance limit check
-        if (setting('min_balance_to_create_forex_account', 'forex_account_settings') > $mainWalletBalance ) {
-            $message = __('We’re sorry, but a minimum balance of :limit in your main wallet is required to create a new Forex account. Please make the necessary deposit and try again.', ['limit' => setting('min_balance_to_create_forex_account', 'forex_account_settings').' '.base_currency()]);
+        if ($schema->min_amount > $mainWalletBalance ) {
+            $message = __('We’re sorry, but a minimum balance of :limit in your main wallet is required to create a new Forex account. Please make the necessary deposit and try again.', ['limit' => $schema->min_amount.' '.base_currency()]);
             notify()->error($message, 'Error');
             return redirect()->back();
         }

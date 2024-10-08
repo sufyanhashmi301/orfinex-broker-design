@@ -729,7 +729,7 @@ class PricingInvestmentProcessor
         $data = [
             "login" => $login,
             "group" => $group,
-            "firstName" => $invest->user->first_name,
+            "firstName" => 'GMF-Phase 1 $'.$invest->amount_allotted.'-'.$invest->user->first_name,
             "middleName" => "",
             "lastName" => $invest->user->last_name,
             "leverage" => $invest->leverage,

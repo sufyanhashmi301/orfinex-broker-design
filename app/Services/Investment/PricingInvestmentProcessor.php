@@ -687,7 +687,7 @@ class PricingInvestmentProcessor
         $latestInvestments = ForexSchemaInvestment::whereHas('forexSchemaPhaseRule', function($query) use ($phaseIds) {
             $query->whereIn('forex_schema_phase_id', $phaseIds);
         })->whereIn('status', [InvestmentStatus::ACTIVE,InvestmentStatus::VIOLATED])
-            ->latest('id')->first();
+            ->latest('login')->first();
 //        dd($schema,$phaseIds,$latestInvestments);
         if($traderType == TraderType::MT5) {
             $login = 0;

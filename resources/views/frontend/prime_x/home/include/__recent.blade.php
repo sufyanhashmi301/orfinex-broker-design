@@ -8,10 +8,8 @@
         <div class="row justify-content-center">
             <div class="col-xl-7 col-lg-12">
                 <div class="section-title text-center">
-                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ $data['title_small'] }}</h4>
-                    <h2 data-aos="fade-down" data-aos-duration="1500">
-                        {{ $data['title_big'] }}
-                    </h2>
+                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ __(''.$data['title_small'].'') }}</h4>
+                    <h2 data-aos="fade-down" data-aos-duration="1500">{{ __(''.$data['title_big'].'') }}</h2>
                 </div>
             </div>
         </div>
@@ -50,7 +48,8 @@
                                     <div class="right">
                                         <div class="amount">
                                             <div class="net in">
-                                                +{{ $investor->already_return_profit*$interest }} {{ $currency }}</div>
+                                                +{{ $investor->already_return_profit*$interest }} {{ $currency }}
+                                            </div>
                                             <div class="total">{{ $investor->invest_amount }} {{ $currency }}</div>
                                         </div>
                                     </div>
@@ -79,8 +78,6 @@
                                         </div>
                                     </div>
                                     <div class="middle">
-
-
                                         @if($withdraw->status == \App\Enums\TxnStatus::Success)
                                             <div class="status site-badge badge-success">{{ __('Success') }}</div>
                                         @elseif( $withdraw->status == \App\Enums\TxnStatus::Failed)
@@ -88,17 +85,14 @@
                                         @else
                                             <div class="status site-badge badge-pending">{{ __('Pending') }}</div>
                                         @endif
-
                                     </div>
                                     <div class="right">
                                         <div class="amount">
                                             @if($withdraw->status == \App\Enums\TxnStatus::Success)
                                                 <div class="net in">+{{ $withdraw->final_amount }} {{ $currency }}</div>
                                             @elseif($withdraw->status == \App\Enums\TxnStatus::Failed)
-                                                <div class="net out">
-                                                    -{{ $withdraw->final_amount }} {{ $currency }}</div>
+                                                <div class="net out">-{{ $withdraw->final_amount }} {{ $currency }}</div>
                                             @endif
-
                                             <div class="total">{{ $withdraw->final_amount }} {{ $currency }}</div>
                                         </div>
                                     </div>

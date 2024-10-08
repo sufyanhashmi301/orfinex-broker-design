@@ -8,8 +8,10 @@
         {{ __('Open New Account') }}
     </h4>
     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">{{ __('My Accounts') }}</a>
-        {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">Get Bonus</a> --}}
+        <a href="{{ route('user.forex-account-logs') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center">
+            {{ __('My Accounts') }}
+        </a>
+        {{-- <a href="{{ route('user.offers') }}" class="btn btn-sm btn-primary">{{ __('Get Bonus') }}</a> --}}
     </div>
 </div>
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
@@ -18,17 +20,17 @@
         <div class="card-body p-6">
             <div class="">
                 <div class="flex items-center justify-between mb-1">
-                    <h4>{{$schema->title}}</h4>
+                    <h4>{{ $schema->title }}</h4>
                     @if($schema->badge)
                         <p class="badge bg-primary text-slate-900 capitalize">
-                            {{$schema->badge}}
+                            {{ $schema->badge }}
                         </p>
                     @endif
                 </div>
                 <p class="text-sm text-success-500 mb-2">
-                    {{ __('Available in countries:  ') }}  {{implode(', ', json_decode($schema->country,true)) }}
+                    {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->country, true)) }}
                 </p>
-                <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{$schema->desc }}</p>
+                <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
             </div>
             <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                 <li class="flex items-center py-3">
@@ -37,7 +39,7 @@
                     </span>
                     <span class="flex-1 text-right">
                         <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
-                            {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit  : $currencySymbol . 0 }}
+                            {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
                         </span>
                     </span>
                 </li>
@@ -46,7 +48,7 @@
                         {{ __('Spread') }}
                     </span>
                     <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->spread ? $schema->spread : 'NA' }}
+                        {{ $schema->spread ? $schema->spread : __('NA') }}
                     </span>
                 </li>
                 <li class="flex items-center py-3">
@@ -54,11 +56,11 @@
                         {{ __('Commission') }}
                     </span>
                     <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->commission ? $schema->commission : 'NA' }}
+                        {{ $schema->commission ? $schema->commission : __('NA') }}
                     </span>
                 </li>
             </ul>
-            <a href="{{route('user.schema.preview',$schema->id)}}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-5">
+            <a href="{{ route('user.schema.preview', $schema->id) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-5">
                 {{ __('Create Account') }}
             </a>
         </div>
@@ -71,103 +73,103 @@
 </h4>
 <div class="grid xl:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-3">
     <!-- BEGIN: Group Chart5 -->
-    @if(setting('desktop_terminal_windows_show','platform_links',false))
+    @if(setting('desktop_terminal_windows_show', 'platform_links', false))
         <div class="card border border-slate-100 dark:border-slate-700 rounded p-4">
             <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
                 <iconify-icon class="dark:text-slate-300" icon="material-symbols:window-sharp"></iconify-icon>
             </div>
             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                Metatrader 5 <br>
-                <span class="text-slate-400 text-sm font-normal">for windows</span>
+                {{ __('Metatrader 5') }} <br>
+                <span class="text-slate-400 text-sm font-normal">{{ __('for windows') }}</span>
             </span>
             <div class="mt-5">
-                <a href="{{setting('desktop_terminal_windows_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                    <span class="mr-1">Download</span>
+                <a href="{{ setting('desktop_terminal_windows_link', 'platform_links', 'javascript:void(0);') }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                    <span class="mr-1">{{ __('Download') }}</span>
                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                 </a>
             </div>
         </div>
     @endif
-    @if(setting('desktop_terminal_mac_show','platform_links',false))
+    @if(setting('desktop_terminal_mac_show', 'platform_links', false))
         <div class="card border border-slate-100 dark:border-slate-700 rounded p-4">
             <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
                 <iconify-icon class="dark:text-slate-300" icon="fa6-brands:app-store-ios"></iconify-icon>
             </div>
             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                Metatrader 5 <br>
-                <span class="text-slate-400 text-sm font-normal">for MAC</span>
+                {{ __('Metatrader 5') }} <br>
+                <span class="text-slate-400 text-sm font-normal">{{ __('for MAC') }}</span>
             </span>
             <div class="mt-5">
-                <a href="{{setting('desktop_terminal_mac_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                    <span class="mr-1">Download</span>
+                <a href="{{ setting('desktop_terminal_mac_link', 'platform_links', 'javascript:void(0);') }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                    <span class="mr-1">{{ __('Download') }}</span>
                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                 </a>
             </div>
         </div>
     @endif
-    @if(setting('mobile_application_android_show','platform_links',false))
+    @if(setting('mobile_application_android_show', 'platform_links', false))
         <div class="card border border-slate-100 dark:border-slate-700 rounded p-4">
             <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
                 <iconify-icon class="dark:text-slate-300" icon="ion:logo-google-playstore"></iconify-icon>
             </div>
             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                Metatrader 5 <br>
-                <span class="text-slate-400 text-sm font-normal">for Android</span>
+                {{ __('Metatrader 5') }} <br>
+                <span class="text-slate-400 text-sm font-normal">{{ __('for Android') }}</span>
             </span>
             <div class="mt-5">
-                <a href="{{setting('mobile_application_android_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                    <span class="mr-1">Download</span>
+                <a href="{{ setting('mobile_application_android_link', 'platform_links', 'javascript:void(0);') }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                    <span class="mr-1">{{ __('Download') }}</span>
                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                 </a>
             </div>
         </div>
     @endif
-    @if(setting('mobile_application_Android_APK_show','platform_links',false))
+    @if(setting('mobile_application_Android_APK_show', 'platform_links', false))
         <div class="card border border-slate-100 dark:border-slate-700 rounded p-4">
             <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
                 <iconify-icon class="dark:text-slate-300" icon="material-symbols:android"></iconify-icon>
             </div>
             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                Metatrader 5 <br>
-                <span class="text-slate-400 text-sm font-normal">for Android APK</span>
+                {{ __('Metatrader 5') }} <br>
+                <span class="text-slate-400 text-sm font-normal">{{ __('for Android APK') }}</span>
             </span>
             <div class="mt-5">
-                <a href="{{setting('mobile_application_Android_APK_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                    <span class="mr-1">Download</span>
+                <a href="{{ setting('mobile_application_Android_APK_link', 'platform_links', 'javascript:void(0);') }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                    <span class="mr-1">{{ __('Download') }}</span>
                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                 </a>
             </div>
         </div>
     @endif
-    @if(setting('mobile_application_iOS_show','platform_links',false))
+    @if(setting('mobile_application_iOS_show', 'platform_links', false))
         <div class="card border border-slate-100 dark:border-slate-700 rounded p-4">
             <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
                 <iconify-icon class="dark:text-slate-300" icon="fa6-brands:apple"></iconify-icon>
             </div>
             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                Metatrader 5 <br>
-                <span class="text-slate-400 text-sm font-normal">for IOS</span>
+                {{ __('Metatrader 5') }} <br>
+                <span class="text-slate-400 text-sm font-normal">{{ __('for iOS') }}</span>
             </span>
             <div class="mt-5">
-                <a href="{{setting('mobile_application_iOS_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                    <span class="mr-1">Download</span>
+                <a href="{{ setting('mobile_application_iOS_link', 'platform_links', 'javascript:void(0);') }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                    <span class="mr-1">{{ __('Download') }}</span>
                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                 </a>
             </div>
         </div>
     @endif
-    @if(setting('web_terminal_show','platform_links',false))
+    @if(setting('web_terminal_show', 'platform_links', false))
         <div class="card border border-slate-100 dark:border-slate-700 rounded p-4">
             <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-slate-900 text-3xl mb-4">
                 <iconify-icon class="dark:text-slate-300" icon="mdi:web"></iconify-icon>
             </div>
             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                Metatrader 5 <br>
-                <span class="text-slate-400 text-sm font-normal">web trader</span>
+                {{ __('Metatrader 5') }} <br>
+                <span class="text-slate-400 text-sm font-normal">{{ __('web trader') }}</span>
             </span>
             <div class="mt-5">
-                <a href="{{setting('web_terminal_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                    <span class="mr-1">Download</span>
+                <a href="{{ setting('web_terminal_link', 'platform_links', 'javascript:void(0);') }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                    <span class="mr-1">{{ __('Download') }}</span>
                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                 </a>
             </div>
@@ -175,5 +177,4 @@
     @endif
     <!-- END: Group Chart5 -->
 </div>
-
 @endsection

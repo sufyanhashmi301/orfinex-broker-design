@@ -70,7 +70,6 @@
     });
 </script>
 
-
 @php
     $googleAnalytics = plugin_active('Google Analytics');
     $tawkChat = plugin_active('Tawk Chat');
@@ -90,5 +89,3 @@
 @if($customChat)
     @include('frontend::plugin.custom_chat',['data' => json_decode($customChat->data, true)])
 @endif
-
-

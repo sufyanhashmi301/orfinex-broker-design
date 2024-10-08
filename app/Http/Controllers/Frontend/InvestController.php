@@ -32,7 +32,7 @@ class InvestController extends GatewayController
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -46,18 +46,17 @@ class InvestController extends GatewayController
 
         //Insufficient Balance validation
         if ($input['wallet'] == 'main' && $user->balance < $investAmount) {
-            notify()->error('Insufficient Balance Your Main Wallet', 'Error');
-
+            notify()->error(__('Insufficient Balance Your Main Wallet'), __('Error'));
             return redirect()->route('user.schema.preview', $schema->id);
         } elseif ($input['wallet'] == 'profit' && $user->profit_balance < $investAmount) {
-            notify()->error('Insufficient Balance Your Profit Wallet', 'Error');
+            notify()->error(__('Insufficient Balance Your Profit Wallet'), __('Error'));
 
             return redirect()->route('user.schema.preview', $schema->id);
         }
 
         //invalid Amount
         if (($schema->type == 'range' && ($schema->min_amount > $investAmount || $schema->max_amount < $investAmount)) || ($schema->type == 'fixed' && $schema->fixed_amount != $investAmount)) {
-            notify()->error('Invest Amount Out Of Range', 'Error');
+            notify()->error(__('Invest Amount Out Of Range'), __('Error'));
 
             return redirect()->route('user.schema.preview', $schema->id);
         }
@@ -141,7 +140,7 @@ class InvestController extends GatewayController
         $this->pushNotify('user_investment', $shortcodes, route('user.invest-logs'), $tnxInfo->user->id);
         $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 
-        notify()->success('Successfully Investment', 'success');
+        notify()->success(__('Successfully Investment'), __('success'));
 
         return redirect()->route('user.invest-logs');
     }
@@ -162,10 +161,10 @@ class InvestController extends GatewayController
                 ->addColumn('profit', 'frontend::user.include.__invest_profit')
                 ->addColumn('period_remaining', function ($raw) {
                     if ($raw->return_type != 'period') {
-                        return 'Unlimited';
+                        return __('Unlimited');
                     }
 
-                    return $raw->number_of_period.($raw->number_of_period < 2 ? ' Time' : ' Times');
+                    return $raw->number_of_period . ($raw->number_of_period < 2 ? ' Time' : ' Times');
                 })
                 ->editColumn('capital_back', 'frontend::user.include.__invest_capital_back')
                 ->editColumn('next_profit_time', 'frontend::user.include.__invest_next_profit_time')
@@ -184,7 +183,7 @@ class InvestController extends GatewayController
         $todayTransaction = Invest::where('status', InvestStatus::Canceled)->whereDate('created_at', Carbon::today())->count();
         $dayLimit = (float) Setting('send_money_day_limit', 'fee');
         if ($todayTransaction >= $dayLimit) {
-            notify()->error(__('Today Investment Cancel limit has been reached'), 'Error');
+            notify()->error(__('Today Investment Cancel limit has been reached'), __('Error'));
 
             return redirect()->back();
         }
@@ -200,12 +199,12 @@ class InvestController extends GatewayController
             $user->save();
 
             Txn::new($investment->invest_amount, 0, $investment->invest_amount, 'system', $investment->schema->name.' '.'Money Refund in Main Wallet from System', TxnType::Refund, TxnStatus::Success, null, null, $user->id);
-            notify()->success('Cancel Investment Successfully', 'success');
+            notify()->success(__('Cancel Investment Successfully'), __('success'));
 
             return redirect()->route('user.invest-logs');
         }
-        abort_if(! $investment->schema->schema_cancel, 403, 'Can Not Be Cancel Investment');
-        notify()->warning('Can Not Be Cancel Investment', 'warning');
+        abort_if(!$investment->schema->schema_cancel, 403, __('Can Not Be Cancel Investment'));
+        notify()->warning(__('Can Not Be Cancel Investment'), __('warning'));
 
         return redirect()->route('user.invest-logs');
     }

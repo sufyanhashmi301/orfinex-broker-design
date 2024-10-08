@@ -27,10 +27,10 @@
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <div class="flex justify-between sm:space-x-4 space-x-2">
                 <div class="input-area relative" style="padding-left: 3rem;">
-                    <label for="" class="inline-inputLabel">Sort:</label>
+                    <label for="" class="inline-inputLabel">{{ __('Sort:') }}</label>
                     <select class="form-control">
-                        <option selected>Choose...</option>
-                        <option>...</option>
+                        <option selected>{{ __('Choose...') }}</option>
+                        <option>{{ __('...') }}</option>
                     </select>
                 </div>
                 <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
@@ -81,14 +81,11 @@
     <!-- Modal for Account rename -->
     @include('frontend::.user.forex.modal.__account_rename')
 
-
     <!-- Modal for Account password -->
     @include('frontend::.user.forex.modal.__change_account_password')
 
-
     <!-- Modal for Account invest password -->
     @include('frontend::.user.forex.modal.__change_investor_password')
-
 
     <!-- Modal for Account archive -->
     @include('frontend::.user.forex.modal.__archive_account')

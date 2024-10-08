@@ -38,7 +38,7 @@
                                                             {{ $ticket->title }}
                                                         </h4>
                                                         <div class="text-xs !text-nowrap font-normal text-slate-600 dark:text-slate-400">
-                                                            {{ __('Created ').$ticket->created_at }}
+                                                            {{ __('Created ') . $ticket->created_at }}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -61,23 +61,23 @@
                                             <td class="table-td">
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                                     @if($ticket->isOpen())
-                                                        <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}" class="action-btn cancel"
-                                                        data-bs-toggle="tooltip" title="Complete Ticket"
-                                                        data-bs-original-title="Complete Ticket">
+                                                        <a href="{{ route('user.ticket.close.now', $ticket->uuid) }}" class="action-btn cancel"
+                                                        data-bs-toggle="tooltip" title="{{ __('Complete Ticket') }}"
+                                                        data-bs-original-title="{{ __('Complete Ticket') }}">
                                                             <iconify-icon icon="heroicons:check-16-solid"></iconify-icon>
                                                         </a>
-                                                        <a href="{{ route('user.ticket.show',$ticket->uuid) }}" class="action-btn loaderBtn"
-                                                        data-bs-toggle="tooltip" title="Show Ticket"
-                                                        data-bs-original-title="Show Ticket">
+                                                        <a href="{{ route('user.ticket.show', $ticket->uuid) }}" class="action-btn loaderBtn"
+                                                        data-bs-toggle="tooltip" title="{{ __('Show Ticket') }}"
+                                                        data-bs-original-title="{{ __('Show Ticket') }}">
                                                             <iconify-icon icon="heroicons:eye"></iconify-icon>
                                                         </a>
                                                     @elseif($ticket->isClosed())
                                                         <a href="#" class="action-btn cancel disabled">
                                                             <iconify-icon icon="heroicons:check-16-solid"></iconify-icon>
                                                         </a>
-                                                        <a href="{{ route('user.ticket.show',$ticket->uuid) }}" class="action-btn loaderBtn"
+                                                        <a href="{{ route('user.ticket.show', $ticket->uuid) }}" class="action-btn loaderBtn"
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="Re-open the Ticket">
+                                                        title="{{ __('Re-open the Ticket') }}">
                                                             <iconify-icon icon="heroicons:book-open"></iconify-icon>
                                                         </a>
                                                     @endif
@@ -99,5 +99,4 @@
             </div>
         </div>
     </div>
-
 @endsection

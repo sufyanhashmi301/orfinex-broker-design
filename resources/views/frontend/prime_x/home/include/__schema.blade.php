@@ -8,8 +8,8 @@
         <div class="row justify-content-center">
             <div class="col-xl-7 col-lg-12">
                 <div class="section-title text-center">
-                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ $data['title_small'] }}</h4>
-                    <h2 data-aos="fade-down" data-aos-duration="1500">{{ $data['title_big'] }}</h2>
+                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ __(''.$data['title_small'].'') }}</h4>
+                    <h2 data-aos="fade-down" data-aos-duration="1500">{{ __(''.$data['title_big'].'') }}</h2>
                 </div>
             </div>
         </div>
@@ -23,11 +23,11 @@
                             alt=""
                         />
                         @if($schema->badge)
-                            <div class="feature-plan">{{$schema->badge}}</div>
+                            <div class="feature-plan">{{ $schema->badge }}</div>
                         @endif
 
-                        <h3>{{$schema->name}}</h3>
-                        <p>{{$schema->schedule->name . ' '. ($schema->interest_type == 'percentage' ? $schema->return_interest.'%' : $currencySymbol.$schema->return_interest ) }}</p>
+                        <h3>{{ __(''.$schema->name.'') }}</h3>
+                        <p>{{ $schema->schedule->name . ' '. ($schema->interest_type == 'percentage' ? $schema->return_interest.'%' : $currencySymbol.$schema->return_interest ) }}</p>
                         <ul>
                             <li>{{ __('Investment') }} <span class="special">
                                                                 {{ $schema->type == 'range' ? $currencySymbol . $schema->min_amount . '-' . $currencySymbol . $schema->max_amount : $currencySymbol . $schema->fixed_amount }}
@@ -38,7 +38,7 @@
                                 <span>{{ ($schema->return_type == 'period' ? $schema->number_of_period.' ' : __('Unlimited').' ' ).($schema->number_of_period == 1 ? __('Time') : __('Times') )  }}</span>
                             </li>
                             <li>{{ __('Profit Withdraw') }} <span>{{ __('Anytime') }}</span></li>
-                            <li>{{ __('Cancel') }}  <span> @if($schema->schema_cancel) {{ __('Within').' '. $schema->expiry_minute .' '. 'Minute' }} @else   {{ __('No') }}@endif</span></li>
+                            <li>{{ __('Cancel') }}  <span> @if($schema->schema_cancel) {{ __('Within').' '. $schema->expiry_minute .' '. __('Minute') }} @else   {{ __('No') }}@endif</span></li>
                         </ul>
                         <div class="holidays"><span class="star">*</span>@if( null != $schema->off_days) {{ implode(', ', json_decode($schema->off_days,true))  .' '.__('are')}}  @else {{ __('No Profit') }} @endif {{ __('Holidays') }}</div>
                         <a href="{{route('user.schema.preview',$schema->id)}}" class="site-btn grad-btn w-100 centered"><i

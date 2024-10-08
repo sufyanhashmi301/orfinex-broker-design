@@ -13,7 +13,7 @@
             <!-- BEGIN: Company Table -->
             @if(count($recentTransactions) == 0)
                 <div class="flex items-center justify-center flex-col gap-3">
-                    <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
+                    <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="{{ __('Danger Icon') }}">
                     <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                         {{ __("You don't have any transaction yet.") }}
                     </p>
@@ -41,14 +41,14 @@
                                     @foreach($recentTransactions as $transaction )
                                     <tr>
                                         <td class="table-td">
-                                            {{ ucfirst(str_replace('_',' ',$transaction->type->value )) }}
+                                            {{ ucfirst(str_replace('_',' ',__(':type', ['type' => $transaction->type->value]))) }}
                                         </td>
                                         <td class="table-td">{{ $transaction->target_id }}</td>
                                         <td class="table-td">
                                             <div class="flex items-center">
                                                 <div class="flex-none">
                                                     <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                        <img src="{{ asset('frontend/images/logo/BinancePay.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                        <img src="{{ asset('frontend/images/logo/BinancePay.svg') }}" alt="{{ __('BinancePay Logo') }}" class="w-full h-full rounded-[100%] object-cover">
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">
@@ -64,7 +64,7 @@
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
                                                 <span class="badge bg-primary text-slate-900 capitalize pill">{{ __('Success') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)
-                                                <span class="badge bg-danger-500 text-slate-900 capitalize pill">{{ __('canceled') }}</span>
+                                                <span class="badge bg-danger-500 text-slate-900 capitalize pill">{{ __('Canceled') }}</span>
                                             @endif
                                         </td>
                                         <td class="table-td">

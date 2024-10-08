@@ -45,7 +45,7 @@ class UserController extends Controller
             'new_confirm_password' => ['same:new_password'],
         ]);
         User::find(auth()->user()->id)->update(['password' => Hash::make($request->new_password)]);
-        notify()->success('Password Changed Successfully');
+        notify()->success(__('Password Changed Successfully'));
 
         return redirect()->back();
     }
@@ -76,7 +76,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -91,7 +91,7 @@ class UserController extends Controller
         $todayTransaction = Transaction::where('type', TxnType::Exchange)->whereDate('created_at', Carbon::today())->count();
         $exchangeDayLimit = (float) Setting('wallet_exchange_day_limit', 'fee');
         if ($todayTransaction >= $exchangeDayLimit) {
-            notify()->error(__('Today Exchange limit has been reached'), 'Error');
+            notify()->error(__('Today Exchange limit has been reached'), __('Error'));
 
             return redirect()->back();
         }
@@ -105,9 +105,9 @@ class UserController extends Controller
         $user = \Auth::user();
 
         if (1 == $input['from_wallet'] && $user->balance < $totalAmount || 2 == $input['from_wallet'] && $user->profit_balance < $totalAmount) {
-            $walletName = 1 == $input['from_wallet'] ? 'Main Wallet' : 'Profit Wallet';
+            $walletName = 1 == $input['from_wallet'] ? __('Main Wallet') : __('Profit Wallet');
 
-            notify()->error(__('Insufficient Balance Your ').$walletName, 'Error');
+            notify()->error(__('Insufficient Balance Your ') . $walletName, __('Error'));
 
             return redirect()->back();
         }
@@ -116,14 +116,14 @@ class UserController extends Controller
             $user->decrement('balance', $totalAmount);
             $user->increment('profit_balance', $amount);
 
-            $sendDescription = 'Main to Profit Wallet Exchanged';
+            $sendDescription = __('Main to Profit Wallet Exchanged');
             $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
                 TxnType::Exchange, TxnStatus::Success, null, null, $user->id);
         } else {
             $user->decrement('profit_balance', $totalAmount);
             $user->increment('balance', $amount);
 
-            $sendDescription = 'Profit to Main Wallet Exchanged';
+            $sendDescription = __('Profit to Main Wallet Exchanged');
             $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
                 TxnType::Exchange, TxnStatus::Success, null, null, $user->id);
         }
@@ -131,12 +131,12 @@ class UserController extends Controller
         $symbol = setting('currency_symbol', 'global');
 
         $notify = [
-            'card-header' => 'Success Your Exchange Money Process',
-            'title' => $symbol.$txnInfo->amount.' Exchange Wallet Money Successfully',
+            'card-header' => __('Success Your Exchange Money Process'),
+            'title' => $symbol . $txnInfo->amount . __(' Exchange Wallet Money Successfully'),
             'p' => $sendDescription,
-            'strong' => 'Transaction ID: '.$txnInfo->tnx,
+            'strong' => __('Transaction ID: ') . $txnInfo->tnx,
             'action' => route('user.wallet-exchange'),
-            'a' => 'Exchange Wallet Money again',
+            'a' => __('Exchange Wallet Money again'),
             'view_name' => 'wallet',
         ];
         Session::put('user_notify', $notify);

@@ -25,15 +25,15 @@
                         @endforeach
                         <div class="input-area relative">
                             <label for="" class="form-label">{{ __('Current Password') }}</label>
-                            <input type="password" name="current_password" class="form-control !text-lg">
+                            <input type="password" name="current_password" class="form-control !text-lg" placeholder="{{ __('Enter Current Password') }}">
                         </div>
                         <div class="input-area relative">
                             <label for="" class="form-label">{{ __('New Password') }}</label>
-                            <input type="password" name="new_password" class="form-control !text-lg">
+                            <input type="password" name="new_password" class="form-control !text-lg" placeholder="{{ __('Enter New Password') }}">
                         </div>
                         <div class="input-area relative">
                             <label for="" class="form-label">{{ __('Confirm Password') }}</label>
-                            <input type="password" name="new_confirm_password" class="form-control !text-lg">
+                            <input type="password" name="new_confirm_password" class="form-control !text-lg" placeholder="{{ __('Confirm New Password') }}">
                         </div>
                         <div class="text-right">
                             <button type="submit" class="btn btn-primary">{{ __('Change Password') }}</button>

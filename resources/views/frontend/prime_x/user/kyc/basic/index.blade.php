@@ -34,7 +34,7 @@
                                 <label for="kycTypeSelect" class="form-label">{{ __('Verification Type') }}</label>
                                 <div class="input-group">
                                     <select name="kyc_id" id="kycTypeSelect" class="select2 form-control" required>
-                                        <option selected disabled>----</option>
+                                        <option selected disabled>{{ __('----') }}</option>
                                         @foreach($kycs as $kyc)
                                             <option value="{{ $kyc->id }}">{{ $kyc->name }}</option>
                                         @endforeach
@@ -50,7 +50,7 @@
                             {{ __('The document you are providing must be valid for at least 30 days and contain all of the following details:') }}
                         </p>
                         <figure class="figure d-block">
-                            <svg alt="verification example" viewBox="0 0 320 178" class="img-fluid">
+                            <svg alt="{{ __('verification example') }}" viewBox="0 0 320 178" class="img-fluid">
                                 <use xlink:href="{{ asset('frontend/images/cards.svg#pid-passport') }}"></use>
                             </svg>
                         </figure>

@@ -25,7 +25,7 @@
                                 <div class="input-area relative">
                                     <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name:') }}</label>
                                     <input type="text" name="method_name" class="form-control !text-lg"
-                                           placeholder="eg. Withdraw Method - USD"
+                                           placeholder="{{ __('eg. Withdraw Method - USD') }}"
                                            value="{{ $withdrawAccount->method_name }}">
                                 </div>
 
@@ -70,7 +70,7 @@
                                             <label for="exampleFormControlInput1" class="form-label">{{ $key }}</label>
                                             <textarea class="form-control !text-lg" rows="5"
                                                           @if($field['validation'] == 'required') required
-                                                          @endif placeholder="Send Money Note"
+                                                          @endif placeholder="{{ __('Send Money Note') }}"
                                                           name="credentials[{{$key}}][value]">{{$field['value']}}</textarea>
                                         </div>
 

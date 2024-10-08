@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-{{ __('Advance KYC') }}
+    {{ __('Advance KYC') }}
 @endsection
 @section('content')
 <div class="card">
@@ -15,7 +15,7 @@
     {{-- sumsub deactivated --}}
     <div class="p-5">
         <p class="text-center font-medium dark:text-slate-300">
-            {{ __('Somthing went wrong.') }}
+            {{ __('Something went wrong.') }}
         </p>
     </div>
     @else
@@ -41,8 +41,8 @@ const launchWebSdk = (accessToken) => {
         lang: 'en',
         email: '{{auth()->user()->email}}'
     }).withOptions({ addViewportTag: false, adaptIframeHeight: true })
-        .on('idCheck.onApplicantStatusChanged', (payload) => {
-            console.log('onStepCompleted', payload);
+        .on('{{ __('idCheck.onApplicantStatusChanged') }}', (payload) => {
+            console.log('{{ __('onStepCompleted') }}', payload);
             if (payload.confirmed === true && '{{auth()->user()->kyc}}' === '0') {
                 $.ajax({
                     url: "{{ route('user.kyc.status') }}",
@@ -50,18 +50,18 @@ const launchWebSdk = (accessToken) => {
                     success: function(response) {
                         if (response.status ===200) {
                             console.log(response.success);
-                        }else{
+                        } else {
                             console.log(response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error updating KYC status:', error);
+                        console.error('{{ __('Error updating KYC status:') }}', error);
                     }
                 });
             }
         })
-        .on('idCheck.onError', (error) => {
-            console.log('onError', error);
+        .on('{{ __('idCheck.onError') }}', (error) => {
+            console.log('{{ __('onError') }}', error);
         }).build();
     snsWebSdkInstance.launch('#sumsub-websdk-container');
 }

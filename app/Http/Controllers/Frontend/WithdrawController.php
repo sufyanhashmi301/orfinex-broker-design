@@ -69,7 +69,7 @@ class WithdrawController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -93,7 +93,7 @@ class WithdrawController extends Controller
 
         WithdrawAccount::create($data);
 
-        notify()->success('Successfully Withdraw Account Created', 'success');
+        notify()->success(__('Successfully Withdraw Account Created'), 'success');
 
         return redirect()->route('user.withdraw.account.index');
     }
@@ -152,7 +152,7 @@ class WithdrawController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -183,7 +183,7 @@ class WithdrawController extends Controller
         ];
 
         $withdrawAccount->update($data);
-        notify()->success('Successfully Withdraw Account Updated', 'success');
+        notify()->success(__('Successfully Withdraw Account Updated'), 'success');
 
         return redirect()->route('user.withdraw.account.index');
 
@@ -223,7 +223,7 @@ class WithdrawController extends Controller
             'name' => $name,
             'charge' => $charge,
             'charge_type' => $withdrawAccount->method->charge_type,
-            'range' => 'Minimum ' . $method->min_withdraw . ' ' . $currency . ' and ' . 'Maximum ' . $method->max_withdraw . ' ' . $currency,
+            'range' => __('Minimum') . ' ' . $method->min_withdraw . ' ' . $currency . ' ' . __('and') . ' ' . __('Maximum') . ' ' . $method->max_withdraw . ' ' . $currency,
             'processing_time' => $processingTime,
             'rate' => $method->rate,
             'pay_currency' => $method->currency
@@ -293,7 +293,7 @@ class WithdrawController extends Controller
     // Check if the amount is within the allowed withdraw range
     if ($amount < $withdrawMethod->min_withdraw || $amount > $withdrawMethod->max_withdraw) {
         $currencySymbol = setting('currency_symbol', 'global');
-        $message = 'Please withdraw the amount within the range ' . $currencySymbol . $withdrawMethod->min_withdraw . ' to ' . $currencySymbol . $withdrawMethod->max_withdraw;
+        $message = __('Please withdraw the amount within the range') . ' ' . $currencySymbol . $withdrawMethod->min_withdraw . ' ' . __('to') . ' ' . $currencySymbol . $withdrawMethod->max_withdraw;
         notify()->error($message, 'Error');
         return redirect()->back()->withInput();  // Passes the old input back to the form
     }
@@ -369,10 +369,10 @@ class WithdrawController extends Controller
             $withdrawResponse = $this->forexApiService->balanceOperation($data);
             if ($withdrawResponse['success']) {
                 $isDeducted = true; // Deduction applied
-                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+                Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
             } else {
                 // Mark the transaction as failed if deduction fails
-                Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, 'Insufficient Withdrawable Balance');
+                Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, __('Insufficient Withdrawable Balance'));
                 return redirect()->back()->withInput();
             }
         } else {
@@ -390,11 +390,11 @@ class WithdrawController extends Controller
             $isDeducted = true;  // Mark deduction as applied for wallet
 
             // Update transaction status
-            Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+            Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
         }
     } else {
         // If deduction feature is disabled, mark the transaction as pending
-        Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
+        Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
     }
 
     // Ensure $txnInfo->manual_field_data is decoded as an array
@@ -409,7 +409,7 @@ class WithdrawController extends Controller
     $manualFieldData['Deduction Status'] = [
         'type' => 'text',
         'validation' => 'optional',
-        'value' => $isDeducted ? 'Deducted' : 'Not Deducted'
+        'value' => $isDeducted ? __('Deducted') : __('Not Deducted')
     ];
 
     // Re-encode and save the updated manual_field_data
@@ -425,12 +425,12 @@ class WithdrawController extends Controller
     // Notify user and admin
     $symbol = setting('currency_symbol', 'global');
     $notify = [
-        'card-header' => 'Withdraw Money',
-        'title' => $symbol . $txnInfo->amount . ' Withdraw Request Successful',
-        'p' => 'The Withdraw Request has been successfully sent',
-        'strong' => 'Transaction ID: ' . $txnInfo->tnx,
+        'card-header' => __('Withdraw Money'),
+        'title' => $symbol . $txnInfo->amount . ' ' . __('Withdraw Request Successful'),
+        'p' => __('The Withdraw Request has been successfully sent'),
+        'strong' => __('Transaction ID: ') . $txnInfo->tnx,
         'action' => route('user.withdraw.view'),
-        'a' => 'WITHDRAW REQUEST AGAIN',
+        'a' => __('WITHDRAW REQUEST AGAIN'),
         'view_name' => 'withdraw',
     ];
     Session::put('user_notify', $notify);

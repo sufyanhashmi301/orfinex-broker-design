@@ -43,7 +43,7 @@ class SettingController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -63,7 +63,7 @@ class SettingController extends Controller
 
         $user->update($data);
 
-        notify()->success('Your Profile Updated successfully');
+        notify()->success(__('Your Profile Updated successfully'));
 
         return redirect()->back();
     }
@@ -78,7 +78,7 @@ class SettingController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -96,7 +96,7 @@ class SettingController extends Controller
 
         $user->update($data);
 
-        notify()->success('Your Profile Updated successfully');
+        notify()->success(__('Your Profile Updated successfully'));
 
         return redirect()->route('user.setting.show');
 

@@ -3,13 +3,13 @@
         <div class="row justify-content-center">
             <div class="col-xl-8">
                 <div class="section-title centered">
-                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ $data['blog_title_small'] }}</h4>
-                    <h2 data-aos="fade-down" data-aos-duration="1500">{{ $data['blog_title_big'] }}</h2>
+                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ __('blog_title_small') }}</h4>
+                    <h2 data-aos="fade-down" data-aos-duration="1500">{{ __('blog_title_big') }}</h2>
                 </div>
             </div>
         </div>
         <div class="row">
-            @foreach(\App\Models\Blog::where('locale',app()->getLocale())->latest()->take(3)->get() as $blog)
+            @foreach(\App\Models\Blog::where('locale', app()->getLocale())->latest()->take(3)->get() as $blog)
                 <div class="col-xl-4 col-lg-6 col-sm-12">
                     <div class="single-blog" data-aos="fade-down" data-aos-duration="1000">
                         <div class="thumb">
@@ -20,19 +20,18 @@
                                 <div class="date">{{ $blog->created_at }}</div>
                             </div>
                             <div class="title">
-                                <h3><a href="{{ route('blog-details',$blog->id) }}">{{ $blog->title }}</a></h3>
+                                <h3><a href="{{ route('blog-details', $blog->id) }}">{{ $blog->title }}</a></h3>
                             </div>
                             <div class="des">
-                                {!! Str::limit($blog->details,100) !!}
+                                {!! Str::limit($blog->details, 100) !!}
                             </div>
                             <div class="link">
-                                <a href="{{ route('blog-details',$blog->id) }}">{{ __('Continue Reading') }}</a>
+                                <a href="{{ route('blog-details', $blog->id) }}">{{ __('Continue Reading') }}</a>
                             </div>
                         </div>
                     </div>
                 </div>
             @endforeach
-
         </div>
     </div>
 </section>

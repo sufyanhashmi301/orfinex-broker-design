@@ -11,10 +11,10 @@
                         <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize rounded-3xl">
                             {{ __('KYC Verified') }}
                         </div>
-                        <p class="mt-3">{{ json_decode($user->kyc_credential,true)['Action Message'] ?? '' }}</p>
+                        <p class="mt-3">{{ json_decode($user->kyc_credential,true)['Action Message'] ?? __('') }}</p>
                     @else
                         <a href="{{ route('user.kyc') }}" class="btn btn-dark">{{ __('Upload KYC') }}</a>
-                        <p class="mt-3">{{ json_decode($user?->kyc_credential,true)['Action Message'] ?? '' }}</p>
+                        <p class="mt-3">{{ json_decode($user?->kyc_credential,true)['Action Message'] ?? __('') }}</p>
                     @endif
                 </div>
             </div>

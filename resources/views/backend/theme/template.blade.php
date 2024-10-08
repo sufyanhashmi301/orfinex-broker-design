@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="items-center p-5">
+                            <div class="items-center dark:bg-body p-5">
                                 <div class="success-radio">
                                     <label class="flex items-center cursor-pointer">
                                         <input

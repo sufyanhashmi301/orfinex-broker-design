@@ -13,7 +13,7 @@
                             <div class="p-0 h-full body-class">
                                 <!-- BEGIN: Messages -->
                                 <div class="h-full">
-                                    <div class="chat-content bg-white dark:bg-slate-800" style="height: calc(100% - 75px);">
+                                    <div class="chat-content bg-white dark:bg-dark" style="height: calc(100% - 75px);">
                                         <div class="msgs overflow-y-auto msg-height pt-6 space-y-6">
                                             <div class="block md:px-6 px-4">
                                                 <div class="flex space-x-2 items-end rtl:space-x-reverse">
@@ -122,7 +122,7 @@
             </div>
         </div>
         <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-            <div class="profiel-wrap h-full p-6 pt-10 rounded-lg bg-white dark:bg-slate-800 lg:space-y-0 space-y-6 relative z-[1]">
+            <div class="profiel-wrap h-full p-6 pt-10 rounded-lg bg-white dark:bg-dark lg:space-y-0 space-y-6 relative z-[1]">
                 <div class="customer-profile-cover absolute left-0 top-0 h-[115px] w-full z-[-1] rounded-t-lg">
                     <p class="text-sm space-x-3 p-3">
                         <span class="font-medium text-slate-900">{{ __('Ticket ID:') }}</span>
@@ -148,7 +148,7 @@
                     <div class="flex justify-center space-x-3 rtl:space-x-reverse mb-5">
                         @can('customer-mail-send')
                             <span type="button" data-bs-toggle="modal" data-bs-target="#sendEmail">
-                                <a href="javascript:void(0);" class="toolTip onTop action-btn"
+                                <a href="javascript:void(0);" class="toolTip onTop action-btn dark:text-slate-300"
                                    data-tippy-theme="dark" data-tippy-content="Send Email">
                                     <iconify-icon icon="lucide:mail"></iconify-icon>
                                 </a>
@@ -156,13 +156,13 @@
                         @endcan
                         @can('customer-login')
                             <a href="{{ route('admin.user.login',$ticket->user->id) }}" target="_blank"
-                               class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Login As User">
+                               class="toolTip onTop action-btn dark:text-slate-300" data-tippy-theme="dark" data-tippy-content="Login As User">
                                 <iconify-icon icon="lucide:user-plus"></iconify-icon>
                             </a>
                         @endcan
                         @can('customer-balance-add-or-subtract')
                             <span data-bs-toggle="modal" data-bs-target="#addSubBal">
-                                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                                    data-tippy-theme="dark" data-tippy-content="Add Funds">
                                     <iconify-icon icon="lucide:wallet"></iconify-icon>
                                 </a>
@@ -170,7 +170,7 @@
                         @endcan
                         {{--@can('Delete User')--}}
                         <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
-                            <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                            <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                                data-tippy-theme="dark" data-tippy-content="Delete User">
                                 <iconify-icon icon="lucide:user-minus"></iconify-icon>
                             </a>

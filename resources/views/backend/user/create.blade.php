@@ -204,110 +204,110 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="grid grid-cols-12 gap-5">
-            <div class="lg:col-span-4 col-span-12">
-                <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-5">
-                    {{ __('KYC Verification Status') }}
-                </h4>
-                <div class="card">
-                    <div class="card-body space-y-5 p-6">
-                        <div class="input-area relative">
-                            <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
-                            <select name="kyc" id="status" class="form-control">
-                                <option value="">{{ __('Select') }}</option>
+            <div class="grid grid-cols-12 gap-5">
+                <div class="lg:col-span-4 col-span-12">
+                    <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-5">
+                        {{ __('KYC Verification Status') }}
+                    </h4>
+                    <div class="card">
+                        <div class="card-body space-y-5 p-6">
+                            <div class="input-area relative">
+                                <label for="status" class="form-label">{{ __('KYC Level:') }}</label>
+                                <select name="kyc" id="status" class="form-control">
+                                    <option value="">{{ __('Select') }}</option>
 
-                                {{-- Loop through KYC Levels --}}
-                                @foreach($kycLevels as $level)
-                                    <option value="{{ $level->id }}">
-                                        {{ $level->name }}
-                                    </option>
-                                @endforeach
+                                    {{-- Loop through KYC Levels --}}
+                                    @foreach($kycLevels as $level)
+                                        <option value="{{ $level->id }}">
+                                            {{ $level->name }}
+                                        </option>
+                                    @endforeach
 
-                                {{-- Loop through KYC Statuses (Enum) --}}
-                                @foreach(App\Enums\KYCStatus::cases() as $status)
-                                    <option value="kyc_{{ $status->value }}">
-                                        {{ $status->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                                    {{-- Loop through KYC Statuses (Enum) --}}
+                                    @foreach(App\Enums\KYCStatus::cases() as $status)
+                                        <option value="kyc_{{ $status->value }}">
+                                            {{ $status->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
 
-                        <div class="input-area relative">
-                            <label for="" class="form-label">
-                                {{ __('Verified By') }}
-                            </label>
-                            <select name="" class="select2 form-control w-full" data-placeholder="Staff Name">
-                                <option value="">{{ __('Staff Name') }}</option>
-                            </select>
-                        </div>
-                        <div class="input-area relative">
-                            <label for="" class="form-label">
-                                {{ __('Comment') }}
-                            </label>
-                            <textarea name="" class="form-control"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="lg:col-span-8 col-span-12">
-                <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-5">
-                    {{ __('Passport or Driving Licence') }}
-                </h4>
-                <div class="card">
-                    <div class="card-body p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="input-area relative">
                                 <label for="" class="form-label">
-                                    {{ __('ID Type') }}
+                                    {{ __('Verified By') }}
                                 </label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="passport">{{ __('Passport') }}</option>
+                                <select name="" class="select2 form-control w-full" data-placeholder="Staff Name">
+                                    <option value="">{{ __('Staff Name') }}</option>
                                 </select>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">
-                                    {{ __('Document No#') }}
+                                    {{ __('Comment') }}
                                 </label>
-                                <input type="text" name="" class="form-control">
+                                <textarea name="" class="form-control"></textarea>
                             </div>
-                            <div class="input-area relative">
-                                <div class="wrap-custom-file">
-                                    <input
-                                        type="file"
-                                        name="icon"
-                                        id="front-page"
-                                        accept=".gif, .jpg, .png"
-
-                                    />
-                                    <label for="front-page">
-                                        <img
-                                            class="upload-icon"
-                                            src="{{asset('global/materials/upload.svg')}}"
-                                            alt=""
-                                        />
-                                        <span>{{ __('Upload Avatar') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-8 col-span-12">
+                    <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-5">
+                        {{ __('Passport or Driving Licence') }}
+                    </h4>
+                    <div class="card">
+                        <div class="card-body p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="input-area relative">
+                                    <label for="" class="form-label">
+                                        {{ __('ID Type') }}
                                     </label>
+                                    <select name="" class="select2 form-control w-full">
+                                        <option value="passport">{{ __('Passport') }}</option>
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="input-area relative">
-                                <div class="wrap-custom-file">
-                                    <input
-                                        type="file"
-                                        name="icon"
-                                        id="back-page"
-                                        accept=".gif, .jpg, .png"
-
-                                    />
-                                    <label for="back-page">
-                                        <img
-                                            class="upload-icon"
-                                            src="{{asset('global/materials/upload.svg')}}"
-                                            alt=""
-                                        />
-                                        <span>{{ __('Upload Avatar') }}</span>
+                                <div class="input-area relative">
+                                    <label for="" class="form-label">
+                                        {{ __('Document No#') }}
                                     </label>
+                                    <input type="text" name="" class="form-control">
+                                </div>
+                                <div class="input-area relative">
+                                    <div class="wrap-custom-file">
+                                        <input
+                                            type="file"
+                                            name="icon"
+                                            id="front-page"
+                                            accept=".gif, .jpg, .png"
+
+                                        />
+                                        <label for="front-page">
+                                            <img
+                                                class="upload-icon"
+                                                src="{{asset('global/materials/upload.svg')}}"
+                                                alt=""
+                                            />
+                                            <span>{{ __('Upload Avatar') }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-area relative">
+                                    <div class="wrap-custom-file">
+                                        <input
+                                            type="file"
+                                            name="icon"
+                                            id="back-page"
+                                            accept=".gif, .jpg, .png"
+
+                                        />
+                                        <label for="back-page">
+                                            <img
+                                                class="upload-icon"
+                                                src="{{asset('global/materials/upload.svg')}}"
+                                                alt=""
+                                            />
+                                            <span>{{ __('Upload Avatar') }}</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -315,12 +315,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="mt-10">
-        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-            {{ __('Add New Customer') }}
-        </button>
-    </div>
+        <div class="mt-10">
+            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                {{ __('Add New Customer') }}
+            </button>
+        </div>
     </form>
 @endsection

@@ -6,7 +6,7 @@
     @include('backend.include.__head')
 
     <!--/Head-->
-    <body>
+    <body class="font-inter dashcode-app" id="body_class">
         <!--Auth Page-->
         <div class="loginwrapper flex-col justify-center items-center bg-cover bg-no-repeat bg-center p-8 lg:py-20 lg:px-0" style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
             <x:notify-messages/>

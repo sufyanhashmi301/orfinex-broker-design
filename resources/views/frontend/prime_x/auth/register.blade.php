@@ -197,7 +197,7 @@
                     </form>
                     <!-- END: Login Form -->
                     <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                        <div class="absolute inline-block bg-white dark:bg-slate-800 dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                        <div class="absolute inline-block bg-white dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
                             {{ __('Already have an account?') }}
                         </div>
                     </div>

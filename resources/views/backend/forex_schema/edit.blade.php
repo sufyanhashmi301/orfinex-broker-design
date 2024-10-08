@@ -208,6 +208,18 @@
 
                         />
                     </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <input
+                            type="text"
+                            name="min_amount"
+                            value="{{$schema->min_amount}}"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Min Amount"
+
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -228,6 +240,7 @@
                                     <option value="{{$group->group}}" @if($group->group == $schema->real_swap_free) selected @endif>{{ $group->group}}</option>
                                 @endforeach
                             </select>
+                        </div>
 {{--                        <div class="input-area">--}}
 {{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
 {{--                            <input--}}

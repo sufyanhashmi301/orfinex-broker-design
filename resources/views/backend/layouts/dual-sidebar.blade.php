@@ -14,7 +14,7 @@
         <x:notify-messages/>
 
         <!--Side Nav-->
-        <div class="sidebar-wrapper group">
+        <div class="sidebar-wrapper group dark:shadow-slate-700">
             @include('backend.include.__side_nav')
         </div>
         <!--/Side Nav-->
@@ -43,7 +43,7 @@
                 </div>
             </div>
             <footer class="md:block hidden static" id="footer">
-                <div class="site-footer px-6 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 py-4" style="margin-left: 448px;">
+                <div class="site-footer px-6 text-slate-500 dark:text-slate-300 py-4" style="margin-left: 448px;">
                     <div class="grid md:grid-cols-2 grid-cols-1 md:gap-5">
                         <div class="text-center ltr:md:text-start rtl:md:text-right text-sm">
                             {{ setting('footer_content', 'global') }}

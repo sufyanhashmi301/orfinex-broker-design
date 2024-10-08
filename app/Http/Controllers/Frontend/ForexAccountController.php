@@ -89,11 +89,29 @@ class ForexAccountController extends GatewayController
         }
         $input = $request->all();
         $user = Auth::user();
+        $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);
         $accountType = $request->account_type;
-//        dd(ForexAccount::where(['user_id'=>$user->id, 'forex_schema_id'=>$schema->id, 'account_type'=>$accountType])->count(),$accountType,$schema->account_limit);
+        $totalLimit = setting('forex_account_settings', 'forex_account_settings');
+        if($user->account_limit > $totalLimit){
+            $totalLimit = $user->account_limit;
+       }
+        //total account creation limit check
+        $totalForexAccounts = ForexAccount::where(['user_id' => $user->id, 'account_type' => $accountType])->count();
+        if ($totalForexAccounts >= $totalLimit) {
+            $message = __('Sorry, You have achieved your total account creation limit. Please contact support :support to increase your account limit.', ['title' => $schema->title,'support' => setting('support_email', 'common_settings')]);
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
+        //specific type account creation limit check
         if (ForexAccount::where(['user_id' => $user->id, 'forex_schema_id' => $schema->id, 'account_type' => $accountType])->count() >= $schema->account_limit) {
             $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.', ['title' => $schema->title]);
+            notify()->error($message, 'Error');
+            return redirect()->back();
+        }
+       //minimum balance limit check
+        if ($schema->min_amount > $mainWalletBalance ) {
+            $message = __('We’re sorry, but a minimum balance of :limit in your main wallet is required to create a new Forex account. Please make the necessary deposit and try again.', ['limit' => $schema->min_amount.' '.base_currency()]);
             notify()->error($message, 'Error');
             return redirect()->back();
         }

@@ -21,7 +21,7 @@
         </div>
         <div class="grid grid-cols-2 gap-5">
             <div class="lg:col-span-1 col-span-2">
-                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-slate-700">
+                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
                         <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
@@ -47,11 +47,11 @@
                                 <strong>{{ __('Referred User Investment Bounty') }}</strong>
                             </p>
                             @foreach($investments as $investment)
-                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4 mb-4">
+                            <div class="single-gateway flex items-center justify-between border dark:border-slate-700 rounded py-3 px-4 mb-4">
                                 <div class="gateway-name flex items-center">
                                     <div class="gateway-title">
-                                        <h4 class="text-sm">{{ $investment->target->name }}</h4>
-                                        <p class="text-xs">{{ $investment->description }}</p>
+                                        <h4 class="text-sm dark:text-white">{{ $investment->target->name }}</h4>
+                                        <p class="text-xs dark:text-slate-300">{{ $investment->description }}</p>
                                     </div>
                                 </div>
                                 <div class="gateway-right flex items-center">
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="gateway-edit flex space-x-3 rtl:space-x-reverse">
                                         @can('referral-edit')
-                                            <a href="" type="button" class="action-btn edit-referral"
+                                            <a href="" type="button" class="action-btn edit-referral dark:text-slate-300"
                                                 data-id="{{$investment->id}}"
                                                 data-type="{{$investment->type}}"
                                                 data-target="{{ $investment->referral_target_id }}"
@@ -72,7 +72,7 @@
                                             ><iconify-icon icon="lucide:edit-3"></iconify-icon></a>
                                         @endcan
                                         @can('referral-delete')
-                                            <a href="" class="action-btn delete-referral" type="button"
+                                            <a href="" class="action-btn delete-referral dark:text-slate-300" type="button"
                                                 data-id="{{$investment->id}}"
                                                 data-target="{{ $investment->target->name }}"
                                             ><iconify-icon icon="lucide:trash-2"></iconify-icon></a>
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="lg:col-span-1 col-span-2">
-                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-slate-700">
+                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
                         <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
@@ -113,11 +113,11 @@
                                 <strong>{{ __('Referred User Deposit Bounty') }}</strong>
                             </p>
                             @foreach($deposits as $deposit)
-                            <div class="single-gateway flex items-center justify-between border rounded py-3 px-4 mb-4">
+                            <div class="single-gateway flex items-center justify-between border dark:border-slate-700 rounded py-3 px-4 mb-4">
                                 <div class="gateway-name flex items-center">
                                     <div class="gateway-title">
-                                        <h4 class="text-sm">{{ $deposit->target->name }}</h4>
-                                        <p class="text-xs">{{ $deposit->description }}</p>
+                                        <h4 class="text-sm dark:text-white">{{ $deposit->target->name }}</h4>
+                                        <p class="text-xs dark:text-slate-300">{{ $deposit->description }}</p>
                                     </div>
                                 </div>
                                 <div class="gateway-right flex items-center">
@@ -128,7 +128,7 @@
                                     </div>
                                     <div class="gateway-edit flex space-x-3 rtl:space-x-reverse">
                                         @can('referral-edit')
-                                            <a href="" type="button" class="action-btn edit-referral"
+                                            <a href="" type="button" class="action-btn edit-referral dark:text-slate-300"
                                                 data-id="{{$deposit->id}}"
                                                 data-type="{{$deposit->type}}"
                                                 data-target="{{ $deposit->referral_target_id }}"
@@ -138,7 +138,7 @@
                                             ><iconify-icon icon="lucide:edit-3"></iconify-icon></a>
                                         @endcan
                                         @can('referral-delete')
-                                            <a href="" class="action-btn delete-referral" type="button"
+                                            <a href="" class="action-btn delete-referral dark:text-slate-300" type="button"
                                                 data-id="{{ $deposit->id }}"
                                                 data-target="{{ $deposit->target->name }}"
                                             ><iconify-icon icon="lucide:trash-2"></iconify-icon></a>

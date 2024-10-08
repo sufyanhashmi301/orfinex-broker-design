@@ -193,8 +193,20 @@
                         <input
                             type="text"
                             name="first_min_deposit"
+                            oninput="this.value = validateDouble(this.value)"
                             class="form-control"
                             placeholder="Min deposit"
+
+                        />
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">{{ __('Min Amount in wallet(On Creation):') }}</label>
+                        <input
+                            type="text"
+                            name="min_amount"
+                            oninput="this.value = validateDouble(this.value)"
+                            class="form-control"
+                            placeholder="Min Amount"
 
                         />
                     </div>

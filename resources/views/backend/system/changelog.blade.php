@@ -12,7 +12,7 @@
                 <div class="card-body p-6">
                     <div class="accordion accordion-flush space-y-3" id="accordionFlushExample">
                         <div class="accordion-item">
-                            <h2 class="accordion-header bg-slate-50 text-base font-medium rounded-lg px-4 py-3">
+                            <h2 class="accordion-header bg-slate-50 dark:bg-body text-base font-medium rounded-lg px-4 py-3">
                                 <button class="accordion-button collapsed flex items-center justify-between w-full" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                                     <span>
                                         {{ __('Version 3.0') }}
@@ -21,7 +21,7 @@
                                     <iconify-icon icon="lucide:chevron-down"></iconify-icon>
                                 </button>
                             </h2>
-                            <div id="flush-collapseOne" class="accordion-collapse collapse border border-slate-100 border-t-0" data-bs-parent="#accordionFlushExample">
+                            <div id="flush-collapseOne" class="accordion-collapse collapse border border-slate-100 border-t-0 dark:border-0 dark:bg-body" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body p-4">
                                     <ul class="space-y-3">
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <div class="accordion-item">
-                            <h2 class="accordion-header bg-slate-50 text-base font-medium rounded-lg px-4 py-3">
+                            <h2 class="accordion-header bg-slate-50 dark:bg-body text-base font-medium rounded-lg px-4 py-3">
                                 <button class="accordion-button collapsed flex items-center justify-between w-full" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                                     <span>
                                         {{ __('Version 2.0') }}
@@ -70,7 +70,7 @@
                                     <iconify-icon icon="lucide:chevron-down"></iconify-icon>
                                 </button>
                             </h2>
-                            <div id="flush-collapseTwo" class="accordion-collapse collapse border border-slate-100 border-t-0" data-bs-parent="#accordionFlushExample">
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse border border-slate-100 border-t-0 dark:border-0 dark:bg-body" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body p-4">
                                     <ul class="space-y-3">
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
@@ -98,7 +98,7 @@
                             </div>
                         </div>
                         <div class="accordion-item">
-                            <h2 class="accordion-header bg-slate-50 text-base font-medium rounded-lg px-4 py-3">
+                            <h2 class="accordion-header bg-slate-50 dark:bg-body text-base font-medium rounded-lg px-4 py-3">
                                 <button class="accordion-button collapsed flex items-center justify-between w-full" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
                                     <span>
                                         {{ __('Version 1.0') }}
@@ -107,7 +107,7 @@
                                     <iconify-icon icon="lucide:chevron-down"></iconify-icon>
                                 </button>
                             </h2>
-                            <div id="flush-collapseThree" class="accordion-collapse collapse border border-slate-100 border-t-0" data-bs-parent="#accordionFlushExample">
+                            <div id="flush-collapseThree" class="accordion-collapse collapse border border-slate-100 border-t-0 dark:border-0 dark:bg-body" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body p-4">
                                     <ul class="space-y-3">
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">

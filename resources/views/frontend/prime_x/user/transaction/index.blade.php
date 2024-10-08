@@ -42,11 +42,11 @@
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Description') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Method') }}</th>
                                             <th scope="col" class="table-th">{{ __('Type') }}</th>
                                             <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                             <th scope="col" class="table-th">{{ __('Fee') }}</th>
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Method') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -104,6 +104,21 @@
                                                 {{ $transaction->tnx }}
                                             </td>
                                             <td class="table-td">
+                                                <div class="flex items-center">
+                                                    <div class="flex-none">
+                                                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                                            {{--                                                        @if($transaction->depositMethod->title)--}}
+                                                            <img src="{{asset(transaction_method_image($transaction))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-1 text-start">
+                                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                            {{transaction_method_name($transaction)}}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="table-td">
                                                 <div class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl">
                                                     {{ str_replace('_',' ',$transaction->type->value) }}
                                                 </div>
@@ -139,9 +154,7 @@
                                                     </span>
                                                 </span>
                                             </td>
-                                            <td class="table-td">
-                                                {{ ucfirst($transaction->method) }}
-                                            </td>
+
                                         </tr>
                                     @endforeach
                                     </tbody>

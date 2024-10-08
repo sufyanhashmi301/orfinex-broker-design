@@ -28,9 +28,9 @@
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Account') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Wallet') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Description') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Method') }}</th>
                                         <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         <th scope="col" class="table-th">{{ __('Fee') }}</th>
                                         <th scope="col" class="table-th">{{ __('Amount') }}</th>
@@ -41,19 +41,21 @@
                                     @foreach($recentTransactions as $transaction )
                                     <tr>
                                         <td class="table-td">
-                                            {{ ucfirst(str_replace('_',' ',$transaction->type->value )) }}
+                                            {{ ucfirst($transaction->description) }}
+
                                         </td>
-                                        <td class="table-td">{{ $transaction->target_id }}</td>
+                                        <td class="table-td">{{ $transaction->tnx }}</td>
                                         <td class="table-td">
                                             <div class="flex items-center">
                                                 <div class="flex-none">
                                                     <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                        <img src="{{ asset('frontend/images/logo/BinancePay.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+{{--                                                        @if($transaction->depositMethod->title)--}}
+                                                        <img src="{{asset(transaction_method_image($transaction))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">
                                                     <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                        {{$transaction->method}}
+                                                        {{transaction_method_name($transaction)}}
                                                     </h4>
                                                 </div>
                                             </div>

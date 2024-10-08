@@ -20,7 +20,7 @@
     <div class="grid grid-cols-3 gap-5">
         @foreach($banners as $banner)
             <div class="lg:col-span-1 col-span-3">
-                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-slate-700">
+                <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <form action="{{ route('admin.banner.update',$banner->id) }}" method="post">
                         @method('put')
                         @csrf

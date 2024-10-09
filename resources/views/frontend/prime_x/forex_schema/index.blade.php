@@ -22,8 +22,8 @@
                 <div class="flex items-center justify-between mb-1">
                     <h4>{{ $schema->title }}</h4>
                     @if($schema->badge)
-                        <p class="badge bg-primary text-slate-900 capitalize">
-                            {{ $schema->badge }}
+                        <p class="badge bg-primary capitalize">
+                            {{$schema->badge}}
                         </p>
                     @endif
                 </div>

@@ -54,7 +54,7 @@
                         </a>
                     @endif
                     <div class="mt-5">
-                        <p class="text-sm">
+                        <p class="text-sm dark:text-slate-300">
                             {{ __('If you face any issue, please visit our') }}
                             <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn-link">
                                 {{ __('Customer Support') }}

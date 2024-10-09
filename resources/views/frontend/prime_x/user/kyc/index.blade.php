@@ -102,7 +102,7 @@
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)
                         <div
                             class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                            <span class="badge bg-primary text-slate-900 capitalize">{{ __('Automated') }}</span>
+                            <span class="badge bg-primary capitalize">{{ __('Automated') }}</span>
                             <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                 {{ __('Verify your details please') }}
                             </p>
@@ -192,7 +192,7 @@
                         @if($automaticSubLevel && $automaticSubLevel->status)
                             <div
                                 class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                <span class="badge bg-primary text-slate-900 capitalize">{{ __('Automated') }}</span>
+                                <span class="badge bg-primary capitalize">{{ __('Automated') }}</span>
                                 <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                     {{ __('Provide a document confirming your name') }}
                                 </p>
@@ -230,7 +230,7 @@
                         @if($manualSubLevel && $manualSubLevel->status)
                             <div
                                 class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                <span class="badge bg-primary text-slate-900 capitalize">{{ __('Manual') }}</span>
+                                <span class="badge bg-primary capitalize">{{ __('Manual') }}</span>
                                 <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                     {{ __('Provide a document confirming your name') }}
                                 </p>
@@ -265,7 +265,7 @@
 
                         <div
                             class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                            <span class="badge bg-primary text-slate-900 capitalize">{{ __('Semi-Automated') }}</span>
+                            <span class="badge bg-primary capitalize">{{ __('Semi-Automated') }}</span>
                             <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                 {{ __('You will need to provide proof of your place of residence') }}
                             </p>

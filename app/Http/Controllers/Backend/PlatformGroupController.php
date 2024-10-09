@@ -46,17 +46,28 @@ class PlatformGroupController extends Controller
 
     public function store(Request $request)
     {
-
         $groupId = $request->id;
+        $status = $request->status; // Boolean value indicating whether to enable or disable
 
-        $result = $this->platformGroupService->createGroupFromMt5($groupId);
+        // Check if the group already exists
+        $group = PlatformGroup::where('group_id', $groupId)->first();
 
-        if ($result['success']) {
-            return response()->json(['success' => true]);
-        } else {
-            return response()->json(['success' => false]);
+        if (!$group) {
+
+            $result = $this->platformGroupService->createGroupFromMt5($groupId);
+            return response()->json(['success' => $result['success'], 'message' => $result['message'] ?? 'Group created successfully.']);
+
+        } elseif ($group && $group->status == 0) {
+
+            $result = $this->platformGroupService->updateGroupStatus($groupId, 1); // 1 for enabled
+            return response()->json(['success' => $result['success'], 'message' => 'Group enabled successfully.']);
+
+        } elseif ($group && $group->status == 1) {
+
+            $result = $this->platformGroupService->updateGroupStatus($groupId, 0); // 0 for disabled
+            return response()->json(['success' => $result['success'], 'message' => 'Group disabled successfully.']);
+
         }
-
     }
 
     public function assignRiskBook(Request $request)

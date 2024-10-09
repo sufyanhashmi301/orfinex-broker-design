@@ -128,43 +128,105 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                             <tr>
-                                <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                <th scope="col" class="table-th">{{ __('Account') }}</th>
+                                <th scope="col" class="table-th">{{ __('Description') }}</th>
                                 <th scope="col" class="table-th">{{ __('Wallet') }}</th>
-                                <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
                                 <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                <th scope="col" class="table-th">{{ __('Method') }}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td class="table-td">{{ __('Withdrawal') }}</td>
-                                <td class="table-td">{{ __('3252362465') }}</td>
-                                <td class="table-td">
-                                    <div class="flex items-center">
-                                        <div class="flex-none">
-                                            <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                <img src="{{ asset('frontend/images/logo/BinancePay.svg') }}" alt=""
-                                                     class="w-full h-full rounded-[100%] object-cover">
+                            @foreach($wallets as $raw)
+                                <tr>
+                                    <td class="table-td">
+                                        <div class="flex items-center">
+                                            <div class="flex-none">
+                                                <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
+                                                    <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    {{ $raw->description }} @if(!in_array($raw->approval_cause,['none',""]))
+                                                        <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $raw->approval_cause }}">
+                                                                    <i icon-name="mail"></i>
+                                                                </span>
+                                                    @endif
+                                                </h4>
+                                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                    {{ $raw->created_at }}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="flex-1 text-start">
-                                            <h4 class="text-sm text-slate-600 whitespace-nowrap">
-                                                {{ __('BinancePay') }}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="table-td">
-                                    <span class="inline-block px-3 text-center mx-auto py-1 rounded-full bg-warning-500">
-                                        {{ __('Done') }}
-                                    </span>
-                                </td>
-                                <td class="table-td">{{ __('1.5%') }}</td>
-                                <td class="table-td">{{ __('10,000 USD') }}</td>
-                            </tr>
+                                    </td>
+                                    <td class="table-td">
+                                        {{ w2n_by_wallet_id($raw->target_id) }}
+                                    </td>
+                                    <td class="table-td">
+                                        {{ $raw->tnx }}
+                                    </td>
+                                    <td class="table-td">
+                                                <span class="font-medium">
+                                                    +{{$raw->amount.' '.$currency }}
+                                                </span>
+                                    </td>
+                                    <td class="table-td">
+                                                <span class="font-medium">
+                                                    -{{ $raw->charge }} {{ $currency }}
+                                                </span>
+                                    </td>
+                                    <td class="table-td">
+                                                <span class="block text-left">
+                                                    <span class="inline-block text-center mx-auto py-1">
+                                                        <span class="flex items-center space-x-3 rtl:space-x-reverse">
+                                                            @switch($raw->status->value)
+                                                                @case('pending')
+                                                                <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                                <span>{{ __('Pending') }}</span>
+                                                                @break
+                                                                @case('success')
+                                                                <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                <span>{{ __('Success') }}</span>
+                                                                @break
+                                                                @case('failed')
+                                                                <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                                <span>{{ __('canceled') }}</span>
+                                                                @break
+                                                            @endswitch
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                    </td>
+                                    <td class="table-td">
+                                        {{ ucfirst($raw->method) }}
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
+                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-3 mt-auto">
+                            <div>
+                                @php
+                                    $from = $wallets->firstItem(); // The starting item number on the current page
+                                    $to = $wallets->lastItem(); // The ending item number on the current page
+                                    $total = $wallets->total(); // The total number of items
+                                @endphp
+
+                                <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
+                                    Showing
+                                    <span class="font-medium">{{ $from }}</span>
+                                    to
+                                    <span class="font-medium">{{ $to }}</span>
+                                    of
+                                    <span class="font-medium">{{ $total }}</span>
+                                    results
+                                </p>
+                            </div>
+                            {{  $wallets->links() }}
+                        </div>
+
                     </div>
                 </div>
             </div>

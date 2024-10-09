@@ -201,10 +201,15 @@ class InvestController extends GatewayController
                     'login'=>$invest->login
 //                'login'=>555561
                 ];
-                $todayScore = $forexApi->getTodayRiskScore($data);
-                $weeklyScore = $forexApi->getWeekRiskScore($data);
-                $totalScore = $forexApi->getTotalRiskScore($data);
-                $totalBalance = $forexApi->getBalance($data);
+//                $todayScore = $forexApi->getTodayRiskScore($data);
+//                $weeklyScore = $forexApi->getWeekRiskScore($data);
+//                $totalScore = $forexApi->getTotalRiskScore($data);
+//                $totalBalance = $forexApi->getBalance($data);
+
+                $todayScore = [];
+                $weeklyScore = [];
+                $totalScore = [];
+                $totalBalance = [];
 
             }elseif($traderType == TraderType::X9) {
                 $forexApi = new x9ApiService();

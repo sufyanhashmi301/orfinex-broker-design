@@ -107,7 +107,10 @@ if (!function_exists('w2n_by_wallet_id')) {
             AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
             AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
         ];
-        return Arr::get($nameMap, $account->balance);
+        if($account) {
+            return Arr::get($nameMap, $account->balance);
+        }
+        return sys_settings('account_main', 'Main Wallet');
     }
 }
 if (!function_exists('get_user_account_by_wallet_id')) {

@@ -92,7 +92,9 @@ class PlatformGroupController extends Controller
         $riskBooks = RiskBook::with(['groups' => function ($query) {
             $query->where('status',true);
         }])->get();
-        return view('backend.platform_group.risk_book', compact('riskBooks'));
+        $unAssignedGroups = PlatformGroup::where('status', 1)->where('risk_book_id', 0)->get();
+
+        return view('backend.platform_group.risk_book', compact('riskBooks', 'unAssignedGroups'));
     }
 
     public function riskBookShow($id)

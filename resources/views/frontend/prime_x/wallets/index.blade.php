@@ -131,10 +131,10 @@
                                 <th scope="col" class="table-th">{{ __('Description') }}</th>
                                 <th scope="col" class="table-th">{{ __('Wallet') }}</th>
                                 <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                <th scope="col" class="table-th">{{ __('Method') }}</th>
                                 <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                 <th scope="col" class="table-th">{{ __('Fee') }}</th>
                                 <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                <th scope="col" class="table-th">{{ __('Method') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -168,6 +168,21 @@
                                         {{ $raw->tnx }}
                                     </td>
                                     <td class="table-td">
+                                        <div class="flex items-center">
+                                            <div class="flex-none">
+                                                <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                                    {{--                                                        @if($raw->depositMethod->title)--}}
+                                                    <img src="{{asset(transaction_method_image($raw))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    {{transaction_method_name($raw)}}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="table-td">
                                                 <span class="font-medium">
                                                     +{{$raw->amount.' '.$currency }}
                                                 </span>
@@ -198,9 +213,6 @@
                                                         </span>
                                                     </span>
                                                 </span>
-                                    </td>
-                                    <td class="table-td">
-                                        {{ ucfirst($raw->method) }}
                                     </td>
                                 </tr>
                             @endforeach

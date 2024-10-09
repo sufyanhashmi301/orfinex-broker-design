@@ -1,23 +1,23 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
-    <a href="{{route('home')}}" class="loaderBtn items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
-        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
+    <a href="{{ route('home') }}" class="loaderBtn items-center md:flex hidden">
+        <img src="{{ asset(setting('site_logo', 'global')) }}" class="black_logo h-10" alt="{{ __('Logo') }}"/>
+        <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="white_logo h-10" alt="{{ __('Logo') }}"/>
     </a>
     <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
-                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt=""
+                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="{{ __('User Profile') }}"
                          class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">
                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                    {{auth()->user()->full_name}}
+                    {{ auth()->user()->full_name }}
                 </h4>
                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                    {{auth()->user()->email}}
+                    {{ auth()->user()->email }}
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
 <div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
         <li>
-            <a href="{{route('user.dashboard')}}" class="navItem loaderBtn {{ isActive('user.dashboard') }}">
+            <a href="{{ route('user.dashboard') }}" class="navItem loaderBtn {{ isActive('user.dashboard') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:home"></iconify-icon>
                     <span>{{ __('Dashboard') }}</span>
@@ -80,7 +80,7 @@
         </li>
 
         <li>
-            <a href="{{route('user.schema')}}" class="navItem loaderBtn {{ isActive('user.schema*') }}">
+            <a href="{{ route('user.schema') }}" class="navItem loaderBtn {{ isActive('user.schema*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
                     <span>{{ __('New Account') }}</span>
@@ -89,7 +89,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.deposit.amount') }}" class="navItem loaderBtn @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
+            <a href="{{ route('user.deposit.amount') }}" class="navItem loaderBtn @if(Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
                     <span>{{ __('Deposit') }}</span>
@@ -107,7 +107,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.withdraw.view') }}" class="navItem loaderBtn @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+            <a href="{{ route('user.withdraw.view') }}" class="navItem loaderBtn @if(Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
                     <span>{{ __('Withdraw') }}</span>
@@ -161,7 +161,7 @@
             </ul>
         </li>
 
-        @if(setting('sign_up_referral','permission'))
+        @if(setting('sign_up_referral', 'permission'))
             <li>
                 <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">

@@ -39,8 +39,6 @@
 
 @section('script')
     <script>
-
-
         (function ($) {
             "use strict";
             var table = $('#dataTable').DataTable({
@@ -48,18 +46,15 @@
                 serverSide: true,
                 ajax: "{{ route('user.invest-logs') }}",
                 columns: [
-                    {data: 'icon', name: 'icon'},
-                    {data: 'schema', name: 'schema'},
-                    {data: 'rio', name: 'rio'},
-                    {data: 'profit', name: 'profit'},
-                    {data: 'period_remaining', name: 'period_remaining'},
-                    {data: 'capital_back', name: 'capital_back'},
-                    {data: 'next_profit_time', name: 'next_profit_time'},
+                    {data: '{{ __("icon") }}', name: '{{ __("icon") }}'},
+                    {data: '{{ __("schema") }}', name: '{{ __("schema") }}'},
+                    {data: '{{ __("rio") }}', name: '{{ __("rio") }}'},
+                    {data: '{{ __("profit") }}', name: '{{ __("profit") }}'},
+                    {data: '{{ __("period_remaining") }}', name: '{{ __("period_remaining") }}'},
+                    {data: '{{ __("capital_back") }}', name: '{{ __("capital_back") }}'},
+                    {data: '{{ __("next_profit_time") }}', name: '{{ __("next_profit_time") }}'},
                 ]
             });
-
-
         })(jQuery);
-
     </script>
 @endsection

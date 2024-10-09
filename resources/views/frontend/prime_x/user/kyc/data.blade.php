@@ -1,52 +1,53 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-@foreach( json_decode($fields, true) as $key => $field)
-
-    @if($field['type'] == 'file')
-        <div class="input-area">
-            <label for="" class="form-label">{{ $field['name'] }}</label>
-            <div class="wrap-custom-file">
-                <input
-                    type="file"
-                    name="kyc_credential[{{$field['name']}}]"
-                    id="{{ $key }}"
-                    accept=".gif, .jpg, .png"
-                    @if($field['validation'] == 'required') required @endif
-                />
-                <label for="{{ $key }}">
-                    <img
-                        class="upload-icon"
-                        src="{{ asset('global/materials/upload.svg') }}"
-                        alt=""
+    @foreach( json_decode($fields, true) as $key => $field)
+    
+        @if($field['type'] == 'file')
+            <div class="input-area">
+                <label for="" class="form-label">{{ __('' . $field['name']) }}</label>
+                <div class="wrap-custom-file">
+                    <input
+                        type="file"
+                        name="kyc_credential[{{$field['name']}}]"
+                        id="{{ $key }}"
+                        accept=".gif, .jpg, .png"
+                        @if($field['validation'] == 'required') required @endif
                     />
-                    <span>{{ __('Select '). $field['name'] }}</span>
-                </label>
+                    <label for="{{ $key }}">
+                        <img
+                            class="upload-icon"
+                            src="{{ asset('global/materials/upload.svg') }}"
+                            alt=""
+                        />
+                        <span>{{ __('Select ' . $field['name']) }}</span>
+                    </label>
+                </div>
+                <p class="text-xs dark:text-white">
+                    {{ __('Provide files in ') }} <span class="font-medium">{{ __('JPG') }}</span> {{ __('format, ') }} <span class="font-medium">{{ __('10 MB') }}</span> {{ __('maximum') }}
+                </p>
             </div>
-            <p class="text-xs dark:text-white">
-                Provide files in <span class="font-medium">JPG</span> format, <span class="font-medium">10 MB</span> maximum
-            </p>
-        </div>
-    @elseif($field['type'] == 'textarea')
-
-        <div class="input-area md:col-span-2">
-            <div class="progress-steps-form">
-                <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
-                <div class="input-group">
-                    <textarea class="form-control" @if($field['validation'] == 'required') required
-                              @endif placeholder="Send Money Note" name="kyc_credential[{{$field['name']}}]"></textarea>
+        @elseif($field['type'] == 'textarea')
+    
+            <div class="input-area md:col-span-2">
+                <div class="progress-steps-form">
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('' . $field['name']) }}</label>
+                    <div class="input-group">
+                        <textarea class="form-control" @if($field['validation'] == 'required') required
+                                  @endif placeholder="{{ __('Send Money Note') }}" name="kyc_credential[{{$field['name']}}]"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
-
-    @else
-        <div class="input-area md:col-span-2">
-            <div class="progress-steps-form">
-                <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
-                <input type="text" class="form-control" name="kyc_credential[{{$field['name']}}]"
-                           @if($field['validation'] == 'required') required @endif class="form-control"
-                           aria-label="Amount" id="amount" aria-describedby="basic-addon1">
+    
+        @else
+            <div class="input-area md:col-span-2">
+                <div class="progress-steps-form">
+                    <label for="exampleFormControlInput1" class="form-label">{{ __('' . $field['name']) }}</label>
+                    <input type="text" class="form-control" name="kyc_credential[{{$field['name']}}]"
+                               @if($field['validation'] == 'required') required @endif class="form-control"
+                               aria-label="{{ __('Amount') }}" id="amount" aria-describedby="basic-addon1">
+                </div>
             </div>
-        </div>
-    @endif
-
-@endforeach
-</div>
+        @endif
+    
+    @endforeach
+    </div>
+    

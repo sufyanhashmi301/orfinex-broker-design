@@ -7,8 +7,8 @@
 
 <script>
     var chatbox = document.getElementById('fb-customer-chat');
-    chatbox.setAttribute("page_id", {{ $data['page_id'] }});
-    chatbox.setAttribute("attribution", "biz_inbox");
+    chatbox.setAttribute("page_id", {{ __('' . $data['page_id'] . '') }});
+    chatbox.setAttribute("attribution", "{{ __('biz_inbox') }}");
 </script>
 
 <!-- Your SDK code -->

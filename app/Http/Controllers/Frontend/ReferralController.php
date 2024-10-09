@@ -114,7 +114,7 @@ class ReferralController extends Controller
     public function download($filename)
     {
         if (!File::exists('assets/'.$filename)) {
-            notify()->error('file not exists', 'Error');
+            notify()->error(__('file not exists'), __('Error'));
             return redirect()->back();
         }
         return response()->download('assets/'.$filename);

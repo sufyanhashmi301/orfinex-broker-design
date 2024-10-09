@@ -6,7 +6,7 @@
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
             <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
-                <a href="{{route('user.dashboard')}}">
+                <a href="{{ route('user.dashboard') }}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
@@ -31,7 +31,7 @@
                         <div class="single-badge @if(!in_array($ranking->id,$alreadyRank)) locked @endif">
                             <div class="badge">
                                 <div class="img">
-                                    <img src="{{ asset($ranking->icon) }}" alt="">
+                                    <img src="{{ asset($ranking->icon) }}" alt="{{ __('Badge Icon') }}">
                                 </div>
                             </div>
                             <div class="content">
@@ -47,4 +47,3 @@
     </div>
 
 @endsection
-

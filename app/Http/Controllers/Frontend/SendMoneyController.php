@@ -56,7 +56,7 @@ class SendMoneyController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         if (! setting('transfer_status', 'permission') or ! \Auth::user()->transfer_status) {
-            abort('403', 'Send Money Disable Now');
+            abort('403', __('Send Money Disable Now'));
         }
 
         $isStepOne = 'current';
@@ -241,7 +241,7 @@ class SendMoneyController extends Controller
     {
         // Check if the user has the permission to transfer
         if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
-            abort(403, 'Send Money Disabled Now');
+            abort(403, __('Send Money Disabled Now'));
         }
 
         // Validate inputs
@@ -256,7 +256,7 @@ class SendMoneyController extends Controller
 
         // Check if validation fails
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
             return redirect()->back();
         }
 
@@ -310,10 +310,10 @@ class SendMoneyController extends Controller
             $toUser = $toUserForexAccount->user;
 
             // Create transaction entries with TxnStatus::None
-            $sendDescription = 'Transfer Money to ' . $toUser->username . '-' . $receiverAccount;
+            $sendDescription =__('Transfer Money to ') . $toUser->username . '-' . $receiverAccount;
             $txnInfoSender = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription, TxnType::SendMoney, TxnStatus::None, null, null, \Auth::id(), $toUser->id, 'User', [], $input['note'], $targetId, $targetType);
 
-            $receiveDescription = 'Transfer Money from ' . \Auth::user()->username . '-' . $targetId;
+            $receiveDescription = __('Transfer Money from ') . \Auth::user()->username . '-' . $targetId;
             $txnInfoReceiver = Txn::new($amount, 0, $amount, 'system', $receiveDescription, TxnType::ReceiveMoney, TxnStatus::None, null, null, $toUser->id, \Auth::id(), 'User', [], $input['note'], $receiverAccount, 'forex');
 
             // Handle Forex-to-Forex or Wallet-to-Forex transfers
@@ -324,8 +324,8 @@ class SendMoneyController extends Controller
             }
 
             // Update transaction status to success
-            Txn::update($txnInfoSender->tnx, TxnStatus::Success, \Auth::id(), 'Transfer Successful');
-            Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id, 'Transfer Successful');
+            Txn::update($txnInfoSender->tnx, TxnStatus::Success, \Auth::id(),  __('Transfer Successful'));
+            Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id,  __('Transfer Successful'));
 
             // Update MT5 balances for Forex accounts
             if ($targetType == 'forex') {
@@ -337,7 +337,7 @@ class SendMoneyController extends Controller
             \DB::commit();
 
             // Notify the user of success
-            notify()->success(__('Successfully Sent Money'), 'Success');
+            notify()->success(__('Successfully Sent Money'), __('Success'));
 
             // Send Email Notifications
             $this->sendEmailNotificationExternal($txnInfoSender, $toUser, $receiverAccount);
@@ -354,9 +354,9 @@ class SendMoneyController extends Controller
 //            }
 
             // Log the error and notify the user
-            Log::error('Transaction failed: ' . $e->getMessage());
-//            dd($e->getMessage());
-            notify()->error($e->getMessage(), 'Error');
+            Log::error(__('Transaction failed: ') . $e->getMessage());
+            //            dd($e->getMessage());
+            notify()->error($e->getMessage(), __('Error'));
 
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
@@ -467,12 +467,12 @@ class SendMoneyController extends Controller
         $symbol = setting('currency_symbol', 'global');
 
         $notify = [
-            'card-header' => 'Transfer Success',
-            'title' => $symbol . $txnInfoSender->amount . ' Transferred Successfully',
-            'p' => 'You have successfully transferred ' . $symbol . $txnInfoSender->amount . ' to ' . $toUser->first_name . ' ' . $toUser->last_name . ' (Account: ' . $receiverAccount . ')',
-            'strong' => 'Transaction ID: ' . $txnInfoSender->tnx,
+            'card-header' => __('Transfer Success'),
+            'title' => $symbol . $txnInfoSender->amount . __(' Transferred Successfully'),
+            'p' => __('You have successfully transferred ') . $symbol . $txnInfoSender->amount . ' to ' . $toUser->first_name . ' ' . $toUser->last_name . ' (Account: ' . $receiverAccount . ')',
+            'strong' => __('Transaction ID: ') . $txnInfoSender->tnx,
             'action' => route('user.send-money.view'),
-            'a' => 'Transfer Again',
+            'a' => __('Transfer Again'),
             'view_name' => 'send_money',
         ];
         Session::put('user_notify', $notify);
@@ -518,7 +518,7 @@ class SendMoneyController extends Controller
             ->orderBy('id', 'desc')
             ->get();
         if (! setting('transfer_status', 'permission') or ! \Auth::user()->transfer_status) {
-            abort('403', 'Send Money Disable Now');
+            abort('403', __('Send Money Disable Now'));
         }
 
         $isStepOne = 'current';
@@ -531,7 +531,7 @@ class SendMoneyController extends Controller
     public function sendMoneyInternalNow(Request $request)
     {
         if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
-            abort(403, 'Send Money Disabled Now');
+            abort(403, __('Send Money Disabled Now'));
         }
         // Validation for input fields
         $validator = Validator::make($request->all(), [
@@ -544,7 +544,7 @@ class SendMoneyController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
             return redirect()->back();
         }
 
@@ -561,8 +561,8 @@ class SendMoneyController extends Controller
         $max = setting('internal_max_send', 'fee');
         if ($amount < $min || $amount > $max) {
             $currencySymbol = setting('currency_symbol', 'global');
-            $message = 'Please Send the Amount within the range '.$currencySymbol.$min.' to '.$currencySymbol.$max;
-            notify()->error($message, 'Error');
+            $message = __('Please Send the Amount within the range ').$currencySymbol.$min.__(' to ').$currencySymbol.$max;
+            notify()->error($message, __('Error'));
 
             return redirect()->back();
         }
@@ -573,7 +573,7 @@ class SendMoneyController extends Controller
                 ->where('account_type', 'real')
                 ->first();
             if (!$forexAccount) {
-                notify()->error(__('The selected Forex account does not belong to you.'), 'Error');
+                notify()->error(__('The selected Forex account does not belong to you.'), __('Error'));
                 return redirect()->back();
             }
             $balance = $this->forexApiService->getValidatedBalance(['login' => $targetId]);
@@ -581,7 +581,7 @@ class SendMoneyController extends Controller
         } elseif ($targetType == 'wallet') {
             $wallet = get_user_account_by_wallet_id($targetId, $fromUser->id);
             if (!$wallet) {
-                notify()->error(__('The selected Wallet account does not belong to you.'), 'Error');
+                notify()->error(__('The selected Wallet account does not belong to you.'), __('Error'));
                 return redirect()->back();
             }
             $balance = BigDecimal::of($wallet->amount);
@@ -591,7 +591,7 @@ class SendMoneyController extends Controller
 
         // ** Check if the sender has sufficient funds **
         if (BigDecimal::of($totalAmount)->compareTo($balance) > 0) {
-            notify()->error(__("Insufficient funds"), 'Error');
+            notify()->error(__("Insufficient funds"), __('Error'));
             return redirect()->back();
         }
 
@@ -601,14 +601,14 @@ class SendMoneyController extends Controller
                 ->where('user_id', $fromUser->id)
                 ->where('account_type', 'real')->first();
             if (!$toUserForexAccount || $toUserForexAccount->user_id == null) {
-                notify()->error(__('Receiver Forex account is invalid or inactive'), 'Error');
+                notify()->error(__('Receiver Forex account is invalid or inactive'), __('Error'));
                 return redirect()->back();
             }
             $toUser = $toUserForexAccount->user;
         } elseif ($receiverType == 'wallet') {
             $receiverWallet = get_user_account_by_wallet_id($receiverAccount, $fromUser->id); // No need for user check here
             if (!$receiverWallet || $receiverWallet->user_id == null) {
-                notify()->error(__('Receiver Wallet account not found'), 'Error');
+                notify()->error(__('Receiver Wallet account not found'), __('Error'));
                 return redirect()->back();
             }
             $toUser = $receiverWallet->user;
@@ -616,14 +616,14 @@ class SendMoneyController extends Controller
 
         // ** Create transactions with TxnStatus::None before managing the ledger **
         // sender account/From Account
-        $sendDescription = 'Transfer Money To ' . $toUser->username . '-' . $targetId . '(' . $targetType . ')';
+        $sendDescription = __('Transfer Money To ') . $toUser->username . '-' . $targetId . '(' . $targetType . ')';
         $txnInfoSender = Txn::new(
             $amount, $this->calculateCharge($amount), $totalAmount, 'system', $sendDescription,
             TxnType::SendMoneyInternal, TxnStatus::None, null, null, $fromUser->id, $toUser->id, 'User', [],
             $input['note'], $targetId, $targetType
         );
         // Receiver account/To Account
-        $receiveDescription = 'Transfer Money From ' . $fromUser->username . '-' . $receiverAccount . '(' . $receiverType . ')';
+        $receiveDescription = __('Transfer Money From ') . $fromUser->username . '-' . $receiverAccount . '(' . $receiverType . ')';
         $txnInfoReceiver = Txn::new(
             $amount, 0, $amount, 'system', $receiveDescription, TxnType::ReceiveMoneyInternal, TxnStatus::None,
             null, null, $toUser->id, $fromUser->id, 'User', [], $input['note'], $receiverAccount, $receiverType
@@ -659,7 +659,7 @@ class SendMoneyController extends Controller
                 $receiverWallet->amount = BigDecimal::of($receiverWallet->amount)->plus(BigDecimal::of($amount));
                 $receiverWallet->save();
             } else {
-                notify()->error(__('Forex to Wallet transfer failed'), 'Error');
+                notify()->error(__('Forex to Wallet transfer failed'), __('Error'));
                 return redirect()->back();
             }
 
@@ -695,8 +695,8 @@ class SendMoneyController extends Controller
         }
 
         // ** Update the transactions to TxnStatus::Success after ledger updates **
-        Txn::update($txnInfoSender->tnx, TxnStatus::Success, $fromUser->id, 'Transfer Successful');
-        Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id, 'Transfer Successful');
+        Txn::update($txnInfoSender->tnx, TxnStatus::Success, $fromUser->id,  __('Transfer Successful'));
+        Txn::update($txnInfoReceiver->tnx, TxnStatus::Success, $toUser->id,  __('Transfer Successful'));
 
         // Update MT5 balances for Forex accounts (if applicable)
         if ($targetType == 'forex') {
@@ -706,17 +706,17 @@ class SendMoneyController extends Controller
             mt5_update_balance($receiverAccount, $this->forexApiService->getValidatedBalance(['login' => $receiverAccount]));
         }
 
-        notify()->success('Successfully Send Money', 'success');
+        notify()->success(__('Successfully Send Money'), __('Success'));
 
         $symbol = setting('currency_symbol', 'global');
 
         $notify = [
-            'card-header' => 'Success Your Send Money Process',
-            'title' => $symbol.$txnInfoSender->amount.' Send Money Successfully',
-            'p' => 'The Send Money has been successfully sent to the '.$toUser->first_name.' '.$toUser->last_name.' account # '.$receiverAccount,
-            'strong' => 'Transaction ID: '.$txnInfoSender->tnx,
+            'card-header' => __('Success Your Send Money Process'),
+            'title' => $symbol . $txnInfoSender->amount . __(' Send Money Successfully'),
+            'p' => __('The Send Money has been successfully sent to the ') . $toUser->first_name . ' ' . $toUser->last_name . __(' account # ') . $receiverAccount,
+            'strong' => __('Transaction ID: ') . $txnInfoSender->tnx,
             'action' => route('user.send-money.internal-view'),
-            'a' => 'Send Money again',
+            'a' => __('Send Money again'),
             'view_name' => 'send_money',
         ];
         Session::put('user_notify', $notify);

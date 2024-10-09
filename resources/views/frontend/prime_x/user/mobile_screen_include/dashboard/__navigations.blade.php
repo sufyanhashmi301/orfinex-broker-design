@@ -8,37 +8,37 @@
         <div class="grid grid-cols-3 gap-2 gap-y-5 contents">
             <div class="single text-center py-2">
                 <a href="{{ route('user.schema') }}">
-                    <img src="{{ asset('frontend/materials/schema.png') }}" class="h-7 mx-auto" alt="">
+                    <img src="{{ asset('frontend/materials/schema.png') }}" class="h-7 mx-auto" alt="{{ __('New Account') }}">
                     <div class="text-sm dark:text-white">{{ __('New Account') }}</div>
                 </a>
             </div>
             <div class="single text-center py-2">
                 <a href="{{ route('user.deposit.amount') }}">
-                    <img src="{{ asset('frontend/materials/deposit.png') }}" class="h-7 mx-auto" alt="">
+                    <img src="{{ asset('frontend/materials/deposit.png') }}" class="h-7 mx-auto" alt="{{ __('Deposit') }}">
                     <div class="text-sm dark:text-white">{{ __('Deposit') }}</div>
                 </a>
             </div>
             <div class="single text-center py-2">
                 <a href="{{ route('user.withdraw.view') }}">
-                    <img src="{{ asset('frontend/materials/withdraw.png') }}" class="h-7 mx-auto" alt="">
+                    <img src="{{ asset('frontend/materials/withdraw.png') }}" class="h-7 mx-auto" alt="{{ __('Withdraw') }}">
                     <div class="text-sm dark:text-white">{{ __('Withdraw') }}</div>
                 </a>
             </div>
             <div class="single text-center py-2">
                 <a href="{{ route('user.transfer') }}">
-                    <img src="{{ asset('frontend/materials/wallet-exchange.png') }}" class="h-7 mx-auto" alt="">
+                    <img src="{{ asset('frontend/materials/wallet-exchange.png') }}" class="h-7 mx-auto" alt="{{ __('Transfer') }}">
                     <div class="text-sm dark:text-white">{{ __('Transfer') }}</div>
                 </a>
             </div>
             <div class="single text-center py-2">
                 <a href="{{ route('user.referral') }}">
-                    <img src="{{ asset('frontend/materials/referral.png') }}" class="h-7 mx-auto" alt="">
+                    <img src="{{ asset('frontend/materials/referral.png') }}" class="h-7 mx-auto" alt="{{ __('Partnership') }}">
                     <div class="text-sm dark:text-white">{{ __('Partnership') }}</div>
                 </a>
             </div>
             <div class="single text-center py-2">
                 <a href="{{ route('user.transactions') }}">
-                    <img src="{{ asset('frontend/materials/transactions.png') }}" class="h-7 mx-auto" alt="">
+                    <img src="{{ asset('frontend/materials/transactions.png') }}" class="h-7 mx-auto" alt="{{ __('Transactions') }}">
                     <div class="text-sm dark:text-white">{{ __('Transactions') }}</div>
                 </a>
             </div>
@@ -47,43 +47,43 @@
             <div class="grid grid-cols-3 gap-2 gap-y-5 contents">
                 <div class="single text-center py-2">
                     <a href="{{ route('user.send-money.log') }}">
-                        <img src="{{ asset('frontend/materials/transfer-log.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/transfer-log.png') }}" class="h-7 mx-auto" alt="{{ __('Transfer Log') }}">
                         <div class="text-sm dark:text-white">{{ __('Transfer Log') }}</div>
                     </a>
                 </div>
                 <div class="single text-center py-2">
                     <a href="{{ route('user.deposit.log') }}">
-                        <img src="{{ asset('frontend/materials/deposit-log.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/deposit-log.png') }}" class="h-7 mx-auto" alt="{{ __('Deposit Log') }}">
                         <div class="text-sm dark:text-white">{{ __('Deposit Log') }}</div>
                     </a>
                 </div>
                 <div class="single text-center py-2">
                     <a href="{{ route('user.withdraw.log') }}">
-                        <img src="{{ asset('frontend/materials/withdraw-log.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/withdraw-log.png') }}" class="h-7 mx-auto" alt="{{ __('Withdraw Log') }}">
                         <div class="text-sm dark:text-white">{{ __('Withdraw Log') }}</div>
                     </a>
                 </div>
                 <div class="single text-center py-2">
                     <a href="{{ route('user.ranking-badge') }}">
-                        <img src="{{ asset('frontend/materials/ranking.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/ranking.png') }}" class="h-7 mx-auto" alt="{{ __('Ranking Badge') }}">
                         <div class="text-sm dark:text-white">{{ __('Ranking Badge') }}</div>
                     </a>
                 </div>
                 <div class="single text-center py-2">
                     <a href="{{ route('user.setting.profile') }}">
-                        <img src="{{ asset('frontend/materials/settings.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/settings.png') }}" class="h-7 mx-auto" alt="{{ __('Settings') }}">
                         <div class="text-sm dark:text-white">{{ __('Settings') }}</div>
                     </a>
                 </div>
                 <div class="single text-center py-2">
                     <a href="{{ route('user.ticket.index') }}">
-                        <img src="{{ asset('frontend/materials/support-ticket.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/support-ticket.png') }}" class="h-7 mx-auto" alt="{{ __('Support Ticket') }}">
                         <div class="text-sm dark:text-white">{{ __('Support Ticket') }}</div>
                     </a>
                 </div>
                 <div class="single text-center py-2">
                     <a href="{{ route('user.notification.all') }}">
-                        <img src="{{ asset('frontend/materials/profile.png') }}" class="h-7 mx-auto" alt="">
+                        <img src="{{ asset('frontend/materials/profile.png') }}" class="h-7 mx-auto" alt="{{ __('Notifications') }}">
                         <div class="text-sm dark:text-white">{{ __('Notifications') }}</div>
                     </a>
                 </div>

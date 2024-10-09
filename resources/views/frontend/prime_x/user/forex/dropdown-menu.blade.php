@@ -55,7 +55,7 @@
           data-leverage="{{$account->leverage}}"
           data-balance="{{get_mt5_account_balance($account->login)}}"
           data-free-margin="{{$account->free_margin}}"
-          data-equity="{{get_mt5_account_equity($account->login)}}">Account Details</a>
+          data-equity="{{get_mt5_account_equity($account->login)}}">{{ __('Account Details') }}</a>
       </li>
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-leverage"
@@ -64,7 +64,7 @@
           data-bs-toggle="modal"
           data-bs-target="#changeLeverage"
           data-login="{{$account->login}}" data-id="{{$account->id}}"
-          data-action="{{route('user.forex.get.leverage')}}">Change leverage</a>
+          data-action="{{route('user.forex.get.leverage')}}">{{ __('Change leverage') }}</a>
       </li>
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-name"
@@ -72,7 +72,7 @@
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#accountRename" data-login="{{$account->login}}"
-          data-account_name="{{$account->account_name}}">Rename account</a>
+          data-account_name="{{$account->account_name}}">{{ __('Rename account') }}</a>
       </li>
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-password"
@@ -81,14 +81,14 @@
           data-bs-toggle="modal"
           data-bs-target="#changeAccountPass" data-login="{{$account->login}}"
           data-main_password="{{$account->main_password}}"
-          data-invest_password="{{$account->invest_password}}">Change trading password</a>
+          data-invest_password="{{$account->invest_password}}">{{ __('Change trading password') }}</a>
       </li>
       <li>
           <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white dropdown-update-password"
           href=""
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#changeInvestorPass" data-login="{{$account->login}}">Change investor password</a>
+          data-bs-target="#changeInvestorPass" data-login="{{$account->login}}">{{ __('Change investor password') }}</a>
       </li>
       <li>
           @if($account->status == \App\Enums\ForexAccountStatus::Archive)
@@ -96,15 +96,15 @@
               type="button"
               data-bs-toggle="modal"
               data-login="{{data_get($account,'login')}}"
-              data-bs-target="#unarchiveAccount">Unarchive account</a>
+              data-bs-target="#unarchiveAccount">{{ __('Unarchive account') }}</a>
           @else
               <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white archive-login"
               href=""
               type="button"
               data-bs-toggle="modal"
               data-login="{{data_get($account,'login')}}"
-              data-bs-target="#archiveAccount">Archive account</a>
+              data-bs-target="#archiveAccount">{{ __('Archive account') }}</a>
           @endif
       </li>
     </ul>
-  </div>
+</div>

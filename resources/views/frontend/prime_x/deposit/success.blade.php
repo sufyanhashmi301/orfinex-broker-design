@@ -3,7 +3,7 @@
     <div class="card progress-steps-form">
         <div class="transaction-status flex flex-col items-center px-7 py-12">
             <div class="relative mb-10">
-                <img src="{{ asset('frontend/images/success-page__img.svg') }}" alt="">
+                <img src="{{ asset('frontend/images/success-page__img.svg') }}" alt="{{ __('Success Image') }}">
                 <div class="absolute left-0 right-0 bottom-0 icon h-16 w-16 bg-primary rounded-full flex flex-col items-center justify-center mx-auto">
                     <iconify-icon icon="heroicons:check-16-solid" class="text-white text-4xl"></iconify-icon>
                 </div>
@@ -27,11 +27,11 @@
                 </span>
             </blockquote>
             <div class="flex items-center gap-3">
-                <a href="" class="btn btn-primary inline-flex justify-center">
+                <a href="{{ route('user.dashboard') }}" class="btn btn-primary inline-flex justify-center">
                     {{ __('Go to Dashboard') }}
                 </a>
                 @if(setting('trust_pilot_review_show','platform_links',false))
-                    <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                    <a href="{{ setting('trust_pilot_review_link','platform_links','javascript:void(0);') }}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
                         <span>{{ __('Review us on Trustpilot') }}</span>
                     </a>

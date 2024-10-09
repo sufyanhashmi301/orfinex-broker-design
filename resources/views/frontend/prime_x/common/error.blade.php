@@ -3,7 +3,7 @@
     <div class="card basicTable_wrapper px-7 py-12">
         <div class="flex flex-col items-center">
             <div class="relative mb-10">
-                <img src="{{ asset('frontend/images/error-page__img.svg') }}" alt="">
+                <img src="{{ asset('frontend/images/error-page__img.svg') }}" alt="{{ __('Error Page Image') }}">
             </div>
             <h2 class="text-3xl dark:text-white mb-5">
                 {{ __('Oops, Something Went Wrong!') }}

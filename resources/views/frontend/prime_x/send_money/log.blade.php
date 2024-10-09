@@ -21,7 +21,7 @@
                         <div class="filter">
                             <form action="{{ route('user.send-money.log') }}" method="get">
                                 <div class="search flex gap-3 items-center">
-                                    <input type="text" class="form-control" id="search" placeholder="Search"
+                                    <input type="text" class="form-control" id="search" placeholder="{{ __('Search') }}"
                                         value="{{ request('query') }}"
                                         name="query"/>
                                     <input type="date" class="form-control flatpickr flatpickr-input active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
@@ -163,13 +163,13 @@
                                         @endphp
 
                                         <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
-                                            Showing
+                                            {{ __('Showing') }}
                                             <span class="font-medium">{{ $from }}</span>
-                                            to
+                                            {{ __('to') }}
                                             <span class="font-medium">{{ $to }}</span>
-                                            of
+                                            {{ __('of') }}
                                             <span class="font-medium">{{ $total }}</span>
-                                            results
+                                            {{ __('results') }}
                                         </p>
                                     </div>
                                     {{  $sendMoneys->links() }}
@@ -191,7 +191,7 @@
                 <div class="filter mb-3">
                     <form action="{{ route('user.send-money.log') }}" method="get">
                         <div class="search flex items-center gap-2">
-                            <input type="text" class="form-control" placeholder="Search" value="{{ request('query') }}" name="query"/>
+                            <input type="text" class="form-control" placeholder="{{ __('Search') }}" value="{{ request('query') }}" name="query"/>
                             <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
                             <button type="submit" class="apply-btn h-10 btn btn-dark">
                                 <iconify-icon icon="lucide:search"></iconify-icon>

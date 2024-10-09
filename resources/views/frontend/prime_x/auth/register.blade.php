@@ -11,7 +11,7 @@
             <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url({{ asset('frontend/images/primex_login_bg.png') }})">
                 <div class="mx-auto max-w-xs text-center">
                     <a href="{{ route('home')}}" class="">
-                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="">
+                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="{{ __('Logo') }}">
                     </a>
                 </div>
             </div>
@@ -20,7 +20,7 @@
             <div class="w-full max-w-lg">
                 <div class="mobile-logo text-center mb-6 lg:hidden block">
                     <a href="{{ route('home')}}">
-                        <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-[56px]">
+                        <img src="{{ asset(setting('site_logo','global')) }}" alt="{{ __('Logo') }}" class="h-[56px]">
                     </a>
                 </div>
                 <h2 class="text-2xl font-semibold text-gray-700">{{ __('Sign Up') }}</h2>
@@ -34,7 +34,7 @@
                                     @endforeach
                                 </p>
                                 <div class="flex-0 text-lg cursor-pointer">
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}">
                                         <iconify-icon icon="line-md:close"></iconify-icon>
                                     </button>
                                 </div>
@@ -51,7 +51,7 @@
                                   {{ __('First Name*') }}
                                 </label>
                                 <div class="relative ">
-                                    <input type="text" class="form-control py-2 h-[48px]" placeholder="Your First Name"
+                                    <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Your First Name') }}"
                                     name="first_name"
                                     value="{{ old('first_name') }}"
                                     required>
@@ -60,7 +60,7 @@
                             <div class="fromGroup">
                                 <label class="block capitalize form-label">{{ __('Last Name*') }}</label>
                                 <div class="relative ">
-                                    <input type="text" class="form-control py-2 h-[48px]" placeholder="Your Last Name"
+                                    <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Your Last Name') }}"
                                     name="last_name"
                                     value="{{ old('last_name') }}"
                                     required>
@@ -73,7 +73,7 @@
                               <input type="email" class="form-control py-2 h-[48px]"
                               name="email"
                               value="{{ old('email') }}"
-                              placeholder="Enter Your Email Address"
+                              placeholder="{{ __('Enter Your Email Address') }}"
                               required>
                           </div>
                       </div>
@@ -84,7 +84,7 @@
                             <input
                                 class="form-control py-2 h-[48px]"
                                 type="text"
-                                placeholder="Enter Your User Name"
+                                placeholder="{{ __('Enter Your User Name') }}"
                                 name="username"
                                 value="{{ old('username') }}"
                                 required
@@ -116,11 +116,11 @@
                           <div class="relative">
                             <input type="text"
                               class="form-control py-2 h-[48px]"
-                              placeholder="Phone Number"
+                              placeholder="{{ __('Phone Number') }}"
                               name="phone"
                               id="phone"
                               value="{{ old('phone') }}"
-                              aria-label="Username"
+                              aria-label="{{ __('Phone Number') }}"
                               aria-describedby="basic-addon1"
                               value="{{ getLocation()->dial_code }}"
                             >
@@ -135,7 +135,7 @@
                             <input
                                 class="form-control py-2 h-[48px]"
                                 type="text"
-                                placeholder="Enter Your Referral Code"
+                                placeholder="{{ __('Enter Your Referral Code') }}"
                                 name="invite"
                                 value="{{ request('invite') ?? old('invite') }}"
                             />
@@ -151,7 +151,7 @@
                                             class="form-control py-2 h-[48px]"
                                             type="password"
                                             name="password"
-                                            placeholder="Enter your password"
+                                            placeholder="{{ __('Enter your password') }}"
                                             required
                                         />
                                     </div>
@@ -163,7 +163,7 @@
                                             class="form-control py-2 h-[48px]"
                                             type="password"
                                             name="password_confirmation"
-                                            placeholder="Enter your password"
+                                            placeholder="{{ __('Enter your password') }}"
                                             required
                                         />
                                     </div>

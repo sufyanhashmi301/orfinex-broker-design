@@ -7,7 +7,7 @@
                         <svg aria-hidden="true" class="w-5 h-5 fill-black dark:fill-white" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
-                        <span class="sr-only">Close modal</span>
+                        <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
                 </div>
                 <div class="p-8 pt-0">
@@ -16,7 +16,7 @@
                             {{ __('Change Password') }}
                         </h3>
                         <p class="text-slate-500 dark:text-slate-100">
-                            {{ __ ('Please enter your current password, followed by your new password twice for confirmation.') }}
+                            {{ __('Please enter your current password, followed by your new password twice for confirmation.') }}
                         </p>
                     </div>
                     <form action="{{ route('user.new.password') }}" method="post" class="space-y-4">
@@ -29,15 +29,15 @@
                         @endforeach
                         <div class="input-area relative">
                             <label for="" class="form-label">{{ __('Current Password') }}</label>
-                            <input type="password" name="current_password" class="form-control form-control-lg" placeholder="Enter Current Password">
+                            <input type="password" name="current_password" class="form-control form-control-lg" placeholder="{{ __('Enter Current Password') }}">
                         </div>
                         <div class="input-area relative">
                             <label for="" class="form-label">{{ __('New Password') }}</label>
-                            <input type="password" name="new_password" class="form-control form-control-lg" placeholder="Enter New Password">
+                            <input type="password" name="new_password" class="form-control form-control-lg" placeholder="{{ __('Enter New Password') }}">
                         </div>
                         <div class="input-area relative">
                             <label for="" class="form-label">{{ __('Confirm Password') }}</label>
-                            <input type="password" name="new_confirm_password" class="form-control form-control-lg" placeholder="Confirm Password">
+                            <input type="password" name="new_confirm_password" class="form-control form-control-lg" placeholder="{{ __('Confirm Password') }}">
                         </div>
                         <div class="text-right">
                             <button type="submit" class="btn btn-primary">{{ __('Change Password') }}</button>

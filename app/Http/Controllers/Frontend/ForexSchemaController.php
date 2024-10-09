@@ -64,7 +64,7 @@ class ForexSchemaController extends Controller
             'display_leverage' => explode(',', $schema->leverage)[0],
             'first_min_deposit' => !empty($schema->first_min_deposit) ? $schema->first_min_deposit : 0,
             'spread' => !empty($schema->spread) ? $schema->spread : 0,
-            'commission' => $schema->commission == 0 ? 'No Commission' : $schema->commission,
+            'commission' => $schema->commission == 0 ? __('No Commission') : $schema->commission,
             'is_real_islamic' => $schema->is_real_islamic,
             'is_demo_islamic' => $schema->is_demo_islamic,
         ];

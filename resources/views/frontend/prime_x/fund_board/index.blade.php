@@ -7,17 +7,17 @@
         <div class="">
             <ul class="m-0 p-0 list-none">
                 <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
-                    <a href="{{route('user.dashboard')}}">
+                    <a href="{{ route('user.dashboard') }}">
                         <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                         <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                     </a>
                 </li>
                 <li class="inline-block relative text-sm text-primary-500 font-Inter ">
-                    Dashboard
+                    {{ __('Dashboard') }}
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
                 </li>
                 <li class="inline-block relative text-sm text-slate-500 font-Inter dark:text-white">
-                    Fund Board
+                    {{ __('Fund Board') }}
                 </li>
             </ul>
         </div>
@@ -25,13 +25,13 @@
             <a href="" class="btn btn-sm inline-flex justify-center btn-white dark:bg-slate-700 dark:text-slate-300 m-1">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus"></iconify-icon>
-                    <span>Deposit Funds</span>
+                    <span>{{ __('Deposit Funds') }}</span>
                 </span>
             </a>
             <a href="" class="btn btn-sm inline-flex justify-center btn-dark dark:bg-slate-700 dark:text-slate-300 m-1">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:hand-coins-light"></iconify-icon>
-                    <span>Get Funded</span>
+                    <span>{{ __('Get Funded') }}</span>
                 </span>
             </a>
         </div>
@@ -41,7 +41,7 @@
         <div class="card">
             <div class="card-body p-6">
                 <div class="text-slate-600 dark:text-slate-400 text-sm mb-2 font-medium">
-                    Total Funded Balance
+                    {{ __('Total Funded Balance') }}
                 </div>
                 <div class="flex items-end flex-nowrap space-x-4">
                     <div class="text-slate-400">
@@ -49,7 +49,7 @@
                             10,000.00
                             <small class="text-base text-slate-600">USD</small>
                         </div>
-                        <div class="text-sm text-slate-500 mt-1">Allotted Fund</div>
+                        <div class="text-sm text-slate-500 mt-1">{{ __('Allotted Fund') }}</div>
                     </div>
                     <div class="text-slate-400">
                         <span class="absolute">
@@ -61,7 +61,7 @@
                                 <small class="text-base text-slate-600">USD</small>
                             </div>
                         </div>
-                        <div class="text-sm text-slate-500 pl-8 mt-1">Profit Earned</div>
+                        <div class="text-sm text-slate-500 pl-8 mt-1">{{ __('Profit Earned') }}</div>
                     </div>    
                 </div>
             </div>
@@ -69,7 +69,7 @@
         <div class="card">
             <div class="card-body p-6">
                 <div class="text-slate-600 dark:text-slate-400 text-sm mb-2 font-medium">
-                    Profit Share
+                    {{ __('Profit Share') }}
                 </div>
                 <div class="flex items-end flex-nowrap space-x-4">
                     <div class="text-slate-400">
@@ -77,7 +77,7 @@
                             10,000.00
                             <small class="text-base text-slate-600">USD</small>
                         </div>
-                        <div class="text-sm text-slate-500 mt-1">User</div>
+                        <div class="text-sm text-slate-500 mt-1">{{ __('User') }}</div>
                     </div>
                     <div class="text-slate-400">
                         <span class="absolute">
@@ -89,14 +89,14 @@
                                 <small class="text-base text-slate-600">USD</small>
                             </div>
                         </div>
-                        <div class="text-sm text-slate-500 pl-8 mt-1">Orfinex</div>
+                        <div class="text-sm text-slate-500 pl-8 mt-1">{{ __('Orfinex') }}</div>
                     </div>    
                 </div>
             </div>
             <div class="card-footer py-4">
                 <a href="" class="inline-flex leading-5 text-slate-600 dark:text-slate-400 text-sm font-normal hover:text-slate-900">
                     <iconify-icon icon="ph:file-text-light" class="text-secondary-600 ltr:mr-2 rtl:ml-2 text-lg"></iconify-icon>
-                    History
+                    {{ __('History') }}
                 </a>
             </div>
         </div>
@@ -104,7 +104,7 @@
     
     <div class="card mt-5">
         <header class="card-header noborder">
-            <h4 class="card-title">Active Fund</h4>
+            <h4 class="card-title">{{ __('Active Fund') }}</h4>
         </header>
         <div class="card-body p-6 pt-0">
             {{-- <div class="overflow-x-auto -mx-6">
@@ -114,19 +114,19 @@
                             <thead class="bg-slate-200 dark:bg-slate-700">
                                 <tr>
                                     <th scope="col" class=" table-th ">
-                                        Fund Title
+                                        {{ __('Fund Title') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Balance
+                                        {{ __('Balance') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Equity
+                                        {{ __('Equity') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Profit
+                                        {{ __('Profit') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Detail
+                                        {{ __('Detail') }}
                                     </th>
                                 </tr>
                             </thead>
@@ -139,7 +139,7 @@
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                    Beginner - 10000 USD
+                                                    {{ __('Beginner - 10000 USD') }}
                                                 </h4>
                                             </div>
                                         </div>
@@ -157,7 +157,7 @@
                                     </td>
                                     <td class="table-td">
                                         <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
-                                            Matrics
+                                            {{ __('Matrics') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -168,10 +168,10 @@
             </div> --}}
             <div class="flex flex-col items-center justify-center">
                 <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                    You do not have any challenges yet.
+                    {{ __('You do not have any challenges yet.') }}
                 </p>
                 <a href="" class="btn btn-outline-dark inline-flex items-center justify-center">
-                    Start a New Challenge
+                    {{ __('Start a New Challenge') }}
                 </a>
             </div>
         </div>
@@ -179,7 +179,7 @@
 
     <div class="card mt-5">
         <header class="card-header noborder">
-            <h4 class="card-title">Active Challenge (1)</h4>
+            <h4 class="card-title">{{ __('Active Challenge') }} (1)</h4>
         </header>
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">
@@ -189,19 +189,19 @@
                             <thead class="bg-slate-200 dark:bg-slate-700">
                                 <tr>
                                     <th scope="col" class=" table-th ">
-                                        Challenge Title
+                                        {{ __('Challenge Title') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Stage / Phase
+                                        {{ __('Stage / Phase') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Activation Date
+                                        {{ __('Activation Date') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Current Status
+                                        {{ __('Current Status') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Detail
+                                        {{ __('Detail') }}
                                     </th>
                                 </tr>
                             </thead>
@@ -214,23 +214,23 @@
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                    Beginner - 10000 USD
+                                                    {{ __('Beginner - 10000 USD') }}
                                                 </h4>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="table-td">
-                                        <span class="font-medium">Phase 1</span>
+                                        <span class="font-medium">{{ __('Phase 1') }}</span>
                                     </td>
                                     <td class="table-td">
-                                        16 Jan, 2024 03:20 PM
+                                        {{ __('16 Jan, 2024 03:20 PM') }}
                                     </td>
                                     <td class="table-td">
-                                        <span class="text-success-500">Active</span>
+                                        <span class="text-success-500">{{ __('Active') }}</span>
                                     </td>
                                     <td class="table-td">
                                         <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
-                                            Matrics
+                                            {{ __('Matrics') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -244,7 +244,7 @@
 
     <div class="card mt-5">
         <header class="card-header noborder">
-            <h4 class="card-title">Violated Challenge (1)</h4>
+            <h4 class="card-title">{{ __('Violated Challenge') }} (1)</h4>
         </header>
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">
@@ -254,19 +254,19 @@
                             <thead class="bg-slate-200 dark:bg-slate-700">
                                 <tr>
                                     <th scope="col" class=" table-th ">
-                                        Challenge Title
+                                        {{ __('Challenge Title') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Stage / Phase
+                                        {{ __('Stage / Phase') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Activation Date
+                                        {{ __('Activation Date') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Violation Date
+                                        {{ __('Violation Date') }}
                                     </th>
                                     <th scope="col" class=" table-th ">
-                                        Detail
+                                        {{ __('Detail') }}
                                     </th>
                                 </tr>
                             </thead>
@@ -279,23 +279,23 @@
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                    Specialist - 50000 USD
+                                                    {{ __('Specialist - 50000 USD') }}
                                                 </h4>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="table-td">
-                                        <span class="font-medium">Phase 2</span>
+                                        <span class="font-medium">{{ __('Phase 2') }}</span>
                                     </td>
                                     <td class="table-td">
-                                        16 Jan, 2024 03:20 PM
+                                        {{ __('16 Jan, 2024 03:20 PM') }}
                                     </td>
                                     <td class="table-td">
-                                        16 Jan, 2024 03:20 PM
+                                        {{ __('16 Jan, 2024 03:20 PM') }}
                                     </td>
                                     <td class="table-td">
                                         <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
-                                            Matrics
+                                            {{ __('Matrics') }}
                                         </a>
                                     </td>
                                 </tr>

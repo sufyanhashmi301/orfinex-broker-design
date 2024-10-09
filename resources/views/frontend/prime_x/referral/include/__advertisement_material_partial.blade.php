@@ -7,7 +7,7 @@
                     <div class="card card-cover h-100 overflow-hidden relative rounded-4"
                          style="background-image: url({{ asset($advertisement->img) }});min-height: 275px;background-size: cover;">
                         <div class="absolute right-0">
-                            <a href="{{route('user.image.download', ['filename' => $advertisement->img])}}"
+                            <a href="{{ route('user.image.download', ['filename' => $advertisement->img]) }}"
                                class="btn inline-flex h-12 w-12 items-center justify-center btn-light rounded-none">
                                     <span class="flex items-center">
                                         <iconify-icon class="text-lg" icon="octicon:download-16"></iconify-icon>
@@ -28,8 +28,7 @@
                     <div class="card card-cover h-100 overflow-hidden relative rounded-4"
                          style="background-image: url({{ asset($advertisement->img) }});min-height: 275px;background-size: cover;">
                         <div class="absolute right-0">
-                            <a href="{{route('user.image.download', ['filename' => $advertisement->img])}}"
-
+                            <a href="{{ route('user.image.download', ['filename' => $advertisement->img]) }}"
                                class="btn inline-flex h-12 w-12 items-center justify-center btn-light rounded-none">
                                     <span class="flex items-center">
                                         <iconify-icon class="text-lg" icon="octicon:download-16"></iconify-icon>

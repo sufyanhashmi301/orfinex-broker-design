@@ -41,7 +41,7 @@
                         <div class="number">{{ __('02') }}</div>
                         <div class="content">
                             <h4 class="leading-none text-dark dark:text-white">{{ __('Success') }}</h4>
-                            <p class="text-dark dark:text-white">{{  $notify['card-header'] ??  __('Successfully Exchanged') }}</p>
+                            <p class="text-dark dark:text-white">{{ $notify['card-header'] ?? __('Successfully Exchanged') }}</p>
                         </div>
                     </div>
                 </div>

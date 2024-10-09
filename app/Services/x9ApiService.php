@@ -14,11 +14,11 @@ class x9ApiService
 
     public function __construct()
     {
-//        $this->baseUrlReal = setting('mt5_api_url_real', 'platform_api') . '/api';
-//        $this->apiKeyReal = setting('mt5_api_key_real', 'platform_api');
+        $this->baseUrlReal = setting('x9_network_address', 'x9_api') . '/api/crm/';
+        $this->apiKeyReal = setting('x9_API_access_key', 'x9_api');
 
-        $this->baseUrlReal ='https://shareafunds-5000.encrypted-gateway.com/api/crm/';
-        $this->apiKeyReal = 'CRegMvGeoX9O24nSHQ';
+//        $this->baseUrlReal ='https://shareafunds-5000.encrypted-gateway.com/api/crm/';
+//        $this->apiKeyReal = 'CRegMvGeoX9O24nSHQ';
 
 //        $demoServerEnabled = setting('demo_server_enable', 'platform_api');
 //        $demoUrl = setting('mt5_api_url_demo', 'platform_api'). '/api';

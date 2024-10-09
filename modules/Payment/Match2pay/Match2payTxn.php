@@ -23,6 +23,7 @@ class Match2payTxn extends BaseTxn
         ]);
 
         // Define required credentials
+        $this->txnInfo = $txnInfo;
         $this->amount = $txnInfo->final_amount;
         $this->payCurrency = $txnInfo->pay_currency;
         $this->apiToken = $credentials->api_token;
@@ -40,6 +41,7 @@ class Match2payTxn extends BaseTxn
      */
     public function deposit()
     {
+//        dd();
         // Generate timestamp in seconds
         $timestamp = Carbon::now()->timestamp;
 
@@ -66,7 +68,10 @@ class Match2payTxn extends BaseTxn
 
         // Parse the response
         $data = json_decode($response->getBody()->getContents(), true);
-
+        $transaction =  $this->txnInfo;
+        $transaction->tnx = $data['paymentId'];
+        $transaction->manual_field_data = $data;
+        $transaction->save();
         // Handle response (get the checkout URL and other details)
         if (isset($data['checkoutUrl'])) {
             $checkoutUrl = $data['checkoutUrl'];

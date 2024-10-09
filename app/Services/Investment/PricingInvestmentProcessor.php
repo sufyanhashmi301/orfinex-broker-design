@@ -687,7 +687,7 @@ class PricingInvestmentProcessor
         $latestInvestments = ForexSchemaInvestment::whereHas('forexSchemaPhaseRule', function($query) use ($phaseIds) {
             $query->whereIn('forex_schema_phase_id', $phaseIds);
         })->whereIn('status', [InvestmentStatus::ACTIVE,InvestmentStatus::VIOLATED])
-            ->latest('id')->first();
+            ->latest('login')->first();
 //        dd($schema,$phaseIds,$latestInvestments);
         if($traderType == TraderType::MT5) {
             $login = 0;
@@ -729,7 +729,7 @@ class PricingInvestmentProcessor
         $data = [
             "login" => $login,
             "group" => $group,
-            "firstName" => $invest->user->first_name,
+            "firstName" => 'GMF-Phase 1 $'.$invest->amount_allotted.'-'.$invest->user->first_name,
             "middleName" => "",
             "lastName" => $invest->user->last_name,
             "leverage" => $invest->leverage,

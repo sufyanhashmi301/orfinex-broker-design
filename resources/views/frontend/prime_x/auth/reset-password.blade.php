@@ -10,7 +10,7 @@
             <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url({{ asset('frontend/images/primex_login_bg.png') }})">
                 <div class="mx-auto max-w-xs text-center">
                     <a href="{{ route('home')}}" class="">
-                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="">
+                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="{{ __('Logo') }}">
                     </a>
                 </div>
             </div>
@@ -19,22 +19,22 @@
             <div class="w-full max-w-lg">
                 <div class="mobile-logo text-center mb-6 lg:hidden block">
                     <a href="{{ route('home')}}">
-                        <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-[56px]">
+                        <img src="{{ asset(setting('site_logo','global')) }}" alt="{{ __('Logo') }}" class="h-[56px]">
                     </a>
                 </div>
                 <div class="text-center 2xl:mb-10 mb-5">
-                    <h4 class="font-medium">👋 {{ __('Reset password') }}</h4>
+                    <h4 class="font-medium">👋 {{ __('Reset Password') }}</h4>
                     <div class="text-slate-500 dark:text-slate-400 text-base">
-                        {{  __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+                        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
                     </div>
                 </div>
                 @if ($errors->any())
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         @foreach($errors->all() as $error)
-                            <strong>{{$error}}</strong>
+                            <strong>{{ $error }}</strong>
                         @endforeach
                         <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
+                                aria-label="{{ __('Close') }}"></button>
                     </div>
                 @endif
 
@@ -42,7 +42,7 @@
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>{{ session('status') }}</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
+                                aria-label="{{ __('Close') }}"></button>
                     </div>
                 @endif
                 <form method="POST" action="{{ route('password.update') }}" class="space-y-4">
@@ -59,7 +59,7 @@
                                 class="form-control !text-lg"
                                 type="text"
                                 name="email"
-                                placeholder="Enter your email address"
+                                placeholder="{{ __('Enter your email address') }}"
                                 required
                                 value="{{ old('email',$request->email) }}"
                             />
@@ -72,6 +72,7 @@
                                 class="form-control !text-lg"
                                 type="password"
                                 name="password"
+                                placeholder="{{ __('Enter your new password') }}"
                                 required
                             />
                         </div>
@@ -84,6 +85,7 @@
                                 class="form-control !text-lg"
                                 type="password"
                                 name="password_confirmation"
+                                placeholder="{{ __('Confirm your new password') }}"
                                 required
                             />
                         </div>
@@ -98,4 +100,3 @@
     </div>
     <!-- Login Section End -->
 @endsection
-

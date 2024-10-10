@@ -15,35 +15,35 @@
                         <svg aria-hidden="true" class="w-5 h-5 fill-black dark:fill-white" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
-                        <span class="sr-only">Close modal</span>
+                        <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
                 </div>
                 <div class="p-6 space-y-4">
                     <ul class="account-details-list divide-y divide-slate-100 dark:divide-slate-700 h-full">
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Server :</span>
+                            <span class="font-medium dark:text-white">{{ __('Server') }} :</span>
                             <span class="ml-auto dark:text-white">
                                 <span id="account-info-server"></span>
                             </span>
                         </li>
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Leverage :</span>
+                            <span class="font-medium dark:text-white">{{ __('Leverage') }} :</span>
                             <span class="ml-auto dark:text-white">
                                 1:<span id="account-info-leverage" class="dropdown-update-leverage"
                                         data-login="" data-id=""
-                                        data-action="{{route('user.forex.get.leverage')}}"></span>
+                                        data-action="{{ route('user.forex.get.leverage') }}"></span>
                             </span>
                         </li>
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Balance :</span>
+                            <span class="font-medium dark:text-white">{{ __('Balance') }} :</span>
                             <span class="ml-auto dark:text-white" id="account-info-balance">16.45</span>
                         </li>
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Free Margin :</span>
+                            <span class="font-medium dark:text-white">{{ __('Free Margin') }} :</span>
                             <span class="ml-auto dark:text-white" id="account-info-free-margin">24.68</span>
                         </li>
                         <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">Equity :</span>
+                            <span class="font-medium dark:text-white">{{ __('Equity') }} :</span>
                             <span class="ml-auto dark:text-white">
                                 <span id="account-info-equity">24.68</span>
                             </span>

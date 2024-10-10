@@ -16,7 +16,7 @@
             </h2>
             <p class="max-w-xl text-center text-slate-500 text-sm mb-3 dark:text-gray-300">
                 <span class="block mb-1">
-                    {{ __('Thank you for your trust in '. setting('site_title','global') .'.') }}
+                    {{ __('Thank you for your trust in ') . setting('site_title','global') . '.' }}
                 </span>
                 {{ __('Feel free to explore more of our services or check your account for the updated balance.') }}
             </p>
@@ -31,7 +31,7 @@
                     {{ __('Go to Dashboard') }}
                 </a>
                 @if(setting('trust_pilot_review_show','platform_links',false))
-                    <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                    <a href="{{ setting('trust_pilot_review_link','platform_links','javascript:void(0);') }}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
                         <span>{{ __('Review us on Trustpilot') }}</span>
                     </a>

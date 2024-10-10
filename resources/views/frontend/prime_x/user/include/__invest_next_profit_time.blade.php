@@ -18,10 +18,7 @@
                 minute = second * 60,
                 hour = minute * 60,
                 day = hour * 24;
-                let timezone = @json(setting('site_timezone','global'));
-
-
-
+            let timezone = @json(setting('site_timezone','global'));
 
             let countDown = new Date('{{$next_profit_time}}').getTime()
             var start = new Date('{{ $last_profit_time ?? $created_at}}').getTime()
@@ -32,9 +29,7 @@
 
                 let distance = countDown - now;
 
-
                 var progress = (((now - start) / (countDown - start)) * 100).toFixed(2);
-
 
                 $("#time-progress{{ $id }}").css("width", progress + '%');
 

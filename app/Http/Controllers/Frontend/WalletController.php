@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enums\AccountBalanceType;
+use App\Enums\TxnTargetType;
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class WalletController extends Controller
@@ -18,6 +21,13 @@ class WalletController extends Controller
         $userID = \Auth::user()->id;
         $mainWallet = get_user_account($userID);
         $ibWallet = get_user_account($userID,AccountBalanceType::IB_WALLET);
+        $wallets = Transaction::search(request('query'), function ($query) {
+            $query->where('user_id', auth()->user()->id)
+                ->when(request('date'), function ($query) {
+                    $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));
+                })
+                ->whereIn('target_type', [TxnTargetType::Wallet]);
+        })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('frontend::wallets.index', get_defined_vars());
     }
 

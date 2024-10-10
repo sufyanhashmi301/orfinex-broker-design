@@ -58,15 +58,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('First Name') }}</label>
-                        <input type="text" class="form-control !text-lg" name="first_name" value="{{ $user->first_name }}" placeholder="First Name" />
+                        <input type="text" class="form-control !text-lg" name="first_name" value="{{ $user->first_name }}" placeholder="{{ __('First Name') }}" />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Last Name') }}</label>
-                        <input type="text" class="form-control !text-lg" name="last_name" value="{{ $user->last_name }}" placeholder="Last Name" />
+                        <input type="text" class="form-control !text-lg" name="last_name" value="{{ $user->last_name }}" placeholder="{{ __('Last Name') }}" />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Username') }}</label>
-                        <input type="text" class="form-control !text-lg" name="username" value="{{ $user->username }}" placeholder="Username" />
+                        <input type="text" class="form-control !text-lg" name="username" value="{{ $user->username }}" placeholder="{{ __('Username') }}" />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Gender') }}</label>
@@ -81,39 +81,39 @@
 
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Date of Birth') }}</label>
-                        <input type="date" name="date_of_birth" class="form-control !text-lg" value="{{ $user->date_of_birth }}" placeholder="Date of Birth"/>
+                        <input type="date" name="date_of_birth" class="form-control !text-lg" value="{{ $user->date_of_birth }}" placeholder="{{ __('Date of Birth') }}"/>
                     </div>
 
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Email Address') }}</label>
-                        <input type="email" disabled class="form-control !text-lg disabled" value="{{ $user->email }}" placeholder="Email Address" />
+                        <input type="email" disabled class="form-control !text-lg disabled" value="{{ $user->email }}" placeholder="{{ __('Email Address') }}" />
                     </div>
                     <div class="input-area relative phone-input-wrapper">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Phone') }}</label>
-                        <input type="text" class="form-control !text-lg w-full" name="phone" id="phone" value="{{ $user->phone }}" placeholder="Phone"/>
+                        <input type="text" class="form-control !text-lg w-full" name="phone" id="phone" value="{{ $user->phone }}" placeholder="{{ __('Phone') }}"/>
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">
                             {{ __('Country') }}
                         </label>
-                        <input type="text" class="form-control !text-lg disabled" value="{{ $user->country }}" placeholder="Country" disabled />
+                        <input type="text" class="form-control !text-lg disabled" value="{{ $user->country }}" placeholder="{{ __('Country') }}" disabled />
                     </div>
 
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('City') }}</label>
-                        <input type="text" class="form-control !text-lg" name="city" value="{{ $user->city }}" placeholder="City" />
+                        <input type="text" class="form-control !text-lg" name="city" value="{{ $user->city }}" placeholder="{{ __('City') }}" />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Zip') }}</label>
-                        <input type="text" class="form-control !text-lg" name="zip_code" value="{{ $user->zip_code }}" placeholder="Zip" />
+                        <input type="text" class="form-control !text-lg" name="zip_code" value="{{ $user->zip_code }}" placeholder="{{ __('Zip') }}" />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Address') }}</label>
-                        <input type="text" class="form-control !text-lg" name="address" value="{{ $user->address }}" placeholder="Address" />
+                        <input type="text" class="form-control !text-lg" name="address" value="{{ $user->address }}" placeholder="{{ __('Address') }}" />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Joining Date') }}</label>
-                        <input type="text" class="form-control !text-lg disabled" value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}" placeholder="Joining Date" disabled />
+                        <input type="text" class="form-control !text-lg disabled" value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}" placeholder="{{ __('Joining Date') }}" disabled />
                     </div>
                 </div>
 

@@ -1,5 +1,5 @@
 @php
-    $landingContent =\App\Models\LandingContent::where('type','howitworks')->where('locale',app()->getLocale())->get();
+    $landingContent = \App\Models\LandingContent::where('type','howitworks')->where('locale',app()->getLocale())->get();
 @endphp
 
 <section class="how-it-works section-style-3">
@@ -7,10 +7,8 @@
         <div class="row justify-content-center">
             <div class="col-xl-7 col-lg-12">
                 <div class="section-title text-center">
-                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ $data['title_small'] }}</h4>
-                    <h2 data-aos="fade-down" data-aos-duration="1500">
-                        {{ $data['title_big'] }}
-                    </h2>
+                    <h4 data-aos="fade-down" data-aos-duration="2000">{{ __(''.$data['title_small'].'') }}</h4>
+                    <h2 data-aos="fade-down" data-aos-duration="1500">{{ __(''.$data['title_big'].'') }}</h2>
                 </div>
             </div>
         </div>
@@ -22,14 +20,11 @@
                             <img class="icon-box-icon" src="{{ asset($content->icon) }}" alt=""><span><i
                                     class="anticon anticon-check"></i></span>
                         </div>
-                        <h4>{{ $content->title }}</h4>
-                        <p>
-                            {{ $content->description }}
-                        </p>
+                        <h4>{{ __(''.$content->title.'') }}</h4>
+                        <p>{{ __(''.$content->description.'') }}</p>
                     </div>
                 </div>
             @endforeach
-
         </div>
     </div>
 </section>

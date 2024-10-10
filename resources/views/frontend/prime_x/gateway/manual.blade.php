@@ -4,25 +4,25 @@
 
     <div class="card">
         <div class="card-header">
-            {{$gateway->name}} {{ __('Payment') }}
+            {{ $gateway->name }} {{ __('Payment') }}
         </div>
         <div class="card-body">
             <div class="site-form mb-30">
                 <form role="form" action="{{ route('gateway.manual') }}" method="POST">
                     @csrf
 
-                    <input type="hidden" name="transaction_id" value="{{$transactionID}}">
+                    <input type="hidden" name="transaction_id" value="{{ $transactionID }}">
 
                     <div class="profile-card-body">
                         <div class="row">
 
                             <div class="col-sm-3">
                                 <div class="thumb text-right">
-                                    <img src="{{ asset($gateway->logo)  }}" alt="">
+                                    <img src="{{ asset($gateway->logo) }}" alt="{{ __('Payment Gateway Logo') }}">
                                 </div>
                             </div>
                             <div class="thumb text-left">
-                                <h4>{{$gateway->name}}</h4>
+                                <h4>{{ $gateway->name }}</h4>
                             </div>
                         </div>
                         <div class="row">
@@ -33,21 +33,20 @@
                         <div class="row">
                             <div class="col-sm-3 col-3">
                                 <div class="left-info text-right">
-                                    @foreach(json_decode($gateway->credentials,true) as $key => $value)
-                                        <p>{{$key}}</p>
+                                    @foreach(json_decode($gateway->credentials, true) as $key => $value)
+                                        <p>{{ $key }}</p>
                                     @endforeach
                                 </div>
                             </div>
                             <div class="col-sm-9 col-9">
                                 <div class="right-info">
-                                    @foreach(json_decode($gateway->credentials,true) as $key => $value)
-                                        <p>{{$value}}</p>
+                                    @foreach(json_decode($gateway->credentials, true) as $key => $value)
+                                        <p>{{ $value }}</p>
                                     @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
-
 
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-sm-12 mb-10">
@@ -65,4 +64,3 @@
     </div>
 
 @endsection
-

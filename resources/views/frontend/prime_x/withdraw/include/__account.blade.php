@@ -1,10 +1,10 @@
 <div class="input-area relative">
     <label for="exampleFormControlInput1" class="form-label">{{ __('Method Name:') }}</label>
-    <input type="text" name="method_name" class="form-control !text-lg" placeholder="eg. Withdraw Method - USD"
-               value="{{ $withdrawMethod->name .'-'. $withdrawMethod->currency}}">
+    <input type="text" name="method_name" class="form-control !text-lg" placeholder="{{ __('eg. Withdraw Method - USD') }}"
+           value="{{ $withdrawMethod->name .'-'. $withdrawMethod->currency }}">
 </div>
 
-@foreach( json_decode($withdrawMethod->fields, true) as $key => $field)
+@foreach(json_decode($withdrawMethod->fields, true) as $key => $field)
 
     @if($field['type'] == 'file')
 
@@ -12,7 +12,7 @@
         <input type="hidden" name="credentials[{{ $field['name']}}][validation]" value="{{ $field['validation'] }}">
 
         <div class="col-xl-6 col-md-12">
-            <div class="body-title">{{ $field['name'] }}</div>
+            <div class="body-title">{{ __($field['name']) }}</div>
             <div class="wrap-custom-file">
                 <input
                     type="file"
@@ -27,7 +27,7 @@
                         src="{{ asset('global/materials/upload.svg') }}"
                         alt=""
                     />
-                    <span>{{ __('Select '). $field['name'] }}</span>
+                    <span>{{ __('Select ') . __($field['name']) }}</span>
                 </label>
             </div>
         </div>
@@ -36,9 +36,9 @@
         <input type="hidden" name="credentials[{{ $field['name']}}][validation]" value="{{ $field['validation'] }}">
 
         <div class="input-area relative">
-            <label for="exampleFormControlInput1" class="form-label">{{ $field['name'] }}</label>
+            <label for="exampleFormControlInput1" class="form-label">{{ __($field['name']) }}</label>
             <textarea class="form-control" @if($field['validation'] == 'required') required
-                          @endif placeholder="Send Money Note" name="credentials[{{$field['name']}}][value]"></textarea>
+                          @endif placeholder="{{ __('Send Money Note') }}" name="credentials[{{$field['name']}}][value]"></textarea>
         </div>
 
     @else
@@ -47,13 +47,11 @@
 
         <div class="input-area relative">
             <label for="exampleFormControlInput1"
-                   class="form-label">{{ ucwords( str_replace('_',' ',$field['name']) ) }}</label>
+                   class="form-label">{{ ucwords( str_replace('_',' ', $field['name']) ) }}</label>
             <input type="text" name="credentials[{{ $field['name']}}][value]"
                    @if($field['validation'] == 'required') required @endif class="form-control !text-lg" aria-label="Amount"
-                   id="amount" aria-describedby="basic-addon1">
+                   id="amount" aria-describedby="basic-addon1" placeholder="{{ __($field['name']) }}">
         </div>
     @endif
 
 @endforeach
-
-

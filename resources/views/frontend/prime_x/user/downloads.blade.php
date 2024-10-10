@@ -14,12 +14,12 @@
                                 <iconify-icon class="dark:text-slate-300" icon="material-symbols:window-sharp"></iconify-icon>
                             </div>
                             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                                Metatrader 5 <br>
-                                <span class="text-slate-400 text-sm font-normal">for windows</span>
+                                {{ __('Metatrader 5') }} <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ __('for windows') }}</span>
                             </span>
                             <div class="mt-5">
                                 <a href="{{setting('desktop_terminal_windows_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                                    <span class="mr-1">Download</span>
+                                    <span class="mr-1">{{ __('Download') }}</span>
                                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                                 </a>
                             </div>
@@ -31,12 +31,12 @@
                                 <iconify-icon class="dark:text-slate-300" icon="fa6-brands:app-store-ios"></iconify-icon>
                             </div>
                             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                                Metatrader 5 <br>
-                                <span class="text-slate-400 text-sm font-normal">for MAC</span>
+                                {{ __('Metatrader 5') }} <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ __('for MAC') }}</span>
                             </span>
                             <div class="mt-5">
                                 <a href="{{setting('desktop_terminal_mac_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                                    <span class="mr-1">Download</span>
+                                    <span class="mr-1">{{ __('Download') }}</span>
                                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                                 </a>
                             </div>
@@ -48,12 +48,12 @@
                                 <iconify-icon class="dark:text-slate-300" icon="ion:logo-google-playstore"></iconify-icon>
                             </div>
                             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                                Metatrader 5 <br>
-                                <span class="text-slate-400 text-sm font-normal">for Android</span>
+                                {{ __('Metatrader 5') }} <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ __('for Android') }}</span>
                             </span>
                             <div class="mt-5">
                                 <a href="{{setting('mobile_application_android_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                                    <span class="mr-1">Download</span>
+                                    <span class="mr-1">{{ __('Download') }}</span>
                                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                                 </a>
                             </div>
@@ -65,12 +65,12 @@
                                 <iconify-icon class="dark:text-slate-300" icon="material-symbols:android"></iconify-icon>
                             </div>
                             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                                Metatrader 5 <br>
-                                <span class="text-slate-400 text-sm font-normal">for Android APK</span>
+                                {{ __('Metatrader 5') }} <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ __('for Android APK') }}</span>
                             </span>
                             <div class="mt-5">
                                 <a href="{{setting('mobile_application_Android_APK_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                                    <span class="mr-1">Download</span>
+                                    <span class="mr-1">{{ __('Download') }}</span>
                                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                                 </a>
                             </div>
@@ -82,12 +82,12 @@
                                 <iconify-icon class="dark:text-slate-300" icon="fa6-brands:apple"></iconify-icon>
                             </div>
                             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                                Metatrader 5 <br>
-                                <span class="text-slate-400 text-sm font-normal">for IOS</span>
+                                {{ __('Metatrader 5') }} <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ __('for IOS') }}</span>
                             </span>
                             <div class="mt-5">
                                 <a href="{{setting('mobile_application_iOS_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                                    <span class="mr-1">Download</span>
+                                    <span class="mr-1">{{ __('Download') }}</span>
                                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                                 </a>
                             </div>
@@ -99,12 +99,12 @@
                                 <iconify-icon class="dark:text-slate-300" icon="mdi:web"></iconify-icon>
                             </div>
                             <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                                Metatrader 5 <br>
-                                <span class="text-slate-400 text-sm font-normal">web trader</span>
+                                {{ __('Metatrader 5') }} <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ __('web trader') }}</span>
                             </span>
                             <div class="mt-5">
                                 <a href="{{setting('web_terminal_link','platform_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
-                                    <span class="mr-1">Download</span>
+                                    <span class="mr-1">{{ __('Download') }}</span>
                                     <iconify-icon icon="hugeicons:download-01"></iconify-icon>
                                 </a>
                             </div>
@@ -113,7 +113,6 @@
                     <!-- END: Group Chart5 -->
                 </div>
             </div>
-    
         </div>
     </div>
 @endsection

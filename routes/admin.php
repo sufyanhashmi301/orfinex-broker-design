@@ -519,7 +519,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     })->name('deposit.miscSetting');
 
     Route::get('withdraw/misc-setting', function () {
-        return view('backend.setting.payment.deposit.misc');
+        return view('backend.setting.payment.withdraw.misc');
     })->name('withdraw.miscSetting');
 
 

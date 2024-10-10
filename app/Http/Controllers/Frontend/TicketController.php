@@ -39,7 +39,7 @@ class TicketController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -72,7 +72,7 @@ class TicketController extends Controller
         $this->mailNotify($ticket->user->email, 'user_support_ticket', $shortcodes);
         $this->mailNotify(setting('support_email', 'global'), 'admin_support_ticket', $shortcodes);
 
-        notify()->success('Your Ticket Was created successfully', 'success');
+        notify()->success(__('Your Ticket Was created successfully'), 'success');
 
         return Redirect::route('user.ticket.show', $ticket->uuid);
 
@@ -94,7 +94,7 @@ class TicketController extends Controller
     {
 
         Ticket::uuid($uuid)->close();
-        notify()->success('Your Ticket Closed successfully', 'success');
+        notify()->success(__('Your Ticket Closed successfully'), 'success');
 
         return Redirect::route('user.ticket.index');
 
@@ -107,7 +107,7 @@ class TicketController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -140,7 +140,7 @@ class TicketController extends Controller
 
         $this->mailNotify(setting('support_email', 'global'), 'admin_support_ticket', $shortcodes);
 
-        notify()->success('Your Ticket Reply successfully', 'success');
+        notify()->success(__('Your Ticket Reply successfully'), 'success');
 
         return Redirect::route('user.ticket.show', $ticket->uuid);
 

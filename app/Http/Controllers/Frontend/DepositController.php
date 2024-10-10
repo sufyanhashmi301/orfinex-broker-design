@@ -35,7 +35,7 @@ class DepositController extends GatewayController
     {
 
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', 'Deposit Disable Now');
+            abort('403', __('Deposit Disable Now'));
         }
 
         $isStepOne = 'current';
@@ -67,7 +67,7 @@ class DepositController extends GatewayController
     public function depositNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', 'Deposit Disabled Now');
+            abort('403', __('Deposit Disabled Now'));
         }
 
         // Validate request input
@@ -80,7 +80,7 @@ class DepositController extends GatewayController
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(),  __('Error'));
             return redirect()->back();
         }
         $user = \Auth::user();
@@ -94,8 +94,8 @@ class DepositController extends GatewayController
         }
         // Check deposit amount against the gateway's limits
         if (!isset($user->country)) {
-            $message = 'Kindly choose the country from your profile for proceed to payment!';
-            notify()->error($message, 'Error');
+            $message = __('Kindly choose the country from your profile for proceed to payment!');
+            notify()->error($message, __('Error'));
             return redirect()->back();
         }
         $input = $request->all();
@@ -105,8 +105,8 @@ class DepositController extends GatewayController
         // Check deposit amount against the gateway's limits
         if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
             $currencySymbol = setting('currency_symbol', 'global');
-            $message = 'Please deposit the amount within the range ' . $currencySymbol . $gatewayInfo->minimum_deposit . ' to ' . $currencySymbol . $gatewayInfo->maximum_deposit;
-            notify()->error($message, 'Error');
+            $message = __('Please deposit the amount within the range') . $currencySymbol . $gatewayInfo->minimum_deposit . __('to')  . $currencySymbol . $gatewayInfo->maximum_deposit;
+            notify()->error($message,  __('Error'));
             return redirect()->back();
         }
 
@@ -123,8 +123,8 @@ class DepositController extends GatewayController
         if (isset($forexAccount->schema->first_min_deposit) && $forexAccount->schema->first_min_deposit > 0) {
             if (!$forexAccount->first_min_deposit_paid && $amount < $forexAccount->schema->first_min_deposit) {
                 $currencySymbol = setting('currency_symbol', 'global');
-                $message = 'Please deposit the first minimum amount of ' . $currencySymbol . $forexAccount->schema->first_min_deposit;
-                notify()->error($message, 'Error');
+                $message =  __('Please deposit the first minimum amount of') . $currencySymbol . $forexAccount->schema->first_min_deposit;
+                notify()->error($message, __('Error'));
                 return redirect()->back();
             }
         }
@@ -134,7 +134,7 @@ class DepositController extends GatewayController
         if ($account) {
             $targetType = TxnTargetType::Wallet->value;
         } else {
-            notify()->error(__('The selected account does not exist'), 'Error');
+            notify()->error(__('The selected account does not exist'), __('Error'));
             return redirect()->back();
         }
     }
@@ -158,7 +158,7 @@ class DepositController extends GatewayController
     // Create transaction with the appropriate target_id and target_type
     $txnInfo = Txn::new(
         $input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code,
-        'Deposit With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending,
+        __('Deposit With') . $gatewayInfo->name, $depositType, TxnStatus::Pending,
         $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User',
         $manualData ?? [], 'none', $targetId, $targetType
     );
@@ -184,7 +184,7 @@ class DepositController extends GatewayController
     public function depositDemoNow(Request $request)
     {
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', 'Deposit Disable Now');
+            abort('403', __('Deposit Disable Now'));
         }
         $request->validate([
             'target_id' => ['required','integer', new ForexLoginBelongsToUserForDemo,
@@ -194,7 +194,7 @@ class DepositController extends GatewayController
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/','numeric','min:1','max:100000'],
         ], [
             'target_id.required' => __('Kindly select Account for deposit'),
-            'target_id.exists' => 'The selected account does not exist or is not of type demo.',
+            'target_id.exists' => __('The selected account does not exist or is not of type demo.'),
         ]);
 
         $input = $request->all();
@@ -217,7 +217,7 @@ class DepositController extends GatewayController
             'login' => $targetId
         ]);
         if(!$response['success']){
-            return response()->json(['error' => __('Your Account is Deactivated, please contact: '.setting('support_email', 'global')), 'reload' => false]);
+            return response()->json(['error' => __('Your Account is Deactivated, please contact: ').setting('support_email', 'global'), 'reload' => false]);
 
         }
 

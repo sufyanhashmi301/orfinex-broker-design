@@ -20,7 +20,7 @@
                 <button type="submit" onclick="copyRef()" class="btn inline-flex items-center justify-center btn-dark btn-sm p-3">
                     <span class="flex items-center">
                         <iconify-icon class="text-lg" icon="bi:copy"></iconify-icon>
-                        <input id="copied" hidden="" value="Copied">
+                        <input id="copied" hidden="" value="{{ __('Copied') }}">
                     </span>
                 </button>
             </div>
@@ -35,7 +35,7 @@
             <h4>{{ $user->rank->ranking }}</h4>
             <p>{{ $user->rank->ranking_name }}</p>
             <div class="rank" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $user->rank->description }}">
-                <img src="{{ asset( $user->rank->icon) }}" alt="">
+                <img src="{{ asset($user->rank->icon) }}" alt="{{ __('Rank Icon') }}">
             </div>
         </div>
     </div>
@@ -62,5 +62,4 @@
             </div>
         </div>
     @endif
-
 </div>

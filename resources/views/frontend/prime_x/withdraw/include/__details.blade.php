@@ -30,10 +30,9 @@
 @foreach($credentials as $name => $data)
     <tr class="border-b border-slate-100 dark:border-slate-700">
         <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
-            <strong>{{$name}}</strong>
+            <strong>{{ __($name) }}</strong>
         </td>
         <td>
-
             @if($data['type'] == 'file')
                 <img src="{{ asset( $data['value']) }}" alt="">
             @else
@@ -42,4 +41,3 @@
         </td>
     </tr>
 @endforeach
-

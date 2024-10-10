@@ -55,7 +55,7 @@ class ForexAccountController extends GatewayController
                 'required',
                 function ($attribute, $value, $fail) {
                     if (!in_array($value, ['real', 'demo'])) {
-                        $fail('The ' . $attribute . ' must be either real or demo.');
+                        $fail(__('The ' . $attribute . ' must be either real or demo.'));
                     }
                 },
             ],
@@ -63,10 +63,10 @@ class ForexAccountController extends GatewayController
                 function ($attribute, $value, $fail) use ($request) {
                     $schema = ForexSchema::find($request->schema_id);
                     if ($request->account_type === 'real' && $value == 1 && !$schema->is_real_islamic) {
-                        $fail('The selected schema does not support Islamic account for Real account type.');
+                        $fail(__('The selected schema does not support Islamic account for Real account type.'));
                     }
                     if ($request->account_type === 'demo' && $value == 1 && !$schema->is_demo_islamic) {
-                        $fail('The selected schema does not support Islamic account for Demo account type.');
+                        $fail(__('The selected schema does not support Islamic account for Demo account type.'));
                     }
 
                 },
@@ -83,7 +83,7 @@ class ForexAccountController extends GatewayController
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -106,7 +106,7 @@ class ForexAccountController extends GatewayController
         //specific type account creation limit check
         if (ForexAccount::where(['user_id' => $user->id, 'forex_schema_id' => $schema->id, 'account_type' => $accountType])->count() >= $schema->account_limit) {
             $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.', ['title' => $schema->title]);
-            notify()->error($message, 'Error');
+            notify()->error($message, __('Error'));
             return redirect()->back();
         }
        //minimum balance limit check
@@ -123,7 +123,7 @@ class ForexAccountController extends GatewayController
             if ($forexAccount) {
                 if ($forexAccount->login >= $schema->end_range) {
                     $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
-                    notify()->error($message, 'Error');
+                    notify()->error($message, __('Error'));
                     return redirect()->back();
                 }
                 $login = $forexAccount->login++;
@@ -153,7 +153,7 @@ class ForexAccountController extends GatewayController
             "email" => $user->email,
             "agent" => 0,
             "account" => "",
-            "company" => env('APP_NAME', 'Company'),
+            "company" => env('APP_NAME', __('Company')),
             "language" => 0,
             "phonePassword" => 'SNNH@2024@bol',
             "status" => "RE",
@@ -225,7 +225,7 @@ class ForexAccountController extends GatewayController
 //                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
 //                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
 
-                notify()->success('Successfully Created Account', 'success');
+                notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->route('user.forex-account-logs');
             }
 
@@ -233,7 +233,7 @@ class ForexAccountController extends GatewayController
 
         }
 
-        notify()->error('Some error occurred! please try again', 'Error');
+        notify()->error(__('Some error occurred! please try again'), __('Error'));
         return redirect()->route('user.schema.preview', $schema->id);
 
         return redirect()->route('user.forex-account-logs');
@@ -272,9 +272,9 @@ class ForexAccountController extends GatewayController
         $forexAccount = ForexAccount::where('login', $account)->where('status', ForexAccountStatus::Ongoing)->first();
 
         if ($forexAccount) {
-            $data = 'Name: ' . $forexAccount->user->first_name . ' ' . $forexAccount->user->last_name;
+            $data =  __('Name') . $forexAccount->user->first_name . ' ' . $forexAccount->user->last_name;
         } else {
-            $data = 'Account Not Found';
+            $data = __('Account Not Found');
         }
 
         return $data;

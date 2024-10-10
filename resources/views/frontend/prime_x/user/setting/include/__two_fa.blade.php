@@ -6,7 +6,7 @@
 
             <div class="progress-steps-form">
                 <p class="dark:text-white">{{ __('Two Factor Authentication (2FA) Strengthens Access Security By Requiring Two Methods (also Referred To As Factors) To Verify Your Identity. Two Factor Authentication Protects Against Phishing, Social Engineering And Password Brute Force Attacks And Secures Your Logins From Attackers Exploiting Weak Or Stolen Credentials.') }}</p>
-                <p class="dark:text-white">{{ __('Scane the QR code with you Google Authenticator App') }}</p>
+                <p class="dark:text-white">{{ __('Scan the QR code with your Google Authenticator App') }}</p>
 
                 @php
                     $google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());

@@ -12,7 +12,7 @@
                     <div class="action-btns mt-5">
                         <input type="hidden" class="update-archive-login" name="login">
                         <button type="button" class="btn btn-primary mr-2 reactivate-account">
-                            {{ __('unarchive Account') }}
+                            {{ __('Unarchive Account') }}
                         </button>
                         <a href="#" class="btn btn-outline-dark inline-flex" data-bs-dismiss="modal" aria-label="Close">
                             {{ __('Close') }}

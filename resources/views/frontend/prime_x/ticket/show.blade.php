@@ -9,31 +9,31 @@
                 <div class="card-body p-6">
                     <di class="space-y-5">
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Tell Us!</p>
-                            <p class="text-sm dark:text-slate-100">Please provide us with as much information as possible when creating your support ticket. The more details you share, the better we can assist you.</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Tell Us!') }}</p>
+                            <p class="text-sm dark:text-slate-100">{{ __('Please provide us with as much information as possible when creating your support ticket. The more details you share, the better we can assist you.') }}</p>
                         </div>
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Show Us!</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Show Us!') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                If you're encountering any issues, consider attaching screenshots or images to your ticket. Visual aids can help us better understand and address your concerns.
+                                {{ __('If you\'re encountering any issues, consider attaching screenshots or images to your ticket. Visual aids can help us better understand and address your concerns.') }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Caution</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Caution') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                Please be aware that our ticket response time may extend up to 2 business days.
+                                {{ __('Please be aware that our ticket response time may extend up to 2 business days.') }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">Response Time</p>
+                            <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Response Time') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                Our dedicated support team is available from Monday to Friday, operating from 8:00 AM to 8:00 PM (Australian Timezone) and 9:00 AM to 6:00 PM (Dubai Time Zone). We make every effort to handle tickets promptly. However, during weekends or government holidays, our response time may experience a delay of one or two business days.
+                                {{ __('Our dedicated support team is available from Monday to Friday, operating from 8:00 AM to 8:00 PM (Australian Timezone) and 9:00 AM to 6:00 PM (Dubai Time Zone). We make every effort to handle tickets promptly. However, during weekends or government holidays, our response time may experience a delay of one or two business days.') }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-danger-600 font-medium mb-2">Important Notice</p>
+                            <p class="text-lg text-danger-600 font-medium mb-2">{{ __('Important Notice') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.
+                                {{ __('Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.') }}
                             </p>
                         </div>
                     </di>
@@ -162,7 +162,7 @@
                             </div>
                             <div class="flex-1 relative flex space-x-3 rtl:space-x-reverse">
                                 <div class="flex-1">
-                                    <textarea placeholder="Type your message..." class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none" name="message"></textarea>
+                                    <textarea placeholder="{{ __('Type your message...') }}" class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none" name="message"></textarea>
                                 </div>
                                 <div class="flex-none md:pr-0 pr-3">
                                     <button type="submit" class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full">

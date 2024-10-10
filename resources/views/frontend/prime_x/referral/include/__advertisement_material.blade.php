@@ -3,7 +3,7 @@
         <h4 class="card-title mb-3">
             {{ __('Choose advertisement materials for any purpose') }}
         </h4>
-        <p class="card-text mb-3">Explore and access advertisement materials effortlessly. Simply check the available options, view the content, and download the materials for your intended purpose with ease</p>
+        <p class="card-text mb-3">{{ __('Explore and access advertisement materials effortlessly. Simply check the available options, view the content, and download the materials for your intended purpose with ease') }}</p>
         <p class="card-text"></p>
     </div>
 </div>
@@ -11,11 +11,11 @@
     <div class="card mb-3">
         <div class="card-header items-center flex-wrap">
             <div class="flex items-center mb-4 sm:mb-0">
-                <label for="" class="form-label me-3 mb-0">Language:</label>
+                <label for="" class="form-label me-3 mb-0">{{ __('Language:') }}</label>
                 <select class="form-control" name="language" id="language">
-                    <option value="" selected="">Choose...</option>
+                    <option value="" selected="">{{ __('Choose...') }}</option>
                     @foreach($languages as $language)
-                        <option value="{{$language->name}}">{{$language->name}}</option>
+                        <option value="{{ $language->name }}">{{ $language->name }}</option>
                     @endforeach
 
                 </select>
@@ -49,5 +49,3 @@
         </div>
     </div>
 </div>
-
-

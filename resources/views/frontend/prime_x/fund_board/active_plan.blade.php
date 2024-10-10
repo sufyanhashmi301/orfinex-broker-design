@@ -182,6 +182,7 @@
                     @php
                         $profit = (isset($totalBalance['result']['balance']) ? (int)$totalBalance['result']['balance'] : 0) - (isset($invest->amount_allotted) ? $invest->amount_allotted : 0);
                         $profit = number_format($profit, 2);
+
                     @endphp
                     @if ($profit < 0)
                         <h4 class="text-base font-medium text-danger-500 whitespace-nowrap">{{ $profit }} {{ base_currency() }}</h4>
@@ -276,10 +277,11 @@
                             {{ $profit }} {{base_currency()}}
                         </span>
                     </li>
+{{--                    {{dd($invest->max_drawdown_limit)}}--}}
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + $profit : '0.00' }} {{base_currency()}}
+                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + (int)$profit : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>

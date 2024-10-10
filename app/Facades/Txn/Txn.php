@@ -140,22 +140,22 @@ class Txn
 
         if ($status == TxnStatus::Success && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
 //            dd($transaction);
-            if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
-                $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
-                $data = [
-                    'login' => $transaction->target_id,
-                    'Amount' => $transaction->final_amount,
-                    'type' => 1,//deposit
-                    'TransactionComments' => $comment
-                ];
-                $forexApiService = new ForexApiService();
-                $forexApiService->balanceOperation($data);
-//                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
-                first_min_deposit($transaction->target_id);
-            } else {
-                $amount = $transaction->amount;
-                $user->increment('balance', $amount);
-            }
+//            if (isset($transaction->target_id) && $transaction->target_type == 'forex_deposit') {
+//                $comment =  $transaction->method.'/'.substr($transaction->tnx, -7);
+//                $data = [
+//                    'login' => $transaction->target_id,
+//                    'Amount' => $transaction->final_amount,
+//                    'type' => 1,//deposit
+//                    'TransactionComments' => $comment
+//                ];
+//                $forexApiService = new ForexApiService();
+//                $forexApiService->balanceOperation($data);
+////                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+//                first_min_deposit($transaction->target_id);
+//            } else {
+//                $amount = $transaction->amount;
+//                $user->increment('balance', $amount);
+//            }
 
             //level referral
 //            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {

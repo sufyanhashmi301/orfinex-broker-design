@@ -325,7 +325,7 @@ class DepositController extends Controller
                 }
                 $transaction->save();
                 $transaction = $transaction->fresh();
-                $this->approveInvestment($transaction->target_id);
+                $this->investment->approveInvestment($transaction->target_id);
 
 
                 }
@@ -363,27 +363,6 @@ class DepositController extends Controller
         $transaction = Transaction::find($id);
         return response()->json(['transaction'=>$transaction]);
     }
-    public function approveInvestment($ivID)
-    {
-        $ivInvestment = ForexSchemaInvestment::findOrFail($ivID);
-//        dd($ivInvestment);
-        if (filled($ivInvestment)) {
-            try {
-//            $this->wrapInTransaction(function ($ivInvestment){
-                $this->investment->approveSubscription($ivInvestment, '', '');
-//                    try {
-//                        ProcessEmail::dispatch('investment-approved-customer', data_get($ivInvestment, 'user'), null, $ivInvestment);
-//                        ProcessEmail::dispatch('investment-approved-admin', data_get($ivInvestment, 'user'), null, $ivInvestment);
-//                    } catch (\Exception $e) {
-//                        save_mailer_log($e, 'investment-placed');
-//                    }
-//            }, $ivInvestment);
-            return true;
-            } catch (\Exception $e) {
-                throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
-            }
-        }
-        throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
-    }
+
 }
 

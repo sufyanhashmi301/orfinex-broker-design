@@ -16,7 +16,7 @@
                     @foreach($navigations as $navigation)
                         @if($navigation->page->status || $navigation->page_id == null)
                             <li>
-                                <a class="block py-2 pl-3 pr-4 lg:p-0 dark:text-white hover:text-primary-500 @if(url($navigation->url) == Request::url() )text-primary-500 @endif"
+                                <a class="block py-2 pl-3 pr-4 lg:p-0 dark:text-white hover:text-primary @if(url($navigation->url) == Request::url() )text-primary @endif"
                                    href="{{ url($navigation->url) }}">{{ __($navigation->tname) }}</a>
                             </li>
                         @endif

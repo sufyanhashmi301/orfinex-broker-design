@@ -28,15 +28,15 @@
                         <div class="input-form-group">
                             <input type="password" class="form-control" name="nickname" id="update-main-password" placeholder="Enter your password">
                             <ul>
-                                <li class="text-xs mb-1 text-danger-500" id="length-check-main">Use from 8 to 15
+                                <li class="text-xs mb-1 text-danger" id="length-check-main">Use from 8 to 15
                                     characters
                                 </li>
-                                <li class="text-xs mb-1 text-danger-500" id="letters-check-main">Use both uppercase
+                                <li class="text-xs mb-1 text-danger" id="letters-check-main">Use both uppercase
                                     and lowercase letters
                                 </li>
-                                <li class="text-xs mb-1 text-danger-500" id="number-check-main">At least one number
+                                <li class="text-xs mb-1 text-danger" id="number-check-main">At least one number
                                 </li>
-                                <li class="text-xs mb-1 text-danger-500" id="special-check-main">At least one special
+                                <li class="text-xs mb-1 text-danger" id="special-check-main">At least one special
                                     character(!@#$%^&*(),-.?":{}|<>)
                                 </li>
                             </ul>

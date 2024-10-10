@@ -35,7 +35,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block charge"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block charge"></div>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
@@ -45,7 +45,7 @@
                                         aria-describedby="basic-addon1">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
                             </div>
                             <div class="input-area relative conversion hidden">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
@@ -55,7 +55,7 @@
                                         aria-describedby="basic-addon2">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
                             <div class="manual-row"></div>
                         </div>

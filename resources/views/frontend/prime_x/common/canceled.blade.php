@@ -4,7 +4,7 @@
         <div class="flex flex-col items-center">
             <div class="relative mb-10">
                 <img src="{{ asset('frontend/images/canceled-page__img.svg') }}" alt="{{ __('Canceled Page Image') }}">
-                <div class="absolute left-0 right-0 bottom-0 icon h-16 w-16 bg-danger-500 rounded-full flex flex-col items-center justify-center mx-auto">
+                <div class="absolute left-0 right-0 bottom-0 icon h-16 w-16 bg-danger rounded-full flex flex-col items-center justify-center mx-auto">
                     <iconify-icon icon="mdi:close" class="text-white text-4xl" aria-label="{{ __('Close Icon') }}"></iconify-icon>
                 </div>
             </div>

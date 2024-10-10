@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Support Tickets') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -61,10 +61,10 @@
             <div class="card mb-5">
                 <div class="card-header flex-col md:flex-row items-start md:items-center">
                     <h4 class="card-title flex items-center">
-                        {{ $ticket->title.' - '.$ticket->uuid }} 
-                        <span class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl ml-2">
+                        {{ $ticket->title.' - '.$ticket->uuid }}
+                        <span class="badge bg-primary text-primary bg-opacity-30 capitalize rounded-3xl ml-2">
                             {{ __('Opened') }}
-                        </span>    
+                        </span>
                     </h4>
                     <div class="pt-3 md:pt-0 text-right md:text-left">
                         <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}" class="btn btn-dark">

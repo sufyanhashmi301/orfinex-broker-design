@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
     <ul class="m-0 p-0 list-none">
-        <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+        <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
             <a href="{{route('user.dashboard')}}">
                 <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
             </a>
         </li>
-        <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+        <li class="inline-block relative text-sm text-primary font-Inter ">
             {{ __('My Accounts') }}
             <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
         </li>
@@ -70,7 +70,7 @@
                 <div class="text-slate-900 dark:text-white text-lg font-medium">
                     {{ __('-1,875.16 USD') }}
                 </div>
-                <div class="text-xs font-medium text-danger-500">
+                <div class="text-xs font-medium text-danger">
                     <iconify-icon icon="ph:arrow-down-right"></iconify-icon>
                     {{ __('100%') }}
                 </div>

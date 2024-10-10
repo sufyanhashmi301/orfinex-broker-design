@@ -33,7 +33,7 @@
                                 <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                                     <a href="javascript:;" type="button"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#emailEditModal" class="text-sm text-success-500">
+                                    data-bs-target="#emailEditModal" class="text-sm text-success">
                                         {{ __('Change') }}
                                     </a>
                                 </span>
@@ -45,7 +45,7 @@
                                 <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                                     <a href="javascript:;" type="button"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#changePasswordModal" class="text-sm text-success-500">
+                                    data-bs-target="#changePasswordModal" class="text-sm text-success">
                                         {{ __('Change') }}
                                     </a>
                                 </span>
@@ -78,7 +78,7 @@
                             <div class="relative">
                                 <input type="text" class="form-control form-control-lg !pr-32" value="{{ $user->email }}">
                                 <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                    <a href="" class="text-sm text-success-500">
+                                    <a href="" class="text-sm text-success">
                                         {{ __('Change') }}
                                     </a>
                                 </span>

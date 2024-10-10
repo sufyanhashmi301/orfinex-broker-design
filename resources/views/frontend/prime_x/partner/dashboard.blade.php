@@ -21,7 +21,7 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ $dataCount['total_referral'] }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
+                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
                                 {{ __('+452%') }}
                             </span>
                         </div>
@@ -39,7 +39,7 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
+                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
                                 {{ __('+452%') }}
                             </span>
                         </div>
@@ -57,7 +57,7 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
+                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
                                 {{ __('+452%') }}
                             </span>
                         </div>
@@ -75,7 +75,7 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-danger-500 dark:text-slate-300 mb-1">
+                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">
                                 {{ __('-52%') }}
                             </span>
                         </div>
@@ -183,7 +183,7 @@
 
     <div class="card mb-6">
         <div class="card-body divide-y divide-slate-100 dark:divide-slate-700 px-6">
-    
+
             <div class="py-6">
                 <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Signup') }}</h4>
@@ -213,7 +213,7 @@
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
                     <div class="input-area relative min-w-[184px]">
                         <select name="level_order" class="select2 form-control w-full">
-    
+
                             @for ($i = 0; $i <= $maxLevelOrderCount; $i++)
                                 <option value="{{ $i }}">{{ __('Level ' . $i) }}</option>
                             @endfor
@@ -244,7 +244,7 @@
             </div>
         </div>
     </div>
-    
+
 
 @endsection
 @section('script')

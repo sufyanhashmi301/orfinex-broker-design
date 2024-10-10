@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Settings') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -172,7 +172,7 @@
                         <div class="card-body p-5">
                             <div class="space-y-6">
                                 <div class="flex space-x-3 items-center rtl:space-x-reverse">
-                                    <div class="flex-none h-8 w-8 rounded-full bg-primary-500 text-slate-300 flex flex-col items-center justify-center text-lg">
+                                    <div class="flex-none h-8 w-8 rounded-full bg-primary text-slate-300 flex flex-col items-center justify-center text-lg">
                                         <iconify-icon icon="heroicons:lock-closed"></iconify-icon>
                                     </div>
                                     <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
@@ -190,7 +190,7 @@
                         <div class="card-body p-5">
                             <div class="space-y-6">
                                 <div class="flex space-x-3 rtl:space-x-reverse items-center">
-                                    <div class="flex-none h-8 w-8 rounded-full bg-success-500 text-white flex flex-col items-center justify-center text-lg">
+                                    <div class="flex-none h-8 w-8 rounded-full bg-success text-white flex flex-col items-center justify-center text-lg">
                                         <iconify-icon icon="heroicons:clipboard-document-list"></iconify-icon>
                                     </div>
                                     <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
@@ -227,7 +227,7 @@
                         <div class="card-body p-5">
                             <div class="space-y-6">
                                 <div class="flex space-x-3 rtl:space-x-reverse items-center">
-                                    <div class="flex-none h-8 w-8 rounded-full bg-success-500 text-white flex flex-col items-center justify-center text-lg">
+                                    <div class="flex-none h-8 w-8 rounded-full bg-success text-white flex flex-col items-center justify-center text-lg">
                                         <iconify-icon icon="fa6-solid:sack-dollar"></iconify-icon>
                                     </div>
                                     <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">

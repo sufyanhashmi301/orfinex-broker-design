@@ -81,7 +81,7 @@
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
                                     {{ __('First Name:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -96,7 +96,7 @@
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
                                     {{ __('Last Name:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -111,7 +111,7 @@
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
                                     {{ __('Nick Name:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -126,7 +126,7 @@
                             <div class="input-area">
                                 <label for="" class="form-label">
                                     {{ __('Email:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="email"

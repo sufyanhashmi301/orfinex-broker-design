@@ -38,11 +38,11 @@
                                     </td>
                                     <td class="table-td">
                                         @if( $question->status)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-warning text-warning bg-opacity-30 capitalize">
                                                 {{ __('Disabled') }}
                                             </div>
                                         @endif
@@ -100,7 +100,7 @@
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                 <div class="modal-body p-6 py-8 text-center space-y-5">
-                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                         <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                     </div>
                     <div class="title">

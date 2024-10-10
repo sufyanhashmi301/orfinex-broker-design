@@ -21,14 +21,14 @@
                                 {{txn_type($transaction->type->value,['+','-']).$transaction->amount .' '.$currency}}</div>
                             <div class="transaction-fee sub mb-1 dark:text-white">-{{  $transaction->charge.' '. $currency .' '.__('Fee') }} </div>
                             <div class="transaction-gateway mb-1 dark:text-white">{{ $transaction->method }}</div>
-        
-        
+
+
                             @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
-                                <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                <div class="transaction-status text-warning">{{ __('Pending') }}</div>
                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
-                                <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                <div class="transaction-status text-success">{{ __('Success') }}</div>
                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)
-                                <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                <div class="transaction-status text-danger">{{ __('canceled') }}</div>
                             @endif
                         </div>
                     </div>

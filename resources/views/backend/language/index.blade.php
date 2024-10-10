@@ -49,7 +49,7 @@
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                 <div class="modal-body popup-body">
                     <div class="popup-body-text p-6 py-8 text-center space-y-5">
-                        <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                        <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                             <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                         </div>
                         <div class="title">

@@ -13,7 +13,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="input-area relative">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('To Wallet:') }}</label>
                     <div class="input-group select2-lg">
@@ -32,7 +32,7 @@
                                aria-describedby="basic-addon1">
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-r-slate-700 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
                     </div>
-                    <div class="font-Inter text-xs text-red-500 pt-2 inline-block charge"></div>
+                    <div class="font-Inter text-xs text-danger pt-2 inline-block charge"></div>
                 </div>
             </div>
 

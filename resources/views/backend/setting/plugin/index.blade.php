@@ -22,7 +22,7 @@
         <div class="card">
             <div class="card-body p-6 space-y-4">
                 <p class="paragraph text-xs dark:text-slate-300">
-                    <iconify-icon class="text-sm mr-2 text-warning-500" icon="lucide:info"></iconify-icon>{{ __('You can') }}
+                    <iconify-icon class="text-sm mr-2 text-warning" icon="lucide:info"></iconify-icon>{{ __('You can') }}
                     <strong>{{ __('Enable or Disable') }}</strong> {{ __('any of the plugin') }}
                 </p>
                 @foreach($plugins as $plugin)
@@ -39,11 +39,11 @@
                         <div class="gateway-right flex items-center gap-2">
                             <div class="gateway-status">
                                 @if($plugin->status)
-                                    <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                    <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                         {{ __('Activated') }}
                                     </div>
                                 @else
-                                    <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                    <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
                                         {{ __('DeActivated') }}
                                     </div>
                                 @endif

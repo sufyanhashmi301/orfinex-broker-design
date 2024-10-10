@@ -7,7 +7,7 @@
         <div class="col-span-12">
             @if(count($accounts) == 0)
             <div class="max-w-xl text-center py-10 mx-auto space-y-5">
-                <div class="w-20 h-20 bg-danger-500 text-white rounded-full inline-flex items-center justify-center">
+                <div class="w-20 h-20 bg-danger text-white rounded-full inline-flex items-center justify-center">
                     <iconify-icon icon="fa6-solid:box-open" class="text-5xl"></iconify-icon>
                 </div>
                 <h4 class="text-3xl text-slate-900 dark:text-white">

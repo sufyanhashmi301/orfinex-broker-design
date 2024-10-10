@@ -23,7 +23,7 @@
         <div class="card-body pt-4 pb-3 px-4">
             <div class="flex space-x-3 rtl:space-x-reverse">
                 <div class="flex-none">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning-500">
+                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-warning">
                         <iconify-icon icon="iconoir:hand-cash"></iconify-icon>
                     </div>
                 </div>
@@ -63,12 +63,12 @@
 <div class="grid grid-cols-12 gap-5">
     <div class="lg:col-span-8 col-span-12">
         <div class="space-y-5">
-            <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md bg-primary-500 bg-opacity-[14%] text-white" role="alert">
+            <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md bg-primary bg-opacity-[14%] text-white" role="alert">
                 <div class="flex items-center space-x-3 rtl:space-x-reverse">
-                    <p class="flex-1 text-primary-500 font-Inter">
+                    <p class="flex-1 text-primary font-Inter">
                         {{ __('Your commission for the day is paid out on the next day before 23:59 (GMT-2).') }}
                     </p>
-                    <div class="flex-0 text-xl cursor-pointer text-primary-500">
+                    <div class="flex-0 text-xl cursor-pointer text-primary">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                             <iconify-icon icon="line-md:close"></iconify-icon>
                         </button>

@@ -11,7 +11,7 @@
                     {{ __('Configure your SMTP server to enable automated email notifications for your customers, keeping them informed about transactions, payments, and important reminders.') }}
                 </p>
             </div>
-            <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+            <span class="badge bg-success text-success bg-opacity-30 capitalize">
                 {{ __('Activated') }}
             </span>
         </div>
@@ -41,7 +41,7 @@
                         <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
                             <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
                             <span>{{ __('Create a Mail Server Account If you don’t already have one, sign up for a third-party mail server provider (e.g., SendGrid, Mailgun).') }}</span>
-                            <a href="https://sendgrid.com/en-us" class="text-success-500">{{ __('Sign up Now') }}</a>
+                            <a href="https://sendgrid.com/en-us" class="text-success">{{ __('Sign up Now') }}</a>
                         </li>
                         <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
                             <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>

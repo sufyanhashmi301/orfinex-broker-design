@@ -82,7 +82,7 @@
                         <div class="mb-3">
                             <div class="flex mb-2 items-end">
                                 <h5 class="text-xl font-medium dark:text-white capitalize mb-0 mr-2">Selected columns 6/13</h5>
-                                <a href="" class="text-sm text-primary-500">Clear selection</a>
+                                <a href="" class="text-sm text-primary">Clear selection</a>
                             </div>
                             <p class="text-sm mb-3">Order columns by drag-n-drop. Remove columns by clicking on the cross icon.</p>
                             <div class="flex flex-wrap gap-2">

@@ -14,7 +14,7 @@ class Match2payTxn extends BaseTxn
         $credentials = gateway_info('match2pay');
 
         // Set the base URL for staging environment
-        $this->baseUrl = 'https://pp-staging.fx-edge.com';
+        $this->baseUrl = $credentials->base_url;
         $this->client = new Client([
             'headers' => [
                 'Content-Type' => 'application/json',

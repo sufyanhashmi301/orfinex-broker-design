@@ -14,6 +14,7 @@ use App\Services\Investment\PricingPayoutProcess;
 use App\Services\Investment\PricingSubscription;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 
 class ForexSchemaInvestormService extends Service
 {
@@ -104,7 +105,28 @@ class ForexSchemaInvestormService extends Service
     {
         return $this->ivProcessor->setDetails($details)->processInvestmentForMigration();
     }
-
+    public function approveInvestment($ivID)
+    {
+        $ivInvestment = ForexSchemaInvestment::findOrFail($ivID);
+//        dd($ivInvestment);
+        if (filled($ivInvestment)) {
+            try {
+//            $this->wrapInTransaction(function ($ivInvestment){
+                $this->approveSubscription($ivInvestment, '', '');
+//                    try {
+//                        ProcessEmail::dispatch('investment-approved-customer', data_get($ivInvestment, 'user'), null, $ivInvestment);
+//                        ProcessEmail::dispatch('investment-approved-admin', data_get($ivInvestment, 'user'), null, $ivInvestment);
+//                    } catch (\Exception $e) {
+//                        save_mailer_log($e, 'investment-placed');
+//                    }
+//            }, $ivInvestment);
+                return true;
+            } catch (\Exception $e) {
+                throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
+            }
+        }
+        throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
+    }
     public function approveSubscription(ForexSchemaInvestment $invest, $remarks = null, $note=null)
     {
         return $this->ivProcessor->approveInvestment($invest, $remarks, $note);

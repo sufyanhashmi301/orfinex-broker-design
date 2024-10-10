@@ -9,6 +9,7 @@ use App\Models\DepositMethod;
 use App\Models\Invest;
 use App\Models\LevelReferral;
 use App\Models\Transaction;
+use App\Services\ForexSchemaInvestormService;
 use charlesassets\LaravelPerfectMoney\PerfectMoney;
 use Exception;
 use Payment\Binance\BinanceTxn;
@@ -199,6 +200,9 @@ trait Payment
 //            $txnInfo->update([
 //                'status' => TxnStatus::Success,
 //            ]);
+            $investment = new ForexSchemaInvestormService();
+            $investment->approveInvestment($txnInfo->target_id);
+
             Txn::update($ref, TxnStatus::Success, $txnInfo->user_id);
 
 //            if (setting('site_referral', 'global') == 'level' && setting('deposit_level')) {

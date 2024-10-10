@@ -6,13 +6,13 @@
     <div class="md:flex justify-between items-center mb-5">
         <div class="">
             <ul class="m-0 p-0 list-none">
-                <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+                <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                     <a href="{{route('user.dashboard')}}">
                         <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                         <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                     </a>
                 </li>
-                <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+                <li class="inline-block relative text-sm text-primary font-Inter ">
                     Dashboard
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
                 </li>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="text-sm text-slate-500 pl-8 mt-1">Profit Earned</div>
-                    </div>    
+                    </div>
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="text-sm text-slate-500 pl-8 mt-1">Orfinex</div>
-                    </div>    
+                    </div>
                 </div>
             </div>
             <div class="card-footer py-4">
@@ -101,7 +101,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="card mt-5">
         <header class="card-header noborder">
             <h4 class="card-title">Active Fund</h4>
@@ -135,7 +135,7 @@
                                     <td class="table-td">
                                         <div class="flex items-center">
                                             <div class="flex-none">
-                                                <iconify-icon icon="ph:check-circle-fill" class="text-4xl text-success-500 mr-2"></iconify-icon>
+                                                <iconify-icon icon="ph:check-circle-fill" class="text-4xl text-success mr-2"></iconify-icon>
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
@@ -151,7 +151,7 @@
                                         $1200
                                     </td>
                                     <td class="table-td">
-                                        <span class="text-success-500">
+                                        <span class="text-success">
                                             $230
                                         </span>
                                     </td>
@@ -210,7 +210,7 @@
                                     <td class="table-td">
                                         <div class="flex items-center">
                                             <div class="flex-none">
-                                                <iconify-icon icon="ph:check-circle-fill" class="text-4xl text-warning-500 mr-2"></iconify-icon>
+                                                <iconify-icon icon="ph:check-circle-fill" class="text-4xl text-warning mr-2"></iconify-icon>
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
@@ -226,7 +226,7 @@
                                         16 Jan, 2024 03:20 PM
                                     </td>
                                     <td class="table-td">
-                                        <span class="text-success-500">Active</span>
+                                        <span class="text-success">Active</span>
                                     </td>
                                     <td class="table-td">
                                         <a href="" class="btn btn-dark btn-sm inline-felx items-center justify-center">
@@ -275,7 +275,7 @@
                                     <td class="table-td">
                                         <div class="flex items-center">
                                             <div class="flex-none">
-                                                <iconify-icon icon="mdi:close-circle" class="text-4xl text-danger-500 mr-2"></iconify-icon>
+                                                <iconify-icon icon="mdi:close-circle" class="text-4xl text-danger mr-2"></iconify-icon>
                                             </div>
                                             <div class="flex-1 text-start">
                                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">

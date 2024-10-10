@@ -151,23 +151,35 @@
                     data = {
                         ...data,
                         body_bg_color: '#f1f5f9',
-                        secondary_color: '#ffffff',
-                        primary_color: '#0f172a',
+                        base_color: '#ffffff',
                         active_menu_bg: '#0f172a',
                         active_menu_color: '#ffffff',
                         secondary_btn_bg: '#f3f4f6',
                         secondary_btn_color: '#0f172a',
+                        primary_btn_bg: '#0f172a',
                         primary_btn_color: '#ffffff',
                     };
                 } else if ($section === 'dark_colors') {
                     data = {
                         ...data,
                         body_bg_color_dark: '#11171f',
-                        secondary_color_dark: '#181e26',
+                        base_color_dark: '#181e26',
                         primary_color_dark: '#0f172a',
                         active_menu_bg_dark: '#0f172a',
                         active_menu_color_dark: '#ffffff',
-                        primary_btn_bg_dark: '#0f172a'
+                        secondary_btn_bg_dark: '#f3f4f6',
+                        secondary_btn_color_dark: '#0f172a',
+                        primary_btn_bg_dark: '#f3f4f6',
+                        primary_btn_color_dark: '#0f172a',
+                    };
+                } else if ($section === 'misc_colors') {
+                    data = {
+                        ...data,
+                        primary_color: '#0f172a',
+                        secondary_color: '#f1f5f9',
+                        success_color: '#0fb60b',
+                        warning_color: '#ffbb0d',
+                        danger_color: '#dc0000',
                     };
                 }
                 $.ajax({

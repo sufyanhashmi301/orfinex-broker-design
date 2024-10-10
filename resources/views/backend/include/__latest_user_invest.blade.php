@@ -171,9 +171,9 @@
                                     </td>
                                     <td class="table-td">
                                         @if($user->kyc == 1)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Verified') }}</div>
+                                            <div class="badge badge-success text-success bg-opacity-30 capitalize">{{ __('Verified') }}</div>
                                         @else
-                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">{{ __('Unverified') }}</div>
+                                            <div class="badge badge-warning bg-opacity-30 capitalize">{{ __('Unverified') }}</div>
                                         @endif
                                     </td>
                                     <td class="table-td">
@@ -181,7 +181,7 @@
                                         <span class="block text-left">
                                             <span class="inline-block text-center mx-auto py-1">
                                                 <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                    <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                    <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                         <span>{{ __('Active') }}</span>
                                                     </span>
                                                 </span>
@@ -190,7 +190,7 @@
                                         <span class="block text-left">
                                             <span class="inline-block text-center mx-auto py-1">
                                                 <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                    <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                    <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
                                                     <span>{{ __('DeActivated') }}</span>
                                                 </span>
                                                 </span>

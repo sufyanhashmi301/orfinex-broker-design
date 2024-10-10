@@ -26,7 +26,6 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Risk Book') }}</th>
                                     <th scope="col" class="table-th">{{ __('Groups') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -35,26 +34,36 @@
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 @foreach ($riskBooks as $riskBook)
                                     <tr>
-                                        <td class="table-td">{{ $riskBook->id }}</td>
                                         <td class="table-td">{{ $riskBook->name }}</td>
                                         <td class="table-td">
                                             <ul class="flex flex-wrap items-center gap-3">
                                                 @foreach ($riskBook->groups as $group)
-                                                    <li class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 uppercase">
+                                                    <li class="badge bg-secondary uppercase">
                                                         {{ $group->group }}
                                                     </li>
                                                 @endforeach
                                             </ul>
                                         </td>
                                         <td class="table-td">
-                                            @if($riskBook->name != 'Un-Assigned')
-                                                <a href="javascript:;" data-id="{{ $riskBook->id }}" class="action-btn editRiskBook">
-                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                                </a>
-                                            @endif
+                                            <a href="javascript:;" data-id="{{ $riskBook->id }}" class="action-btn editRiskBook">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
+                                <tr>
+                                    <td class="table-td">{{ __('Un-Assigned') }}</td>
+                                    <td class="table-td">
+                                        <ul class="flex flex-wrap items-center gap-3">
+                                            @foreach ($unAssignedGroups as $unAssignedGroup)
+                                                <li class="badge bg-secondary uppercase">
+                                                    {{ $unAssignedGroup->group }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td class="table-td"></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

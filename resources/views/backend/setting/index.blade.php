@@ -167,7 +167,7 @@
                     <li>
                         <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Colors Customize') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -219,7 +219,7 @@
                     <li>
                         <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform Groups') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -232,7 +232,7 @@
                     <li>
                         <a href="{{ route('admin.settings.webterminal.mt5') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Web Terminal') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -270,7 +270,7 @@
                         <li>
                             <a href="{{ route('admin.email-template') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Email Templates') }}
-                                <span class="badge-warning text-xs capitalize rounded-full px-2 py-1">
+                                <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                     {{ __('Updated') }}
                                 </span>
                             </a>
@@ -328,7 +328,7 @@
                     <li class="">
                         <a href="{{ route('admin.clear-cache') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Clear Cache') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -336,7 +336,7 @@
                     <li class="">
                         <a href="{{ route('admin.application-info') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Application Details') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -344,7 +344,7 @@
                     <li class="">
                         <a href="{{ route('admin.changelog') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Changelog') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -393,25 +393,6 @@
         </div>
     </div>
 @endsection
-@section('style')
-    <style>
-        .badge-secondary {
-            background-color: rgba(205, 205, 205, 0.29);
-            color: #828289;
-        }
-        .badge-warning {
-            background-color: rgba(254, 208, 0, 0.52);
-            color: #5F4D00;
-        }
-        .badge-success {
-            background-color: rgba(0, 236, 66, 0.29);
-            color: #008133;
-        }
-    </style>
-@endsection
 @section('script')
-    <script>
-        new SimpleBar($("#sidebar_subMenus, #scrollModal")[0]);
-    </script>
     @yield('setting-script')
 @endsection

@@ -1,23 +1,23 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
-    <a href="{{route('home')}}" class="items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
-        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
+    <a href="{{ route('home') }}" class="items-center md:flex hidden">
+        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="{{ __('Logo') }}"/>
+        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="{{ __('Logo') }}"/>
     </a>
     <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
-                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt=""
+                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="{{ __('User Image') }}"
                          class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">
                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                    {{auth()->user()->full_name}}
+                    {{ auth()->user()->full_name }}
                 </h4>
                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                    {{auth()->user()->email}}
+                    {{ auth()->user()->email }}
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
 <div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
-        <li class="sidebar-menu-title">MENU</li>
+        <li class="sidebar-menu-title">{{ __('MENU') }}</li>
         <li>
             <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">
                 <span class="flex items-center">
@@ -91,7 +91,7 @@
         </li>
 
         <li>
-            <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
+            <a href="{{ route('user.dashboard') }}" class="navItem {{ isActive('user.dashboard') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:user-round"></iconify-icon>
                     <span>{{ __('Client Portal') }}</span>
@@ -104,12 +104,12 @@
                 <span class="dark:flex items-center hidden">
                     <iconify-icon class="nav-icon" id="sunIcon"
                                   icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
-                    <span>Light Mode</span>
+                    <span>{{ __('Light Mode') }}</span>
                 </span>
                 <span class="dark:hidden flex items-center">
                     <iconify-icon class="nav-icon" id="moonIcon"
                                   icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
-                    <span>Dark Mode</span>
+                    <span>{{ __('Dark Mode') }}</span>
                 </span>
             </a>
         </li>

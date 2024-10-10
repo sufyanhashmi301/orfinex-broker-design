@@ -10,10 +10,10 @@
                 @if(count($withdraws) == 0)
                     <div class="flex items-center justify-center flex-col">
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
-                            You don't have any transaction yet.
+                            {{ __('You don\'t have any transaction yet.') }}
                         </p>
                         <a href="{{ route('user.withdraw.view') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
-                            Withdraw Now
+                            {{ __('Withdraw Now') }}
                         </a>
                     </div>
                 @else
@@ -21,7 +21,7 @@
                         <div class="filter">
                             <form action="{{ route('user.withdraw.log') }}" method="get">
                                 <div class="search flex gap-3 items-center">
-                                    <input type="text" class="form-control" id="search" placeholder="Search"
+                                    <input type="text" class="form-control" id="search" placeholder="{{ __('Search') }}"
                                         value="{{ request('query') }}"
                                         name="query"/>
                                     <input type="date" class="form-control flatpickr flatpickr-input active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
@@ -130,16 +130,16 @@
                                                             <span class="flex items-center space-x-3 rtl:space-x-reverse">
                                                                 @switch($raw->status->value)
                                                                     @case('pending')
-                                                                        <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                                        <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
                                                                         <span>{{ __('Pending') }}</span>
                                                                         @break
                                                                     @case('success')
-                                                                        <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                        <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                                         <span>{{ __('Success') }}</span>
                                                                         @break
                                                                     @case('failed')
-                                                                        <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
-                                                                        <span>{{ __('canceled') }}</span>
+                                                                        <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                                        <span>{{ __('Canceled') }}</span>
                                                                         @break
                                                                 @endswitch
                                                             </span>
@@ -160,13 +160,13 @@
                                         @endphp
 
                                         <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
-                                            Showing
+                                            {{ __('Showing') }}
                                             <span class="font-medium">{{ $from }}</span>
-                                            to
+                                            {{ __('to') }}
                                             <span class="font-medium">{{ $to }}</span>
-                                            of
+                                            {{ __('of') }}
                                             <span class="font-medium">{{ $total }}</span>
-                                            results
+                                            {{ __('results') }}
                                         </p>
                                     </div>
                                     {{  $withdraws->links() }}
@@ -187,7 +187,7 @@
                 <div class="filter mb-3">
                     <form action="{{ route('user.withdraw.log') }}" method="get">
                         <div class="search flex items-center gap-2">
-                            <input type="text" class="form-control" placeholder="Search" value="{{ request('query') }}" name="query"/>
+                            <input type="text" class="form-control" placeholder="{{ __('Search') }}" value="{{ request('query') }}" name="query"/>
                             <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
                             <button type="submit" class="apply-btn h-10 btn btn-dark">
                                 <iconify-icon icon="lucide:search"></iconify-icon>
@@ -207,15 +207,15 @@
                             </div>
                             <div class="transaction-right text-right">
                                 <div class="transaction-amount sub mb-1 dark:text-white">- {{$raw->amount .' '.$currency}}</div>
-                                <div class="transaction-fee sub mb-1 dark:text-white">-{{  $raw->charge.' '. $currency .' '.__('Fee') }} </div>
+                                <div class="transaction-fee sub mb-1 dark:text-white">- {{ $raw->charge.' '. $currency .' '. __('Fee') }}</div>
                                 <div class="transaction-gateway mb-1 dark:text-white">{{ $raw->method }}</div>
 
                                 @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
-                                    <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                    <div class="transaction-status text-warning">{{ __('Pending') }}</div>
                                 @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
-                                    <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                    <div class="transaction-status text-success">{{ __('Success') }}</div>
                                 @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                    <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                    <div class="transaction-status text-danger">{{ __('Canceled') }}</div>
                                 @endif
                             </div>
                         </div>

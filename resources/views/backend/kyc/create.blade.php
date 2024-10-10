@@ -9,7 +9,7 @@
                 {{ __('Add New KYC Form') }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="{{ route('admin.kyc-form.index') }}" class="inline-flex items-center justify-center text-success-500">
+                <a href="{{ route('admin.kyc-form.index') }}" class="inline-flex items-center justify-center text-success">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                     {{ __('Back') }}
                 </a>
@@ -19,7 +19,7 @@
             <div class="card-body p-6">
                 <form action="{{ route('admin.kyc-form.store') }}" method="post" class="space-y-4">
                     @csrf
-                   
+
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Name:') }}</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="form-control"

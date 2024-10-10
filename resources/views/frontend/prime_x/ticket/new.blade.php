@@ -7,7 +7,7 @@
         <div class="lg:col-span-4 col-span-12">
             <div class="card">
                 <div class="card-body p-6">
-                    <di class="space-y-5">
+                    <div class="space-y-5">
                         <div>
                             <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Tell Us!') }}</p>
                             <p class="text-sm dark:text-slate-100">
@@ -33,12 +33,12 @@
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-danger-600 font-medium mb-2">{{ __('Important Notice') }}</p>
+                            <p class="text-lg text-danger600 font-medium mb-2">{{ __('Important Notice') }}</p>
                             <p class="text-sm dark:text-slate-100">
                                 {{ __('Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.') }}
                             </p>
                         </div>
-                    </di>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,11 +94,9 @@
                                 </button>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection

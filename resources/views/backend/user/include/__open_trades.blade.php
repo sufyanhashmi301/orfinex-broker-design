@@ -35,11 +35,11 @@
                                     <td class="table-td">{{$deal->Symbol}}</td>
                                     <td class="table-td">
                                         @if($deal->Action == 0)
-                                            <span class="badge bg-success-500 text-white capitalize">
+                                            <span class="badge bg-success text-white capitalize">
                                                 {{ __('Buy') }}
                                             </span>
                                         @elseif($deal->Action == 1)
-                                            <span class="badge bg-danger-500 text-white capitalize">
+                                            <span class="badge bg-danger text-white capitalize">
                                                 {{ __('Sell') }}
                                             </span>
                                         @endif

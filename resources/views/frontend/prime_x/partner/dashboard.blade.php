@@ -21,8 +21,8 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ $dataCount['total_referral'] }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
-                                +452%
+                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
+                                {{ __('+452%') }}
                             </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -39,8 +39,8 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
-                                +452%
+                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
+                                {{ __('+452%') }}
                             </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -57,8 +57,8 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
-                                +452%
+                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
+                                {{ __('+452%') }}
                             </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -75,8 +75,8 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-danger-500 dark:text-slate-300 mb-1">
-                                -52%
+                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">
+                                {{ __('-52%') }}
                             </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -107,7 +107,7 @@
                                 {{ __('Sales: 75%') }}
                             </span>
                         </div>
-                        <div class="bg-slate-100 darmaxLevelOrderk:bg-slate-900 p-2 rounded text-center">
+                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
                             <span class="text-slate-600 dark:text-slate-300 text-sm block">
                                 {{ __('Referral: 75%') }}
                             </span>
@@ -207,7 +207,7 @@
                     </div>
                 </div>
             </div>
-{{--            {{dd($maxLevelOrder)}}--}}
+            {{--            {{dd($maxLevelOrder)}}--}}
             <div class="py-6">
                 <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
@@ -245,6 +245,7 @@
         </div>
     </div>
 
+
 @endsection
 @section('script')
     <script>
@@ -258,11 +259,11 @@
                 }
             },
             series: [{
-                name: "Registration",
+                name: "{{ __('Registration') }}",
                 type: "area",
                 data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
             }, {
-                name: "Active Clients",
+                name: "{{ __('Active Clients') }}",
                 type: "line",
                 data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
             }],
@@ -300,7 +301,7 @@
                 }
             },
             title: {
-                text: "Revenue Report",
+                text: "{{ __('Revenue Report') }}",
                 align: "left",
                 offsetX: e ? "0%" : 0,
                 offsetY: 13,
@@ -313,7 +314,7 @@
                 }
             },
             subtitle: {
-                text: "Check all your Total Registration & Active Cleints",
+                text: "{{ __('Check all your Total Registration & Active Cleints') }}",
                 align: "left",
                 offsetX: e ? "0%" : 0,
                 offsetY: 42,
@@ -350,7 +351,7 @@
                 }
             },
             xaxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                categories: ["{{ __('Jan') }}", "{{ __('Feb') }}", "{{ __('Mar') }}", "{{ __('Apr') }}", "{{ __('May') }}", "{{ __('Jun') }}", "{{ __('Jul') }}", "{{ __('Aug') }}", "{{ __('Sep') }}", "{{ __('Oct') }}", "{{ __('Nov') }}", "{{ __('Dec') }}"],
                 labels: {
                     style: {
                         colors: l ? "#CBD5E1" : "#475569",
@@ -402,7 +403,7 @@
                 // Change the button text and style
                 var $button = $(this);
                 var originalText = $button.text();
-                $button.text('Copied');
+                $button.text('{{ __('Copied') }}');
                 $button.addClass('copy-button');
 
                 // Revert the button text and style after 2 seconds
@@ -444,7 +445,7 @@
                         // Change the button text and style
                         var $button = $(this);
                         var originalText = $button.text();
-                        $button.text('Copied');
+                        $button.text('{{ __('Copied') }}');
                         $button.addClass('copy-button');
 
                         // Revert the button text and style after 2 seconds

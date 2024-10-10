@@ -23,7 +23,7 @@
             <div class="lg:col-span-1 col-span-2">
                 <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Investment Bounty') }}
                         </h3>
@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                             {{ $investment->bounty }}%
                                         </div>
                                     </div>
@@ -89,7 +89,7 @@
             <div class="lg:col-span-1 col-span-2">
                 <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Deposit Bounty') }}
                         </h3>
@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                             {{ $deposit->bounty .''.__('%')}}
                                         </div>
                                     </div>

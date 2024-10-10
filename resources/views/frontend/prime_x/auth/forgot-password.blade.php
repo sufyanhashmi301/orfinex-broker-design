@@ -10,7 +10,7 @@
             <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url({{ asset('frontend/images/primex_login_bg.png') }})">
                 <div class="mx-auto max-w-xs text-center">
                     <a href="{{ route('home')}}" class="">
-                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="">
+                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="{{ __('Logo') }}">
                     </a>
                 </div>
             </div>
@@ -19,7 +19,7 @@
             <div class="w-full max-w-lg">
                 <div class="mobile-logo text-center mb-6 lg:hidden block">
                     <a href="{{ route('home')}}">
-                        <img src="{{ asset(setting('site_logo','global')) }}" alt="" class="h-[56px]">
+                        <img src="{{ asset(setting('site_logo','global')) }}" alt="{{ __('Logo') }}" class="h-[56px]">
                     </a>
                 </div>
                 <h2 class="text-2xl font-semibold text-gray-700 mb-1">{{ __('Password Reset') }}</h2>
@@ -32,11 +32,11 @@
                             <div class="flex items-center space-x-3 rtl:space-x-reverse">
                                 <p class="flex-1 font-Inter">
                                     @foreach($errors->all() as $error)
-                                        {{$error}}
+                                        {{ __($error) }}
                                     @endforeach
                                 </p>
                                 <div class="flex-0 text-lg cursor-pointer">
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}">
                                         <iconify-icon icon="line-md:close"></iconify-icon>
                                     </button>
                                 </div>
@@ -47,10 +47,10 @@
                         <div class="alert alert-warning alert-dismissible fade show mt-2 text-sm" role="alert">
                             <div class="flex items-center space-x-3 rtl:space-x-reverse">
                                 <p class="flex-1 font-Inter">
-                                    {{ session('status') }}
+                                    {{ __(session('status')) }}
                                 </p>
                                 <div class="flex-0 text-lg cursor-pointer">
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}">
                                         <iconify-icon icon="line-md:close"></iconify-icon>
                                     </button>
                                 </div>
@@ -67,7 +67,7 @@
                                     class="form-control py-2 h-[48px]"
                                     type="text"
                                     name="email"
-                                    placeholder="Enter your email address"
+                                    placeholder="{{ __('Enter your email address') }}"
                                     required
                                     value="{{ old('email') }}"
                                 />
@@ -94,5 +94,3 @@
     </div>
     <!-- Login Section End -->
 @endsection
-
-

@@ -26,7 +26,7 @@
                                             </option>
                                         @endforeach
 
-                                    <!-- Wallet Accounts -->
+                                        <!-- Wallet Accounts -->
                                         @include('frontend::wallet.include.__all-wallets-dropdown', ['target_id_name' => 'target_id'])
                                     </select>
                                 </div>
@@ -36,30 +36,30 @@
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Account To:') }}</label>
                                 <div class="relative">
                                     <input type="text" name="receiver_account" oninput="this.value = validateDouble(this.value)" required class="form-control !text-lg userAccountCheck"
-                                           placeholder="Receiver Account">
+                                           placeholder="{{ __('Receiver Account') }}">
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max notifyUser"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max notifyUser"></div>
                             </div>
 
                             <div class="input-area relative mb-5">
                                 <label for="exampleFormControlInput1" class="form-label">{{ __('Enter Amount') }}</label>
                                 <div class="relative">
                                     <input type="text" class="form-control !text-lg sendAmount" name="amount" required
-                                           placeholder="Enter Amount" aria-label="Amount"
+                                           placeholder="{{ __('Enter Amount') }}" aria-label="Amount"
                                            oninput="this.value = validateDouble(this.value)" aria-describedby="basic-addon1">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">
                                     {{ $currency }}
                                 </span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max">
-                                    {{ 'Minimum '. setting('min_send','fee').' '.$currency.' and Maximum '. setting('max_send','fee').' '.$currency }}
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max">
+                                    {{ __('Minimum') . ' ' . setting('min_send','fee') . ' ' . $currency . ' ' . __('and Maximum') . ' ' . setting('max_send','fee') . ' ' . $currency }}
                                 </div>
                             </div>
 
                             <div class="input-area relative">
                                 <label for="exampleFormControlInput1"
                                        class="form-label">{{ __('Transfer Note (Optional)') }}</label>
-                                <textarea class="form-control !text-lg" rows="5" placeholder="Transfer Note" name="note"></textarea>
+                                <textarea class="form-control !text-lg" rows="5" placeholder="{{ __('Transfer Note') }}" name="note"></textarea>
                             </div>
                         </div>
                     </div>

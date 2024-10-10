@@ -5,13 +5,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Dashboard') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -34,7 +34,7 @@
                     <span class="text-[32px] leading-10 font-medium">
                         Unlimited
                     </span>
-                    <span class="text-xs bg-warning-50 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
+                    <span class="text-xs bg-warning-50 text-warning font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
                         Instant
                     </span>
                 </div>
@@ -70,7 +70,7 @@
                     <span class="text-[32px] leading-10 font-medium">
                         $500
                     </span>
-                    <span class="text-xs bg-warning-50 text-warning-500 font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
+                    <span class="text-xs bg-warning-50 text-warning font-medium px-2 py-1 rounded-full inline-block dark:bg-slate-700 uppercase h-auto">
                         Semi Instant
                     </span>
                 </div>

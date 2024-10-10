@@ -5,14 +5,14 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right"
                                   class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('Dashboard') }}
                 <iconify-icon icon="heroicons-outline:chevron-right"
                               class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
@@ -77,7 +77,7 @@
                                         </select>
                                     </div>
                                     <div
-                                        class="font-Inter text-xs text-red-500 pt-2 inline-block processing-time"></div>
+                                        class="font-Inter text-xs text-danger pt-2 inline-block processing-time"></div>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
@@ -92,7 +92,7 @@
 
                                     </div>
                                     <div
-                                        class="font-Inter text-xs text-red-500 pt-2 inline-block withdrawAmountRange"></div>
+                                        class="font-Inter text-xs text-danger pt-2 inline-block withdrawAmountRange"></div>
                                 </div>
                                 <div class="input-area relative conversion hidden">
                                     <label for="exampleFormControlInput1" class="form-label">{{ __('Amount') }}</label>
@@ -104,7 +104,7 @@
 
                                     </div>
                                     <div
-                                        class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
+                                        class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                                 </div>
                             </div>
                             <div class="transaction-list mt-5">

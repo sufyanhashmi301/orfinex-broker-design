@@ -240,7 +240,6 @@
                                     <option value="{{$group->group}}" @if($group->group == $schema->real_swap_free) selected @endif>{{ $group->group}}</option>
                                 @endforeach
                             </select>
-                        </div>
 {{--                        <div class="input-area">--}}
 {{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
 {{--                            <input--}}

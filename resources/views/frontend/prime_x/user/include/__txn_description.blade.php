@@ -18,11 +18,11 @@
         </i>
     </div>
     <div class="description">
-        <strong>{{$description}}</strong>@if(!in_array($approval_cause,['none',""]))
-            <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $approval_cause }}"><i
-                    icon-name="mail"></i></span>
+        <strong>{{__('description')}}</strong>@if(!in_array($approval_cause,['none',""]))
+            <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ __('approval_cause') }}"><i
+                    icon-name="{{__('mail')}}"></i></span>
         @endif
-        <div class="date">{{ $created_at }}</div>
+        <div class="date">{{ __('created_at') }}</div>
     </div>
 </div>
 <script>

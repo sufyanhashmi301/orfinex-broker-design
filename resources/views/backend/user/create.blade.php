@@ -71,7 +71,7 @@
                             <label class="form-label">{{ __('Email') }}</label>
                             <input type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="">
                             @error('email')
-                                <small class="text-red-500">{{ $message }}</small>
+                                <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="input-area relative">

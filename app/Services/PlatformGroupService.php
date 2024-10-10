@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StorePlatformGroupRequest;
 use App\Models\PlatformGroup;
 use Illuminate\Support\Facades\DB;
@@ -33,4 +34,20 @@ class PlatformGroupService
         notify()->success(__('Group enabled successfully'));
         return ['success' => true];
     }
+
+    public function updateGroupStatus($groupId, $status)
+    {
+        $group = PlatformGroup::where('group_id', $groupId)->first();
+        if (!$group) {
+            return ['success' => false, 'message' => 'Group not found'];
+        }
+
+        $group->status = $status;
+        $group->save();
+
+        $message = $status == 1 ? __('Group enabled successfully') : __('Group disabled successfully');
+        notify()->success($message);
+        return ['success' => true];
+    }
+
 }

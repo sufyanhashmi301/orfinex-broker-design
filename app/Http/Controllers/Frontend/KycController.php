@@ -43,7 +43,7 @@ class KycController extends Controller
 //       dd($user->kyc );
         if ($checkLevel1) {
             if ($user->kyc <= 1) {
-                notify()->error('kindly complete the level 1 first');
+                notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
         }
@@ -91,9 +91,9 @@ class KycController extends Controller
             $user->update([
                 'kyc' => 1,
             ]);
-            return response()->json(['status' => 200, 'success' => 'Verification completed']);
+            return response()->json(['status' => 200, 'success' => __('Verification completed')]);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+            return response()->json(['status' => 200, 'error' => __('Somthing went wrong.')]);
         }
     }
 
@@ -114,7 +114,7 @@ class KycController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -126,7 +126,7 @@ class KycController extends Controller
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
             if (!isset($user->kyc ) && $user->kyc < KYCStatus::Level1->value) {
-                notify()->error('kindly complete the level 1 first');
+                notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
         }
@@ -141,7 +141,7 @@ class KycController extends Controller
                 if (isset($path) && !empty($path)) {
                     $kycCredential[$key] = $path;
                 } else {
-                    notify()->error('kindly Set the ' . $key, 'Error');
+                    notify()->error(__('kindly Set the ') . $key, __('Error'));
                     return redirect()->back();
                 }
             }
@@ -195,7 +195,7 @@ class KycController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            notify()->error($validator->errors()->first(), __('Error'));
 
             return redirect()->back();
         }
@@ -206,14 +206,14 @@ class KycController extends Controller
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->first();
         if ($checkLevel1->status == 1) {
             if (!isset($user->kyc) && $user->kyc < KYCStatus::Level1->value) {
-                notify()->error('kindly complete the level 1 first');
+                notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
         }
         $checkLevel2 = KycLevel::where('slug', KycLevelSlug::LEVEL2)->first();
         if ($checkLevel2->status == 1) {
             if ($user->kyc < KYCStatus::Level2->value) {
-                notify()->error('kindly complete the level 2 first');
+                notify()->error(__('kindly complete the level 2 first'));
                 return redirect()->back();
             }
         }
@@ -228,7 +228,7 @@ class KycController extends Controller
                 if (isset($path) && !empty($path)) {
                     $kycCredential[$key] = $path;
                 } else {
-                    notify()->error('kindly Set the ' . $key, 'Error');
+                    notify()->error(__('kindly Set the ') . $key, __('Error'));
                     return redirect()->back();
                 }
             }

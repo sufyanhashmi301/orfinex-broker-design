@@ -75,7 +75,7 @@
                             </div>
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">
+                            <label class="form-label" for="select-leverage">
                                 {{ __('Select Leverage:') }}
                             </label>
                             <select class="form-control py-2 h-[48px]" aria-label="Default select example"
@@ -86,7 +86,7 @@
                             </select>
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">
+                            <label class="form-label" for="enter-nickname">
                                 {{ __('Account Nickname:') }}
                             </label>
                             <input type="text" class="form-control py-2 h-[48px]"
@@ -94,7 +94,7 @@
                                    name="account_name" id="enter-nickname" aria-describedby="basic-addon1" required>
                         </div>
                         <div class="input-area">
-                            <label class="form-label" for="">
+                            <label class="form-label" for="enter-main-password">
                                 {{ __('Main Password:') }}
                             </label>
                             <input type="text" class="form-control py-2 h-[48px]"
@@ -102,16 +102,16 @@
                                    name="main_password" id="enter-main-password" aria-describedby="basic-addon1"
                                    required>
                             <ul>
-                                <li class="text-xs font-Inter font-normal text-danger-500 mt-2" id="length-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-2" id="length-check-main">
                                     {{ __('Use from 8 to 15 characters') }}
                                 </li>
-                                <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="letters-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="letters-check-main">
                                     {{ __('Use both uppercase and lowercase letters') }}
                                 </li>
-                                <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="number-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="number-check-main">
                                     {{ __('At least one number') }}
                                 </li>
-                                <li class="text-xs font-Inter font-normal text-danger-500 mt-1" id="special-check-main">
+                                <li class="text-xs font-Inter font-normal text-danger mt-1" id="special-check-main">
                                     {{ __('At least one special character(!@#$%^&*(),-.?":{}|<>)') }}
                                 </li>
                             </ul>
@@ -147,7 +147,7 @@
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>{{ __('Commission') }}</span>
                             <span
-                                id="display-commission">{{$schema->commission == 0 ? __('No Commission') : $schema->commission}}</span>
+                                id="display-commission">{{ $schema->commission == 0 ? __('No Commission') : $schema->commission }}</span>
                         </li>
                         <li class="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                             <span>{{ __('Leverage') }}</span>
@@ -214,10 +214,9 @@
                 $('#account-type').val(accountType);
             });
 
-
             function updateLeverageAndDeposit(result) {
                 // Assuming result contains these fields
-                $('#display-commission').text(result.commission === 0 ? 'No Commission' : result.commission);
+                $('#display-commission').text(result.commission === 0 ? '{{ __('No Commission') }}' : result.commission);
                 $('#display-spread').text(result.spread);
                 $('#display-leverage').text(result.display_leverage);
                 $('#initial-deposit').text(result.first_min_deposit);
@@ -235,11 +234,11 @@
                 var selectedOption = select_plan_id.val();
                 var isRealIslamic = select_plan_id.data('is_real_islamic');
                 var isDemoIslamic = select_plan_id.data('is_demo_islamic');
-                console.log(selectedOption,'selectedOption');
-                console.log(isRealIslamic,'isRealIslamic');
-                console.log(isDemoIslamic,'isDemoIslamic');
+                console.log(selectedOption, 'selectedOption');
+                console.log(isRealIslamic, 'isRealIslamic');
+                console.log(isDemoIslamic, 'isDemoIslamic');
 
-                console.log(accountType,'accountType');
+                console.log(accountType, 'accountType');
 
                 var isIslamic = false;
                 if (accountType === 'real' && isRealIslamic == 1) {
@@ -247,7 +246,7 @@
                 } else if (accountType === 'demo' && isDemoIslamic == 1) {
                     isIslamic = true;
                 }
-                console.log(isIslamic,'isIslamic');
+                console.log(isIslamic, 'isIslamic');
                 if (isIslamic) {
                     $('#islamic-checkbox').closest('.input-area').show();
                 } else {
@@ -273,6 +272,7 @@
 
             {{--    $.ajax({--}}
             {{--        url: url,--}}
+
             {{--        success: function (result) {--}}
             {{--            $('#first-min-amount').text(result.first_min_deposit);--}}
             {{--            updateLeverageAndDeposit(result);--}}

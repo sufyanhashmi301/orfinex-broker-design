@@ -62,15 +62,15 @@
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $schema->badge,
-                                        'bg-warning-500 text-warning-500' => !$schema->badge
+                                        'bg-success text-success' => $schema->badge,
+                                        'bg-warning text-warning' => !$schema->badge
                                         ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
                                     </td>
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $schema->status,
-                                        'bg-danger-500 text-danger-500' => !$schema->status
+                                        'bg-success text-success' => $schema->status,
+                                        'bg-danger text-danger' => !$schema->status
                                         ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
                                     </td>
                                     <td class="table-td">

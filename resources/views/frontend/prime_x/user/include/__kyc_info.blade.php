@@ -3,38 +3,37 @@
     $totalActiveLevels = $kycLevels->count();
     $completedSteps = 0;
     if($totalActiveLevels > 0){
-    if($user->kyc >=\App\Enums\KYCStatus::Level1->value){
-       $completedSteps = 1;
-       }
-    if($user->kyc >= \App\Enums\KYCStatus::Level2->value){
-        $completedSteps = 2;
+        if($user->kyc >= \App\Enums\KYCStatus::Level1->value){
+            $completedSteps = 1;
+        }
+        if($user->kyc >= \App\Enums\KYCStatus::Level2->value){
+            $completedSteps = 2;
+        }
+        if($user->kyc >= \App\Enums\KYCStatus::Level3->value){
+            $completedSteps = 3;
+        }
     }
-    if($user->kyc >= \App\Enums\KYCStatus::Level3->value){
-        $completedSteps = 3;
-    }
-}
-
 @endphp
 @if($totalActiveLevels > 0 && $user->kyc < \App\Enums\KYCStatus::Level2->value)
     <div class="alert alert-dismissible py-[18px] px-6 font-normal text-sm rounded-md border mb-3"
          style="background-color: rgba(254, 208, 0, 0.3); border-color: #FED000;" role="alert">
         <div class="flex flex-wrap items-center space-x-3 space-y-3 rtl:space-x-reverse">
             <div class="flex-1 flex items-center space-x-3">
-                <iconify-icon class="text-2xl flex-0 text-danger-500" icon="typcn:warning"></iconify-icon>
+                <iconify-icon class="text-2xl flex-0 text-danger" icon="typcn:warning"></iconify-icon>
                 <div class="font-inter text-slate-900 dark:text-white">
                     <p class="text-lg font-medium">
                         {{ __('Steps Completed: ') }}{{$completedSteps}}{{__('/')}}{{$totalActiveLevels}}
                     </p>
                     @if($user->kyc == \App\Enums\KYCStatus::Pending->value)
-                        <strong>{{ __('Your KYC for Level 2 is pending. Please contact support :support to resolve your KYC status.',['support'=> setting('support_email', 'global')]) }}</strong>
+                        <strong>{{ __('Your KYC for Level 2 is pending. Please contact support :support to resolve your KYC status.', ['support' => setting('support_email', 'global')]) }}</strong>
                     @elseif($user->kyc == \App\Enums\KYCStatus::Rejected->value)
-                        <strong>{{ __('Your KYC for Level 2 has been rejected by the admin. Please contact support :support to resolve your KYC status.',['support'=> setting('support_email', 'global')]) }}</strong>
+                        <strong>{{ __('Your KYC for Level 2 has been rejected by the admin. Please contact support :support to resolve your KYC status.', ['support' => setting('support_email', 'global')]) }}</strong>
                     @elseif($user->kyc <= \App\Enums\KYCStatus::Level1->value)
-                        {{ __('You need to submit your KYC and Other Documents before proceed to the system.') }}
+                        {{ __('You need to submit your KYC and Other Documents before proceeding to the system.') }}
                     @endif
                 </div>
             </div>
-            <div class="flex-0 text-xl cursor-pointer text-danger-500">
+            <div class="flex-0 text-xl cursor-pointer text-danger">
                 @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
                     <a href="{{ route('user.kyc') }}" class="btn loaderBtn inline-flex justify-center btn-dark btn-sm">
                         <span>{{ __('Submit Now') }}</span>
@@ -101,13 +100,13 @@
                         </div>
                     </li>
 
-                @if($totalActiveLevels == 3)
                     <!--Third item-->
+                    @if($totalActiveLevels > 2)
                         <li class="w-[4.5rem] flex-auto">
                             <div
-                                class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1  @if($user->kyc > \App\Enums\KYCStatus::Level2->value) before:bg-primary @else before:bg-[#e0e0e0] @endif before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                                class="flex items-center leading-[1.3rem] no-underline @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) after:ml-2 after:h-3px after:w-full after:flex-1 after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
                                 <div>
-                                    @if($user->kyc == \App\Enums\KYCStatus::Level3->value)
+                                    @if($user->kyc >= \App\Enums\KYCStatus::Level3->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="9.5" cy="9.5" r="9.5" fill="#FED000"/>
@@ -116,14 +115,14 @@
                                                   fill="white"/>
                                         </svg>
                                     @else
-                                    <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
-                                        <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000"
-                                                stroke-width="4"/>
-                                        <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
-                                    </svg>
-                                        @endif
+                                        <svg width="28" height="27" viewBox="0 0 28 27" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="14" cy="13.5" r="9" stroke="#FED000"/>
+                                            <circle opacity="0.4" cx="14" cy="13.5" r="11.5" stroke="#FED000"
+                                                    stroke-width="4"/>
+                                            <circle cx="14" cy="13.5" r="3.5" fill="#FED000"/>
+                                        </svg>
+                                    @endif
                                 </div>
                             </div>
                         </li>
@@ -133,5 +132,3 @@
         @endif
     </div>
 @endif
-
-

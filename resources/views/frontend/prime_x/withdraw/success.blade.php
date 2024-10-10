@@ -25,7 +25,7 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">{{ $notify['card-header'] }}</h3>
+            <h3 class="card-title">{{ __('Withdraw Request Notification') }}</h3>
             <div class="card-header-links">
                 <a href="{{ route('user.withdraw.view') }}" class="btn btn-dark">{{ __('Withdraw request') }}</a>
             </div>
@@ -34,12 +34,12 @@
             <div class="progress-steps-form">
                 <div class="transaction-status text-center px-7 py-12">
                     <div
-                        class="icon h-20 w-20 bg-success-500 rounded-full flex flex-col items-center justify-center mx-auto">
+                        class="icon h-20 w-20 bg-success rounded-full flex flex-col items-center justify-center mx-auto">
                         <iconify-icon icon="heroicons:check-16-solid" class="text-white text-4xl"></iconify-icon>
                     </div>
-                    <h2 class="text-3xl my-5">{{$notify['title']}}</h2>
-                    <p class="text-sm mb-3 dark:text-white">{{$notify['p']}}</p>
-                    <p class="text-sm mb-3 dark:text-white">{{ $notify['strong'] }}</p>
+                    <h2 class="text-3xl my-5">{{ __('Success Notification Title') }}</h2>
+                    <p class="text-sm mb-3 dark:text-white">{{ __('Success Notification Description') }}</p>
+                    <p class="text-sm mb-3 dark:text-white">{{ __('Strong Notification Message') }}</p>
                     <a href="{{ $notify['action'] }}" class="btn inline-flex justify-center btn-light">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
                                       icon="heroicons:plus-small-20-solid"></iconify-icon>
@@ -50,16 +50,16 @@
                            target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
                                           icon="simple-icons:trustpilot"></iconify-icon>
-                            <span>Review us on Trustpilot</span>
+                            <span>{{ __('Review us on Trustpilot') }}</span>
                         </a>
                     @endif
                     <div class="mt-5">
-                        <p class="text-sm">
-                            If you face any issue, please visit our
+                        <p class="text-sm dark:text-slate-300">
+                            {{ __('If you face any issue, please visit our') }}
                             <a href="{{setting('customer_support_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn-link">
-                                Customer Support
+                                {{ __('Customer Support') }}
                             </a>
-                            or Email us at
+                            {{ __('or Email us at') }}
                             <a href="mailto:{{ setting('support_email','global')}}" class="btn-link">
                                 {{ setting('support_email','global')}}
                             </a>.

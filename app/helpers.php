@@ -85,6 +85,34 @@ if (!function_exists('get_user_account')) {
         return $account;
     }
 }
+if (!function_exists('w2n_by_wallet_id')) {
+
+    /**
+     * Retrieves or creates an account for a user based on user ID and balance type.
+     * @param int $userId The ID of the user.
+     * @param string $balance The type of balance, defaulting to main balance if not specified.
+     * @return mixed Returns the account object.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function w2n_by_wallet_id($walletId, $userId=null)
+    {
+        // Attempt to retrieve the account.
+        $account = Account::where('wallet_id', $walletId);
+        if($userId)
+            $account->where('user_id', $userId);
+
+        $account = $account->first();
+        $nameMap = [
+            AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
+            AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
+        ];
+        if($account) {
+            return Arr::get($nameMap, $account->balance);
+        }
+        return sys_settings('account_main', 'Main Wallet');
+    }
+}
 if (!function_exists('get_user_account_by_wallet_id')) {
 
     /**

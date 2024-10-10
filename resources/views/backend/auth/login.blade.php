@@ -22,7 +22,7 @@
                 <input
                     type="email"
                     name="email"
-                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aer px-3 py-2"
+                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aer dark:text-slate-300 px-3 py-2"
                     placeholder="Admin Email"
                     required
                 />
@@ -31,7 +31,7 @@
                 <input
                     type="password"
                     name="password"
-                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aeg px-3 py-2"
+                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aeg dark:text-slate-300 px-3 py-2"
                     placeholder="Password"
                     required
                 />

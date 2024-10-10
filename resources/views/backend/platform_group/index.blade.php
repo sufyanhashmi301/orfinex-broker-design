@@ -110,20 +110,20 @@
             event.preventDefault();
             var checkbox = $('input[data-id="' + dataId + '"]');
             var newState = checkbox.is(':checked');
+
             $.post('groups/store', {
                 "_token": "{{ csrf_token() }}",
-                "id": dataId
-
+                "id": dataId,
+                "status": newState // Include the status
             }, function(response) {
                 if (response.success) {
                     window.location.reload();
                 } else {
-                    window.location.reload();
+                    alert(response.message || 'Error occurred');
                 }
             }).fail(function(error) {
                 console.error('Error:', error);
             });
-
         }
 
     </script>

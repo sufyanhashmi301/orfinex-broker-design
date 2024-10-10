@@ -7,7 +7,7 @@
         <div class="col-span-12">
             @if(count($accounts) == 0)
             <div class="max-w-xl text-center py-10 mx-auto space-y-5">
-                <div class="w-20 h-20 bg-danger-500 text-white rounded-full inline-flex items-center justify-center">
+                <div class="w-20 h-20 bg-danger text-white rounded-full inline-flex items-center justify-center">
                     <iconify-icon icon="fa6-solid:box-open" class="text-5xl"></iconify-icon>
                 </div>
                 <h4 class="text-3xl text-slate-900 dark:text-white">
@@ -40,17 +40,17 @@
                                     </div>
                                     <div class="flex-1 text-start">
                                         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                            {{$account->method_name}}
+                                            {{ $account->method_name }}
                                         </h4>
                                         <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                            {{ $account->method->currency .' '. __('Account') }}
+                                            {{ __('Account') }}: {{ $account->method->currency }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex">
                                 <span class="flex-none space-x-2 text-base text-secondary-500 flex rtl:space-x-reverse">
-                                    <a href="{{ route('user.withdraw.account.edit',the_hash($account->id))     }}" class="action-btn loaderBtn">
+                                    <a href="{{ route('user.withdraw.account.edit', the_hash($account->id)) }}" class="action-btn loaderBtn">
                                         <iconify-icon icon="lucide:edit"></iconify-icon>
                                     </a>
                                 </span>

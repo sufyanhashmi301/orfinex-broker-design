@@ -8,7 +8,7 @@
                 <div class="card-body p-6">
 
                     @if($user->kyc == \App\Enums\KYCStatus::Level1->value)
-                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize rounded-3xl">
+                        <div class="badge bg-success text-success bg-opacity-30 capitalize rounded-3xl">
                             {{ __('KYC Verified') }}
                         </div>
                         <p class="mt-3">{{ json_decode($user->kyc_credential,true)['Action Message'] ?? '' }}</p>

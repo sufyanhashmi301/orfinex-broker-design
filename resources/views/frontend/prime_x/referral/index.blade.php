@@ -13,7 +13,7 @@
                 <div class="card-body p-6">
                     <div class="max-w-2xl progress-steps-form">
                         <div class="transaction-status text-center">
-                            <div class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                            <div class="icon h-20 w-20 bg-warning text-warning bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
                                 <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
                             </div>
                             <h2 class="text-3xl dark:text-white my-5">{{ __('Partner Request Pending') }}</h2>
@@ -59,7 +59,6 @@
 
                         @foreach($ibQuestions as $qIndex=>$ibQuestion)
                             @foreach(json_decode($ibQuestion->fields) as $field)
-{{--                                {{dd($field)}}--}}
                                 <div class="input-area">
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-12">
@@ -144,14 +143,14 @@
                                                  class="h-[10px] w-[10px] block m-auto opacity-0"></span>
                                     <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
                                         {{ __('I have read and agree with the ') }}
-                                        <a href="javascript:;" class="btn-link">IB Agreement</a>
+                                        <a href="javascript:;" class="btn-link">{{ __('IB Agreement') }}</a>
                                     </span>
                                 </label>
                             </div>
                         </div>
                         <div class="md:col-span-2">
                             <div class="text-right">
-                                <button type="button" class="btn btn-dark save-btn">Register</button>
+                                <button type="button" class="btn btn-dark save-btn">{{ __('Register') }}</button>
                             </div>
                         </div>
                     </form>
@@ -207,7 +206,7 @@
                 var url = $('#ib-from-create').attr('action');
                 submit_form(formData, btn, url, '', 'ibForm');
             } else {
-                tNotify('error','Kindly check the agreement before proceed!')
+                tNotify('error','{{ __('Kindly check the agreement before proceeding!') }}')
             }
 
         });

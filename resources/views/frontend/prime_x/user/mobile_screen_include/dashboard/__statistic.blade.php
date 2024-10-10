@@ -108,7 +108,7 @@
                                     </div>
                                     <div class="flex-1 content">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">{{ __('Deposit Bonus') }}</div>
-                                        <div class="text-slate-900 dark:text-white text-lg font-medium">$ {{ $dataCount['deposit_bonus'] }}</div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">{{ $currencySymbol }} {{ $dataCount['deposit_bonus'] }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                                         <iconify-icon class="text-xl" icon="lucide:archive"></iconify-icon>
                                     </div>
                                     <div class="flex-1 content">
-                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium"> {{ __('Investment Bonus') }}</div>
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">{{ __('Investment Bonus') }}</div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">{{ $currencySymbol }} {{ $dataCount['investment_bonus'] }}</div>
                                     </div>
                                 </div>
@@ -133,7 +133,7 @@
                                         <iconify-icon class="text-xl" icon="lucide:gift"></iconify-icon>
                                     </div>
                                     <div class="flex-1 content">
-                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium"> {{ __('Total Referral') }}</div>
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">{{ __('Total Referral') }}</div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">{{ $dataCount['total_referral'] }}</div>
                                     </div>
                                 </div>
@@ -147,7 +147,7 @@
                                     </div>
                                     <div class="flex-1 content">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">{{ __('Rank Achieved') }}</div>
-                                        <div class="text-slate-900 dark:text-white text-lg font-medium"> {{ $dataCount['rank_achieved'] }}</div>
+                                        <div class="text-slate-900 dark:text-white text-lg font-medium">{{ $dataCount['rank_achieved'] }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                                         <iconify-icon class="text-xl" icon="lucide:alert-triangle"></iconify-icon>
                                     </div>
                                     <div class="flex-1 content">
-                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium"> {{ __('Total Ticket') }}</div>
+                                        <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">{{ __('Total Ticket') }}</div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">{{ $dataCount['total_ticket'] }}</div>
                                     </div>
                                 </div>

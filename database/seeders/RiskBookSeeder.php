@@ -29,9 +29,6 @@ class RiskBookSeeder extends Seeder
             [
                 'name' => 'Demo',
             ],
-            [
-                'name' => 'Un-Assigned',
-            ],
         ]);
     }
 }

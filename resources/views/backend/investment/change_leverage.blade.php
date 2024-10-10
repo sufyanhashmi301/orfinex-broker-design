@@ -58,7 +58,7 @@
                                     </td>
                                     <td>Aug 19, 2024 13:11</td>
                                     <td>
-                                        <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize"> Pending </div>
+                                        <div class="badge bg-warning text-warning bg-opacity-30 capitalize"> Pending </div>
                                     </td>
                                     <td>
                                         <div class="flex space-x-3 rtl:space-x-reverse">
@@ -98,7 +98,7 @@
                                     </td>
                                     <td>Aug 19, 2024 13:11</td>
                                     <td>
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize"> Approved </div>
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize"> Approved </div>
                                     </td>
                                     <td>
                                         <div class="flex space-x-3 rtl:space-x-reverse">

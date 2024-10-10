@@ -69,14 +69,14 @@
                                     </td>
                                     <td class="table-td">
                                         <span class="block">{{ __('asadsynt@gmail.com') }}</span>
-                                        <span class="text-success-500">{{ __('Verified') }}</span>
+                                        <span class="text-success">{{ __('Verified') }}</span>
                                     </td>
                                     <td class="table-td">
                                         <span class="block">{{ __('+92 328 4324626') }}</span>
-                                        <span class="text-success-500">{{ __('Verified') }}</span>
+                                        <span class="text-success">{{ __('Verified') }}</span>
                                     </td>
                                     <td class="table-td">
-                                        <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <span class="badge bg-success text-success bg-opacity-30 capitalize">
                                             {{ __('Approved') }}
                                         </span>
                                     </td>

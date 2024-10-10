@@ -22,7 +22,7 @@
                             </div>
                             <div class="text-start overflow-hidden text-ellipsis whitespace-nowrap max-w-[63%]">
                                 <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                    {{ $notification->notice }}
+                                    {{ __('Notice:') }} {{ $notification->notice }}
                                 </h4>
                                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
                                     {{ $notification->created_at->diffForHumans() }}
@@ -48,13 +48,13 @@
                             @endphp
 
                             <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
-                                Showing
+                                {{ __('Showing') }}
                                 <span class="font-medium">{{ $from }}</span>
-                                to
+                                {{ __('to') }}
                                 <span class="font-medium">{{ $to }}</span>
-                                of
+                                {{ __('of') }}
                                 <span class="font-medium">{{ $total }}</span>
-                                results
+                                {{ __('results') }}
                             </p>
                         </div>
                         {{ $notifications->links() }}

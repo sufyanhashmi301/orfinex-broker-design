@@ -16,13 +16,13 @@
     <div class="md:flex justify-between items-center mb-5">
         <div class="">
             <ul class="m-0 p-0 list-none">
-                <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+                <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                     <a href="{{route('user.dashboard')}}">
                         <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                         <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                     </a>
                 </li>
-                <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+                <li class="inline-block relative text-sm text-primary font-Inter ">
                     Dashboard
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
                 </li>
@@ -105,7 +105,7 @@
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="dark:text-white">$10000.00</span>
                                             <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
+                                                <strike>$ 199.00</strike> / $ 139.00
                                             </span>
                                         </span>
                                     </label>
@@ -117,7 +117,7 @@
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="dark:text-white">$10000.00</span>
                                             <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
+                                                <strike>$ 199.00</strike> / $ 139.00
                                             </span>
                                         </span>
                                     </label>
@@ -129,7 +129,7 @@
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="dark:text-white">$10000.00</span>
                                             <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
+                                                <strike>$ 199.00</strike> / $ 139.00
                                             </span>
                                         </span>
                                     </label>
@@ -141,7 +141,7 @@
                                         <span class="flex-1 inline-flex justify-between items-center">
                                             <span class="dark:text-white">$10000.00</span>
                                             <span class="badge bg-slate-900 text-white capitalize">
-                                                <strike>$ 199.00</strike> / $ 139.00 
+                                                <strike>$ 199.00</strike> / $ 139.00
                                             </span>
                                         </span>
                                     </label>

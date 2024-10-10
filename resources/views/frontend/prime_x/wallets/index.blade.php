@@ -11,10 +11,10 @@
             <div class="card-body">
                 <div class="flex flex-wrap justify-between items-center mb-5">
                     <div class="space-x-3">
-                        <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                        <span class="badge bg-secondary bg-opacity-30 capitalize">
                             {{ __('USD') }}
                         </span>
-                        <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                        <span class="badge bg-secondary bg-opacity-30 capitalize">
                             {{ __('Standard') }}
                         </span>
                     </div>
@@ -61,10 +61,10 @@
             <div class="card-body">
                 <div class="flex flex-wrap justify-between items-center mb-5">
                     <div class="space-x-3">
-                        <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                        <span class="badge bg-secondary bg-opacity-30 capitalize">
                             {{ __('USD') }}
                         </span>
-                        <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
+                        <span class="badge bg-secondary bg-opacity-30 capitalize">
                             {{ __('Standard') }}
                         </span>
                     </div>
@@ -198,15 +198,15 @@
                                                         <span class="flex items-center space-x-3 rtl:space-x-reverse">
                                                             @switch($raw->status->value)
                                                                 @case('pending')
-                                                                <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                                <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
                                                                 <span>{{ __('Pending') }}</span>
                                                                 @break
                                                                 @case('success')
-                                                                <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                                 <span>{{ __('Success') }}</span>
                                                                 @break
                                                                 @case('failed')
-                                                                <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                                <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
                                                                 <span>{{ __('canceled') }}</span>
                                                                 @break
                                                             @endswitch

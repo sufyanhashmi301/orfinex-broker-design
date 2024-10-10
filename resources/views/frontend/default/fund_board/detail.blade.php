@@ -12,13 +12,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 Fund Board
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -36,14 +36,14 @@
                         <div class="flex-none w-1/5 md:block hidden">
                             <span class="flex relative h-12 w-12 mx-auto">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-12 w-12 bg-success-500"></span>
+                                <span class="relative inline-flex rounded-full h-12 w-12 bg-success"></span>
                             </span>
                         </div>
                         <div class="flex-1">
                             <div class="flex justify-between items-center mb-1">
                                 <h5 class="text-xl text-slate-900 font-medium">Funded Account: 9997452</h5>
                                 <div class="flex items-setrech gap-2">
-                                    <span class="badge bg-success-500 flex-inline items-center justify-center text-white capitalize !px-3">
+                                    <span class="badge bg-success flex-inline items-center justify-center text-white capitalize !px-3">
                                         Active
                                     </span>
                                     <a href="" class="btn btn-sm btn-light w-8 h-8 inline-flex items-center justify-center">
@@ -152,7 +152,7 @@
                                     <h5 class="text-slate-900 dark:text-slate-300 text-sm">
                                         Minimum Trading Days
                                     </h5>
-                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                    <span class="badge bg-success text-white capitalize">Ongoing</span>
                                 </div>
                                 <ul class="space-y-3">
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
@@ -170,7 +170,7 @@
                                     <h5 class="text-slate-900 dark:text-slate-300 text-sm">
                                         Daily Loss Limit
                                     </h5>
-                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                    <span class="badge bg-success text-white capitalize">Ongoing</span>
                                 </div>
                                 <ul class="space-y-3">
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
@@ -188,7 +188,7 @@
                                     <h5 class="text-slate-900 dark:text-slate-300 text-sm">
                                         Stopout Level
                                     </h5>
-                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                    <span class="badge bg-success text-white capitalize">Ongoing</span>
                                 </div>
                                 <ul class="space-y-3">
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
@@ -206,7 +206,7 @@
                                     <h5 class="text-slate-900 dark:text-slate-300 text-sm">
                                         Profit Target
                                     </h5>
-                                    <span class="badge bg-success-500 text-white capitalize">Ongoing</span>
+                                    <span class="badge bg-success text-white capitalize">Ongoing</span>
                                 </div>
                                 <ul class="space-y-3">
                                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">

@@ -26,7 +26,7 @@
                                             @if(oldSetting($field['name'],$section)) checked @endif
                                         >
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="text-success-500 text-sm leading-6 capitalize">
+                                        <span class="text-success text-sm leading-6 capitalize">
                                             {{ __('On Request') }}
                                         </span>
                                     </label>
@@ -42,7 +42,7 @@
                                             @if(!oldSetting($field['name'],$section)) checked @endif
                                         >
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="text-success-500 text-sm leading-6 capitalize">
+                                        <span class="text-success text-sm leading-6 capitalize">
                                             {{ __('On Approval') }}
                                         </span>
                                     </label>
@@ -64,7 +64,7 @@
                                             @if(oldSetting($field['name'],$section)) checked @endif
                                         >
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="text-success-500 text-sm leading-6 capitalize">
+                                        <span class="text-success text-sm leading-6 capitalize">
                                             {{ __('Show') }}
                                         </span>
                                     </label>
@@ -80,7 +80,7 @@
                                             @if(!oldSetting($field['name'],$section)) checked @endif
                                         >
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="text-success-500 text-sm leading-6 capitalize">
+                                        <span class="text-success text-sm leading-6 capitalize">
                                             {{ __('Hide') }}
                                         </span>
                                     </label>
@@ -99,7 +99,7 @@
                                                 value="{{ $value }}"
                                                 {{ oldSetting($field['name'],$section) === $value ? 'checked' : '' }}>
                                             <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                <span class="text-success-500 text-sm leading-6 capitalize">
+                                                <span class="text-success text-sm leading-6 capitalize">
                                                 {{ $label }}
                                             </span>
                                         </label>
@@ -121,7 +121,7 @@
                                             @if(oldSetting($field['name'],$section)) checked @endif
                                         >
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="text-success-500 text-sm leading-6 capitalize">
+                                        <span class="text-success text-sm leading-6 capitalize">
                                             {{ __('Enable') }}
                                         </span>
                                     </label>
@@ -137,7 +137,7 @@
                                             @if(!oldSetting($field['name'],$section)) checked @endif
                                         >
                                         <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                        <span class="text-success-500 text-sm leading-6 capitalize">
+                                        <span class="text-success text-sm leading-6 capitalize">
                                             {{ __('Disabled') }}
                                         </span>
                                     </label>

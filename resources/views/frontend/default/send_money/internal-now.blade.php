@@ -51,7 +51,7 @@
                             {{ $currency }}
                         </span>
                     </div>
-                    <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max">
+                    <div class="font-Inter text-xs text-danger pt-2 inline-block min-max">
                         {{ 'Minimum '. setting('internal_min_send','fee').' '.$currency.' and Maximum '. setting('internal_max_send','fee').' '.$currency }}
                     </div>
                 </div>

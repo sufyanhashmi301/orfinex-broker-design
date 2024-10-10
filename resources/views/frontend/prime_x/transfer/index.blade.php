@@ -17,7 +17,7 @@
                         {{ __('Instant') }}
                     </span>
                 </div>
-                <p class="text-base text-success-500">
+                <p class="text-base text-success">
                     {{ __('Free of Cost') }}
                 </p>
             </header>
@@ -51,7 +51,7 @@
                         {{ __('Semi Instant') }}
                     </span>
                 </div>
-                <p class="text-base text-success-500">
+                <p class="text-base text-success">
                     {{ __('1% Fee Applied') }}
                 </p>
             </header>

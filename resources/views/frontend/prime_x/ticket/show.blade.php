@@ -31,7 +31,7 @@
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-danger-600 font-medium mb-2">{{ __('Important Notice') }}</p>
+                            <p class="text-lg text-danger600 font-medium mb-2">{{ __('Important Notice') }}</p>
                             <p class="text-sm dark:text-slate-100">
                                 {{ __('Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.') }}
                             </p>
@@ -48,7 +48,7 @@
                             <div class="md:flex-1">
                                 <h4 class="card-title flex items-center">
                                     {{ $ticket->title.' - '.$ticket->uuid }}
-                                    <span class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl ml-2">
+                                    <span class="badge bg-primary text-primary bg-opacity-30 capitalize rounded-3xl ml-2">
                                         {{ __('Opened') }}
                                     </span>
                                 </h4>

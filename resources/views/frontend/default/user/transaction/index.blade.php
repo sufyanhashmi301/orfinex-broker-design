@@ -7,13 +7,13 @@
 @section('content')
     <div class="mb-5">
         <ul class="m-0 p-0 list-none">
-            <li class="inline-block relative top-[3px] text-base text-primary-500 font-Inter ">
+            <li class="inline-block relative top-[3px] text-base text-primary font-Inter ">
                 <a href="{{route('user.dashboard')}}">
                     <iconify-icon icon="heroicons-outline:home"></iconify-icon>
                     <iconify-icon icon="heroicons-outline:chevron-right" class="relative text-slate-500 text-sm rtl:rotate-180"></iconify-icon>
                 </a>
             </li>
-            <li class="inline-block relative text-sm text-primary-500 font-Inter ">
+            <li class="inline-block relative text-sm text-primary font-Inter ">
                 {{ __('History') }}
                 <iconify-icon icon="heroicons-outline:chevron-right" class="relative top-[3px] text-slate-500 rtl:rotate-180"></iconify-icon>
             </li>
@@ -38,7 +38,7 @@
                         <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                             Deposit Now
                         </a>
-                    </div> 
+                    </div>
                 @else
                     <div class="grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
                         <div class="filter">
@@ -120,7 +120,7 @@
                                                 {{ $transaction->tnx }}
                                             </td>
                                             <td class="table-td">
-                                                <div class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl">
+                                                <div class="badge bg-primary text-primary bg-opacity-30 capitalize rounded-3xl">
                                                     {{ str_replace('_',' ',$transaction->type->value) }}
                                                 </div>
                                             </td>
@@ -139,15 +139,15 @@
                                                         <span class="flex items-center space-x-3 rtl:space-x-reverse">
                                                             @switch($transaction->status->value)
                                                                 @case('pending')
-                                                                    <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                                    <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
                                                                     <span>{{ __('Pending') }}</span>
                                                                     @break
                                                                 @case('success')
-                                                                    <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                    <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                                     <span>{{ __('Success') }}</span>
                                                                     @break
                                                                 @case('failed')
-                                                                    <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                                    <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
                                                                     <span>{{ __('canceled') }}</span>
                                                                     @break
                                                             @endswitch
@@ -207,11 +207,11 @@
 
 
                                 @if($transaction->status->value == App\Enums\TxnStatus::Pending->value)
-                                    <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                    <div class="transaction-status text-warning">{{ __('Pending') }}</div>
                                 @elseif($transaction->status->value ==  App\Enums\TxnStatus::Success->value)
-                                    <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                    <div class="transaction-status text-success">{{ __('Success') }}</div>
                                 @elseif($transaction->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                    <div class="transaction-status text-danger-500">{{ __('canceled') }}</div>
+                                    <div class="transaction-status text-danger">{{ __('canceled') }}</div>
                                 @endif
                             </div>
                         </div>

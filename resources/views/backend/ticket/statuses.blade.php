@@ -30,11 +30,11 @@
                                         </td>
                                         <td class="table-td">
                                             @if($status->status_type == 'open')
-                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-success-500 bg-success-500">
+                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-success bg-success">
                                                     {{ __('Open') }}
                                                 </span>
                                             @elseif($status->status_type == 'closed')
-                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-danger-500 bg-danger-500">
+                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-danger bg-danger">
                                                     {{ __('Closed') }}
                                                 </span>
                                             @endif

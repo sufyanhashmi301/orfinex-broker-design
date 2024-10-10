@@ -19,7 +19,7 @@
          style="background-color: rgba(254, 208, 0, 0.3); border-color: #FED000;" role="alert">
         <div class="flex flex-wrap items-center space-x-3 space-y-3 rtl:space-x-reverse">
             <div class="flex-1 flex items-center space-x-3">
-                <iconify-icon class="text-2xl flex-0 text-danger-500" icon="typcn:warning"></iconify-icon>
+                <iconify-icon class="text-2xl flex-0 text-danger" icon="typcn:warning"></iconify-icon>
                 <div class="font-inter text-slate-900 dark:text-white">
                     <p class="text-lg font-medium">
                         {{ __('Steps Completed: ') }}{{$completedSteps}}{{__('/')}}{{$totalActiveLevels}}
@@ -33,7 +33,7 @@
                     @endif
                 </div>
             </div>
-            <div class="flex-0 text-xl cursor-pointer text-danger-500">
+            <div class="flex-0 text-xl cursor-pointer text-danger">
                 @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
                     <a href="{{ route('user.kyc') }}" class="btn loaderBtn inline-flex justify-center btn-dark btn-sm">
                         <span>{{ __('Submit Now') }}</span>

@@ -1,7 +1,7 @@
 <section class="bg-white dark:bg-gray-900 py-20 px-5">
     <div class="mx-auto max-w-2xl">
         <div class="text-center space-y-5">
-            <p class="subtitle text-primary-500 font-light uppercase">
+            <p class="subtitle text-primary font-light uppercase">
                 {{ __('Better and Secure') }}
             </p>
             <h2 class="text-6xl capitalize">

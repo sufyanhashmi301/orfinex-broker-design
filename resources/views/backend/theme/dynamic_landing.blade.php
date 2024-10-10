@@ -22,7 +22,7 @@
 
             <div class="card-body p-6">
                 <p class="paragraph flex items-center text-sm">
-                    <iconify-icon class="text-warning-500 text-sm mr-1" icon="lucide:info"></iconify-icon>{{ __('You can upload your own HTML template here as a website Home page and other pages. You need to add ') }}
+                    <iconify-icon class="text-warning text-sm mr-1" icon="lucide:info"></iconify-icon>{{ __('You can upload your own HTML template here as a website Home page and other pages. You need to add ') }}
                     <strong> @@lasset('landing asset')</strong> {{  __(' for any assets support on the theme') }}
                 </p>
                 @foreach($landingThemes as $theme)
@@ -87,7 +87,7 @@
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                 <div class="modal-body p-6 py-8 text-center space-y-5">
-                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                    <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                         <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                     </div>
                     <div class="title">
@@ -96,7 +96,7 @@
                         </h4>
                     </div>
                     <p>
-                        {{ __('You want to Delete') }} 
+                        {{ __('You want to Delete') }}
                         <strong class="name"></strong> {{ __('landing Theme?') }}
                     </p>
                     <form method="post" id="themeLandingDeleteForm">

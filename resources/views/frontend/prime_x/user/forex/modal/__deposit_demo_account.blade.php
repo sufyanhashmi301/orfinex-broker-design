@@ -28,7 +28,7 @@
                         <div class="input-form-group">
                             <input type="text" class="form-control" name="amount" id="demo-amount" placeholder="{{ __('Enter Amount') }}">
                             <ul>
-                                <li class="text-xs mb-1 text-danger-500">{{ __('You can deposit Maximum $100000 amount') }}
+                                <li class="text-xs mb-1 text-danger">{{ __('You can deposit Maximum $100000 amount') }}
                                 </li>
                             </ul>
                         </div>

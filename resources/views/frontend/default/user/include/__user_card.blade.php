@@ -28,7 +28,7 @@
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ __('Balance') }}
                             </div>
-                            <div class="text-sm text-success-500">
+                            <div class="text-sm text-success">
                                 {{ __('+452%') }}
                             </div>
                             <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
@@ -42,7 +42,7 @@
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ __('Equity') }}
                             </div>
-                            <div class="text-sm text-success-500">
+                            <div class="text-sm text-success">
                                 {{ __('+452%') }}
                             </div>
                             <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
@@ -56,7 +56,7 @@
                             <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ __('Success Points') }}
                             </div>
-                            <div class="text-sm text-success-500">
+                            <div class="text-sm text-success">
                                 {{ __('+452%') }}
                             </div>
                             <div class="w-full text-slate-900 dark:text-white text-xl font-medium">

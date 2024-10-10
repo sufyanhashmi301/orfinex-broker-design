@@ -201,12 +201,12 @@
                 // Change the button text and style
                 var $button = $(this);
                 var $icon = $button.find('iconify-icon');
-                $icon.addClass('text-success-500');
+                $icon.addClass('text-success');
                 $button.addClass('copy-button');
 
                 // Revert the button text and style after 2 seconds
                 setTimeout(function() {
-                    $icon.removeClass('text-success-500');
+                    $icon.removeClass('text-success');
                 }, 2000);
 
             });

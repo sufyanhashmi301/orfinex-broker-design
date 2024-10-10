@@ -52,8 +52,8 @@
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $advertisement->status,
-                                        'bg-danger-500 text-danger-500' => !$advertisement->status
+                                        'bg-success text-success' => $advertisement->status,
+                                        'bg-danger text-danger' => !$advertisement->status
                                         ])>{{ $advertisement->status ? 'Active' : 'Deactivated' }}</div>
                                     </td>
                                     <td class="table-td">

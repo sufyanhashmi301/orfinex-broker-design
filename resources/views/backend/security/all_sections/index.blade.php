@@ -70,7 +70,7 @@
                         <div class="input-area">
                             <label for="" class="form-label d-block mb-4">
                                 Send Email Notifications if login from different IP Address ?
-                                <span class="text-danger-500 ml-1">*</span>
+                                <span class="text-danger ml-1">*</span>
                             </label>
                             <div class="flex items-center space-x-7 flex-wrap">
                                 <div class="basicRadio">

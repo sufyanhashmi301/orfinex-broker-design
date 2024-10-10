@@ -33,7 +33,7 @@
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-danger-600 font-medium mb-2">{{ __('Important Notice') }}</p>
+                            <p class="text-lg text-danger600 font-medium mb-2">{{ __('Important Notice') }}</p>
                             <p class="text-sm dark:text-slate-100">
                                 {{ __('Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.') }}
                             </p>

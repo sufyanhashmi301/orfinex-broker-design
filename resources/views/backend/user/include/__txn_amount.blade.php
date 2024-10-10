@@ -1,3 +1,3 @@
-<strong class="{{$type !== 'subtract' ? 'text-success-500': 'text-danger-500'}}">
+<strong class="{{$type !== 'subtract' ? 'text-success': 'text-danger'}}">
     {{ ($type !== 'subtract' ? '+': '-' ).$final_amount.' '.$currency }}
 </strong>

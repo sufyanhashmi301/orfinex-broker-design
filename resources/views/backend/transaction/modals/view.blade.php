@@ -32,7 +32,7 @@
                     {{$data->pay_currency}}
                 </span>
             </div>
-            <div class="font-Inter text-xs text-red-500 pt-2 inline-block conversion-rate"></div>
+            <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
         </div>
     @endif
     <br>

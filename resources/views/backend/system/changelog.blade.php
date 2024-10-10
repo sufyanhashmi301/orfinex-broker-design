@@ -25,35 +25,35 @@
                                 <div class="accordion-body p-4">
                                     <ul class="space-y-3">
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Added X9Trader Trading Platform: Launched the X9Trader platform, offering enhanced trading capabilities and tools for clients.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('New Tools and Modules:') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Discount Coupon System: Enabled brokers to create and distribute discount coupons for various account levels and features.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Trial Accounts: Introduced trial accounts to provide clients with the ability to explore the platform’s functionalities risk-free.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Risk Management & Security Enhancements:') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Added advanced Risk Tools to monitor and manage trading behaviors.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Fraud Protection Tools implemented to secure the platform against suspicious activities and safeguard clients’ data.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('User Interface Improvements: Further polished the client dashboard for streamlined navigation and better access to trading features and reports.') }}</span>
                                         </li>
                                     </ul>
@@ -74,23 +74,23 @@
                                 <div class="accordion-body p-4">
                                     <ul class="space-y-3">
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Revamped Infrastructure: Migrated to a modern, scalable framework to enhance performance and reliability.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Enhanced User Interface: Updated the client area for a cleaner and more intuitive user experience.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('New Functionalities Introduced:') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Multi-language support to cater to a diverse clientele.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Improved KYC and compliance process for better user onboarding.') }}</span>
                                         </li>
                                     </ul>
@@ -111,15 +111,15 @@
                                 <div class="accordion-body p-4">
                                     <ul class="space-y-3">
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Launched the initial version of the Prop Firm platform.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Infrastructure built on legacy technology.') }}</span>
                                         </li>
                                         <li class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300">
-                                            <span class="h-2 w-2 bg-primary-500 rounded-full"></span>
+                                            <span class="h-2 w-2 bg-primary rounded-full"></span>
                                             <span>{{ __('Core features included account creation, basic trading functionalities, and support ticket management.') }}</span>
                                         </li>
                                     </ul>

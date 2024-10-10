@@ -12,7 +12,7 @@
     </div>
     @canany(['deposit-action','withdraw-action','kyc-action',])
         @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
-            <div class="admin-latest-announcements flex flex-wrap justify-between items-center py-[18px] px-4 sm:px-6 font-normal font-Inter rounded-md bg-danger-500 bg-opacity-[14%] text-danger-500 mb-5">
+            <div class="admin-latest-announcements flex flex-wrap justify-between items-center py-[18px] px-4 sm:px-6 font-normal font-Inter rounded-md bg-danger bg-opacity-[14%] text-danger mb-5">
                 <div class="content flex items-center ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                     <iconify-icon class="text-lg mr-2" icon="lucide:zap"></iconify-icon>
                     {{ __("Explore what's important to review first") }}

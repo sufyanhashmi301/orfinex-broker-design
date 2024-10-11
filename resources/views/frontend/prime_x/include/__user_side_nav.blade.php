@@ -1,15 +1,14 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{ route('home') }}" class="loaderBtn items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo', 'global')) }}" class="black_logo h-10" alt="{{ __('Logo') }}"/>
-        <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="white_logo h-10" alt="{{ __('Logo') }}"/>
+        <img src="{{ asset(setting('site_logo', 'global')) }}" class="black_logo max-w-[160px]" alt="{{ __('Logo') }}"/>
+        <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="white_logo max-w-[160px]" alt="{{ __('Logo') }}"/>
     </a>
     <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
-                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="{{ __('User Profile') }}"
-                         class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="{{ __('User Profile') }}" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">

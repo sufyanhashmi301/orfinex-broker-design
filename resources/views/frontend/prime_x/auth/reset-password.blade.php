@@ -7,7 +7,7 @@
     <!-- Login Section -->
     <div class="h-screen md:flex">
         <div class="hidden w-1/2 overflow-hidden md:block p-3">
-            <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url({{ asset('frontend/images/primex_login_bg.png') }})">
+            <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url('https://cdn.brokeret.com/crm-assets/login-image/c19.png')">
                 <div class="mx-auto max-w-xs text-center">
                     <a href="{{ route('home')}}" class="">
                         <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="{{ __('Logo') }}">

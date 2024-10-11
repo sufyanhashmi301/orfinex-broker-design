@@ -3,7 +3,7 @@
     {{ __('2FA Security') }}
 @endsection
 @section('content')
-    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url(https://cloud.orfinex.com/crm/orfinexlogin.png);">
+    <div class="loginwrapper bg-cover bg-no-repeat bg-center" style="background-image: url('https://cdn.brokeret.com/crm-assets/login-image/c19.png');">
         <div class="lg-inner-column">
             <div class="left-columns lg:w-1/2 lg:block hidden">
                 <div class="logo-box-3">

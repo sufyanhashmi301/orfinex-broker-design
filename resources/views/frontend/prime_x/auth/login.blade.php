@@ -80,12 +80,12 @@
                     </form>
                     <!-- END: Login Form -->
                     <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                        <div class="absolute inline-block bg-white dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
                             {{ __("Don't have an account?") }}
                         </div>
                     </div>
                     <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-6 uppercase text-sm text-center">
-                        <a href="{{route('register')}}" class="btn btn-light inline-flex items-center justify-center w-full">
+                        <a href="{{route('register')}}" class="btn btn-base inline-flex items-center justify-center w-full">
                             {{ __('Signup for free') }}
                         </a>
                     </div>

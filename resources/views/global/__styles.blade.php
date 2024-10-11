@@ -18,7 +18,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .sidebar-menu .sidebar-submenu > li > a {
+    .sidebar-menu .sidebar-submenu > li > a, .sidebar-menu .sidebar-menu-title {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -26,7 +26,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menu .sidebar-submenu > li > a {
+    .dark .sidebar-menu .sidebar-submenu > li > a, .dark .sidebar-menu .sidebar-menu-title {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }

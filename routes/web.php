@@ -55,7 +55,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive','payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa', 'isActive', 'payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -73,7 +73,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive','payment_access', 'set.
 
     //kyc apply
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-//        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+        //        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
         Route::get('/basic', [KycController::class, 'basicKyc'])->name('basic');
         Route::get('/level3', [KycController::class, 'kycLevel3'])->name('level3');
         Route::get('/{id}', [KycController::class, 'kycData'])->name('data');
@@ -118,7 +118,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive','payment_access', 'set.
     Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
         Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
         Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
-
     });
 
     //Send Money
@@ -185,18 +184,15 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive','payment_access', 'set.
         Route::post('info-update', 'infoUpdate')->name('info-update');
 
         Route::post('/2fa/verify', function (\Illuminate\Support\Facades\Request $request) {
-//            dd($request->all());
-//            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
+            //            dd($request->all());
+            //            dd(Auth::guard('admin')->check(),Auth::guard('web')->check());
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
 
         Route::get('/communication', function () {
             return view('frontend::user.setting.communication.index');
         })->name('communication');
-
     });
-
-
 });
 
 //translate

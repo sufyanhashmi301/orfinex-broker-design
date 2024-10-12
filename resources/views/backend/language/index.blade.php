@@ -18,6 +18,7 @@
             </a>
         </div>
     </div>
+
     <div class="card">
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -80,6 +81,7 @@
         </div>
     </div>
     <!-- Modal for Delete Language End-->
+
 @endsection
 @section('misc-script')
     <script>
@@ -110,7 +112,6 @@
                     {data: 'action', name: 'action'},
                 ]
             });
-
 
             $('body').on('click', '#deleteLanguageModal', function () {
                 var id = $(this).data('id');

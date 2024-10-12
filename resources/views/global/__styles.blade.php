@@ -18,7 +18,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .sidebar-menu .sidebar-submenu > li > a {
+    .sidebar-menu .sidebar-submenu > li > a, .sidebar-menu .sidebar-menu-title {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -26,7 +26,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menu .sidebar-submenu > li > a {
+    .dark .sidebar-menu .sidebar-submenu > li > a, .dark .sidebar-menu .sidebar-menu-title {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
@@ -73,6 +73,29 @@
         --tw-ring-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg')) }} / var(--tw-ring-opacity));
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
+    }
+    .btn-base {
+        --tw-bg-opacity: 1;
+        background-color: rgb({{ implode(' ', getColorFromSettings('secondary_btn_bg')) }} / var(--tw-bg-opacity));
+        --tw-text-opacity: 1;
+        color: rgb({{ implode(' ', getColorFromSettings('secondary_btn_color')) }} / var(--tw-text-opacity));
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('secondary_btn_bg')) }} / var(--tw-ring-opacity));
+    }
+    .dark .btn-base {
+        --tw-bg-opacity: 1;
+        background-color: rgb({{ implode(' ', getColorFromSettings('secondary_btn_bg_dark')) }} / var(--tw-bg-opacity));
+        --tw-text-opacity: 1;
+        color: rgb({{ implode(' ', getColorFromSettings('secondary_btn_color_dark')) }} / var(--tw-text-opacity));
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('secondary_btn_bg_dark')) }} / var(--tw-ring-opacity));
+    }
+    .btn-base:hover {
+        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+        box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+        --tw-ring-opacity: 0.8;
+        --tw-ring-offset-width: 1px;
     }
     .dark .btn-primary {
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_btn_bg_dark')) }} / var(--tw-bg-opacity));
@@ -132,17 +155,37 @@
     .bg-primary, .btn-primary{
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
     }
+    .btn-primary {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-ring-opacity));
+    }
     .bg-secondary, .btn-secondary{
         background-color: rgba({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-bg-opacity));
+    }
+    .btn-secondary {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-ring-opacity));
     }
     .bg-success, .btn-success, .switch-field input:checked + label {
         background-color: rgba({{ implode(' ', getColorFromSettings('success_color')) }} / var(--tw-bg-opacity));
     }
+    .btn-success {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('success_color')) }} / var(--tw-ring-opacity));
+    }
     .bg-warning, .btn-warning{
         background-color: rgba({{ implode(' ', getColorFromSettings('warning_color')) }} / var(--tw-bg-opacity));
     }
+    .btn-warning {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('warning_color')) }} / var(--tw-ring-opacity));
+    }
     .bg-danger, .btn-danger, .switch-field input:checked + label:last-of-type {
         background-color: rgba({{ implode(' ', getColorFromSettings('danger_color')) }} / var(--tw-bg-opacity));
+    }
+    .btn-danger {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb({{ implode(' ', getColorFromSettings('danger_color')) }} / var(--tw-ring-opacity));
     }
     .text-primary{
         --tw-text-opacity: 1;

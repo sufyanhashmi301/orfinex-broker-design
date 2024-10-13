@@ -1212,7 +1212,7 @@ return [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
-                'label' => 'Pending Deposit Limit', // you know what label it is
+                'label' => 'Forex Account Limit', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
             ],

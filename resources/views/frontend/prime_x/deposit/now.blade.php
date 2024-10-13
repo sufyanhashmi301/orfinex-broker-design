@@ -192,7 +192,7 @@ console.log(data,'data')
                 if (data.credentials !== undefined) {
                     console.log(data.credentials,'data.credentials')
                     $('.manual-row').append(data.credentials)
-                    // imagePreview()
+                    imagePreview()
                 }
 
             });

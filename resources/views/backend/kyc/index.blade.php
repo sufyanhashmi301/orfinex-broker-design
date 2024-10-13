@@ -8,7 +8,7 @@
             {{ __('KYC Forms') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.kyc-form.create') }}" class="inline-flex items-center justify-center text-success">
+            <a href="{{ route('admin.kyc-form.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
                 {{ __('Add New') }}
             </a>

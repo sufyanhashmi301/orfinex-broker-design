@@ -3,7 +3,7 @@
     {{ __('Tickets Status') }}
 @endsection
 @section('header-btn')
-    <a href="javascript:;" class="btn btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#statusModal">
+    <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#statusModal">
         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
         Add Status
     </a>

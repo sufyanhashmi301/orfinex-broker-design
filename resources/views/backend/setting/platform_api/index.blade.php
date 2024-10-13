@@ -12,39 +12,39 @@
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
             @if(Route::is(['admin.platform_api.db-synchronization', 'admin.platform_api.dbX9trader']))
                 <li class="nav-item">
-                    <a href="{{ route('admin.platform_api.db-synchronization') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.db-synchronization') }}">
+                    <a href="{{ route('admin.platform_api.db-synchronization') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.db-synchronization') }}">
                         {{ __('Metatrader 5') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.platform_api.dbX9trader') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.dbX9trader') }}">
+                    <a href="{{ route('admin.platform_api.dbX9trader') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.dbX9trader') }}">
                         {{ __('X9 Trader') }}
                     </a>
                 </li>
             @elseif(Route::is(['admin.settings.webterminal.mt5', 'admin.settings.webterminal.x9']))
                 <li class="nav-item">
-                    <a href="{{ route('admin.settings.webterminal.mt5') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.webterminal.mt5') }}">
+                    <a href="{{ route('admin.settings.webterminal.mt5') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.webterminal.mt5') }}">
                         {{ __('Metatrader 5') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.settings.webterminal.x9') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.webterminal.x9') }}">
+                    <a href="{{ route('admin.settings.webterminal.x9') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.webterminal.x9') }}">
                         {{ __('X9 Trader') }}
                     </a>
                 </li>
             @else
                 <li class="nav-item">
-                    <a href="{{ route('admin.platform_api.ctrader') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.ctrader') }}">
+                    <a href="{{ route('admin.platform_api.ctrader') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.ctrader') }}">
                         {{ __('CTrader') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.settings.platform-api') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.platform-api') }}">
+                    <a href="{{ route('admin.settings.platform-api') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.platform-api') }}">
                         {{ __('MetaTrader') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.platform_api.x9trader') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.x9trader') }}">
+                    <a href="{{ route('admin.platform_api.x9trader') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.platform_api.x9trader') }}">
                         {{ __('X9 Trader') }}
                     </a>
                 </li>

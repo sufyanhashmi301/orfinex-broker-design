@@ -7,7 +7,7 @@
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
         {{ __('View All Symbols') }}
     </a> -->
-    <a href="{{route('admin.symbol-groups.index')}}" class="btn btn-primary inline-flex items-center justify-center" type="button" >
+    <a href="{{route('admin.symbol-groups.index')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" >
 
         {{ __('Symbol Groups') }}
     </a>

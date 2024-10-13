@@ -64,7 +64,7 @@
                                             @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
                                                 <span class="badge bg-slate-100 text-slate-900 capitalize pill">{{ __('Pending') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
-                                                <span class="badge bg-primary capitalize pill">{{ __('Success') }}</span>
+                                                <span class="badge badge-primary capitalize pill">{{ __('Success') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)
                                                 <span class="badge bg-danger text-slate-900 capitalize pill">{{ __('canceled') }}</span>
                                             @endif

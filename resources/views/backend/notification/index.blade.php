@@ -7,7 +7,7 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('All Notifications') }}
         </h4>
-        <a href="{{ route('admin.read-notification', 0) }}" class="btn btn-primary inline-flex items-center justify-center">
+        <a href="{{ route('admin.read-notification', 0) }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
             {{ __(' Mark all read') }}
         </a>

@@ -48,16 +48,16 @@
             </div>
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
                 <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-                    <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
+                    <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Tag') }}
                     </a>
                     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                        <a href="{{ url()->previous() }}" class="btn btn-white inline-flex items-center justify-center">
+                        <a href="{{ url()->previous() }}" class="btn btn-sm btn-white inline-flex items-center justify-center">
                             {{ __('Go Back') }}
                         </a>
-                        <button type="button" class="btn btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
-                            <iconify-icon class="text-xl" icon="lucide:refresh-cw"></iconify-icon>
+                        <button type="button" class="btn btn-sm btn-dark inline-flex items-center justify-center" style="min-width: fit-content !important;">
+                            <iconify-icon class="text-base" icon="lucide:refresh-cw"></iconify-icon>
                         </button>
                     </div>
                 </div>
@@ -165,7 +165,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active"
                                         id="pills-informations-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-informations"
@@ -182,7 +182,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-transfer-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-transfer"
@@ -198,7 +198,7 @@
                             <li class="nav-item" role="presentation">
                                 <a
                                     href=""
-                                    class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                     id="pills-kyc-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#pills-kyc"
@@ -214,7 +214,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-transfer-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#ib-info"
@@ -232,7 +232,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-transactions-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-transactions"
@@ -250,7 +250,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-direct-referral-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-direct-referral"
@@ -267,7 +267,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-tree"
@@ -286,7 +286,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-ticket"
@@ -301,7 +301,7 @@
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
-                                        class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                        class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                         id="pills-ticket-tab"
                                         data-bs-toggle="pill"
                                         data-bs-target="#pills-note"
@@ -316,7 +316,7 @@
                                     <li class="nav-item" role="presentation">
                                         <a
                                             href=""
-                                            class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                            class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
                                             id="pills-security-tab"
                                             data-bs-toggle="pill"
                                             data-bs-target="#pills-security"

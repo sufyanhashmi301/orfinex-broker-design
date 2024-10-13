@@ -39,7 +39,7 @@
                             </div>
                         </div>
                     </li>
-            
+
                     <!--Second item-->
                     <li class="w-[4.5rem] flex-auto">
                         <div
@@ -65,13 +65,12 @@
                             </div>
                         </div>
                     </li>
-            
+
                     @if($totalActiveLevels == 3)
                         <!--Third item-->
                         <li class="w-[4.5rem] flex-auto">
-                            <div
-                                class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 @if($user->kyc > \App\Enums\KYCStatus::Level2->value) before:bg-primary @else before:bg-[#e0e0e0] @endif dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b']">
-            
+                            <div class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 @if($user->kyc > \App\Enums\KYCStatus::Level2->value) before:bg-primary @else before:bg-[#e0e0e0] @endif dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b']">
+
                                 <div>
                                     @if($user->kyc == \App\Enums\KYCStatus::Level3->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"
@@ -95,14 +94,14 @@
                             </li>
                         @endif
                 </ul>
-            </div>            
+            </div>
             @endif
             <div class="grid grid-cols-1 md:grid-cols-3  gap-5">
                 @foreach($kycLevels as $kycLevel)
                     @if($kycLevel->slug== \App\Enums\KycLevelSlug::LEVEL1)
                         <div
                             class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                            <span class="badge bg-primary capitalize">{{ __('Automated') }}</span>
+                            <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
                             <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                 {{ __('Verify your details please') }}
                             </p>
@@ -192,7 +191,7 @@
                         @if($automaticSubLevel && $automaticSubLevel->status)
                             <div
                                 class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                <span class="badge bg-primary capitalize">{{ __('Automated') }}</span>
+                                <span class="badge badge-primary capitalize">{{ __('Automated') }}</span>
                                 <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                     {{ __('Provide a document confirming your name') }}
                                 </p>
@@ -230,7 +229,7 @@
                         @if($manualSubLevel && $manualSubLevel->status)
                             <div
                                 class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                                <span class="badge bg-primary capitalize">{{ __('Manual') }}</span>
+                                <span class="badge badge-primary capitalize">{{ __('Manual') }}</span>
                                 <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                     {{ __('Provide a document confirming your name') }}
                                 </p>
@@ -265,7 +264,7 @@
 
                         <div
                             class="h-100 flex flex-col items-start border border-slate-100 dark:border-slate-700 rounded p-4 gap-3">
-                            <span class="badge bg-primary capitalize">{{ __('Semi-Automated') }}</span>
+                            <span class="badge badge-primary capitalize">{{ __('Semi-Automated') }}</span>
                             <p class="text-base font-normal text-slate-500 dark:text-slate-300">
                                 {{ __('You will need to provide proof of your place of residence') }}
                             </p>

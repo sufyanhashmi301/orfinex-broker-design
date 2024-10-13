@@ -10,9 +10,9 @@
             </h4>
             <div class="flex space-x-4 justify-end items-center rtl:space-x-reverse">
                 @can('referral-create')
-                    <button class="btn btn-primary inline-flex justify-center new-referral" type="button">
+                    <button class="btn btn-sm btn-primary inline-flex justify-center new-referral" type="button">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
                             <span>{{ __('Add New') }}</span>
                     </button>
                 @endcan

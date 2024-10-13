@@ -113,7 +113,7 @@
                 </span>
             </a>
         </li>
-        @if(setting('copy_trading', 'features'))
+        @if(setting('is_copy_trading', 'copy_trading'))
             <li>
                 <a href="{{ route('user.follower_access') }}" class="navItem loaderBtn {{ isActive('user.follower_access') }}">
                 <span class="flex items-center">

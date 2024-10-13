@@ -103,8 +103,7 @@
                     <!--Third item-->
                     @if($totalActiveLevels > 2)
                         <li class="w-[4.5rem] flex-auto">
-                            <div
-                                class="flex items-center leading-[1.3rem] no-underline @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) after:ml-2 after:h-3px after:w-full after:flex-1 after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                            <div class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) before:bg-primary @else before:bg-[#e0e0e0] @endif dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b']">
                                 <div>
                                     @if($user->kyc >= \App\Enums\KYCStatus::Level3->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"

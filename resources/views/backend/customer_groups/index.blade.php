@@ -3,7 +3,7 @@
     {{ __('Customer Groups') }}
 @endsection
 @section('title-btns')
-    <a href="{{route('admin.customer-groups.create')}}" class="btn btn-primary inline-flex items-center justify-center">
+    <a href="{{route('admin.customer-groups.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New Group') }}
     </a>

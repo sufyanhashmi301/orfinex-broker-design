@@ -285,16 +285,13 @@
                     <div class="card-body p-6 space-y-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                                <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                    <option value="">{{ __('Select Group')}}</option>
+                            <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                <option value="">{{ __('Select Group')}}</option>
 
                                 @foreach(\App\Models\PlatformGroup::all() as $group)
-                                        <option value="{{$group->group}}">{{ $group->group}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                    <option value="{{$group->group}}">{{ $group->group}}</option>
+                                @endforeach
+                            </select>
 {{--                            <input--}}
 {{--                                type="text"--}}
 {{--                                name="demo_swap_free"--}}

@@ -62,7 +62,7 @@
                     </div>
                     <div class="list-view-layout">
                         <div class="flex items-center">
-                            <span class="badge bg-primary text-primary-900 bg-opacity-30 capitalize">
+                            <span class="badge badge-primary  bg-opacity-30 capitalize">
                                 {{ ucfirst(data_get($account, 'account_type')) }}
                             </span>
                             <span class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mx-1">{{ __('MT5') }}</span>

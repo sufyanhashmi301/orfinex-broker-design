@@ -1207,7 +1207,6 @@ return [
     'forex_account_settings' => [
         'title' => 'Forex Accounts Settings',
         'elements' => [
-
             [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean

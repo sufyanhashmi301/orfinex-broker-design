@@ -73,6 +73,7 @@ class RegisteredUserController extends Controller
             'country' => $country,
             'phone' => $phone,
             'email' => $input['email'],
+            'account_limit' => setting('forex_account_settings', 'forex_account_settings'),
             'password' => Hash::make($input['password']),
         ]);
 

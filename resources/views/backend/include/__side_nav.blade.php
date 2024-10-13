@@ -1,8 +1,16 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
-<div class="logo-segment flex-wrap">
-    <a href="{{route('admin.dashboard')}}" class="items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo','global')) }}" class="black_logo h-10" alt="Logo"/>
-        <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo h-10" alt="Logo"/>
+<div class="logo-segment">
+    <a class="flex items-center" href="index.html">
+        @php
+            $logoSrc = setting('site_favicon','global')
+                ? asset(setting('site_favicon','global'))
+                : asset('backend/images/example_favicon.png');
+        @endphp
+        <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
+        <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
+        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-bold text-slate-900 dark:text-white">
+            {{ __('Backoffice') }}
+        </span>
     </a>
     <!-- Sidebar Type Button -->
     <button class="sidebarCloseIcon text-2xl">

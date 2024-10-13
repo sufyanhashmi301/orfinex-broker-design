@@ -94,9 +94,9 @@
                 {{ 'Currency Settings' }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                    Add Currency
+                    {{ __('Add Currency') }}
                 </a>
             </div>
         </div>

@@ -6,7 +6,7 @@
     <a href="" class="btn btn-white inline-flex items-center justify-center">
         {{ __('View All Symbol') }}
     </a>
-    <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#symbolGroupModal">
+    <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#symbolGroupModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Symbol Group') }}
     </a>

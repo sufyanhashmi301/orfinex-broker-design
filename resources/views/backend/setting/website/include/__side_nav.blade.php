@@ -6,13 +6,13 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
-                {{ __('Site Settings') }}
+            <a href="{{ route('admin.theme.global') }}" class="navItem {{ isActive('admin.theme.global') }}">
+                {{ __('Branding')}}
             </a>
         </li>
-        <li class="nav-item">
-            <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="navItem {{ isActive('admin.theme.colors*') }}">
-                {{ __('Colors Customize') }}
+        <li>
+            <a href="{{ route('admin.settings.site') }}" class="navItem {{ isActive('admin.settings.site') }}">
+                {{ __('Site Settings') }}
             </a>
         </li>
         <li>

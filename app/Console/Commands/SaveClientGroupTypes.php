@@ -41,6 +41,8 @@ class SaveClientGroupTypes extends Command
      */
     public function handle()
     {
+
+        X9ClientGroupType::truncate();
         // Fetch client group types from the API
         $response = $this->forexApiService->getClientGroupType();
 //        dd($response);

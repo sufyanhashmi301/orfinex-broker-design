@@ -42,6 +42,8 @@ class SaveClientGroups extends Command
      */
     public function handle()
     {
+        $this->call('save:client-group-types');
+        X9ClientGroup::truncate();
         // Fetch all client group types from X9ClientGroupType
         $clientGroupTypes = X9ClientGroupType::all();
 //        dd($clientGroupTypes);

@@ -28,7 +28,7 @@
                                 <div>
                                     @if(setting('kyc_verification','permission'))
                                         {{-- Kyc Info--}}
-                                        @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings']))
+                                        @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings', 'user.ticket*']))
                                             <div class="md:block hidden">
                                                 @include('frontend::user.include.__kyc_info')
                                             </div>

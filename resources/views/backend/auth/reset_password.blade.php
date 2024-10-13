@@ -17,8 +17,14 @@
         </div>
         <div class="login-content">
             <div class="logo">
-                <a href="{{ route('home') }}"><img src="{{asset(setting('site_logo','global') )}}"
-                                                   alt="{{asset(setting('site_title','global') )}}"/></a>
+                <a href="{{ route('home')}}" class="inline-block">
+                    @php
+                        $logoSrc = setting('site_logo','global')
+                            ? asset(setting('site_logo','global'))
+                            : asset('backend/images/example_logo_light.png');
+                    @endphp
+                    <img src="{{ $logoSrc }}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
+                </a>
             </div>
             <div class="auth-body">
 

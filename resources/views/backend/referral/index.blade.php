@@ -10,9 +10,9 @@
             </h4>
             <div class="flex space-x-4 justify-end items-center rtl:space-x-reverse">
                 @can('target-manage')
-                    <a href="{{ route('admin.referral.target') }}" class="btn btn-primary inline-flex items-center justify-center">
+                    <a href="{{ route('admin.referral.target') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
                             <span>{{ __('Set Targets') }}</span>
                         </span>
                     </a>

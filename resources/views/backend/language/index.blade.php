@@ -8,16 +8,17 @@
             {{ __('Language Settings') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.language-sync-missing') }}" class="btn btn-white inline-flex items-center justify-center mr-2">
+            <a href="{{ route('admin.language-sync-missing') }}" class="btn btn-sm btn-white inline-flex items-center justify-center mr-2">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:refresh-ccw"></iconify-icon>
                 {{ __('Sync Missing Translation Keys') }}
             </a>
-            <a href="{{ route('admin.language.create') }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ route('admin.language.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
         </div>
     </div>
+
     <div class="card">
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -80,6 +81,7 @@
         </div>
     </div>
     <!-- Modal for Delete Language End-->
+
 @endsection
 @section('misc-script')
     <script>
@@ -110,7 +112,6 @@
                     {data: 'action', name: 'action'},
                 ]
             });
-
 
             $('body').on('click', '#deleteLanguageModal', function () {
                 var id = $(this).data('id');

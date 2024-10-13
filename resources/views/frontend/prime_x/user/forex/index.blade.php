@@ -120,7 +120,7 @@
                                                 {{ $transaction->tnx }}
                                             </td>
                                             <td class="table-td">
-                                                <div class="badge bg-primary text-primary bg-opacity-30 capitalize rounded-3xl">
+                                                <div class="badge badge-primary capitalize rounded-3xl">
                                                     {{ str_replace('_',' ',$transaction->type->value) }}
                                                 </div>
                                             </td>

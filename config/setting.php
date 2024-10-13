@@ -1213,7 +1213,7 @@ return [
                 'name' => 'forex_account_create_limit', // unique name for field
                 'label' => 'Forex Account Limit', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 3, // default value if you want
+                'value' => 10, // default value if you want
             ],
         ],
     ],

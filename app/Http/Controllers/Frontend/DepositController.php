@@ -52,7 +52,7 @@ class DepositController extends GatewayController
 //        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
 //            $this->syncForexAccounts(auth()->id());
 //        }
-        $forexAccounts = ForexAccount::with('schema')
+        $forexAccounts = ForexAccount::with('schema')->traderType()
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
             ->where('status', ForexAccountStatus::Ongoing)

@@ -86,6 +86,11 @@
             <div class="card-body p-6 pt-0">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="input-area">
+                        <label class="form-label">{{ __('Active Trader Type') }}</label>
+                        <input type="text" name="trader_type" class="form-control"
+                               placeholder="Platform Group" value="{{setting('active_trader_type', 'features')}}" readonly/>
+                    </div>
+                    <div class="input-area">
                         <label class="form-label" for="">{{ __('Title:') }}</label>
                         <input
                             type="text"
@@ -221,16 +226,35 @@
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                <option value="">{{ __('Select Group')}}</option>
 
-                            @foreach(\App\Models\PlatformGroup::all() as $group)
-                                <option value="{{$group->group}}">{{ $group->group}}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+
+                                    @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}">{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                            <div class="input-area">
+                                <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                <select name="real_swap_free" class="select2 form-control w-full">
+                                    <option
+                                        value="" >
+                                        {{ __('Select Group')}}
+                                    </option>
+                                    @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                        <option
+                                            value="{{$group->id}}" >
+                                            {{ $group->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
 {{--                        <div class="input-area">--}}
 {{--                            <input--}}
 {{--                                type="text"--}}
@@ -258,22 +282,59 @@
                             </div>
                         </div>
                         <div id="live-islamic-group" class="hidden">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
-                                <input
-                                    type="text"
-                                    name="real_islamic"
-                                    class="form-control"
-                                    placeholder="Platform Group (Islamic)"
-                                />
-                            </div>
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    name="real_islamic"--}}
+{{--                                    class="form-control"--}}
+{{--                                    placeholder="Platform Group (Islamic)"--}}
+{{--                                />--}}
+{{--                            </div>--}}
+                            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                    <select name="real_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                        <option value="">{{ __('Select Group')}}</option>
+
+                                        @foreach(\App\Models\PlatformGroup::all() as $group)
+                                            <option value="{{$group->group}}">{{ $group->group}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                                <div class="input-area">
+                                    <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                    <select name="real_islamic" class="select2 form-control w-full">
+                                        <option
+                                            value="" >
+                                            {{ __('Select Group')}}
+                                        </option>
+                                        @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                            <option
+                                                value="{{$group->id}}" >
+                                                {{ $group->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
                         </div>
-                        <div class="input-area relative">
-                            <label for="" class="form-label">
-                                {{ __('Trading Server (Demo) ') }}
-                            </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('live_server','platform_api') }}" readonly>
-                        </div>
+                            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                <div class="input-area relative">
+                                    <label for="" class="form-label">
+                                        {{ __('Trading Server') }}
+                                    </label>
+                                    <input type="text" class="form-control" name="demo_server" placeholder="Trading Server" value="{{ setting('live_server','platform_api') }}" readonly>
+                                </div>
+                            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                                <div class="input-area relative">
+                                    <label for="" class="form-label">
+                                        {{ __('Trading Server') }}
+                                    </label>
+                                    <input type="text" class="form-control" name="demo_server" placeholder="Trading Server" value="{{ setting('x9_name','x9_api') }}" readonly>
+                                </div>
+                            @endif
                     </div>
                 </div>
             </div>
@@ -283,25 +344,50 @@
                 </h4>
                 <div class="card">
                     <div class="card-body p-6 space-y-5">
-                        <div class="input-area">
-                            <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
-                                <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
-                                    <option value="">{{ __('Select Group')}}</option>
+{{--                        <div class="input-area">--}}
+{{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
+{{--                            <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">--}}
+{{--                                <option value="">{{ __('Select Group')}}</option>--}}
 
-                                @foreach(\App\Models\PlatformGroup::all() as $group)
-                                        <option value="{{$group->group}}">{{ $group->group}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+{{--                                @foreach(\App\Models\PlatformGroup::all() as $group)--}}
+{{--                                    <option value="{{$group->group}}">{{ $group->group}}</option>--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
 {{--                            <input--}}
 {{--                                type="text"--}}
 {{--                                name="demo_swap_free"--}}
 {{--                                class="form-control"--}}
 {{--                                placeholder="Platform Group"--}}
 {{--                            />--}}
-                        </div>
+{{--                        </div>--}}
+                        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                            <div class="input-area">
+                                <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                <select name="demo_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                    <option value="">{{ __('Select Group')}}</option>
+
+                                    @foreach(\App\Models\PlatformGroup::all() as $group)
+                                        <option value="{{$group->group}}">{{ $group->group}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                            <div class="input-area">
+                                <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                <select name="demo_swap_free" class="select2 form-control w-full">
+                                    <option
+                                        value="" >
+                                        {{ __('Select Group')}}
+                                    </option>
+                                    @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                        <option
+                                            value="{{$group->id}}" >
+                                            {{ $group->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                         <div class="input-area !mb-7">
                             <div class="flex items-center space-x-5 flex-wrap">
                                 <div class="form-switch ps-0" style="line-height:0;">
@@ -321,23 +407,60 @@
                             </div>
                         </div>
                         <div id="demo-islamic-group" class="hidden">
-                            <div class="input-area">
-                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>
-                                <input
-                                    type="text"
-                                    name="demo_islamic"
-                                    class="form-control"
-                                    placeholder="Platform Group (Islamic)"
-                                />
-                            </div>
-                        </div>
+{{--                            <div class="input-area">--}}
+{{--                                <label class="form-label" for="">{{ __('Platform Group (Islamic):') }}</label>--}}
+{{--                                <input--}}
+{{--                                    type="text"--}}
+{{--                                    name="demo_islamic"--}}
+{{--                                    class="form-control"--}}
+{{--                                    placeholder="Platform Group (Islamic)"--}}
+{{--                                />--}}
+{{--                            </div>--}}
+                            @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                                <div class="input-area">
+                                    <label class="form-label" for="">{{ __('Platform Group') }}</label>
+                                    <select name="demo_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
+                                        <option value="">{{ __('Select Group')}}</option>
 
-                        <div class="input-area relative">
-                            <label for="" class="form-label">
-                                {{ __('Trading Server (Demo) ') }}
-                            </label>
-                            <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
+                                        @foreach(\App\Models\PlatformGroup::all() as $group)
+                                            <option value="{{$group->group}}">{{ $group->group}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                                <div class="input-area">
+                                    <label class="form-label">{{ __('Platform Group: ') }}</label>
+                                    <select name="demo_islamic" class="select2 form-control w-full">
+                                        <option
+                                            value="" >
+                                            {{ __('Select Group')}}
+                                        </option>
+                                        @foreach(\App\Models\X9ClientGroup::where('client_group_type_id',2)->get() as $group)
+                                            <option
+                                                value="{{$group->id}}" >
+                                                {{ $group->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
                         </div>
+                        @if (setting('active_trader_type', 'features') == \App\Enums\TraderType::MT5)
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    {{ __('Trading Server (Demo) ') }}
+                                </label>
+                                <input type="text" class="form-control" name="demo_server" placeholder="Trading Server Demo" value="{{ setting('demo_server','platform_api') }}" readonly>
+                            </div>
+                        @elseif (setting('active_trader_type', 'features') == \App\Enums\TraderType::X9)
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    {{ __('Trading Server (Demo) ') }}
+                                </label>
+                                <input type="text" class="form-control" name="x9_name" placeholder="Trading Server Demo" value="{{ setting('x9_name','x9_api') }}" readonly>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
             </div>

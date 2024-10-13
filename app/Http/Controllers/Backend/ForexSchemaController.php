@@ -43,7 +43,7 @@ class ForexSchemaController extends Controller
     public function index()
     {
 
-        $schemas = ForexSchema::orderBy('priority','asc')->paginate(10);
+        $schemas = ForexSchema::orderBy('priority','asc')->traderType()->paginate(10);
 
         return view('backend.forex_schema.index', compact('schemas'));
     }
@@ -75,6 +75,7 @@ class ForexSchemaController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
+            'trader_type' => 'required',
             'title' => 'required',
             'leverage' => 'required',
             'real_swap_free' => 'required_without_all:real_islamic,demo_swap_free,demo_islamic',
@@ -107,6 +108,7 @@ class ForexSchemaController extends Controller
         $input = $request->all();
 
         $finalData = [
+            'trader_type' => $input['trader_type'],
             'title' => $input['title'],
             'badge' => $input['badge'],
             'commission' => $input['commission'],

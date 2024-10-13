@@ -51,6 +51,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ib_balance',
         'ib_status',
         'is_multi_ib',
+        'account_limit',
         'kyc',
         'kyc_credential',
         'kyc_level3_credential',

@@ -128,7 +128,7 @@ class DepositController extends Controller
         return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies'));
     }
 
-    public function methodUpdate($id, Request $request)
+    public function methodUpdate(Request $request, $id)
     {
         $input = $request->all();
         $validator = Validator::make($input, [

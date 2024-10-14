@@ -15,7 +15,7 @@
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
-                <form action="{{ route('admin.deposit.method.update',$method->id) }}" method="post" enctype="multipart/form-data">
+                <form id="myForm" action="{{ route('admin.deposit.method.update',$method->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
@@ -254,7 +254,7 @@
                         </div>
 
                         <div class="md:col-span-2 text-right mt-10">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            <button type="Button" id="submitForm" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}
                             </button>
                         </div>
@@ -335,6 +335,10 @@
         if (currency !== null) {
             $('#currency-selected').text(currency);
         }
+        $('#submitForm').on('click', function(event) {
+            event.preventDefault(); // Prevent the default action
+            $('#myForm').submit();  // Submit the form using jQuery
+        });
 
     </script>
 

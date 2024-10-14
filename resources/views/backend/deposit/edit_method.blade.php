@@ -335,10 +335,16 @@
         if (currency !== null) {
             $('#currency-selected').text(currency);
         }
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         $('#myForm').on('submit', function(event) {
             event.preventDefault(); // Prevent the default action
             var form = $(this);
             var submitButton = $('#submitForm');
+            console.log(form.serialize());
 
             // Disable the button and show loading text
             submitButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');

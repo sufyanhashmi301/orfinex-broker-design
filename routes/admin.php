@@ -208,8 +208,11 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::get('create/{type}', 'createMethod')->name('create');
             Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
             Route::get('edit/{type}', 'methodEdit')->name('edit');
-            Route::post('update/manual/{id}', 'methodUpdate')->name('update.manual')->withoutMiddleware('XSS');
+//            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
         });
+
+        Route::post('update/manual/{id}', 'methodUpdate')->name('update.manual');
+
         //=============================== end deposit Method ================================
 
         Route::get('manual-pending', 'pending')->name('manual.pending');

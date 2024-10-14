@@ -316,6 +316,27 @@ return [
             ],
         ],
     ],
+    'fonts_settings' => [
+        'title' => 'Fonts Settings',
+        'elements' => [
+            [
+                'type' => 'radio', // Change type to 'radio'
+                'data' => 'string',
+                'name' => 'font_family',
+                'label' => 'Font Family',
+                'description' => 'Select your preferred font family for the CRM interface.',
+                'rules' => 'required', // Include options
+                'value' => 'Inter', // Default value
+                'options' => [
+                    'Inter' => 'Inter',
+                    'Lato' => 'Lato',
+                    'Montserrat' => 'Montserrat',
+                    'Poppins' => 'Poppins',
+                    'Roboto' => 'Roboto',
+                ],
+            ],
+        ]
+    ],
     'common_settings' => [
         'title' => 'Company Settings',
         'elements' => [

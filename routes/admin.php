@@ -269,6 +269,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('site', 'siteTheme')->name('site');
         Route::get('global', 'globalSetting')->name('global');
         Route::get('colors', 'colorsSetting')->name('colors');
+        Route::get('fonts', 'fontSetting')->name('fonts');
         Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
         Route::get('status-update', 'statusUpdate')->name('status-update');
@@ -521,6 +522,10 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('withdraw/misc-setting', function () {
         return view('backend.setting.payment.withdraw.misc');
     })->name('withdraw.miscSetting');
+
+    Route::get('settings/report-issues', function () {
+        return view('backend.system.report_issues');
+    })->name('reportIssues');
 
 
 });

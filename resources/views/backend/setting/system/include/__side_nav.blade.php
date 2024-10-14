@@ -15,5 +15,10 @@
                 {{ __('Changelog') }}
             </a>
         </li>
+        <li class="">
+            <a href="{{ route('admin.reportIssues') }}" class="navItem {{ isActive('admin.reportIssues') }}">
+                {{ __('Report Issue') }}
+            </a>
+        </li>
     </ul>
 @endsection

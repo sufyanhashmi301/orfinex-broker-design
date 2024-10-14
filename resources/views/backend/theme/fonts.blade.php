@@ -1,12 +1,11 @@
 @extends('backend.setting.customization.index')
 @section('title')
-    {{ __('Theme Colors') }}
+    {{ __('Theme Fonts') }}
 @endsection
 @section('customization-content')
     <?php
-        $type = request()->query('type');
-        $section = $type;
-        $fields = config("setting.$section");
+        $section = 'fonts_settings';
+        $fields = config('setting.fonts_settings');
     ?>
 
     <div class="flex justify-between flex-wrap items-center mb-6">
@@ -14,27 +13,11 @@
             @yield('title')
         </h4>
     </div>
-    <div class="card p-4 mb-5">
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
-            <li class="nav-item">
-                <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.theme.colors') && request()->query('type') === 'light_colors' ? 'active' : '' }}">
-                    {{ __('Light Theme') }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.theme.colors', ['type' => 'dark_colors']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.theme.colors') && request()->query('type') === 'dark_colors' ? 'active' : '' }}">
-                    {{ __('Dark Theme') }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.theme.colors', ['type' => 'misc_colors']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.theme.colors') && request()->query('type') === 'misc_colors' ? 'active' : '' }}">
-                    {{ __('Misc Colors') }}
-                </a>
-            </li>
-        </ul>
-    </div>
     <div class="card">
         <div class="card-body p-6">
+            <p class="text-4xl font-medium leading-relaxed mb-5" id="textSample">
+                {{ __('The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. Jaded zombies quickly faxed over mixed quaint gym equipment. Bright vixens jump; dozy fowl quack.') }}
+            </p>
             <form action="{{ route('admin.settings.update') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="section" value="{{$section}}">
@@ -93,7 +76,7 @@
                         </div>
                     @elseif($field['name'] == 'font_family')
                         <div class="lg:col-span-6 md:col-span-3 sm:col-span-2">
-                            <hr class="dark:border-slate-700 my-6">
+                            {{--<hr class="dark:border-slate-700 my-6">--}}
                             <div class="flex flex-wrap items-center gap-7 gap-x-3 pt-3">
                                 <label for="" class="form-label !flex items-center !w-auto !mb-0">
                                     {{ __($field['label']) }}
@@ -143,108 +126,22 @@
                         class="btn btn-dark inline-flex items-center justify-center">
                         {{ __('Save Changes') }}
                     </button>
-                    <button
-                        type="button"
-                        id="defaultColorsBtn"
-                        class="btn btn-outline-dark inline-flex items-center justify-center ml-1">
-                        {{ __('Default Colors') }}
-                    </button>
                 </div>
             </form>
         </div>
     </div>
 @endsection
-@section('customization-script')
-    <script>
+@section('style')
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+    </style>
+@endsection
+@section('script')
+    <script !src="">
         $(document).ready(function() {
-            // Function to synchronize text and color inputs in the same group
-            function syncGroupInputs(group) {
-                var $textInput = $(group).find('.text-input');
-                var $colorInput = $(group).find('.color-input');
-
-                $textInput.on('input', function() {
-                    var colorValue = $(this).val();
-                    if (isValidColor(colorValue)) {
-                        $colorInput.val(colorValue).css('background-color', colorValue);
-                    }
-                });
-
-                $colorInput.on('input', function() {
-                    var colorValue = $(this).val();
-                    $textInput.val(colorValue);
-                });
-            }
-
-            // Function to validate color input
-            function isValidColor(value) {
-                var s = new Option().style;
-                s.color = value;
-                return s.color !== '';
-            }
-
-            // Initialize synchronization for each input group
-            $('.color-input-group').each(function() {
-                syncGroupInputs(this);
-            });
-        });
-
-        $(document).ready(function() {
-
-            const $section = '{{ $section }}';
-
-            $('#defaultColorsBtn').click(function() {
-                let data = {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    section: $section
-                };
-
-                // Conditional data based on the value of section
-                if ($section === 'light_colors') {
-                    data = {
-                        ...data,
-                        body_bg_color: '#f1f5f9',
-                        base_color: '#ffffff',
-                        active_menu_bg: '#0f172a',
-                        active_menu_color: '#ffffff',
-                        secondary_btn_bg: '#f3f4f6',
-                        secondary_btn_color: '#0f172a',
-                        primary_btn_bg: '#0f172a',
-                        primary_btn_color: '#ffffff',
-                    };
-                } else if ($section === 'dark_colors') {
-                    data = {
-                        ...data,
-                        body_bg_color_dark: '#11171f',
-                        base_color_dark: '#181e26',
-                        primary_color_dark: '#0f172a',
-                        active_menu_bg_dark: '#0f172a',
-                        active_menu_color_dark: '#ffffff',
-                        secondary_btn_bg_dark: '#f3f4f6',
-                        secondary_btn_color_dark: '#0f172a',
-                        primary_btn_bg_dark: '#f3f4f6',
-                        primary_btn_color_dark: '#0f172a',
-                    };
-                } else if ($section === 'misc_colors') {
-                    data = {
-                        ...data,
-                        primary_color: '#0f172a',
-                        secondary_color: '#f1f5f9',
-                        success_color: '#0fb60b',
-                        warning_color: '#ffbb0d',
-                        danger_color: '#dc0000',
-                    };
-                }
-                $.ajax({
-                    url: '{{ route('admin.settings.update') }}',
-                    method: 'POST',
-                    data: data,
-                    success: function(response) {
-                        location.reload();
-                    },
-                    error: function() {
-                        alert('There was an error processing your request');
-                    }
-                });
+            $('input[name="font_family"]').change(function() {
+                const selectedFont = $(this).val();
+                $('#textSample').css('font-family', selectedFont);
             });
         });
     </script>

@@ -18,7 +18,7 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-115px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu flex flex-column">
         <li>
             <a href="{{route('admin.dashboard')}}" class="navItem {{ isActive('admin.dashboard') }}">
@@ -443,20 +443,18 @@
                 </li>
             </ul>
         </li>
-
-{{-- ************************************************************* Site  Settings *********************************************************--}}
-        @canany(['site-setting','email-setting','plugin-setting','page-manage'])
-            @canany(['site-setting','email-setting','plugin-setting'])
-                <li class="mt-auto">
-                    <a href="{{ route('admin.settings.index') }}" class="navItem {{ isActive(['admin.settings*']) }}">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
-                            <span>{{ __('Settings') }}</span>
-                        </span>
-                    </a>
-                </li>
-            @endcanany
-        @endcanany
     </ul>
 </div>
-
+<div class="stickySetting_menu sticky bottom-0 px-6 py-4">
+    {{-- ************************************************************* Site  Settings *********************************************************--}}
+    @canany(['site-setting','email-setting','plugin-setting','page-manage'])
+        @canany(['site-setting','email-setting','plugin-setting'])
+            <a href="{{ route('admin.settings.index') }}" class="navItem {{ isActive(['admin.settings*']) }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>
+                    <span>{{ __('Settings') }}</span>
+                </span>
+            </a>
+        @endcanany
+    @endcanany
+</div>

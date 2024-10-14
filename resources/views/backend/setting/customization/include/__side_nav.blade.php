@@ -6,6 +6,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.theme.fonts') }}" class="navItem {{ isActive('admin.theme.fonts') }}">
+                {{ __('Custom Fonts') }}
+            </a>
+        </li>
+        <li>
             <a href="javascript:;" class="navItem">
                 {{ __('Routes')}}
             </a>

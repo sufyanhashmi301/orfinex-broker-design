@@ -138,8 +138,16 @@ class x9ApiService
         return $this->get($endpoint, $data);
     }
 
-    public function balanceOperation($data)
+    public function balanceOperation($login,$operationType='balance',$transactionType='deposit',$amount,$comment,$operateWithoutChecking=true)
     {
+        $data = [
+            "login_id" => $login,
+            "operation_type"=> $operationType, // balance, credit etc
+            "transaction_type"=> $transactionType, // deposit, withdrawal etc
+            "amount"=> $amount,
+            "comment"=> $comment,
+            "operate_without_checking"=> $operateWithoutChecking
+        ];
         $endpoint = 'user/balance';
         return $this->post($endpoint, $data);
     }

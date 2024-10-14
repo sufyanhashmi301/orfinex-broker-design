@@ -254,7 +254,7 @@
                         </div>
 
                         <div class="md:col-span-2 text-right mt-10">
-                            <button type="Button" id="submitForm" class="btn btn-dark inline-flex items-center justify-center">
+                            <button type="submit" id="submitForm" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}
                             </button>
                         </div>
@@ -335,10 +335,56 @@
         if (currency !== null) {
             $('#currency-selected').text(currency);
         }
-        $('#submitForm').on('click', function(event) {
+        $('#myForm').on('submit', function(event) {
             event.preventDefault(); // Prevent the default action
-            $('#myForm').submit();  // Submit the form using jQuery
+            var form = $(this);
+            var submitButton = $('#submitForm');
+
+            // Disable the button and show loading text
+            submitButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',  // Make sure it's POST
+                data: form.serialize(),
+                success: function(response) {
+                    console.log(response);
+                    // Check if the response contains a redirect URL
+                    if (response.redirect) {
+                        // Perform the redirection
+                        window.location.href = response.redirect;
+                    } else {
+                        // Handle other success responses
+                        console.log(response);
+                        tNotify('success', 'Form submitted successfully');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Capture validation errors
+                    if (xhr.status === 422) {  // Laravel validation error
+                        var errors = xhr.responseJSON.errors;
+                        var errorMessage = '';
+
+                        // Loop through the errors and construct the message
+                        $.each(errors, function(key, value) {
+                            errorMessage += value + '<br>';
+                        });
+
+                        // Display error messages in the notification
+                        tNotify('warning', errorMessage);
+                    } else {
+                        // Handle generic errors
+                        tNotify('error', 'Something went wrong. Please try again.');
+                        console.error('Error:', error);
+                    }
+                },
+                complete: function() {
+                    // Re-enable the submit button and reset its text
+                    submitButton.prop('disabled', false).html('Save Changes');
+                }
+            });
         });
+
 
     </script>
 

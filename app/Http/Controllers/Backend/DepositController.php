@@ -131,6 +131,7 @@ class DepositController extends Controller
     public function methodUpdate($id, Request $request)
     {
         $input = $request->all();
+//        dd($input);
         $validator = Validator::make($input, [
             'name' => 'required',
             'gateway_id' => 'required_if:type,==,auto',
@@ -146,9 +147,10 @@ class DepositController extends Controller
         ]);
 
         if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-
-            return redirect()->back();
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);  // Laravel will return status 422 automatically
         }
 
         $depositMethod = DepositMethod::find($id);
@@ -156,12 +158,16 @@ class DepositController extends Controller
         $user = \Auth::user();
         if ($depositMethod->type == GatewayType::Automatic) {
             if (!$user->can('automatic-gateway-manage')) {
-                return redirect()->route('admin.deposit.method.list', $depositMethod->type);
+//                return redirect()->route('admin.deposit.method.list', $depositMethod->type);
+                return response()->json(['redirect'=> route('admin.deposit.method.list', $depositMethod->type)]);
+
             }
 
         } else {
             if (!$user->can('manual-gateway-manage')) {
-                return redirect()->route('admin.deposit.method.list', $depositMethod->type);
+                return response()->json(['redirect'=> route('admin.deposit.method.list', $depositMethod->type)]);
+
+//                return redirect()->route('admin.deposit.method.list', $depositMethod->type);
             }
         }
 
@@ -189,8 +195,9 @@ class DepositController extends Controller
 
         $depositMethod->update($data);
         notify()->success($depositMethod->name . ' ' . __(' Method Updated'));
+        return response()->json(['redirect'=> route('admin.deposit.method.list', $depositMethod->type)]);
 
-        return redirect()->route('admin.deposit.method.list', $depositMethod->type);
+//        return redirect()->route('admin.deposit.method.list', $depositMethod->type);
     }
 
     //-------------------------------------------  Deposit method end ---------------------------------------------------------------

@@ -15,7 +15,7 @@
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
-                <form action="{{ route('admin.deposit.update.manual',['id'=>$method->id]) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.update.manual1',['id'=>$method->id]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">

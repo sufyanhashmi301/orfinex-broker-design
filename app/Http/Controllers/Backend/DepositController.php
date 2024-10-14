@@ -37,8 +37,8 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
-//        $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
+        $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
+        $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
     }
 
     //-------------------------------------------  Deposit method start ---------------------------------------------------------------
@@ -128,7 +128,7 @@ class DepositController extends Controller
         return view('backend.deposit.edit_method', compact('method', 'type', 'gateways', 'supported_currencies'));
     }
 
-    public function methodUpdate(Request $request, $id)
+    public function methodUpdate($id, Request $request)
     {
         $input = $request->all();
         $validator = Validator::make($input, [

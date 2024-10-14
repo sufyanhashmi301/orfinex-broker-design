@@ -86,7 +86,7 @@ class DepositController extends GatewayController
         $user = \Auth::user();
 
         // Check pending deposit request limits
-        if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'Deposit_settings')) {
+        if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'deposit_settings')) {
             $currencySymbol = setting('currency_symbol', 'global');
             $message = __('You already have a pending deposit request. Please contact our support team at :support to resolve this issue and proceed with further deposits.', ['support' => setting('support_email', 'common_settings')]);
             notify()->error($message, 'Error');

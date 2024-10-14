@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Services\ForexApiService;
 use App\Services\WalletService;
+use App\Services\x9ApiService;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
@@ -204,8 +205,15 @@ class Txn
                     'type' => 1,//deposit
                     'TransactionComments' => $comment
                 ];
-                $forexApiService = new ForexApiService();
-                $forexApiService->balanceOperation($data);
+                $traderType = $transaction->forexTarget->trader_type;
+                if ($traderType == \App\Enums\TraderType::MT5){
+                    $forexApiService = new ForexApiService();
+                    $forexApiService->balanceOperation($data);
+                }elseif($traderType == \App\Enums\TraderType::X9){
+                    $forexApiService = new x9ApiService();
+                    $forexApiService->balanceOperation( $transaction->target_id,'balance','deposit',$transaction->final_amount,$comment);
+                }
+
 //                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
                 first_min_deposit($transaction->target_id);
             }elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {

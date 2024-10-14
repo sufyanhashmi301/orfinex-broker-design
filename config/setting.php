@@ -1402,6 +1402,20 @@ return [
                     'all' => \App\Enums\TraderType::All,
                 ],
             ],
+            [
+                'type' => 'radio', // Change type to 'radio'
+                'data' => 'string',
+                'name' => 'active_data_sync_way',
+                'label' => 'Trader Type',
+                'rules' => 'required', // Include options
+                'value' => \App\Enums\TraderType::MT5, // Default value
+                'options' => [
+                    'mt5' => \App\Enums\TraderType::MT5,
+                    'x9' => \App\Enums\TraderType::X9,
+                    'c_trader' => \App\Enums\TraderType::CTRADER,
+                    'all' => \App\Enums\TraderType::All,
+                ],
+            ],
         ],
 
     ],

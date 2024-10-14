@@ -202,7 +202,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
     });
 
-    Route::post('update/manual1/{id}', [DepositController::class, 'methodUpdate'])->name('update.manual1')->withoutMiddleware('XSS');
+    Route::post('update/manual1/{id}', [DepositController::class, 'methodUpdate'])->name('update.manual1')->withoutMiddleware('XSS','secure_header');
 
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
         //=============================== deposit Method ================================

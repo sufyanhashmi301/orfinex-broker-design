@@ -51,7 +51,7 @@ class TransactionController extends Controller
             }
         }
         $transactions = new Collection($data);
-        $forexAccounts = ForexAccount::where('user_id', auth()->id())
+        $forexAccounts = ForexAccount::where('user_id', auth()->id())->traderType()
             ->where('account_type', 'real')
             ->where('status',ForexAccountStatus::Ongoing)
             ->get();

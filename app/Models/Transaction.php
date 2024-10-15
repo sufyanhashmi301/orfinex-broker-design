@@ -73,7 +73,10 @@ class Transaction extends Model
     {
         return $this->hasMany(Referral::class, 'referral_target_id', 'target_id')->where('type', '=', $this->target_type);
     }
-
+    public function forexTarget()
+    {
+        return $this->belongsTo(ForexAccount::class, 'target_id','login');
+    }
     public function target()
     {
         return $this->belongsTo(ReferralTarget::class, 'target_id');

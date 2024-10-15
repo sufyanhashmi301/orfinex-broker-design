@@ -7,7 +7,7 @@
 
     <!-- Login Section -->
     <div class="h-screen md:flex">
-        <div class="flex flex-col justify-center py-10 px-10 md:w-1/2">
+        <div class="flex flex-col justify-center py-10 md:w-1/2">
             <div class="w-full max-w-lg">
                 <h2 class="text-2xl font-semibold text-gray-700">{{ __('Sign In') }}</h2>
                 <div class="">
@@ -28,7 +28,7 @@
                         </div>
                     @endif
                     <!-- BEGIN: Login Form -->
-                    <form method="POST" action="{{ route('login') }}" class="space-y-4">
+                    <form method="POST" action="{{ route('login') }}" class="space-y-4" id="loginForm">
                         @csrf
                         <div class="fromGroup">
                             <label class="block capitalize form-label">{{ __('Email Or Username') }}</label>
@@ -60,7 +60,7 @@
                                 </a>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-primary block w-full text-center" target="_top">
+                        <button type="submit" class="btn btn-primary block w-full text-center" target="_blank">
                             {{ __('Account Login') }}
                         </button>
                     </form>

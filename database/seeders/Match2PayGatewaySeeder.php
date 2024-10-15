@@ -18,7 +18,6 @@ class Match2PayGatewaySeeder extends Seeder
         $match2payCredentials = [
             'secret_key' => '',
             'api_token' => '',
-            'base_url' => '',
         ];
         $match2payCurrencies = [
             "BTC", "ETH", "UST", "UCC", "TRX", "USX", "UCX", "BNB", "USB",

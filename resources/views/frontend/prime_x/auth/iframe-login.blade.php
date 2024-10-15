@@ -28,7 +28,7 @@
                         </div>
                     @endif
                     <!-- BEGIN: Login Form -->
-                    <form method="POST" action="{{ route('login') }}" class="space-y-4">
+                    <form method="POST" action="{{ route('login') }}" class="space-y-4" id="loginForm">
                         @csrf
                         <div class="fromGroup">
                             <label class="block capitalize form-label">{{ __('Email Or Username') }}</label>
@@ -60,7 +60,7 @@
                                 </a>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-primary block w-full text-center" target="_top">
+                        <button type="submit" class="btn btn-primary block w-full text-center" target="_blank">
                             {{ __('Account Login') }}
                         </button>
                     </form>

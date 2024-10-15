@@ -176,7 +176,7 @@
                                 </span>
                             </label>
                         </div>
-                        <button type="submit" class="btn btn-primary block w-full text-center" target="_top">
+                        <button type="submit" class="btn btn-primary block w-full text-center" target="_blank">
                           {{ __('Create Account') }}
                         </button>
                     </form>

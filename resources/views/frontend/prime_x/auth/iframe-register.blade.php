@@ -7,7 +7,7 @@
 
     <!-- Login Section -->
     <div class="h-screen md:flex">
-        <div class="flex flex-col justify-center py-10 md:w-1/2">
+        <div class="flex flex-col justify-center px-10 md:w-1/2">
             <div class="w-full max-w-lg">
                 <h2 class="text-2xl font-semibold text-gray-700">{{ __('Sign Up') }}</h2>
                 <div class="">

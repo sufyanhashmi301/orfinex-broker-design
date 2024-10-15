@@ -1,4 +1,7 @@
 @extends('backend.layouts.app')
+@section('title')
+   All Bonuses
+@endsection
 @section('content')
     <div class="card">
         <div class="card-header noborder">

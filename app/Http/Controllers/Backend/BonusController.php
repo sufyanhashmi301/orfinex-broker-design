@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreBonusRequest;
+use App\Models\User;
 use App\Models\Bonus;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBonusRequest;
+use App\Http\Requests\UserAssignBonusRequest;
+use App\Models\ForexSchema;
+use App\Services\BonusService;
 
 class BonusController extends Controller
 {
+
+    protected $bonusService;
+
+    public function __construct(BonusService $bonusService) {
+        $this->bonusService = $bonusService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,17 +28,18 @@ class BonusController extends Controller
     public function index()
     {
         $bonuses = Bonus::all();
-        return view('backend.bonus.index')->with('bonuses', $bonuses);
+        return view('backend.bonus.index', compact('bonuses'));
     }
 
-    /**
+    /** 
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        return view('backend.bonus.create');
+        $forex_account_types = ForexSchema::where('status', 1)->with('bonus')->get();
+        return view('backend.bonus.create', compact('forex_account_types'));
     }
 
     /**
@@ -40,9 +52,22 @@ class BonusController extends Controller
     {
         $bonus = Bonus::create($request->validated());
 
-        notify()->success(__('Bonus created successfully.'));
-        return redirect()->route('admin.bonus.index')->with('success', 'Bonus created successfully.');
+        $this->bonusService->assignBonusToAccountType($bonus->id, $request->forex_account_types);
 
+        notify()->success(__('Bonus created successfully.'));
+        return redirect()->route('admin.bonus.index');
+
+    }
+
+    /**
+     * Adding bonus to the user's account
+     */
+    public function addBonus(UserAssignBonusRequest $request, User $user){
+        $response = $this->bonusService->addManualBonus($request, $user);
+        
+        $response['status'] == 'error' ? notify()->error($response['message'], $response['status']) : notify()->success($response['message'], $response['status']);
+
+        return redirect()->back();
     }
 
     /**
@@ -62,9 +87,15 @@ class BonusController extends Controller
      * @param  \App\Models\Bonus  $bonus
      * @return \Illuminate\Http\Response
      */
-    public function edit($bonus)
+    public function edit($bonus_id)
     {
-        return view('backend.bonus.create')->with('bonus', Bonus::findorFail($bonus));
+        $forex_account_types = ForexSchema::where('status', 1)->with('bonus')->get();
+
+        return view('backend.bonus.create')
+        ->with([
+                'bonus' => Bonus::where('id', $bonus_id)->with('forex_schemas')->first(), 
+                'forex_account_types' => $forex_account_types
+            ]);
     }
     
 
@@ -79,8 +110,10 @@ class BonusController extends Controller
     {
         Bonus::findorFail($bonus)->update($request->validated());
 
+        $this->bonusService->assignBonusToAccountType($bonus, $request->forex_account_types);
+
         notify()->success(__('Bonus updated successfully.'));
-        return redirect()->back();
+        return redirect()->route('admin.bonus.index');
     }
 
     /**

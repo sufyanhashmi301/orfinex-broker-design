@@ -52,6 +52,7 @@ class ForexSchema extends Model
 
 	protected $fillable = [
 		'trader_type',
+		'bonus_id',
 		'icon',
 		'title',
 		'desc',
@@ -60,7 +61,7 @@ class ForexSchema extends Model
 		'leverage',
 		'first_min_deposit',
 		'min_amount',
-        'account_limit',
+		'account_limit',
 		'real_swap_free',
 		'is_real_islamic',
 		'real_islamic',
@@ -89,10 +90,9 @@ class ForexSchema extends Model
 		return $this->hasMany(ForexAccount::class);
 	}
 
-    public function multiLevels()
-    {
-        return $this->hasMany(MultiLevel::class,'forex_scheme_id');
-    }
+	public function bonus(){
+			return $this->belongsTo(Bonus::class);
+	}
 
     public function scopeActive(Builder $query)
     {
@@ -114,4 +114,25 @@ class ForexSchema extends Model
                 });
         });
     }
+	public function multiLevels()
+	{
+		return $this->hasMany(MultiLevel::class, 'forex_scheme_id');
+	}
+
+	public function scopeActive(Builder $query)
+	{
+		return $query->where('status', true);
+	}
+	public function scopeRelevantForUser(Builder $query, $country, array $tags)
+	{
+		return $query->where(function ($q) use ($country, $tags) {
+			$q->whereJsonContains('country', $country)
+				->orWhereJsonContains('country', 'All')
+				->orWhere(function ($subQuery) use ($tags) {
+					foreach ($tags as $tag) {
+						$subQuery->orWhereJsonContains('tags', $tag);
+					}
+				});
+		});
+	}
 }

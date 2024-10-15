@@ -19,14 +19,15 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('last_date');
             $table->string('type');
+            $table->string('bonus_removal');
             $table->string('amount');
             $table->string('process');
             $table->string('applicable_by');
             $table->text('terms_link');
             $table->text('description');
-            $table->string('kyc_verified');
-            $table->string('first_deposit');
-            $table->string('status');
+            $table->integer('is_kyc_verified')->default(0);
+            $table->integer('is_first_deposit')->default(0);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

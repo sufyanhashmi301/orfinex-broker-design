@@ -14,13 +14,22 @@ class Bonus extends Model
         "start_date",
         "last_date",
         "type",
+        "bonus_removal",
         "amount",
         "process",
         "applicable_by",
-        "kyc_verified",
-        "first_deposit",
+        "is_kyc_verified",
+        "is_first_deposit",
         "status",
         "terms_link",
         "description",
     ];
+
+    public function forex_schemas(){
+        return $this->hasMany(ForexSchema::class);
+    }
+
+    public function users(){
+        return $this->belongsToMany(User::class)->withPivot('transaction_id', 'account_target_id', 'account_target_type', 'added_by', 'type', 'amount');
+    }
 }

@@ -25,13 +25,13 @@ class Match2payTxn extends BaseTxn
         // Define required credentials
         $this->txnInfo = $txnInfo;
         $this->amount = $txnInfo->final_amount;
-        $this->payCurrency = $txnInfo->pay_currency;
+        $this->payCurrency = $this->getPaymentCurrency($txnInfo->payCurrency);;
         $this->apiToken = $credentials->api_token;
         $this->apiSecretKey = $credentials->secret_key;
         $this->callbackUrl = url('/').'/ipn/match2pay'; // Your callback URL
 
         // Set the gateway based on the currency
-        $this->gatewayName = $this->getPaymentGatewayName($this->payCurrency);
+        $this->gatewayName = $txnInfo->pay_currency;
     }
 
     /**
@@ -114,7 +114,7 @@ class Match2payTxn extends BaseTxn
      * @param string $currency
      * @return string
      */
-    private function getPaymentGatewayName($currency)
+    private function getPaymentCurrency($currency)
     {
         // Define the mapping of payment currencies to their gateway names
         $currencyGatewayMap = [
@@ -139,9 +139,10 @@ class Match2payTxn extends BaseTxn
             'TON' => 'TON',
             'UTT' => 'USDT TON',
         ];
+        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
 
         // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
-        return $currencyGatewayMap[$currency] ?? 'USDT TRC20';
+        return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
     }
 }
 

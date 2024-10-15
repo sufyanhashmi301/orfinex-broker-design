@@ -18,10 +18,16 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
+    Route::get('web-register', [RegisteredUserController::class, 'iframeRegister'])
+        ->name('webRegister');
+
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+
+    Route::get('web-login', [AuthenticatedSessionController::class, 'iframeLogin'])
+        ->name('webLogin');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
     Route::post('device-token/store', [RegisteredUserController::class, 'deviceToken'])->name('deviceToken');

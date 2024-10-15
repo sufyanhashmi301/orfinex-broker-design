@@ -8,6 +8,7 @@ namespace App\Models;
 
 use App\Enums\ForexAccountStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -58,6 +59,7 @@ class ForexAccount extends Model
 	];
 
 	protected $fillable = [
+		'trader_type',
 		'user_id',
 		'forex_schema_id',
 		'account_name',
@@ -104,6 +106,10 @@ class ForexAccount extends Model
         return $query->where('user_id', $userID)
             ->where('account_type','real')
             ->where('status', ForexAccountStatus::Ongoing);
+    }
+    public function scopeTraderType(Builder $query)
+    {
+        return $query->where('trader_type', setting('active_trader_type', 'features'));
     }
     public function scopeDemoActiveAccount($query,$userID=null)
     {

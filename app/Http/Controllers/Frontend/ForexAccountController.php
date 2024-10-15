@@ -6,6 +6,7 @@ use App\Enums\IBStatus;
 use App\Enums\InvestStatus;
 use App\Enums\ForexAccountStatus;
 
+use App\Enums\TraderType;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Models\DepositMethod;
@@ -18,6 +19,7 @@ use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
+use App\Services\x9ApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
@@ -97,14 +99,14 @@ class ForexAccountController extends GatewayController
             $totalLimit = $user->account_limit;
        }
         //total account creation limit check
-        $totalForexAccounts = ForexAccount::where(['user_id' => $user->id, 'account_type' => $accountType])->count();
+        $totalForexAccounts = ForexAccount::where(['user_id' => $user->id, 'account_type' => $accountType])->traderType()->count();
         if ($totalForexAccounts >= $totalLimit) {
             $message = __('Sorry, You have achieved your total account creation limit. Please contact support :support to increase your account limit.', ['title' => $schema->title,'support' => setting('support_email', 'common_settings')]);
             notify()->error($message, 'Error');
             return redirect()->back();
         }
         //specific type account creation limit check
-        if (ForexAccount::where(['user_id' => $user->id, 'forex_schema_id' => $schema->id, 'account_type' => $accountType])->count() >= $schema->account_limit) {
+        if (ForexAccount::where(['user_id' => $user->id, 'forex_schema_id' => $schema->id, 'account_type' => $accountType])->traderType()->count() >= $schema->account_limit) {
             $message = __('Sorry, You have achieved your account creation limit of :title type . Please choose different type or contact support to increase your account limit.', ['title' => $schema->title]);
             notify()->error($message, __('Error'));
             return redirect()->back();
@@ -116,7 +118,12 @@ class ForexAccountController extends GatewayController
             return redirect()->back();
         }
 
-        $login = 0;
+        $traderType = $schema->trader_type;
+        if($traderType == TraderType::MT5) {
+            $login = 0;
+        }elseif($traderType == TraderType::X9) {
+            $login = 'default';
+        }
         //Start/End Range of create forex account on MT5
         if (setting('is_forex_group_range', 'global')) {
             $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
@@ -131,107 +138,111 @@ class ForexAccountController extends GatewayController
                 $login = $schema->start_range;
             }
         }
-
-        $server = $this->getServe($request);
+        $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
+//        dd($traderType,$group,$server);
 
-        $data = [
-            "login" => $login,
-            "group" => $group,
-            "firstName" => $user->first_name,
-            "middleName" => "",
-            "lastName" => $user->last_name,
-            "leverage" => $request->leverage,
-            "rights" => "USER_RIGHT_ALL",
-            "country" => $user->country,
-            "city" => $user->city,
-            "state" => "",
-            "zipCode" => $user->zip_code,
-            "address" => $user->address,
-            "phone" => $user->phone,
-            "email" => $user->email,
-            "agent" => 0,
-            "account" => "",
-            "company" => env('APP_NAME', __('Company')),
-            "language" => 0,
-            "phonePassword" => 'SNNH@2024@bol',
-            "status" => "RE",
-            "masterPassword" => $password,
-            "investorPassword" => 'SNNH@2024@bol'
-        ];
+        if($traderType == TraderType::MT5) {
+            $data = [
+                "login" => $login,
+                "group" => $group,
+                "firstName" => $user->first_name,
+                "middleName" => "",
+                "lastName" => $user->last_name,
+                "leverage" => $request->leverage,
+                "rights" => "USER_RIGHT_ALL",
+                "country" => $user->country,
+                "city" => $user->city,
+                "state" => "",
+                "zipCode" => $user->zip_code,
+                "address" => $user->address,
+                "phone" => $user->phone,
+                "email" => $user->email,
+                "agent" => 0,
+                "account" => "",
+                "company" => setting('site_title', 'global'),
+                "language" => 0,
+                "phonePassword" => 'SNNH@2024@bol',
+                "status" => "RE",
+                "masterPassword" => $password,
+                "investorPassword" => 'SNNH@2024@bol'
+            ];
 //        dd($data,$accountType);
-        if ($accountType == 'real') {
-            $response = $this->forexApiService->createUser($data);
-        } else {
-            $response = $this->forexApiService->createUserDemo($data);
-        }
-        if ($response['success']) {
-            $resResult = $response['result'];
-            $mt5Login = $resResult['login'];
+            if ($accountType == 'real') {
+                $response = $this->forexApiService->createUser($data);
+            } else {
+                $response = $this->forexApiService->createUserDemo($data);
+            }
+            if ($response['success']) {
+                $resResult = $response['result'];
+                $mt5Login = $resResult['login'];
 //            dd($response,$response->data[0]->Login);
-            if ($mt5Login && $resResult['responseCode'] == 0) {
-                $rightData =  [
-                    "login" => $mt5Login,
-                    "rights" => 'USER_RIGHT_ENABLED',
+                if ($mt5Login && $resResult['responseCode'] == 0) {
+                    $rightData =  [
+                        "login" => $mt5Login,
+                        "rights" => 'USER_RIGHT_ENABLED',
 
-                ];
-                 $this->forexApiService->setUserRights($rightData);
+                    ];
+                    $this->forexApiService->setUserRights($rightData);
 
-                $accountData = $request->all();
+                    //save account in DB
+                $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
 
-                $accountData['forex_schema_id'] = $schema->id;
-                $accountData['login'] = $mt5Login;
-                $accountData['account_name'] = $request->account_name;
-                $accountData['account_type'] = $accountType;
-                $accountData['user_id'] = $user->id;
-                $accountData['currency'] = setting('site_currency', 'global');
-                $accountData['group'] = $data['group'];
-                $accountData['leverage'] = $data['leverage'];
-                $accountData['status'] = ForexAccountStatus::Ongoing;
-                $accountData['server'] = $server;
-                $accountData['created_by'] = $user->id;
-                $accountData['first_min_deposit_paid'] = 0;
-                $accountData['trading_platform'] = setting('live_server', 'platform_api');
+                $this->sendNotification($user,$mt5Login,$schema);
 
-                if ($accountType == 'demo' && setting('demo_server_enable', 'platform_api') && !empty(setting('demo_server', 'platform_api'))) {
-                    $accountData['trading_platform'] = setting('demo_server', 'platform_api');
+                    notify()->success(__('Successfully Created Account'), 'success');
+                    return redirect()->route('user.forex-account-logs');
                 }
 
-                $forexTrading = ForexAccount::create($accountData);
-                if ($user->ref_id) {
-                    $referrer = User::find($user->ref_id);
-                    if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {
-                        $data = [
-                            'login' => $mt5Login,
-                            'agent' => $referrer->ib_login,
-                        ];
-                        $this->forexApiService->updateAgentAccount($data);
-                    }
-                }
-//                if($forexTrading->account_type == ForexTradingAccountTypesStatus::REAL)
-//                    event(new NewForexAccountEvent($forexTrading));
+//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
 
+            }
+        }elseif($traderType == TraderType::X9) {
+            $data = [
+                "preferred_login" => 'default',
+                "client_id" => null,
+                "client_group_type_id" => $accountType == 'real' ? 2 : 1,
+                "client_group_id" => (int)$group,
+                "first_name" => $user->first_name,
+                "middle_name" => null,
+                "last_name" => $user->last_name,
+//            "leverage" => $invest->leverage,
 
-                $shortcodes = [
-                    '[[full_name]]' => $user->full_name,
-                    '[[login]]' => $mt5Login,
-                    '[[plan_name]]' => $schema->title,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                ];
-//
-                $this->mailNotify($user->email, 'user_forex_account_creation', $shortcodes);
-//                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
-//                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
+                "country_id" => 5,
+//            "city" => $invest->user->city,
+//            "state" => "",
+//            "zipCode" => $invest->user->zip_code,
+//            "address" => $invest->user->address,
+                "phone" => $user->phone,
+                "email" => $user->email,
+//            "agent" => 0,
+                "company" => setting('site_title', 'global'),
+                "master_password" => $password,
+                "investor_password" => 'SNNH@2024@bol'
+            ];
+//        dd($data);
+            $forexApiService = new x9ApiService();
+            $response = $forexApiService->createUser($data);
+//        dd($response);
+            if ($response['success']) {
+                $resResult = $response['result']['trading_account'];
+                $mt5Login = $resResult['account_number'];
+                $data['group'] = (int)$group;
+                $data['leverage'] = $request->leverage;
+                //save account in DB
+                $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
+
+                $this->sendNotification($user,$mt5Login,$schema);
 
                 notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->route('user.forex-account-logs');
             }
-
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-
         }
+
+
+
+
 
         notify()->error(__('Some error occurred! please try again'), __('Error'));
         return redirect()->route('user.schema.preview', $schema->id);
@@ -239,14 +250,75 @@ class ForexAccountController extends GatewayController
         return redirect()->route('user.forex-account-logs');
     }
 
-    public function getServe($request)
+    public function saveAccount($request,$schema,$mt5Login,$accountType,$user,$data,$server)
     {
+        $accountData = $request->all();
+
+        $accountData['forex_schema_id'] = $schema->id;
+        $accountData['login'] = $mt5Login;
+        $accountData['account_name'] = $request->account_name;
+        $accountData['account_type'] = $accountType;
+        $accountData['user_id'] = $user->id;
+        $accountData['currency'] = setting('site_currency', 'global');
+        $accountData['group'] = $data['group'];
+        $accountData['leverage'] = $data['leverage'];
+        $accountData['status'] = ForexAccountStatus::Ongoing;
+        $accountData['server'] = $server;
+        $accountData['created_by'] = $user->id;
+        $accountData['first_min_deposit_paid'] = 0;
+        $accountData['trader_type'] = $schema->trader_type;
+        $accountData['trading_platform'] = $schema->trader_type;
+
+//        if ($accountType == 'demo' && setting('demo_server_enable', 'platform_api') && !empty(setting('demo_server', 'platform_api'))) {
+//            $accountData['trading_platform'] = setting('demo_server', 'platform_api');
+//        }
+
+        $forexTrading = ForexAccount::create($accountData);
+//        if ($user->ref_id) {
+//            $referrer = User::find($user->ref_id);
+//            if ($referrer->ib_status == IBStatus::APPROVED && isset($referrer->ib_login)) {
+//                $data = [
+//                    'login' => $mt5Login,
+//                    'agent' => $referrer->ib_login,
+//                ];
+////                $this->forexApiService->updateAgentAccount($data);
+//            }
+//        }
+        return true;
+    }
+    public function sendNotification($user,$mt5Login,$schema)
+    {
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[login]]' => $mt5Login,
+            '[[plan_name]]' => $schema->title,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+//
+        $this->mailNotify($user->email, 'user_forex_account_creation', $shortcodes);
+//                $this->pushNotify('user_investment', $shortcodes, route('user.forex-account-logs'), $tnxInfo->user->id);
+//                $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
+    }
+        public function getServe($request,$schema)
+
+    {
+
         $server = '';
-        if ($request->account_type === 'real') {
-            $server = setting('live_server', 'platform_api');
-        } elseif ($request->account_type === 'demo') {
-            $server = setting('demo_server', 'platform_api');
+        if($schema->trader_type == TraderType::MT5) {
+            if ($request->account_type === 'real') {
+                $server = setting('live_server', 'platform_api');
+            } elseif ($request->account_type === 'demo') {
+                $server = setting('demo_server', 'platform_api');
+            }
+        }elseif($schema->trader_type == TraderType::X9) {
+            if ($request->account_type === 'real') {
+                $server = setting('x9_name', 'x9_api');
+            } elseif ($request->account_type === 'demo') {
+                $server = setting('x9_name', 'x9_api');
+            }
         }
+
         return $server;
     }
 
@@ -287,14 +359,14 @@ class ForexAccountController extends GatewayController
         if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
 //            sync_forex_accounts(auth()->id());
         }
-        $realForexAccounts = ForexAccount::realActiveAccount()
+        $realForexAccounts = ForexAccount::realActiveAccount()->traderType()
             ->orderBy('balance', 'desc')
             ->get();
 //        dd($realForexAccounts);
-        $demoForexAccounts = ForexAccount::demoActiveAccount()
+        $demoForexAccounts = ForexAccount::demoActiveAccount()->traderType()
             ->orderBy('balance', 'desc')
             ->get();
-        $archiveForexAccounts = ForexAccount::archiveAccount()
+        $archiveForexAccounts = ForexAccount::archiveAccount()->traderType()
             ->orderBy('balance', 'desc')
             ->get();
 
@@ -304,7 +376,7 @@ class ForexAccountController extends GatewayController
     public function testForexAccount(Request $request)
     {
         $data = [
-            'login' => 600952
+            'login' => 874641
         ];
         $response = $this->forexApiService->getBalance($data);
         dd($response);
@@ -320,13 +392,13 @@ class ForexAccountController extends GatewayController
 //        if(!in_array($clientIp,['127.0.0.1' , '::1'])) {
 //            $this->syncForexAccounts(auth()->id());
 //        }
-        $realForexAccounts = ForexAccount::realActiveAccount()
+        $realForexAccounts = ForexAccount::realActiveAccount()->traderType()
             ->orderBy('balance', 'desc')
             ->get();
-        $demoForexAccounts = ForexAccount::demoActiveAccount()
+        $demoForexAccounts = ForexAccount::demoActiveAccount()->traderType()
             ->orderBy('balance', 'desc')
             ->get();
-        $archiveForexAccounts = ForexAccount::archiveAccount()
+        $archiveForexAccounts = ForexAccount::archiveAccount()->traderType()
             ->orderBy('balance', 'desc')
             ->get();
 

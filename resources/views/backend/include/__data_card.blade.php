@@ -153,7 +153,7 @@
                         {{ __('Live Accounts') }}
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
-                        16
+                        {{ $data['total_live_forex_accounts'] }}
                     </div>
                 </div>
             </div>
@@ -172,7 +172,7 @@
                         {{ __('Demo Accounts') }}
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
-                        12
+                        {{ $data['total_demo_forex_accounts'] }}
                     </div>
                 </div>
             </div>

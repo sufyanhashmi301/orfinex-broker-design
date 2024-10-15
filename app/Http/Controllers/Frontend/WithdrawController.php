@@ -485,7 +485,7 @@ class WithdrawController extends Controller
         $accounts = $accounts->reject(function ($value, $key) {
             return !$value->method->status;
         });
-        $forexAccounts = ForexAccount::with('schema')
+        $forexAccounts = ForexAccount::with('schema')->traderType()
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
             ->where('status', ForexAccountStatus::Ongoing)

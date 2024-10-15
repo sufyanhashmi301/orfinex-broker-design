@@ -1,4 +1,10 @@
 <style>
+
+    @import url('https://fonts.googleapis.com/css2?family={{ setting('font_family', 'misc_colors') }}:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    html, .sidebar-menu > li, .card-title, .btn {
+        font-family: {{ setting('font_family', 'misc_colors') }}, sans-serif;
+    }
     .light body, body, .bg-body {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color')) }} / var(--tw-bg-opacity));
     }
@@ -8,17 +14,17 @@
     .dark body, .dark .dark\:bg-body, .dark .app-header, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color_dark')) }} / var(--tw-bg-opacity));
     }
-    .sidebar-menus, .logo-segment {
+    .sidebar-menus, .logo-segment, .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg')) }} / var(--tw-bg-opacity));
     }
-    .dark .sidebar-menus, .dark .logo-segment {
+    .dark .sidebar-menus, .dark .logo-segment, .dark .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg_dark')) }} / var(--tw-bg-opacity));
     }
     .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .sidebar-menu .sidebar-submenu > li > a, .logo-title, .sidebar-menu .sidebar-menu-title {
+    .sidebar-menu .sidebar-submenu > li > a, .logo-title, .sidebar-menu .sidebar-menu-title, .stickySetting_menu a {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -26,7 +32,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menu .sidebar-submenu > li > a, .dark .logo-title, .dark .sidebar-menu .sidebar-menu-title {
+    .dark .sidebar-menu .sidebar-submenu > li > a, .dark .logo-title, .dark .sidebar-menu .sidebar-menu-title, .dark .stickySetting_menu a {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }

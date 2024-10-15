@@ -49,12 +49,12 @@ class DashboardController extends Controller
             'total_forex_equity' => mt5_total_equity($user->id),
         ];
         $referral = $user->getReferrals()->first();
-        $realForexAccountsCount = ForexAccount::realActiveAccount()->count();
-        $demoForexAccountsCount = ForexAccount::demoActiveAccount()->count();
-        $realForexAccounts = ForexAccount::realActiveAccount()
+        $realForexAccountsCount = ForexAccount::realActiveAccount()->traderType()->count();
+        $demoForexAccountsCount = ForexAccount::demoActiveAccount()->traderType()->count();
+        $realForexAccounts = ForexAccount::realActiveAccount()->traderType()
             ->orderBy('balance','desc')
             ->paginate(3)->withQueryString();
-        $demoForexAccounts = ForexAccount::demoActiveAccount()
+        $demoForexAccounts = ForexAccount::demoActiveAccount()->traderType()
             ->orderBy('balance','desc')
             ->paginate(3)->withQueryString();
         $getReferral = $user->getReferrals()->first();

@@ -316,6 +316,27 @@ return [
             ],
         ],
     ],
+    'fonts_settings' => [
+        'title' => 'Fonts Settings',
+        'elements' => [
+            [
+                'type' => 'radio', // Change type to 'radio'
+                'data' => 'string',
+                'name' => 'font_family',
+                'label' => 'Font Family',
+                'description' => 'Select your preferred font family for the CRM interface.',
+                'rules' => 'required', // Include options
+                'value' => 'Inter', // Default value
+                'options' => [
+                    'Inter' => 'Inter',
+                    'Lato' => 'Lato',
+                    'Montserrat' => 'Montserrat',
+                    'Poppins' => 'Poppins',
+                    'Roboto' => 'Roboto',
+                ],
+            ],
+        ]
+    ],
     'common_settings' => [
         'title' => 'Company Settings',
         'elements' => [
@@ -1207,14 +1228,13 @@ return [
     'forex_account_settings' => [
         'title' => 'Forex Accounts Settings',
         'elements' => [
-
             [
                 'type' => 'text', // input fields type
                 'data' => 'double', // data type, string, int, boolean
                 'name' => 'forex_account_create_limit', // unique name for field
-                'label' => 'Pending Deposit Limit', // you know what label it is
+                'label' => 'Forex Account Limit', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 3, // default value if you want
+                'value' => 10, // default value if you want
             ],
         ],
     ],
@@ -1372,6 +1392,20 @@ return [
                 'type' => 'radio', // Change type to 'radio'
                 'data' => 'string',
                 'name' => 'active_trader_type',
+                'label' => 'Trader Type',
+                'rules' => 'required', // Include options
+                'value' => \App\Enums\TraderType::MT5, // Default value
+                'options' => [
+                    'mt5' => \App\Enums\TraderType::MT5,
+                    'x9' => \App\Enums\TraderType::X9,
+                    'c_trader' => \App\Enums\TraderType::CTRADER,
+                    'all' => \App\Enums\TraderType::All,
+                ],
+            ],
+            [
+                'type' => 'radio', // Change type to 'radio'
+                'data' => 'string',
+                'name' => 'active_data_sync_way',
                 'label' => 'Trader Type',
                 'rules' => 'required', // Include options
                 'value' => \App\Enums\TraderType::MT5, // Default value

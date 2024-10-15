@@ -210,6 +210,14 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.theme.fonts') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Custom Fonts') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Routes')}}
                             <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
@@ -382,6 +390,14 @@
                     <li class="">
                         <a href="{{ route('admin.changelog') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Changelog') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.reportIssues') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Report Issue') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>

@@ -197,6 +197,31 @@ class SettingController extends Controller
         return view('backend.setting.site_setting.gdpr');
     }
 
+    public static function devMode()
+    {
+        return view('backend.system.dev_mode');
+    }
+
+    public static function clearCache()
+    {
+        return view('backend.system.cache_clear');
+    }
+
+    public static function apiAccess()
+    {
+        return view('backend.setting.integrations.api_access');
+    }
+
+    public static function webHook()
+    {
+        return view('backend.setting.integrations.web_hook');
+    }
+
+    public static function documentation()
+    {
+        return view('backend.setting.documentation');
+    }
+
     public static function slackSetting()
     {
         return view('backend.setting.collab_tools.slack');

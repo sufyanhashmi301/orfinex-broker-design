@@ -196,6 +196,7 @@ class DepositController extends Controller
         $depositMethod->update($data);
         notify()->success($depositMethod->name . ' ' . __(' Method Updated'));
         return response()->json(['redirect'=> route('admin.deposit.method.list', $depositMethod->type)]);
+        
 
 //        return redirect()->route('admin.deposit.method.list', $depositMethod->type);
     }

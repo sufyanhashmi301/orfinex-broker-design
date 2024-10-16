@@ -66,6 +66,7 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
+
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', __('Deposit Disabled Now'));
         }
@@ -116,7 +117,7 @@ class DepositController extends GatewayController
 
     // Check if the selected target is a forex account
     $forexAccount = ForexAccount::where('login', $targetId)->first();
-//    dd($forexAccount);
+//    dd('s');
 
     if ($forexAccount) {
         // It's a Forex account, handle the Forex-specific validation
@@ -227,7 +228,7 @@ class DepositController extends GatewayController
         $payAmount = $finalAmount;
         $depositType = TxnType::DemoDeposit;
 
-        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, 'USD', $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, base_currency(), $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
         $comment = 'demo/deposit/'.substr($txnInfo->tnx, -7);
         $data = [
             'login' => $targetId,

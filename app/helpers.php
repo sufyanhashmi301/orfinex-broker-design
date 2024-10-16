@@ -175,14 +175,22 @@ if (!function_exists('transaction_method_name')) {
      */
     function transaction_method_name($transaction)
     {
-        if ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit || $transaction->type == TxnType::DemoDeposit) {
-            return $transaction->depositMethod->name;
+        if ($transaction->type == TxnType::Deposit ||
+            $transaction->type == TxnType::ManualDeposit ||
+            $transaction->type == TxnType::DemoDeposit) {
+
+            // Check if depositMethod exists, if not return the method
+            return $transaction->depositMethod ? $transaction->depositMethod->name : $transaction->method;
+
         } elseif ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto) {
+
             return $transaction->method;
-        }else{
+
+        } else {
             return $transaction->method;
         }
     }
+
 }
 if (!function_exists('transaction_method_image')) {
 

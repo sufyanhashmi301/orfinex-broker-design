@@ -6,11 +6,6 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.plugin','system') }}" class="navItem {{ isActive('admin.settings.plugin') }}">
-                {{ __('Notification') }}
-            </a>
-        </li>
-        <li>
             <a href="{{route('admin.settings.slack')}}" class="navItem {{isActive('admin.settings.slack')}}">
                 {{ __('Collab Tools')}}
             </a>

@@ -312,6 +312,11 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
         Route::get('transfers', 'transfers')->name('transfers');
         Route::get('gdpr', 'gdpr')->name('gdpr');
+        Route::get('dev-mode', 'devMode')->name('devMode');
+        Route::get('clear-cache', 'clearCache')->name('clearCache');
+        Route::get('api-access', 'apiAccess')->name('apiAccess');
+        Route::get('web-hook', 'webHook')->name('webHook');
+        Route::get('documentation', 'documentation')->name('documentation');
 
         Route::get('slack', 'slackSetting')->name('slack');
 

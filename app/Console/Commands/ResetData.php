@@ -7,6 +7,7 @@ use App\Models\ForexAccount;
 use App\Models\Notification;
 use App\Models\Ranking;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -108,6 +109,7 @@ class ResetData extends Command
             'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make(12345678),
             'kyc' => 0,
+            'email_verified_at' =>Carbon::now(),
         ];
         $user = User::create($dataUser);
 
@@ -124,9 +126,9 @@ class ResetData extends Command
             'icon' => 'user-plus',
             'user_id' => 1,
             'for' => 'admin',
-            'title' => 'Wellcome to admin',
+            'title' => 'Welcome to admin',
             'notice' => 'Thanks for joining us',
-            'action_url' => 'https://banexcapital.com/admin/user/1/edit',
+            'action_url' => route('admin.user.edit',$superAdmin->id),
         ];
         Notification::create($data);
 

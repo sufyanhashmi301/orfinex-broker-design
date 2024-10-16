@@ -596,14 +596,6 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'debug_mode', // unique name for field
-                'label' => 'Development Mode', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 0, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'new_trading_accounts', // unique name for field
                 'label' => 'New Trading Accounts', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
@@ -1760,6 +1752,19 @@ return [
                 'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
             ],
         ],
+    ],
+    'dev_mode' => [
+        'title' => 'Development Mode',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'debug_mode', // unique name for field
+                'label' => 'Development Mode', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+        ]
     ],
     'company_misc' => [
         'title' => 'Misc Settings',

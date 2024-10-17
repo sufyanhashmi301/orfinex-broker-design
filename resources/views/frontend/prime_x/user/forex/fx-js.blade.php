@@ -21,12 +21,14 @@
                     // }
                 } else if (res.error) {
                     tNotify('warning', res.error);
+                    btn.prop('disabled', false);
                     setTimeout(function () {
                         location.reload();
                     }, 900);
                 } else if (res.errors) {
-                    NioApp.Form.errors(res, true);
                     btn.prop('disabled', false);
+                    NioApp.Form.errors(res, true);
+
                 }
             },
             error: function (data) {

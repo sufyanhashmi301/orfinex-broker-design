@@ -31,7 +31,11 @@
                                 <!-- Options will be populated by JavaScript -->
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update Group</button>
+                        <div class="text-right mt-10">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                {{ __('Update Group') }}
+                            </button>
+                        </div>
                     </form>
                 </div>
 

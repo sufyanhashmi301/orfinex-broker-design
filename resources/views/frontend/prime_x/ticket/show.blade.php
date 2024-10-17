@@ -10,30 +10,32 @@
                     <di class="space-y-5">
                         <div>
                             <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Tell Us!') }}</p>
-                            <p class="text-sm dark:text-slate-100">{{ __('Please provide us with as much information as possible when creating your support ticket. The more details you share, the better we can assist you.') }}</p>
+                            <p class="text-sm dark:text-slate-100">
+                                {{ __('Please provide as much detail as possible when submitting your support ticket. Clear and complete information helps us assist you more efficiently.') }}
+                            </p>
                         </div>
                         <div>
                             <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Show Us!') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                {{ __('If you\'re encountering any issues, consider attaching screenshots or images to your ticket. Visual aids can help us better understand and address your concerns.') }}
+                                {{ __('If you encounter any issues, attach relevant images or screenshots to your ticket. Visual references help us understand your concern better and resolve it faster.') }}
                             </p>
                         </div>
                         <div>
                             <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Caution') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                {{ __('Please be aware that our ticket response time may extend up to 2 business days.') }}
+                                {{ __('Please note that the response time for tickets may extend up to 2 business days based on the nature of the inquiry.') }}
                             </p>
                         </div>
                         <div>
                             <p class="text-lg text-slate-900 font-medium mb-2 dark:text-white">{{ __('Response Time') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                {{ __('Our dedicated support team is available from Monday to Friday, operating from 8:00 AM to 8:00 PM (Australian Timezone) and 9:00 AM to 6:00 PM (Dubai Time Zone). We make every effort to handle tickets promptly. However, during weekends or government holidays, our response time may experience a delay of one or two business days.') }}
+                                {{ __('Our support team operates during standard business hours, Monday through Friday. We aim to resolve all inquiries promptly. However, response times may be affected during weekends or public holidays.') }}
                             </p>
                         </div>
                         <div>
-                            <p class="text-lg text-danger-600 font-medium mb-2">{{ __('Important Notice') }}</p>
+                            <p class="text-lg text-danger600 font-medium mb-2">{{ __('Important Notice') }}</p>
                             <p class="text-sm dark:text-slate-100">
-                                {{ __('Tickets that remain unresponsive for more than one or two business days or are unrelated to our support items may be locked. Additionally, please avoid creating duplicate tickets, as this may also result in ticket locking. We appreciate your cooperation in helping us provide efficient support.') }}
+                                {{ __('Tickets that remain inactive for a specified period or are unrelated to support inquiries may be closed. To ensure prompt resolution, please avoid submitting duplicate tickets. We appreciate your understanding and cooperation in providing seamless support.') }}
                             </p>
                         </div>
                     </di>
@@ -44,11 +46,11 @@
             <div class="h-screen card">
                 <div class="h-full">
                     <header class="border-b border-slate-100 dark:border-slate-700">
-                        <div class="flex flex-wrap items-center py-6 md:px-6 px-3 gap-5">
+                        <div class="flex flex-wrap items-center justify-between py-6 md:px-6 px-3 gap-5">
                             <div class="md:flex-1">
                                 <h4 class="card-title flex items-center">
                                     {{ $ticket->title.' - '.$ticket->uuid }}
-                                    <span class="badge bg-primary-500 text-primary-500 bg-opacity-30 capitalize rounded-3xl ml-2">
+                                    <span class="badge badge-primary capitalize rounded-3xl ml-2">
                                         {{ __('Opened') }}
                                     </span>
                                 </h4>

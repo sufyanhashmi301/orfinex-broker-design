@@ -48,10 +48,10 @@
                                                     <span class="inline-block text-center mx-auto py-1">
                                                         <span class="flex items-center space-x-3 rtl:space-x-reverse">
                                                             @if($ticket->isOpen())
-                                                                <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                                <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
                                                                 <span>{{ __('Opened') }}</span>
                                                             @elseif($ticket->isClosed())
-                                                                <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                                 <span>{{ __('Completed') }}</span>
                                                             @endif
                                                         </span>

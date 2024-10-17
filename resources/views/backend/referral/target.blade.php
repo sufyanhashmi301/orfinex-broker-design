@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-body p-6">
                     <p class="paragraph text-slate-600 dark:text-slate-400 text-sm mb-4">
-                        <iconify-icon class="text-base text-warning-500 mr-1" icon="lucide:alert-triangle"></iconify-icon>
+                        <iconify-icon class="text-base text-warning mr-1" icon="lucide:alert-triangle"></iconify-icon>
                         {{ __('You can') }}
                         <strong>{{ __('Add or Edit') }}</strong> {{ __('any of the') }}
                         <strong>{{ __('Targets') }}</strong>

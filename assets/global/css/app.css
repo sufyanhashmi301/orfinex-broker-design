@@ -4626,6 +4626,9 @@ textarea.form-control.is-invalid{
 .h-\[calc\(100\%-80px\)\]{
   height: calc(100% - 80px);
 }
+.h-\[calc\(100\%-115px\)\]{
+    height: calc(100% - 115px);
+}
 .h-\[200px\]{
   height: 200px;
 }
@@ -13181,8 +13184,8 @@ ul.custom-list ul li{
   border-style: none;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }

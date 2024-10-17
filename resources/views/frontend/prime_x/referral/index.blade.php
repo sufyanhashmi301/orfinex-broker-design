@@ -13,7 +13,7 @@
                 <div class="card-body p-6">
                     <div class="max-w-2xl progress-steps-form">
                         <div class="transaction-status text-center">
-                            <div class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                            <div class="icon h-20 w-20 bg-warning text-warning bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
                                 <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
                             </div>
                             <h2 class="text-3xl dark:text-white my-5">{{ __('Partner Request Pending') }}</h2>

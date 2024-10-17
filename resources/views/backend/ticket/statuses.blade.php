@@ -3,7 +3,7 @@
     {{ __('Tickets Status') }}
 @endsection
 @section('header-btn')
-    <a href="javascript:;" class="btn btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#statusModal">
+    <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#statusModal">
         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
         Add Status
     </a>
@@ -30,11 +30,11 @@
                                         </td>
                                         <td class="table-td">
                                             @if($status->status_type == 'open')
-                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-success-500 bg-success-500">
+                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-success bg-success">
                                                     {{ __('Open') }}
                                                 </span>
                                             @elseif($status->status_type == 'closed')
-                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-danger-500 bg-danger-500">
+                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-danger bg-danger">
                                                     {{ __('Closed') }}
                                                 </span>
                                             @endif

@@ -14,7 +14,7 @@
                     {{ __('Configure your Google Mail (Gmail) server to send automated email notifications regarding transactions, payments, and reminders to your customers.') }}
                 </p>
             </div>
-            <span class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+            <span class="badge bg-danger text-danger bg-opacity-30 capitalize">
                 {{ __('Deactivated') }}
             </span>
         </div>
@@ -35,14 +35,14 @@
                         </li>
                     </ul>
                 </div>
-                <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-warning-500 bg-opacity-[14%] text-warning-500">
+                <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-warning bg-opacity-[14%] text-warning">
                     <div class="flex items-center space-x-3 rtl:space-x-reverse mb-3">
                         <iconify-icon class="text-2xl flex-0" icon="lucide:triangle-alert"></iconify-icon>
                         <p class="flex-1 text-lg font-medium">
                             {{ __('Important Guidelines:') }}
                         </p>
                     </div>
-                    <p class="text-sm text-warning-500">
+                    <p class="text-sm text-warning">
                         {{ __('Sending emails via Gmail is not recommended by us due to the security restrictions imposed by Google. These security measures may prevent the sending of emails from your CRM, even after making the necessary settings. Google may block email sending on certain servers, leading to unreliable delivery. While you can use Gmail if it works on your server, our support team will not assist in troubleshooting Gmail-related issues. For a more reliable solution, we recommend using a professional email provider such as SMTP servers (e.g., SendGrid, Mailgun) for better performance and support.') }}
                     </p>
                 </div>

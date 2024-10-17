@@ -22,12 +22,12 @@
                 <div class="flex items-center justify-between mb-1">
                     <h4>{{ $schema->title }}</h4>
                     @if($schema->badge)
-                        <p class="badge bg-primary capitalize">
+                        <p class="badge badge-primary capitalize">
                             {{$schema->badge}}
                         </p>
                     @endif
                 </div>
-                <p class="text-sm text-success-500 mb-2">
+                <p class="text-sm text-success mb-2">
                     {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->country, true)) }}
                 </p>
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
@@ -38,7 +38,7 @@
                         {{ __('Initial Deposit') }}
                     </span>
                     <span class="flex-1 text-right">
-                        <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success-500 text-success-500">
+                        <span class="bg-opacity-20 capitalize font-semibold text-sm leading-4 px-[10px] py-[2px] rounded-full inline-block bg-success text-success">
                             {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
                         </span>
                     </span>

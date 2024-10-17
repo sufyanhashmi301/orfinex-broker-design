@@ -8,7 +8,7 @@
             {{ __('Edit Account Type') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -240,7 +240,6 @@
                                     <option value="{{$group->group}}" @if($group->group == $schema->real_swap_free) selected @endif>{{ $group->group}}</option>
                                 @endforeach
                             </select>
-                        </div>
 {{--                        <div class="input-area">--}}
 {{--                            <label class="form-label" for="">{{ __('Platform Group') }}</label>--}}
 {{--                            <input--}}
@@ -382,7 +381,7 @@
                 <div class="input-area mb-5">
                     <label for="" class="form-label">{{ __('Detail:') }}</label>
                     <div class="site-editor">
-                        <textarea class="summernote" name="desc">
+                        <textarea class="basicTinymce" name="desc">
                             {{$schema->desc}}
                         </textarea>
                     </div>
@@ -486,7 +485,24 @@
     </form>
 @endsection
 @section('script')
+    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
     <script>
+
+        tinymce.init({
+            selector: 'textarea.basicTinymce',
+            height: 500,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+
         $(document).ready(function() {
             $('.toggle-checkbox').change(function() {
                 var target = $(this).data('target');

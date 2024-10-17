@@ -36,22 +36,22 @@
                                     </td>
                                     <td class="table-td">
                                         @if($gateway->is_withdraw != 0)
-                                            <div class="badge bg-success-500 text-white capitalize">
+                                            <div class="badge bg-success text-white capitalize">
                                                 {{ __('Yes') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger-500 text-white capitalize">
+                                            <div class="badge bg-danger text-white capitalize">
                                                 {{ __('No') }}
                                             </div>
                                         @endif
                                     </td>
                                     <td class="table-td">
                                         @if($gateway->status == 1)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                                 {{ __('Activated') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
                                                 {{ __('Deactivated') }}
                                             </div>
                                         @endif

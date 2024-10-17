@@ -36,6 +36,11 @@ class ThemeController extends Controller
         return view('backend.theme.colors', compact('type'));
     }
 
+    public function fontSetting()
+    {
+        return view('backend.theme.fonts');
+    }
+
     public function dynamicLanding()
     {
         $landingThemes = Theme::where('type', 'landing')->get();

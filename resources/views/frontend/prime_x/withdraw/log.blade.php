@@ -130,15 +130,15 @@
                                                             <span class="flex items-center space-x-3 rtl:space-x-reverse">
                                                                 @switch($raw->status->value)
                                                                     @case('pending')
-                                                                        <span class="h-[6px] w-[6px] bg-warning-500 rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
+                                                                        <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
                                                                         <span>{{ __('Pending') }}</span>
                                                                         @break
                                                                     @case('success')
-                                                                        <span class="h-[6px] w-[6px] bg-success-500 rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
+                                                                        <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
                                                                         <span>{{ __('Success') }}</span>
                                                                         @break
                                                                     @case('failed')
-                                                                        <span class="h-[6px] w-[6px] bg-danger-500 rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
+                                                                        <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
                                                                         <span>{{ __('Canceled') }}</span>
                                                                         @break
                                                                 @endswitch
@@ -158,7 +158,7 @@
                                             $to = $withdraws->lastItem(); // The ending item number on the current page
                                             $total = $withdraws->total(); // The total number of items
                                         @endphp
-        
+
                                         <p class="text-sm text-gray-700 dark:text-slate-300 px-3">
                                             {{ __('Showing') }}
                                             <span class="font-medium">{{ $from }}</span>
@@ -176,7 +176,7 @@
                     </div>
                 @endif
             </div>
-        </div>        
+        </div>
         @else
         <!-- Transactions -->
         <div class="card all-feature-mobile mobile-transactions mb-3">
@@ -209,13 +209,13 @@
                                 <div class="transaction-amount sub mb-1 dark:text-white">- {{$raw->amount .' '.$currency}}</div>
                                 <div class="transaction-fee sub mb-1 dark:text-white">- {{ $raw->charge.' '. $currency .' '. __('Fee') }}</div>
                                 <div class="transaction-gateway mb-1 dark:text-white">{{ $raw->method }}</div>
-        
+
                                 @if($raw->status->value == App\Enums\TxnStatus::Pending->value)
-                                    <div class="transaction-status text-warning-500">{{ __('Pending') }}</div>
+                                    <div class="transaction-status text-warning">{{ __('Pending') }}</div>
                                 @elseif($raw->status->value ==  App\Enums\TxnStatus::Success->value)
-                                    <div class="transaction-status text-success-500">{{ __('Success') }}</div>
+                                    <div class="transaction-status text-success">{{ __('Success') }}</div>
                                 @elseif($raw->status->value ==  App\Enums\TxnStatus::Failed->value)
-                                    <div class="transaction-status text-danger-500">{{ __('Canceled') }}</div>
+                                    <div class="transaction-status text-danger">{{ __('Canceled') }}</div>
                                 @endif
                             </div>
                         </div>
@@ -223,7 +223,7 @@
                 </div>
                 {{  $withdraws->onEachSide(1)->links() }}
             </div>
-        </div>        
+        </div>
         @endif
     </div>
 

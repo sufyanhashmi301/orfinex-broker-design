@@ -19,7 +19,7 @@
          style="background-color: rgba(254, 208, 0, 0.3); border-color: #FED000;" role="alert">
         <div class="flex flex-wrap items-center space-x-3 space-y-3 rtl:space-x-reverse">
             <div class="flex-1 flex items-center space-x-3">
-                <iconify-icon class="text-2xl flex-0 text-danger-500" icon="typcn:warning"></iconify-icon>
+                <iconify-icon class="text-2xl flex-0 text-danger" icon="typcn:warning"></iconify-icon>
                 <div class="font-inter text-slate-900 dark:text-white">
                     <p class="text-lg font-medium">
                         {{ __('Steps Completed: ') }}{{$completedSteps}}{{__('/')}}{{$totalActiveLevels}}
@@ -33,7 +33,7 @@
                     @endif
                 </div>
             </div>
-            <div class="flex-0 text-xl cursor-pointer text-danger-500">
+            <div class="flex-0 text-xl cursor-pointer text-danger">
                 @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
                     <a href="{{ route('user.kyc') }}" class="btn loaderBtn inline-flex justify-center btn-dark btn-sm">
                         <span>{{ __('Submit Now') }}</span>
@@ -103,8 +103,7 @@
                     <!--Third item-->
                     @if($totalActiveLevels > 2)
                         <li class="w-[4.5rem] flex-auto">
-                            <div
-                                class="flex items-center leading-[1.3rem] no-underline @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) after:ml-2 after:h-3px after:w-full after:flex-1 after:bg-primary @else after:bg-[#e0e0e0] @endif after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                            <div class="flex items-center pr-2 leading-[1.3rem] no-underline before:mr-2 before:h-3px before:w-full before:flex-1 before:bg-[#e0e0e0] before:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:before:bg-neutral-600 @if($user->kyc >= \App\Enums\KYCStatus::Level3->value) before:bg-primary @else before:bg-[#e0e0e0] @endif dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b']">
                                 <div>
                                     @if($user->kyc >= \App\Enums\KYCStatus::Level3->value)
                                         <svg width="28" height="27" viewBox="0 0 19 19" fill="none"

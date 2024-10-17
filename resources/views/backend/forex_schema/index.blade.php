@@ -9,7 +9,7 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('schema-create')
-                <a href="{{route('admin.accountType.create')}}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{route('admin.accountType.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New') }}
                 </a>
@@ -28,6 +28,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Icon') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Trader Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Leverage') }}</th>
@@ -48,6 +49,9 @@
                                         />
                                     </td>
                                     <td class="table-td">
+                                        {{$schema->trader_type}}
+                                    </td>
+                                    <td class="table-td">
                                         {{$schema->priority}}
                                     </td>
                                     <td class="table-td">
@@ -62,15 +66,15 @@
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $schema->badge,
-                                        'bg-warning-500 text-warning-500' => !$schema->badge
+                                        'bg-success text-success' => $schema->badge,
+                                        'bg-warning text-warning' => !$schema->badge
                                         ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
                                     </td>
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $schema->status,
-                                        'bg-danger-500 text-danger-500' => !$schema->status
+                                        'bg-success text-success' => $schema->status,
+                                        'bg-danger text-danger' => !$schema->status
                                         ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
                                     </td>
                                     <td class="table-td">

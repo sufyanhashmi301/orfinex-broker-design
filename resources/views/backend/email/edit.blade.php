@@ -8,7 +8,7 @@
             {{ __('Edit') }} {{  $template->name }} {{ __('Template') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.email-template') }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ route('admin.email-template') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -201,12 +201,12 @@
                 // Change the button text and style
                 var $button = $(this);
                 var $icon = $button.find('iconify-icon');
-                $icon.addClass('text-success-500');
+                $icon.addClass('text-success');
                 $button.addClass('copy-button');
 
                 // Revert the button text and style after 2 seconds
                 setTimeout(function() {
-                    $icon.removeClass('text-success-500');
+                    $icon.removeClass('text-success');
                 }, 2000);
 
             });

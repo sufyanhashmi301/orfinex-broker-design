@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ route('admin.settings.documentation') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 {{ __('Documentation') }}
             </a>
         </div>
@@ -160,16 +160,16 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.settings.site') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Site Settings') }}
+                        <a href="{{ route('admin.theme.global') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Branding')}}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Colors Customize') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
-                                {{ __('New') }}
-                            </span>
+                        <a href="{{ route('admin.settings.site') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Site Settings') }}
                         </a>
                     </li>
                     <li>
@@ -185,6 +185,52 @@
                     <li>
                         <a href="{{ route('admin.settings.site-maintenance') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Maintenance') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="gala:settings"></iconify-icon>
+                        {{ __('Customization') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li>
+                        <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Custom Colors') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.theme.fonts') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Custom Fonts') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Routes')}}
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Dynamic Content')}}
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('Coming Soon') }}
+                            </span>
                         </a>
                     </li>
                 </ul>
@@ -219,7 +265,7 @@
                     <li>
                         <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform Groups') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -232,7 +278,7 @@
                     <li>
                         <a href="{{ route('admin.settings.webterminal.mt5') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Web Terminal') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('New') }}
                             </span>
                         </a>
@@ -257,11 +303,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Notification') }}
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ route('admin.settings.slack') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Collab Tools') }}
                         </a>
@@ -270,7 +311,7 @@
                         <li>
                             <a href="{{ route('admin.email-template') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Email Templates') }}
-                                <span class="badge-warning text-xs capitalize rounded-full px-2 py-1">
+                                <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                     {{ __('Updated') }}
                                 </span>
                             </a>
@@ -326,9 +367,9 @@
             <div class="card-body p-3">
                 <ul class="space-y-3">
                     <li class="">
-                        <a href="{{ route('admin.clear-cache') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.settings.clearCache') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Clear Cache') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -336,7 +377,15 @@
                     <li class="">
                         <a href="{{ route('admin.application-info') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Application Details') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.settings.devMode') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Dev Mode') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -344,8 +393,54 @@
                     <li class="">
                         <a href="{{ route('admin.changelog') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Changelog') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.reportIssues') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Report Issue') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="fluent:settings-cog-multiple-24-regular"></iconify-icon>
+                        {{ __('Integrations') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Plugins') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('API Access')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.webHook') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Web Hooks')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>
@@ -393,25 +488,6 @@
         </div>
     </div>
 @endsection
-@section('style')
-    <style>
-        .badge-secondary {
-            background-color: rgba(205, 205, 205, 0.29);
-            color: #828289;
-        }
-        .badge-warning {
-            background-color: rgba(254, 208, 0, 0.52);
-            color: #5F4D00;
-        }
-        .badge-success {
-            background-color: rgba(0, 236, 66, 0.29);
-            color: #008133;
-        }
-    </style>
-@endsection
 @section('script')
-    <script>
-        new SimpleBar($("#sidebar_subMenus, #scrollModal")[0]);
-    </script>
     @yield('setting-script')
 @endsection

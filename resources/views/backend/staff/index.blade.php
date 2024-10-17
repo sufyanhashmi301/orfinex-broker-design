@@ -9,7 +9,7 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('staff-create')
-                <a href="{{ route('admin.staff.create') }}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{ route('admin.staff.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New Staff') }}
                 </a>
@@ -62,11 +62,11 @@
                                     <td class="table-td">{{ $staff->location }}</td>
                                     <td class="table-td">
                                         @if($staff->status)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
                                                 {{ __('InActive') }}
                                             </div>
                                         @endif

@@ -94,9 +94,9 @@
                 {{ 'Currency Settings' }}
             </h4>
             <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <a href="" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                    Add Currency
+                    {{ __('Add Currency') }}
                 </a>
             </div>
         </div>
@@ -122,7 +122,7 @@
                                                     @checked(oldSetting($field['name'],$section) == 'fiat')
                                                 >
                                                 <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                <span class="text-success-500 text-sm leading-6 capitalize">
+                                                <span class="text-success text-sm leading-6 capitalize">
                                                     {{ __('Fiat') }}
                                                 </span>
                                             </label>
@@ -138,7 +138,7 @@
                                                     @checked(oldSetting($field['name'],$section) == 'crypto')
                                                 >
                                                 <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all duration-150 h-[16px] w-[16px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
-                                                <span class="text-success-500 text-sm leading-6 capitalize">
+                                                <span class="text-success text-sm leading-6 capitalize">
                                                     {{ __('Crypto') }}
                                                 </span>
                                             </label>

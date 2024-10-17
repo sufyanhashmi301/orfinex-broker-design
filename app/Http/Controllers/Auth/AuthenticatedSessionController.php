@@ -27,6 +27,14 @@ class AuthenticatedSessionController extends Controller
         return view('frontend::auth.login', compact('googleReCaptcha'));
     }
 
+    public function iframeLogin()
+    {
+
+        $googleReCaptcha = plugin_active('Google reCaptcha');
+
+        return view('frontend::auth.iframe-login', compact('googleReCaptcha'));
+    }
+
     /**
      * Handle an incoming authentication request.
      *

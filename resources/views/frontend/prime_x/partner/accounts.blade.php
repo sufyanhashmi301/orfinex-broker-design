@@ -71,7 +71,7 @@
                                 <tr>
                                     <td class="table-td">
                                         <span class="block">{{ __('32423233432') }}</span>
-                                        <span class="text-success-500">{{ __('Live') }}</span>
+                                        <span class="text-success">{{ __('Live') }}</span>
                                     </td>
                                     <td class="table-td">
                                         <span class="block">{{ __('Asad Nisar') }}</span>

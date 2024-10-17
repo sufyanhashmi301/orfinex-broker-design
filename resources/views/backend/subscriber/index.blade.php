@@ -9,7 +9,7 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('subscriber-mail-send')
-                <a href="{{ route('admin.mail.send.subscriber') }}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{ route('admin.mail.send.subscriber') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:mail"></iconify-icon>
                     {{ __('Email To All') }}
                 </a>

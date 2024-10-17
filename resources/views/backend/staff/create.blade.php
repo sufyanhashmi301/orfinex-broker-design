@@ -8,7 +8,7 @@
             @yield('title')
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ url()->previous() }}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{ url()->previous() }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:corner-down-left"></iconify-icon>
                 {{ __('Back') }}
             </a>
@@ -28,7 +28,7 @@
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
                                     {{ __('First Name:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -41,7 +41,7 @@
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
                                     {{ __('Last Name:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -54,7 +54,7 @@
                             <div class="input-area !mt-0">
                                 <label for="" class="form-label">
                                     {{ __('Nick Name:') }}
-                                    <span class="text-xs text-danger-500">*</span>
+                                    <span class="text-xs text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -135,7 +135,7 @@
                     <div class="input-area">
                         <label class="form-label" for="">
                             {{ __('Select Role:') }}
-                            <span class="text-xs text-danger-500">*</span>
+                            <span class="text-xs text-danger">*</span>
                         </label>
                         <select name="role" class="select2 form-control w-100" required>
                             @foreach($roles as $role)
@@ -259,7 +259,7 @@
                     <div class="input-area">
                         <label for="" class="form-label">
                             {{ __('Email:') }}
-                            <span class="text-xs text-danger-500">*</span>
+                            <span class="text-xs text-danger">*</span>
                         </label>
                         <input
                             type="email"
@@ -272,7 +272,7 @@
                     <div class="input-area">
                         <label for="" class="form-label">
                             {{ __('Password:') }}
-                            <span class="text-xs text-danger-500">*</span>
+                            <span class="text-xs text-danger">*</span>
                         </label>
                         <input
                             type="password"
@@ -285,7 +285,7 @@
                     <div class="input-area">
                         <label for="" class="form-label">
                             {{ __('Confirm Password:') }}
-                            <span class="text-xs text-danger-500">*</span>
+                            <span class="text-xs text-danger">*</span>
                         </label>
                         <input
                             type="password"
@@ -299,7 +299,7 @@
                         <div class="flex items-center space-x-7 flex-wrap">
                             <label class="form-label !w-auto" for="">
                                 {{ __('Status') }}
-                                <span class="text-xs text-danger-500">*</span>
+                                <span class="text-xs text-danger">*</span>
                             </label>
                             <div class="form-switch ps-0">
                                 <input type="hidden" value="0" name="status">

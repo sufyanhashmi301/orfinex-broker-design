@@ -10,9 +10,9 @@
             </h4>
             <div class="flex space-x-4 justify-end items-center rtl:space-x-reverse">
                 @can('referral-create')
-                    <button class="btn btn-primary inline-flex justify-center new-referral" type="button">
+                    <button class="btn btn-sm btn-primary inline-flex justify-center new-referral" type="button">
                         <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
+                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
                             <span>{{ __('Add New') }}</span>
                     </button>
                 @endcan
@@ -22,7 +22,7 @@
             <div class="lg:col-span-1 col-span-3">
                 <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Deposit Bounty') }}
                         </h3>
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
@@ -103,7 +103,7 @@
             <div class="lg:col-span-1 col-span-3">
                 <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Multi IB Bounty') }}
                         </h3>
@@ -149,7 +149,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
@@ -180,7 +180,7 @@
             <div class="lg:col-span-1 col-span-3">
                 <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                     <div class="relative flex justify-between items-center bg-white dark:bg-slate-800 rounded shadow-base px-6 py-5">
-                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary-500"></span>
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-[2px] bg-primary"></span>
                         <h3 class="text-lg text-slate-900 dark:text-white font-medium capitalize">
                             {{ __('Profit Bounty') }}
                         </h3>
@@ -226,7 +226,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>

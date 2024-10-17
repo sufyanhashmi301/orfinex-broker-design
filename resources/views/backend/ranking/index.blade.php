@@ -9,7 +9,7 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('ranking-create')
-                <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNewRanking">
+                <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addNewRanking">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New') }}
                 </a>
@@ -57,11 +57,11 @@
                                     </td>
                                     <td class="table-td">
                                         @if($ranking->status)
-                                            <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-warning text-warning bg-opacity-30 capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
                                                 {{ __('Disabled') }}
                                             </div>
                                         @endif

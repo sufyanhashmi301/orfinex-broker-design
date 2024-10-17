@@ -16,13 +16,35 @@ class Match2PayGatewaySeeder extends Seeder
     public function run()
     {
         $match2payCredentials = [
-            'api_token' => '',
             'secret_key' => '',
+            'api_token' => '',
         ];
+//        $match2payCurrencies = [
+//            "BTC", "ETH", "UST", "UCC", "TRX", "USX", "UCX", "BNB", "USB",
+//            "MAT", "USP", "UCP", "XRP", "DOG", "LTC", "SOL", "USS", "UCS",
+//            "TON", "UTT"
+//        ];
         $match2payCurrencies = [
-            "BTC", "ETH", "UST", "UCC", "TRX", "USX", "UCX", "BNB", "USB",
-            "MAT", "USP", "UCP", "XRP", "DOG", "LTC", "SOL", "USS", "UCS",
-            "TON", "UTT"
+            "BTC",
+            "ETH",
+            "USDT ERC20",
+            "USDC ERC20",
+            "TRX",
+            "USDT TRC20",
+            "USDC TRC20",
+            "BNB",
+            "USDT BEP20",
+            "MATIC",
+            "USDT POLYGON",
+            "USDC POLYGON",
+            "XRP",
+            "DOGECOIN",
+            "LTC",
+            "SOL",
+            "USDT SOL",
+            "USDC SOL",
+            "TON",
+            "USDT TON"
         ];
 
         $match2pay = DB::table('gateways')->where('gateway_code','match2pay')->first();

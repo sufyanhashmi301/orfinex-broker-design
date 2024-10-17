@@ -52,7 +52,7 @@ class DepositController extends GatewayController
 //        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
 //            $this->syncForexAccounts(auth()->id());
 //        }
-        $forexAccounts = ForexAccount::with('schema')
+        $forexAccounts = ForexAccount::with('schema')->traderType()
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
             ->where('status', ForexAccountStatus::Ongoing)
@@ -66,6 +66,7 @@ class DepositController extends GatewayController
 
     public function depositNow(Request $request)
     {
+
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', __('Deposit Disabled Now'));
         }
@@ -86,7 +87,7 @@ class DepositController extends GatewayController
         $user = \Auth::user();
 
         // Check pending deposit request limits
-        if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'Deposit_settings')) {
+        if (Transaction::where('user_id',$user->id)->where('type',TxnType::ManualDeposit)->where('status',TxnStatus::Pending)->count() > setting('pending_deposit_limit', 'deposit_settings')) {
             $currencySymbol = setting('currency_symbol', 'global');
             $message = __('You already have a pending deposit request. Please contact our support team at :support to resolve this issue and proceed with further deposits.', ['support' => setting('support_email', 'common_settings')]);
             notify()->error($message, 'Error');
@@ -116,7 +117,7 @@ class DepositController extends GatewayController
 
     // Check if the selected target is a forex account
     $forexAccount = ForexAccount::where('login', $targetId)->first();
-//    dd($forexAccount);
+//    dd('s');
 
     if ($forexAccount) {
         // It's a Forex account, handle the Forex-specific validation
@@ -227,7 +228,7 @@ class DepositController extends GatewayController
         $payAmount = $finalAmount;
         $depositType = TxnType::DemoDeposit;
 
-        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, 'USD', $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, 'Demo-Deposit', 'Demo Deposit of '.$targetId  , $depositType, TxnStatus::Pending, base_currency(), $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
         $comment = 'demo/deposit/'.substr($txnInfo->tnx, -7);
         $data = [
             'login' => $targetId,

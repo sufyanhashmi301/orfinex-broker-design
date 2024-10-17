@@ -96,8 +96,7 @@
                     <div class="site-input-groups fw-normal">
                         <label for="" class="box-input-label">{{ __('Detail:') }}</label>
                         <div class="site-editor">
-                        <textarea class="summernote"
-                                    name="desc">{{$schema->desc}}</textarea>
+                        <textarea class="basicTinymce" name="desc">{{$schema->desc}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -137,8 +136,23 @@
 @endsection
 @section('script')
 
-     <script src="{{ asset('backend/js/choices.min.js') }}"></script>
-     <script>
+    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
+    <script>
+
+        tinymce.init({
+            selector: 'textarea.basicTinymce',
+            height: 500,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
 
 
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {

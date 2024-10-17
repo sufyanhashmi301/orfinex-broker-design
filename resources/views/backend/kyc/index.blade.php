@@ -8,7 +8,7 @@
             {{ __('KYC Forms') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{ route('admin.kyc-form.create') }}" class="inline-flex items-center justify-center text-success-500">
+            <a href="{{ route('admin.kyc-form.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus-circle"></iconify-icon>
                 {{ __('Add New') }}
             </a>
@@ -36,11 +36,11 @@
                                     </td>
                                     <td class="table-td">
                                         @if( $kyc->status)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
+                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
                                                 {{ __('Disabled') }}
                                             </div>
                                         @endif
@@ -75,7 +75,7 @@
             <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                 <div class="relative rounded-lg shadow">
                     <div class="modal-body popup-body p-6 py-8 text-center space-y-5">
-                        <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                        <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                             <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                         </div>
                         <div class="title">

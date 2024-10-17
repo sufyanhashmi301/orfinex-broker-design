@@ -73,6 +73,7 @@ class RegisteredUserController extends Controller
             'country' => $country,
             'phone' => $phone,
             'email' => $input['email'],
+            'account_limit' => setting('forex_account_create_limit', 'forex_account_settings'),
             'password' => Hash::make($input['password']),
         ]);
 
@@ -133,5 +134,20 @@ class RegisteredUserController extends Controller
 //        dd($location);
 
         return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data'));
+    }
+
+    public function iframeRegister()
+    {
+        if (! setting('account_creation', 'permission')) {
+            abort('403', 'User registration is closed now');
+        }
+
+        $page = Page::where('code', 'registration')->where('locale', app()->getLocale())->first();
+        $data = json_decode($page->data, true);
+
+        $googleReCaptcha = plugin_active('Google reCaptcha');
+        $location = getLocation();
+
+        return view('frontend::auth.iframe-register', compact('location', 'googleReCaptcha', 'data'));
     }
 }

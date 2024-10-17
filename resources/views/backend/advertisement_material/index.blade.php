@@ -9,7 +9,7 @@
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @can('advertisement_material-create')
-                <a href="{{route('admin.advertisement_material.create')}}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{route('admin.advertisement_material.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New') }}
                 </a>
@@ -52,8 +52,8 @@
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $advertisement->status,
-                                        'bg-danger-500 text-danger-500' => !$advertisement->status
+                                        'bg-success text-success' => $advertisement->status,
+                                        'bg-danger text-danger' => !$advertisement->status
                                         ])>{{ $advertisement->status ? 'Active' : 'Deactivated' }}</div>
                                     </td>
                                     <td class="table-td">

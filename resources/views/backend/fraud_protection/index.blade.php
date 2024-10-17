@@ -30,7 +30,7 @@
                             </span>
                         </div>
                         <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            <iconify-icon class="text-success-500" icon="lucide:arrow-up"></iconify-icon>
+                            <iconify-icon class="text-success" icon="lucide:arrow-up"></iconify-icon>
                             {{ __('12.74% higher than last week') }}
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                             </span>
                         </div>
                         <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            <iconify-icon class="text-success-500" icon="lucide:arrow-up"></iconify-icon>
+                            <iconify-icon class="text-success" icon="lucide:arrow-up"></iconify-icon>
                             {{ __('12.74% higher than last week') }}
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                             </span>
                         </div>
                         <div class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            <iconify-icon class="text-success-500" icon="lucide:arrow-up"></iconify-icon>
+                            <iconify-icon class="text-success" icon="lucide:arrow-up"></iconify-icon>
                             {{ __('12.74% higher than last week') }}
                         </div>
                     </div>

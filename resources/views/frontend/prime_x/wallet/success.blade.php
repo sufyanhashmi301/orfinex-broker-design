@@ -2,7 +2,7 @@
 @section('wallet_exchange_content')
     <div class="progress-steps-form">
         <div class="transaction-status text-center px-7 py-12">
-            <div class="icon h-20 w-20 bg-success-500 rounded-full flex flex-col items-center justify-center mx-auto">
+            <div class="icon h-20 w-20 bg-success rounded-full flex flex-col items-center justify-center mx-auto">
                 <iconify-icon icon="heroicons:check-16-solid" class="text-white text-4xl"></iconify-icon>
             </div>
             <h2 class="text-3xl my-5">{{ __('Title:') }} {{ $notify['title'] }}</h2>

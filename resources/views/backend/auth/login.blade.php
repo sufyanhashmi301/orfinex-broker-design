@@ -4,13 +4,18 @@
 @endsection
 @section('auth-content')
 
-<div class="max-w-sm w-full space-y-10">
+<div class="max-w-sm w-full">
     <div class="text-center">
         <a href="{{ route('home')}}" class="inline-block">
-            <img src="{{asset(setting('site_logo','global') )}}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
+            @php
+                $logoSrc = setting('site_logo','global')
+                    ? asset(setting('site_logo','global'))
+                    : asset('backend/images/example_logo_light.png');
+            @endphp
+            <img src="{{ $logoSrc }}" class="h-[56px]"  alt="{{asset(setting('site_title','global') )}}">
         </a>
         <h2 class="text-2xl font-semibold text-gray-700 mt-5">
-            {{ __('Admin Login') }}
+            {{ __('Backoffice Login') }}
         </h2>
     </div>
     <!-- BEGIN: Login Form -->
@@ -22,7 +27,7 @@
                 <input
                     type="email"
                     name="email"
-                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aer px-3 py-2"
+                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aer dark:text-slate-300 px-3 py-2"
                     placeholder="Admin Email"
                     required
                 />
@@ -31,7 +36,7 @@
                 <input
                     type="password"
                     name="password"
-                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aeg px-3 py-2"
+                    class="relative w-full border-0 text-sm ring-1 ring-slate-100 ring-inset aeg dark:text-slate-300 px-3 py-2"
                     placeholder="Password"
                     required
                 />
@@ -54,10 +59,21 @@
             </a>
         </div>
         <button class="btn btn-dark block w-full text-center" type="submit">
-            {{ __('Admin Login') }}
+            {{ __('Access Now') }}
         </button>
     </form>
+    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+            {{ __('Powered by') }}
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <a href="https://brokeret.com/" target="__blank">
+            <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-8 inline-flex" alt="">
+        </a>
+    </div>
 </div>
+
 @endsection
 @section('script')
     @if($googleReCaptcha)

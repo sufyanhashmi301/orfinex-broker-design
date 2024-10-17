@@ -38,7 +38,7 @@
                                     <input type="text" name="receiver_account" oninput="this.value = validateDouble(this.value)" required class="form-control !text-lg userAccountCheck"
                                            placeholder="{{ __('Receiver Account') }}">
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max notifyUser"></div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max notifyUser"></div>
                             </div>
 
                             <div class="input-area relative mb-5">
@@ -51,7 +51,7 @@
                                     {{ $currency }}
                                 </span>
                                 </div>
-                                <div class="font-Inter text-xs text-red-500 pt-2 inline-block min-max">
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max">
                                     {{ __('Minimum') . ' ' . setting('min_send','fee') . ' ' . $currency . ' ' . __('and Maximum') . ' ' . setting('max_send','fee') . ' ' . $currency }}
                                 </div>
                             </div>

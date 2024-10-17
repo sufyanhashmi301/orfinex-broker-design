@@ -3,10 +3,10 @@
     {{ __('All Symbol Groups') }}
 @endsection
 @section('title-btns')
-    <a href="{{route('admin.symbols.index')}}" class="btn btn-white inline-flex items-center justify-center">
+    <a href="{{route('admin.symbols.index')}}" class="btn btn-sm btn-white inline-flex items-center justify-center">
         {{ __('View All Symbols') }}
     </a>
-    <a href="" class="btn btn-primary inline-flex items-center justify-center addSymbolGroup" type="button" >
+    <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center addSymbolGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Symbol Group') }}
     </a>

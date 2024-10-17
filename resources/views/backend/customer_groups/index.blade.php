@@ -3,7 +3,7 @@
     {{ __('Customer Groups') }}
 @endsection
 @section('title-btns')
-    <a href="{{route('admin.customer-groups.create')}}" class="btn btn-primary inline-flex items-center justify-center">
+    <a href="{{route('admin.customer-groups.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New Group') }}
     </a>
@@ -32,9 +32,9 @@
                                     </td>
                                     <td class="table-td">
                                         @if( $customerGroup->status==1)
-                                            <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Active') }}</div>
+                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">{{ __('Active') }}</div>
                                         @else
-                                            <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">{{ __('Disabled') }}</div>
+                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">{{ __('Disabled') }}</div>
                                         @endif
                                     </td>
                                     <td class="table-td">

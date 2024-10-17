@@ -138,6 +138,16 @@
                 @endauth
                 <!-- Notifications Dropdown area -->
 
+                <div class="relative">
+                    <select name="language" class="form-control !py-1 min-w-max" onchange="window.location.href=this.options[this.selectedIndex].value;">
+                        @foreach(\App\Models\Language::where('status',true)->get() as $lang)
+                            <option value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>
+                                {{$lang->name}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- END: Header -->
                 <button class="smallDeviceMenuController md:hidden block leading-0">
                     <iconify-icon class="cursor-pointer text-slate-900 dark:text-white text-2xl" icon="heroicons-outline:menu-alt-3"></iconify-icon>

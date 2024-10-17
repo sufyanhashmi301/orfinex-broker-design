@@ -15,7 +15,7 @@
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
-                <form action="{{ route('admin.deposit.method.update',$method->id) }}" method="post" enctype="multipart/form-data">
+                <form id="myForm" action="{{ route('admin.deposit.method.update',$method->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
@@ -30,7 +30,7 @@
                                         accept=".gif, .jpg, .png"
                                     />
                                     <label for="schema-icon" class="file-ok"
-                                        style="background-image: url({{ asset($method->logo ?? $method->gateway->logo) }})">
+                                           style="background-image: url({{ asset($method->logo ?? $method->gateway->logo) }})">
                                         <img
                                             class="upload-icon"
                                             src="{{ asset('global/materials/upload.svg') }}"
@@ -58,7 +58,7 @@
                             </div>
                             <div class="input-area relative">
                                 <label class="form-label"
-                                    for="">{{ __('Gateway Supported Currency:') }}</label>
+                                       for="">{{ __('Gateway Supported Currency:') }}</label>
                                 <select name="currency" class="form-control w-100" id="currency">
                                     @foreach(json_decode($supported_currencies) as $currency)
                                         <option
@@ -122,8 +122,8 @@
                             <label class="form-label" for="">{{ __('Charges:') }}</label>
                             <div class="relative">
                                 <input type="text" class="form-control"
-                                    oninput="this.value = validateDouble(this.value)" name="charge"
-                                    value="{{ $method->charge }}"/>
+                                       oninput="this.value = validateDouble(this.value)" name="charge"
+                                       value="{{ $method->charge }}"/>
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 py-0.5">
                                     <select name="charge_type" class="w-full h-full outline-none">
                                         <option value="percentage"
@@ -167,64 +167,64 @@
                             </select>
                         </div>
 
-                    @if($type == 'manual')
+                        @if($type == 'manual')
                             <div class="col-span-2">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                                {{ __('Add Field option') }}
-                            </a>
+                                    {{ __('Add Field option') }}
+                                </a>
                             </div>
 
                             <div class="addOptions col-span-2">
                                 @foreach(json_decode($method->field_options,true) as $key => $value)
-                                <div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
-                                    <div class="xl:col-span-4 md:col-span-6 col-span-12">
-                                        <div class="input-area">
-                                            <input name="field_options[{{$key}}][name]" class="form-control"
-                                                type="text" value="{{$value['name']}}" required
-                                                placeholder="Field Name">
+                                    <div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
+                                        <div class="xl:col-span-4 md:col-span-6 col-span-12">
+                                            <div class="input-area">
+                                                <input name="field_options[{{$key}}][name]" class="form-control"
+                                                       type="text" value="{{$value['name']}}" required
+                                                       placeholder="Field Name">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="xl:col-span-4 md:col-span-6 col-span-12">
-                                        <div class="input-area">
-                                            <select name="field_options[{{$key}}][type]" class="form-control w-100">
-                                                <option value="text"
-                                                        @if($value['type'] == 'text') selected @endif>Input
-                                                    Text
-                                                </option>
-                                                <option value="textarea"
-                                                        @if($value['type'] == 'textarea') selected @endif>
-                                                    Textarea
-                                                </option>
-                                                <option value="file"
-                                                        @if($value['type'] == 'file') selected @endif>File
-                                                    upload
-                                                </option>
-                                            </select>
+                                        <div class="xl:col-span-4 md:col-span-6 col-span-12">
+                                            <div class="input-area">
+                                                <select name="field_options[{{$key}}][type]" class="form-control w-100">
+                                                    <option value="text"
+                                                            @if($value['type'] == 'text') selected @endif>Input
+                                                        Text
+                                                    </option>
+                                                    <option value="textarea"
+                                                            @if($value['type'] == 'textarea') selected @endif>
+                                                        Textarea
+                                                    </option>
+                                                    <option value="file"
+                                                            @if($value['type'] == 'file') selected @endif>File
+                                                        upload
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="xl:col-span-3 md:col-span-6 col-span-12">
+                                            <div class="input-area mb-0">
+                                                <select name="field_options[{{ $key }}][validation]" class="form-control w-100">
+                                                    <option value="required"
+                                                            @if($value['validation'] == 'required') selected @endif>
+                                                        Required
+                                                    </option>
+                                                    <option value="nullable"
+                                                            @if($value['validation'] == 'nullable') selected @endif>
+                                                        Optional
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="xl:col-span-1 md:col-span-6 col-span-12">
+                                            <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                                    <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
+                                                </svg>
+                                            </button>
                                         </div>
                                     </div>
-                                    <div class="xl:col-span-3 md:col-span-6 col-span-12">
-                                        <div class="input-area mb-0">
-                                            <select name="field_options[{{ $key }}][validation]" class="form-control w-100">
-                                                <option value="required"
-                                                        @if($value['validation'] == 'required') selected @endif>
-                                                    Required
-                                                </option>
-                                                <option value="nullable"
-                                                        @if($value['validation'] == 'nullable') selected @endif>
-                                                    Optional
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="xl:col-span-1 md:col-span-6 col-span-12">
-                                        <button class="btn-dark h-[32px] w-[32px] flex items-center justify-center rounded-full text-xl delete-option-row delete_desc" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                                <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
                                 @endforeach
                             </div>
 
@@ -232,8 +232,7 @@
                                 <div class="input-area fw-normal relative">
                                     <label for="" class="form-label">{{ __('Payment Details:') }}</label>
                                     <div class="site-editor">
-                                <textarea class="summernote"
-                                          name="payment_details">{!! $method->payment_details !!}</textarea>
+                                <textarea class="basicTinymce" name="payment_details">{!! $method->payment_details !!}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +253,7 @@
                         </div>
 
                         <div class="md:col-span-2 text-right mt-10">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            <button type="submit" id="submitForm" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Save Changes') }}
                             </button>
                         </div>
@@ -266,7 +265,23 @@
 @endsection
 
 @section('payment-script')
+    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
     <script>
+
+        tinymce.init({
+            selector: 'textarea.basicTinymce',
+            height: 500,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
 
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
@@ -335,6 +350,56 @@
         if (currency !== null) {
             $('#currency-selected').text(currency);
         }
+        $('#myForm').on('submit', function(event) {
+            event.preventDefault(); // Prevent the default action
+            var form = $(this);
+            var submitButton = $('#submitForm');
+
+            // Disable the button and show loading text
+            submitButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',  // Make sure it's POST
+                data: form.serialize(),
+                success: function(response) {
+                    console.log(response);
+                    // Check if the response contains a redirect URL
+                    if (response.redirect) {
+                        // Perform the redirection
+                        window.location.href = response.redirect;
+                    } else {
+                        // Handle other success responses
+                        console.log(response);
+                        tNotify('success', 'Form submitted successfully');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Capture validation errors
+                    if (xhr.status === 422) {  // Laravel validation error
+                        var errors = xhr.responseJSON.errors;
+                        var errorMessage = '';
+
+                        // Loop through the errors and construct the message
+                        $.each(errors, function(key, value) {
+                            errorMessage += value + '<br>';
+                        });
+
+                        // Display error messages in the notification
+                        tNotify('warning', errorMessage);
+                    } else {
+                        // Handle generic errors
+                        tNotify('error', 'Something went wrong. Please try again.');
+                        console.error('Error:', error);
+                    }
+                },
+                complete: function() {
+                    // Re-enable the submit button and reset its text
+                    submitButton.prop('disabled', false).html('Save Changes');
+                }
+            });
+        });
+
 
     </script>
 

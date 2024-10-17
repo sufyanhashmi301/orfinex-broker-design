@@ -50,13 +50,27 @@
             </select>
         </div>
         <div class="lg:col-span-2 input-area">
+            <label for="ib_group_id" class="form-label">{{ __('Select IB Group') }}</label>
+            <select name="ib_group_id[]" class="select2 form-control w-full" multiple="multiple">
+                @foreach($ibGroups as $ibGroup)
+                    <option value="{{ $ibGroup->id }}"
+                        @selected($multiLevelAccount->ibGroups->contains('id', $ibGroup->id))>
+                        {{ $ibGroup->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        
+        
+        
+        <div class="lg:col-span-2 input-area">
             <label for="description" class="form-label">{{ __('Short Description') }}</label>
             <textarea
                 name="description"
                 class="form-control mb-0"
                 placeholder="Short Description"
                 required
-            />{{ $multiLevelAccount->description }}</textarea>
+            >{{ $multiLevelAccount->description }}</textarea>
         </div>
         <div class="lg:col-span-2 input-area">
             <label for="status" class="form-label">{{ __('Status') }}</label>

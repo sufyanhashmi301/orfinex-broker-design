@@ -97,7 +97,7 @@ class ResetData extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $rank = Ranking::find(1);
-        $sitename = 'banexcapital';
+        $sitename = 'brokeret';
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),

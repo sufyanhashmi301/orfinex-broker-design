@@ -20,6 +20,8 @@ class PlatformGroup extends Model
         'group',
         'currency',
         'currencyDigits',
+        'trader_type',
+        'source_type',
         'status'
     ];
 

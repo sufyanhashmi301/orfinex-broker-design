@@ -41,7 +41,7 @@ class PlatformGroupController extends Controller
         }
         $groups = PlatformGroup::where('status',true)->get();
         $riskBooks = RiskBook::get();
-        return view('backend.platform_group.index', compact('groups', 'riskBooks'));
+        return view('backend.platform_group.metatrader', compact('groups', 'riskBooks'));
     }
 
     public function store(Request $request)
@@ -68,6 +68,85 @@ class PlatformGroupController extends Controller
             return response()->json(['success' => $result['success'], 'message' => 'Group disabled successfully.']);
 
         }
+    }
+
+    public function storeManualGroup(Request $request)
+    {
+        $validatedData = $request->validate([
+            'group' => 'required|string|max:255',
+            'currency' => 'required|string|max:255',
+            'currencyDigits' => 'required|string|max:255',
+            'trader_type' => 'nullable|string|max:255',
+            'source_type' => 'nullable|string|max:255',
+            'status' => 'required|boolean',
+        ]);
+
+        $existingGroup = PlatformGroup::where('group', $validatedData['group'])
+            ->where('trader_type', $validatedData['trader_type'])
+            ->first();
+
+        if ($existingGroup) {
+            notify()->error('Group and trader type combination already exists');
+            return redirect()->back();
+        }
+
+        $group = new PlatformGroup();
+        $group->risk_book_id = 0;
+        $group->group = $validatedData['group'];
+        $group->currency = $validatedData['currency'];
+        $group->currencyDigits = $validatedData['currencyDigits'];
+        $group->trader_type = $validatedData['trader_type'];
+        $group->source_type = $validatedData['source_type'];
+        $group->status = $validatedData['status'];
+        $group->save();
+
+        notify()->success('Group created successfully');
+        return redirect()->back();
+    }
+
+    public function manualGroupListing()
+    {
+        $groups = PlatformGroup::where('source_type', 'manual')->get();
+        return view('backend.platform_group.manual', compact('groups'));
+    }
+
+    public function editManualGroup($id)
+    {
+        $group = PlatformGroup::find($id);
+
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        return view('backend.platform_group.include.__edit_manual_form', compact('group'))->render();
+    }
+
+    public function updateManualGroup(Request $request, $id)
+    {
+        $group = PlatformGroup::find($id);
+
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        $group->update($request->all());
+        notify()->success('Group updated successfully');
+        return redirect()->back();
+    }
+
+    public function deleteManualGroup($id)
+    {
+        $group = PlatformGroup::find($id);
+
+        if ($group->risk_book_id !== 0) {
+            notify()->error(__('Cannot delete platform group as it is linked to a risk book.'));
+            return redirect()->back();
+        }
+
+        $group->delete();
+        notify()->success(__(' Platform group deleted successfully.'));
+        return redirect()->back();
+
     }
 
     public function assignRiskBook(Request $request)

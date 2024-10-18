@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('leverage_updates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('login');
+            $table->foreignId('forex_account_id');
             $table->integer('last_leverage');
             $table->integer('updated_leverage');
             $table->tinyInteger('status')->default(false);

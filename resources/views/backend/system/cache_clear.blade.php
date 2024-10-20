@@ -11,9 +11,8 @@
                     {{ __('Clearing the cache can help resolve issues with outdated data and improve system performance. Only use this option when necessary, as it may temporarily affect loading times.') }}
                 </p>
                 <div class="text-center mt-5">
-                    <a href="{{ route('admin.clear-cache') }}"
-                        type="submit"
-                        class="btn btn-danger inline-flex items-center justify-center">
+                    <a href="{{ route('admin.clear-cache') }}" type="submit" class="btn btn-danger inline-flex items-center justify-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:trash"></iconify-icon>
                         {{ __('Clear Cache') }}
                     </a>
                 </div>

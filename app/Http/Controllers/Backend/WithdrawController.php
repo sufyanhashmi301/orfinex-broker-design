@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Gateway;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\WithdrawAccount;
 use App\Models\WithdrawalSchedule;
 use App\Models\WithdrawMethod;
 use App\Services\ForexApiService;
@@ -475,4 +476,24 @@ class WithdrawController extends Controller
 
             return Excel::download(new PendingWithdrawsExport($request), 'pendingwithdraws.xlsx');
         }
+
+    public function destroy($id)
+    {
+//        dd($id);
+        try {
+            // Find the method by its ID and delete it
+            $method = WithdrawMethod::findOrFail($id);
+            if(Transaction::where('method',$method->name)->exists() || WithdrawAccount::where('withdraw_method_id',$id)->exists()){
+                notify()->error(__('This method is associated with existing transactions or User withdraw accounts, and therefore cannot be deleted: :method', ['method' => $method->name]), 'Error');
+                return redirect()->back();
+            }
+            $method->delete();
+            notify()->success('Successfully deleted method');
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            notify()->error('Something went wrong, Please check error log', 'Error Log');
+            return redirect()->back();
+        }
+    }
     }

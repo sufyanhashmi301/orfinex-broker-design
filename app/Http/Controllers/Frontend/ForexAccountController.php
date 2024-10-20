@@ -14,6 +14,7 @@ use App\Models\ForexAccount;
 use App\Models\ForexSchema;
 use App\Models\Invest;
 use App\Models\LevelReferral;
+use App\Models\LeverageUpdate;
 use App\Models\Schema;
 use App\Models\User;
 use App\Rules\ForexLoginBelongsToUser;
@@ -442,14 +443,22 @@ class ForexAccountController extends GatewayController
 
         if ($request->leverage) {
 //            $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
-            $data = [
-                'login' => $request->login,
-                'leverageAmount' => $request->leverage,
-            ];
+            $forexAccount = ForexAccount::where('login',$request->login)->first();
+            if($forexAccount->leverage == $request->leverage){
+                return response()->json(['error' => __('Kindly provide a different leverage! The leverage :leverage has already been assigned.',['leverage'=>$request->leverage]), 'reload' => false]);
 
-            $updateUserApiResponse = $this->forexApiService->setUserLeverage($data);
+            }
+            if(!$forexAccount) {
+                return response()->json(['error' => __('Kindly provide valid forex account and try again!'), 'reload' => false]);
+            }
+                $data = [
+                    'user_id' => auth()->user()->id,
+                    'forex_account_id' => $forexAccount->id,
+                    'last_leverage' => $forexAccount->leverage,
+                    'updated_leverage' => $request->leverage,
+                ];
+                LeverageUpdate::create($data);
 
-            if ($updateUserApiResponse['success']) {
                 ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
                 $shortcodes = [
                     '[[full_name]]' => auth()->user()->full_name,
@@ -459,11 +468,9 @@ class ForexAccountController extends GatewayController
                     '[[site_url]]' => route('home'),
                 ];
 //
-                $this->mailNotify(auth()->user()->email, 'user_update_leverage', $shortcodes);
+                $this->mailNotify(auth()->user()->email, 'user_pending_leverage', $shortcodes);
                 return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
-            } else {
-                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
-            }
+
         }
 
         if ($request->name) {

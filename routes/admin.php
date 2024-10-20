@@ -209,6 +209,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
             Route::get('edit/{type}', 'methodEdit')->name('edit');
             Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+            Route::delete('delete/{id}', 'destroy')->name('delete')->withoutMiddleware('XSS');
         });
         //=============================== end deposit Method ================================
 
@@ -227,6 +228,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
             Route::get('edit/{type}', 'methodEdit')->name('edit');
             Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+            Route::delete('delete/{id}', 'destroy')->name('delete')->withoutMiddleware('XSS');
+
         });
 
         //Schedule

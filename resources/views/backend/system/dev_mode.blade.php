@@ -21,9 +21,8 @@
                         <input type="hidden" value="0" name="debug_mode"/>
 
                         <div class="text-center mt-5">
-                            <button
-                                type="submit"
-                                class="btn btn-dark inline-flex items-center justify-center">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:power"></iconify-icon>
                                 {{ __('Turn Development Mode Off') }}
                             </button>
                         </div>
@@ -31,9 +30,8 @@
                         <input type="hidden" value="1" name="debug_mode"/>
 
                         <div class="text-center mt-5">
-                            <button
-                                type="submit"
-                                class="btn btn-danger inline-flex items-center justify-center">
+                            <button type="submit" class="btn btn-danger inline-flex items-center justify-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:power"></iconify-icon>
                                 {{ __('Turn Development Mode On') }}
                             </button>
                         </div>

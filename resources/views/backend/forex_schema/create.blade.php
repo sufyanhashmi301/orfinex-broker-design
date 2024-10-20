@@ -232,7 +232,6 @@
                                 <label class="form-label" for="">{{ __('Platform Group') }}</label>
                                 <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
                                     <option value="">{{ __('Select Group')}}</option>
-
                                     @foreach(\App\Models\PlatformGroup::all() as $group)
                                         <option value="{{$group->group}}">{{ $group->group}}</option>
                                     @endforeach
@@ -296,7 +295,6 @@
                                     <label class="form-label" for="">{{ __('Platform Group') }}</label>
                                     <select name="real_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
                                         <option value="">{{ __('Select Group')}}</option>
-
                                         @foreach(\App\Models\PlatformGroup::all() as $group)
                                             <option value="{{$group->group}}">{{ $group->group}}</option>
                                         @endforeach

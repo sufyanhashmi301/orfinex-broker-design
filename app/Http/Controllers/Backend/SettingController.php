@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\Country;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Cache;
@@ -178,7 +179,8 @@ class SettingController extends Controller
 
     public static function currencySetting()
     {
-        return view('backend.setting.site_setting.currency');
+        $countries = Country::paginate(15);
+        return view('backend.setting.site_setting.currency', compact('countries'));
     }
 
     public static function siteMaintenance()

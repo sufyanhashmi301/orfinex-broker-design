@@ -58,11 +58,17 @@
                                 {{ __($field['label']) }}
                                 <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="{{ __($field['description']) }}"></iconify-icon>
                             </label>
-                            <input type="{{$field['type']}}" name="{{ $field['name'] }}"
-                               class="form-control @if($errors->has($field['name'])) has-error @endif"
-                               value="{{oldSetting($field['name'],$section)}}"
-                               required=""
-                            >
+                            <div class="relative">
+                                <input type="{{$field['type']}}" name="{{ $field['name'] }}"
+                                   class="form-control @if($errors->has($field['name'])) has-error @endif"
+                                   value="{{oldSetting($field['name'],$section)}}"
+                                   required="">
+                                @if($field['name'] == 'webterminal_width' || $field['name'] == 'webterminal_height')
+                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center">
+                                        <iconify-icon icon="lucide:percent"></iconify-icon>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     @endif
                 @endforeach

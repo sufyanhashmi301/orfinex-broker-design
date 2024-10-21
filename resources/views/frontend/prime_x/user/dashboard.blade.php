@@ -54,26 +54,10 @@
                             {{ $banner->title }}
                         </h4>
                     </div>
-                    @if($banners->count() <= 2)
-                        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                            @if(!empty($banner->button_link) && !empty($banner->button_text))
-                                <a href="{{ $banner->button_link }}" class="btn btn-dark loaderBtn inline-flex items-center justify-center">
-                                    {{ $banner->button_text }}
-                                </a>
-                            @endif
-                            <a href="{{ $banner->primary_link }}" class="loaderBtn text-sm inline-flex items-center justify-center dark:text-white">
-                                <span class="flex items-center">
-                                    <span>{{ __('Learn More') }}</span>
-                                    <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
-                                </span>
-                            </a>
-                        </div>
-                    @else
-                        <a href="{{ $banner->primary_link }}" class="loaderBtn text-sm inline-flex items-center justify-center dark:text-white">
-                            <span>{{ __('Learn More') }}</span>
-                            <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
-                        </a>
-                    @endif
+                    <a href="{{ $banner->button_link }}" class="loaderBtn text-sm inline-flex items-center justify-center dark:text-white">
+                        <span>{{ $banner->button_text }}</span>
+                        <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                    </a>
                 </div>
             @endforeach
         </div>

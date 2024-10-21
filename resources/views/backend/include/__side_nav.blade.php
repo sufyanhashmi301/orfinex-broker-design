@@ -332,7 +332,7 @@
                         @canany(['deposit-list','deposit-action'])
                             <li class="">
                                 <a href="{{ route('admin.deposit.manual.pending') }}" class="{{ isActive('admin.deposit.manual.pending') }}">
-                                    {{ __('Pending Manual Deposits') }}
+                                    {{ __('Pending Deposits') }}
                                 </a>
                             </li>
                             <li class="">
@@ -362,13 +362,6 @@
                                 </a>
                             </li>
                         @endcanany
-                        @can('withdraw-schedule')
-                            <li class="">
-                                <a href="{{ route('admin.withdraw.schedule') }}" class="{{ isActive('admin.withdraw.schedule') }}">
-                                    {{ __('Withdraw Schedule') }}
-                                </a>
-                            </li>
-                        @endcan
                         @can('withdraw-list')
                             <li class="">
                                 <a href="{{ route('admin.withdraw.history') }}" class="{{ isActive('admin.withdraw.history') }}">

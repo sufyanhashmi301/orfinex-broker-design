@@ -39,7 +39,7 @@
                         0
                     </p>
                     <p class="text-base text-slate-600">
-                        {{ __('Rewards') }}
+                        {{ __('Wallet Balance') }}
                     </p>
                 </div>
             </div>
@@ -73,7 +73,9 @@
                         <div class="input-group select2-lg">
                             <select name="gender" id="kycTypeSelect" class="select2 form-control !text-lg w-full mt-2 py-2" required>
                                 @foreach(['male','female','other'] as $gender)
-                                    <option @if($user->gender == $gender) selected @endif value="{{$gender}}">{{$gender}}</option>
+                                    <option @if($user->gender == $gender) selected @endif value="{{$gender}}">
+                                        {{ ucfirst($gender) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>

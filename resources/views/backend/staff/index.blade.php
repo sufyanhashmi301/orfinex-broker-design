@@ -44,7 +44,7 @@
                                     <td class="table-td">
                                         {{ $staff->getRoleNames()->first() }}
                                     </td>
-                                    <td class="table-td">{{ $staff->email }}</td>
+                                    <td class="table-td !normal-case">{{ $staff->email }}</td>
                                     <td class="table-td">
                                         @if(isset($staff->designation))
                                             {{ $staff->designation->name }}

@@ -8,10 +8,10 @@
     .light body, body, .bg-body {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color')) }} / var(--tw-bg-opacity));
     }
-    .app-header, .sidebar-wrapper, .submenu-sidebar, .site-footer, .card {
+    .app-header, .kyc-alert .sidebar-wrapper, .submenu-sidebar, .site-footer, .card {
         background-color: rgba({{ implode(' ', getColorFromSettings('base_color')) }} / var(--tw-bg-opacity));
     }
-    .dark body, .dark .dark\:bg-body, .dark .app-header, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
+    .dark body, .dark .dark\:bg-body, .dark .app-header, .dark .kyc-alert, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color_dark')) }} / var(--tw-bg-opacity));
     }
     .sidebar-menus, .logo-segment, .stickySetting_menu {
@@ -20,7 +20,7 @@
     .dark .sidebar-menus, .dark .logo-segment, .dark .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg_dark')) }} / var(--tw-bg-opacity));
     }
-    .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow {
+    .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow, .mobileUserInfo > *, .sidebarCloseIcon {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -28,7 +28,7 @@
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menus .navItem, .dark .sidebar-menu > li .icon-arrow {
+    .dark .sidebar-menus .navItem, .dark .sidebar-menu > li .icon-arrow, .mobileUserInfo > *, .sidebarCloseIcon {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
@@ -225,7 +225,7 @@
     .border-danger {
         border-color:  rgba({{ implode(' ', getColorFromSettings('danger_color')) }});
     }
-    .badge-primary{
+    .badge-primary, .tag.label-info{
         background-color: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
         color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
     }
@@ -252,6 +252,10 @@
     }
     .dark .sidebar-submenu .navItem.active {
         color: white;
+    }
+    .dark .form-control[readonly], .dark .form-control[disbaled] {
+        --tw-bg-opacity: .1;
+        background-color: rgba(255 255 255 / var(--tw-bg-opacity));
     }
     .dark .select2-container--default .select2-selection--single, .dark .select2-container--default .select2-selection--multiple, .dark .wrap-custom-file {
         border-color: rgb(51 65 85 / var(--tw-border-opacity));

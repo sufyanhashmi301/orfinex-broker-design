@@ -7199,6 +7199,9 @@ textarea.form-control.is-invalid{
 .normal-case{
   text-transform: none;
 }
+.\!normal-case {
+    text-transform: none !important;
+}
 .italic{
   font-style: italic;
 }

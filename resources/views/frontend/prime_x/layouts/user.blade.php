@@ -26,17 +26,6 @@
                       <div class="transition-all duration-150 container-fluid" id="page_layout">
                             <div id="content_layout">
                                 <div>
-                                    @if(setting('kyc_verification','permission'))
-                                        {{-- Kyc Info--}}
-                                        @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings', 'user.ticket*']))
-                                            <div class="md:block hidden">
-                                                @include('frontend::user.include.__kyc_info')
-                                            </div>
-                                            <div class="md:hidden block">
-                                                {{-- @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}
-                                            </div>
-                                        @endif
-                                    @endif
                                     <!--Page Content-->
                                     @yield('content')
                                     <!--Page Content-->

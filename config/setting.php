@@ -459,30 +459,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'UTC', // default value if you want
             ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_referral', // unique name for field
-                'label' => 'Site Referral Type', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'level', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'integer', // data type, string, int, boolean
-                'name' => 'referral_code_limit', // unique name for field
-                'label' => 'Referral Code Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '6', // default value if you want
-            ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'home_redirect', // unique name for field
-                'label' => 'Home Redirect', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '/', // default value if you want
-            ],
         ],
     ],
 
@@ -664,6 +640,14 @@ return [
                 'label' => 'Forex Group Range', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'forex_account_create_limit', // unique name for field
+                'label' => 'Forex Account Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 10, // default value if you want
             ],
         ],
     ],
@@ -1215,19 +1199,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 3, // default value if you want
             ]
-        ],
-    ],
-    'forex_account_settings' => [
-        'title' => 'Forex Accounts Settings',
-        'elements' => [
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'forex_account_create_limit', // unique name for field
-                'label' => 'Forex Account Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 10, // default value if you want
-            ],
         ],
     ],
     'external' => [

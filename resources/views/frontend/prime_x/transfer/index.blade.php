@@ -13,7 +13,7 @@
                     <span class="text-[32px] leading-10 font-medium">
                         {{ __('Unlimited') }}
                     </span>
-                    <span class="text-xs bg-primary font-medium px-2 py-1 rounded-full inline-block uppercase h-auto">
+                    <span class="badge badge-primary capitalize h-auto">
                         {{ __('Instant') }}
                     </span>
                 </div>
@@ -47,7 +47,7 @@
                     <span class="text-[32px] leading-10 font-medium">
                         {{ __('$500') }}
                     </span>
-                    <span class="text-xs bg-primary font-medium px-2 py-1 rounded-full inline-block uppercase h-auto">
+                    <span class="badge badge-primary capitalize h-auto">
                         {{ __('Semi Instant') }}
                     </span>
                 </div>

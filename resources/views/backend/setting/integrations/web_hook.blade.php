@@ -11,9 +11,8 @@
                     {{ __('Webhooks enable real-time data sharing with external systems and are available as an add-on upon request. Please request access if your system needs automated event-based notifications.') }}
                 </p>
                 <div class="text-center mt-5">
-                    <a href="{{ route('admin.clear-cache') }}"
-                       type="submit"
-                       class="btn btn-dark inline-flex items-center justify-center">
+                    <a href="{{ route('admin.clear-cache') }}" type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:webhook"></iconify-icon>
                         {{ __('Request Access') }}
                     </a>
                 </div>

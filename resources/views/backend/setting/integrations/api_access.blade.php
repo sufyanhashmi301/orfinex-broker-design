@@ -11,9 +11,8 @@
                     {{ __('API Access allows seamless integration with external systems and is available as an add-on upon request. Please request access only if your system requires external connectivity.') }}
                 </p>
                 <div class="text-center mt-5">
-                    <a href="{{ route('admin.clear-cache') }}"
-                       type="submit"
-                       class="btn btn-dark inline-flex items-center justify-center">
+                    <a href="{{ route('admin.clear-cache') }}" type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lineicons:cloud-network"></iconify-icon>
                         {{ __('Request Access') }}
                     </a>
                 </div>

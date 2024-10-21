@@ -192,6 +192,25 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
+    // Stats User APIs
+    public function statsUser($data)
+    {
+        $endpoint = 'stats/user';
+        return $this->post($endpoint, $data);
+    }
+
+    public function statsUserArray($data)
+    {
+        $endpoint = 'stats/user/array';
+        return $this->post($endpoint, $data);
+    }
+
+    public function statsUserGroup($data)
+    {
+        $endpoint = 'stats/user/group';
+        return $this->post($endpoint, $data);
+    }
+
     // Positions APIs
     public function getPositionsByGroup($group)
     {
@@ -257,6 +276,7 @@ class ForexApiService
     {
         try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
+//            dd($URL);
             $body = json_encode($params);
             $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)

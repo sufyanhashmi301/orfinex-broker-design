@@ -240,15 +240,15 @@
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Today’s  Loss:') }}</span>
+                        <span>{{ __('Today’s  PNL:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($todayScore['result']['net_Profit']) ? number_format($todayScore['result']['net_Profit'], 2) : '0.00' }} {{ base_currency() }}
+                            {{ isset($statsUser['result']['todayPNL_Realized']) ? number_format($statsUser['result']['todayPNL_Realized'], 2) : '0.00' }} {{ base_currency() }}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            <?php $loss = isset($todayScore['result']['net_Profit']) ? number_format($todayScore['result']['net_Profit'], 2) : 0; ?>
+                            <?php $loss = isset($statsUser['result']['todayPNL_Realized']) ? number_format($statsUser['result']['todayPNL_Realized'], 2) : 0; ?>
                             {{ $invest->daily_drawdown_limit + $loss}} {{ base_currency() }}
                         </span>
                     </li>
@@ -272,16 +272,16 @@
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Overall Loss:') }}</span>
+                        <span>{{ __('Overall PNL:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $profit }} {{base_currency()}}
+                            {{ number_format($statsUser['result']['todayPNL_UnRealized'], 2) }} {{base_currency()}}
                         </span>
                     </li>
 {{--                    {{dd($invest->max_drawdown_limit)}}--}}
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + (int)$profit : '0.00' }} {{base_currency()}}
+                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + (int)$statsUser['result']['todayPNL_UnRealized'] : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>
@@ -299,15 +299,15 @@
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __("Current Trading Days:") }}</span>
-                        <span class="text-slate-900 font-medium">0 </span>
+                        <span class="text-slate-900 font-medium">{{$statsUser['result']['tradingDays']}} </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Minimum Trading Days:') }}</span>
-                        <span class="text-slate-900 font-medium">0</span>
+                        <span class="text-slate-900 font-medium">4</span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Trading Days:') }}</span>
-                        <span class="text-slate-900 font-medium">0</span>
+                        <span class="text-slate-900 font-medium">@if($statsUser['result']['tradingDays'] >=4) 0 @else {{4 - $statsUser['result']['tradingDays']}} @endif</span>
                     </li>
                 </ul>
             </div>
@@ -331,13 +331,13 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Achieved Profit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($todayScore['result']['net_Profit']) ? number_format($todayScore['result']['net_Profit'], 2) : '0.00' }} {{base_currency()}}
+                            {{ isset($statsUser['result']['total_PNL']) ? number_format($statsUser['result']['total_PNL'], 2) : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Profit Target:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($invest->forexSchemaPhaseRule->profit_target) ? $invest->forexSchemaPhaseRule->profit_target - (isset($todayScore['result']['net_Profit']) ? number_format($todayScore['result']['net_Profit'], 2) : 0) : '0.00' }} {{base_currency()}}
+                            {{ isset($invest->forexSchemaPhaseRule->profit_target) ? $invest->forexSchemaPhaseRule->profit_target - (isset($statsUser['result']['total_PNL']) ? number_format($statsUser['result']['total_PNL'], 2) : 0) : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>

@@ -61,9 +61,9 @@ class DailyDrawDownCron extends Command
 //            $responseRight = $this->forexApiService->setUserRights($rightData);
 //            dd($responseRight);
 
-            $response = $this->forexApiService->getBalance([
-                'login' => $investment->login
-//                'login' => 400007
+            $response = $this->forexApiService->statsUser([
+//                'login' => $investment->login
+                'login' => 400109
             ]);
 
 //           dd($response);
@@ -94,6 +94,7 @@ class DailyDrawDownCron extends Command
 
     public function updateMaxBalance($resData, $pricingInvestment)
     {
+//        dd($resData->balance);
         data_get($pricingInvestment->forexSchemaPhaseRule,'profit_target');
         if (BigDecimal::of($resData->balance)->isGreaterThan($pricingInvestment->max_balance)) {
             $pricingInvestment->max_balance = $resData->balance;

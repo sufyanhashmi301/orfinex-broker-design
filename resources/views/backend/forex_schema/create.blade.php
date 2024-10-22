@@ -170,6 +170,7 @@
                             class="form-control"
                             placeholder="Account Type Spread"
                             name="spread"
+                            data-role="tagsinput"
                             required
                         />
                     </div>
@@ -232,7 +233,6 @@
                                 <label class="form-label" for="">{{ __('Platform Group') }}</label>
                                 <select name="real_swap_free" id="" class="select2 form-control w-full" data-placeholder="Group">
                                     <option value="">{{ __('Select Group')}}</option>
-
                                     @foreach(\App\Models\PlatformGroup::all() as $group)
                                         <option value="{{$group->group}}">{{ $group->group}}</option>
                                     @endforeach
@@ -296,7 +296,6 @@
                                     <label class="form-label" for="">{{ __('Platform Group') }}</label>
                                     <select name="real_islamic" id="" class="select2 form-control w-full" data-placeholder="Group">
                                         <option value="">{{ __('Select Group')}}</option>
-
                                         @foreach(\App\Models\PlatformGroup::all() as $group)
                                             <option value="{{$group->group}}">{{ $group->group}}</option>
                                         @endforeach
@@ -474,7 +473,7 @@
                 <div class="input-area mb-5">
                     <label for="" class="form-label">{{ __('Detail:') }}</label>
                     <div class="site-editor">
-                        <textarea class="summernote" name="desc"></textarea>
+                        <textarea class="basicTinymce" name="desc"></textarea>
                     </div>
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
@@ -573,8 +572,53 @@
         </div>
     </form>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('global/css/bootstrap-tagsinput.css') }}">
+    <style>
+        .bootstrap-tagsinput {
+            width: 100%;
+            border-radius: 0.25rem;
+            border-width: 1px;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+        .bootstrap-tagsinput .tag.label-info{
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            font-family: Inter, sans-serif;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 400;
+            border-radius: 4px;
+        }
+    </style>
+@endsection
 @section('script')
+    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('global/js/bootstrap-tagsinput.min.js') }}"></script>
     <script>
+
+        tinymce.init({
+            selector: 'textarea.basicTinymce',
+            height: 500,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+
         $(document).ready(function() {
             $('.toggle-checkbox').change(function() {
                 var target = $(this).data('target');

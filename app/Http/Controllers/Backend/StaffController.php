@@ -224,9 +224,20 @@ class StaffController extends Controller
     }
 
 
-    public function security()
+    public function security($id)
     {
-        return view('backend.staff.security.index');
+
+        $user = Admin::find($id);
+        if (null == $user->google2fa_secret){
+            $google2fa = app('pragmarx.google2fa');
+            $secret = $google2fa->generateSecretKey();
+            //dd($user,$google2fa,$secret);
+            $user->update([
+                'google2fa_secret' => $secret,
+            ]);
+        }
+
+        return view('backend.staff.security.index', compact('user'));
     }
     public function twoFaPin()
     {
@@ -234,13 +245,7 @@ class StaffController extends Controller
     }
     public function twoFa()
     {
-        $user = \Auth::user();
-        $google2fa = app('pragmarx.google2fa');
-        $secret = $google2fa->generateSecretKey();
-//dd($user,$google2fa,$secret);
-        $user->update([
-            'google2fa_secret' => $secret,
-        ]);
+
         notify()->success(__('QR Code And Secret Key Generate successfully'));
 
         return redirect()->back();

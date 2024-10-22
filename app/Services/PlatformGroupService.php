@@ -31,8 +31,7 @@ class PlatformGroupService
         $group->currencyDigits = $data->CurrencyDigits;
         $group->status = 1;
         $group->save();
-        notify()->success(__('Group enabled successfully'));
-        return ['success' => true];
+        return ['success' => true, 'message' => 'Group enabled successfully'];
     }
 
     public function updateGroupStatus($groupId, $status)
@@ -46,8 +45,7 @@ class PlatformGroupService
         $group->save();
 
         $message = $status == 1 ? __('Group enabled successfully') : __('Group disabled successfully');
-        notify()->success($message);
-        return ['success' => true];
+        return ['success' => true, $message];
     }
 
 }

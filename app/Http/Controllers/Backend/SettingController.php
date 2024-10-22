@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\Country;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use Cache;
@@ -178,7 +179,8 @@ class SettingController extends Controller
 
     public static function currencySetting()
     {
-        return view('backend.setting.site_setting.currency');
+        $countries = Country::paginate(15);
+        return view('backend.setting.site_setting.currency', compact('countries'));
     }
 
     public static function siteMaintenance()
@@ -195,6 +197,31 @@ class SettingController extends Controller
     public static function gdpr()
     {
         return view('backend.setting.site_setting.gdpr');
+    }
+
+    public static function devMode()
+    {
+        return view('backend.system.dev_mode');
+    }
+
+    public static function clearCache()
+    {
+        return view('backend.system.cache_clear');
+    }
+
+    public static function apiAccess()
+    {
+        return view('backend.setting.integrations.api_access');
+    }
+
+    public static function webHook()
+    {
+        return view('backend.setting.integrations.web_hook');
+    }
+
+    public static function documentation()
+    {
+        return view('backend.setting.documentation');
     }
 
     public static function slackSetting()

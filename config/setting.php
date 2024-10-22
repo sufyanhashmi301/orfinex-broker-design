@@ -459,30 +459,6 @@ return [
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'UTC', // default value if you want
             ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'site_referral', // unique name for field
-                'label' => 'Site Referral Type', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 'level', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'integer', // data type, string, int, boolean
-                'name' => 'referral_code_limit', // unique name for field
-                'label' => 'Referral Code Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '6', // default value if you want
-            ],
-            [
-                'type' => 'dropdown', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'home_redirect', // unique name for field
-                'label' => 'Home Redirect', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '/', // default value if you want
-            ],
         ],
     ],
 
@@ -596,14 +572,6 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'debug_mode', // unique name for field
-                'label' => 'Development Mode', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 0, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'new_trading_accounts', // unique name for field
                 'label' => 'New Trading Accounts', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
@@ -672,6 +640,14 @@ return [
                 'label' => 'Forex Group Range', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'forex_account_create_limit', // unique name for field
+                'label' => 'Forex Account Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 10, // default value if you want
             ],
         ],
     ],
@@ -1225,19 +1201,6 @@ return [
             ]
         ],
     ],
-    'forex_account_settings' => [
-        'title' => 'Forex Accounts Settings',
-        'elements' => [
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'forex_account_create_limit', // unique name for field
-                'label' => 'Forex Account Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 10, // default value if you want
-            ],
-        ],
-    ],
     'external' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
@@ -1760,6 +1723,19 @@ return [
                 'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
             ],
         ],
+    ],
+    'dev_mode' => [
+        'title' => 'Development Mode',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'debug_mode', // unique name for field
+                'label' => 'Development Mode', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+        ]
     ],
     'company_misc' => [
         'title' => 'Misc Settings',

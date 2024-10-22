@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center">
+            <a href="{{ route('admin.settings.documentation') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 {{ __('Documentation') }}
             </a>
         </div>
@@ -311,11 +311,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Notification') }}
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ route('admin.settings.slack') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Collab Tools') }}
                         </a>
@@ -380,7 +375,7 @@
             <div class="card-body p-3">
                 <ul class="space-y-3">
                     <li class="">
-                        <a href="{{ route('admin.clear-cache') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.settings.clearCache') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Clear Cache') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
@@ -390,6 +385,14 @@
                     <li class="">
                         <a href="{{ route('admin.application-info') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Application Details') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.settings.devMode') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Dev Mode') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
@@ -408,6 +411,44 @@
                             {{ __('Report Issue') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="fluent:settings-cog-multiple-24-regular"></iconify-icon>
+                        {{ __('Integrations') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Plugins') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('API Access')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.webHook') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Web Hooks')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>

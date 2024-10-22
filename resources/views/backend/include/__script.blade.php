@@ -8,12 +8,12 @@
 {{-- <script src="{{ asset('backend/js/chart.js') }}"></script> --}}
 
 <script src="{{ asset('global/js/simple-notify.min.js') }}"></script>
-<script src="{{ asset('backend/js/summernote-lite.min.js') }}"></script>
 <script src="{{ asset('backend/js/main.js?var=5') }}"></script>
 <script src="{{ asset('global/js/pusher.min.js') }}"></script>
 <script src="{{ asset('global/js/rt-plugins.js') }}"></script>
 <script src="{{ asset('global/js/app.js') }}"></script>
 <script src="{{ asset('global/js/custom.js?var=6') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
 
 @include('global.__notification_script',['for'=>'admin','userId' => ''])
 @notifyJs
@@ -75,4 +75,13 @@
         calculateHeights();
         // $(window).resize(calculateHeights);
     });
+
+    var animation = lottie.loadAnimation({
+        container: document.getElementById('secure-data'), // ID of the div where the animation will render
+        renderer: 'svg',  // Render the animation in SVG format
+        loop: true,       // Loop the animation
+        autoplay: true,   // Autoplay the animation
+        path: '{{ asset('global/json/secure.json') }}' // Path to your JSON file
+    });
+
 </script>

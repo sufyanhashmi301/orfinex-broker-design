@@ -42,14 +42,13 @@
             <footer class="md:block sticky bottom-0" id="footer">
                 <div class="site-footer px-6 text-slate-500 dark:text-slate-300 py-4 ltr:ml-[248px] rtl:mr-[248px]">
                     <div class="grid md:grid-cols-2 grid-cols-1 md:gap-5">
-                        <div class="text-center ltr:md:text-start rtl:md:text-right text-sm">
-                            {{ setting('footer_content', 'global') }}
-                        </div>
+                        <a href="https://brokeret.com/" target="_blank" class="text-primary font-semibold ml-1">
+                            <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-6 inline-flex" alt="">
+                        </a>
                         <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
-                            {{ __('Powered by:') }}
-                            <a href="https://brokeret.com/" target="_blank" class="text-primary font-semibold ml-1">
-                                <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-6 inline-flex" alt="">
-                            </a>
+                            <span class="toolTip onTop" style="line-height: 0" data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring that all transactions and information exchanged between you and your clients are protected. Brokeret’s servers will never have access to or visibility of your sensitive data.">
+                                <span id="secure-data" style="display: inline-flex; width: 24px; height: 24px;"></span>
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,7 @@
             <div class="left-columns lg:w-1/2 lg:block hidden">
                 <div class="logo-box-3">
                     <a href="{{ route('home')}}" class="">
-                        <img src="{{ asset(setting('site_logo','global')) }}" alt="{{ __('Site Logo') }}">
+                        <img src="{{ asset(setting('site_logo','global')) }}" class="h-[56px]" alt="{{ __('Site Logo') }}">
                     </a>
                 </div>
             </div>

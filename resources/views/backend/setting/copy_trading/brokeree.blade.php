@@ -43,15 +43,13 @@
                             <div class="lg:col-span-4 col-span-12 form-label pt-0">
                                 {{ __($field['label']) }}
                                 @if($field['name'] == 'secret_key')
-                                    <iconify-icon class="toolTip onTop" icon="lucide:info" data-tippy-theme="dark" title=""
-                                                  data-tippy-content="Remember the Secret Key. Use domain/secret-key to trun back the website live"></iconify-icon>
                                 @endif
+                                <iconify-icon class="toolTip onTop" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Remember the Secret Key. Use domain/secret-key to trun back the website live"></iconify-icon>
                             </div>
                             <input type="{{$field['type']}}" name="{{ $field['name'] }}"
                                class="form-control @if($errors->has($field['name'])) has-error @endif"
                                placeholder="Label"
-                               value="{{oldSetting($field['name'],$section)}}"
-                               required="">
+                               value="{{oldSetting($field['name'],$section)}}">
                         </div>
                     @endif
                 @endforeach

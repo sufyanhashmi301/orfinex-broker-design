@@ -52,10 +52,6 @@
                                     <input type="text" name="subtitle" class="form-control" value="{{ $banner->subtitle }}">
                                 </div>
                                 <div class="input-area">
-                                    <label for="" class="form-label">{{ __('Primary Link') }}</label>
-                                    <input type="text" name="primary_link" class="form-control" value="{{ $banner->primary_link }}">
-                                </div>
-                                <div class="input-area">
                                     <label for="" class="form-label">{{ __('Button Text') }}</label>
                                     <input type="text" name="button_text" class="form-control" value="{{ $banner->button_text }}">
                                 </div>

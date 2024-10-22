@@ -135,4 +135,19 @@ class RegisteredUserController extends Controller
 
         return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data'));
     }
+
+    public function iframeRegister()
+    {
+        if (! setting('account_creation', 'permission')) {
+            abort('403', 'User registration is closed now');
+        }
+
+        $page = Page::where('code', 'registration')->where('locale', app()->getLocale())->first();
+        $data = json_decode($page->data, true);
+
+        $googleReCaptcha = plugin_active('Google reCaptcha');
+        $location = getLocation();
+
+        return view('frontend::auth.iframe-register', compact('location', 'googleReCaptcha', 'data'));
+    }
 }

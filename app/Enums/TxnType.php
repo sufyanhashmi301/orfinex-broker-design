@@ -19,6 +19,7 @@ enum TxnType: string
     case SignupBonus = 'signup_bonus';
     case Bonus = 'bonus';
     case BonusSubtract = 'bonus_subtract'; 
+    case BonusRefund = 'bonus_refund'; 
     case Withdraw = 'withdraw';
     case WithdrawAuto = 'withdraw_auto';
     case ReceiveMoney = 'receive_money';
@@ -44,7 +45,8 @@ enum TxnType: string
             self::Referral => 'Referral',
             self::SignupBonus => 'Signup Bonus',
             self::Bonus => 'Bonus',
-            self::BonusSubtract => 'bonus_subtract',
+            self::BonusSubtract => 'Bonus Subtract',
+            self::BonusRefund => 'Bonus Refund',
             self::Withdraw => 'Withdraw',
             self::WithdrawAuto => 'Withdraw Auto',
             self::ReceiveMoney => 'Receive Money',

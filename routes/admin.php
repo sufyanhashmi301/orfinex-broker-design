@@ -60,6 +60,7 @@ use App\Http\Controllers\Backend\ProfitDeductionController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
+use App\Http\Controllers\RateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,8 +73,8 @@ use App\Http\Controllers\Backend\AdvertisementMaterialController;
 |
 */
 //Route::group(['middleware' => [ '2fa']], function () {
-Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])->group(function () {
-//Admin Dashboard
+Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
+    //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 
@@ -98,7 +99,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         // Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
         Route::post('kyc/{id}', 'kyc')->name('kyc');
-
     });
 
     Route::group(['prefix' => 'user/note', 'as' => 'user.note.', 'controller' => NoteController::class], function () {
@@ -125,7 +125,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('action-now', 'actionNow')->name('action.now');
         Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
         Route::get('all', 'kycAll')->name('all');
-
     });
     // system tags route
     Route::resource('system-tag', SystemTagController::class);
@@ -134,7 +133,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
         Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
         Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
-
     });
     Route::resource('kyclevels', KYCLevelsController::class);
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KYCLevelsController::class], function () {
@@ -156,10 +154,9 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('multi/update', 'updateMIbMember')->name('multi.update');
         Route::post('reject', 'rejectIbMember')->name('reject');
         Route::post('save/form', 'saveForm')->name('save.form');
-
     });
 
-//===============================  Role Management ==================================
+    //===============================  Role Management ==================================
     Route::resource('roles', RoleController::class)->except('show', 'destroy');
     Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
     Route::resource('staff', StaffController::class)->except('show', 'destroy');
@@ -168,23 +165,23 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
     Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
     Route::post('/2fa/verify', function () {
-//            dd(route('admin.dashboard'));
+        //            dd(route('admin.dashboard'));
         return redirect(route('admin.dashboard'));
     })->name('2fa.verify');
-//===============================  Plans Management ==================================
+    //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
-    Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
+    Route::get('multi-level/view/{id}', [ForexSchemaController::class, 'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
-//===============================  Profit Deduction Management ==================================
+    //===============================  Profit Deduction Management ==================================
     Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
     Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
 
-//===============================  Transactions ==================================
+    //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
@@ -195,7 +192,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
-//===============================  Essentials ==================================
+    //===============================  Essentials ==================================
 
     Route::group(['prefix' => 'gateway', 'as' => 'gateway.', 'controller' => GatewayController::class], function () {
         Route::get('/automatic', 'automatic')->name('automatic');
@@ -230,7 +227,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::get('edit/{type}', 'methodEdit')->name('edit');
             Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
             Route::delete('delete/{id}', 'destroy')->name('delete')->withoutMiddleware('XSS');
-
         });
 
         //Schedule
@@ -242,7 +238,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('pending/export', 'pendingExport')->name('pending.export');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
-
     });
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
         Route::get('index', 'index')->name('index');
@@ -261,12 +256,12 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
         Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
     });
-//===============================  Advertisement Material ==================================
+    //===============================  Advertisement Material ==================================
     Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
 
     Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
 
-//===============================  Site Essentials ==================================
+    //===============================  Site Essentials ==================================
 
     Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
@@ -291,7 +286,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('position-update', 'positionUpdate')->name('position.update');
     });
 
-//===============================  site Settings ==================================
+    //===============================  site Settings ==================================
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
         Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
@@ -310,6 +305,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::get('tune', 'setTune')->name('tune');
             Route::get('tune/status/{id}', 'status')->name('tune.status');
         });
+
+        Route::get('get-rate/{code}', [RateController::class, 'get_rate'])->name('currency.get-rate');
 
         Route::get('company', 'companySetting')->name('company');
         Route::get('currency', 'currencySetting')->name('currency');
@@ -334,10 +331,9 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('mt5-webterminal', 'mt5WebterminalSetting')->name('webterminal.mt5');
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
-
     });
 
-//===============================  Security Settings ==================================
+    //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
         Route::get('all-sections', 'allSections')->name('all-sections');
         Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
@@ -346,7 +342,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
     });
 
-// show all notifications
+    // show all notifications
     Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
     Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
     Route::get('notification-read/{id}', [NotificationController::class, 'readNotification'])->name('read-notification');
@@ -368,7 +364,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::get('user', 'userTemplate')->name('user-template');
             Route::get('template-edit/{id}', 'edit_template')->name('template-edit');
             Route::post('template-update', 'update_template')->name('template-update');
-
         });
 
         Route::group(['prefix' => 'notification', 'as' => 'notification.', 'controller' => NotificationController::class], function () {
@@ -378,13 +373,13 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         });
     });
 
-//===============================  Links Settings ==================================
+    //===============================  Links Settings ==================================
     Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
         Route::get('document-links', 'documentLinks')->name('document-links');
         Route::get('platform-links', 'platformLinks')->name('platform-links');
     });
 
-//===============================  Others ==================================
+    //===============================  Others ==================================
     Route::group(['controller' => AppController::class], function () {
         Route::get('subscribers', 'subscribers')->name('subscriber');
         Route::get('mail-send-subscriber', 'mailSendSubscriber')->name('mail.send.subscriber');
@@ -400,12 +395,11 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
         Route::resource('statuses', TicketStatusController::class);
         Route::resource('priorities', TicketPriorityController::class);
-
     });
     Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
     Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
 
-//admin self manage
+    //admin self manage
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
     Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
 
@@ -436,7 +430,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
     // Bonus Module
     Route::resource('bonus', BonusController::class);
-    Route::post('bonus-add/{user}', [BonusController::class, 'addManualBonus'])->name('bonus.add');
+    Route::post('bonus-add/{user}', [BonusController::class, 'addBonusByAdmin'])->name('bonus.add');
 
     Route::get('/symbol-groups', function () {
         return view('backend.symbol_groups.metatrader5');
@@ -467,14 +461,14 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         return view('backend.announcements.index');
     })->name('announcements');
 
-    Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
-    Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-    Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-    Route::resource('swap-multi-level', MultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
-    Route::post('symbols/store', [SymbolController::class,'store']);
-    Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    Route::resource('customer-groups', CustomerGroupController::class)->only('index', 'store', 'create', 'edit', 'update', 'destroy');
+    Route::resource('departments', DepartmentController::class)->only('index', 'create', 'store', 'edit', 'update', 'destroy');
+    Route::resource('designations', DesignationController::class)->only('index', 'create', 'store', 'edit', 'update', 'destroy');
+    Route::resource('swap-multi-level', MultiLevelController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('symbol-groups', SymbolGroupController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('symbols', SymbolController::class)->only(['index', 'create', 'edit', 'update', 'destroy']);
+    Route::post('symbols/store', [SymbolController::class, 'store']);
+    Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 
 
@@ -506,10 +500,10 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
     Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
     Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');
-    Route::post('platform/groups/store', [PlatformGroupController::class,'store'])->name('groups.store');
+    Route::post('platform/groups/store', [PlatformGroupController::class, 'store'])->name('groups.store');
     Route::get('platform/groups/manual', [PlatformGroupController::class, 'manualGroupListing'])->name('manual.platformGroups');
-    Route::post('platform/groups/store/manually', [PlatformGroupController::class,'storeManualGroup'])->name('groups.storeManually');
-    Route::get('platform/groups/{id}/edit', [PlatformGroupController::class,'editManualGroup'])->name('groups.editManually');
+    Route::post('platform/groups/store/manually', [PlatformGroupController::class, 'storeManualGroup'])->name('groups.storeManually');
+    Route::get('platform/groups/{id}/edit', [PlatformGroupController::class, 'editManualGroup'])->name('groups.editManually');
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
     Route::delete('platform/groups/{id}', [PlatformGroupController::class, 'deleteManualGroup'])->name('group.delete');
@@ -546,9 +540,6 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         return view('backend.setting.customization.dynamic_content');
     })->name('dynamicContent');
 
-
+    
 });
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
-
-
-;
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');;

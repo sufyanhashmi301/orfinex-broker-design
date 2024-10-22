@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'payment_access', 'set
         Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
     });
     Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
-    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
+    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycaddBonusStatus'])->name('kyc.status');
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 

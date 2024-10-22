@@ -15,19 +15,30 @@ return new class extends Migration
     {
         Schema::create('bonuses', function (Blueprint $table) {
             $table->id();
+
+            $table->string('kyc_slug');
             $table->string('bonus_name');
+            
             $table->date('start_date');
             $table->date('last_date');
+            
             $table->string('type');
-            $table->string('bonus_removal');
             $table->string('amount');
+
             $table->string('process');
+
+            $table->string('bonus_removal_type');
+            $table->string('bonus_removal_amount')->nullable();
+
             $table->string('applicable_by');
+            
             $table->text('terms_link');
             $table->text('description');
-            $table->integer('is_kyc_verified')->default(0);
-            $table->integer('is_first_deposit')->default(0);
+            
+            $table->string('first_or_every_deposit');
+
             $table->integer('status')->default(0);
+
             $table->timestamps();
         });
     }

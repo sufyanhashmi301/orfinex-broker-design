@@ -6,6 +6,7 @@ use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\ResetData;
+use App\Console\Commands\UpdateExchangeRates;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
@@ -19,6 +20,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('exchange:update-rates')->everyThirtyMinutes();
+        $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        if(url('/') == 'http://brokerdemo.brokeret.com') {
 //            $schedule->command('reset:data')->daily();
 //        }
@@ -52,5 +55,7 @@ class Kernel extends ConsoleKernel
         ResetData::class,
         IBProfitRecord::class,
         MultiIbBonus::class,
+        Commands\UpdateExchangeRates::class,
+        Commands\UpdateTokenRates::class,
     ];
 }

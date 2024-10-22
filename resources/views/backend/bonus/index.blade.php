@@ -10,7 +10,7 @@
             </h4>
             <a href="{{ route('admin.bonus.create') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                ADD NEW
+                ADD NEW BONUS
             </a>
         </div>
         <div class="card-body px-6 pb-6">
@@ -28,8 +28,9 @@
                                     <th scope="col" class="table-th">{{ __('Applicable by') }}</th>
                                     <th scope="col" class="table-th">{{ __('Start Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('End Date') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Forex Account Types') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -46,7 +47,13 @@
                                         <td class="table-td">{{ date('M d Y', strtotime($bonus->start_date)) }}</td>
                                         <td class="table-td">{{ date('M d Y', strtotime($bonus->last_date)) }}</td>
                                         <td class="table-td">
-                                            <span class="badge bg-slate-900 text-white capitalize">{{ $bonus->status == '1' ? 'Activated' : 'Deactivated' }}</span>
+                                            @foreach ($bonus->forex_schemas as $schema) 
+                                                <span class="badge bg-slate-900 text-white capitalize">{{ $schema->title }}</span>
+                                            @endforeach
+
+                                        </td>
+                                        <td class="table-td">
+                                            <span class="badge bg-{{ $bonus->status == '1' ? 'success' : 'danger' }} text-white capitalize">{{ $bonus->status == '1' ? 'Active' : 'Inactive' }}</span>
                                         </td>
                                         <td class="table-td">
                                             <a href="{{ route('admin.bonus.edit', ["bonu" => $bonus->id]) }}" class="action-btn mr-1" data-bs-toggle="tooltip" style="float: left" title="" data-bs-original-title="Edit Record" aria-label="Edit Record" target="_blank">

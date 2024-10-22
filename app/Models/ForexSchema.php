@@ -90,29 +90,14 @@ class ForexSchema extends Model
 		return $this->hasMany(ForexAccount::class);
 	}
 
-	public function bonus(){
-			return $this->belongsTo(Bonus::class);
+	public function bonuses(){
+			return $this->belongsToMany(Bonus::class);
 	}
 
-    public function scopeActive(Builder $query)
-    {
-        return $query->where('status', true);
-    }
+
     public function scopeTraderType(Builder $query)
     {
         return $query->where('trader_type', setting('active_trader_type', 'features'));
-    }
-    public function scopeRelevantForUser(Builder $query, $country, array $tags)
-    {
-        return $query->where(function($q) use ($country, $tags) {
-            $q->whereJsonContains('country', $country)
-                ->orWhereJsonContains('country', 'All')
-                ->orWhere(function($subQuery) use ($tags) {
-                    foreach ($tags as $tag) {
-                        $subQuery->orWhereJsonContains('tags', $tag);
-                    }
-                });
-        });
     }
 	public function multiLevels()
 	{

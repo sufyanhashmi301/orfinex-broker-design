@@ -179,7 +179,7 @@ class SettingController extends Controller
 
     public static function currencySetting()
     {
-        $countries = Country::paginate(15);
+        $countries = Country::with('rate')->paginate(15);
         return view('backend.setting.site_setting.currency', compact('countries'));
     }
 

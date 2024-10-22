@@ -10,23 +10,25 @@ class Bonus extends Model
     use HasFactory;
 
     protected $fillable = [
+        "kyc_slug",
         "bonus_name",
         "start_date",
         "last_date",
         "type",
-        "bonus_removal",
+        "bonus_removal_type",
+        "bonus_removal_amount",
         "amount",
         "process",
         "applicable_by",
         "is_kyc_verified",
-        "is_first_deposit",
+        "first_or_every_deposit",
         "status",
         "terms_link",
         "description",
     ];
 
     public function forex_schemas(){
-        return $this->hasMany(ForexSchema::class);
+        return $this->belongsToMany(ForexSchema::class);
     }
 
     public function users(){

@@ -13,8 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->unsignedBigInteger('bonus_id')->nullable()->after('id');
+        Schema::create('bonus_deductions', function (Blueprint $table) {
+            $table->id();
+
+            $table->unsignedBigInteger('bonus_transaction_id');
+            
+            $table->unsignedBigInteger('withdraw_transaction_id');
+
+            $table->string('deducted_amount');
+
+            $table->timestamps();
         });
     }
 
@@ -25,8 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('forex_schemas', function (Blueprint $table) {
-            $table->dropColumn('bonus_id');
-        });
+        Schema::dropIfExists('bonus_deductions');
     }
 };

@@ -25,7 +25,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('added_by')->nullable(); // self or by Admin
             $table->string('type'); // add or subtract. Also helps maintain the history of bonus additions/removals
-            $table->decimal('amount', 10, 2); // amount added or subtracted. 
+            $table->decimal('amount', 10, 2); // amount added or subtracted. only when manually applied by admin
 
             $table->timestamps();
         });

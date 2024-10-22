@@ -198,8 +198,8 @@ class InvestController extends GatewayController
             if($traderType == TraderType::MT5) {
                 $forexApi = new ForexApiService();
                 $data = [
-//                    'login'=>$invest->login
-                'login'=>400109
+                    'login'=>$invest->login
+//                'login'=>400109
                 ];
                 $statsUser = $forexApi->statsUser($data);
 //                dd($statsUser);

@@ -199,17 +199,14 @@ class InvestController extends GatewayController
                 $forexApi = new ForexApiService();
                 $data = [
                     'login'=>$invest->login
-//                'login'=>555561
+//                'login'=>400109
                 ];
-//                $todayScore = $forexApi->getTodayRiskScore($data);
-//                $weeklyScore = $forexApi->getWeekRiskScore($data);
-//                $totalScore = $forexApi->getTotalRiskScore($data);
-//                $totalBalance = $forexApi->getBalance($data);
-
-                $todayScore = [];
-                $weeklyScore = [];
-                $totalScore = [];
-                $totalBalance = [];
+                $statsUser = $forexApi->statsUser($data);
+//                dd($statsUser);
+                $todayScore = $forexApi->getTodayRiskScore($data);
+                $weeklyScore = $forexApi->getWeekRiskScore($data);
+                $totalScore = $forexApi->getTotalRiskScore($data);
+                $totalBalance = $forexApi->getBalance($data);
 
             }elseif($traderType == TraderType::X9) {
                 $forexApi = new x9ApiService();
@@ -217,6 +214,7 @@ class InvestController extends GatewayController
                     'login_id'=>$invest->login
 //                'login'=>555561
                 ];
+                $statsUser['result'] = [];
                 $todayScore['result'] = [];
                 $weeklyScore['result']= [];
                 $totalScore['result'] = [];
@@ -224,7 +222,6 @@ class InvestController extends GatewayController
                 $totalBalance['result'] = $totalBalance['result']['trading_account_details']['balance_details'];
 //                dd($totalBalance);
             }
-
 //            dd($totalBalance);
             $todayDrawddown = 0;
             if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {
@@ -232,7 +229,7 @@ class InvestController extends GatewayController
             }
             $remainingLoss = to_minus($invest->daily_drawdown_limit, $todayDrawddown);
 
-            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage", "todayScore", "weeklyScore", "totalScore", "totalBalance"));
+            return view("frontend::fund_board.active_plan", compact("invest", "todayDrawddown", "remainingLoss", "growthPercentage", "todayScore", "weeklyScore", "totalScore", "totalBalance", "statsUser"));
         }
 
         $plans = PricingScheme::where('status', 'active')->get();

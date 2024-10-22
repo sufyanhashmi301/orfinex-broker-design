@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Imports\BanexUsersImport;
 use App\Imports\PrimexUsersImport;
 use App\Imports\UserImportClass;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xls,xlsx,csv',
         ]);
 
-        Excel::import(new PrimexUsersImport, request()->file('file'));
+        Excel::import(new BanexUsersImport, request()->file('file'));
 
         return back()->with('success', 'Users imported successfully.');
     }

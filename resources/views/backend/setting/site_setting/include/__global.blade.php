@@ -78,58 +78,13 @@
                         <label for="" class="form-label">
                             {{ __($field['label']) }}
                         </label>
-                        @if($field['name'] == 'site_currency')
-
-                            <div class="currency-fiat">
-                                <select name="" class="form-control w-100 site-currency-fiat" id="">
-                                    @if(setting('site_currency_type','global') == 'fiat')
-                                        <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                        </option>
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="currency-crypto">
-                                <select name="" class="form-control w-100 site-currency-crypto" id="">
-                                    @if(setting('site_currency_type','global') == 'crypto')
-                                        <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                        </option>
-                                    @endif
-                                </select>
-                            </div>
-                        @endif
-
-                        @if($field['name'] == 'site_timezone')
-                            <select name="{{$field['name']}}" class="form-control w-100 site-timezone" id="">
-                                <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                </option>
-                            </select>
-                        @endif
-
-                        @if($field['name'] == 'site_referral')
-                            <select name="{{$field['name']}}" class="form-control w-100" id="">
-                            @foreach(['level','target'] as $type)
-                                <option @selected(oldSetting($field['name'],$section) == $type)
-                                        value="{{$type}}"> {{ ucwords($type) .' '.__('Base') }}
+                        <select name="" class="form-control">
+                            @foreach ($field['options'] as $value => $label)
+                                <option @selected(oldSetting($field['name'],$section) == $value) value="{{ $value }}">
+                                {{ $label }}
                                 </option>
                             @endforeach
-                            </select>
-                        @endif
-
-                        @if($field['name'] == 'home_redirect')
-                            <select name="{{$field['name']}}" class="form-control w-100" id="">
-                            <option @selected(oldSetting($field['name'],$section) == '/')
-                                    value="/"> {{ __('Home Page') }}
-                            </option>
-                            @foreach($pages as $page)
-                                @if($page->status)
-                                    <option @selected(oldSetting($field['name'],$section) == $page->url)
-                                            value="{{$page->url}}"> {{ ucwords($page->title) .' '. __('Page')  }}
-                                    </option>
-                                @endif
-                            @endforeach
-                            </select>
-                        @endif
-
+                        </select>
                     </div>
                 @else
                     <div class="input-area">

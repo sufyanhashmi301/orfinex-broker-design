@@ -458,6 +458,24 @@ return [
                 'label' => 'Site Timezone', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 'UTC', // default value if you want
+                'options' => [
+                    'UTC' => 'UTC'
+                ],
+            ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'session_expiry', // unique name for field
+                'label' => 'Session Expiry', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '1 Hour', // Default value
+                'options' => [
+                    '1 Hour' => '1 Hour',
+                    '6 Hour' => '6 Hour',
+                    '12 Hours' => '12 Hours',
+                    '24 Hours' => '24 Hours',
+                    '1 Week' => '1 Week',
+                ],
             ],
         ],
     ],

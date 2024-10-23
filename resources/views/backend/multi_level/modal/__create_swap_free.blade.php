@@ -72,6 +72,17 @@
                                 <div class="invalid-feedback" id="rebate-rules" style="display: none;"></div>
                             </div>
                             <div class="lg:col-span-2 input-area">
+                                <label for="" class="form-label">{{ __('Select IB Groups') }}</label>
+                                <select name="ib_group_id[]" class="select2 form-control w-full" multiple="multiple">
+                                    @foreach($ibGroups as $ibGroup)
+                                        <option value="{{ $ibGroup->id }}">
+                                            {{ $ibGroup->name }} <!-- Adjust the property to display the name of the IB group -->
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback" id="ib-groups" style="display: none;"></div>
+                            </div>
+                            <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">{{ __('Short Description') }}</label>
                                 <textarea
                                     name="description"

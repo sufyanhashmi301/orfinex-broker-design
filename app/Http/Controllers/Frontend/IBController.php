@@ -88,7 +88,7 @@ class IBController extends Controller
             '[[email]]' => $user->email,
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
-        '[[status]]' => __('Pending'),
+        '[[status]]' => 'Pending',
         ];
 
 

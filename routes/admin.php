@@ -59,6 +59,7 @@ use App\Http\Controllers\Backend\PlatformGroupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\NoteController;
 use App\Http\Controllers\Backend\SystemTagController;
+use App\Http\Controllers\Backend\IBGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,9 +127,14 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::get('all', 'kycAll')->name('all');
 
     });
-    // system tags route
+//===============================  System Tag ==================================
     Route::resource('system-tag', SystemTagController::class);
 
+    //===============================  IB Groups ==================================
+    Route::resource('ib-group', IBGroupController::class);
+
+
+//===============================  Risk Profile Tag ==================================
     Route::resource('risk-profile-tag', RiskProfileTagController::class);
     Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
         Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
@@ -218,6 +224,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('export',  'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
+
+        Route::get('add', 'addDeposit')->name('add');
     });
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //=============================== withdraw Method ================================
@@ -241,6 +249,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('pending/export', 'pendingExport')->name('pending.export');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
+
+        Route::get('add', 'addWithdraw')->name('add');
 
     });
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {

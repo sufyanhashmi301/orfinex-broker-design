@@ -496,4 +496,10 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
     }
+
+    public function addWithdraw()
+    {
+        return view('backend.withdraw.add_withdraw');
     }
+
+}

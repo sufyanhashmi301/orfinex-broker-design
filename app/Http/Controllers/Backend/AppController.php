@@ -91,11 +91,12 @@ class AppController extends Controller
 
     public function profileUpdate(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $user = \Auth::user();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:admins,email,'.$user->id,
+
         ]);
 
         if ($validator->fails()) {

@@ -1,5 +1,5 @@
 @php
-    $kycLevels = \App\Models\Kyclevel::with('kyc_sub_levels')->where('status', true)->get();
+    $kycLevels = \App\Models\KycLevel::with('kyc_sub_levels')->where('status', true)->get();
     $totalActiveLevels = $kycLevels->count();
     $completedSteps = 0;
     if($totalActiveLevels > 0){

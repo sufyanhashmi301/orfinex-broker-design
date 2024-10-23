@@ -1,6 +1,6 @@
 <div class="innerMenu card p-4 mb-5">
     @php
-    $kycLevels = \App\Models\Kyclevel::get();
+    $kycLevels = \App\Models\KycLevel::get();
     @endphp
     <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
         @canany(['kyc-list','kyc-action'])

@@ -78,42 +78,15 @@
                         <label for="" class="form-label">
                             {{ __($field['label']) }}
                         </label>
-                        @if($field['name'] == 'site_currency')
-
-                            <div class="currency-fiat">
-                                <select name="" class="form-control w-100 site-currency-fiat" id="">
-                                    @if(setting('site_currency_type','global') == 'fiat')
-                                        <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                        </option>
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="currency-crypto">
-                                <select name="" class="form-control w-100 site-currency-crypto" id="">
-                                    @if(setting('site_currency_type','global') == 'crypto')
-                                        <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                        </option>
-                                    @endif
-                                </select>
-                            </div>
-                        @endif
-
-                        @if($field['name'] == 'site_timezone')
-                            <select name="{{$field['name']}}" class="form-control w-100 site-timezone" id="">
-                                <option selected value="{{ oldSetting($field['name'],$section) }}"> {{ oldSetting($field['name'],$section) }}
-                                </option>
-                            </select>
-                        @endif
-
-                        @if($field['name'] == 'site_referral')
-                            <select name="{{$field['name']}}" class="form-control w-100" id="">
-                            @foreach(['level','target'] as $type)
-                                <option @selected(oldSetting($field['name'],$section) == $type)
-                                        value="{{$type}}"> {{ ucwords($type) .' '.__('Base') }}
+                        <select name="" class="form-control">
+                            @foreach ($field['options'] as $value => $label)
+                                <option @selected(oldSetting($field['name'],$section) == $value) value="{{ $value }}">
+                                {{ $label }}
                                 </option>
                             @endforeach
                             </select>
                         @endif
+
 
                         @if($field['name'] == 'home_redirect')
                             <select name="{{$field['name']}}" class="form-control w-100" id="">
@@ -128,8 +101,25 @@
                                 @endif
                             @endforeach
                             </select>
+
                         @endif
 
+                        @if($field['name'] == 'session_expiry')
+
+                            @php
+                                $staff = Auth::user();
+                            @endphp
+
+                            <select name="{{$field['name']}}" class="form-control w-100" id="">
+                            </option>
+                                    <option value="60" @selected($staff->session_expiry == '60')>{{ __('1 Hour') }}</option>
+                                    <option value="360" @selected($staff->session_expiry == '360')>{{ __('6 Hours') }}</option>
+                                    <option value="720" @selected($staff->session_expiry == '720')>{{ __('12 Hours') }}</option>
+                                    <option value="1440" @selected($staff->session_expiry == '1440')>{{ __('24 Hours') }}</option>
+                                    <option value="10080" @selected($staff->session_expiry == '10080')>{{ __('1 Week') }}</option>
+                            </select>
+
+                        @endif
                     </div>
                 @else
                     <div class="input-area">

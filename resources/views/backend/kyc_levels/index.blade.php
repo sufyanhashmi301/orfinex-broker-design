@@ -7,72 +7,36 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('KYC Levels') }}
         </h4>
-
     </div>
     <div class="card">
-        <div class="card-body px-6 pt-3">
-            <div class="overflow-x-auto -mx-6">
-                <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden basicTable_wrapper">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="table-th">{{ __(' Name') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                            @foreach($kycLevels as $kyc)
-                                <tr>
-                                    <td class="table-td">
-                                        <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="onTop">
-                                        <strong>{{ $kyc->name }}</strong>
-                                        </a>
-                                    </td>
-                                    <td class="table-td">
-                                        @if( $kyc->status)
-                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
-                                                {{ __('Active') }}
-                                            </div>
-                                        @else
-                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
-                                                {{ __('Disabled') }}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td class="table-td">
-                                        <div class="flex space-x-3 rtl:space-x-reverse">
-                                            <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </a>
+        <div class="card-body p-6">
+            <div class="grid grid-cols-12 items-center gap-5">
+                <div class="lg:col-span-5 col-span-12 relative text-center">
+                    <div id="lottie-container" class="inline-flex" style="width: 350px; height: 350px;"></div>
+                    <div class="absolute right-0 top-0 hidden h-full min-h-[1em] w-px self-stretch border-t-0 bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400 lg:block"></div>
+                </div>
+                <div class="lg:col-span-7 col-span-12">
+                    <ul class="list-item space-y-3 h-full overflow-x-auto">
+                        @foreach($kycLevels as $kyc)
+                            <li class="single-gateway flex items-center justify-between border rounded dark:border-slate-300 py-3 px-4">
+                                <p class="gateway-name text-lg text-slate-900 dark:text-slate-50">{{ $kyc->name }}</p>
+                                <div class="gateway-right flex items-center gap-2">
+                                    @if( $kyc->status)
+                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                            {{ __('Active') }}
                                         </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">
-                            <div>
-                                @php
-                                    $from = $kycLevels->firstItem(); // The starting item number on the current page
-                                    $to = $kycLevels->lastItem(); // The ending item number on the current page
-                                    $total = $kycLevels->total(); // The total number of items
-                                @endphp
-
-                                <p class="text-sm text-gray-700">
-                                    Showing
-                                    <span class="font-medium">{{ $from }}</span>
-                                    to
-                                    <span class="font-medium">{{ $to }}</span>
-                                    of
-                                    <span class="font-medium">{{ $total }}</span>
-                                    results
-                                </p>
-                            </div>
-                            {{ $kycLevels->links() }}
-                        </div>
-                    </div>
+                                    @else
+                                        <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                            {{ __('Disabled') }}
+                                        </div>
+                                    @endif
+                                    <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn">
+                                        <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                    </a>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
@@ -140,5 +104,14 @@
             $('.name').html(name);
             $('#deleteKyc').modal('show');
         })
+
+        var animation = lottie.loadAnimation({
+            container: document.getElementById('lottie-container'), // ID of the div where the animation will render
+            renderer: 'svg',  // Render the animation in SVG format
+            loop: true,       // Loop the animation
+            autoplay: true,   // Autoplay the animation
+            path: '{{ asset('global/json/kyc.json') }}' // Path to your JSON file
+        });
+
     </script>
 @endsection

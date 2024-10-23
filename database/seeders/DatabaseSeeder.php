@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RiskBookSeeder::class);
         $this->call(Match2PayGatewaySeeder::class);
         $this->call(EmailTemplatesSeeder::class);
+//        $this->call(DefaultIbGroupSeeder::class);
+        $this->call(PluginSeeder::class);
 
 
     }

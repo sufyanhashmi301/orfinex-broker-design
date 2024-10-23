@@ -35,9 +35,11 @@ class SyncForexAccountsViaEmailForBanex extends Command
         }
 
         // Process users in chunks
-        User::where('id', '>=', $startingUserId)
+        $users = User::where('id', '>=', $startingUserId)
             ->orderBy('id')
-            ->chunk(100, function ($users) {
+            ->take(50)->get();
+//        dd($users);
+//            ->chunk(100, function ($users) {
                 foreach ($users as $user) {
                     // Fetch account data using email
                     $email = $user->email;
@@ -54,7 +56,7 @@ class SyncForexAccountsViaEmailForBanex extends Command
                             }
 
                             // Determine the ForexSchema and account type based on group
-                            $schema = ForexSchema::where('id', 12)
+                            $schema = ForexSchema::where('id', 10)
                                 ->first();
 
                             if ($schema) {
@@ -107,7 +109,7 @@ class SyncForexAccountsViaEmailForBanex extends Command
                         $this->error("Failed to fetch account data for user {$user->email}.");
                     }
                 }
-            });
+//            });
 
         $this->info("Forex accounts synchronization completed.");
     }

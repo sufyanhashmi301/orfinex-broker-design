@@ -76,6 +76,7 @@
     $fb = plugin_active('Facebook Messenger');
     $customChat = plugin_active('Custom Chat');
     $zohoSalesIQ = plugin_active('Zoho SalesIQ');
+    $zohoPageSense = plugin_active('Zoho PageSense');
 @endphp
 
 @if($googleAnalytics)
@@ -92,4 +93,7 @@
 @endif
 @if($zohoSalesIQ)
      @include('frontend::plugin.zoho_salesiq',['data' => json_decode($zohoSalesIQ->data, true)])
+@endif
+@if($zohoPageSense)
+     @include('frontend::plugin.zoho_pagesense',['data' => json_decode($zohoPageSense->data, true)])
 @endif

@@ -37,7 +37,8 @@ class Admin extends Authenticatable
         'gender',
         'marital_status',
         'google2fa_secret',
-        'two_fa'
+        'two_fa',
+        'session_expiry',
     ];
 
 

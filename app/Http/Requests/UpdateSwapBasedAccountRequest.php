@@ -29,6 +29,8 @@ class UpdateSwapBasedAccountRequest extends FormRequest
             'status' => 'required|boolean',
             'rebate_rules' => 'required|array',
             'rebate_rules.*' => 'exists:rebate_rules,id',
+            'ib_group_id' => 'required|array', // Ensure this line is present
+            'ib_group_id.*' => 'exists:ib_groups,id',
         ];
     }
 }

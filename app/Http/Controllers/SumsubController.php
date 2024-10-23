@@ -6,6 +6,7 @@ use App\Models\Plugin;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Request;
 use Log;
+use App\Enums\KYCStatus;
 use sumsub\SumsubClient;
 
 
@@ -20,7 +21,7 @@ class SumsubController extends Controller
         $user = \Auth::user();
         $currentTime = Carbon::now();
         $lastUpdatedTime = $user->kyc_created_at;
-        if (empty($lastUpdatedTime) || $currentTime->diffInMinutes($lastUpdatedTime) > 25 && $user->kyc === 0 && $sumsubstatus === 1) {
+        if (empty($lastUpdatedTime) || $currentTime->diffInMinutes($lastUpdatedTime) > 25 && $user->kyc < KYCStatus::Level2->value && $sumsubstatus === 1) {
 
             $externalUserId = uniqid();
             $levelName = $sumsubscredentials->level_name;
@@ -31,6 +32,7 @@ class SumsubController extends Controller
                 $applicantId = $testObject->createApplicant($externalUserId, $levelName);
 //                dd($applicantId);
                 $test = $testObject->getApplicantStatus($applicantId);
+//                dd($applicantId,$test);
                 $accessTokenInfo = $testObject->getAccessToken($externalUserId, $levelName);
 
                 $user->update([
@@ -41,6 +43,8 @@ class SumsubController extends Controller
                 return redirect()->back();
             }
         }
+
+
         return view('frontend::user.kyc.advance.index', compact('sumsubstatus', 'currentTime', 'lastUpdatedTime'));
     }
     public function UpdateKycStatus(Request $request)
@@ -49,11 +53,11 @@ class SumsubController extends Controller
         try {
             $user = \Auth::user();
             $user->update([
-                'kyc' => 1,
+                'kyc' => KYCStatus::Level2->value
             ]);
-            return response()->json(['status' => 200, 'success' => 'Verification completed']);
+            return response()->json(['status' => 200, 'success' => __('KYC Verification completed')]);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
+            return response()->json(['status' => 200, 'error' => __('Something went wrong')]);
         }
     }
 }

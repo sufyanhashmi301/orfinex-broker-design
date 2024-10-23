@@ -56,4 +56,8 @@ class MultiLevel extends Model
     {
         return $this->belongsToMany(RebateRule::class)->withTimestamps();
     }
+	public function ibGroups()
+    {
+        return $this->belongsToMany(IBGroup::class, 'ib_group_multi_level', 'multi_level_id', 'ib_group_id')->withTimestamps();
+    }
 }

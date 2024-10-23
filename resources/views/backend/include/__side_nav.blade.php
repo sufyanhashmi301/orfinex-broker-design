@@ -70,6 +70,76 @@
             </li>
         @endcanany
 
+        {{-- *************************************************************  Essentials *********************************************************--}}
+        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
+        'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
+        'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
+            @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+                <li class="{{ isActive(['admin.deposit*']) }}">
+                    <a href="javascript:void(0);" class="navItem">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="lucide:arrow-down-circle"></iconify-icon>
+                            <span>{{ __('Deposits') }}</span>
+                        </span>
+                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
+                    <ul class="sidebar-submenu">
+                        <li class="">
+                            <a href="{{ route('admin.deposit.add') }}" class="{{ isActive('admin.deposit.add') }}">
+                                {{ __('Add Deposit') }}
+                            </a>
+                        </li>
+                        @canany(['deposit-list','deposit-action'])
+                            <li class="">
+                                <a href="{{ route('admin.deposit.manual.pending') }}" class="{{ isActive('admin.deposit.manual.pending') }}">
+                                    {{ __('Pending Deposits') }}
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ route('admin.deposit.history') }}" class="{{ isActive('admin.deposit.history') }}">
+                                    {{ __('Deposit History') }}
+                                </a>
+                            </li>
+                        @endcanany
+                    </ul>
+                </li>
+            @endcanany
+
+            @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
+                <li class="{{ isActive(['admin.withdraw*']) }}">
+                    <a href="javascript:void(0);" class="navItem">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="lucide:landmark"></iconify-icon>
+                            <span>{{ __('Withdraw') }}</span>
+                        </span>
+                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
+                    <ul class="sidebar-submenu">
+                        <li class="">
+                            <a href="{{ route('admin.withdraw.add') }}" class="{{ isActive('admin.withdraw.add')  }}">
+                                {{ __('Add Withdraw') }}
+                            </a>
+                        </li>
+                        @canany(['withdraw-list','withdraw-action'])
+                            <li class="">
+                                <a href="{{ route('admin.withdraw.pending') }}" class="{{ isActive('admin.withdraw.pending')  }}">
+                                    {{ __('Pending Withdraws') }}
+                                </a>
+                            </li>
+                        @endcanany
+                        @can('withdraw-list')
+                            <li class="">
+                                <a href="{{ route('admin.withdraw.history') }}" class="{{ isActive('admin.withdraw.history') }}">
+                                    {{ __('Withdraw History') }}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcanany
+
+        @endcanany
+
         @canany(['kyc-list','kyc-action','kyc-form-manage','risk-profile-tag'])
             <li class="{{ isActive(['admin.kyc*']) }}">
                 <a href="javascript:void(0);" class="navItem">
@@ -314,74 +384,6 @@
                 </li>
             @endcan
         @endcanany
-
-        {{-- *************************************************************  Essentials *********************************************************--}}
-        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-        'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
-        'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-            @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
-                <li class="{{ isActive(['admin.deposit*']) }}">
-                    <a href="javascript:void(0);" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:arrow-down-circle"></iconify-icon>
-                            <span>{{ __('Deposits') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
-                    <ul class="sidebar-submenu">
-                        @canany(['deposit-list','deposit-action'])
-                            <li class="">
-                                <a href="{{ route('admin.deposit.manual.pending') }}" class="{{ isActive('admin.deposit.manual.pending') }}">
-                                    {{ __('Pending Manual Deposits') }}
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ route('admin.deposit.history') }}" class="{{ isActive('admin.deposit.history') }}">
-                                    {{ __('Deposit History') }}
-                                </a>
-                            </li>
-                        @endcanany
-                    </ul>
-                </li>
-            @endcanany
-
-            @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
-                <li class="{{ isActive(['admin.withdraw*']) }}">
-                    <a href="javascript:void(0);" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:landmark"></iconify-icon>
-                            <span>{{ __('Withdraw') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
-                    <ul class="sidebar-submenu">
-                        @canany(['withdraw-list','withdraw-action'])
-                            <li class="">
-                                <a href="{{ route('admin.withdraw.pending') }}" class="{{ isActive('admin.withdraw.pending')  }}">
-                                    {{ __('Pending Withdraws') }}
-                                </a>
-                            </li>
-                        @endcanany
-                        @can('withdraw-schedule')
-                            <li class="">
-                                <a href="{{ route('admin.withdraw.schedule') }}" class="{{ isActive('admin.withdraw.schedule') }}">
-                                    {{ __('Withdraw Schedule') }}
-                                </a>
-                            </li>
-                        @endcan
-                        @can('withdraw-list')
-                            <li class="">
-                                <a href="{{ route('admin.withdraw.history') }}" class="{{ isActive('admin.withdraw.history') }}">
-                                    {{ __('Withdraw History') }}
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcanany
-
-        @endcanany
-
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])

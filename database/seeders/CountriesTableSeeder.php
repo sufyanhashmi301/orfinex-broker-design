@@ -25,6 +25,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ZW',
                 'ISO_3166_3' => 'ZWE',
                 'currency_code' => 'ZWL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -34,6 +35,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ZM',
                 'ISO_3166_3' => 'ZMB',
                 'currency_code' => 'ZMK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -43,6 +45,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'YE',
                 'ISO_3166_3' => 'YEM',
                 'currency_code' => 'YER',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -52,6 +55,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'EH',
                 'ISO_3166_3' => 'ESH',
                 'currency_code' => 'MAD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -61,6 +65,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'WF',
                 'ISO_3166_3' => 'WLF',
                 'currency_code' => 'XPF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -70,6 +75,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VI',
                 'ISO_3166_3' => 'VIR',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -79,6 +85,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VG',
                 'ISO_3166_3' => 'VGB',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -88,6 +95,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VN',
                 'ISO_3166_3' => 'VNM',
                 'currency_code' => 'VND',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -97,6 +105,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VE',
                 'ISO_3166_3' => 'VEN',
                 'currency_code' => 'VEF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -106,6 +115,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VU',
                 'ISO_3166_3' => 'VUT',
                 'currency_code' => 'VUV',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -115,6 +125,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'UZ',
                 'ISO_3166_3' => 'UZB',
                 'currency_code' => 'UZS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -124,6 +135,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'UY',
                 'ISO_3166_3' => 'URY',
                 'currency_code' => 'UYU',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -133,6 +145,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'UM',
                 'ISO_3166_3' => 'UMI',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -142,6 +155,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'US',
                 'ISO_3166_3' => 'USA',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -151,6 +165,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GB',
                 'ISO_3166_3' => 'GBR',
                 'currency_code' => 'GBP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -160,6 +175,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AE',
                 'ISO_3166_3' => 'ARE',
                 'currency_code' => 'AED',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -169,6 +185,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'UA',
                 'ISO_3166_3' => 'UKR',
                 'currency_code' => 'UAH',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -178,6 +195,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'UG',
                 'ISO_3166_3' => 'UGA',
                 'currency_code' => 'UGX',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -187,6 +205,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TV',
                 'ISO_3166_3' => 'TUV',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -196,6 +215,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TC',
                 'ISO_3166_3' => 'TCA',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -205,6 +225,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TM',
                 'ISO_3166_3' => 'TKM',
                 'currency_code' => 'TMT',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -214,6 +235,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TR',
                 'ISO_3166_3' => 'TUR',
                 'currency_code' => 'TRY',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -223,6 +245,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TN',
                 'ISO_3166_3' => 'TUN',
                 'currency_code' => 'TND',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -232,6 +255,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TT',
                 'ISO_3166_3' => 'TTO',
                 'currency_code' => 'TTD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -241,6 +265,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TO',
                 'ISO_3166_3' => 'TON',
                 'currency_code' => 'TOP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -250,6 +275,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TK',
                 'ISO_3166_3' => 'TKL',
                 'currency_code' => 'NZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -259,6 +285,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TG',
                 'ISO_3166_3' => 'TGO',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -268,6 +295,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TL',
                 'ISO_3166_3' => 'TLS',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -277,6 +305,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TH',
                 'ISO_3166_3' => 'THA',
                 'currency_code' => 'THB',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -286,6 +315,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TZ',
                 'ISO_3166_3' => 'TZA',
                 'currency_code' => 'TZS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -295,6 +325,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TJ',
                 'ISO_3166_3' => 'TJK',
                 'currency_code' => 'TJS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -304,6 +335,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TW',
                 'ISO_3166_3' => 'TWN',
                 'currency_code' => 'TWD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -313,6 +345,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SY',
                 'ISO_3166_3' => 'SYR',
                 'currency_code' => 'SYP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -322,6 +355,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CH',
                 'ISO_3166_3' => 'CHE',
                 'currency_code' => 'CHF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -331,6 +365,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SE',
                 'ISO_3166_3' => 'SWE',
                 'currency_code' => 'SEK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -340,6 +375,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SZ',
                 'ISO_3166_3' => 'SWZ',
                 'currency_code' => 'SZL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -349,6 +385,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SJ',
                 'ISO_3166_3' => 'SJM',
                 'currency_code' => 'NOK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -358,6 +395,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SR',
                 'ISO_3166_3' => 'SUR',
                 'currency_code' => 'SRD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -367,6 +405,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SD',
                 'ISO_3166_3' => 'SDN',
                 'currency_code' => 'SDG',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -376,6 +415,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LK',
                 'ISO_3166_3' => 'LKA',
                 'currency_code' => 'LKR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -385,6 +425,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ES',
                 'ISO_3166_3' => 'ESP',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -394,6 +435,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SS',
                 'ISO_3166_3' => 'SSD',
                 'currency_code' => 'SSP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -403,6 +445,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GS',
                 'ISO_3166_3' => 'SGS',
                 'currency_code' => '',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -412,6 +455,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ZA',
                 'ISO_3166_3' => 'ZAF',
                 'currency_code' => 'ZAR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -421,6 +465,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SO',
                 'ISO_3166_3' => 'SOM',
                 'currency_code' => 'SOS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -430,6 +475,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SB',
                 'ISO_3166_3' => 'SLB',
                 'currency_code' => 'SBD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -439,6 +485,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SI',
                 'ISO_3166_3' => 'SVN',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -448,6 +495,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SK',
                 'ISO_3166_3' => 'SVK',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -457,6 +505,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SX',
                 'ISO_3166_3' => 'SXM',
                 'currency_code' => 'ANG',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -466,6 +515,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SG',
                 'ISO_3166_3' => 'SGP',
                 'currency_code' => 'SGD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -475,6 +525,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SL',
                 'ISO_3166_3' => 'SLE',
                 'currency_code' => 'SLL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -484,6 +535,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SC',
                 'ISO_3166_3' => 'SYC',
                 'currency_code' => 'SCR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -493,6 +545,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'RS',
                 'ISO_3166_3' => 'SRB',
                 'currency_code' => 'RSD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -502,6 +555,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SN',
                 'ISO_3166_3' => 'SEN',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -511,6 +565,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SA',
                 'ISO_3166_3' => 'SAU',
                 'currency_code' => 'SAR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -520,6 +575,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ST',
                 'ISO_3166_3' => 'STP',
                 'currency_code' => 'STD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -529,6 +585,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SM',
                 'ISO_3166_3' => 'SMR',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -538,6 +595,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'WS',
                 'ISO_3166_3' => 'WSM',
                 'currency_code' => 'WST',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -547,6 +605,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VC',
                 'ISO_3166_3' => 'VCT',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -556,6 +615,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PM',
                 'ISO_3166_3' => 'SPM',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -565,6 +625,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MF',
                 'ISO_3166_3' => 'MAF',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -574,6 +635,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LC',
                 'ISO_3166_3' => 'LCA',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -583,6 +645,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KN',
                 'ISO_3166_3' => 'KNA',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -592,6 +655,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SH',
                 'ISO_3166_3' => 'SHN',
                 'currency_code' => 'SHP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -601,6 +665,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BL',
                 'ISO_3166_3' => 'BLM',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -610,6 +675,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'RW',
                 'ISO_3166_3' => 'RWA',
                 'currency_code' => 'RWF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -619,6 +685,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'RU',
                 'ISO_3166_3' => 'RUS',
                 'currency_code' => 'RUB',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -628,6 +695,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'RO',
                 'ISO_3166_3' => 'ROU',
                 'currency_code' => 'RON',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -637,6 +705,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'RE',
                 'ISO_3166_3' => 'REU',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -646,6 +715,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'QA',
                 'ISO_3166_3' => 'QAT',
                 'currency_code' => 'QAR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -655,6 +725,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PR',
                 'ISO_3166_3' => 'PRI',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -664,6 +735,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PT',
                 'ISO_3166_3' => 'PRT',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -673,6 +745,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PL',
                 'ISO_3166_3' => 'POL',
                 'currency_code' => 'PLN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -682,6 +755,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PN',
                 'ISO_3166_3' => 'PCN',
                 'currency_code' => 'NZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -691,6 +765,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PH',
                 'ISO_3166_3' => 'PHL',
                 'currency_code' => 'PHP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -700,6 +775,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PE',
                 'ISO_3166_3' => 'PER',
                 'currency_code' => 'PEN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -709,6 +785,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PY',
                 'ISO_3166_3' => 'PRY',
                 'currency_code' => 'PYG',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -718,6 +795,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PG',
                 'ISO_3166_3' => 'PNG',
                 'currency_code' => 'PGK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -727,6 +805,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PA',
                 'ISO_3166_3' => 'PAN',
                 'currency_code' => 'PAB',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -736,6 +815,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PS',
                 'ISO_3166_3' => 'PSE',
                 'currency_code' => '',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -745,6 +825,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PW',
                 'ISO_3166_3' => 'PLW',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -754,6 +835,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PK',
                 'ISO_3166_3' => 'PAK',
                 'currency_code' => 'PKR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -763,6 +845,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'OM',
                 'ISO_3166_3' => 'OMN',
                 'currency_code' => 'OMR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -772,6 +855,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NO',
                 'ISO_3166_3' => 'NOR',
                 'currency_code' => 'NOK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -781,6 +865,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MP',
                 'ISO_3166_3' => 'MNP',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -790,6 +875,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NF',
                 'ISO_3166_3' => 'NFK',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -799,6 +885,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NU',
                 'ISO_3166_3' => 'NIU',
                 'currency_code' => 'NZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -808,6 +895,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NG',
                 'ISO_3166_3' => 'NGA',
                 'currency_code' => 'NGN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -817,6 +905,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NE',
                 'ISO_3166_3' => 'NER',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -826,6 +915,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NI',
                 'ISO_3166_3' => 'NIC',
                 'currency_code' => 'NIO',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -835,6 +925,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NZ',
                 'ISO_3166_3' => 'NZL',
                 'currency_code' => 'NZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -844,6 +935,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NC',
                 'ISO_3166_3' => 'NCL',
                 'currency_code' => 'XPF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -853,6 +945,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NL',
                 'ISO_3166_3' => 'NLD',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -862,6 +955,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NP',
                 'ISO_3166_3' => 'NPL',
                 'currency_code' => 'NPR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -871,6 +965,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NR',
                 'ISO_3166_3' => 'NRU',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -880,6 +975,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'NA',
                 'ISO_3166_3' => 'NAM',
                 'currency_code' => 'NAD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -889,6 +985,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MM',
                 'ISO_3166_3' => 'MMR',
                 'currency_code' => 'MMK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -898,6 +995,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MZ',
                 'ISO_3166_3' => 'MOZ',
                 'currency_code' => 'MZN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -907,6 +1005,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MA',
                 'ISO_3166_3' => 'MAR',
                 'currency_code' => 'MAD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -916,6 +1015,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MS',
                 'ISO_3166_3' => 'MSR',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -925,6 +1025,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ME',
                 'ISO_3166_3' => 'MNE',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -934,6 +1035,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MN',
                 'ISO_3166_3' => 'MNG',
                 'currency_code' => 'MNT',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -943,6 +1045,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MC',
                 'ISO_3166_3' => 'MCO',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -952,6 +1055,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MD',
                 'ISO_3166_3' => 'MDA',
                 'currency_code' => 'MDL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -961,6 +1065,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'FM',
                 'ISO_3166_3' => 'FSM',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -970,6 +1075,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MX',
                 'ISO_3166_3' => 'MEX',
                 'currency_code' => 'MXN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -979,6 +1085,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'YT',
                 'ISO_3166_3' => 'MYT',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -988,6 +1095,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MU',
                 'ISO_3166_3' => 'MUS',
                 'currency_code' => 'MUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -997,6 +1105,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MR',
                 'ISO_3166_3' => 'MRT',
                 'currency_code' => 'MRO',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1006,6 +1115,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MQ',
                 'ISO_3166_3' => 'MTQ',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1015,6 +1125,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MH',
                 'ISO_3166_3' => 'MHL',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1024,6 +1135,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MT',
                 'ISO_3166_3' => 'MLT',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1033,6 +1145,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ML',
                 'ISO_3166_3' => 'MLI',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1042,6 +1155,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MV',
                 'ISO_3166_3' => 'MDV',
                 'currency_code' => 'MVR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1051,6 +1165,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MY',
                 'ISO_3166_3' => 'MYS',
                 'currency_code' => 'MYR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1060,6 +1175,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MW',
                 'ISO_3166_3' => 'MWI',
                 'currency_code' => 'MWK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1069,6 +1185,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MG',
                 'ISO_3166_3' => 'MDG',
                 'currency_code' => 'MGA',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1078,6 +1195,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MK',
                 'ISO_3166_3' => 'MKD',
                 'currency_code' => 'MKD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1087,6 +1205,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'MO',
                 'ISO_3166_3' => 'MAC',
                 'currency_code' => 'MOP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1096,6 +1215,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LU',
                 'ISO_3166_3' => 'LUX',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1105,6 +1225,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LT',
                 'ISO_3166_3' => 'LTU',
                 'currency_code' => 'LTL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1114,6 +1235,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LI',
                 'ISO_3166_3' => 'LIE',
                 'currency_code' => 'CHF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1123,6 +1245,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LY',
                 'ISO_3166_3' => 'LBY',
                 'currency_code' => 'LYD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1132,6 +1255,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LR',
                 'ISO_3166_3' => 'LBR',
                 'currency_code' => 'LRD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1141,6 +1265,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LS',
                 'ISO_3166_3' => 'LSO',
                 'currency_code' => 'LSL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1150,6 +1275,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LB',
                 'ISO_3166_3' => 'LBN',
                 'currency_code' => 'LBP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1159,6 +1285,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LV',
                 'ISO_3166_3' => 'LVA',
                 'currency_code' => 'LVL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1168,6 +1295,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'LA',
                 'ISO_3166_3' => 'LAO',
                 'currency_code' => 'LAK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1177,6 +1305,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KG',
                 'ISO_3166_3' => 'KGZ',
                 'currency_code' => 'KGS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1186,6 +1315,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KW',
                 'ISO_3166_3' => 'KWT',
                 'currency_code' => 'KWD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1195,6 +1325,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KR',
                 'ISO_3166_3' => 'KOR',
                 'currency_code' => 'KRW',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1204,6 +1335,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KP',
                 'ISO_3166_3' => 'PRK',
                 'currency_code' => 'KPW',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1213,6 +1345,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KI',
                 'ISO_3166_3' => 'KIR',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1222,6 +1355,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KE',
                 'ISO_3166_3' => 'KEN',
                 'currency_code' => 'KES',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1231,6 +1365,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KZ',
                 'ISO_3166_3' => 'KAZ',
                 'currency_code' => 'KZT',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1240,6 +1375,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'JO',
                 'ISO_3166_3' => 'JOR',
                 'currency_code' => 'JOD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1249,6 +1385,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'JE',
                 'ISO_3166_3' => 'JEY',
                 'currency_code' => 'GBP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1258,6 +1395,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'JP',
                 'ISO_3166_3' => 'JPN',
                 'currency_code' => 'JPY',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1267,6 +1405,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'JM',
                 'ISO_3166_3' => 'JAM',
                 'currency_code' => 'JMD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1276,6 +1415,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IT',
                 'ISO_3166_3' => 'ITA',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1285,6 +1425,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IL',
                 'ISO_3166_3' => 'ISR',
                 'currency_code' => 'ILS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1294,6 +1435,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IM',
                 'ISO_3166_3' => 'IMN',
                 'currency_code' => 'GBP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1303,6 +1445,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IE',
                 'ISO_3166_3' => 'IRL',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1312,6 +1455,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IQ',
                 'ISO_3166_3' => 'IRQ',
                 'currency_code' => 'IQD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1321,6 +1465,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IR',
                 'ISO_3166_3' => 'IRN',
                 'currency_code' => 'IRR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1330,6 +1475,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ID',
                 'ISO_3166_3' => 'IDN',
                 'currency_code' => 'IDR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1339,6 +1485,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IN',
                 'ISO_3166_3' => 'IND',
                 'currency_code' => 'INR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1348,6 +1495,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IS',
                 'ISO_3166_3' => 'ISL',
                 'currency_code' => 'ISK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1357,6 +1505,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'HU',
                 'ISO_3166_3' => 'HUN',
                 'currency_code' => 'HUF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1366,6 +1515,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'HK',
                 'ISO_3166_3' => 'HKG',
                 'currency_code' => 'HKD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1375,6 +1525,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'HN',
                 'ISO_3166_3' => 'HND',
                 'currency_code' => 'HNL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1384,6 +1535,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'VA',
                 'ISO_3166_3' => 'VAT',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1393,6 +1545,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'HM',
                 'ISO_3166_3' => 'HMD',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1402,6 +1555,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'HT',
                 'ISO_3166_3' => 'HTI',
                 'currency_code' => 'HTG',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1411,6 +1565,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GY',
                 'ISO_3166_3' => 'GUY',
                 'currency_code' => 'GYD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1420,6 +1575,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GW',
                 'ISO_3166_3' => 'GNB',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1429,6 +1585,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GN',
                 'ISO_3166_3' => 'GIN',
                 'currency_code' => 'GNF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1438,6 +1595,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GG',
                 'ISO_3166_3' => 'GGY',
                 'currency_code' => 'GBP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1447,6 +1605,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GT',
                 'ISO_3166_3' => 'GTM',
                 'currency_code' => 'GTQ',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1456,6 +1615,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GU',
                 'ISO_3166_3' => 'GUM',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1465,6 +1625,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GP',
                 'ISO_3166_3' => 'GLP',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1474,6 +1635,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GD',
                 'ISO_3166_3' => 'GRD',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1483,6 +1645,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GL',
                 'ISO_3166_3' => 'GRL',
                 'currency_code' => 'DKK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1492,6 +1655,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GR',
                 'ISO_3166_3' => 'GRC',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1501,6 +1665,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GI',
                 'ISO_3166_3' => 'GIB',
                 'currency_code' => 'GIP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1510,6 +1675,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GH',
                 'ISO_3166_3' => 'GHA',
                 'currency_code' => 'GHS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1519,6 +1685,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'DE',
                 'ISO_3166_3' => 'DEU',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1528,6 +1695,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GE',
                 'ISO_3166_3' => 'GEO',
                 'currency_code' => 'GEL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1537,6 +1705,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GM',
                 'ISO_3166_3' => 'GMB',
                 'currency_code' => 'GMD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1546,6 +1715,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GA',
                 'ISO_3166_3' => 'GAB',
                 'currency_code' => 'XAF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1555,6 +1725,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TF',
                 'ISO_3166_3' => 'ATF',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1564,6 +1735,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'PF',
                 'ISO_3166_3' => 'PYF',
                 'currency_code' => 'XPF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1573,6 +1745,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GF',
                 'ISO_3166_3' => 'GUF',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1582,6 +1755,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'FR',
                 'ISO_3166_3' => 'FRA',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1591,6 +1765,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'FI',
                 'ISO_3166_3' => 'FIN',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1600,6 +1775,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'FJ',
                 'ISO_3166_3' => 'FJI',
                 'currency_code' => 'FJD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1609,6 +1785,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'FO',
                 'ISO_3166_3' => 'FRO',
                 'currency_code' => 'DKK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1618,6 +1795,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'FK',
                 'ISO_3166_3' => 'FLK',
                 'currency_code' => 'FKP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1627,6 +1805,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ET',
                 'ISO_3166_3' => 'ETH',
                 'currency_code' => 'ETB',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1636,6 +1815,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'EE',
                 'ISO_3166_3' => 'EST',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1645,6 +1825,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'ER',
                 'ISO_3166_3' => 'ERI',
                 'currency_code' => 'ERN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1654,6 +1835,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'GQ',
                 'ISO_3166_3' => 'GNQ',
                 'currency_code' => 'XAF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1663,6 +1845,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'SV',
                 'ISO_3166_3' => 'SLV',
                 'currency_code' => 'SVC',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1672,6 +1855,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'EG',
                 'ISO_3166_3' => 'EGY',
                 'currency_code' => 'EGP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1681,6 +1865,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'EC',
                 'ISO_3166_3' => 'ECU',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1690,6 +1875,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'DO',
                 'ISO_3166_3' => 'DOM',
                 'currency_code' => 'DOP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1699,6 +1885,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'DM',
                 'ISO_3166_3' => 'DMA',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1708,6 +1895,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'DJ',
                 'ISO_3166_3' => 'DJI',
                 'currency_code' => 'DJF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1717,6 +1905,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'DK',
                 'ISO_3166_3' => 'DNK',
                 'currency_code' => 'DKK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1726,6 +1915,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CZ',
                 'ISO_3166_3' => 'CZE',
                 'currency_code' => 'CZK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1735,6 +1925,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CY',
                 'ISO_3166_3' => 'CYP',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1744,6 +1935,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CW',
                 'ISO_3166_3' => 'CUW',
                 'currency_code' => 'ANG',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1753,6 +1945,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CU',
                 'ISO_3166_3' => 'CUB',
                 'currency_code' => 'CUP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1762,6 +1955,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'HR',
                 'ISO_3166_3' => 'HRV',
                 'currency_code' => 'HRK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1771,6 +1965,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CI',
                 'ISO_3166_3' => 'CIV',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1780,6 +1975,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CR',
                 'ISO_3166_3' => 'CRI',
                 'currency_code' => 'CRC',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1789,6 +1985,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CK',
                 'ISO_3166_3' => 'COK',
                 'currency_code' => 'NZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1798,6 +1995,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CD',
                 'ISO_3166_3' => 'COD',
                 'currency_code' => 'CDF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1807,6 +2005,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CG',
                 'ISO_3166_3' => 'COG',
                 'currency_code' => 'XAF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1816,6 +2015,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KM',
                 'ISO_3166_3' => 'COM',
                 'currency_code' => 'KMF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1825,6 +2025,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CO',
                 'ISO_3166_3' => 'COL',
                 'currency_code' => 'COP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1834,6 +2035,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CC',
                 'ISO_3166_3' => 'CCK',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1843,6 +2045,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CX',
                 'ISO_3166_3' => 'CXR',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1852,6 +2055,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CN',
                 'ISO_3166_3' => 'CHN',
                 'currency_code' => 'CNY',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1861,6 +2065,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CL',
                 'ISO_3166_3' => 'CHL',
                 'currency_code' => 'CLP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1870,6 +2075,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'TD',
                 'ISO_3166_3' => 'TCD',
                 'currency_code' => 'XAF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1879,6 +2085,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CF',
                 'ISO_3166_3' => 'CAF',
                 'currency_code' => 'XAF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1888,6 +2095,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KY',
                 'ISO_3166_3' => 'CYM',
                 'currency_code' => 'KYD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1897,6 +2105,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CV',
                 'ISO_3166_3' => 'CPV',
                 'currency_code' => 'CVE',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1906,6 +2115,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CA',
                 'ISO_3166_3' => 'CAN',
                 'currency_code' => 'CAD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1915,6 +2125,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'CM',
                 'ISO_3166_3' => 'CMR',
                 'currency_code' => 'XAF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1924,6 +2135,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'KH',
                 'ISO_3166_3' => 'KHM',
                 'currency_code' => 'KHR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1933,6 +2145,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BI',
                 'ISO_3166_3' => 'BDI',
                 'currency_code' => 'BIF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1942,6 +2155,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BF',
                 'ISO_3166_3' => 'BFA',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1951,6 +2165,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BG',
                 'ISO_3166_3' => 'BGR',
                 'currency_code' => 'BGN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1960,6 +2175,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BN',
                 'ISO_3166_3' => 'BRN',
                 'currency_code' => 'BND',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1969,6 +2185,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'IO',
                 'ISO_3166_3' => 'IOT',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1978,6 +2195,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BR',
                 'ISO_3166_3' => 'BRA',
                 'currency_code' => 'BRL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1987,6 +2205,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BV',
                 'ISO_3166_3' => 'BVT',
                 'currency_code' => 'NOK',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -1996,6 +2215,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BW',
                 'ISO_3166_3' => 'BWA',
                 'currency_code' => 'BWP',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2005,6 +2225,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BA',
                 'ISO_3166_3' => 'BIH',
                 'currency_code' => 'BAM',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2014,6 +2235,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BQ',
                 'ISO_3166_3' => 'BES',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2023,6 +2245,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BO',
                 'ISO_3166_3' => 'BOL',
                 'currency_code' => 'BOB',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2032,6 +2255,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BT',
                 'ISO_3166_3' => 'BTN',
                 'currency_code' => 'INR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2041,6 +2265,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BM',
                 'ISO_3166_3' => 'BMU',
                 'currency_code' => 'BMD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2050,6 +2275,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BJ',
                 'ISO_3166_3' => 'BEN',
                 'currency_code' => 'XOF',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2059,6 +2285,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BZ',
                 'ISO_3166_3' => 'BLZ',
                 'currency_code' => 'BZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2068,6 +2295,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BE',
                 'ISO_3166_3' => 'BEL',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2077,6 +2305,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BY',
                 'ISO_3166_3' => 'BLR',
                 'currency_code' => 'BYR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2086,6 +2315,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BB',
                 'ISO_3166_3' => 'BRB',
                 'currency_code' => 'BBD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2095,6 +2325,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BD',
                 'ISO_3166_3' => 'BGD',
                 'currency_code' => 'BDT',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2104,6 +2335,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BH',
                 'ISO_3166_3' => 'BHR',
                 'currency_code' => 'BHD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2113,6 +2345,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'BS',
                 'ISO_3166_3' => 'BHS',
                 'currency_code' => 'BSD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2122,6 +2355,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AZ',
                 'ISO_3166_3' => 'AZE',
                 'currency_code' => 'AZN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2131,6 +2365,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AT',
                 'ISO_3166_3' => 'AUT',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2140,6 +2375,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AU',
                 'ISO_3166_3' => 'AUS',
                 'currency_code' => 'AUD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2149,6 +2385,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AW',
                 'ISO_3166_3' => 'ABW',
                 'currency_code' => 'AWG',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2158,6 +2395,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AM',
                 'ISO_3166_3' => 'ARM',
                 'currency_code' => 'AMD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2167,6 +2405,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AR',
                 'ISO_3166_3' => 'ARG',
                 'currency_code' => 'ARS',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2176,6 +2415,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AG',
                 'ISO_3166_3' => 'ATG',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2185,6 +2425,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AQ',
                 'ISO_3166_3' => 'ATA',
                 'currency_code' => '',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2194,6 +2435,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AI',
                 'ISO_3166_3' => 'AIA',
                 'currency_code' => 'XCD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2203,6 +2445,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AO',
                 'ISO_3166_3' => 'AGO',
                 'currency_code' => 'AOA',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2212,6 +2455,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AD',
                 'ISO_3166_3' => ' and ',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2221,6 +2465,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'as',
                 'ISO_3166_3' => 'ASM',
                 'currency_code' => 'USD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2230,6 +2475,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'DZ',
                 'ISO_3166_3' => 'DZA',
                 'currency_code' => 'DZD',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2239,6 +2485,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AL',
                 'ISO_3166_3' => 'ALB',
                 'currency_code' => 'ALL',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2248,6 +2495,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AX',
                 'ISO_3166_3' => 'ALA',
                 'currency_code' => 'EUR',
+                'rate' => 0.0,
                 'status' => 1,
             ],
             [
@@ -2257,6 +2505,7 @@ class CountriesTableSeeder extends Seeder
                 'ISO_3166_2' => 'AF',
                 'ISO_3166_3' => 'AFG',
                 'currency_code' => 'AFN',
+                'rate' => 0.0,
                 'status' => 1,
             ],
         ];

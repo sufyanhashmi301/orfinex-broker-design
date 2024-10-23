@@ -215,6 +215,7 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
             Route::get('edit/{type}', 'methodEdit')->name('edit');
             Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+            Route::delete('delete/{id}', 'destroy')->name('delete')->withoutMiddleware('XSS');
         });
         //=============================== end deposit Method ================================
 
@@ -223,6 +224,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('export',  'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
+
+        Route::get('add', 'addDeposit')->name('add');
     });
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //=============================== withdraw Method ================================
@@ -233,6 +236,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
             Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
             Route::get('edit/{type}', 'methodEdit')->name('edit');
             Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+            Route::delete('delete/{id}', 'destroy')->name('delete')->withoutMiddleware('XSS');
+
         });
 
         //Schedule
@@ -244,6 +249,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('pending/export', 'pendingExport')->name('pending.export');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
+
+        Route::get('add', 'addWithdraw')->name('add');
 
     });
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
@@ -512,7 +519,13 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
 
     Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
     Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');
-    Route::post('platform/groups/store', [PlatformGroupController::class,'store']);
+    Route::post('platform/groups/store', [PlatformGroupController::class,'store'])->name('groups.store');
+    Route::get('platform/groups/manual', [PlatformGroupController::class, 'manualGroupListing'])->name('manual.platformGroups');
+    Route::post('platform/groups/store/manually', [PlatformGroupController::class,'storeManualGroup'])->name('groups.storeManually');
+    Route::get('platform/groups/{id}/edit', [PlatformGroupController::class,'editManualGroup'])->name('groups.editManually');
+    Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
+    Route::put('platform/groups/{id}', [PlatformGroupController::class, 'updateManualGroup'])->name('groups.updateManually');
+    Route::delete('platform/groups/{id}', [PlatformGroupController::class, 'deleteManualGroup'])->name('group.delete');
     Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
     Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
@@ -537,6 +550,14 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
     Route::get('settings/report-issues', function () {
         return view('backend.system.report_issues');
     })->name('reportIssues');
+
+    Route::get('settings/route', function () {
+        return view('backend.setting.customization.routes');
+    })->name('routeSetting');
+
+    Route::get('settings/dynamic-content', function () {
+        return view('backend.setting.customization.dynamic_content');
+    })->name('dynamicContent');
 
 
 });

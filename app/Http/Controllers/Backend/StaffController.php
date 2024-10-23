@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -41,9 +42,15 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $staffs = Admin::paginate(10);
+        $loggedInUser = Auth::user();
+        $staffs = Admin::all();
 
-        return view('backend.staff.index', compact('staffs'));
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $departments = Department::with('children')->whereNull('parent_id')->get();
+        $designations = Designation::with('children')->whereNull('parent_id')->get();
+
+        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'roles', 'departments', 'designations'));
+
     }
 
     public function create()
@@ -51,7 +58,7 @@ class StaffController extends Controller
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.create', compact('roles','departments','designations'));
+        return view('backend.staff.create', compact('roles','departments','designations'))->render();
     }
 
     /**
@@ -115,13 +122,11 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
-        $staff->getRoleNames()->first();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.edit', compact('staff', 'roles','departments','designations'))->render();
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
     }
 
     /**
@@ -224,9 +229,20 @@ class StaffController extends Controller
     }
 
 
-    public function security()
+    public function security($id)
     {
-        return view('backend.staff.security.index');
+
+        $user = Admin::find($id);
+        if (null == $user->google2fa_secret){
+            $google2fa = app('pragmarx.google2fa');
+            $secret = $google2fa->generateSecretKey();
+            //dd($user,$google2fa,$secret);
+            $user->update([
+                'google2fa_secret' => $secret,
+            ]);
+        }
+
+        return view('backend.staff.security.index', compact('user'));
     }
     public function twoFaPin()
     {
@@ -234,13 +250,7 @@ class StaffController extends Controller
     }
     public function twoFa()
     {
-        $user = \Auth::user();
-        $google2fa = app('pragmarx.google2fa');
-        $secret = $google2fa->generateSecretKey();
-//dd($user,$google2fa,$secret);
-        $user->update([
-            'google2fa_secret' => $secret,
-        ]);
+
         notify()->success(__('QR Code And Secret Key Generate successfully'));
 
         return redirect()->back();

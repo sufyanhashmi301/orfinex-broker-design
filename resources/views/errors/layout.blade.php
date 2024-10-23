@@ -80,6 +80,8 @@
         <script src="{{ asset('global/js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('global/js/rt-plugins.js') }}"></script>
         <script src="{{ asset('global/js/app.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
+        @yield('script')
     </body>
 </html>
 

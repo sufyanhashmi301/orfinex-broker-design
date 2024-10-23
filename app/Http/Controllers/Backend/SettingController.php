@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use Cache;
+use Exception;
 use App\Models\Setting;
 use App\Models\Country;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use Cache;
-use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\Foundation\Application;
 
 class SettingController extends Controller
 {
@@ -114,6 +115,12 @@ class SettingController extends Controller
 //        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
 
+        // update session expiry
+        $user = Auth::user();
+        auth()->user()->update([
+            'session_expiry' => $request->session_expiry
+        ]);
+
         try {
             $validSettings = array_keys($rules);
 //            dd($validSettings);
@@ -179,7 +186,7 @@ class SettingController extends Controller
 
     public static function currencySetting()
     {
-        $countries = Country::paginate(15);
+        $countries = Country::with('rate')->paginate(15);
         return view('backend.setting.site_setting.currency', compact('countries'));
     }
 

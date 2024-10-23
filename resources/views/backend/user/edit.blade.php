@@ -47,11 +47,13 @@
             <!-- User Status Update End-->
             </div>
             <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
+                
                 <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
                     <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#addTags">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Tag') }}
                     </a>
+                    
                     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                         <a href="{{ url()->previous() }}" class="btn btn-sm btn-white inline-flex items-center justify-center">
                             {{ __('Go Back') }}
@@ -340,7 +342,7 @@
 
                 <!-- investments -->
                 @can('investment-list')
-                    @include('backend.user.include.__accounts')
+                    {{-- @include('backend.user.include.__accounts') Uncomment later --}} 
                 @endcan
 
                 <!-- KYC Tab -->
@@ -399,6 +401,9 @@
     {{-- Modal for add Forex Account --}}
     @include('backend.user.include.__forex_account')
 
+    {{-- Modal for Add or Subtract Bonus --}}
+    @include('backend.user.include.__bonus')
+
     <!-- Modal for Add or Subtract Balance -->
     @can('customer-balance-add-or-subtract')
         @include('backend.user.include.__balance')
@@ -430,6 +435,10 @@
                 tags: true
             })
         });
+
+        $('#bonus-form').on('submit', function(){
+            $('.bonus-apply-now').prop('disabled', true)
+        })
 
         function confirmDelete(tagId,tagName) {
             $('#risk_profile_tag_id').val(tagId)
@@ -474,11 +483,18 @@
                 });
             });
 
-            //account type selection
-            $('#tradingAccount').on('change', function () {
+            //account type selection for Balance Module
+            $('#tradingAccount_balance').on('change', function () {
                 var selectedOption = $(this).find('option:selected');
                 var selectedAccountType = selectedOption.data('type');
-                $('#selectedAccountType').val(selectedAccountType);
+                $('#selectedAccountType_balance').val(selectedAccountType);
+            });
+
+            //account type selection for Bonus Module
+            $('#tradingAccount_bonus').on('change', function () {
+                var selectedOption = $(this).find('option:selected');
+                var selectedAccountType = selectedOption.data('type');
+                $('#selectedAccountType_bonus').val(selectedAccountType);
             });
 
             //send mail modal form open

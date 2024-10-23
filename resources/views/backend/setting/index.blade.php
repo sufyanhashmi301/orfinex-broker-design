@@ -140,6 +140,14 @@
                             {{ __('Transfers')}}
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.bonus.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Bonuses')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

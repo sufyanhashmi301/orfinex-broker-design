@@ -98,6 +98,7 @@ class ResetData extends Command
 
         $rank = Ranking::find(1);
         $sitename = 'brokeret';
+
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
@@ -131,8 +132,6 @@ class ResetData extends Command
             'action_url' => route('admin.user.edit',$superAdmin->id),
         ];
         Notification::create($data);
-
-
 
     }
 }

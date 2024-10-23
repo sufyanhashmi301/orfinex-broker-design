@@ -42,11 +42,16 @@ class KycController extends Controller
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
 //       dd($user->kyc );
         if ($checkLevel1) {
-            if ($user->kyc <= 1) {
+            if ($user->kyc < 1) {
                 notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
         }
+        if ($user->kyc >= kyc_completed_level()) {
+            notify()->error(__('Your Kyc already completed!'));
+            return redirect()->back();
+        }
+
         $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
 
         return view('frontend::user.kyc.basic.index', compact('kycs'));

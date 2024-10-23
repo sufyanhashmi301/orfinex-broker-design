@@ -248,8 +248,9 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            <?php $loss = isset($statsUser['result']['todayPNL_Realized']) ? number_format($statsUser['result']['todayPNL_Realized'], 2) : 0; ?>
-                            {{ $invest->daily_drawdown_limit + $loss}} {{ base_currency() }}
+                            <?php $loss = isset($statsUser['result']['todayPNL_Realized']) ? $statsUser['result']['todayPNL_Realized'] : 0; ?>
+{{--                            {{dd($loss)}}--}}
+                                {{ number_format($invest->daily_drawdown_limit + $loss,2)}} {{ base_currency() }}
                         </span>
                     </li>
                 </ul>
@@ -281,7 +282,7 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($invest->max_drawdown_limit) ? $invest->max_drawdown_limit + (int)$statsUser['result']['todayPNL_UnRealized'] : '0.00' }} {{base_currency()}}
+                            {{ isset($invest->max_drawdown_limit) ? number_format($invest->max_drawdown_limit + (int)$statsUser['result']['todayPNL_UnRealized'],2) : '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>

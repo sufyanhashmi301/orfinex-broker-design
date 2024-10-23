@@ -6936,6 +6936,9 @@ textarea.form-control.is-invalid{
 .pl-0{
   padding-left: 0px;
 }
+.pr-0{
+    padding-right: 0px;
+}
 .pb-2{
   padding-bottom: 0.5rem;
 }

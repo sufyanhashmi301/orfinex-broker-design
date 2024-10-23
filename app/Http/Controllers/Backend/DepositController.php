@@ -383,5 +383,10 @@ class DepositController extends Controller
         }
     }
 
+    public function addDeposit()
+    {
+        return view('backend.deposit.add_deposit');
+    }
+
 }
 

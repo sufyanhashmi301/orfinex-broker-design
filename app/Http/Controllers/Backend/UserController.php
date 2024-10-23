@@ -11,6 +11,7 @@ use App\Exports\DisabledUsersExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
+use App\Models\Bonus;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
@@ -75,7 +76,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-          $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::applyFilters($filters);
 
             return Datatables::of($data)
@@ -90,7 +91,7 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username','email','kyc', 'balance','equity','credit', 'status', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
 
@@ -132,7 +133,7 @@ class UserController extends Controller
                 ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('status', 'backend.user.include.__status')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc', 'balance','equity','credit','status', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
 
@@ -149,7 +150,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('status', 0)->latest();
-            $data->applyFilters( $filters);
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -161,7 +162,7 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc','balance','equity','credit', 'status', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
 
@@ -172,10 +173,10 @@ class UserController extends Controller
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $realForexAccounts)
-            ->where('Balance', '>',0)
-            ->pluck('Login');
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '>', 0)
+                ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
             $data = User::whereIn('id', $userIds)->latest();
             return Datatables::of($data)
@@ -189,7 +190,7 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -200,13 +201,13 @@ class UserController extends Controller
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
-            ->table('mt5_accounts')
-            ->whereIn('Login', $realForexAccounts)
-            ->where('Balance', '<=',0)
-            ->pluck('Login');
+                ->table('mt5_accounts')
+                ->whereIn('Login', $realForexAccounts)
+                ->where('Balance', '<=', 0)
+                ->pluck('Login');
 
-        $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-        $data = User::whereIn('id', $userIds)->latest();
+            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
+            $data = User::whereIn('id', $userIds)->latest();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -218,7 +219,7 @@ class UserController extends Controller
                 ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
                 ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
                 ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar','username','email', 'kyc', 'status','balance','equity','credit', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
                 ->make(true);
         }
 
@@ -240,25 +241,25 @@ class UserController extends Controller
             ->get();
         $tags = RiskProfileTag::where('status', true)
             ->get();
-            $countries = getCountries();
-        $customerGroups = CustomerGroup::where('status',1)->get();
-         $riskProfileTags = RiskProfileTag::all();
-         $kycLevels = KycLevel::where('status', 1)->get();
-         $kycStatus = KYCStatus::cases();
-//        $users = User::where('id', '<>', $id)
-//            ->where(function ($query) use ($id, $user) {
-//                $query->whereNull('ref_id')
-//                    ->orWhere('ref_id', '<>', $id);
-//            })
-//            ->where('id', '<>', $user->ref_id)
-//            ->get();
+        $countries = getCountries();
+        $customerGroups = CustomerGroup::where('status', 1)->get();
+        $riskProfileTags = RiskProfileTag::all();
+        $kycLevels = KycLevel::where('status', 1)->get();
+        $kycStatus = KYCStatus::cases();
+        //        $users = User::where('id', '<>', $id)
+        //            ->where(function ($query) use ($id, $user) {
+        //                $query->whereNull('ref_id')
+        //                    ->orWhere('ref_id', '<>', $id);
+        //            })
+        //            ->where('id', '<>', $user->ref_id)
+        //            ->get();
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
-            ->where(function($query) use ($tagNames) {
+            ->where(function ($query) use ($tagNames) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All')
-                    ->orWhere(function($subQuery) use ($tagNames) {
+                    ->orWhere(function ($subQuery) use ($tagNames) {
                         foreach ($tagNames as $tagName) {
                             $subQuery->orWhereJsonContains('tags', $tagName);
                         }
@@ -266,8 +267,9 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags','customerGroups', 'schemas', 'riskProfileTags','countries', 'kycLevels', 'kycStatus'));
+        $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses'));
     }
 
     public function destroy($id)
@@ -334,7 +336,6 @@ class UserController extends Controller
         notify()->success('Status Updated Successfully', 'success');
 
         return redirect()->back();
-
     }
 
     /**
@@ -425,19 +426,19 @@ class UserController extends Controller
         notify()->success('User Info Updated Successfully', 'success');
         return redirect()->back();
     }
-    public function kyc( Request $request,$id)
+    public function kyc(Request $request, $id)
     {
-//        dd($request->all());
+        //        dd($request->all());
         // Fetch the user
         $user = User::findOrFail($id);
 
         $kyc = $request->kyc;
 
-        if(empty($kyc)) {
+        if (empty($kyc)) {
             $kyc = 0;
             $data['email_verified_at'] = null;
         }
-        if($kyc >= KYCStatus::Level1->value){
+        if ($kyc >= KYCStatus::Level1->value) {
             $data['email_verified_at'] = Carbon::now();
         }
         $data['kyc'] = $kyc;
@@ -491,13 +492,14 @@ class UserController extends Controller
         ]);
         $targetId = $request->input('target_id');
         $targetType = $request->input('target_type');
+        // dd($targetType);
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
             return redirect()->back();
         }
 
         try {
-//dd($request->all());
+            //dd($request->all());
             $amount = $request->amount;
             $type = $request->type;
             $comment = $request->comment;
@@ -510,22 +512,22 @@ class UserController extends Controller
                     $data = [
                         'login' => $targetId,
                         'Amount' => $amount,
-                        'type' => 1,//deposit
+                        'type' => 1, //deposit
                         'TransactionComments' => $comment
                     ];
-                     $this->forexApiService->balanceOperation($data);
+                    $this->forexApiService->balanceOperation($data);
                 }
                 Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
 
                 $status = 'success';
                 $message = __('Account Balance Update');
-
             } elseif ($type == 'subtract') {
                 if ($targetType == 'forex') {
                     $balance = $this->forexApiService->getValidatedBalance([
                         'login' => $targetId
                     ]);
-//                    $balance = $this->getForexAccountBalance($targetId);
+                    //                    $balance = $this->getForexAccountBalance($targetId);
+
                     if (BigDecimal::of($amount)->compareTo($balance) > 0) {
                         notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
                         return redirect()->back();
@@ -533,12 +535,12 @@ class UserController extends Controller
                     $data = [
                         'login' => $targetId,
                         'Amount' => $amount,
-                        'type' => 2,//withdraw
+                        'type' => 2, //withdraw
                         'TransactionComments' => $comment
                     ];
                     $withdrawResponse = $this->forexApiService->balanceOperation($data);
-//                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-                    if(!$withdrawResponse['success']){
+                    //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
+                    if (!$withdrawResponse['success']) {
                         return redirect()->back();
                     }
                 }
@@ -550,13 +552,11 @@ class UserController extends Controller
             notify()->success($message, $status);
 
             return redirect()->back();
-
         } catch (Exception $e) {
             $status = 'warning';
             $message = __('something is wrong');
             $code = 503;
         }
-
     }
 
     /**
@@ -604,7 +604,6 @@ class UserController extends Controller
                 $shortcodes = array_merge($shortcodes, ['[[full_name]]' => $user->full_name]);
 
                 $this->mailNotify($user->email, 'user_mail', $shortcodes);
-
             } else {
                 $users = User::where('status', 1)->get();
 
@@ -613,11 +612,9 @@ class UserController extends Controller
 
                     $this->mailNotify($user->email, 'user_mail', $shortcodes);
                 }
-
             }
             $status = 'success';
             $message = __('Mail Send Successfully');
-
         } catch (Exception $e) {
 
             $status = 'warning';
@@ -651,7 +648,7 @@ class UserController extends Controller
     }
     public function ibInfo($id, Request $request)
     {
-//dd($id);
+        //dd($id);
         if ($request->ajax()) {
             $data = User::where('id', $id)->latest();
 
@@ -659,7 +656,7 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->editColumn('ib_status', 'backend.user.include.__ib_status')
                 ->addColumn('action', 'backend.user.include.__ib_action')
-                ->rawColumns(['ib_status','action'])
+                ->rawColumns(['ib_status', 'action'])
                 ->make(true);
         }
     }
@@ -676,154 +673,152 @@ class UserController extends Controller
 
 
     public function createCustomer()
-{
-    // Get the location (e.g., from a user's profile or a service like IP-based location)
-    $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+    {
+        // Get the location (e.g., from a user's profile or a service like IP-based location)
+        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
 
-    // Assuming this function returns an array of countries
-    $countries = getCountries();
-    $kycLevels = KycLevel::where('status', 1)->get();
-    $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
-// dd($kycLevels);
-    // Get all risk profile tags
-    $riskProfileTags = RiskProfileTag::all();
-    $kycStatus = KYCStatus::cases();
-    // dd($kycstatus);
+        // Assuming this function returns an array of countries
+        $countries = getCountries();
+        $kycLevels = KycLevel::where('status', 1)->get();
+        $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
+        // dd($kycLevels);
+        // Get all risk profile tags
+        $riskProfileTags = RiskProfileTag::all();
+        $kycStatus = KYCStatus::cases();
+        // dd($kycstatus);
 
-    return view('backend.user.create', compact('location', 'countries', 'riskProfileTags','kycLevels','kycStatus','kycs'));
-}
+        return view('backend.user.create', compact('location', 'countries', 'riskProfileTags', 'kycLevels', 'kycStatus', 'kycs'));
+    }
 
-public function store(Request $request)
-{
-    // Get setting-based flags
-    $isUsername = (bool) getPageSetting('username_show');
-    $isCountry = (bool) getPageSetting('country_show');
-    $isPhone = (bool) getPageSetting('phone_show');
+    public function store(Request $request)
+    {
+        // Get setting-based flags
+        $isUsername = (bool) getPageSetting('username_show');
+        $isCountry = (bool) getPageSetting('country_show');
+        $isPhone = (bool) getPageSetting('phone_show');
 
-    // Validate the request data
-    try {
-        $validatedData = $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
-            'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
-            'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'email_verified_at' => 'nullable|date',
-            'gender' => 'in:male,female,other|nullable',
-            'city' => 'string|max:255|nullable',
-            'zip_code' => 'string|max:10|nullable',
-            'address' => 'string|max:255|nullable',
-            'risk_profile_tags' => 'array|nullable',
-            'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
-            'comment' => 'nullable|string|max:500',
-            'kyc' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    // Handle KYC Levels or KYC Status enum values
-                    if (Str::startsWith($value, 'kyc_')) {
-                        $statusValue = str_replace('kyc_', '', $value);
-                        if (!in_array((int) $statusValue, array_column(KYCStatus::cases(), 'value'))) {
-                            $fail('The selected KYC status is invalid.');
+        // Validate the request data
+        try {
+            $validatedData = $request->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
+                'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
+                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'email_verified_at' => 'nullable|date',
+                'gender' => 'in:male,female,other|nullable',
+                'city' => 'string|max:255|nullable',
+                'zip_code' => 'string|max:10|nullable',
+                'address' => 'string|max:255|nullable',
+                'risk_profile_tags' => 'array|nullable',
+                'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
+                'comment' => 'nullable|string|max:500',
+                'kyc' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        // Handle KYC Levels or KYC Status enum values
+                        if (Str::startsWith($value, 'kyc_')) {
+                            $statusValue = str_replace('kyc_', '', $value);
+                            if (!in_array((int) $statusValue, array_column(KYCStatus::cases(), 'value'))) {
+                                $fail('The selected KYC status is invalid.');
+                            }
+                        } elseif (!KycLevel::where('id', $value)->exists()) {
+                            $fail('The selected KYC level is invalid.');
                         }
-                    } elseif (!KycLevel::where('id', $value)->exists()) {
-                        $fail('The selected KYC level is invalid.');
-                    }
-                },
-            ],
-            'password' => ['required', 'string', 'min:8'],
-            'date_of_birth' => 'nullable|date',
-        ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return redirect()->back()->withErrors($e->errors())->withInput();
-    }
-
-    // Collect input data
-    $input = $request->only([
-        'first_name',
-        'last_name',
-        'country',
-        'username',
-        'phone',
-        'email',
-        'gender',
-        'date_of_birth',
-        'city',
-        'zip_code',
-        'address',
-        'kyc',
-        'risk_profile_tags',
-        'comment',
-        'password',
-    ]);
-
-    // Ensure date_of_birth is null if not provided
-    $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
-
-    // Get location details (e.g., from user's profile or a service)
-    $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
-
-    // Set country and phone depending on settings and input
-    $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
-    $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
-
-    // Generate a username if it’s not provided
-    $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
-
-    // Get the ranking
-    $rank = Ranking::find(1);
-
-    // Handle the status value
-    $kyc = $input['kyc'];
-    if (Str::startsWith($kyc, 'kyc_')) {
-        $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
-    } else {
-        $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
-    }
-
-    // Create the user with exception handling
-    try {
-        $user = User::create([
-            'ranking_id' => $rank->id,
-            'rankings' => json_encode([$rank->id]),
-            'first_name' => $input['first_name'],
-            'last_name' => $input['last_name'],
-            'country' => $country,
-            'username' => $username,
-            'phone' => $phone,
-            'email' => $input['email'],
-            'gender' => $input['gender'],
-            'city' => $input['city'],
-            'zip_code' => $input['zip_code'],
-            'address' => $input['address'],
-            'comment' => $input['comment'],
-            'password' => Hash::make($input['password']),
-            'date_of_birth' => $input['date_of_birth'],
-            'email_verified_at' => $request->has('is_email_verified') ? now() : null,
-            'kyc' => $kyc,
-        ]);
-
-        // Handle risk profile tags
-        if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
-            $user->riskProfileTags()->attach($input['risk_profile_tags']);
+                    },
+                ],
+                'password' => ['required', 'string', 'min:8'],
+                'date_of_birth' => 'nullable|date',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
-    } catch (\Exception $e) {
-        return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
+        // Collect input data
+        $input = $request->only([
+            'first_name',
+            'last_name',
+            'country',
+            'username',
+            'phone',
+            'email',
+            'gender',
+            'date_of_birth',
+            'city',
+            'zip_code',
+            'address',
+            'kyc',
+            'risk_profile_tags',
+            'comment',
+            'password',
+        ]);
+
+        // Ensure date_of_birth is null if not provided
+        $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
+
+        // Get location details (e.g., from user's profile or a service)
+        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+
+        // Set country and phone depending on settings and input
+        $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
+        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
+
+        // Generate a username if it’s not provided
+        $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
+
+        // Get the ranking
+        $rank = Ranking::find(1);
+
+        // Handle the status value
+        $kyc = $input['kyc'];
+        if (Str::startsWith($kyc, 'kyc_')) {
+            $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
+        } else {
+            $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
+        }
+
+        // Create the user with exception handling
+        try {
+            $user = User::create([
+                'ranking_id' => $rank->id,
+                'rankings' => json_encode([$rank->id]),
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'country' => $country,
+                'username' => $username,
+                'phone' => $phone,
+                'email' => $input['email'],
+                'gender' => $input['gender'],
+                'city' => $input['city'],
+                'zip_code' => $input['zip_code'],
+                'address' => $input['address'],
+                'comment' => $input['comment'],
+                'password' => Hash::make($input['password']),
+                'date_of_birth' => $input['date_of_birth'],
+                'email_verified_at' => $request->has('is_email_verified') ? now() : null,
+                'kyc' => $kyc,
+            ]);
+
+            // Handle risk profile tags
+            if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
+                $user->riskProfileTags()->attach($input['risk_profile_tags']);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
+        }
+        notify()->success('Customer created successfully', 'success');
+        // Redirect to the user index with success message
+        return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
-    notify()->success('Customer created successfully', 'success');
-    // Redirect to the user index with success message
-    return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
-}
 
 
-     public function createNote(Request $request,$id)
-     {
-         $user = User::find($id);
-         $user->update(['notes' => $request->notes]);
-         notify()->success('Note added successfully');
+    public function createNote(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->update(['notes' => $request->notes]);
+        notify()->success('Note added successfully');
 
-         return redirect()->back();
-     }
-
+        return redirect()->back();
+    }
 }

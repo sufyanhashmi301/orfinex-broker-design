@@ -6,7 +6,10 @@ use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\ResetData;
+use App\Console\Commands\UpdateExchangeRates;
+
 use App\Console\Commands\SyncForexAccountsViaEmailForBanex;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
@@ -20,13 +23,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('exchange:update-rates')->everyThirtyMinutes();
+        $schedule->command('tokens:update-rates')->everyThirtyMinutes();
 //        if(url('/') == 'http://brokerdemo.brokeret.com') {
 //            $schedule->command('reset:data')->daily();
 //        }
 //        $schedule->command('ib:record')->dailyAt('00:10');
 //        $schedule->command('multiIB:Bonus')->dailyAt('00:30');
 
-        $schedule->command('sync:forex-accounts-via-email-banex')->everyFiveMinutes();
+//        $schedule->command('sync:forex-accounts-via-email-banex')->everyFiveMinutes();
 //        $schedule->command('ib:record')->everyMinute();
 //        $schedule->command('forex:create-accounts-from-mysql-to-mt5')->everyTwoMinutes();
 //        $schedule->command('multiIB:Bonus')->everyMinute();
@@ -54,6 +59,9 @@ class Kernel extends ConsoleKernel
         ResetData::class,
         IBProfitRecord::class,
         MultiIbBonus::class,
+        Commands\UpdateExchangeRates::class,
+        Commands\UpdateTokenRates::class,
         SyncForexAccountsViaEmailForBanex::class,
+
     ];
 }

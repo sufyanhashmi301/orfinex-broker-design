@@ -83,30 +83,39 @@
                         @if($type == 'manual')
                             <div class="input-area relative">
                                 <label class="form-label" for="">{{ __('Currency:') }}</label>
-                                <input
+                                {{-- <input
                                     type="text"
                                     class="form-control"
                                     name="currency"
                                     id="currency"
-                                />
+                                /> --}}
+                                <select name="currency" class="select2 form-control w-full select-manual-currency" placeholder="Select Currency">
+                                    <option value=""></option>
+                                    @foreach( $rates_with_countries as $field)
+                                        <option  value="{{ $field->currency_code }}">
+                                            {{ $field->currency_code  }} ({{ $field->currency_name }})
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         @endif
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Currency Symbol:') }}</label>
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control currency-symbol"
                                 name="currency_symbol"
-                                id="currency"
+                   
+                                readonly
                             />
                         </div>
                         <div class="input-area relative">
                             <label class="form-label" for="">{{ __('Conversion Rate:') }}</label>
                             <div class="joint-input relative">
                                 <span class="absolute left-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1">
-                                    {{'1 '.' '.$currency. ' ='}}
+                                    {{'1 '.' ' . $currency. ' ='}}
                                 </span>
-                                <input type="text" class="form-control !pl-16.5 !pr-9" name="rate"/>
+                                <input type="text"  class="form-control !pl-16.5 !pr-9 display-conversion-rate" name="rate" readonly />
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm border-r border-r-slate-200 dark:border-r-slate-700 flex items-center justify-center px-1" id="currency-selected"></span>
                             </div>
                         </div>
@@ -201,6 +210,38 @@
     <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
     <script>
 
+        let get_rate = (code) => {
+     
+            $.ajax({
+                url:  '{{ route("admin.settings.currency.get-rate", ":code") }}'.replace(':code', code),
+                type: 'GET',
+                success: function(response) {
+                    // Handle the success response (you get the rate here)
+                    if (response.rate) {
+                        // You can also update a field or display the result on the page
+                        $('.display-conversion-rate').val(response.rate.toFixed(6));
+                        $('.currency-symbol').val(response.symbol);
+                    } else {
+                        console.log(response.error);
+                    }
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    console.log('Error fetching rate');
+                }
+            });
+        }
+
+        // Manual
+        $('.select-manual-currency').on('change', function(){
+            get_rate($(this).val())
+        })
+
+        // Auto
+        $('#currency').on('change', function(){
+            get_rate($(this).val())
+        })
+
         tinymce.init({
             selector: 'textarea.basicTinymce',
             height: 500,
@@ -223,6 +264,7 @@
             let currency = null;
             $("#currency").on('change', function () {
                 if (currency === null) {
+                    $('#currency-selected').text(this.value);
                     $('#currency-selected').text(this.value);
                 }
             });
@@ -277,6 +319,7 @@
                     $('#currency').html($data.view);
                     $('#currency-selected').text($data.pay_currency);
                     currency = $data.pay_currency
+                    get_rate($('#currency').val())
                 })
             })
 

@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Backend;
 
+use Txn;
+use Purifier;
+use DataTables;
+use Carbon\Carbon;
+use App\Models\Rate;
+use App\Enums\TxnType;
+use App\Models\Invest;
+use App\Models\Country;
+use App\Models\Gateway;
+use App\Enums\TxnStatus;
 use App\Enums\GatewayType;
 use App\Enums\InvestStatus;
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Exports\DepositsExport;
-use App\Http\Controllers\Controller;
-use App\Models\DepositMethod;
-use App\Models\ForexAccount;
-use App\Models\Gateway;
-use App\Models\Invest;
-use App\Models\LevelReferral;
 use App\Models\Transaction;
-use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use Carbon\Carbon;
-use DataTables;
+use App\Models\ForexAccount;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\DepositMethod;
+use App\Models\LevelReferral;
+use App\Traits\ForexApiTrait;
+use App\Exports\DepositsExport;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
-use Purifier;
-use Txn;
+use Illuminate\Support\Facades\Validator;
 
 class DepositController extends Controller
 {
@@ -59,8 +61,9 @@ class DepositController extends Controller
     public function createMethod($type)
     {
         $gateways = Gateway::where('status', true)->get();
+        $rates_with_countries = Rate::with('country')->get();
 
-        return view('backend.deposit.create_method', compact('type', 'gateways'));
+        return view('backend.deposit.create_method', compact('type', 'gateways', 'rates_with_countries'));
     }
 
     public function methodStore(Request $request)

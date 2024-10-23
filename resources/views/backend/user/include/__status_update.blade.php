@@ -52,6 +52,12 @@
                     </a>
                 </span>
             @endcan
+            <span data-bs-toggle="modal" data-bs-target="#addSubBonus">
+                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
+                   data-tippy-theme="dark" data-tippy-content="Add Bonus">
+                    <iconify-icon icon="lucide:credit-card"></iconify-icon>
+                </a>
+            </span>
             {{--@can('Delete User')--}}
             <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"

@@ -84,7 +84,42 @@
                                 {{ $label }}
                                 </option>
                             @endforeach
-                        </select>
+                            </select>
+                        @endif
+
+
+                        @if($field['name'] == 'home_redirect')
+                            <select name="{{$field['name']}}" class="form-control w-100" id="">
+                            <option @selected(oldSetting($field['name'],$section) == '/')
+                                    value="/"> {{ __('Home Page') }}
+                            </option>
+                            @foreach($pages as $page)
+                                @if($page->status)
+                                    <option @selected(oldSetting($field['name'],$section) == $page->url)
+                                            value="{{$page->url}}"> {{ ucwords($page->title) .' '. __('Page')  }}
+                                    </option>
+                                @endif
+                            @endforeach
+                            </select>
+
+                        @endif
+
+                        @if($field['name'] == 'session_expiry')
+
+                            @php
+                                $staff = Auth::user();
+                            @endphp
+
+                            <select name="{{$field['name']}}" class="form-control w-100" id="">
+                            </option>
+                                    <option value="60" @selected($staff->session_expiry == '60')>{{ __('1 Hour') }}</option>
+                                    <option value="360" @selected($staff->session_expiry == '360')>{{ __('6 Hours') }}</option>
+                                    <option value="720" @selected($staff->session_expiry == '720')>{{ __('12 Hours') }}</option>
+                                    <option value="1440" @selected($staff->session_expiry == '1440')>{{ __('24 Hours') }}</option>
+                                    <option value="10080" @selected($staff->session_expiry == '10080')>{{ __('1 Week') }}</option>
+                            </select>
+
+                        @endif
                     </div>
                 @else
                     <div class="input-area">

@@ -138,27 +138,8 @@ class BonusService{
 
     if($type == 'forex') {
 
-      // --- Bonus Basic fns ---
       // assigning the bonus id to schema types
       $bonus->forex_schemas()->sync($forex_account_types);
-      // --- Bonus Basic fns ---
-
-      // --- Attaching to accounts ---
-      // Get all the forex_accounts (account_type:real, status:ongoing) of the selected account types
-      $forexAccounts = ForexAccount::whereIn('forex_schema_id', $forex_account_types)->where('account_type', 'real')->where('status', 'ongoing')->with('user')->get();
-
-      foreach($forexAccounts as $account) {
-        $account->user->bonuses()->attach($bonus->id, [
-          'added_by' => Auth::id(),
-          'type' => $type,
-          'amount' => 0,
-          'transaction_id' => 0,
-          'account_target_id' => $account->login,
-          'account_target_type' => $type
-        ]);
-      }
-      // --- Attaching to accounts ---
-
 
     }
 

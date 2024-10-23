@@ -45,7 +45,7 @@ class StoreBonusRequest extends FormRequest
             ],
             "bonus_name" => "string|required|max:255",
             "start_date" => "date|required",
-            "last_date" => "date|required|after:start_date", // Make sure the last_date is a valid date after or equal to start_date",
+            "last_date" => "date|required|after:start_date|after:today", // Make sure the last_date is a valid date after or equal to start_date",
             "type" => "string|required",
             "bonus_removal_type" => "string|required",
             "bonus_removal_amount" => 'numeric|required',

@@ -319,11 +319,11 @@ class Txn
             }
 
             // create new deduction record
-             $bonus_deduction = new BonusDeduction();
-             $bonus_deduction->withdraw_transaction_id = $transaction->id;
-             $bonus_deduction->bonus_transaction_id = $bonus_txn->id;
-             $bonus_deduction->deducted_amount = $deducted_amount;
-             $bonus_deduction->save();
+            $bonus_deduction = new BonusDeduction();
+            $bonus_deduction->withdraw_transaction_id = $transaction->id;
+            $bonus_deduction->bonus_transaction_id = $bonus_txn->id;
+            $bonus_deduction->deducted_amount = $deducted_amount;
+            $bonus_deduction->save();
         }
 
         if ($remaining_bonus_to_remove > 0) {
@@ -359,7 +359,15 @@ class Txn
         // if there is full_bonus then remove the remaning bonus from it
         if( $bonus_removal_type['type'] == 'full_bonus' ) {
             $total_removed_bonus = $largest_given_bonus_active_transaction->bonus_amount_left;
+            $deducted_amount = $largest_given_bonus_active_transaction->bonus_amount_left;
             $largest_given_bonus_active_transaction->decrement('bonus_amount_left', $total_removed_bonus);
+
+            // create new deduction record
+            $bonus_deduction = new BonusDeduction();
+            $bonus_deduction->withdraw_transaction_id = $transaction->id;
+            $bonus_deduction->bonus_transaction_id = $largest_given_bonus_active_transaction->id;
+            $bonus_deduction->deducted_amount = $deducted_amount;
+            $bonus_deduction->save();
         }
 
         // if type is percentage

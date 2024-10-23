@@ -41,11 +41,17 @@ class KycController extends Controller
         $user = Auth::user();
         $checkLevel1 = KycLevel::where('slug', KycLevelSlug::LEVEL1)->where('status', true)->first();
         if ($checkLevel1) {
-            if ($user->email_verified_at == null) {
-                notify()->error('kindly complete the level 1 first');
+
+            if ($user->kyc < 1) {
+                notify()->error(__('kindly complete the level 1 first'));
                 return redirect()->back();
             }
         }
+        if ($user->kyc >= kyc_completed_level()) {
+            notify()->error(__('Your Kyc already completed!'));
+            return redirect()->back();
+        }
+
         $kycs = Kyc::where('kyc_sub_level_id', 3)->where('status', true)->get();
 
         return view('frontend::user.kyc.basic.index', compact('kycs'));
@@ -66,7 +72,7 @@ class KycController extends Controller
         $user = \Auth::user();
         if (empty($user->kyc_token)) {
             $externalUserId = $user->id;
-            $levelName = 'Orfinex Verification';
+            $levelName = 'Verification';
 
             $testObject = new SumsubClient($SUMSUB_APP_TOKEN, $SUMSUB_SECRET_KEY);
 

@@ -218,6 +218,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('export',  'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
+
+        Route::get('add', 'addDeposit')->name('add');
     });
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //=============================== withdraw Method ================================
@@ -241,6 +243,8 @@ Route::middleware(['2fa_admin','payment_access', 'set.session.lifetime:admin'])-
         Route::post('pending/export', 'pendingExport')->name('pending.export');
         Route::get('action/{id}', 'withdrawAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
+
+        Route::get('add', 'addWithdraw')->name('add');
 
     });
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {

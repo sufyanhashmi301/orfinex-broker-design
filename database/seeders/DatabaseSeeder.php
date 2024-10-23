@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(Match2PayGatewaySeeder::class);
         $this->call(EmailTemplatesSeeder::class);
         $this->call(DefaultGroupSeeder::class);
+        $this->call(PluginSeeder::class);
 
 
     }

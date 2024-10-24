@@ -1221,6 +1221,19 @@ return [
             ]
         ],
     ],
+    'forex_account_settings' => [
+        'title' => 'Forex Accounts Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'forex_account_create_limit', // unique name for field
+                'label' => 'Forex Account Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 10, // default value if you want
+            ],
+        ],
+    ],
     'external' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [

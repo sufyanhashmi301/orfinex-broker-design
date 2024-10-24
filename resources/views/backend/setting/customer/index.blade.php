@@ -27,12 +27,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.ib-group.index') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.ib-group.index') }}">
+                <a href="{{ route('admin.ib-group.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.ib-group.index') }}">
                     {{ __('IB Groups') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.settings.customer.permissions') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.customer.permissions') }}">
+                <a href="{{ route('admin.settings.customer.permissions') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.customer.permissions') }}">
                     {{ __('Permission') }}
                 </a>
             </li>

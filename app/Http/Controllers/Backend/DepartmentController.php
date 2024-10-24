@@ -21,10 +21,13 @@ class DepartmentController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            //$data = Department::latest('updated_at');
-            $data = Department::with('parent')->latest('updated_at');
+        // Fetch the data
+        $data = Department::with('parent')->latest('updated_at');
 
+        // Get the count of records
+        $dataCount = $data->count();
+
+        if ($request->ajax()) {
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('name', 'backend.departments.include.__name')
@@ -37,7 +40,7 @@ class DepartmentController extends Controller
                 ->make(true);
         }
 
-        return view('backend.departments.index');
+        return view('backend.departments.index', compact('dataCount'));
 
     }
 

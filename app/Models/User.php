@@ -98,6 +98,13 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tag_user');
     }
+
+
+    public function leverageUpdates()
+    {
+        return $this->hasMany(LeverageUpdate::class, 'user_id');
+    }
+
     public function notes()
     {
         return $this->hasMany(Note::class, 'user_id');

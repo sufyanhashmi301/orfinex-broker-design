@@ -252,6 +252,11 @@
                                 {{ __('Change Leverage') }}
                             </a>
                         </li>
+                        <li>
+                            <a href="{{route('admin.pending-leverage')}}" class="{{ isActive('admin.pending-leverage') }}">
+                                {{ __('Pending Leverage') }}
+                            </a>
+                        </li>
                     </ul>
 
                 </li>

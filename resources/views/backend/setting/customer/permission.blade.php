@@ -4,8 +4,8 @@
 @endsection
 @section('customer-content')
     <?php
-        $section = 'permission';
-        $fields = config('setting.permission');
+        $section = 'customer_permission';
+        $fields = config('setting.customer_permission');
         //   dd($fields);
     ?>
     <div class="card">

@@ -477,6 +477,14 @@ return [
                     '1 Week' => '1 Week',
                 ],
             ],
+            [
+                'type' => 'dropdown', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'session_expiry', // unique name for field
+                'label' => 'Session Expiry', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => '/', // default value if you want
+            ],
         ],
     ],
 

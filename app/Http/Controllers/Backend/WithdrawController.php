@@ -2,36 +2,37 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Enums\TxnTargetType;
-use App\Exports\PendingWithdrawsExport;
-use App\Exports\WithdrawsExport;
-use App\Http\Controllers\Controller;
-use App\Models\Gateway;
-use App\Models\Transaction;
-use App\Models\User;
-use App\Models\WithdrawAccount;
-use App\Models\WithdrawalSchedule;
-use App\Models\WithdrawMethod;
-use App\Services\ForexApiService;
-use App\Services\WalletService;
-use App\Traits\ForexApiTrait;
-use App\Traits\ImageUpload;
-use App\Traits\NotifyTrait;
-use Brick\Math\BigDecimal;
-use DataTables;
-use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
 use Str;
 use Txn;
+use Exception;
+use DataTables;
+use App\Models\Rate;
+use App\Models\User;
+use App\Enums\TxnType;
+use App\Models\Gateway;
+use App\Enums\TxnStatus;
+use Brick\Math\BigDecimal;
+use App\Models\Transaction;
+use App\Traits\ImageUpload;
+use App\Traits\NotifyTrait;
+use App\Enums\TxnTargetType;
+use Illuminate\Http\Request;
+use App\Traits\ForexApiTrait;
+use App\Models\WithdrawMethod;
+use App\Models\WithdrawAccount;
+use App\Services\WalletService;
+use App\Exports\WithdrawsExport;
+use App\Services\ForexApiService;
+use Illuminate\Http\JsonResponse;
+use App\Models\WithdrawalSchedule;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\Factory;
+use App\Exports\PendingWithdrawsExport;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Foundation\Application;
 
 class WithdrawController extends Controller
 {
@@ -80,8 +81,9 @@ class WithdrawController extends Controller
             'route' => route('admin.withdraw.method.list', $type),
         ];
         $gateways = Gateway::where('status', true)->whereNot('is_withdraw', '=', '0')->get();
+        $rates_with_countries = Rate::with('country')->get();
 
-        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways'));
+        return view('backend.withdraw.method_create', compact('button', 'type', 'gateways', 'rates_with_countries'));
     }
 
     /**

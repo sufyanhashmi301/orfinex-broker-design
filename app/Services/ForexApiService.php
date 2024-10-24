@@ -172,6 +172,15 @@ class ForexApiService
         return BigDecimal::of(0);
     }
 
+    // To check the current Credit
+    public function getCurrentCredit($data){
+        $response = $this->getBalance($data);
+        if ($response['success'] === true) {
+            return BigDecimal::of($response['result']['credit']);
+        }
+        return BigDecimal::of(0);
+    }
+
 
     // Risk Score APIs
     public function getTotalRiskScore($data)

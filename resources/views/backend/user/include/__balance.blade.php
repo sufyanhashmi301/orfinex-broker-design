@@ -22,7 +22,7 @@
             <div class="modal-body p-6 pt-0">
                 <form action="{{ route('admin.user.balance-update',$user->id) }}" method="post" class="space-y-5">
                     @csrf
-                    <input type="hidden" name="target_type" id="selectedAccountType" value="">
+                    <input type="hidden" name="target_type" id="selectedAccountType_balance" value="" >
                     <div class="input-area">
                         <div class="switch-field flex overflow-hidden">
                             <input
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="input-area">
-                        <select class="form-control w-100" name="target_id" id="tradingAccount">
+                        <select class="form-control w-100" name="target_id" id="tradingAccount_balance">
                             <option value="">Select Account</option>
                                 @foreach($realForexAccounts as $forexAccount)
                                     <option value="{{$forexAccount->login}}" data-type="forex">
@@ -74,12 +74,15 @@
                                     placeholder="Comment Message" rows="6"></textarea>
                     </div>
                     <div class="input-area text-right">
+
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                             {{ __('Apply Now') }}
                         </button>
                     </div>
                 </form>
+
+                
 
             </div>
         </div>

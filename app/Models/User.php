@@ -376,6 +376,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return count(json_decode($this->rankings, true));
     }
 
+    public function bonuses(){
+        return $this->belongsToMany(Bonus::class)->withPivot('transaction_id', 'account_target_id', 'account_target_type', 'added_by', 'type', 'amount');
+    }
+
     protected function google2faSecret(): Attribute
     {
         return new Attribute(

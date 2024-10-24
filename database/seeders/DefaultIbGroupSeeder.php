@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\IBGroup;
+use App\Models\IbGroup;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DefaultIbGroupSeeder extends Seeder
 {
@@ -11,7 +12,7 @@ class DefaultIbGroupSeeder extends Seeder
     {
         DB::table('ib_groups')->truncate();
 
-        IBGroup::firstOrCreate(
+        IbGroup::firstOrCreate(
             ['name' => 'Default IB'], // Ensure uniqueness based on the 'name' column
             ['status' => 1] // Set any other attributes for the default group
         );

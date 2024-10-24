@@ -10,5 +10,10 @@
                 {{ __('Data Export') }}
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.settings.endToEndEncryption') }}" class="navItem {{ isActive('admin.settings.endToEndEncryption') }}">
+                {{ __('Data Encryption') }}
+            </a>
+        </li>
     </ul>
 @endsection

@@ -186,8 +186,11 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.settings.gdpr') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('GDPR') }}
+                        <a href="{{ route('admin.grpdCompliance') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('GDPR Compliance') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
                         </a>
                     </li>
                     <li>
@@ -357,6 +360,14 @@
                             {{ __('Export')}}
                             <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
                                 {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.endToEndEncryption') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Data Encryption') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
                             </span>
                         </a>
                     </li>

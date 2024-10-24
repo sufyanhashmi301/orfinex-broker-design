@@ -329,6 +329,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('api-access', 'apiAccess')->name('apiAccess');
         Route::get('web-hook', 'webHook')->name('webHook');
         Route::get('documentation', 'documentation')->name('documentation');
+        Route::get('end-to-end-encryption', 'endToEndEncryption')->name('endToEndEncryption');
 
         Route::get('slack', 'slackSetting')->name('slack');
 
@@ -343,6 +344,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('x9-webterminal', 'x9WebterminalSetting')->name('webterminal.x9');
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
     });
+
+    Route::get('grpd-compliance', function () {
+        return view('backend.setting.site_setting.gdpr_compliance');
+    })->name('grpdCompliance');
 
     //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {

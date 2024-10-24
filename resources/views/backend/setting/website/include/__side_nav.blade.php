@@ -21,8 +21,8 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.settings.gdpr') }}" class="navItem {{ isActive('admin.settings.gdpr') }}">
-                {{ __('GDPR')}}
+            <a href="{{ route('admin.grpdCompliance') }}" class="navItem {{ isActive('admin.grpdCompliance') }}">
+                {{ __('GDPR Compliance')}}
             </a>
         </li>
         <li>

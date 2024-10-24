@@ -22,7 +22,7 @@ return new class extends Migration
             $table->tinyInteger('status')->default(false);
             $table->foreignId('approved_by')->nullable();
             $table->timestamps();
-        });
+        }); 
     }
 
     /**

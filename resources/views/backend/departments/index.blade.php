@@ -9,36 +9,58 @@
     </a>
 @endsection
 @section('company-content')
+    @if($dataCount > 0)
+        <div class="card">
+            <div class="card-body relative px-6 pt-3">
+                <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                    <span class=" col-span-8 hidden"></span>
+                    <span class="  col-span-4 hidden"></span>
+                    <div class="inline-block min-w-full align-middle">
+                        <div class="overflow-hidden ">
+                            <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="departments-dataTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="table-th">{{ __('Name') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Parent Category') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
-    <div class="card">
-        <div class="card-body relative px-6 pt-3">
-            <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8 hidden"></span>
-                <span class="  col-span-4 hidden"></span>
-                <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="departments-dataTable">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="table-th">{{ __('Name') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Parent Category') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="processingIndicator" class="text-center">
+                    {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
+                    <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="card basicTable_wrapper items-center justify-center">
+            <div class="card-body p-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <img src="{{ asset('backend/images/territory_get_started.svg') }}" class="inline-flex mb-5" alt="">
+                    <p class="text-base font-semibold mb-3 dark:text-white">
+                        {{ __('Territory Management') }}
+                    </p>
+                    <p class="card-text">
+                        {{ __('Department Management allows you to organize teams and departments within your company for better coordination and oversight. Use this feature to streamline operations and enhance collaboration across your organization.') }}
+                    </p>
+                    <div class="text-center mt-5">
+                        <a href="javascript:;" type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="material-symbols:resume"></iconify-icon>
+                            {{ __('Resume') }}
+                        </a>
                     </div>
                 </div>
             </div>
-            <div id="processingIndicator" class="text-center">
-                {{-- <img src="{{ asset('global/images/loading.gif') }}" class="inline-block h-20" alt="Loader"> --}}
-                <iconify-icon class="spining-icon text-5xl dark:text-slate-100" icon="lucide:loader"></iconify-icon>
-            </div>
         </div>
-    </div>
+    @endif
+
     <!-- Modal for Delete deleteDepartment -->
     @include('backend.departments.include.__create')
     @include('backend.departments.include.__delete')

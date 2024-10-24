@@ -494,110 +494,6 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'email_verification', // unique name for field
-                'label' => 'Email Verification', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'kyc_verification', // unique name for field
-                'label' => 'KYC Verification', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'fa_verification', // unique name for field
-                'label' => '2FA Verification', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'account_creation', // unique name for field
-                'label' => 'Account Creation', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'user_deposit', // unique name for field
-                'label' => 'User Deposit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'user_withdraw', // unique name for field
-                'label' => 'User Withdraw', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'transfer_status', // unique name for field
-                'label' => 'User Send Money', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'sign_up_referral', // unique name for field
-                'label' => 'User Referral', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'referral_signup_bonus', // unique name for field
-                'label' => 'Signup Bonus', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'investment_referral_bounty', // unique name for field
-                'label' => 'Investment Referral Bounty', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'deposit_referral_bounty', // unique name for field
-                'label' => 'Deposit Referral Bounty', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'site_animation', // unique name for field
-                'label' => 'Site Animation', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'back_to_top', // unique name for field
-                'label' => 'Site Back to Top', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'new_trading_accounts', // unique name for field
                 'label' => 'New Trading Accounts', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
@@ -638,14 +534,6 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'automatic_kyc', // unique name for field
-                'label' => 'Automatic KYC (SumSub)', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 0, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
                 'name' => 'disable_trading', // unique name for field
                 'label' => 'Disable Trading (No Balance)', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
@@ -677,7 +565,128 @@ return [
             ],
         ],
     ],
-
+    'customer_permission' => [
+        'title' => 'Customers',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'customer_name_edit', // unique name for field
+                'label' => 'Edit Name', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'customer_phone_edit', // unique name for field
+                'label' => 'Edit Phone', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'customer_username_edit', // unique name for field
+                'label' => 'Edit Username', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'customer_email_edit', // unique name for field
+                'label' => 'Edit Email', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'customer_country_edit', // unique name for field
+                'label' => 'Edit Country', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'customer_dob_edit', // unique name for field
+                'label' => 'Edit Date Of Birth', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'account_creation', // unique name for field
+                'label' => 'Account Creation', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'email_verification', // unique name for field
+                'label' => 'Email Verification', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'kyc_verification', // unique name for field
+                'label' => 'KYC Verification', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'fa_verification', // unique name for field
+                'label' => '2FA Verification', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'user_deposit', // unique name for field
+                'label' => 'Deposit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'user_withdraw', // unique name for field
+                'label' => 'Withdraw', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'transfer_status', // unique name for field
+                'label' => 'Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ]
+    ],
+    'staff_permission' => [
+        'title' => 'Staff Permissions',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'email_verification', // unique name for field
+                'label' => 'Email Verification', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+        ]
+    ],
     'document_links' => [
         'title' => 'Document Links',
         'elements' => [

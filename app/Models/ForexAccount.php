@@ -128,4 +128,11 @@ class ForexAccount extends Model
         return $query->where('user_id', $userID)
             ->where('status', ForexAccountStatus::Archive);
     }
+
+
+    public function leverageUpdates()
+    {
+        return $this->hasMany(LeverageUpdate::class, 'forex_account_id');
+    }
+
 }

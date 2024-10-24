@@ -6,13 +6,16 @@ use App\Enums\ForexAccountStatus;
 use App\Enums\IBStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
+use App\Models\LeverageUpdate;
 use App\Models\ForexSchema;
 use App\Models\Invest;
 use App\Models\User;
 use App\Services\ForexApiService;
+use App\Traits\NotifyTrait;
 use DataTables;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -22,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 
 class   AccountsController extends Controller
 {
+    use NotifyTrait;
     /**
      * Display a listing of the resource.
      *
@@ -284,7 +288,55 @@ class   AccountsController extends Controller
     }
 
     public function changeLeverage(){
-        return view('backend.investment.change_leverage');
+        return view('backend.investment.leverage.change');
     }
 
+
+    public function pendingLeverage(Request $request)
+{
+    // Handle approve or reject actions
+    if ($request->has('action')) {
+        $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
+        $user = $leverageUpdate->user; // Get the related user
+        
+        // Define shortcodes for email notifications
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[login]]' => $leverageUpdate->forexAccount->login,
+            '[[leverage]]' => $leverageUpdate->updated_leverage,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' => $request->input('action') == 'approve' ? 'approved' : 'rejected',
+        ];
+
+        if ($request->input('action') == 'approve') {
+            $leverageUpdate->status = 1; // Approved
+            $leverageUpdate->approved_by = Auth::id(); // Set the user who approved
+
+            // Send approval email
+            $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
+            notify()->success('Leverage Update Approved Successfully!');
+        } elseif ($request->input('action') == 'reject') {
+            $leverageUpdate->status = 2; // Rejected
+            $leverageUpdate->approved_by = Auth::id(); // Set the user who rejected
+
+            // Send rejection email
+            $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
+            notify()->success('Leverage Update Rejected Successfully!');
+        }
+
+        $leverageUpdate->save();
+        return redirect()->route('admin.pending-leverage');
+    }
+
+    // Fetch pending leverage updates
+    $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+        ->where('status', 0)
+        ->get();
+
+    return view('backend.investment.leverage.pending', compact('leverageUpdates'));
+}
+
+
+    
 }

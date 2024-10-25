@@ -165,7 +165,7 @@
             $.get(url, function (data) {
 
                 globalData = data;
-console.log(data,'data')
+// console.log(data,'data')
                 if (data.currency === currency){
                     $('.conversion').addClass('hidden');
                 }else {

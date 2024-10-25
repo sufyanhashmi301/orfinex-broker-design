@@ -17,49 +17,53 @@
                     <h4 class="card-title">{{ __('Add Deposit') }}</h4>
                 </div>
                 <div class="card-body p-6 pt-3">
-                    <form action="" method="post">
+                    <form action="{{route('admin.deposit.now')}}" method="post" >
+                        @csrf
                         <div class="grid grid-cols-12 items-center gap-5">
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Transaction By') }}</label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="customer wallet">{{ __('Customer Wallet') }}</option>
-                                    <option value="trading account">{{ __('Trading Account') }}</option>
-                                </select>
-                            </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="customer wallet">{{ __('Customer Wallet') }}</option>
-                                    <option value="trading account">{{ __('Trading Account') }}</option>
+                            <div class="input-area col-span-12">
+                                <label for="" class="form-label">{{ __('User') }}</label>
+                                <select name="user_id" class="select2 form-control w-full">
+                                    <option selected="">{{__('Select User')}}</option>
+                                    @foreach($users as $user)
+                                        <option value="{{the_hash($user->id) }}"  class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $user->full_name }} ({{ $user->email }})</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="input-area col-span-12">
+                                <label for="" class="form-label">{{ __('Account / Wallet') }}</label>
+                                <select name="target_id" class="select2 form-control w-full">
+                                      </select>
+                            </div>
+                            <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('Payment Method') }}</label>
-                                <select name="gateway_code" class="select2 form-control">
-                                    <option selected="">--Select Gateway--</option>
-                                    <option value="perfectmoney-usd">Perfect Money</option>
-                                    <option value="BANKPK">Bank Transfer - PKR</option>
-                                    <option value="USDT-TRC20">USDT</option>
-                                    <option value="BANKAED">Bank Transfer - AED</option>
+                                <select name="gateway_code" id="gatewaySelect" class="select2 form-control !text-lg w-full mt-2 py-2">
+                                    <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>--{{ __('Select Gateway') }}--</option>
+                                    @foreach($gateways as $gateway)
+                                        <option value="{{ $gateway->gateway_code }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $gateway->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Base Currency') }}</label>
-                                <select name="" class="select2 form-control w-full">
-                                    <option value="usd">{{ __('USD') }}</option>
-                                    <option value="eur">{{ __('EUR') }}</option>
-                                    <option value="btc">{{ __('BTC') }}</option>
-                                    <option value="bnb">{{ __('BNB') }}</option>
-                                </select>
+                            <div class="input-area col-span-12">
+                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                                <div class="relative">
+                                    <input type="text" name="amount" class="form-control !text-lg"
+                                           oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
+                                           aria-describedby="basic-addon1">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
+                                </div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block min-max"></div>
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Account Currency') }}</label>
-                                <input type="text" name="" class="form-control w-full" placeholder="PKR" readonly>
+                            <div class="input-area col-span-12 conversion hidden">
+                                <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
+                                <div class="relative">
+                                    <input type="text"  class="form-control !text-lg"
+                                           oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
+                                           aria-describedby="basic-addon2">
+                                    <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
+                                </div>
+                                <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
-                            <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label">{{ __('Amount') }}</label>
-                                <input type="text" name="" class="form-control" placeholder="1000">
-                            </div>
+{{--                            <div class="manual-row"></div>--}}
                             <div class="input-area lg:col-span-6 col-span-12">
                                 <label for="" class="form-label opacity-0">{{ __('Auto Approve') }}</label>
                                 <div class="flex items-center space-x-7 flex-wrap">
@@ -67,17 +71,17 @@
                                         {{ __('Auto Approve') }}
                                     </label>
                                     <div class="form-switch" style="line-height: 0;">
-                                        <input class="form-check-input" type="hidden" value="0" name=""/>
+                                        <input class="form-check-input" type="hidden" value="0" name="is_auto_approve"/>
                                         <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                            <input type="checkbox" name="" value="1" class="sr-only peer" >
+                                            <input type="checkbox" name="is_auto_approve" value="1" class="sr-only peer" >
                                             <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-area col-span-12">
-                                <label for="" class="form-label">{{ __('Comments') }}</label>
-                                <textarea name="" class="form-control" rows="5"></textarea>
+                                <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
+                                <textarea name="approval_cause" class="form-control" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -106,52 +110,16 @@
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Date') }}</th>
                                             <th scope="col" class="table-th">{{ __('User') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Type') }}</th>
                                             <th scope="col" class="table-th">{{ __('Account') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Transaction') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                             <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                        </tr>
+                                            <th scope="col" class="table-th">{{ __('Action') }}</th></tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                                        <tr>
-                                            <td>Oct 08, 2024 08:54</td>
-                                            <td>
-                                                <a href="" class="flex">
-                                                    <span class="w-8 h-8 rounded-[100%] bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize ltr:mr-3 rtl:ml-3">
-                                                        NA
-                                                    </span>
-                                                    <div>
-                                                        <span class="text-sm text-slate-900 dark:text-white block capitalize">
-                                                            Sufyan9079
-                                                        </span>
-                                                        <span class="text-xs text-slate-500 dark:text-slate-300">
-                                                            sufyanhashmi301@gmail.com
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                            </td>
-                                            <td>8187660384</td>
-                                            <td>
-                                                <span class="text-slate-500 dark:text-slate-400">
-                                                    <span class="block font-medium text-slate-600 dark:text-slate-300">20 USD</span>
-                                                    <span class="block text-slate-500 text-xs">TID: 8HG654Pk32</span>
-                                                </span>
-                                            </td>
-                                            <td>USDT Test</td>
-                                            <td>
-                                                <div class="badge bg-warning text-warning bg-opacity-30 capitalize">
-                                                    Pending
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span type="button" data-id="" id="deposit-action">
-                                                    <button class="action-btn" data-bs-toggle="tooltip" title="" data-bs-original-title="Approval Process">
-                                                        <iconify-icon icon="lucide:eye"></iconify-icon>
-                                                    </button>
-                                                </span>
-                                            </td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -165,6 +133,19 @@
             </div>
         </div>
     </div>
+    @can('transaction-action')
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+                <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-body popup-body">
+                        <div class="popup-body-text deposit-action p-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('script')
     <script !src="">
@@ -188,8 +169,175 @@
                         search: "Search:"
                     },
                     processing: true,
+                    serverSide: true,
                     autoWidth: false,
-                })
+                    ajax: {
+                        url: "{{ route('admin.transactions') }}",
+                        data: function (d) {
+                            d.email = $('#email').val();
+                            d.status = $('#status').val();
+                            d.type = $('#type').val();
+                            d.status = $('#status').val();
+                            d.created_at = $('#created_at').val();
+
+                        }
+                    },
+                    columns: [
+                        {data: 'created_at', name: 'created_at'},
+                        {data: 'username', name: 'username'},
+                        {data: 'tnx', name: 'tnx'},
+                        {data: 'type', name: 'type'},
+                        {data: 'target_id', name: 'target_id'},
+                        {data: 'final_amount', name: 'final_amount'},
+                        {data: 'method', name: 'method'},
+                        {data: 'status', name: 'status'},
+                        {data: 'action', name: 'action'},
+                    ]
+                });
+
+            $('#filter').click(function () {
+                table.draw();
+            });
+            $('body').on('click', '#deposit-action', function () {
+                $('.deposit-action').empty();
+
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                        $('.deposit-action').append(response)
+                        imagePreview()
+                        $('#transaction-action-modal').modal('show');
+
+                    }
+                });
+            });
         })(jQuery);
+
+        // $(document).ready(function() {
+        let assetPath = '{{ asset('') }}/';
+            var globalData;
+            var currency = @json($currency)
+
+
+            // When the user dropdown changes
+            $('select[name="user_id"]').on('change', function() {
+                var userId = $(this).val();
+                $('select[name="target_id"]').empty();
+                if (userId) {
+                    // Use Laravel's route helper to generate the URL
+                    var url = '{{ route("admin.deposit.get.user.accounts", ":userId") }}';
+                    url = url.replace(':userId', userId);
+
+                    // Make an AJAX call to fetch the user's forex accounts and wallets
+                    $.ajax({
+                        url: url, // URL generated from the route helper
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            // Clear the current options in Account / Wallet dropdown (now target_id)
+                            $('select[name="target_id"]').empty();
+
+                            // Populate forex accounts
+                            $.each(data.forexAccounts, function(key, account) {
+                                $('select[name="target_id"]').append('<option value="'+ account.login +'" data-type="forex">'+ account.login +' - '+ account.account_name + ' ('+ account.equity +' USD)</option>');
+                            });
+
+                            // Populate wallets
+                            $.each(data.wallets, function(key, wallet) {
+                                $('select[name="target_id"]').append('<option value="'+ wallet.wallet_id +'" data-type="wallet">'+ wallet.wallet_name +' ('+ wallet.amount +' USD)</option>');
+                            });
+
+                        }
+                    });
+                } else {
+                    // If no user selected, clear the Account / Wallet dropdown (now target_id)
+                    $('select[name="target_id"]').empty();
+                }
+            });
+
+            $("#gatewaySelect").on('change', function (e) {
+                "use strict"
+                e.preventDefault();
+                $('.manual-row').empty();
+                var code = $(this).val()
+                var url = '{{ route("admin.deposit.gateway",":code") }}';
+                url = url.replace(':code', code);
+                $.get(url, function (data) {
+
+                    globalData = data;
+                    console.log(data,'data')
+                    if (data.currency === currency){
+                        $('.conversion').addClass('hidden');
+                    }else {
+                        $('.conversion').removeClass('hidden');
+                        $('#basic-addon2').text(globalData.currency);
+                        $('#amount').trigger('keyup')
+                    }
+
+                    $('.charge').text('Charge ' + data.charge + ' ' + (data.charge_type === 'percentage' ? ' % ' : currency))
+                    $('.conversion-rate').text('1' +' '+ currency + ' = ' + data.rate +' '+ data.currency)
+
+
+                    $('.min-max').text('Minimum ' + data.minimum_deposit + ' ' + currency + ' and ' + 'Maximum ' + data.maximum_deposit + ' ' + currency)
+                    $('#logo').html(`<img class="payment-method h-12" src='${assetPath + data.logo}'>`);
+                    var amount = $('#amount').val()
+
+                    if (Number(amount) > 0) {
+                        $('.amount').text((Number(amount)))
+                        var charge = data.charge_type === 'percentage' ? calPercentage(amount, data.charge) : data.charge
+                        $('.charge2').text(charge + ' ' + currency)
+                        $('.total').text((Number(amount) + Number(charge)) + ' ' + currency)
+                    }
+
+                    if (data.credentials !== undefined) {
+                        console.log(data.credentials,'data.credentials')
+                        $('.manual-row').append(data.credentials)
+                        imagePreview()
+                    }
+
+                });
+
+                $('#amount').on('keyup', function (e) {
+                    "use strict"
+                    var amount = $(this).val()
+                    $('.amount').text((Number(amount)))
+                    $('.currency').text(currency)
+
+                    var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
+                    $('.charge2').text(charge + ' ' + currency)
+
+                    var total = (Number(amount) + Number(charge));
+
+                    $('.total').text(total + ' ' + currency)
+
+                    $('.pay-amount').text(parseFloat((total * globalData.rate).toFixed(4)).toString() +' '+ globalData.currency)
+
+                    $('#converted-amount').val(parseFloat((total * globalData.rate).toFixed(4)).toString())
+                })
+                $('#converted-amount').on('keyup', function (e) {
+                    "use strict"
+                    var converted_amount = $(this).val();
+                    var amount = parseFloat((converted_amount / globalData.rate).toFixed(4)).toString();
+                    $('#amount').val(amount);
+                    $('.amount').text((Number(amount)))
+                    $('.currency').text(currency)
+
+                    var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
+                    $('.charge2').text(charge + ' ' + currency)
+
+                    var total = (Number(amount) + Number(charge));
+
+                    $('.total').text(total + ' ' + currency)
+
+                    $('.pay-amount').text(parseFloat((total * globalData.rate +' '+ globalData.currency).toFixed(4)).toString());
+
+
+                })
+
+                });
+            // });
+
     </script>
 @endsection

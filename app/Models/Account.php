@@ -16,7 +16,17 @@ class Account extends Model
         'balance',
         'amount',
     ];
+    protected $walletNameMap = [
+        'main_wallet' =>'Main Wallet',
+        'ib_wallet' => 'IB Wallet',
+        'affiliate_wallet' => 'Affiliate Wallet'
+    ];
 
+    // Create an accessor to attach the wallet_name dynamically
+    public function getWalletNameAttribute()
+    {
+        return $this->walletNameMap[$this->balance] ?? 'Unknown Wallet';
+    }
 
     public function user()
     {

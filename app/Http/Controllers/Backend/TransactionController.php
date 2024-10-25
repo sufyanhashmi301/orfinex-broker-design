@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Enums\GatewayType;
+use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use DataTables;
@@ -38,15 +39,15 @@ class TransactionController extends Controller
     {
         if ($request->ajax()) {
             $filters = $request->only(['email', 'status', 'type', 'created_at']);
-          
+
             if ($id) {
                 $data = Transaction::where('user_id', $id)->latest();
-                
+
             } else {
                 $data = Transaction::query()->latest();
             }
             $data->applyFilters($filters);
-           
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -65,19 +66,38 @@ class TransactionController extends Controller
     }
     public function export(Request $request)
     {
-       
+
         return Excel::download(new TransactionsExport($request), 'transactions.xlsx');
     }
     public function view($id)
     {
         $data = Transaction::find($id);
-        if($data->status->value=='pending'){
+
+        if($data->status->value=='pending' && ($data->type == TxnType::Withdraw || $data->type == TxnType::WithdrawAuto)){
             return view('backend.withdraw.include.__withdraw_action', compact('data', 'id'))->render();
+        }elseif($data->status->value=='pending' && ($data->type == TxnType::Deposit || $data->type == TxnType::ManualDeposit)){
+            $gateway = $this->gateway($data->method);
+            return view('backend.deposit.include.__deposit_action', compact('data', 'id', 'gateway'))->render();
         }else{
             return view('backend.transaction.modals.view', compact('data', 'id'))->render();
         }
-        
-        
+
+
     }
-   
+    public function gateway($code)
+    {
+        $gateway = DepositMethod::code($code)->first();
+        if($gateway){
+            if ($gateway->type == GatewayType::Manual->value) {
+                $fieldOptions = $gateway->field_options;
+                $paymentDetails = $gateway->payment_details;
+                $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
+            }else{
+                $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
+                $gateway['currency'] = $gatewayCurrency;
+            }
+            return $gateway;
+        }
+    }
+
 }

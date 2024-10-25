@@ -58,15 +58,36 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('First Name') }}</label>
-                        <input type="text" class="form-control !text-lg" name="first_name" value="{{ $user->first_name }}" placeholder="{{ __('First Name') }}" />
+                        <input
+                            type="text"
+                            class="form-control !text-lg"
+                            name="first_name"
+                            value="{{ $user->first_name }}"
+                            placeholder="{{ __('First Name') }}"
+                            @if($user->last_name && !setting('customer_name_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Last Name') }}</label>
-                        <input type="text" class="form-control !text-lg" name="last_name" value="{{ $user->last_name }}" placeholder="{{ __('Last Name') }}" />
+                        <input
+                            type="text"
+                            class="form-control !text-lg"
+                            name="last_name"
+                            value="{{ $user->last_name }}"
+                            placeholder="{{ __('Last Name') }}"
+                            @if($user->last_name && !setting('customer_name_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Username') }}</label>
-                        <input type="text" class="form-control !text-lg" name="username" value="{{ $user->username }}" placeholder="{{ __('Username') }}" />
+                        <input
+                            type="text"
+                            class="form-control !text-lg"
+                            name="username"
+                            value="{{ $user->username }}"
+                            placeholder="{{ __('Username') }}"
+                            @if($user->username && !setting('customer_username_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Gender') }}</label>
@@ -83,22 +104,48 @@
 
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Date of Birth') }}</label>
-                        <input type="date" name="date_of_birth" class="form-control !text-lg" value="{{ $user->date_of_birth }}" placeholder="{{ __('Date of Birth') }}"/>
+                        <input
+                            type="date"
+                            name="date_of_birth"
+                            class="form-control !text-lg"
+                            value="{{ $user->date_of_birth }}"
+                            placeholder="{{ __('Date of Birth') }}"
+                            @if($user->date_of_birth && !setting('customer_dob_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
 
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Email Address') }}</label>
-                        <input type="email" disabled class="form-control !text-lg disabled" value="{{ $user->email }}" placeholder="{{ __('Email Address') }}" />
+                        <input
+                            type="email"
+                            class="form-control !text-lg"
+                            value="{{ $user->email }}"
+                            placeholder="{{ __('Email Address') }}"
+                            @if($user->email && !setting('customer_email_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
                     <div class="input-area relative phone-input-wrapper">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Phone') }}</label>
-                        <input type="text" class="form-control !text-lg w-full" name="phone" id="phone" value="{{ $user->phone }}" placeholder="{{ __('Phone') }}"/>
+                        <input
+                            type="text"
+                            class="form-control !text-lg w-full"
+                            name="phone" id="phone"
+                            value="{{ $user->phone }}"
+                            placeholder="{{ __('Phone') }}"
+                            @if($user->phone && !setting('customer_phone_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
                     <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">
                             {{ __('Country') }}
                         </label>
-                        <input type="text" class="form-control !text-lg disabled" value="{{ $user->country }}" placeholder="{{ __('Country') }}" disabled />
+                        <input
+                            type="text"
+                            class="form-control !text-lg"
+                            value="{{ $user->country }}"
+                            placeholder="{{ __('Country') }}"
+                            @if($user->country && !setting('customer_country_edit', 'customer_permission')) disabled @endif
+                        />
                     </div>
 
                     <div class="input-area relative">

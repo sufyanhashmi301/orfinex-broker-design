@@ -90,11 +90,11 @@ class EmailTemplateController extends Controller
             'title' => $input['title'],
             'button_level' => $input['button_level'],
             'button_link' => $input['button_link'],
-            'footer_status' => $input['footer_status'],
-            'bottom_status' => $input['bottom_status'],
-            'bottom_title' => $input['bottom_title'],
-            'bottom_body' => nl2br($input['bottom_body']),
-            'status' => $input['status'],
+            'footer_status' => $input['footer_status'] ?? 0,
+            'bottom_status' => $input['bottom_status'] ?? 0,
+            'bottom_title' => $input['bottom_title'] ?? null,
+            'bottom_body' => nl2br($input['bottom_body']) ?? null,
+            'status' => $input['status'] ?? 0,
         ];
 
         $template = EmailTemplate::find($input['id']);
@@ -106,6 +106,9 @@ class EmailTemplateController extends Controller
         $template->update($data);
 
         notify()->success(__('Email Template Updated Successfully'));
+        if($template->for == 'User'){
+            return redirect()->route('admin.email-template.user');
+        }
 
         return redirect()->route('admin.email-template');
     }

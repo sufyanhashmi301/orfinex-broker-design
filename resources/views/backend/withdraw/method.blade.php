@@ -26,54 +26,59 @@
                     $icon = $method->gateway->logo;
                 }
             @endphp
-            <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
-                <div class="card-body rounded-md bg-white dark:bg-dark p-6">
-                    <div class="grid-view-layout">
-                        <div class="flex justify-between items-center mb-4">
-                            <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" alt=""/>
-                            <div class="dropdown relative">
-                                <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
-                                        <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
-                                    </span>
-                                </button>
-                                <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none lrt:origin-top-right ">
-                                    <li>
-                                        <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                                            <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                                            {{ __('Upadte') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" class="delete-method text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
-                                           data-id="{{ $method->id }}" data-name="{{ $method->name }}" >
-
-                                            <iconify-icon icon="lucide:trash" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
-                                            {{ __('Delete') }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <h4 class="text-base font-medium dark:text-white">{{$method->name}}</h4>
-                        <ul class="divide-y divide-slate-100 dark:divide-slate-700 h-full">
-                            <li class="flex items-center py-3">
-                                <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Minimum Withdraw:') }}</span>
-                                <span class="flex-1 text-right text-slate-600 dark:text-slate-300">{{ $method->min_withdraw .' '.$currency }}</span>
+            <div class="card border hover:shadow-lg">
+                <div class="card-header items-center noborder !p-4">
+                    <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" alt="{{ $method->name }}"/>
+                    <div class="dropdown relative">
+                        <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
+                                <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none lrt:origin-top-right ">
+                            <li>
+                                <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                    <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                    {{ __('Upadte') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="delete-method text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+                                   data-id="{{ $method->id }}" data-name="{{ $method->name }}" >
+                                    <iconify-icon icon="lucide:trash" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
+                                    {{ __('Delete') }}
+                                </a>
                             </li>
                         </ul>
-                        <div class="gateway-status">
-                            @if($method->status)
-                                <div class="badge bg-success text-success bg-opacity-30 capitalize">
-                                    {{ __('Activated') }}
-                                </div>
-                            @else
-                                <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
-                                    {{ __('Deactivated') }}
-                                </div>
-                            @endif
-                        </div>
                     </div>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <div class="flex items-center mb-3">
+                        <h4 class="text-base font-medium dark:text-white mr-1">{{ $method->name }}</h4>
+                        @if($method->status)
+                            <span class="badge-success text-xs text-success capitalize rounded bg-opacity-30 px-2 py-1">
+                                {{ __('Activated') }}
+                            </span>
+                        @else
+                            <span class="badge-danger text-xs text-danger capitalize rounded bg-opacity-30 px-2 py-1">
+                                {{ __('Deactivated') }}
+                            </span>
+                        @endif
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 mr-1">{{ __('Processing Time') }}</span>
+                            <span class="capitalize">{{ $method->required_time .' '. $method->required_time_format }}</span>
+                        </li>
+                        <li class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 mr-1">{{ __('Fee') }}</span>
+                            <span>{{ $method->charge }}</span>
+                        </li>
+                        <li class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 mr-1">{{ __('Limits') }}</span>
+                            <span>{{ $method->min_withdraw .' - '. $method->maximum_deposit .$currency }}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         @endforeach

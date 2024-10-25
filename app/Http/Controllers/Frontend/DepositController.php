@@ -31,27 +31,31 @@ class DepositController extends GatewayController
     {
         $this->forexApiService = $forexApiService;
     }
-    public function deposit()
+    public function depositMethods()
     {
-
-        if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
-            abort('403', __('Deposit Disable Now'));
-        }
-
-        $isStepOne = 'current';
-        $isStepTwo = '';
         $gateways = DepositMethod::where('status', 1)
             ->where(function($query) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All');
             })->get();
+        return view('frontend::deposit.deposit-methods', compact('gateways'));
+    }
+    public function deposit()
+    {
+        if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
+            abort('403', __('Deposit Disable Now'));
+        }
 
-//        dd($gateways);
+        $gatewayCode = request()->get('gateway_code', '');
+        $gatewayCode = get_hash($gatewayCode);
 
-//        $clientIp = request()->ip();
-//        if (!in_array($clientIp, ['127.0.0.1', '::1'])) {
-//            $this->syncForexAccounts(auth()->id());
-//        }
+        if (!$gatewayCode){
+            notify()->error('Please select a valid deposit method');
+            return redirect()->back();
+        }
+
+        $isStepOne = 'current';
+        $isStepTwo = '';
         $forexAccounts = ForexAccount::with('schema')->traderType()
             ->where('user_id', auth()->id())
             ->where('account_type', 'real')
@@ -59,9 +63,7 @@ class DepositController extends GatewayController
             ->orderBy('id', 'desc')
             ->get();
 
-//        dd($forexAccounts);
-
-        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'gateways', 'forexAccounts'));
+        return view('frontend::deposit.now', compact('isStepOne', 'isStepTwo', 'forexAccounts', 'gatewayCode'));
     }
 
     public function depositNow(Request $request)

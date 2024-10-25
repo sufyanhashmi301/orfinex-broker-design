@@ -468,7 +468,14 @@ return [
                 'name' => 'session_expiry', // unique name for field
                 'label' => 'Session Expiry', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => '/', // default value if you want
+                'value' => '60', // default value if you want
+                'options' => [
+                    "60" => '1 Hour',
+                    "360" => '6 Hours',
+                    "720" => '12 Hours',
+                    "1440" => '24 Hours',
+                    "10080" => '1 Week',
+                ]
             ],
         ],
     ],

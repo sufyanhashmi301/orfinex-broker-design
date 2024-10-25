@@ -16,6 +16,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.bonus.index') }}" class="navItem {{ isActive('admin.bonus*') }}">
+                {{ __('Bonuses') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('admin.settings.currency') }}" class="navItem {{ isActive('admin.settings.currency') }}">
                 {{ __('Currency')}}
             </a>

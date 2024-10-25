@@ -225,6 +225,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('action-now', 'actionNow')->name('action.now');
 
         Route::get('add', 'addDeposit')->name('add');
+        Route::get('gateway/{code}', 'gateway')->name('gateway');
+        Route::post('now', 'depositNow')->name('now');
+        Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
     });
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //=============================== withdraw Method ================================

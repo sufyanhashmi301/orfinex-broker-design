@@ -106,6 +106,9 @@ class EmailTemplateController extends Controller
         $template->update($data);
 
         notify()->success(__('Email Template Updated Successfully'));
+        if($template->for == 'User'){
+            return redirect()->route('admin.email-template.user');
+        }
 
         return redirect()->route('admin.email-template');
     }

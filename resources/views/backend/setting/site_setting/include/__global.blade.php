@@ -139,12 +139,11 @@
                             @endphp
 
                             <select name="{{$field['name']}}" class="form-control w-100" id="">
-                            </option>
-                                    <option value="60" @selected($staff->session_expiry == '60')>{{ __('1 Hour') }}</option>
-                                    <option value="360" @selected($staff->session_expiry == '360')>{{ __('6 Hours') }}</option>
-                                    <option value="720" @selected($staff->session_expiry == '720')>{{ __('12 Hours') }}</option>
-                                    <option value="1440" @selected($staff->session_expiry == '1440')>{{ __('24 Hours') }}</option>
-                                    <option value="10080" @selected($staff->session_expiry == '10080')>{{ __('1 Week') }}</option>
+                                @foreach($field['options'] as $value => $label)
+                                    <option value="{{ $value }}" {{ Auth::user()->session_expiry == $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
                             </select>
                             
                         @endif

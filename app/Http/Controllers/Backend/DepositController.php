@@ -86,6 +86,7 @@ class DepositController extends Controller
             'rate' => 'required',
             'minimum_deposit' => 'required',
             'maximum_deposit' => 'required',
+            'processing_time' => 'required',
             'status' => 'required',
             'field_options' => 'required_if:type,==,manual',
         ]);
@@ -114,6 +115,7 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
@@ -149,6 +151,7 @@ class DepositController extends Controller
             'rate' => 'required',
             'minimum_deposit' => 'required',
             'maximum_deposit' => 'required',
+            'processing_time' => 'required',
             'status' => 'required',
             'field_options' => 'required_if:type,==,manual',
         ]);
@@ -189,6 +192,7 @@ class DepositController extends Controller
             'rate' => $input['rate'],
             'minimum_deposit' => $input['minimum_deposit'],
             'maximum_deposit' => $input['maximum_deposit'],
+            'processing_time' => $input['processing_time'],
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,

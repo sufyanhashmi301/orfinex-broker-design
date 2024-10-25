@@ -3,6 +3,7 @@
     <div class="progress-steps-form mb-6">
         <form action="{{ route('user.deposit.now') }}" method="post" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="gateway_code" value="{{ $gatewayCode }}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
                     <h4 class="text-xl text-slate-900 mb-3">
@@ -24,18 +25,6 @@
 
                                     </select>
                                 </div>
-                            </div>
-                            <div class="input-area relative">
-                                <label for="" class="form-label">{{ __('Payment Method:') }}</label>
-                                <div class="input-group select2-lg">
-                                    <select name="gateway_code" id="gatewaySelect" class="select2 form-control !text-lg w-full mt-2 py-2">
-                                        <option selected class="inline-block font-Inter font-normal text-sm text-slate-600" disabled>--{{ __('Select Gateway') }}--</option>
-                                        @foreach($gateways as $gateway)
-                                            <option value="{{ $gateway->gateway_code }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $gateway->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="font-Inter text-xs text-danger pt-2 inline-block charge"></div>
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
@@ -155,17 +144,16 @@
         var globalData;
         var currency = @json($currency)
 
-        $("#gatewaySelect").on('change', function (e) {
+        $(document).ready(function() {
             "use strict"
-            e.preventDefault();
             $('.manual-row').empty();
-            var code = $(this).val()
+            var code = $("input[name='gateway_code']").val();
             var url = '{{ route("user.deposit.gateway",":code") }}';
             url = url.replace(':code', code);
             $.get(url, function (data) {
 
                 globalData = data;
-// console.log(data,'data')
+                console.log(data,'data')
                 if (data.currency === currency){
                     $('.conversion').addClass('hidden');
                 }else {
@@ -231,9 +219,7 @@
 
                 $('.pay-amount').text(parseFloat((total * globalData.rate +' '+ globalData.currency).toFixed(4)).toString());
 
-
             })
-
 
         });
     </script>

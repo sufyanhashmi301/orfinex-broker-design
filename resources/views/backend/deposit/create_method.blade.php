@@ -105,7 +105,6 @@
                                 type="text"
                                 class="form-control currency-symbol"
                                 name="currency_symbol"
-                   
                                 readonly
                             />
                         </div>
@@ -150,8 +149,17 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="md:col-span-2 input-area relative">
-                            <label class="form-label" for="">{{ __('Select countries where you want to show this method(select "All" if you have to show this scheme to whole world):') }}</label>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Processing Time:') }}</label>
+                            <input type="text" name="processing_time" class="form-control"/>
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">
+                                <span class="flex items-center">
+                                    {{ __('Select Countries Authorized to Use:') }}
+                                    <iconify-icon class="toolTip onTop text-base ml-1" icon="lucide:info" data-tippy-content="Select ‘All’ to make this payment method available in all countries."></iconify-icon>
+                                </span>
+                            </label>
                             <select name="country[]" class="select2 form-control w-full" placeholder="Manage Country" multiple>
                                 @foreach( getCountries() as $country)
                                     <option  value="{{ $country['name'] }}">
@@ -211,7 +219,7 @@
     <script>
 
         let get_rate = (code) => {
-     
+
             $.ajax({
                 url:  '{{ route("admin.settings.currency.get-rate", ":code") }}'.replace(':code', code),
                 type: 'GET',

@@ -1,8 +1,8 @@
-@extends('backend.setting.payment.index')
+@extends('backend.setting.integrations.index')
 @section('title')
     {{ __('Automatic Payment Gateway') }}
 @endsection
-@section('payment-content')
+@section('integrations-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Automatic Payment Gateway') }}
@@ -18,15 +18,15 @@
                     </button>
                 </div>
                 <div class="card-body p-4 pt-2">
-                    <div class="flex items-center mb-3">
+                    <div class="flex items-center justify-between mb-3">
                         <h4 class="text-base font-medium dark:text-white mr-1">{{ $gateway->name }}</h4>
                         @if($gateway->status == 1)
                             <span class="badge-success text-xs text-success capitalize rounded bg-opacity-30 px-2 py-1">
-                                {{ __('Activated') }}
+                                {{ __('Active') }}
                             </span>
                         @else
                             <span class="badge-danger text-xs text-danger capitalize rounded bg-opacity-30 px-2 py-1">
-                                {{ __('Deactivated') }}
+                                {{ __('Deactive') }}
                             </span>
                         @endif
                     </div>

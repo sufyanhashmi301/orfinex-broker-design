@@ -21,6 +21,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
                         <div class="md:col-span-2">
                             <div class="input-area max-w-xs">
+                                @php
+                                    $icon = $method->icon;
+                                    if (null != $method->gateway_id && $method->icon == ''){
+                                        $icon = $method->gateway->logo;
+                                    }
+                                @endphp
                                 <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
@@ -30,7 +36,7 @@
                                         accept=".gif, .jpg, .png"
                                     />
                                     <label for="schema-icon" class="file-ok"
-                                           style="background-image: url({{ asset($method->logo ?? $method->gateway->logo) }})">
+                                           style="background-image: url({{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }})">
                                         <img
                                             class="upload-icon"
                                             src="{{ asset('global/materials/upload.svg') }}"

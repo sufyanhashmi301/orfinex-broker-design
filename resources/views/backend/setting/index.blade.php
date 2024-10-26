@@ -111,13 +111,6 @@
                         'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
                         'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
                         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
-                            @can('automatic-gateway-manage')
-                                <li>
-                                    <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                                        {{ __('Payment Gateways') }}
-                                    </a>
-                                </li>
-                            @endcan
                             <li>
                                 <a href="{{ route('admin.deposit.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Deposit Methods') }}
@@ -447,6 +440,16 @@
                             </span>
                         </a>
                     </li>
+                    @can('automatic-gateway-manage')
+                        <li>
+                            <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                                {{ __('Payment Gateways') }}
+                                <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                            </a>
+                        </li>
+                    @endcan
                     <li>
                         <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('API Access')}}

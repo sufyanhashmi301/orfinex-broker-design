@@ -21,9 +21,15 @@
 @section('deposit-content')
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($depositMethods as $method)
+            @php
+                $icon = $method->icon;
+                if (null != $method->gateway_id && $method->icon == ''){
+                    $icon = $method->gateway->logo;
+                }
+            @endphp
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
-                    <img class="inline-block h-10" src="{{ asset($method->logo) }}" alt="{{ $method->name }}"/>
+                    <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" alt="{{ $method->name }}"/>
                     <div class="dropdown relative">
                         <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
@@ -48,15 +54,15 @@
                     </div>
                 </div>
                 <div class="card-body p-4 pt-2">
-                    <div class="flex items-center mb-3">
+                    <div class="flex items-center justify-between mb-3">
                         <h4 class="text-base font-medium dark:text-white mr-1">{{ $method->name }}</h4>
                         @if($method->status)
                             <span class="badge-success text-xs text-success capitalize rounded bg-opacity-30 px-2 py-1">
-                                {{ __('Activated') }}
+                                {{ __('Active') }}
                             </span>
                         @else
                             <span class="badge-danger text-xs text-danger capitalize rounded bg-opacity-30 px-2 py-1">
-                                {{ __('Deactivated') }}
+                                {{ __('Deactive') }}
                             </span>
                         @endif
                     </div>

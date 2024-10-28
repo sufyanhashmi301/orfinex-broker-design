@@ -220,16 +220,16 @@ class IBController extends Controller
                     return redirect()->back();
                 }
             }
-            $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
-            if (!$ibSchema) {
-                return false;
-            }
-            $group = $ibSchema->group;
-//            dd($group);
-            $responseLogin =  $this->createForexAccount($user, $group);
-//            dd($responseLogin);
-            if ($responseLogin) {
-                $user->ib_login = $responseLogin;
+//            $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
+//            if (!$ibSchema) {
+//                return false;
+//            }
+//            $group = $ibSchema->group;
+////            dd($group);
+//            $responseLogin =  $this->createForexAccount($user, $group);
+////            dd($responseLogin);
+//            if ($responseLogin) {
+//                $user->ib_login = $responseLogin;
                 $user->ib_status = IBStatus::APPROVED;
                 $user->save();
 
@@ -252,16 +252,16 @@ class IBController extends Controller
                     notify()->success($message, 'IB added');
                     return redirect()->back();
                 }
-            } else {
-                $message = __('some error occurred.please try again');
-                if ($request->ajax()) {
-                    return response()->json(['error' => $message, 'reload' => false]);
-                } else {
-                    notify()->error($message, 'Error Log');
-
-                    return redirect()->back();
-                }
-            }
+//            } else {
+//                $message = __('some error occurred.please try again');
+//                if ($request->ajax()) {
+//                    return response()->json(['error' => $message, 'reload' => false]);
+//                } else {
+//                    notify()->error($message, 'Error Log');
+//
+//                    return redirect()->back();
+//                }
+//            }
         }
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
@@ -412,6 +412,7 @@ class IBController extends Controller
         return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
     }
+
 
     public function updateMIbMember(Request $request)
     {

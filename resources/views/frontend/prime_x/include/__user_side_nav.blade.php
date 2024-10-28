@@ -161,6 +161,7 @@
         </li>
 
         @if(setting('sign_up_referral', 'permission'))
+            @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
             <li>
                 <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">
@@ -169,6 +170,7 @@
                     </span>
                 </a>
             </li>
+                @endif
         @endif
 
         <li>

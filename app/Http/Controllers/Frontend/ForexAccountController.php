@@ -380,6 +380,15 @@ class ForexAccountController extends GatewayController
             'login' => 874641
         ];
         $response = $this->forexApiService->getBalance($data);
+
+            $reportFlag = 0;//(0 for all, 1 for buy, 2 for sell)
+            $timeInSeconds = 360;
+            $from = '25/10/24';
+            $to = '28/10/24';
+
+
+        $response = $this->forexApiService->fastDeals($reportFlag,$timeInSeconds,$from,$to);
+
         dd($response);
         dd($this->getUserInfoApi(88876));
 //        $this->getPositionList(9996792);

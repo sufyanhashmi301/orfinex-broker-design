@@ -108,6 +108,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'payment_access', 'set
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
         Route::get('', [DepositController::class, 'deposit'])->name('amount');
+        Route::get('methods', [DepositController::class, 'depositMethods'])->name('methods');
         Route::get('gateway/{code}', [GatewayController::class, 'gateway'])->name('gateway');
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
@@ -280,10 +281,6 @@ Route::get('get/account/{login}', function ($login) {
 
 
 });
-
-Route::get('user/deposit-methods', function () {
-    return view('frontend.default.deposit.deposit-methods');
-})->name('user.deposit-methods');
 
 Route::get('user/platform', function () {
     return view('frontend.default.terminal.index');

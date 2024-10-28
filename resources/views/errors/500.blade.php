@@ -9,22 +9,30 @@
             <img src="{{ asset(setting('site_logo_light','global')) }}" class="white_logo max-w-xs" alt="Logo"/>
         </a>
     </div>
-    <div class="w-full my-8">
-        <div class="notfound">
-            <h3>
-                {{ __('Server Error') }}
-            </h3>
-            <h1>
-                <span>5</span>
-                <span>0</span>
-                <span>0</span>
-            </h1>
+    <div class="max-w-3xl my-8 mx-auto">
+        <div id="lottie-container" style="display: inline-flex; width: 350px; height: 350px;"></div>
+        <p class="text-xl text-center font-semibold mb-3">
+            {{ __('Oops! Something went wrong on our end.') }}
+        </p>
+        <p class="text-center mb-3">
+            {{ __('We’re working to resolve the issue as quickly as possible. You can try refreshing the page or come back later. If the issue persists, please contact our support team for assistance.') }}
+        </p>
+        <div class="max-w-[300px] mx-auto w-full">
+            <a href="{{route('home')}}" class="btn btn-dark dark:bg-slate-800 block text-center">
+                {{ __('Return to Home') }}
+            </a>
         </div>
     </div>
-    <div class="max-w-[300px] mx-auto w-full">
-        <a href="{{route('home')}}" class="btn btn-dark dark:bg-slate-800 block text-center">
-            {{ __('Back to Home') }}
-        </a>
-    </div>
 
+@endsection
+@section('script')
+    <script>
+        var animation = lottie.loadAnimation({
+            container: document.getElementById('lottie-container'), // ID of the div where the animation will render
+            renderer: 'svg',  // Render the animation in SVG format
+            loop: true,       // Loop the animation
+            autoplay: true,   // Autoplay the animation
+            path: '{{ asset('global/json/server-error.json') }}' // Path to your JSON file
+        });
+    </script>
 @endsection

@@ -84,7 +84,7 @@
                 <div class="max-w-4xl mx-auto text-center">
                     <div id="lottie-container" style="display: inline-flex; width: 350px; height: 350px;"></div>
                     <p class="text-base font-semibold mb-3 dark:text-white">
-                        {{ __('Territory Management') }}
+                        {{ __('Department Management') }}
                     </p>
                     <p class="card-text">
                         {{ __('Customer Group Management enables you to categorize clients for targeted service and streamlined management. Use this feature to efficiently organize customer segments while optimizing your workflow.') }}
@@ -109,7 +109,7 @@
             renderer: 'svg',  // Render the animation in SVG format
             loop: true,       // Loop the animation
             autoplay: true,   // Autoplay the animation
-            path: '{{ asset('global/json/delete.json') }}' // Path to your JSON file
+            path: '{{ asset('global/json/customer-groups.json') }}' // Path to your JSON file
         });
 
         $('.deleteCustomerGroup').on('click',function (e) {

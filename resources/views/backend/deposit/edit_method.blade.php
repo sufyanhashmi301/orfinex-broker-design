@@ -21,6 +21,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
                         <div class="md:col-span-2">
                             <div class="input-area max-w-xs">
+                                @php
+                                    $icon = $method->icon;
+                                    if (null != $method->gateway_id && $method->icon == ''){
+                                        $icon = $method->gateway->logo;
+                                    }
+                                @endphp
                                 <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
                                 <div class="wrap-custom-file">
                                     <input
@@ -30,7 +36,7 @@
                                         accept=".gif, .jpg, .png"
                                     />
                                     <label for="schema-icon" class="file-ok"
-                                           style="background-image: url({{ asset($method->logo ?? $method->gateway->logo) }})">
+                                           style="background-image: url({{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }})">
                                         <img
                                             class="upload-icon"
                                             src="{{ asset('global/materials/upload.svg') }}"
@@ -153,8 +159,17 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="md:col-span-2 input-area relative">
-                            <label class="form-label" for="">{{ __('Select countries where you want to show this Payment method(select "All" if you have to show this scheme to whole world):') }}</label>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">{{ __('Processing Time:') }}</label>
+                            <input type="text" name="processing_time" class="form-control" value="{{ $method->processing_time }}"/>
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label" for="">
+                                <span class="flex items-center">
+                                    {{ __('Select Countries Authorized to Use:') }}
+                                    <iconify-icon class="toolTip onTop text-base ml-1" icon="lucide:info" data-tippy-content="Select ‘All’ to make this payment method available in all countries."></iconify-icon>
+                                </span>
+                            </label>
                             <select name="country[]" class="select2 form-control w-full" placeholder="Countries" multiple>
                                 @php
                                     $countries = getCountries();

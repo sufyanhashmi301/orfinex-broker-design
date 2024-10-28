@@ -24,8 +24,8 @@
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('Username') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
-                                    <th scope="col" class="table-th">{{ __('IB') }}</th>
-                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('IB') }}</th>--}}
+{{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('IB Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -93,8 +93,8 @@
                     {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
-                    {data: 'ib_login', name: 'ib_login'},
-                    {data: 'kyc', name: 'kyc'},
+                    // {data: 'ib_login', name: 'ib_login'},
+                    // {data: 'kyc', name: 'kyc'},
                     {data: 'ib_status', name: 'ib_status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]

@@ -53,15 +53,15 @@
                     </div>
                 </div>
                 <div class="card-body p-4 pt-2">
-                    <div class="flex items-center mb-3">
+                    <div class="flex items-center justify-between mb-3">
                         <h4 class="text-base font-medium dark:text-white mr-1">{{ $method->name }}</h4>
                         @if($method->status)
                             <span class="badge-success text-xs text-success capitalize rounded bg-opacity-30 px-2 py-1">
-                                {{ __('Activated') }}
+                                {{ __('Active') }}
                             </span>
                         @else
                             <span class="badge-danger text-xs text-danger capitalize rounded bg-opacity-30 px-2 py-1">
-                                {{ __('Deactivated') }}
+                                {{ __('Deactive') }}
                             </span>
                         @endif
                     </div>

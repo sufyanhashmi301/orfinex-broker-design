@@ -5,6 +5,13 @@
                 {{ __('Plugins')}}
             </a>
         </li>
+        @can('automatic-gateway-manage')
+            <li>
+                <a href="{{ route('admin.gateway.automatic') }}" class="navItem {{ isActive('admin.gateway.automatic') }}">
+                    {{ __('Payment Gateways') }}
+                </a>
+            </li>
+        @endcan
         <li>
             <a href="{{ route('admin.settings.apiAccess') }}" class="navItem {{ isActive('admin.settings.apiAccess') }}">
                 {{ __('API Access')}}

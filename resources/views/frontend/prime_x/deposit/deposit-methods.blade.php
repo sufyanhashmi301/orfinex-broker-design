@@ -14,14 +14,9 @@
                 <div class="card-header items-center noborder !p-4">
                     <div class="flex items-center">
                         <div class="flex-none">
-                            <div class="w-12 h-12 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                <img src="{{ asset($gateway->logo) }}" alt="{{ $gateway->name }}" class="block w-full h-full object-cover rounded-full">
-                            </div>
+                            <img src="{{ asset($gateway->logo) }}" alt="{{ $gateway->name }}" />
                         </div>
                         <div class="flex-1 text-start">
-                            <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap mb-1">
-                                {{ $gateway->name }}
-                            </h4>
                             <span class="badge badge-secondary capitalize rounded-3xl py-1">
                                 {{ __('Verification required') }}
                             </span>
@@ -29,6 +24,9 @@
                     </div>
                 </div>
                 <div class="card-body p-4">
+                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap mb-3">
+                        {{ $gateway->name }}
+                    </h4>
                     <ul class="space-y-3">
                         <li class="text-sm">
                             <span class="text-slate-400 mr-1">{{ __('Processing Time') }}</span>

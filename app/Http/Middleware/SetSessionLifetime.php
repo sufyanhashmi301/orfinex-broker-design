@@ -16,11 +16,11 @@ class SetSessionLifetime
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($guard == 'admin') {
-            config(['session.lifetime' => 60]);
-        } else {
-            config(['session.lifetime' => 60]);
-        }
+//        if ($guard == 'admin') {
+//            config(['session.lifetime' => 60]);
+//        } else {
+//            config(['session.lifetime' => 60]);
+//        }
 
         return $next($request);
     }

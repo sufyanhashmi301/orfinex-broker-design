@@ -15,9 +15,7 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form action="{{ route('admin.gateway.update',$gateway->id) }}"
-                    method="post"
-                    enctype="multipart/form-data">
+                <form action="{{ route('admin.gateway.update',$gateway->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="grid grid-col-2 gap-5">
                         <div class="col-span-2">

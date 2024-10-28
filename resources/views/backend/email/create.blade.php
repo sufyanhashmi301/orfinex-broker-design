@@ -96,7 +96,7 @@
                                 <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the main Messages here"></iconify-icon>
                             </label>
                             <div class="md:col-span-9 col-span-12">
-                        <textarea name="message_body" class="form-control" cols="30" rows="8"></textarea>
+                        <textarea name="message_body" class="form-control basicTinymce" cols="30" rows="8"></textarea>
                             </div>
                         </div>
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
@@ -128,7 +128,7 @@
                                 </div>
 
                                 <div class="input-area mb-5" id="secondary_message__body">
-                                    <textarea name="bottom_body" class="form-control" cols="30" rows="8"></textarea>
+                                    <textarea name="bottom_body" class="form-control basicTinymce" cols="30" rows="8"></textarea>
                                 </div>
 
                                 <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
@@ -183,7 +183,24 @@
     </div>
 @endsection
 @section('script')
+    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
     <script>
+
+        tinymce.init({
+            selector: 'textarea.basicTinymce',
+            height: 500,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+
         $(document).ready(function() {
             $('.copy-button').click(function() {
 

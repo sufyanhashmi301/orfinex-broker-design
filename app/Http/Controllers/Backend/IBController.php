@@ -93,18 +93,13 @@ class IBController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.pending');
@@ -120,18 +115,13 @@ class IBController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.approved');
@@ -147,7 +137,8 @@ class IBController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->editColumn('email', function ($request) {
                     return safe($request->email);
@@ -158,7 +149,7 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['avatar', 'username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.rejected');
@@ -174,18 +165,17 @@ class IBController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
+                ->addColumn('username', 'backend.user.include.__user')
+                ->addColumn('email', 'backend.user.include.__email')
+//                ->editColumn('kyc', 'backend.user.include.__kyc')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
-                ->editColumn('email', function ($request) {
-                    return safe($request->email);
-                })
-                ->editColumn('username', function ($request) {
-                    return safe($request->username);
-                })
+//                ->editColumn('username', function ($request) {
+//                    return safe($request->username);
+//                })
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'kyc', 'ib_status', 'action'])
+                ->rawColumns(['avatar', 'username','email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.all');

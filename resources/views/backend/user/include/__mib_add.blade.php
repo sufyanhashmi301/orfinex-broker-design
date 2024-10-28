@@ -13,11 +13,11 @@
                 </div>
                 <div class="title">
                     <h4 class="text-xl font-medium dark:text-white capitalize">
-                        {{ __('Add Multi IB To ') }} <span id="name">{{ $user->full_name ?? ''}}</span>
+                        {{ __('Convert to IB member ') }} <span id="name">{{ $user->full_name ?? ''}}</span>
                     </h4>
                 </div>
                 <p class="dark:text-slate-300">
-                    {{ __('Are you sure you want to add Multi IB Account? ') }}
+                    {{ __('Are you sure you want to convert IB member? ') }}
                 </p>
 
                 <form id="addIBModalForm" action="{{ route('admin.ib.multi.approve') }}" method="POST">
@@ -27,7 +27,7 @@
                     <div class="action-btns">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:send"></iconify-icon>
-                            {{ __('Add Multi IB') }}
+                            {{ __('Confirm IB member') }}
                         </button>
                         <a
                             href="#"

@@ -160,7 +160,7 @@
             </ul>
         </li>
 
-        @if(setting('sign_up_referral', 'permission'))
+{{--        @if(setting('sign_up_referral', 'permission'))--}}
             @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
             <li>
                 <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
@@ -171,7 +171,7 @@
                 </a>
             </li>
                 @endif
-        @endif
+{{--        @endif--}}
 
         <li>
             <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn {{ isActive('user.setting*') }}">

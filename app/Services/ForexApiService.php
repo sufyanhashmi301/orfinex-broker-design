@@ -115,6 +115,17 @@ class ForexApiService
         $endpoint = 'useraccount/balance';
         return $this->get($endpoint, $data);
     }
+    public function fastDeals($reportFlag=0,$timeInSeconds,$from,$to)
+    {
+        $endpoint = 'reports/fastdeals';
+        $data = [
+            'reportFlag' => $reportFlag,//(0 for all, 1 for buy, 2 for sell)
+            'timeInSeconds' => $timeInSeconds,
+            'fromDateTime' => $from,
+            'toDateTime' => $to,
+        ];
+        return $this->get($endpoint, $data);
+    }
 
     public function getUserBalanceByGroup($data)
     {

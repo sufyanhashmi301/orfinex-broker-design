@@ -129,6 +129,16 @@
                     {{ $displayName }}
     </span>
             </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('IB Member:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @if($user->ib_status == 'Unprocessed')
+                        {{ __('N/A') }}
+                    @else
+                        {{ ucfirst($user->ib_status)  }}
+                    @endif
+                </span>
+            </li>
 
         </ul>
         <div

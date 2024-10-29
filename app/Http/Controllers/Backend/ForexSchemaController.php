@@ -8,7 +8,7 @@ use App\Models\ForexSchema;
 use App\Models\RebateRule;
 use App\Models\Schedule;
 use App\Models\MultiLevel;
-use App\Models\IBGroup;
+use App\Models\IbGroup;
 use App\Models\SwapFreeAccount;
 use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
@@ -71,7 +71,7 @@ class ForexSchemaController extends Controller
         $swapBasedAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP)->orderBy('level_order','asc')->get();
         $swapFreeAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP_FREE)->orderBy('level_order','asc')->get();
         $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
-        $ibGroups = IBGroup::where('status', 1)->orderBy('name', 'asc')->get();
+        $ibGroups = IbGroup::where('status', 1)->orderBy('name', 'asc')->get();
         return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts','rebateRules', 'ibGroups'));
     }
     /**

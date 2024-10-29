@@ -248,8 +248,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.change-leverage')}}" class="{{ isActive('admin.change-leverage') }}">
-                                {{ __('Change Leverage') }}
+                            <a href="{{route('admin.all-leverage')}}" class="{{ isActive('admin.all-leverage') }}">
+                                {{ __('All Leverage') }}
                             </a>
                         </li>
                         <li>

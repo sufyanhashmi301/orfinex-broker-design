@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 
-@section('title', __('Pending Leverage Updates'))
+@section('title', __('All Leverage Updates'))
 
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
@@ -57,14 +57,41 @@
                                         </td>
                                         <td>
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <button type="button" data-id="{{ $update->id }}" data-action="approve" class="btn btn-sm btn-light inline-flex items-center leverageAction">
-                                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                                    <span>{{ __('Approve') }}</span>
-                                                </button>
-                                                <button type="button" data-id="{{ $update->id }}" data-action="reject" class="btn btn-sm btn-danger inline-flex items-center leverageAction">
-                                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mdi:close"></iconify-icon>
-                                                    <span>{{ __('Reject') }}</span>
-                                                </button>
+                                                @if ($update->status == 1)
+                                                    <!-- Only show reject button when status is approved -->
+                                                    <button type="button" 
+                                                            data-id="{{ $update->id }}" 
+                                                            data-action="reject" 
+                                                            class="btn btn-sm btn-danger inline-flex items-center leverageAction">
+                                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mdi:close"></iconify-icon>
+                                                        <span>{{ __('Reject') }}</span>
+                                                    </button>
+                                                @elseif ($update->status == 2)
+                                                    <!-- Only show approve button when status is rejected -->
+                                                    <button type="button" 
+                                                            data-id="{{ $update->id }}" 
+                                                            data-action="approve" 
+                                                            class="btn btn-sm btn-light inline-flex items-center leverageAction">
+                                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                                        <span>{{ __('Approve') }}</span>
+                                                    </button>
+                                                @else
+                                                    <!-- Show both buttons if status is pending -->
+                                                    <button type="button" 
+                                                            data-id="{{ $update->id }}" 
+                                                            data-action="approve" 
+                                                            class="btn btn-sm btn-light inline-flex items-center leverageAction">
+                                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                                        <span>{{ __('Approve') }}</span>
+                                                    </button>
+                                                    <button type="button" 
+                                                            data-id="{{ $update->id }}" 
+                                                            data-action="reject" 
+                                                            class="btn btn-sm btn-danger inline-flex items-center leverageAction">
+                                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mdi:close"></iconify-icon>
+                                                        <span>{{ __('Reject') }}</span>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -97,7 +124,7 @@
         $('#leverageActionForm').on('submit', function(e) {
     e.preventDefault();
     var form = $(this);
-    var url = '{{ route("admin.pending-leverage.action") }}';
+    var url = '{{ route("admin.all-leverage.action") }}';
 
     $.ajax({
         type: 'POST',

@@ -195,8 +195,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
-    Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
-    Route::match(['get', 'post'], 'pending-leverage', [AccountsController::class, 'pendingLeverage'])->name('pending-leverage');
+    Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
+    Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
+    Route::get('pending-leverage', [AccountsController::class, 'pendingLeverage'])->name('pending-leverage');
+    Route::post('pending-leverage/action', [AccountsController::class, 'handlePendingLeverage'])->name('pending-leverage.action');
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
     //===============================  Essentials ==================================

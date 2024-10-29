@@ -42,7 +42,7 @@ class PluginSeeder extends Seeder
         // Insert Zoho SalesIQ plugin if it doesn't exist
         if (!$zohoSalesIQExists) {
             $plugins[] = [
-                'icon' => asset('crm-assets/integration-logo/png/salesiq.png'),
+                'icon' => 'https://cdn.brokeret.com/crm-assets/integration-logo/png/salesiq.png',
                 'type' => 'system',
                 'name' => 'Zoho SalesIQ',
                 'description' => 'Zoho SalesIQ live chat and visitor tracking software',
@@ -73,7 +73,7 @@ class PluginSeeder extends Seeder
         // Insert Zoho PageSense plugin if it doesn't exist
         if (!$zohoPageSenseExists) {
             $plugins[] = [
-                'icon' => asset('crm-assets/integration-logo/svg/pagesense.svg'),
+                'icon' => 'https://cdn.brokeret.com/crm-assets/integration-logo/svg/pagesense.svg',
                 'type' => 'system',
                 'name' => 'Zoho PageSense',
                 'description' => 'Zoho PageSense for heatmaps and visitor tracking',

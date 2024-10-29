@@ -29,8 +29,9 @@
                     <div class="single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
                         <div class="gateway-name flex items-center gap-2">
                             <div class="gateway-icon mr-4">
-                                <img class="h-7" src="{{ asset($plugin->icon) }}" alt=""/>
+                                <img class="h-7" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
                             </div>
+                            
                             <div class="gateway-title">
                                 <h4 class="text-sm">{{ $plugin->name }}</h4>
                                 <p class="text-xs dark:text-slate-300">{{ $plugin->description }}</p>

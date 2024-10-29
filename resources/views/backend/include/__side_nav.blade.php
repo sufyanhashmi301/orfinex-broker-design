@@ -248,8 +248,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.change-leverage')}}" class="{{ isActive('admin.change-leverage') }}">
-                                {{ __('Change Leverage') }}
+                            <a href="{{route('admin.all-leverage')}}" class="{{ isActive('admin.all-leverage') }}">
+                                {{ __('All Leverage') }}
                             </a>
                         </li>
                         <li>
@@ -433,6 +433,11 @@
                 <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
             <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('admin.manageLevel') }}" class="{{ isActive('admin.manageLevel') }}">
+                        {{ __('Manage Levels') }}
+                    </a>
+                </li>
                 <li class="">
                     <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">
                         {{ __('Symbols') }}

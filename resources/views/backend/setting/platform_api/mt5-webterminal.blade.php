@@ -1,6 +1,13 @@
 @extends('backend.setting.platform_api.index')
 @section('title')
-    {{ __('MT5 Web Terminal Settings') }}
+    <div>
+        <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
+            {{ __('MT5 Web Terminal Settings') }}
+        </h4>
+        <p class="text-sm text-slate-500 dark:text-slate-300">
+            {{ __("Seamlessly configure web terminal for user access.") }}
+        </p>
+    </div>
 @endsection
 @section('platform-api-content')
     <?php

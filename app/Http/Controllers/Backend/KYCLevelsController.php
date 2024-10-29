@@ -49,7 +49,8 @@ class KYCLevelsController extends Controller
      */
     public function index(Request $request)
     {
-        $kycLevels = KycLevel::paginate(10);
+        $kycLevels = KycLevel::with('kyc_sub_levels')->get();
+
         return view('backend.kyc_levels.index', compact('kycLevels'));
     }
 

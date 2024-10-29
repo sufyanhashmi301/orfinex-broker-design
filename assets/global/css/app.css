@@ -4599,6 +4599,9 @@ textarea.form-control.is-invalid{
 .h-3{
   height: 0.75rem;
 }
+.h-\[12px\]{
+  height: 12px;
+}
 .h-\[16px\]{
   height: 16px;
 }
@@ -4850,6 +4853,9 @@ textarea.form-control.is-invalid{
 }
 .w-8{
   width: 2rem;
+}
+.w-\[12px\]{
+  width: 12px;
 }
 .w-\[16px\]{
   width: 16px;

@@ -58,6 +58,13 @@ class ForexSchemaController extends Controller
     {
         return view('backend.forex_schema.create');
     }
+
+    public function manageLevel()
+    {
+        $schemas = ForexSchema::orderBy('priority', 'asc')->traderType()->get();
+        return view('backend.multi_level.manage_level', compact('schemas'));
+    }
+
     public function view($id)
     {
         $schema = ForexSchema::find($id);

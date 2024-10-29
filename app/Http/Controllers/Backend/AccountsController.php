@@ -287,56 +287,141 @@ class   AccountsController extends Controller
         return redirect()->back();
     }
 
-    public function changeLeverage(){
-        return view('backend.investment.leverage.change');
-    }
-
-
+    
     public function pendingLeverage(Request $request)
+    {
+        $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+            ->where('status', 0)
+            ->get();
+    
+        return view('backend.investment.leverage.pending', compact('leverageUpdates'));
+    }
+    
+    public function handlePendingLeverage(Request $request)
 {
-    // Handle approve or reject actions
-    if ($request->has('action')) {
-        $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
-        $user = $leverageUpdate->user; // Get the related user
-        
-        // Define shortcodes for email notifications
-        $shortcodes = [
-            '[[full_name]]' => $user->full_name,
-            '[[login]]' => $leverageUpdate->forexAccount->login,
-            '[[leverage]]' => $leverageUpdate->updated_leverage,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[status]]' => $request->input('action') == 'approve' ? 'approved' : 'rejected',
+    // Validate the request
+    $request->validate([
+        'action' => 'required|string',
+        'id' => 'required|integer|exists:leverage_updates,id',
+    ]);
+
+    $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
+    $user = $leverageUpdate->user;
+
+    $shortcodes = [
+        '[[full_name]]' => $user->full_name,
+        '[[login]]' => $leverageUpdate->forexAccount->login,
+        '[[leverage]]' => $leverageUpdate->updated_leverage,
+        '[[site_title]]' => config('app.name'),
+        '[[site_url]]' => route('home'),
+        '[[status]]' => $request->input('action') === 'approve' ? 'approved' : 'rejected',
+    ];
+
+    if ($request->input('action') === 'approve') {
+        $leverageUpdate->status = 1; // Approved
+        $leverageUpdate->approved_by = Auth::id();
+
+        // Prepare data for the API call
+        $data = [
+            'login' => $leverageUpdate->forexAccount->login,
+            'leverage' => $leverageUpdate->updated_leverage,
         ];
 
-        if ($request->input('action') == 'approve') {
-            $leverageUpdate->status = 1; // Approved
-            $leverageUpdate->approved_by = Auth::id(); // Set the user who approved
+        try {
+            // Call the API to update leverage
+            $this->forexApiService->setUserLeverage($data);
 
-            // Send approval email
+            // Update leverage in ForexAccount model
+            $forexAccount = $leverageUpdate->forexAccount;
+            $forexAccount->leverage = $leverageUpdate->updated_leverage;
+            $forexAccount->save();
+
+            // Send email notification
             $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
-            notify()->success('Leverage Update Approved Successfully!');
-        } elseif ($request->input('action') == 'reject') {
-            $leverageUpdate->status = 2; // Rejected
-            $leverageUpdate->approved_by = Auth::id(); // Set the user who rejected
 
-            // Send rejection email
-            $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
-            notify()->success('Leverage Update Rejected Successfully!');
+            $message = 'Leverage Update Approved and Updated Successfully!';
+        } catch (\Exception $e) {
+            $message = 'Leverage Update Approved but API Update Failed. Please check the API service.';
+            \Log::error('Leverage API Update Failed: ' . $e->getMessage());
         }
-
-        $leverageUpdate->save();
-        return redirect()->route('admin.pending-leverage');
+    } elseif ($request->input('action') === 'reject') {
+        $leverageUpdate->status = 2; // Rejected
+        $leverageUpdate->approved_by = Auth::id();
+        $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
+        $message = 'Leverage Update Rejected Successfully!';
     }
 
-    // Fetch pending leverage updates
-    $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-        ->where('status', 0)
-        ->get();
+    // Save the LeverageUpdate status
+    $leverageUpdate->save();
 
-    return view('backend.investment.leverage.pending', compact('leverageUpdates'));
+    // Return a JSON response with the message
+    return response()->json(['message' => $message]);
+}
+
+public function allLeverage(Request $request)
+{
+    // Fetch all leverage updates with their associated user and forexAccount relationships
+    $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')->get();
+
+    return view('backend.investment.leverage.all', compact('leverageUpdates'));
 }
 
 
-    
+public function handleAllLeverage(Request $request)
+{
+    $request->validate([
+        'action' => 'required|string',
+        'id' => 'required|integer|exists:leverage_updates,id',
+    ]);
+
+    $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
+    $user = $leverageUpdate->user;
+    $forexAccount = $leverageUpdate->forexAccount;
+    $action = $request->input('action');
+
+    $shortcodes = [
+        '[[full_name]]' => $user->full_name,
+        '[[login]]' => $forexAccount->login,
+        '[[leverage]]' => $leverageUpdate->updated_leverage,
+        '[[site_title]]' => config('app.name'),
+        '[[site_url]]' => route('home'),
+        '[[status]]' => $action === 'approve' ? 'approved' : 'rejected',
+    ];
+
+    try {
+        if ($action === 'approve' && $leverageUpdate->status !== 1) {
+            $leverageUpdate->status = 1; // Approved
+            $leverageUpdate->approved_by = Auth::id();
+            $forexAccount->leverage = $leverageUpdate->updated_leverage;
+            $this->forexApiService->setUserLeverage([
+                'login' => $forexAccount->login,
+                'leverage' => $leverageUpdate->updated_leverage,
+            ]);
+            $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
+            $message = 'Leverage Update Approved and Applied Successfully!';
+        } elseif ($action === 'reject' && $leverageUpdate->status !== 2) {
+            $leverageUpdate->status = 2; // Rejected
+            $leverageUpdate->approved_by = Auth::id();
+            $forexAccount->leverage = $leverageUpdate->last_leverage; // Restore last leverage
+            $this->forexApiService->setUserLeverage([
+                'login' => $forexAccount->login,
+                'leverage' => $leverageUpdate->last_leverage,
+            ]);
+            $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
+            $message = 'Leverage Update Rejected and Restored Successfully!';
+        } else {
+            $message = 'No change in status was made.';
+        }
+
+        $forexAccount->save();
+        $leverageUpdate->save();
+    } catch (\Exception $e) {
+        \Log::error('Leverage API Update Failed: ' . $e->getMessage());
+        $message = 'Action succeeded locally, but API Update Failed. Please check the API service.';
+    }
+
+    return response()->json(['message' => $message]);
+}
+
+
 }

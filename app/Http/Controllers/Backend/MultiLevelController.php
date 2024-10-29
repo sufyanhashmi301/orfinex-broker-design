@@ -7,7 +7,7 @@ use App\Http\Requests\StoreSwapBasedAccountRequest;
 use App\Http\Requests\UpdateSwapBasedAccountRequest;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
-use App\Models\IBGroup;
+use App\Models\IbGroup;
 use App\Models\ReferralRelationship;
 use App\Models\Symbol;
 use App\Services\SwapBasedAccountService;
@@ -73,7 +73,7 @@ class MultiLevelController extends Controller
     {
         $multiLevelAccount = MultiLevel::with('rebateRule', 'ibGroups')->findOrFail($id);
         $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
-        $ibGroups = IBGroup::where('status', 1)->orderBy('name', 'asc')->get();
+        $ibGroups = IbGroup::where('status', 1)->orderBy('name', 'asc')->get();
         return view('backend.multi_level.include.__editSwapBasForm', compact('multiLevelAccount','rebateRules', 'ibGroups'))->render();
 
     }

@@ -1,44 +1,91 @@
 @extends('backend.setting.user_management.index')
 @section('title')
-    {{ __('KYC Levels') }}
+    {{ __('KYC & Compliance') }}
 @endsection
 @section('user-management-content')
-    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('KYC Levels') }}
-        </h4>
+    <div class="pageTitle flex justify-between flex-wrap items-center mb-10">
+        <div>
+            <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
+                @yield('title')
+            </h4>
+            <p class="text-sm text-slate-500 dark:text-slate-300">
+                {{ __('Configure verification levels and requirements') }}
+            </p>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-body p-6">
-            <div class="grid grid-cols-12 items-center gap-5">
-                <div class="lg:col-span-5 col-span-12 relative text-center">
+
+    <div class="grid grid-cols-12 gap-5">
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <div class="card-body flex items-center justify-center p-6">
                     <div id="lottie-container" class="inline-flex" style="width: 350px; height: 350px;"></div>
-                    <div class="absolute right-0 top-0 hidden h-full min-h-[1em] w-px self-stretch border-t-0 bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400 lg:block"></div>
-                </div>
-                <div class="lg:col-span-7 col-span-12">
-                    <ul class="list-item space-y-3 h-full overflow-x-auto">
-                        @foreach($kycLevels as $kyc)
-                            <li class="single-gateway flex items-center justify-between border rounded dark:border-slate-300 py-3 px-4">
-                                <p class="gateway-name text-lg text-slate-900 dark:text-slate-50">{{ $kyc->name }}</p>
-                                <div class="gateway-right flex items-center gap-2">
-                                    @if( $kyc->status)
-                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
-                                            {{ __('Active') }}
-                                        </div>
-                                    @else
-                                        <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
-                                            {{ __('Disabled') }}
-                                        </div>
-                                    @endif
-                                    <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn">
-                                        <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                    </a>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
                 </div>
             </div>
+        </div>
+        <div class="lg:col-span-8 col-span-12">
+            <ul class="list-item space-y-3 h-full overflow-x-auto">
+                @php $count = 1; @endphp
+                @foreach($kycLevels as $kyc)
+                    <li class="card single-gateway border rounded dark:border-slate-700 p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flex-none">
+                                    <div class="flex items-center justify-center w-8 h-8 rounded-[100%] bg-body font-medium dark:text-white dark:bg-body ltr:mr-3 rtl:ml-3">
+                                        {{ $count }}
+                                    </div>
+                                </div>
+                                <div class="flex-1 text-start">
+                                    <h4 class="text-base font-semibold text-slate-600 whitespace-nowrap">
+                                        {{ $kyc->name }}
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="gateway-right flex items-center gap-2">
+                                @if( $kyc->status)
+                                    <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                        {{ __('Active') }}
+                                    </div>
+                                @else
+                                    <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                        {{ __('Disabled') }}
+                                    </div>
+                                @endif
+                                <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn dark:text-slate-300">
+                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-300 my-3">
+                            {{ $kyc->description }}
+                        </p>
+                        <div class="flex items-center space-x-7 flex-wrap">
+                            @foreach ($kyc->kyc_sub_levels as $subLevel)
+                                @if($kyc->slug==\App\Enums\KycLevelSlug::LEVEL2)
+                                    <div class="basicRadio">
+                                        <label class="flex items-center cursor-pointer">
+                                            <input type="radio" class="hidden" name="sub_level" value="secondary-500" @if($subLevel->status) checked @endif>
+                                            <span class="flex-none bg-white dark:bg-slate-500 rounded-full border inline-flex ltr:mr-2 rtl:ml-2 relative transition-all
+                                            duration-150 h-[12px] w-[12px] border-slate-400 dark:border-slate-600 dark:ring-slate-700"></span>
+                                            <span class="text-secondary-500 text-sm leading-6 capitalize">{{ $subLevel->name }}</span>
+                                        </label>
+                                    </div>
+                                @elseif($kyc->slug==\App\Enums\KycLevelSlug::LEVEL3)
+                                    <div class="checkbox-area primary-checkbox">
+                                        <label class="inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="hidden" name="sub_level" @if($subLevel->status) checked @endif>
+                                            <span class="h-[12px] w-[12px] border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                            </span>
+                                            <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">{{ $subLevel->name }}</span>
+                                        </label>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </li>
+                    @php $count++; @endphp
+                @endforeach
+            </ul>
         </div>
     </div>
     <!-- Modal for Delete deleteKycType -->

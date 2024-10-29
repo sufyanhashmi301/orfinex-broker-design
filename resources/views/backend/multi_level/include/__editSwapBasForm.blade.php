@@ -60,9 +60,7 @@
                 @endforeach
             </select>
         </div>
-        
-        
-        
+
         <div class="lg:col-span-2 input-area">
             <label for="description" class="form-label">{{ __('Short Description') }}</label>
             <textarea

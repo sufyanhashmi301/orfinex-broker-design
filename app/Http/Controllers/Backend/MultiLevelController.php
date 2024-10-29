@@ -68,7 +68,7 @@ class MultiLevelController extends Controller
             return redirect()->back();
         }
     }
-        public function edit($id)
+    public function edit($id)
 
     {
         $multiLevelAccount = MultiLevel::with('rebateRule', 'ibGroups')->findOrFail($id);

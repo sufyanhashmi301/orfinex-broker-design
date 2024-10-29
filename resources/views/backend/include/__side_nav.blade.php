@@ -433,6 +433,11 @@
                 <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
             <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{ route('admin.manageLevel') }}" class="{{ isActive('admin.manageLevel') }}">
+                        {{ __('Manage Levels') }}
+                    </a>
+                </li>
                 <li class="">
                     <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">
                         {{ __('Symbols') }}

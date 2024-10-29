@@ -178,6 +178,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+    Route::get('manage-level', [ForexSchemaController::class, 'manageLevel'])->name('manageLevel');
     Route::get('multi-level/view/{id}', [ForexSchemaController::class, 'view'])->name('multi-level.view');
     Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');

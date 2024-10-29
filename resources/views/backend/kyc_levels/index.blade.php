@@ -8,37 +8,50 @@
             {{ __('KYC Levels') }}
         </h4>
     </div>
-    <div class="card">
-        <div class="card-body p-6">
-            <div class="grid grid-cols-12 items-center gap-5">
-                <div class="lg:col-span-5 col-span-12 relative text-center">
+
+    <div class="grid grid-cols-12 gap-5">
+        <div class="lg:col-span-4 col-span-12">
+            <div class="card h-full">
+                <div class="card-body flex items-center justify-center p-6">
                     <div id="lottie-container" class="inline-flex" style="width: 350px; height: 350px;"></div>
-                    <div class="absolute right-0 top-0 hidden h-full min-h-[1em] w-px self-stretch border-t-0 bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400 lg:block"></div>
-                </div>
-                <div class="lg:col-span-7 col-span-12">
-                    <ul class="list-item space-y-3 h-full overflow-x-auto">
-                        @foreach($kycLevels as $kyc)
-                            <li class="single-gateway flex items-center justify-between border rounded dark:border-slate-300 py-3 px-4">
-                                <p class="gateway-name text-lg text-slate-900 dark:text-slate-50">{{ $kyc->name }}</p>
-                                <div class="gateway-right flex items-center gap-2">
-                                    @if( $kyc->status)
-                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
-                                            {{ __('Active') }}
-                                        </div>
-                                    @else
-                                        <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
-                                            {{ __('Disabled') }}
-                                        </div>
-                                    @endif
-                                    <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn">
-                                        <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                    </a>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
                 </div>
             </div>
+        </div>
+        <div class="lg:col-span-8 col-span-12">
+            <ul class="list-item space-y-3 h-full overflow-x-auto">
+                @php $count = 1; @endphp
+                @foreach($kycLevels as $kyc)
+                    <li class="card single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
+                        <div class="flex items-center">
+                            <div class="flex-none">
+                                <div class="flex flex-items justify-center w-6 h-6 rounded-[100%] bg-body dark:text-white dark:bg-body ltr:mr-3 rtl:ml-3">
+                                    {{ $count }}
+                                </div>
+                            </div>
+                            <div class="flex-1 text-start">
+                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                    {{ $kyc->name }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="gateway-right flex items-center gap-2">
+                            @if( $kyc->status)
+                                <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                    {{ __('Active') }}
+                                </div>
+                            @else
+                                <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                    {{ __('Disabled') }}
+                                </div>
+                            @endif
+                            <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn dark:text-slate-300">
+                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                            </a>
+                        </div>
+                    </li>
+                    @php $count++; @endphp
+                @endforeach
+            </ul>
         </div>
     </div>
     <!-- Modal for Delete deleteKycType -->

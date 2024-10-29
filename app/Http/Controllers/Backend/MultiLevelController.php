@@ -42,8 +42,13 @@ class MultiLevelController extends Controller
 
         $request->merge(['type' => get_hash($request->type)]);
         $this->swapBasedAccountService->create($request);
-        notify()->success(__('Multi Level Account created successfully.'));
-        return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Multi Level Account created successfully.'),
+            'forex_scheme_id' => $request->forex_scheme_id, // Send back any additional data if needed
+        ]);
+
 
     }
 
@@ -68,8 +73,8 @@ class MultiLevelController extends Controller
             return redirect()->back();
         }
     }
-        public function edit($id)
 
+    public function edit($id)
     {
         $multiLevelAccount = MultiLevel::with('rebateRule', 'ibGroups')->findOrFail($id);
         $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
@@ -96,7 +101,7 @@ class MultiLevelController extends Controller
 //        dd($request->validated());
         $this->swapBasedAccountService->update($swapBasedAccount, $request->validated(),$id);
         notify()->success(__('Multi Level Account updated successfully.'));
-        return redirect()->route('admin.multi-level.view', $request->forex_scheme_id);
+        return redirect()->route('admin.multi-level.manage_level', $request->forex_scheme_id);
 
     }
 

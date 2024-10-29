@@ -342,7 +342,7 @@
 
                 <!-- investments -->
                 @can('investment-list')
-                    {{-- @include('backend.user.include.__accounts') Uncomment later --}}
+                     @include('backend.user.include.__accounts')
                 @endcan
 
                 <!-- KYC Tab -->

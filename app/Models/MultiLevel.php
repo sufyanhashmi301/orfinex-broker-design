@@ -58,6 +58,6 @@ class MultiLevel extends Model
     }
 	public function ibGroups()
     {
-        return $this->belongsToMany(IBGroup::class, 'ib_group_multi_level', 'multi_level_id', 'ib_group_id')->withTimestamps();
+        return $this->belongsToMany(IbGroup::class, 'ib_group_multi_level', 'multi_level_id', 'ib_group_id')->withTimestamps();
     }
 }

@@ -1,6 +1,13 @@
 @extends('backend.setting.platform_api.index')
 @section('title')
-    {{ __('X9 Database Credentials') }}
+    <div>
+        <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
+            {{ __('X9 Database Credentials') }}
+        </h4>
+        <p class="text-sm text-slate-500 dark:text-slate-300">
+            {{ __('Configure your database connection settings') }}
+        </p>
+    </div>
 @endsection
 @section('platform-api-content')
     <div class="card">
@@ -42,7 +49,7 @@
                 </div>
                 <div class="flex justify-between mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                        {{ __('Save') }}
+                        {{ __('Save Changes') }}
                     </button>
                     <button type="button" class="btn btn-outline-dark inline-flex items-center justify-center" id="test-connection-btn">
                         {{ __('Test Connection') }}

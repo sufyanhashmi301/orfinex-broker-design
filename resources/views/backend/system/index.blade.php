@@ -3,10 +3,17 @@
     {{ __('Application Details') }}
 @endsection
 @section('system-content')
-    <div class="flex justify-between flex-wrap items-center mb-6">
-        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('Application Details') }}
-        </h4>
+    <div class="card bg-dark p-6 mb-6">
+        <h4 class="card-title">{{ setting('site_title', 'global') }}</h4>
+        <p class="card-text my-2">{{ __('Enterprise CRM Platform') }}</p>
+        <ul class="flex items-center gap-3">
+            <li class="badge badge-secondary">
+                {{ __('Version 3.0') }}
+            </li>
+            <li class="badge badge-secondary">
+                {{ __('Enterprise License') }}
+            </li>
+        </ul>
     </div>
     <div class="card">
         <div class="card-body p-6">

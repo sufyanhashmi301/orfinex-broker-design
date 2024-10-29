@@ -66,7 +66,6 @@
                                             {{ $rebateRule->title  }}
                                         </option>
                                     @endforeach
-
                                 </select>
                                 <div class="invalid-feedback" id="rebate-rules" style="display: none;"></div>
                             </div>
@@ -81,7 +80,7 @@
                                 </select>
                                 <div class="invalid-feedback" id="ib-groups" style="display: none;"></div>
                             </div>
-                            
+
                             <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">{{ __('Short Description') }}</label>
                                 <textarea

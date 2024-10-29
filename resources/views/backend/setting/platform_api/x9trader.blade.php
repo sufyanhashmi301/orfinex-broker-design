@@ -1,6 +1,13 @@
 @extends('backend.setting.platform_api.index')
 @section('title')
-    {{ __('X9trader Settings') }}
+    <div>
+        <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
+            {{ __('X9trader API Settings') }}
+        </h4>
+        <p class="text-sm text-slate-500 dark:text-slate-300">
+            {{ __("Set up Trading Platform API's provided by your provider.") }}
+        </p>
+    </div>
 @endsection
 @section('platform-api-content')
     <div class="card">

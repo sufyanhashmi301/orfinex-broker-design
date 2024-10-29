@@ -21,7 +21,7 @@
                     </button>
                 </div>
                 <div class="p-6">
-                    <form id="swapMultiLevelForm">
+                    <form action="{{route('admin.swap-multi-level.store')}}" method="post">
                         @csrf
                         <input type="hidden" name="type" value="{{the_hash(\App\Enums\MultiLevelType::SWAP)}}" >
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">

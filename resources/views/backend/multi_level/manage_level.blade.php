@@ -8,116 +8,66 @@
             @yield('title')
         </h4>
     </div>
-    <div id="schemaDetails"></div>
-    <div class="card basicTable_wrapper items-center justify-center">
-        <div class="max-w-xl w-full relative">
-            <label for="" class="form-label">{{ __('Please Select Account') }}</label>
-            <select name="" class="form-control flex-1" id="schemaSelect">
-                <option value="">{{ __('Select an Account') }}</option>
-                @foreach($schemas as $schema)
-                    <option value="{{ $schema->id }}">{{ $schema->title }}</option>
-                @endforeach
-            </select>
-        </div>
+    <div class="card p-4 mb-5">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active">
+                    {{ __('Metatrader') }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                    {{ __('X9 Trader') }}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="grid md:grid-cols-3 grid-cols-1 gap-5">
+        @foreach($schemas as $schema)
+            <a href="{{route('admin.multi-level.view',$schema->id)}}" class="card h-full">
+                <div class="card-header noborder">
+                    <div class="flex items-center">
+                        <div class="flex-none">
+                            <div class="w-10 h-10 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                <img src="{{ asset($schema->icon) }}" alt="{{ $schema->title }}" class="w-full h-full rounded-[100%] object-cover">
+                            </div>
+                        </div>
+                        <div class="flex-1 text-start">
+                            <h4 class="text-lg font-medium text-slate-600 whitespace-nowrap">
+                                {{ $schema->title }}
+                            </h4>
+                        </div>
+                    </div>
+                    <div @class([
+                        'badge bg-opacity-30 capitalize', // common classes
+                        'bg-success text-success' => $schema->status,
+                        'bg-danger text-danger' => !$schema->status
+                        ])>
+                        {{ $schema->status ? 'Active' : 'Deactivated' }}
+                    </div>
+                </div>
+                <div class="card-body p-6 pt-3">
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 mr-1">{{ __('Leverage') }}</span>
+                            <span class="capitalize">{{ $schema->leverage }}</span>
+                        </li>
+                        <li class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 mr-1">{{ __('Country') }}</span>
+                            <span>
+                                @if( null != $schema->country) {{ implode(', ', json_decode($schema->country,true)) }} @endif
+                            </span>
+                        </li>
+                        <li class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 mr-1">{{ __('Tags') }}</span>
+                            <span>
+                                @if( null != $schema->tags) {{ implode(', ', json_decode($schema->tags,true)) }} @endif
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </a>
+        @endforeach
     </div>
 
-@endsection
-@section('script')
-    <script>
-        $('body').on('change', '#schemaSelect', function() {
-            var schemaId = $(this).val();
-            if (schemaId) {
-                // Construct the route
-                var route = "{{ route('admin.multi-level.view', '') }}/" + schemaId;
-
-                // Perform AJAX request
-                $.ajax({
-                    url: route,
-                    type: 'GET',
-                    beforeSend: function() {
-                        $('#schemaDetails').html('<p>Loading...</p>');
-                    },
-                    success: function(response) {
-                        // Render the response into the div
-                        $('.basicTable_wrapper').css('display', 'none');
-                        $('#schemaDetails').html(response);
-                        $(".select2").select2({
-                            placeholder: "Select an Option"
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        $('#schemaDetails').html('<p>Error occurred. Please try again.</p>');
-                        console.error('Error occurred: ' + error);
-                    }
-                });
-            } else {
-                // Clear the div if no schema is selected
-                $('#schemaDetails').html('');
-            }
-        });
-
-
-        $(document).ready(function() {
-
-            $('body').on('change', '.toggle-checkbox', function() {
-                var target = $(this).data('target');
-                $(target).toggleClass('hidden');
-            })
-
-            $('body').on('click', '.editSwapBased', function (event) {
-                "use strict";
-                event.preventDefault();
-                $('#edit-swap-based-body').empty();
-                var id = $(this).data('id');
-                console.log(id,'id')
-                var url = '{{ route("admin.swap-multi-level.edit", ":id") }}';
-                url = url.replace(':id', id);
-                $.get(url, function (data) {
-                    $('#editSwapBasedModal').modal('show');
-                    $('#edit-swap-based-body').append(data);
-                    $('.select2').select2();
-                });
-            })
-            $('body').on('click', '.deleteSwapBased', function (event) {
-
-                "use strict";
-                event.preventDefault();
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-
-                var url = '{{ route("admin.swap-multi-level.destroy", ":id") }}';
-                url = url.replace(':id', id);
-                $('#swapBasedDeleteForm').attr('action', url)
-
-                $('.name').html(name);
-                $('#deleteSwapBased').modal('show');
-            })
-
-        });
-
-        $('body').on('submit', '#swapMultiLevelForm', function (event) {
-            event.preventDefault(); // Prevent default form submission
-
-            let formData = $(this).serialize(); // Serialize form data
-
-            $.ajax({
-                url: "{{ route('admin.swap-multi-level.store') }}", // Your route here
-                type: 'POST',
-                data: formData,
-                success: function(response) {
-                    $('#addLevelModal').modal('hide'); // Hide the modal
-                    $('#swapMultiLevelForm')[0].reset(); // Reset the form
-                },
-                error: function(xhr) {
-                    // Handle error response
-                    let errors = xhr.responseJSON.errors;
-                    $('.invalid-feedback').hide(); // Clear previous errors
-                    for (let key in errors) {
-                        $(`#${key}-groups`).text(errors[key]).show(); // Show error messages
-                    }
-                }
-            });
-        });
-
-    </script>
 @endsection

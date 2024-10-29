@@ -22,9 +22,30 @@ class KYCLevelSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         DB::table('kyc_levels')->insert([
-            ['name' => 'Level 1', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>KycLevelSlug::LEVEL1],
-            ['name' => 'Level 2', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>KycLevelSlug::LEVEL2],
-            ['name' => 'Level 3', 'status' => true, 'created_at' => now(), 'updated_at' => now(),'slug'=>KycLevelSlug::LEVEL3],
+            [
+                'name' => 'Level 1',
+                'status' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'slug' => KycLevelSlug::LEVEL1,
+                'description' => 'Email and Phone verification required',
+            ],
+            [
+                'name' => 'Level 2',
+                'status' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'slug' => KycLevelSlug::LEVEL2,
+                'description' => 'ID verification method',
+            ],
+            [
+                'name' => 'Level 3',
+                'status' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'slug' => KycLevelSlug::LEVEL3,
+                'description' => 'Additional verification requirements',
+            ],
         ]);
 
         // Call the other seeders

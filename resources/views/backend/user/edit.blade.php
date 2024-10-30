@@ -4,7 +4,6 @@
 @endsection
 @section('content')
     @php
-
         // Initialize the array to store statuses to exclude
         $excludedStatuses = [];
 
@@ -35,7 +34,6 @@
             ]
         ];
     @endphp
-
 
     <div class="space-y-5 profile-page">
         <div class="grid grid-cols-12 gap-6">

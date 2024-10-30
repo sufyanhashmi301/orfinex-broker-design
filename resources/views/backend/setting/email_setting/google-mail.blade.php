@@ -4,77 +4,83 @@
 @endsection
 @section('email-content')
     <div class="card">
-        <div class="card-header">
+        <div class="card-header noborder">
             <div class="flex-1">
-                <div class="flex items-center space-x-3 mb-3">
-                    <img src="{{ asset('backend/images/gmail-icon.png') }}" class="h-6" alt="">
-                    <span class="text-2xl font-medium">{{ __('Gmail') }}</span>
-                </div>
+                <h4 class="font-medium text-xl capitalize dark:text-white inline-block mb-1">{{ __('Gmail Configuration') }}</h4>
                 <p class="card-text">
-                    {{ __('Configure your Google Mail (Gmail) server to send automated email notifications regarding transactions, payments, and reminders to your customers.') }}
+                    {{ __('Set up Gmail for basic email notifications') }}
                 </p>
             </div>
-            <span class="badge bg-danger text-danger bg-opacity-30 capitalize">
-                {{ __('Deactivated') }}
+            <span class="badge badge-danger text-danger bg-opacity-30 capitalize">
+                {{ __('Limited Support') }}
             </span>
         </div>
-        <div class="card-body p-6">
+        <div class="card-body p-6 pt-3">
             <div class="space-y-5">
-                <div>
-                    <h6 class="text-lg font-medium mb-[6px] dark:text-white text-slate-900 mb-3">
-                        {{ __('Key Benefits:') }}
-                    </h6>
-                    <ul>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Notify your customers instantly about their transaction statuses, payments, and important reminders via Gmail.') }}</span>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Enable seamless email notifications for both customers and their assigned contact persons, ensuring effective communication.') }}</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-warning bg-opacity-[14%] text-warning">
-                    <div class="flex items-center space-x-3 rtl:space-x-reverse mb-3">
-                        <iconify-icon class="text-2xl flex-0" icon="lucide:triangle-alert"></iconify-icon>
-                        <p class="flex-1 text-lg font-medium">
-                            {{ __('Important Guidelines:') }}
+                <div class="font-normal text-sm text-warning rounded-md border border-warning bg-warning bg-opacity-[14%] p-4">
+                    <div class="flex space-x-3 rtl:space-x-reverse">
+                        <iconify-icon class="text-xl flex-0 mr-1" icon="lucide:triangle-alert"></iconify-icon>
+                        <p class="flex-1 text-sm">
+                            {{ __('Gmail has strict sending limits and security restrictions that may affect delivery reliability. For business use, we recommend using a professional SMTP provider instead.') }}
                         </p>
                     </div>
-                    <p class="text-sm text-warning">
-                        {{ __('Sending emails via Gmail is not recommended by us due to the security restrictions imposed by Google. These security measures may prevent the sending of emails from your CRM, even after making the necessary settings. Google may block email sending on certain servers, leading to unreliable delivery. While you can use Gmail if it works on your server, our support team will not assist in troubleshooting Gmail-related issues. For a more reliable solution, we recommend using a professional email provider such as SMTP servers (e.g., SendGrid, Mailgun) for better performance and support.') }}
-                    </p>
                 </div>
-                <div>
-                    <h6 class="text-lg font-medium mb-[6px] dark:text-white text-slate-900">
-                        {{ __('Before Connecting Your Gmail Account:') }}
-                    </h6>
-                    <p class="text-sm font-semibold dark:text-white mb-2">
-                        {{ __('To integrate Gmail with your CRM, follow these steps:') }}
-                    </p>
-                    <ul>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Enable IMAP in Gmail Go to your Gmail settings and enable IMAP to allow email sending through third-party platforms.') }}</span>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Generate an App Password Due to Gmail’s enhanced security, you need to generate an app-specific password to connect Gmail with your CRM.') }}</span>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Enter Credentials Enter your Gmail credentials and the generated app password into the CRM to initiate the connection.') }}</span>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="space-y-5">
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ 1 }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Enable IMAP Access') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-1">
+                                    {{ __('Go to Gmail settings and enable IMAP to allow third-party access') }}
+                                </p>
+                                <a href="https://sendgrid.com/en-us" class="inline-flex items-center text-sm font-medium dark:text-white">
+                                    {{ __('View Gmail Settings') }}
+                                    <iconify-icon class="ml-1" icon="lucide:external-link"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('2') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Create App Password') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-0">
+                                    {{ __('Generate a secure app-specific password for this integration') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('3') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Configure Authentication') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-0">
+                                    {{ __('Enter your Gmail address and the generated app password') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                <ul>
             </div>
-            <div class="flex items-center justify-between gap-5 mt-10">
+            <div class="flex items-center justify-end gap-3 mt-10">
                 <a href="javascript:;" class="btn btn-dark inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#mailSettings">
+                    <iconify-icon class="text-lg mr-2" icon="mdi:connection"></iconify-icon>
                     {{ __('Connect') }}
-                </a>
-                <a href="javascript:;" class="btn btn-outline-dark inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#mailConnection">
-                    {{ __('Connection Check') }}
                 </a>
             </div>
         </div>

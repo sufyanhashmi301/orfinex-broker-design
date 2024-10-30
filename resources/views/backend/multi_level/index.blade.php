@@ -22,6 +22,7 @@
                             value="{{$schema->real_swap_free}}"
                             class="form-control"
                             placeholder="Platform Group"
+                            disabled
                             required
                         />
                     </div>

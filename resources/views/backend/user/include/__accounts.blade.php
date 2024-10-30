@@ -45,7 +45,8 @@
                         {{ __('Positions / Active Trades') }}
                     </h3>
                     <p class="text-slate-600 dark:text-slate-200">
-                        {{ __('Here are the current positions / active trades for Account Number 876960') }}
+                        {{ __('Here are the current positions / active trades for Account Number ') }}
+                        <span id="account-number">876960</span>
                     </p>
                 </div>
                 <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
@@ -105,7 +106,7 @@
 
             // Get the account login ID
             var login = $(this).data('login');
-            // alert(login);
+            $('#account-number').text(login);
 
             var url = '{{ route("admin.getDeals", ":login") }}';
             url = url.replace(':login', login);

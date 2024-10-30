@@ -26,18 +26,7 @@
         @foreach($schemas as $schema)
             <a href="{{route('admin.multi-level.view',$schema->id)}}" class="card h-full">
                 <div class="card-header noborder">
-                    <div class="flex items-center">
-                        <div class="flex-none">
-                            <div class="w-10 h-10 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                <img src="{{ asset($schema->icon) }}" alt="{{ $schema->title }}" class="w-full h-full rounded-[100%] object-cover">
-                            </div>
-                        </div>
-                        <div class="flex-1 text-start">
-                            <h4 class="text-lg font-medium text-slate-600 whitespace-nowrap">
-                                {{ $schema->title }}
-                            </h4>
-                        </div>
-                    </div>
+                    <img src="{{ asset($schema->icon) }}" alt="{{ $schema->title }}" class="h-8">
                     <div @class([
                         'badge bg-opacity-30 capitalize', // common classes
                         'bg-success text-success' => $schema->status,
@@ -47,6 +36,7 @@
                     </div>
                 </div>
                 <div class="card-body p-6 pt-3">
+                    <h4 class="text-base font-medium dark:text-white mb-3">{{ $schema->title }}</h4>
                     <ul class="space-y-3">
                         <li class="flex items-center justify-between text-sm">
                             <span class="text-slate-400 mr-1">{{ __('Leverage') }}</span>

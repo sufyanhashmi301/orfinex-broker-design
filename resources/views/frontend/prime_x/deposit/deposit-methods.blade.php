@@ -8,20 +8,20 @@
             @yield('title')
         </h4>
     </div>
-    <div class="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($gateways as $gateway)
+            @php
+                $icon = $gateway->icon;
+                if (null != $gateway->gateway_id && $gateway->icon == ''){
+                    $icon = $gateway->gateway->logo;
+                }
+            @endphp
             <a href="{{ route('user.deposit.amount', ['gateway_code' => the_hash($gateway->gateway_code)]) }}" class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
-                    <div class="flex items-center">
-                        <div class="flex-none">
-                            <img src="{{ asset($gateway->logo) }}" alt="{{ $gateway->name }}" />
-                        </div>
-                        <div class="flex-1 text-start">
-                            <span class="badge badge-secondary capitalize rounded-3xl py-1">
-                                {{ __('Verification required') }}
-                            </span>
-                        </div>
-                    </div>
+                    <img src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" class="h-10" alt="{{ $gateway->name }}" />
+                    <span class="badge badge-secondary capitalize rounded-3xl py-1">
+                        {{ __('Verification required') }}
+                    </span>
                 </div>
                 <div class="card-body p-4">
                     <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap mb-3">

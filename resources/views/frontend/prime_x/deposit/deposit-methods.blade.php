@@ -18,7 +18,7 @@
             @endphp
             <a href="{{ route('user.deposit.amount', ['gateway_code' => the_hash($gateway->gateway_code)]) }}" class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
-                    <img src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" class="h-10" alt="{{ $gateway->name }}" />
+                    <img src="{{ isset($gateway->gateway_id) ? $gateway->gateway->logo : asset($icon) }}" class="h-10" alt="{{ $gateway->name }}" />
                     <span class="badge badge-secondary capitalize rounded-3xl py-1">
                         {{ __('Verification required') }}
                     </span>

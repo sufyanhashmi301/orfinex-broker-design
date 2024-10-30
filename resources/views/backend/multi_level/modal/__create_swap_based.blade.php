@@ -48,13 +48,13 @@
                             </div>
                             <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">{{ __('Group Tag') }}</label>
-                                <input
-                                    type="text"
-                                    name="group_tag"
-                                    class="form-control mb-0"
-                                    placeholder="real\Promo\nb50s"
-                                    required
-                                />
+                                <select name="group_tag" class="select2 form-control w-full">
+                                    @foreach($platformGroups as $platformGroup)
+                                        <option value="{{ $platformGroup->group }}">
+                                            {{ $platformGroup->group }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="lg:col-span-2 input-area">
                                 <label for="" class="form-label">

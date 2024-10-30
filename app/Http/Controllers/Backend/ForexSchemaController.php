@@ -10,6 +10,7 @@ use App\Models\Schedule;
 use App\Models\MultiLevel;
 use App\Models\IbGroup;
 use App\Models\SwapFreeAccount;
+use App\Models\PlatformGroup;
 use App\Rules\MinDigits;
 use App\Traits\ImageUpload;
 use Illuminate\Contracts\Foundation\Application;
@@ -72,7 +73,8 @@ class ForexSchemaController extends Controller
         $swapFreeAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP_FREE)->orderBy('level_order','asc')->get();
         $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
         $ibGroups = IbGroup::where('status', 1)->orderBy('name', 'asc')->get();
-        return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts','rebateRules', 'ibGroups'));
+        $platformGroups = PlatformGroup::where('status', 1)->where('risk_book_id', 0)->get();
+        return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts','rebateRules', 'ibGroups', 'platformGroups'));
     }
     /**
      * Store a newly created resource in storage.

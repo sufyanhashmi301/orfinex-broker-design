@@ -21,7 +21,7 @@
                         <tbody>
                         @if($deals->isEmpty())
                             <tr>
-                                <td class="table-td text-center" colspan="6">
+                                <td class="table-td text-center" colspan="10">
                                     <span class="block my-4">
                                         {{ __('No Open Trades found for this account.') }}
                                     </span>

@@ -104,6 +104,7 @@ class DepositController extends GatewayController
         $input = $request->all();
         $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
         $amount = $input['amount'];
+//        dd($amount);
 
         // Check deposit amount against the gateway's limits
         if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
@@ -178,6 +179,8 @@ class DepositController extends GatewayController
             '[[status]]' =>  'Pending',
         ];
         $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
+        $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+
     }
 
     return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);

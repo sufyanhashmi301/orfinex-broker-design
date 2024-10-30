@@ -539,6 +539,7 @@ $shortcodes = [
         $shortcodes['[[status]]'] = 'Pending';
         $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
         $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+        $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
 
         notify()->success('Successfully added pending deposit request');
       return redirect()->back();

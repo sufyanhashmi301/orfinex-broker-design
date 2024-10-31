@@ -55,7 +55,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', 'payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web', 'KYC'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -163,6 +163,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'payment_access', 'set
 
     Route::group(['middleware' => 'KYC'], function () {
         Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+        Route::get('referral/members', [ReferralController::class, 'referralMembers'])->name('referral.members');
         Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
         Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
 

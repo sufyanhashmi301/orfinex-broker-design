@@ -21,6 +21,7 @@
                     {{ __('All IB Logs') }}
                 </a>
             </li>
+            
         @endcanany
         @can('ib-form-manage')
             <li class="nav-item">
@@ -36,5 +37,18 @@
                 </a>
             </li>
         @endcan
+
+        <li class="nav-item !ml-auto">
+            <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+                <span class="flex items-center">
+                    <span>{{ __('More') }}</span>
+                    <iconify-icon icon="lucide:chevron-down" class="text-base ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
+                </span>
+            </a>
+        </li>
     </ul>
+    
+        <div class="hidden mt-5" id="filters_div">
+            @yield('filters')
+        </div>
 </div>

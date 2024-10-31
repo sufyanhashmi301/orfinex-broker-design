@@ -75,8 +75,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+
+        $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::applyFilters($filters);
 
             return Datatables::of($data)

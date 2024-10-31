@@ -188,13 +188,13 @@ class Txn
      */
     private function withdrawBalance($amount): void
     {
-        
+
         User::find(auth()->user()->id)->removeMoney($amount);
     }
 
     /**
      * Bonus Update method
-     * 
+     *
      */
     private function applyBonusToForexAccount($transaction, $user, $uId)
     {
@@ -243,7 +243,7 @@ class Txn
         // dd($bonus);
         if ($bonus->type == 'percentage') {
             $bonusPercentage = $bonus->amount;
-            $bonusValue = ($bonusPercentage / 100) * $transaction->final_amount;
+            $bonusValue = ($bonusPercentage / 100) * $transaction->amount;
         } else {
             $bonusValue = $bonus->amount;
         }
@@ -282,7 +282,7 @@ class Txn
     }
 
     /**
-     * Remove leftover amounts until total bonus to be removed is 0 
+     * Remove leftover amounts until total bonus to be removed is 0
      * Helper fn() for deductBonusFromForexAccount
      */
     private function removeBonusUntilFinish($transaction, $remaining_bonus_to_remove){
@@ -297,12 +297,12 @@ class Txn
                                             ->where('bonus_amount_left', '>', 0)
                                             ->orderBy('bonus_amount', 'desc') // Get the largest bonus available
                                             ->first();
-        
+
             // Exit loop if no more eligible transactions
             if (!$bonus_txn) {
                 break;
             }
-            
+
             // Deduct from the current bonus transaction
             if ($bonus_txn->bonus_amount_left >= $remaining_bonus_to_remove) {
                 // If the current bonus can cover the remaining removal amount
@@ -335,7 +335,7 @@ class Txn
 
     /**
      * Deduct bonus method
-     * 
+     *
      */
     private function deductBonusFromForexAccount($transaction, $user, $uId, $status)
     {
@@ -345,12 +345,12 @@ class Txn
                                                                     })
                                                                     ->where('given_by', 'System')
                                                                     ->where('bonus_amount_left', '>', 0)
-                                                                    ->orderBy('bonus_amount', 'desc') 
+                                                                    ->orderBy('bonus_amount', 'desc')
                                                                     ->first();
-                                                                    
+
         if(!$largest_given_bonus_active_transaction) {
             return false;
-        }                                                                
+        }
         $total_removed_bonus = 0;
         $withdrawAmount = $transaction->amount;
         $bonus_removal_type['type'] = $largest_given_bonus_active_transaction->bonus_removal_type;
@@ -374,7 +374,7 @@ class Txn
         if( $bonus_removal_type['type'] == 'percentage' ) {
             $total_removed_bonus = ($largest_given_bonus_active_transaction->bonus_removal_amount / 100) * $withdrawAmount;
         }
-        
+
         // if type is amount
         if($bonus_removal_type['type'] == 'amount') {
             $total_removed_bonus = $largest_given_bonus_active_transaction->bonus_removal_amount;
@@ -385,7 +385,7 @@ class Txn
             $remaining_bonus_to_remove = $total_removed_bonus;
             $deducted_amount = $this->removeBonusUntilFinish($transaction, $remaining_bonus_to_remove);
         }
-        
+
         // Creating new transaction for bonus
         $forex_account = ForexAccount::where('login', $transaction->target_id)->first();
         $transaction_description =  "Bonus deducted from " . $forex_account->account_name . ' forex account';
@@ -407,14 +407,14 @@ class Txn
 
     /**
      * Refund the bonus
-     * 
+     *
      */
     private function refundBonusToForexAccount($transaction, $user, $uId) {
         $get_bonus_deduction_rejected_fields = BonusDeduction::where('withdraw_transaction_id', $transaction->id)->get();
 
         if(!$get_bonus_deduction_rejected_fields) {
             return false;
-        }   
+        }
 
         $amount_to_add_again = 0;
         $update_transaction = false;
@@ -456,7 +456,7 @@ class Txn
         $bonusService = new BonusService($forexApiService);
         $bonusService->addOrSubtractBonusToAccount('forex', $transaction->target_id, $amount_to_add_again, 'Bonus Refunded!', 'add');
     }
-    
+
 
     public function update($tnx, $status, $userId = null, $approvalCause = 'none')
     {
@@ -473,7 +473,7 @@ class Txn
                 $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
                 $data = [
                     'login' => $transaction->target_id,
-                    'Amount' => $transaction->final_amount,
+                    'Amount' => $transaction->amount,
                     'type' => 1, //deposit
                     'TransactionComments' => $comment
                 ];
@@ -490,7 +490,7 @@ class Txn
                 $this->applyBonusToForexAccount($transaction, $user, $uId);
 
 
-                //                $this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
+                //$this->ForexDeposit($transaction->target_id,$transaction->final_amount,$comment);
                 first_min_deposit($transaction->target_id);
             } elseif (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::Wallet->value && ($transaction->type == TxnType::Deposit || $transaction->type == TxnType::ManualDeposit)) {
                 $userAccount = get_user_account($transaction->user_id);
@@ -524,12 +524,12 @@ class Txn
 
         // Withdrawl Rejected
         if($status == TxnStatus::Failed && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)){
-            // Bonus Withdraw Rejected 
+            // Bonus Withdraw Rejected
             $this->refundBonusToForexAccount($transaction, $user, $uId);
         }
 
         if ($status == TxnStatus::Success && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {
-            
+
             $deductionApplied = $this->applyWithdrawalDeduction($transaction);
 
 
@@ -558,7 +558,7 @@ class Txn
 
     private function applyWithdrawalDeduction($transaction)
     {
-        
+
         // If the deduction has already been applied, skip further deduction
         $manualFieldData = json_decode($transaction->manual_field_data, true);
         $deductionStatus = isset($manualFieldData['Deduction Status']['value']) ? $manualFieldData['Deduction Status']['value'] : 'Not Deducted';
@@ -585,7 +585,7 @@ class Txn
      */
     private function deductForexAccount($transaction)
     {
-        
+
         $comment = $transaction->method . '/' . substr($transaction->tnx, -7);
         $data = [
             'login' => $transaction->target_id,

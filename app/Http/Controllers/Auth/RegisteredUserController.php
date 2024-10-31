@@ -53,11 +53,13 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
             'i_agree' => ['required'],
-            'level' => ['sometimes', 'exists:multi_levels,id']
+//            'level' => ['sometimes', 'exists:multi_levels,id']
         ]);
 
         $input = $request->all();
-        $multiLevel = $request->level;
+
+        $level = $request->level;
+        $multiLevel = $level ? decrypt($request->level) : null;
         $location = getLocation();
         $phone = $isPhone ? ($isCountry ? explode(':', $input['country'])[1] : $location->dial_code).' '.$input['phone'] : $location->dial_code.' ';
         $country = $isCountry ? explode(':', $input['country'])[0] : $location->name;
@@ -94,9 +96,9 @@ class RegisteredUserController extends Controller
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
 
-        if(!$multiLevel){
-            $multiLevel = null;
-        }
+//        if(!$multiLevel){
+//            $multiLevel = null;
+//        }
         //referral code
         event(new UserReferred($request->cookie('invite'), $user,$multiLevel));
 

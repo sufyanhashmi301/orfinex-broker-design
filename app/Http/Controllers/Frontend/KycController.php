@@ -47,7 +47,7 @@ class KycController extends Controller
                 return redirect()->back();
             }
         }
-        if ($user->kyc >= kyc_completed_level()) {
+        if ($user->kyc >= kyc_required_completed_level()) {
             notify()->error(__('Your Kyc already completed!'));
             return redirect()->back();
         }

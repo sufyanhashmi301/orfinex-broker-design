@@ -87,7 +87,9 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
 
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('ib_status', IBStatus::PENDING)->latest();
+            $data->applyFilters($filters);
 //            dd($data);
 
             return Datatables::of($data)
@@ -108,8 +110,10 @@ class IBController extends Controller
     public function IbApprovedList(Request $request)
     {
         if ($request->ajax()) {
-
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('ib_status', IBStatus::APPROVED)->latest();
+            $data->applyFilters($filters);
+
 //            dd($data);
 
             return Datatables::of($data)
@@ -131,7 +135,9 @@ class IBController extends Controller
     {
         if ($request->ajax()) {
 
+            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::where('ib_status', IBStatus::REJECTED)->latest();
+            $data->applyFilters($filters);
 //            dd($data);
 
             return Datatables::of($data)
@@ -158,8 +164,11 @@ class IBController extends Controller
     public function IbAllList(Request $request)
     {
         if ($request->ajax()) {
+             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
+             $data = User::latest();
+             $data->applyFilters($filters);
 
-            $data = User::latest();
+            // $data = User::latest();
 //            dd($data);
 
             return Datatables::of($data)

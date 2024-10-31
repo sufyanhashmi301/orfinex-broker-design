@@ -49,7 +49,7 @@ class MultiLevel extends Model
 
 	public function forexSchema()
 	{
-		return $this->belongsTo(ForexSchema::class, 'forex_scheme_id')->withTimestamps();
+		return $this->belongsTo(ForexSchema::class, 'forex_scheme_id');
 	}
 
     public function rebateRule()

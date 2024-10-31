@@ -1,4 +1,4 @@
-<<div class="flex justify-between flex-wrap items-center mb-6">
+<div class="flex justify-between flex-wrap items-center mb-6">
     <h4 class="font-medium text-xl capitalize text-slate-700 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
         {{ __('All Referral Logs') }}
     </h4>

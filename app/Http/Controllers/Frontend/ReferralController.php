@@ -8,6 +8,8 @@ use App\Models\AdvertisementMaterial;
 use App\Models\IbQuestion;
 use App\Models\Language;
 use App\Models\LevelReferral;
+use App\Models\MultiLevel;
+use App\Models\ReferralRelationship;
 use App\Models\Transaction;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
@@ -68,6 +70,33 @@ class ReferralController extends Controller
         $qrCode = QrCode::size(300)->generate($getReferral->link);
         return view('frontend::referral.index', compact( 'getReferral',  'level', 'balance', 'ibQuestions', 'qrCode'));
     }
+    public function referralMembers(Request $request)
+    {
+        $user = auth()->user();
+        $referralLink = $user->getReferral;
+
+        // Capture the selected level order from the request, defaulting to '0' for all levels
+        $selectedLevel = $request->input('level_order', 0);
+
+        // Filter referrals based on selected level in the multi_levels table
+        $referrals = ReferralRelationship::where('referral_link_id', $referralLink->id)
+            ->when($selectedLevel != 0, function ($query) use ($selectedLevel) {
+                return $query->whereHas('multiLevel', function ($subQuery) use ($selectedLevel) {
+                    $subQuery->where('level_order', $selectedLevel);
+                });
+            })
+            ->with(['user', 'multiLevel.forexSchema']) // Eager load related models
+            ->get();
+
+        $maxLevelOrder = MultiLevel::where('status', 1)
+            ->select(\DB::raw('MAX(level_order) as max_level'))
+            ->first();
+
+        $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->max_level : 0;
+
+        return view('frontend::referral.index', compact('maxLevelOrderCount', 'referrals', 'selectedLevel'));
+    }
+
     public function advertisementMaterial(Request $request)
     {
 //        dd($request->all());
@@ -96,18 +125,17 @@ class ReferralController extends Controller
         } else {
             $referrals = Transaction::where('user_id', $user->id)->where('target_type', '!=', null)->get()->groupBy('target');
         }
-
         $generalReferrals = Transaction::where('user_id', $user->id)->where('target_type', null)->where('type', TxnType::Referral)->latest()->paginate(8);
 
         $getReferral = $user->getReferrals()->first();
         $totalReferralProfit = $user->totalReferralProfit();
-
 
         return view('frontend::referral.index', compact('referrals', 'getReferral', 'totalReferralProfit', 'generalReferrals'));
     }
 
     public function network() {
         $level = LevelReferral::max('the_order');
+//        dd($level);
         return view('frontend::referral.index', compact( 'level'));
     }
 

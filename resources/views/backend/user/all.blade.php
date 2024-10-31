@@ -6,7 +6,7 @@
     $riskProfileTags = getRiskProfileTag();
 @endphp
 @section('filters')
-    <form id="filter-form" method="POST" action="{{ route('admin.user.export',['type' => 'all']) }}">
+    <form id="filter-form" method="GET" action="{{ route('admin.user.index') }}">
         @csrf
         <div class="flex justify-between flex-wrap items-center">
             <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
@@ -52,7 +52,7 @@
                     </button>
                 </div>
                 <div class="input-area relative">
-                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                    <button type="button" id="exportButton" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
@@ -164,6 +164,12 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
+
+            $('#filter-form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                table.draw(); // Redraw the table with new parameters
+            });
+
             $('#country').select2({
                 placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
 
@@ -171,9 +177,6 @@
             $('#tag').select2({
                 placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
 
-            });
-            $('#filter').click(function () {
-                table.draw();
             });
 
             $('#global_search').keyup(function() {
@@ -187,6 +190,33 @@
                 $('#name').html(name);
                 $('#userId').val(id);
                 $('#sendEmail').modal('toggle')
+            });
+
+            $('#exportButton').click(function() {
+                const formData = $('#filter-form').serialize();
+                const exportType = 'all'; // Specify your export type if needed
+
+                $.ajax({
+                    url: "{{ route('admin.user.export', ':type') }}".replace(':type', exportType),
+                    type: 'POST',
+                    data: formData,
+                    xhrFields: {
+                        responseType: 'blob' // Important for handling file downloads
+                    },
+                    success: function(data, status, xhr) {
+                        const filename = xhr.getResponseHeader('Content-Disposition').match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1].replace(/['"]/g, '');
+                        const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Export failed:', error);
+                    }
+                });
             });
 
         })(jQuery);

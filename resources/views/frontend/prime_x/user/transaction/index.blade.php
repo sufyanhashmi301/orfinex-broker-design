@@ -42,9 +42,9 @@
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Description') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Method') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Type') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Account') }}</th>
                                             <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                             <th scope="col" class="table-th">{{ __('Fee') }}</th>
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         </tr>
@@ -89,8 +89,8 @@
                                                     <div class="flex-1 text-start">
                                                         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
                                                             {{ $transaction->description }} @if(!in_array($transaction->approval_cause,['none',""]))
-                                                                <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $transaction->approval_cause }}">
-                                                                    <i icon-name="mail"></i>
+                                                                <span class="toolTip onTop optional-msg" data-tippy-content="{{ $transaction->approval_cause }}">
+                                                                    <iconify-icon icon="lucide:mail"></iconify-icon>
                                                                 </span>
                                                             @endif
                                                         </h4>
@@ -104,52 +104,31 @@
                                                 {{ $transaction->tnx }}
                                             </td>
                                             <td class="table-td">
-                                                <div class="flex items-center">
-                                                    <div class="flex-none">
-                                                        <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                            {{--                                                        @if($transaction->depositMethod->title)--}}
-                                                            <img src="{{asset(transaction_method_image($transaction))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex-1 text-start">
-                                                        <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                            {{transaction_method_name($transaction)}}
-                                                        </h4>
-                                                    </div>
-                                                </div>
+                                                {{ $transaction->target_id }}
                                             </td>
                                             <td class="table-td">
-                                                <div class="badge badge-primary capitalize rounded-3xl">
-                                                    {{ str_replace('_',' ',$transaction->type->value) }}
-                                                </div>
+                                                <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
+                                                    {{ (in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal,TxnType::BonusSubtract]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}
+                                                </strong>
                                             </td>
                                             <td class="table-td">
-                                                <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'red-color' : 'green-color'}}">{{ (in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal,TxnType::BonusSubtract]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}</strong>
+                                                {{ transaction_method_name($transaction) }}
                                             </td>
                                             <td class="table-td">
                                                 {{ $transaction->charge }} {{ $currency }}
                                             </td>
                                             <td class="table-td">
-                                                <span class="block text-left">
-                                                    <span class="inline-block text-center mx-auto py-1">
-                                                        <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                            @switch($transaction->status->value)
-                                                                @case('pending')
-                                                                <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
-                                                                <span>{{ __('Pending') }}</span>
-                                                                @break
-                                                                @case('success')
-                                                                <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
-                                                                <span>{{ __('Success') }}</span>
-                                                                @break
-                                                                @case('failed')
-                                                                <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
-                                                                <span>{{ __('Canceled') }}</span>
-                                                                @break
-                                                            @endswitch
-                                                        </span>
-                                                    </span>
-                                                </span>
+                                                @switch($transaction->status->value)
+                                                    @case('pending')
+                                                    <span class="badge-warning bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Pending') }}</span>
+                                                    @break
+                                                    @case('success')
+                                                    <span class="badge-success bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Success') }}</span>
+                                                    @break
+                                                    @case('failed')
+                                                    <span class="badge-danger bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Canceled') }}</span>
+                                                    @break
+                                                @endswitch
                                             </td>
 
                                         </tr>

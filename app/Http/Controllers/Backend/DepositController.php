@@ -495,7 +495,7 @@ class DepositController extends Controller
     }
     // Proceed with transaction
     $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
-    $finalAmount = (float)$amount + (float)$charge;
+    $finalAmount = (float)$amount - (float)$charge;
     $payAmount = $finalAmount * $gatewayInfo->rate;
     $depositType =  TxnType::ManualDeposit;;
 
@@ -513,7 +513,7 @@ class DepositController extends Controller
 
     // Create transaction with the appropriate target_id and target_type
     $txnInfo = Txn::new(
-        $input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code,
+        $finalAmount, $charge, $amount, $gatewayInfo->gateway_code,
         __('Deposit With ') . $gatewayInfo->name . __(' by Admin'), $depositType, TxnStatus::Pending,
         $gatewayInfo->currency, $payAmount, $userID, null, 'User',
         $manualData ?? [], $approvalCause, $targetId, $targetType

@@ -62,6 +62,14 @@
                     </a>
                 @endif
             @endif
+            @if(setting('enc_mode', 'end_to_end_encryption'))
+            <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
+                <span class="toolTip onTop" style="line-height: 0" 
+                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">           
+                        <span id="lottie-container" style="display: inline-flex; width: 24px; height: 24px;"></span>
+                </span>
+            </div>
+            @endif
             <!-- end vertcial -->
 
             <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
@@ -169,8 +177,10 @@
         </div>
     @endif
 @endif
+
 <!-- END: Header -->
 @push('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
     <script>
         // Color Switcher
         $(".color-switcher").on('click', function () {
@@ -179,5 +189,13 @@
             var url = '{{ route("mode-theme") }}';
             $.get(url)
         });
+        var animation = lottie.loadAnimation({
+            container: document.getElementById('lottie-container'), // ID of the div where the animation will render
+            renderer: 'svg',  // Render the animation in SVG format
+            loop: true,       // Loop the animation
+            autoplay: true,   // Autoplay the animation
+            path: '{{ asset('global/json/secure.json') }}' // Path to your JSON file
+        });
     </script>
 @endpush
+

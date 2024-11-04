@@ -38,7 +38,7 @@ class ResetData extends Command
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('account_types')->truncate();
-        DB::table('	account_type_investments')->truncate();
+        DB::table('account_type_investments')->truncate();
         DB::table('account_type_investment_hourly_stats_records')->truncate();
         DB::table('account_type_investment_snapshots')->truncate();
         DB::table('account_type_investment_stats')->truncate();

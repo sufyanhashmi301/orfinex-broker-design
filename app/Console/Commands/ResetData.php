@@ -38,6 +38,13 @@ class ResetData extends Command
     public function handle()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('account_types')->truncate();
+        DB::table('	account_type_investments')->truncate();
+        DB::table('account_type_investment_hourly_stats_records')->truncate();
+        DB::table('account_type_investment_snapshots')->truncate();
+        DB::table('account_type_investment_stats')->truncate();
+        DB::table('account_type_phases')->truncate();
+        DB::table('account_type_phase_rules')->truncate();
         DB::table('risk_profile_tags_users')->truncate();
         DB::table('admins')->truncate();
         DB::table('risk_profile_tags_users')->truncate();

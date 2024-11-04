@@ -9,6 +9,7 @@ use App\Models\PricingInvestment;
 
 use App\Enums\InterestRateType;
 use App\Enums\InvestmentStatus;
+use App\Models\AccountTypePhaseRule;
 use App\Services\InvestormService;
 
 use Carbon\Carbon;
@@ -41,7 +42,7 @@ class PricingSubscription
         return $this->scheme;
     }
 
-    public function setScheme(ForexSchemaPhaseRule $scheme): self
+    public function setScheme(AccountTypePhaseRule $scheme): self
     {
         $this->scheme = $scheme;
 
@@ -267,7 +268,7 @@ class PricingSubscription
 //        dd($this->getInput()['leverage']);
         return [
             "user_id" => data_get($this->user, 'id', auth()->user()->id),
-            "trader_type" => $this->scheme->forexSchemaPhase->forexSchema->trader_type,
+            "trader_type" => $this->scheme->accountTypePhase->accountType->trader_type,
             "forex_schema_phase_rule_id" => $this->scheme->id,
             "amount" => $this->getInvest(),
             "amount_allotted" => $this->scheme->allotted_funds,

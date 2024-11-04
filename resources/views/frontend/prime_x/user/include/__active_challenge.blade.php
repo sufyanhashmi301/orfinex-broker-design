@@ -21,7 +21,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach($activePlans as $plan)
+                        {{-- @foreach($activePlans as $plan)
                             <tr>
                                 <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
                                 <td class="table-td">{{ data_get($plan,'login')}}</td>
@@ -40,7 +40,7 @@
                                     </a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @endforeach --}}
                         </tbody>
                     </table>
                 </div>

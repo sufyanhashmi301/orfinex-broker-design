@@ -33,7 +33,7 @@
                                     </thead>
                                     <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                     <!-- Rules Table -->
-                                    @foreach($phase->forexSchemaPhaseRules as $rule)
+                                    @foreach($phase->rules as $rule)
                                         <tr>
                                             <!-- Hidden field for rule ID -->
                                             <input type="hidden" name="rules[{{ $loop->parent->index }}][{{ $loop->index }}][id]" value="{{ $rule->id }}">

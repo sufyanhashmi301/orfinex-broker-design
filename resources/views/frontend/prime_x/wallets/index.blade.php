@@ -131,7 +131,7 @@
             <div class="card-body h-full flex flex-col items-center justify-center gap-5">
                 <iconify-icon class="text-2xl" icon="ic:outline-dashboard-customize"></iconify-icon>
                 <a href="" class="btn-link">
-                    {{ __('Open Additional Acocunt') }}
+                    {{ __('Open Additional account') }}
                 </a>
             </div>
         </div>

@@ -1,35 +1,37 @@
 <?php
 
+use App\Traits\ForexApiTrait;
+use App\Models\AccountTypeInvestment;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
-use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\CronJobController;
-use App\Http\Controllers\Frontend\DashboardController;
-use App\Http\Controllers\Frontend\DepositController;
-use App\Http\Controllers\Frontend\ForexAccountController;
-use App\Http\Controllers\Frontend\GatewayController;
-use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\Frontend\InvestController;
+use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\IpnController;
 use App\Http\Controllers\Frontend\KycController;
-use App\Http\Controllers\Frontend\MultiLevelIBController;
+use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
-use App\Http\Controllers\Frontend\ReferralController;
-use App\Http\Controllers\Frontend\ForexSchemaController;
-use App\Http\Controllers\Frontend\SendMoneyController;
-use App\Http\Controllers\Frontend\SettingController;
+use App\Http\Controllers\Frontend\UserController;
+use App\Http\Controllers\Frontend\InvestController;
+use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\Frontend\StatusController;
 use App\Http\Controllers\Frontend\TicketController;
-use App\Http\Controllers\Frontend\TransactionController;
-use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\Frontend\WalletController;
-use App\Http\Controllers\Frontend\WithdrawController;
-use App\Http\Controllers\Frontend\IBController;
+use App\Http\Controllers\Frontend\DepositController;
+use App\Http\Controllers\Frontend\GatewayController;
+use App\Http\Controllers\Frontend\SettingController;
+use App\Http\Controllers\Frontend\ReferralController;
 use App\Http\Controllers\Frontend\TransferController;
-use App\Http\Controllers\Frontend\OffersController;
-use App\Http\Controllers\SumsubController;
-use App\Http\Controllers\TelegramController;
-use Illuminate\Support\Facades\Route;
-use App\Traits\ForexApiTrait;
+use App\Http\Controllers\Frontend\WithdrawController;
+use App\Http\Controllers\Frontend\DashboardController;
+use App\Http\Controllers\Frontend\SendMoneyController;
+use App\Http\Controllers\Frontend\ForexSchemaController;
+use App\Http\Controllers\Frontend\TransactionController;
+use App\Http\Controllers\AccountTypeInvestmentController;
+use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\Frontend\ForexAccountController;
+use App\Http\Controllers\Frontend\MultiLevelIBController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +57,7 @@ Route::get('blog/{id}', [PageController::class, 'blogDetails'])->name('blog-deta
 Route::post('mail-send', [PageController::class, 'mailSend'])->name('mail-send');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:web', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -82,6 +84,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'set.session.lifetime:
     });
     Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
     Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
+
+    // ======== Optimizations ========
+    Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
+    Route::get('all-investments', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
+    Route::get('investment/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats
+
+
+
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 

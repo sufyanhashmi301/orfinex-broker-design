@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountType;
 use App\Models\ForexSchema;
 use App\Models\Schema;
 use App\Models\User;
@@ -19,7 +20,7 @@ class ForexSchemaController extends Controller
         $user = auth()->user();
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
-        $schemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
+        $schemas = AccountType::active()->traderType()  // Use the defined scope for active schemas
         ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
         ->orderBy('priority', 'asc')
             ->get();
@@ -31,10 +32,10 @@ class ForexSchemaController extends Controller
     public function schemaPreview($id)
     {
         $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-        $schemas = ForexSchema::where('status', true)
+        $schemas = AccountType::where('status', true)
             ->where(function($query) use ($tagNames) {
-                $query->whereJsonContains('country', auth()->user()->country)
-                    ->orWhereJsonContains('country', 'All')
+                $query->whereJsonContains('countries', auth()->user()->country)
+                    ->orWhereJsonContains('countries', 'All')
                     ->orWhere(function($subQuery) use ($tagNames) {
                         foreach ($tagNames as $tagName) {
                             $subQuery->orWhereJsonContains('tags', $tagName);
@@ -44,7 +45,7 @@ class ForexSchemaController extends Controller
             ->orderBy('priority', 'asc')
             ->get();
 //        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
-        $schema = ForexSchema::find($id);
+        $schema = AccountType::find($id);
 
         return view('frontend::forex_schema.preview', compact('schema', 'schemas'));
     }

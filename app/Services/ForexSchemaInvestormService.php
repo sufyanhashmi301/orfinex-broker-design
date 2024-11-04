@@ -105,12 +105,14 @@ class ForexSchemaInvestormService extends Service
     {
         return $this->ivProcessor->setDetails($details)->processInvestmentForMigration();
     }
+    
     public function approveInvestment($ivID)
     {
         $ivInvestment = ForexSchemaInvestment::findOrFail($ivID);
-//        dd($ivInvestment);
+        //        dd($ivInvestment);
         if (filled($ivInvestment)) {
             try {
+                
 //            $this->wrapInTransaction(function ($ivInvestment){
                 $this->approveSubscription($ivInvestment, '', '');
 //                    try {
@@ -127,6 +129,7 @@ class ForexSchemaInvestormService extends Service
         }
         throw ValidationException::withMessages(['invest' => 'Some error occurred! please try again']);
     }
+
     public function approveSubscription(ForexSchemaInvestment $invest, $remarks = null, $note=null)
     {
         return $this->ivProcessor->approveInvestment($invest, $remarks, $note);

@@ -6,6 +6,7 @@ use App\Enums\FundedSchemeTypes;
 use App\Enums\InterestPeriod;
 use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
+use App\Models\AccountType;
 use App\Models\ForexSchema;
 use App\Models\ForexSchemaPhase;
 use App\Models\ForexSchemaPhaseRule;
@@ -35,9 +36,9 @@ class ForexSchemaController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:schema-list|schema-create|schema-edit', ['only' => ['index', 'store']]);
-//        $this->middleware('permission:schema-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:schema-edit', ['only' => ['edit', 'update']]);
+        //        $this->middleware('permission:schema-list|schema-create|schema-edit', ['only' => ['index', 'store']]);
+        //        $this->middleware('permission:schema-create', ['only' => ['create', 'store']]);
+        //        $this->middleware('permission:schema-edit', ['only' => ['edit', 'update']]);
     }
 
     /**
@@ -47,10 +48,10 @@ class ForexSchemaController extends Controller
      */
     public function index()
     {
+        
+        // $schemas = AccountType::orderBy('priority', 'asc')->paginate(10);
 
-        $schemas = ForexSchema::orderBy('priority','asc')->paginate(10);
-
-        return view('backend.forex_schema.index', compact('schemas'));
+        // return view('backend.account_types.index', compact('schemas'));
     }
 
     /**
@@ -60,17 +61,17 @@ class ForexSchemaController extends Controller
      */
     public function create()
     {
-        return view('backend.forex_schema.create');
+        return view('backend.account_types.create');
     }
-    public function view($id)
-    {
-        $schema = ForexSchema::find($id);
-        $swapBasedAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP)->orderBy('level_order','asc')->get();
-        $swapFreeAccounts = MultiLevel::where('forex_scheme_id',$id)->where('type',MultiLevelType::SWAP_FREE)->orderBy('level_order','asc')->get();
-        $rebateRules = RebateRule::where('status',true)->orderBy('title','asc')->get();
+    // public function view($id)
+    // {
+    //     $schema = ForexSchema::find($id);
+    //     $swapBasedAccounts = MultiLevel::where('forex_scheme_id', $id)->where('type', MultiLevelType::SWAP)->orderBy('level_order', 'asc')->get();
+    //     $swapFreeAccounts = MultiLevel::where('forex_scheme_id', $id)->where('type', MultiLevelType::SWAP_FREE)->orderBy('level_order', 'asc')->get();
+    //     $rebateRules = RebateRule::where('status', true)->orderBy('title', 'asc')->get();
 
-        return view('backend.multi_level.index',compact('schema','swapBasedAccounts','swapFreeAccounts','rebateRules'));
-    }
+    //     return view('backend.multi_level.index', compact('schema', 'swapBasedAccounts', 'swapFreeAccounts', 'rebateRules'));
+    // }
     /**
      * Store a newly created resource in storage.
      *
@@ -79,13 +80,12 @@ class ForexSchemaController extends Controller
     public function store(Request $request)
     {
 
-//        dd($request->all());
         $validator = Validator::make($request->all(), [
             'trader_type' => 'required',
             'title' => 'required',
             'leverage' => 'required',
-//            'commission' => 'required',
-//            'spread' => 'required',
+            //            'commission' => 'required',
+            //            'spread' => 'required',
             'is_scalable' => 'required',
             'is_weekend_holding' => 'required',
             'is_refundable' => 'required',
@@ -93,7 +93,7 @@ class ForexSchemaController extends Controller
             'priority' => 'required|integer',
             'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
             'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
-            'group' => 'required|max:500',
+            'platform_group' => 'required|max:500',
             'type' => [
                 'required',
                 Rule::in([
@@ -119,8 +119,9 @@ class ForexSchemaController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        
         $input = $request->all();
-//        dd($input);
+        //        dd($input);
 
         $finalData = [
             'trader_type' => $input['trader_type'],
@@ -129,7 +130,7 @@ class ForexSchemaController extends Controller
             'commission' => $input['commission'],
             'spread' => $input['spread'],
             'leverage' => $input['leverage'],
-//            'first_min_deposit' => $input['first_min_deposit'],
+            //            'first_min_deposit' => $input['first_min_deposit'],
             'account_limit' => $input['account_limit'],
             'desc' => $input['desc'],
             'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
@@ -160,10 +161,11 @@ class ForexSchemaController extends Controller
             'server' => $input['server']
         ];
         $phase = ForexSchemaPhase::create($phaseData);
+
         // Save rules
         foreach ($request->rules as $rule) {
             do {
-                $unique_id = 'R-'.mt_rand(10000, 99999); // Generates a random number between 10000 and 99999
+                $unique_id = 'R-' . mt_rand(10000, 99999); // Generates a random number between 10000 and 99999
             } while (ForexSchemaPhaseRule::where('unique_id', $unique_id)->exists());
 
             ForexSchemaPhaseRule::create([
@@ -179,8 +181,9 @@ class ForexSchemaController extends Controller
                 'is_new_order' => $rule['is_new_order'] ?? 0,
             ]);
         }
+
         notify()->success('schema created successfully');
-        return redirect()->route('admin.accountType.index');
+        return redirect()->route('admin.account-type.index');
     }
 
     /**
@@ -192,8 +195,8 @@ class ForexSchemaController extends Controller
     public function edit($id)
     {
         $schema = ForexSchema::with(['forexSchemaPhases.forexSchemaPhaseRules'])->findOrFail($id);
-//        dd($schema);
-        return view('backend.forex_schema.edit', compact('schema'));
+        //        dd($schema);
+        return view('backend.account_types.edit', compact('schema'));
     }
 
 
@@ -205,12 +208,13 @@ class ForexSchemaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         // Define validation rules
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'leverage' => 'required',
-//            'commission' => 'required',
-//            'spread' => 'required',
+            //            'commission' => 'required',
+            //            'spread' => 'required',
             'is_scalable' => 'required|boolean',
             'is_weekend_holding' => 'required|boolean',
             'is_refundable' => 'required|boolean',
@@ -248,7 +252,7 @@ class ForexSchemaController extends Controller
             'spread' => $input['spread'],
             'commission' => $input['commission'],
             'leverage' => $input['leverage'],
-//            'first_min_deposit' => !empty($input['first_min_deposit']) ? $input['first_min_deposit'] : null,
+            //            'first_min_deposit' => !empty($input['first_min_deposit']) ? $input['first_min_deposit'] : null,
             'account_limit' => $input['account_limit'],
             'desc' => $input['desc'],
             'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
@@ -330,59 +334,59 @@ class ForexSchemaController extends Controller
         return redirect()->route('admin.accountType.index');
     }
 
-//    public function update(Request $request, $id)
-//    {
-//
-//        $validator = Validator::make($request->all(), [
-//            'title' => 'required',
-//            'leverage' => 'required',
-//            'commission' => 'required',
-//            'spread' => 'required',
-//            'is_scalable' => 'required',
-//            'is_weekend_holding' => 'required',
-//            'is_refundable' => 'required',
-//            'account_limit' => 'required|integer|min:1|max:50',
-//            'priority' => 'required|integer',
-//            'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
-//            'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
-//
-//        ]);
-//
-//        if ($validator->fails()) {
-//            notify()->error($validator->errors()->first(), 'Error');
-//
-//            return redirect()->back();
-//        }
-////        dd($request->all());
-//        $schema = ForexSchema::find($id);
-//        $input = $request->all();
-//        $finalData = [
-//            'title' => $input['title'],
-//            'badge' => $input['badge'],
-//            'spread' => $input['spread'],
-//            'commission' => $input['commission'],
-//            'leverage' => $input['leverage'],
-//            'first_min_deposit' => !empty($input['first_min_deposit']) ? $input['first_min_deposit'] : null,
-//            'account_limit' => $input['account_limit'],
-//            'desc' => $input['desc'],
-//            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
-//            'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
-//            'is_weekend_holding' => $input['is_weekend_holding'],
-//            'is_scalable' => $input['is_scalable'],
-//            'is_refundable' => $input['is_refundable'],
-//            'status' => $input['status'],
-//            'priority' => $input['priority'],
-//            'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
-//            'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
-//            'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
-//        ];
-//
-//        $schema->update($finalData);
-//
-//        notify()->success('schema Update successfully');
-//
-//        return redirect()->route('admin.accountType.index');
-//    }
+    //    public function update(Request $request, $id)
+    //    {
+    //
+    //        $validator = Validator::make($request->all(), [
+    //            'title' => 'required',
+    //            'leverage' => 'required',
+    //            'commission' => 'required',
+    //            'spread' => 'required',
+    //            'is_scalable' => 'required',
+    //            'is_weekend_holding' => 'required',
+    //            'is_refundable' => 'required',
+    //            'account_limit' => 'required|integer|min:1|max:50',
+    //            'priority' => 'required|integer',
+    //            'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
+    //            'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
+    //
+    //        ]);
+    //
+    //        if ($validator->fails()) {
+    //            notify()->error($validator->errors()->first(), 'Error');
+    //
+    //            return redirect()->back();
+    //        }
+    ////        dd($request->all());
+    //        $schema = ForexSchema::find($id);
+    //        $input = $request->all();
+    //        $finalData = [
+    //            'title' => $input['title'],
+    //            'badge' => $input['badge'],
+    //            'spread' => $input['spread'],
+    //            'commission' => $input['commission'],
+    //            'leverage' => $input['leverage'],
+    //            'first_min_deposit' => !empty($input['first_min_deposit']) ? $input['first_min_deposit'] : null,
+    //            'account_limit' => $input['account_limit'],
+    //            'desc' => $input['desc'],
+    //            'country' => isset($input['country']) ? json_encode($input['country']) : json_encode(['All']),
+    //            'tags' => isset($input['tags']) ? json_encode($input['tags']) : null,
+    //            'is_weekend_holding' => $input['is_weekend_holding'],
+    //            'is_scalable' => $input['is_scalable'],
+    //            'is_refundable' => $input['is_refundable'],
+    //            'status' => $input['status'],
+    //            'priority' => $input['priority'],
+    //            'start_range' => !empty($input['start_range']) ? $input['start_range'] : null,
+    //            'end_range' => !empty($input['end_range']) ? $input['end_range'] : null,
+    //            'icon' => $request->hasFile('icon') ? self::imageUploadTrait($input['icon']) : $schema->icon,
+    //        ];
+    //
+    //        $schema->update($finalData);
+    //
+    //        notify()->success('schema Update successfully');
+    //
+    //        return redirect()->route('admin.accountType.index');
+    //    }
 
     public function destroy($id)
     {

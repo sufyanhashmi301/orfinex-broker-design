@@ -109,7 +109,7 @@
 
         {{-- *************************************************************  Plan Management *********************************************************--}}
         @canany(['schedule-manage','schema-list','schema-create','schema-edit'])
-            <li class="{{ isActive(['admin.schedule*','admin.accountType*','admin.ibAccountType*']) }}">
+            <li class="{{ isActive(['admin.schedule*','admin.account-type*','admin.ibAccountType*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:album"></iconify-icon>
@@ -120,23 +120,26 @@
                 <ul class="sidebar-submenu">
                     @can('schema-edit')
                         <li>
-                            <a href="{{route('admin.accountType.index')}}" class="{{ isActive('admin.accountType*') }}">
+                            <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::CHALLENGE]) }}"
+                            class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::CHALLENGE ? 'active' : '' }}">
                                 {{ __('Challenge') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.accountType.index')}}" class="">
+                            <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::FUNDED]) }}"
+                            class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::FUNDED ? 'active' : '' }}">
                                 {{ __('Funded') }}
                             </a>
                         </li>
-                        <li>
-                            <a href="{{route('admin.accountType.index')}}" class="">
+                        {{-- <li>
+                            <a href="{{route('admin.account-type.index')}}" class="">
                                 {{ __('Direct Funded') }}
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
-                            <a href="{{route('admin.accountType.index')}}" class="">
-                                {{ __('Trial - Auto Expire') }}
+                            <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::AUTO_EXPIRE]) }}"
+                            class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::AUTO_EXPIRE ? 'active' : '' }}">
+                                {{ __('Auto Expire') }}
                             </a>
                         </li>
                     @endcan

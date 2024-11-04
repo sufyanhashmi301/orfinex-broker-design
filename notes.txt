@@ -1,0 +1,26 @@
+ForexSchema -> AccountType
+- index Done, create Done, store Done, edit, update, view
+- Done: drop forex_schema table
+- Done: create AccountType model with migration and resource controller
+- All Done: fields: trading_platform (mt5, x9 etc), platform_group, , , , , , , , , , , tags, countries, description, status, is_weekend_holding,is_scalable, is_refundable
+- optimize the admin.php routes -> import the controller methods -> Done: create the views with proper naming
+- Will keep the model and ForexSchemaController for safety
+- Refactored store and update method code by separating them in validation request (AccountTypeRequest), services (AccountTypeService, AccountTypePhaseService), + other optimizations
+- Need frontend developer to pass phase data as array and rules must be the value inside phases, also make all the required fields required
+
+ForexSchemaPhase
+- Done: create AccountTypePhase model with migration and resource controller
+- Done: drop forex_schema_phases table
+- Done: create AccountTypePhase model with migration and resource controller
+
+ForexSchemaPhaseRule
+- Done: create AccountTypePhaseRule model with migration and resource controller
+- Done: drop forex_schema_phase_rules table
+- Done: create AccountTypePhaseRule model with migration and resource controller
+
+Current Issues:
+- Tags to the users are being stored in the DB and the relation is also setup properly but the account_types
+are not being filtered on the user's end.
+
+Modules needed
+MultiLevel, swapFreeAccounts, swapBasedAccounts,  rebateRules, mainWallet, Ibwallet, blogs, advertisements, banners, customer groups, designations, forexaccounts, ibquestions/answers/schemas/transactrions, landing pages/contents, multi-levels, rebates, X9

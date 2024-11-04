@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountTypeController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\AuthController;
@@ -68,8 +69,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::group(['middleware' => [ '2fa']], function () {
-Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function () {
+//Route::group(['middleware' => [ '2fa', 'set.session.lifetime:admin']], function () {
+Route::middleware(['2fa_admin'])->group(function () {
 //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -154,9 +155,17 @@ Route::middleware(['2fa_admin', 'set.session.lifetime:admin'])->group(function (
     })->name('2fa.verify');
 //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
-    Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
+
+// =============================== Optimization ===============================
+    // Account Types
+    Route::resource('account-type', AccountTypeController::class);
+    // Route::resource('account-type', ForexSchemaController::class);
+    // Route::delete('account-type/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('account-type.delete');
+
+// =============================== Optimization ===============================
+    
+
     Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
-    Route::delete('accountType/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('accountType.delete');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');

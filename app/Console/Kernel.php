@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('daily:drawdown')->everyFiveMinutes();
 
+        $schedule->command('update:investment-stats')->everyMinute();
+        $schedule->command('update:investment-stats --save-record')->hourly();
+
     }
 
     /**

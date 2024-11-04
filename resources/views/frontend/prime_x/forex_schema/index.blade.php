@@ -26,7 +26,7 @@
                             @endif
                         </div>
                         <p class="text-sm text-success-500 mb-2">
-                            {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->country,true)) }}
+                            {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->countries,true)) }}
                         </p>
                         <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
                     </div>

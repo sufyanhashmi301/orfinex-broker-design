@@ -50,7 +50,7 @@
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Server') }}</label>
                         <div class="relative">
-                            <input class="form-control !pr-9" type="text" value="{{data_get($invest->forexSchemaPhaseRule->forexSchemaPhase,'server')}}" id="copyServerModal" readonly>
+                            <input class="form-control !pr-9" type="text" value="{{data_get($invest->accountTypePhaseRule->accountTypePhase,'server')}}" id="copyServerModal" readonly>
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyServerModal">
                                 <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>

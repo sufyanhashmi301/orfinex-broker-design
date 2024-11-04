@@ -10,6 +10,7 @@ use App\Exports\DisabledUsersExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
+use App\Models\AccountType;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
@@ -241,10 +242,11 @@ class UserController extends Controller
 //            ->get();
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-        $schemas = ForexSchema::where('status', true)
+
+        $schemas = AccountType::where('status', true)
             ->where(function($query) use ($tagNames) {
-                $query->whereJsonContains('country', auth()->user()->country)
-                    ->orWhereJsonContains('country', 'All')
+                $query->whereJsonContains('countries', auth()->user()->country)
+                    ->orWhereJsonContains('countries', 'All')
                     ->orWhere(function($subQuery) use ($tagNames) {
                         foreach ($tagNames as $tagName) {
                             $subQuery->orWhereJsonContains('tags', $tagName);
@@ -253,6 +255,7 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
+
         return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags','customerGroups', 'schemas'));
 
     }

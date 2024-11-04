@@ -6,9 +6,9 @@ use App\Enums\ForexAccountStatus;
 use App\Enums\PricingInvestmentStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
+use App\Models\AccountTypeInvestment;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
-use App\Models\ForexSchemaInvestment;
 use App\Models\ForexSchemaPhaseRule;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
@@ -34,10 +34,10 @@ class DepositController extends GatewayController
         $this->forexApiService = $forexApiService;
     }
 
-    public function deposit($id = null)
+    public function deposit(Request $request, $id = null)
     {
 
-//        dd($request->all());
+    //    dd($request->all());
         if (!setting('user_deposit', 'permission') || !\Auth::user()->deposit_status) {
             abort('403', 'Deposit Disable Now');
         }
@@ -63,7 +63,7 @@ class DepositController extends GatewayController
             ->orderBy('id', 'desc')
             ->get();
 
-        $investment = ForexSchemaInvestment::where('pvx',get_hash($id))->firstorFail();
+        $investment = AccountTypeInvestment::where('id', $request->investment)->firstorFail();
 
 //        dd($rule);
 

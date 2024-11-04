@@ -169,9 +169,9 @@ class ForexSchemaInvestment extends Model
 	];
 
 
-    public function forexSchemaPhaseRule()
+    public function accountTypePhaseRule()
     {
-        return $this->belongsTo(ForexSchemaPhaseRule::class,'forex_schema_phase_rule_id');
+        return $this->belongsTo(AccountTypePhaseRule::class, 'forex_schema_phase_rule_id');
     }
     public function user()
     {

@@ -2,33 +2,35 @@
 
 namespace App\Http\Controllers\Backend;
 
+use Txn;
+use Purifier;
+use DataTables;
+use Carbon\Carbon;
+use App\Enums\TxnType;
+use App\Models\Invest;
+use App\Models\Gateway;
+use App\Enums\TxnStatus;
 use App\Enums\GatewayType;
 use App\Enums\InvestStatus;
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Exports\DepositsExport;
-use App\Http\Controllers\Controller;
-use App\Models\DepositMethod;
-use App\Models\ForexAccount;
-use App\Models\ForexSchemaInvestment;
-use App\Models\ForexSchemaPhaseRule;
-use App\Models\Gateway;
-use App\Models\Invest;
-use App\Models\LevelReferral;
 use App\Models\Transaction;
-use App\Services\ForexSchemaInvestormService;
-use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use Carbon\Carbon;
-use DataTables;
+use App\Models\ForexAccount;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\DepositMethod;
+use App\Models\LevelReferral;
+use App\Traits\ForexApiTrait;
+use App\Exports\DepositsExport;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\Controller;
+use App\Models\ForexSchemaPhaseRule;
 use Maatwebsite\Excel\Facades\Excel;
-use Purifier;
-use Txn;
+use App\Models\ForexSchemaInvestment;
+use Illuminate\Support\Facades\Validator;
+use App\Services\ForexSchemaInvestormService;
+use App\Services\AccountTypeInvestmentService;
+use Illuminate\Validation\ValidationException;
+use App\Services\AccountTypeInvestmentPaymentService;
 
 class DepositController extends Controller
 {
@@ -39,11 +41,11 @@ class DepositController extends Controller
      *
      * @return void
      */
-    private $investment;
+    private $investment_payment;
 
-    public function __construct(ForexSchemaInvestormService $investment)
+    public function __construct(AccountTypeInvestmentPaymentService $investment_payment)
     {
-        $this->investment = $investment;
+        $this->investment_payment = $investment_payment;
         $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
     }
@@ -302,6 +304,7 @@ class DepositController extends Controller
         if (isset($input['approve'])) {
 
             if ($transaction->type == TxnType::Investment) {
+                
                 $invest = Invest::where('transaction_id', $id)->first();
                 $periodHours = $invest->period_hours;
                 $nextProfitTime = Carbon::now()->addHour($periodHours);
@@ -317,6 +320,7 @@ class DepositController extends Controller
                 }
 
             } else {
+                
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
                 $transaction->pay_amount = $input['final_amount'];
@@ -325,10 +329,12 @@ class DepositController extends Controller
                 }
                 $transaction->save();
                 $transaction = $transaction->fresh();
-                $this->investment->approveInvestment($transaction->target_id);
+                // $this->investment->approveInvestment($transaction->target_id);
+                $this->investment_payment->investmentActive($transaction->target_id);
 
 
-                }
+            }
+            
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
 

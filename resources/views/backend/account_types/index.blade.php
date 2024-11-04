@@ -1,6 +1,16 @@
 @extends('backend.layouts.app')
+
+@php
+    use App\Enums\AccountType;
+
+    // Retrieve the type parameter and check if it’s one of the valid enum values
+    $type = request('type') && in_array(request('type'), [AccountType::CHALLENGE, AccountType::FUNDED, AccountType::AUTO_EXPIRE]) 
+            ? request('type') 
+            : AccountType::CHALLENGE;
+@endphp
+
 @section('title')
-    {{ __('Challenge Accounts') }}
+    {{ str_replace('_', ' ', $type) . __(' Accounts') }}
 @endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
@@ -8,8 +18,11 @@
             @yield('title')
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+
+            
+
             @can('schema-create')
-                <a href="{{route('admin.accountType.create')}}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{route('admin.account-type.create', ['type' => $type  ])}}" class="btn btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                     {{ __('Add New') }}
                 </a>
@@ -51,59 +64,59 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                @foreach($schemas as $schema)
+                                @foreach($account_types as $account_type)
                                 <tr>
                                     <td class="table-td">
                                         <img
                                             class="h-7"
-                                            src="{{ asset($schema->icon) }}"
+                                            src="{{ asset($account_type->icon) }}"
                                             alt=""
                                         />
                                     </td>
                                     <td class="table-td">
-                                        {{$schema->trader_type}}
+                                        {{$account_type->trader_type}}
                                     </td>
                                     <td class="table-td">
-                                        {{$schema->priority}}
+                                        {{$account_type->priority}}
                                     </td>
 
                                     <td class="table-td">
-                                        {{$schema->title}}
+                                        {{$account_type->title}}
                                     </td>
                                     <td class="table-td">
-                                        {{$schema->leverage}}
+                                        {{$account_type->leverage}}
                                     </td>
                                     <td class="table-td">
-                                        @if( null != $schema->country) {{ implode(', ', json_decode($schema->country,true)) }} @endif
-                                    </td>
-                                    <td class="table-td">
-                                        <div @class([
-                                        'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $schema->badge,
-                                        'bg-warning-500 text-warning-500' => !$schema->badge
-                                        ])>{{ $schema->badge ? $schema->badge : 'No Feature Badge' }}</div>
+                                        @if( null != $account_type->countries) {{ implode(', ', json_decode($account_type->countries,true)) }} @endif
                                     </td>
                                     <td class="table-td">
                                         <div @class([
                                         'badge bg-opacity-30 capitalize', // common classes
-                                        'bg-success-500 text-success-500' => $schema->status,
-                                        'bg-danger-500 text-danger-500' => !$schema->status
-                                        ])>{{ $schema->status ? 'Active' : 'Deactivated' }}</div>
+                                        'bg-success-500 text-success-500' => $account_type->badge,
+                                        'bg-warning-500 text-warning-500' => !$account_type->badge
+                                        ])>{{ $account_type->badge ? $account_type->badge : 'No Feature Badge' }}</div>
+                                    </td>
+                                    <td class="table-td">
+                                        <div @class([
+                                        'badge bg-opacity-30 capitalize', // common classes
+                                        'bg-success-500 text-success-500' => $account_type->status,
+                                        'bg-danger-500 text-danger-500' => !$account_type->status
+                                        ])>{{ $account_type->status ? 'Active' : 'Deactivated' }}</div>
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
                                         @can('schema-edit')
-                                                <a href="{{route('admin.multi-level.view',$schema->id)}}" class="action-btn">
+                                                <a href="{{route('admin.multi-level.view',$account_type->id)}}" class="action-btn">
                                                     <iconify-icon icon="lucide:eye"></iconify-icon>
                                                 </a>
                                             @endcan
                                             @can('schema-edit')
-                                                <a href="{{route('admin.accountType.edit',$schema->id)}}" class="action-btn">
+                                                <a href="{{route('admin.account-type.edit',$account_type->id)}}" class="action-btn">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </a>
                                             @endcan
                                             @can('schema-delete')
-                                                <a href="#" class="action-btn delete-schema-btn" data-id="{{ $schema->id }}">
+                                                <a href="#" class="action-btn delete-schema-btn" data-id="{{ $account_type->id }}">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </a>
                                             @endcan
@@ -116,9 +129,9 @@
                         <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">
                             <div>
                                 @php
-                                    $from = $schemas->firstItem(); // The starting item number on the current page
-                                    $to = $schemas->lastItem(); // The ending item number on the current page
-                                    $total = $schemas->total(); // The total number of items
+                                    $from = $account_types->firstItem(); // The starting item number on the current page
+                                    $to = $account_types->lastItem(); // The ending item number on the current page
+                                    $total = $account_types->total(); // The total number of items
                                 @endphp
 
                                 <p class="text-sm text-gray-700">
@@ -131,7 +144,7 @@
                                     results
                                 </p>
                             </div>
-                            {{ $schemas->links() }}
+                            {{ $account_types->links() }}
                         </div>
                     </div>
                 </div>
@@ -140,7 +153,7 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    @include('backend.forex_schema.include.__delete')
+    @include('backend.account_types.include.__delete')
 
 @endsection
 
@@ -164,7 +177,7 @@
                 // Create a form and submit it
                 const form = $('<form>', {
                     'method': 'POST',
-                    'action': '{{ route('admin.accountType.delete', ':id') }}'.replace(':id', deleteSchemaId)
+                    'action': '{{ route('admin.account-type.destroy', ':id') }}'.replace(':id', deleteSchemaId)
                 });
 
                 // Add the CSRF token and method fields

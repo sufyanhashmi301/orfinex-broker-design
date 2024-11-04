@@ -31,6 +31,7 @@ class InvestController extends GatewayController
 
     public function investNow(Request $request)
     {
+        
 
         $validator = Validator::make($request->all(), [
             'schema_id' => 'required',
@@ -94,7 +95,6 @@ class InvestController extends GatewayController
 
         if ($input['wallet'] == 'main') {
             $user->decrement('balance', $input['invest_amount']);
-
         } elseif ($input['wallet'] == 'profit') {
             $user->decrement('profit_balance', $input['invest_amount']);
         } else {
@@ -115,18 +115,16 @@ class InvestController extends GatewayController
                         $manualData[$key] = self::imageUploadTrait($value);
                     }
                 }
-
             }
 
-            $txnInfo = Txn::new($investAmount, $charge, $finalAmount, $gatewayInfo->name, $schema->name.' Invested', TxnType::Investment, TxnStatus::Pending, $payCurrency, $payAmount, $user->id, null, 'user', $manualData ?? []);
+            $txnInfo = Txn::new($investAmount, $charge, $finalAmount, $gatewayInfo->name, $schema->name . ' Invested', TxnType::Investment, TxnStatus::Pending, $payCurrency, $payAmount, $user->id, null, 'user', $manualData ?? []);
             $data = array_merge($data, ['status' => InvestStatus::Pending, 'transaction_id' => $txnInfo->id]);
             Invest::create($data);
 
             return self::depositAutoGateway($input['gateway_code'], $txnInfo);
-
         }
 
-        $tnxInfo = Txn::new($input['invest_amount'], 0, $input['invest_amount'], 'system', $schema->name.' Plan Invested', TxnType::Investment, TxnStatus::Success, null, null, $user->id);
+        $tnxInfo = Txn::new($input['invest_amount'], 0, $input['invest_amount'], 'system', $schema->name . ' Plan Invested', TxnType::Investment, TxnStatus::Success, null, null, $user->id);
         $data = array_merge($data, ['transaction_id' => $tnxInfo->id]);
         Invest::create($data);
 
@@ -139,7 +137,7 @@ class InvestController extends GatewayController
             '[[full_name]]' => $tnxInfo->user->full_name,
             '[[txn]]' => $tnxInfo->tnx,
             '[[plan_name]]' => $tnxInfo->invest->schema->name,
-            '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
+            '[[invest_amount]]' => $tnxInfo->amount . setting('site_currency', 'global'),
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
         ];
@@ -155,37 +153,37 @@ class InvestController extends GatewayController
 
     public function showPlans(Request $request, $ucode = null)
     {
-//        dd($request->all(),$ucode);
+        //        dd($request->all(),$ucode);
         $invest = ForexSchemaInvestment::find(get_hash($ucode));
         if (blank($invest)) {
-//            throw ValidationException::withMessages(['invest' => 'Invalid Funded!']);
+            //            throw ValidationException::withMessages(['invest' => 'Invalid Funded!']);
         }
-//        dd($invest);
+        //        dd($invest);
 
-//        $balance = user_balance(AccType('main'));
+        //        $balance = user_balance(AccType('main'));
 
         // All Scheme Listing
         $plans = $this->getSchemes();
 
         if (empty($plans)) {
-//            $errors = MsgState::of('no-plan', 'invest');
-//            return view("investment.user.pricing.invest.errors", $errors);
+            //            $errors = MsgState::of('no-plan', 'invest');
+            //            return view("investment.user.pricing.invest.errors", $errors);
         }
         $type = $request->funded_main_type;
         $subType = $request->funded_sub_type;
         $stage = $request->funded_stage;
-//        dd($type,$subType,$stage);
+        //        dd($type,$subType,$stage);
 
-        return view("investment.user.pricing.invest", compact('plans','invest','type','subType','stage','ucode'));
+        return view("investment.user.pricing.invest", compact('plans', 'invest', 'type', 'subType', 'stage', 'ucode'));
     }
     public function investmentDetails($id)
     {
         $invest = ForexSchemaInvestment::find(get_hash($id));
-//        dd($invest);
+        //        dd($invest);
         if (blank($invest)) {
             notify()->error(__('Investment not found! Try Again'), 'Error');
             return redirect()->back();
-//            throw ValidationException::withMessages(['invest' => 'Invalid Funded!']);
+            //            throw ValidationException::withMessages(['invest' => 'Invalid Funded!']);
         }
         if ($invest->status == InvestmentStatus::ACTIVE) {
             $response = $this->syncPricingAccount($invest->login);
@@ -195,34 +193,33 @@ class InvestController extends GatewayController
 
             $traderType = $invest->trader_type;
 
-            if($traderType == TraderType::MT5) {
+            if ($traderType == TraderType::MT5) {
                 $forexApi = new ForexApiService();
                 $data = [
-                    'login'=>$invest->login
-//                'login'=>400109
+                    'login' => $invest->login
+                    //                'login'=>400109
                 ];
                 $statsUser = $forexApi->statsUser($data);
-//                dd($statsUser);
+                //                dd($statsUser);
                 $todayScore = $forexApi->getTodayRiskScore($data);
                 $weeklyScore = $forexApi->getWeekRiskScore($data);
                 $totalScore = $forexApi->getTotalRiskScore($data);
                 $totalBalance = $forexApi->getBalance($data);
-
-            }elseif($traderType == TraderType::X9) {
+            } elseif ($traderType == TraderType::X9) {
                 $forexApi = new x9ApiService();
                 $data = [
-                    'login_id'=>$invest->login
-//                'login'=>555561
+                    'login_id' => $invest->login
+                    //                'login'=>555561
                 ];
                 $statsUser['result'] = [];
                 $todayScore['result'] = [];
-                $weeklyScore['result']= [];
+                $weeklyScore['result'] = [];
                 $totalScore['result'] = [];
                 $totalBalance = $forexApi->getBalance($data);
                 $totalBalance['result'] = $totalBalance['result']['trading_account_details']['balance_details'];
-//                dd($totalBalance);
+                //                dd($totalBalance);
             }
-//            dd($totalBalance);
+            //            dd($totalBalance);
             $todayDrawddown = 0;
             if (BigDecimal::of(to_minus($invest->snap_equity, $invest->current_equity))->isGreaterThan(BigDecimal::of(0))) {
                 $todayDrawddown = to_minus($invest->snap_equity, $invest->current_equity);
@@ -239,32 +236,32 @@ class InvestController extends GatewayController
 
     public function syncPricingAccount($login)
     {
-//        $getUserResponse = get_mt5_account($login);
-//        if () {
-//            $this->updatePricingInvestmentAccount($getUserResponse);
-//        }else{
-//            $invest = ForexSchemaInvestment::where('login',$login)->first();
-//            $invest->status = PricingInvestmentStatus::VIOLATED;
-//            $invest->violated_at = Carbon::now();
-//            $invest->save();
-//        }
+        //        $getUserResponse = get_mt5_account($login);
+        //        if () {
+        //            $this->updatePricingInvestmentAccount($getUserResponse);
+        //        }else{
+        //            $invest = ForexSchemaInvestment::where('login',$login)->first();
+        //            $invest->status = PricingInvestmentStatus::VIOLATED;
+        //            $invest->violated_at = Carbon::now();
+        //            $invest->save();
+        //        }
     }
     public function updatePricingInvestmentAccount($getUserResponse)
     {
         $resData = $getUserResponse;
-//        dd($resData);
+        //        dd($resData);
         if ($getUserResponse) {
             $pricingInvestment = ForexSchemaInvestment::where('login', $resData->Login)->first();
-//            $pricingInvestment->leverage = $resData->Leverage;
+            //            $pricingInvestment->leverage = $resData->Leverage;
             $pricingInvestment->current_balance = $resData->Balance;
             $pricingInvestment->current_equity = $resData->Equity;
 
             $profit = 0;
-            if(to_minus($resData->Equity,$pricingInvestment->amount_allotted) > 0){
-                $profit = to_minus($resData->Equity,$pricingInvestment->amount_allotted);
+            if (to_minus($resData->Equity, $pricingInvestment->amount_allotted) > 0) {
+                $profit = to_minus($resData->Equity, $pricingInvestment->amount_allotted);
             }
             $pricingInvestment->profit = $profit;
-//            $pricingInvestment->group = $resData->Group;
+            //            $pricingInvestment->group = $resData->Group;
             $pricingInvestment->save();
         }
     }
@@ -273,8 +270,8 @@ class InvestController extends GatewayController
 
         if ($request->ajax()) {
             $data = Invest::with('schema')->where('user_id', auth()->id())->latest();
-//            dd($data->get());
-//            dd('frontend::user.include.__invest_rio');
+            //            dd($data->get());
+            //            dd('frontend::user.include.__invest_rio');
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -287,7 +284,7 @@ class InvestController extends GatewayController
                         return 'Unlimited';
                     }
 
-                    return $raw->number_of_period.($raw->number_of_period < 2 ? ' Time' : ' Times');
+                    return $raw->number_of_period . ($raw->number_of_period < 2 ? ' Time' : ' Times');
                 })
                 ->editColumn('capital_back', 'frontend::user.include.__invest_capital_back')
                 ->editColumn('next_profit_time', 'frontend::user.include.__invest_next_profit_time')
@@ -321,7 +318,7 @@ class InvestController extends GatewayController
             $user->balance += $investment->invest_amount;
             $user->save();
 
-            Txn::new($investment->invest_amount, 0, $investment->invest_amount, 'system', $investment->schema->name.' '.'Money Refund in Main Wallet from System', TxnType::Refund, TxnStatus::Success, null, null, $user->id);
+            Txn::new($investment->invest_amount, 0, $investment->invest_amount, 'system', $investment->schema->name . ' ' . 'Money Refund in Main Wallet from System', TxnType::Refund, TxnStatus::Success, null, null, $user->id);
             notify()->success('Cancel Investment Successfully', 'success');
 
             return redirect()->route('user.invest-logs');

@@ -20,17 +20,17 @@
                             <tbody>
                             @foreach($activePlans as $plan)
                                 <tr>
-                                    <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule->forexSchemaPhase->forexSchema,'title') }}</td>
+                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule->accountTypePhase->accountType,'title') }}</td>
                                     <td class="table-td">{{ data_get($plan,'login')}}</td>
-                                    <td class="table-td">{{ data_get($plan,'amount_allotted')}}</td>
-                                    <td class="table-td">{{ data_get($plan,'term_start') ?? 'N/A'}}</td>
-                                    <td class="table-td">{{ data_get($plan,'daily_drawdown_limit') }}</td>
-                                    <td class="table-td">{{ data_get($plan,'max_drawdown_limit') }}</td>
-                                    <td class="table-td">{{ data_get($plan->forexSchemaPhaseRule,'profit_target')}}</td>
+                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule, 'allotted_funds')}}</td>
+                                    <td class="table-td">{{ data_get($plan,'phase_started_at') ?? 'N/A'}}</td>
+                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule,'daily_drawdown_limit') }}</td>
+                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule,'max_drawdown_limit') }}</td>
+                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule, 'profit_target')}}</td>
                                     <td class="table-td">
-                                        <a href="{{route('user.invest.details',the_hash($plan->id))}}" class="inline-flex justify-center">
+                                        <a href="{{route('user.investment.trading-stats', ['investment_id' => $plan->id ])}}" class="inline-flex justify-center">
                                         <span class="flex items-center">
-                                            <span>{{ __('Fund Matrics') }}</span>
+                                            <span>{{ __('Trading Stats') }}</span>
                                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                                         </span>
                                         </a>

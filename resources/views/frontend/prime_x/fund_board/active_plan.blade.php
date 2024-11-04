@@ -249,7 +249,12 @@
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
                             <?php $loss = isset($statsUser['result']['todayPNL_Realized']) ? $statsUser['result']['todayPNL_Realized'] : 0; ?>
+<<<<<<< HEAD
                             {{ $investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit'] }} {{ base_currency() }}
+=======
+{{--                            {{dd($loss)}}--}}
+                                {{ number_format($invest->daily_drawdown_limit + $loss,2)}} {{ base_currency() }}
+>>>>>>> 907d0ea07e0005bf0dda0e94e223108bbbea639d
                         </span>
                     </li>
                 </ul>

@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\IbSchema;
+use App\Models\KycLevel;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\RiskProfileTag;
@@ -812,6 +813,32 @@ if (!function_exists('generate_date_range_array')) {
         }
 
         return $dates->toArray();
+    }
+}
+if (!function_exists('kyc_completed_level')) {
+    function kyc_completed_level()
+    {
+        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true);
+        $totalActiveLevels = $kycLevels->count();
+        $kycCompletedLevel = 0;
+        if($totalActiveLevels == 1){
+            if(kyclevel::where('id', 1)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level1->value;
+            }elseif(kyclevel::where('id', 2)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level2->value;
+            }elseif(kyclevel::where('id', 3)->where('status', true)->exists()) {
+                $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
+            }
+        }elseif($totalActiveLevels == 2){
+            // Assume you have the highest level like this:
+            $highestLevel = kyclevel::where('status', true)->orderBy('id', 'desc')->first();
+            $enumLevelName = 'Level' . $highestLevel->id;
+            $kycCompletedLevel = constant("App\\Enums\\KYCStatus::$enumLevelName")->value;
+
+        }elseif($totalActiveLevels == 3){
+            $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
+        }
+        return $kycCompletedLevel;
     }
 }
 if (!function_exists('calPercentage')) {

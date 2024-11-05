@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        @if(setting('is_internal_transfer', 'internal'))
+        @if(setting('is_internal_transfer', 'transfer_internal'))
             <div class="card price-table shadow-base p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
                 <header class="mb-6">
                     <h4 class="text-xl text-slate-500 dark:text-slate-300 mb-3">
@@ -40,7 +40,7 @@
                 </div>
             </div>
         @endif
-        @if(setting('is_external_transfer', 'external'))
+        @if(setting('is_external_transfer', 'transfer_external'))
             <div class="card price-table shadow-base p-6 text-slate-900 dark:text-white relative overflow-hidden z-[1] bg-white">
                 <header class="mb-6">
                     <h4 class="text-xl text-slate-500 dark:text-slate-300 mb-3">

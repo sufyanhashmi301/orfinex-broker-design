@@ -96,7 +96,7 @@
             </a>
         </li>
 
-        @if( setting('is_internal_transfer', 'internal') && setting('is_external_transfer', 'external') )
+        @if(setting('is_internal_transfer', 'transfer_internal') || setting('is_external_transfer', 'transfer_external'))
             <li>
                 <a href="{{ route('user.transfer') }}" class="navItem loaderBtn {{ isActive('user.transfer') }}">
                     <span class="flex items-center">

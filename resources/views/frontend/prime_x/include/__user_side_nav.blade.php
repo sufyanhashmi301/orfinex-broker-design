@@ -96,14 +96,16 @@
             </a>
         </li>
 
-        <li>
-            <a href="{{ route('user.transfer') }}" class="navItem loaderBtn {{ isActive('user.transfer') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
-                    <span>{{ __('Transfer') }}</span>
-                </span>
-            </a>
-        </li>
+        @if(setting('is_internal_transfer', 'transfer_internal') || setting('is_external_transfer', 'transfer_external'))
+            <li>
+                <a href="{{ route('user.transfer') }}" class="navItem loaderBtn {{ isActive('user.transfer') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="heroicons-outline:switch-horizontal"></iconify-icon>
+                        <span>{{ __('Transfer') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endif
 
         <li>
             <a href="{{ route('user.withdraw.view') }}" class="navItem loaderBtn @if(Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">

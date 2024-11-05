@@ -263,36 +263,13 @@
             @endcan
         @endcanany
 
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
+        <li>
+            <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="teenyicons:toggle-outline"></iconify-icon>
-                    <span>{{ __('Control Center') }}</span>
+                    <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
+                    <span>{{ __('RMS') }}</span>
                 </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('admin.activePositions') }}" class="{{ isActive('admin.activePositions') }}">
-                        {{ __('Active Positions') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.netPositionsAccounts') }}" class="{{ isActive('admin.netPositionsAccounts') }}">
-                        {{ __('Net Positions - Accounts') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.netPositionsGroups') }}" class="{{ isActive('admin.netPositionsGroups') }}">
-                        {{ __('Net Positions - Groups') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.olderPositionsDays') }}" class="{{ isActive('admin.olderPositionsDays') }}">
-                        {{ __('Older Positions - Days') }}
-                    </a>
-                </li>
-            </ul>
         </li>
 
         {{-- *************************************************************  Advertisement Management *********************************************************--}}

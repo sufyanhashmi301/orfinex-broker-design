@@ -4629,8 +4629,11 @@ textarea.form-control.is-invalid{
 .h-\[calc\(100\%-80px\)\]{
   height: calc(100% - 80px);
 }
+.h-\[calc\(100\%-64px\)\]{
+  height: calc(100% - 64px);
+}
 .h-\[calc\(100\%-115px\)\]{
-    height: calc(100% - 115px);
+  height: calc(100% - 115px);
 }
 .h-\[200px\]{
   height: 200px;

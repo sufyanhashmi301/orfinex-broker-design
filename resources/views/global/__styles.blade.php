@@ -276,4 +276,10 @@
     .dark .site-footer{
         box-shadow: inset 0 15px 4px -15px #334155;
     }
+    .tickets-list__container li.current {
+        background-color: white;
+    }
+    .dark .tickets-list__container li.current {
+        background-color: rgba({{ implode(' ', getColorFromSettings('base_color_dark')) }} / var(--tw-bg-opacity));
+    }
 </style>

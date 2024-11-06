@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('support_link')->nullable()->after('note');
             $table->text('warning_content')->nullable()->after('support_link');
             $table->text('company_info')->nullable()->after('warning_content');
+            $table->boolean('is_disclaimer')->default(0)->after('company_info');
+            $table->boolean('is_risk_warning')->default(0)->after('is_disclaimer');
 
         });
     }
@@ -34,6 +36,8 @@ return new class extends Migration
             $table->dropColumn('support_link');
             $table->dropColumn('warning_content');
             $table->dropColumn('company_info');
+            $table->dropColumn('is_disclaimer');
+            $table->dropColumn('is_risk_warning');
         });
     }
 };

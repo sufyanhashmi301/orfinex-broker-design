@@ -1777,6 +1777,19 @@ return [
             ],
         ]
     ],
+    'end_to_end_encryption' => [
+        'title' => 'End To End Encryption',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'enc_mode', // unique name for field
+                'label' => 'End To End Encryption', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+        ]
+    ],
     'company_misc' => [
         'title' => 'Misc Settings',
         'elements' => [

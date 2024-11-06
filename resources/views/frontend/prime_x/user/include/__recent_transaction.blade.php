@@ -106,7 +106,7 @@
                                         </td>
                                         <td class="table-td">
                                             @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
-                                                <span class="badge-secondary capitalize rounded px-2 py-1">{{ __('Pending') }}</span>
+                                                <span class="badge-warning capitalize rounded px-2 py-1">{{ __('Pending') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
                                                 <span class="badge-success bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Success') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)

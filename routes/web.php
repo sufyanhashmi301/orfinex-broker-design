@@ -154,7 +154,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     //support ticket
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
         Route::get('index', 'index')->name('index');
-        Route::get('new', 'new')->name('new');
+        Route::get('new', 'newTicket')->name('new');
         Route::post('new-store', 'store')->name('new-store');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');

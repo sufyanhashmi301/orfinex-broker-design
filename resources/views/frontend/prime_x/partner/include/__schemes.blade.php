@@ -14,7 +14,7 @@
                     $level = '';
                     $multiLevel = $schema->multiLevels()->where('level_order', $levelOrder)->where('type', \App\Enums\MultiLevelType::SWAP)->where('status', true)->first();
                     if ($multiLevel) {
-                        $level = $multiLevel->id;
+                        $level = encrypt($multiLevel->id);
                     }
                     ?>
                     <input type="text" class="form-control !pr-32" id="standard-input{{ $index }}"

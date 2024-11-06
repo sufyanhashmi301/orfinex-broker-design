@@ -59,34 +59,34 @@
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 @if ($update->status == 1)
                                                     <!-- Only show reject button when status is approved -->
-                                                    <button type="button" 
-                                                            data-id="{{ $update->id }}" 
-                                                            data-action="reject" 
+                                                    <button type="button"
+                                                            data-id="{{ $update->id }}"
+                                                            data-action="reject"
                                                             class="btn btn-sm btn-danger inline-flex items-center leverageAction">
                                                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mdi:close"></iconify-icon>
                                                         <span>{{ __('Reject') }}</span>
                                                     </button>
                                                 @elseif ($update->status == 2)
                                                     <!-- Only show approve button when status is rejected -->
-                                                    <button type="button" 
-                                                            data-id="{{ $update->id }}" 
-                                                            data-action="approve" 
+                                                    <button type="button"
+                                                            data-id="{{ $update->id }}"
+                                                            data-action="approve"
                                                             class="btn btn-sm btn-light inline-flex items-center leverageAction">
                                                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                                         <span>{{ __('Approve') }}</span>
                                                     </button>
                                                 @else
                                                     <!-- Show both buttons if status is pending -->
-                                                    <button type="button" 
-                                                            data-id="{{ $update->id }}" 
-                                                            data-action="approve" 
+                                                    <button type="button"
+                                                            data-id="{{ $update->id }}"
+                                                            data-action="approve"
                                                             class="btn btn-sm btn-light inline-flex items-center leverageAction">
                                                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                                                         <span>{{ __('Approve') }}</span>
                                                     </button>
-                                                    <button type="button" 
-                                                            data-id="{{ $update->id }}" 
-                                                            data-action="reject" 
+                                                    <button type="button"
+                                                            data-id="{{ $update->id }}"
+                                                            data-action="reject"
                                                             class="btn btn-sm btn-danger inline-flex items-center leverageAction">
                                                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mdi:close"></iconify-icon>
                                                         <span>{{ __('Reject') }}</span>
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    @include('backend.investment.leverage.include.__leverage_confirm') 
+    @include('backend.investment.leverage.include.__leverage_confirm')
 @endsection
 
 @section('script')
@@ -144,7 +144,7 @@
     });
 });
     $('#dataTable').DataTable({
-            dom: "<'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5'lip>",
+            dom: "<'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5 mt-auto'lip>",
             processing: true,
             searching: false,
             lengthChange: false,

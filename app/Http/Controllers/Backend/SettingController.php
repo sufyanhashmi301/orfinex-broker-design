@@ -114,6 +114,7 @@ class SettingController extends Controller
         $rules = Setting::getValidationRules($section);
 //        dd($request->all(),$rules, $section);
         $data = $this->validate($request, $rules);
+//        dd($data);
 
         // update session expiry
         $user = Auth::user();

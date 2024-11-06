@@ -230,19 +230,23 @@
         color: rgba({{ implode(' ', getColorFromSettings('primary_btn_color')) }} / var(--tw-text-opacity));
     }
     .badge-secondary{
-        background-color: rgba({{ implode(' ', getColorFromSettings('secondary_color')) }} / var(--tw-bg-opacity));
+        background-color: rgba(205, 205, 205, 0.29);
+        color: #828289;
     }
     .dark .badge-secondary{
         background-color: rgba({{ implode(' ', getColorFromSettings('secondary_color_dark')) }} / var(--tw-bg-opacity));
     }
     .badge-success{
-        background-color: rgba({{ implode(' ', getColorFromSettings('success_color')) }} / var(--tw-bg-opacity));
+        background-color: rgba(0, 236, 66, 0.29);
+        color: #008133;
     }
     .badge-warning{
-        background-color: rgba({{ implode(' ', getColorFromSettings('warning_color')) }} / var(--tw-bg-opacity));
+        background-color: rgba(254, 208, 0, 0.52);
+        color: #5F4D00;
     }
     .badge-danger{
-        background-color: rgba({{ implode(' ', getColorFromSettings('danger_color')) }} / var(--tw-bg-opacity));
+        background-color: rgba(193, 65, 65, 0.29);
+        color: #C14141;
     }
     .dark .dark\:fill-white {
         fill: #fff;
@@ -275,5 +279,11 @@
     }
     .dark .site-footer{
         box-shadow: inset 0 15px 4px -15px #334155;
+    }
+    .tickets-list__container li.current {
+        background-color: white;
+    }
+    .dark .tickets-list__container li.current {
+        background-color: rgba({{ implode(' ', getColorFromSettings('base_color_dark')) }} / var(--tw-bg-opacity));
     }
 </style>

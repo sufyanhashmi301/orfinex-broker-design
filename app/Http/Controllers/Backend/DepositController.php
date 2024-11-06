@@ -455,6 +455,7 @@ class DepositController extends Controller
         $input = $request->all();
         $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
         $amount = $input['amount'];
+//        dd($amount);
 
         // Check deposit amount against the gateway's limits
         if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
@@ -494,7 +495,7 @@ class DepositController extends Controller
     }
     // Proceed with transaction
     $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $amount) : $gatewayInfo->charge;
-    $finalAmount = (float)$amount + (float)$charge;
+    $finalAmount = (float)$amount - (float)$charge;
     $payAmount = $finalAmount * $gatewayInfo->rate;
     $depositType =  TxnType::ManualDeposit;;
 
@@ -512,7 +513,7 @@ class DepositController extends Controller
 
     // Create transaction with the appropriate target_id and target_type
     $txnInfo = Txn::new(
-        $input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code,
+        $finalAmount, $charge, $amount, $gatewayInfo->gateway_code,
         __('Deposit With ') . $gatewayInfo->name . __(' by Admin'), $depositType, TxnStatus::Pending,
         $gatewayInfo->currency, $payAmount, $userID, null, 'User',
         $manualData ?? [], $approvalCause, $targetId, $targetType
@@ -537,6 +538,9 @@ $shortcodes = [
 
         $shortcodes['[[status]]'] = 'Pending';
         $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
+        $this->mailNotify(setting('site_email', 'global'), 'manual_deposit_request', $shortcodes);
+        $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
+
         notify()->success('Successfully added pending deposit request');
       return redirect()->back();
 }

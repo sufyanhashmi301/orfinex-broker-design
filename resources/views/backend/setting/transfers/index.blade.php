@@ -22,12 +22,12 @@
     <div class="card p-4 mb-5">
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
             <li class="nav-item">
-                <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.settings.transfers') && request()->query('type') === 'internal' ? 'active' : '' }}">
+                <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_internal']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.settings.transfers') && request()->query('type') === 'transfer_internal' ? 'active' : '' }}">
                     {{ __('Internal Transfers') }}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.settings.transfers', ['type' => 'external']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.settings.transfers') && request()->query('type') === 'external' ? 'active' : '' }}">
+                <a href="{{ route('admin.settings.transfers', ['type' => 'transfer_external']) }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->routeIs('admin.settings.transfers') && request()->query('type') === 'transfer_external' ? 'active' : '' }}">
                     {{ __('External Transfers') }}
                 </a>
             </li>
@@ -43,17 +43,17 @@
         <div class="card-body p-6">
             @include('backend.setting.site_setting.include.form.__open_action')
             <div class="grid grid-cols-12 gap-5">
-                @if($section == 'internal')
+                @if($section == 'transfer_internal')
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Min Amount:') }}</label>
-                            <input type="text" class="form-control" name="internal_min_send" value="{{ oldSetting('internal_min_send','fee') }}">
+                            <input type="text" class="form-control" name="internal_min_send" value="{{ oldSetting('internal_min_send','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Max Amount:') }}</label>
-                            <input type="text" class="form-control" name="internal_max_send" value="{{ oldSetting('internal_max_send','fee') }}">
+                            <input type="text" class="form-control" name="internal_max_send" value="{{ oldSetting('internal_max_send','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
@@ -76,7 +76,7 @@
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfers per Day') }}</label>
-                            <input type="text" class="form-control" name="internal_send_daily_limit" value="{{ oldSetting('internal_send_daily_limit','fee') }}">
+                            <input type="text" class="form-control" name="internal_send_daily_limit" value="{{ oldSetting('internal_send_daily_limit','transfer_internal') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-4 col-span-12">
@@ -85,7 +85,7 @@
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="is_internal_transfer">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                        <input type="checkbox" name="is_internal_transfer" value="1" class="sr-only peer" @if(oldSetting('is_internal_transfer', 'fee')) checked @endif>
+                                        <input type="checkbox" name="is_internal_transfer" value="1" class="sr-only peer" @if(oldSetting('is_internal_transfer', 'transfer_internal')) checked @endif>
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
@@ -96,29 +96,29 @@
                         </div>
                     </div>
 
-                @elseif($section == 'external')
+                @elseif($section == 'transfer_external')
 
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Min Amount:') }}</label>
-                            <input type="text" class="form-control" name="external_min_send" value="{{ oldSetting('external_min_send','fee') }}">
+                            <input type="text" class="form-control" name="external_min_send" value="{{ oldSetting('external_min_send','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Max Amount:') }}</label>
-                            <input type="text" class="form-control" name="external_max_send" value="{{ oldSetting('external_max_send','fee') }}">
+                            <input type="text" class="form-control" name="external_max_send" value="{{ oldSetting('external_max_send','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfer Charge') }}</label>
                             <div class="relative">
-                                <input type="text" class="form-control" value="{{ oldSetting('external_send_charge','global') }}" name="external_send_charge">
+                                <input type="text" class="form-control" value="{{ oldSetting('external_send_charge','transfer_external') }}" name="external_send_charge">
                                 <div class="prcntcurr absolute right-1 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full py-0.5">
                                     <select name="external_send_charge_type" class="w-full h-full outline-none" id="">
-                                        @foreach(['fixed' => setting('currency_symbol','global') , 'percentage' => '%'] as $key => $value)
-                                            <option @if( oldSetting('send_charge_type','global') == $key) selected @endif value="{{ $key }}">
+                                        @foreach(['fixed' => setting('currency_symbol','transfer_external') , 'percentage' => '%'] as $key => $value)
+                                            <option @if( oldSetting('send_charge_type','transfer_external') == $key) selected @endif value="{{ $key }}">
                                                 {{ $value }}
                                             </option>
                                         @endforeach
@@ -130,7 +130,7 @@
                     <div class="lg:col-span-6 col-span-12">
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Transfers per Day') }}</label>
-                            <input type="text" class="form-control" name="external_send_daily_limit" value="{{ oldSetting('external_send_daily_limit','fee') }}">
+                            <input type="text" class="form-control" name="external_send_daily_limit" value="{{ oldSetting('external_send_daily_limit','transfer_external') }}">
                         </div>
                     </div>
                     <div class="lg:col-span-4 col-span-12">
@@ -139,7 +139,7 @@
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="is_external_transfer">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                        <input type="checkbox" name="is_external_transfer" value="1" class="sr-only peer" @if(oldSetting('is_external_transfer', 'fee')) checked @endif>
+                                        <input type="checkbox" name="is_external_transfer" value="1" class="sr-only peer" @if(oldSetting('is_external_transfer', 'transfer_external')) checked @endif>
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
@@ -155,7 +155,7 @@
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="is_external_transfer_auto_approve">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                        <input type="checkbox" name="is_external_transfer_auto_approve" value="1" class="sr-only peer" @if(oldSetting('is_external_transfer_auto_approve', 'fee')) checked @endif>
+                                        <input type="checkbox" name="is_external_transfer_auto_approve" value="1" class="sr-only peer" @if(oldSetting('is_external_transfer_auto_approve', 'transfer_external')) checked @endif>
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>
@@ -171,7 +171,7 @@
                                 <div class="form-switch ps-0">
                                     <input type="hidden" value="0" name="is_external_transfer_purpose">
                                     <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                        <input type="checkbox" name="is_external_transfer_purpose" value="1" class="sr-only peer" @if(oldSetting('is_external_transfer_purpose', 'fee')) checked @endif>
+                                        <input type="checkbox" name="is_external_transfer_purpose" value="1" class="sr-only peer" @if(oldSetting('is_external_transfer_purpose', 'transfer_external')) checked @endif>
                                         <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
                                     </label>
                                 </div>

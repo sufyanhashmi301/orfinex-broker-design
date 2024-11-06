@@ -89,6 +89,14 @@
                 </span>
             </a>
         </li>
+        <li>
+            <a href="{{ route('user.referral.members') }}" class="navItem {{ isActive('user.referral.members') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:user-round"></iconify-icon>
+                    <span>{{ __('Referrals') }}</span>
+                </span>
+            </a>
+        </li>
 
         <li>
             <a href="{{ route('user.dashboard') }}" class="navItem {{ isActive('user.dashboard') }}">

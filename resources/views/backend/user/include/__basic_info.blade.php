@@ -87,18 +87,12 @@
                                value="{{ carbonInstance($user->created_at)->toDayDateTimeString() }}"
                                required="" disabled>
                     </div>
-                    <div class="input-area relative lg:col-span-3">
-                        <label for="" class="form-label">{{ __('Comment:') }}</label>
-                        <textarea type="text"  name="comment" class="form-control"
-                        > {{ $user->comment }}</textarea>
-                    </div>
                     @if($user->notes)
-                    <div class="input-area relative lg:col-span-3">
-                        <label for="" class="form-label">{{ __('Notes:') }}</label>
-                        <textarea type="text"  name="notes" class="form-control"
-                        > {{ $user->notes }}</textarea>
-                    </div>
-
+                        <div class="input-area relative lg:col-span-3">
+                            <label for="" class="form-label">{{ __('Notes:') }}</label>
+                            <textarea type="text"  name="notes" class="form-control"
+                            > {{ $user->notes }}</textarea>
+                        </div>
                     @endif
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Assign Group:') }}</label>
@@ -123,6 +117,20 @@
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="input-area relative">
+                        <label for="" class="form-label">{{ __('Lead Campaign:') }}</label>
+                        <input type="text" class="form-control" name="lead_campaign" value="">
+                    </div>
+
+                    <div class="input-area relative">
+                        <label for="" class="form-label">{{ __('Lead Source:') }}</label>
+                        <input type="text" class="form-control" name="lead_source" value="">
+                    </div>
+
+                    <div class="input-area relative lg:col-span-3">
+                        <label for="" class="form-label">{{ __('Comment:') }}</label>
+                        <textarea type="text"  name="comment" class="form-control" rows="5"> {{ $user->comment }}</textarea>
                     </div>
                     <div class="input-area relative text-right lg:col-span-3">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

@@ -21,9 +21,6 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ $dataCount['total_referral'] }}
                             </h6>
-                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
-                                {{ __('+452%') }}
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -39,9 +36,6 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
-                                {{ __('+452%') }}
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -57,9 +51,6 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success dark:text-slate-300 mb-1">
-                                {{ __('+452%') }}
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -75,9 +66,9 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">
-                                {{ __('-52%') }}
-                            </span>
+{{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
+{{--                                {{ __('-52%') }}--}}
+{{--                            </span>--}}
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -101,18 +92,18 @@
                     <a href="{{route('user.withdraw.view')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
                         {{ __('Withdraw') }}
                     </a>
-                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
-                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
-                            <span class="text-slate-600 dark:text-slate-300 text-sm block">
-                                {{ __('Sales: 75%') }}
-                            </span>
-                        </div>
-                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
-                            <span class="text-slate-600 dark:text-slate-300 text-sm block">
-                                {{ __('Referral: 75%') }}
-                            </span>
-                        </div>
-                    </div>
+{{--                    <div class="grid md:grid-cols-2 grid-cols-1 gap-3">--}}
+{{--                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">--}}
+{{--                            <span class="text-slate-600 dark:text-slate-300 text-sm block">--}}
+{{--                                {{ __('Sales: 75%') }}--}}
+{{--                            </span>--}}
+{{--                        </div>--}}
+{{--                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">--}}
+{{--                            <span class="text-slate-600 dark:text-slate-300 text-sm block">--}}
+{{--                                {{ __('Referral: 75%') }}--}}
+{{--                            </span>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                 </div>
             </div>
         </div>
@@ -188,10 +179,56 @@
                 <div class="flex justify-between flex-wrap items-center mb-5">
                     <h4 class="card-title">{{ __('Signup') }}</h4>
                     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                        <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center">
-                            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
-                            {{ __('Share') }}
-                        </button>
+                        <div class="relative">
+                            <div class="dropdown relative">
+                                <button class="btn btn-light btn-sm inline-flex items-center justify-center" type="button" id="shareDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
+                                    {{ __('Share') }}
+                                </button>
+                                <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="https://brokeret.com/">
+                                    <li>
+                                        <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/email-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Email') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_sms text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/sms-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('SMS') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_whatsapp text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/whatsapp-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Whatsapp') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_facebook text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/facebook-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Facebook') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="a2a_button_twitter text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                            <span class="flex items-center gap-2">
+                                                <img src="{{ asset('frontend/images/logo/twitter-item.png') }}" border="0" alt="Facebook" width="14" height="14">
+                                                {{ __('Twitter') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center">
                             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:share-2"></iconify-icon>
                             {{ __('Invite') }}
@@ -247,7 +284,17 @@
 
 
 @endsection
+@section('style')
+    <style>
+        .a2a_default_style:not(.a2a_flex_style) a {
+            float: none !important;
+            line-height: 16px;
+            padding: 8px 16px !important;
+        }
+    </style>
+@endsection
 @section('script')
+    <script async src="https://static.addtoany.com/menu/page.js"></script>
     <script>
         let l, e;
         var options = {

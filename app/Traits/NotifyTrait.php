@@ -48,6 +48,8 @@ trait NotifyTrait
                     'site_logo' => asset(setting('site_logo', 'global')),
                     'site_title' => setting('site_title', 'global'),
                     'site_link' => route('home'),
+                    'is_risk_warning' => $template->is_risk_warning,
+                    'is_disclaimer' => $template->is_disclaimer,
                 ];
 //dd($details,$code);
                 if ($code == 'email_verification') {

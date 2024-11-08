@@ -52,7 +52,7 @@
     </div>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-115px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu">
         <li class="sidebar-menu-title">MENU</li>
         <li>
@@ -89,26 +89,22 @@
                 </span>
             </a>
         </li>
-
         <li>
-            <a href="{{route('user.dashboard')}}" class="navItem {{ isActive('user.dashboard') }}">
+            <a href="{{ route('user.referral.members') }}" class="navItem {{ isActive('user.referral.members') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:user-round"></iconify-icon>
-                    <span>{{ __('Client Portal') }}</span>
+                    <span>{{ __('Referrals') }}</span>
                 </span>
             </a>
         </li>
-
         <li>
             <a href="javascript:;" id="themeMood" class="navItem">
                 <span class="dark:flex items-center hidden">
-                    <iconify-icon class="nav-icon" id="sunIcon"
-                                  icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    <iconify-icon class="nav-icon" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
                     <span>Light Mode</span>
                 </span>
                 <span class="dark:hidden flex items-center">
-                    <iconify-icon class="nav-icon" id="moonIcon"
-                                  icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                    <iconify-icon class="nav-icon" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
                     <span>Dark Mode</span>
                 </span>
             </a>
@@ -127,4 +123,12 @@
             </form>
         </li>
     </ul>
+</div>
+<div class="stickySetting_menu sticky bottom-0 border-t dark:border-slate-700 px-6 py-4">
+    <a href="{{ route('user.dashboard') }}" class="navItem {{ isActive('user.dashboard') }}">
+        <span class="flex items-center">
+            <iconify-icon class="nav-icon" icon="lucide:arrow-left"></iconify-icon>
+            <span>{{ __('Client Portal') }}</span>
+        </span>
+    </a>
 </div>

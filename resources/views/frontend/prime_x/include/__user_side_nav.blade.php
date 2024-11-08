@@ -195,6 +195,15 @@
 {{--        </li>--}}
 
         <li>
+            <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                    <span>{{ __('Partner Area') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
             <a href="{{ route('user.setting.profile') }}" class="navItem {{ isActive('user.setting*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>

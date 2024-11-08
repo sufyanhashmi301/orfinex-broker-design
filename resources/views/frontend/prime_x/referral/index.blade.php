@@ -13,8 +13,7 @@
                 <div class="card-body p-6">
                     <div class="progress-steps-form">
                         <div class="transaction-status text-center px-7 py-12">
-                            <div
-                                class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
+                            <div class="icon h-20 w-20 bg-warning-500 text-warning-500 bg-opacity-30 rounded-full flex flex-col items-center justify-center mx-auto">
                                 <iconify-icon icon="icomoon-free:hour-glass" class="text-4xl"></iconify-icon>
                             </div>
                             <h2 class="text-3xl dark:text-white my-5">Partner Request Pending</h2>
@@ -61,8 +60,7 @@
                                         </div>
                                         @if($field->type === 'text')
                                             <div class="md:col-span-6 col-span-12">
-                                                <input name="fields[{{ $field->name }}]"
-                                                       class="form-control !text-lg" type="text" value="" @if($field->validation === 'required') required @endif>
+                                                <input name="fields[{{ $field->name }}]" class="form-control !text-lg" type="text" value="" @if($field->validation === 'required') required @endif>
                                             </div>
                                         @elseif($field->type === 'checkbox')
                                             <div class="col-span-12">
@@ -74,8 +72,7 @@
                                                                    name="fields[{{ $field->name }}][]"
                                                                    value="{{ $option }}" id="flexCheckDefault{{$qIndex}}{{$index}}"
                                                                    @if($field->validation === 'required') required @endif />
-                                                            <span
-                                                                class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
                                                                 <img
                                                                     src="{{ asset('frontend/images/icon/ck-white.svg') }}"
                                                                     alt=""
@@ -109,13 +106,10 @@
                                             </div>
                                         @elseif($field->type === 'dropdown')
                                             <div class="md:col-span-6 col-span-12 select2-lg">
-                                                <select name="fields[{{ $field->name }}]"
-                                                        class="select2 form-control w-full mt-2 py-2" @if($field->validation === 'required') required @endif>
+                                                <select name="fields[{{ $field->name }}]" class="select2 form-control w-full mt-2 py-2" @if($field->validation === 'required') required @endif>
                                                     @foreach($field->options as $option)
-                                                        <option value="{{ $option }}"
-                                                                class="inline-block font-Inter font-normal text-sm text-slate-600"
-                                                        ">
-                                                        {{ $option }}
+                                                        <option value="{{ $option }}" class="inline-block font-Inter font-normal text-sm text-slate-600">
+                                                            {{ $option }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -132,14 +126,12 @@
                             <div class="checkbox-area">
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox" class="hidden" name="checkbox" id="agreement-check" required>
-                                    <span
-                                        class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt=""
-                                                 class="h-[10px] w-[10px] block m-auto opacity-0"></span>
-                                    <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
-                                        {{ __('I have read and agree with the ') }}
-                                        <a href="javascript:;" class="btn-link">IB Agreement</a>
-                                    </span>
+                                    <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                        <img src="{{ asset('frontend/assets/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0"></span>
+                                        <span class="text-slate-500 dark:text-slate-400 text-sm leading-6">
+                                            {{ __('I have read and agree with the ') }}
+                                            <a href="javascript:;" class="btn-link">IB Agreement</a>
+                                        </span>
                                 </label>
                             </div>
                         </div>

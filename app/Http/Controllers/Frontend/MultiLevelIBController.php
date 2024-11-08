@@ -18,6 +18,12 @@ class MultiLevelIBController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function dashboard()
+    {
+        return view('frontend::partner.dashboard');
+
+    }
+
     public function index()
     {
         $user = auth()->user();
@@ -59,7 +65,7 @@ class MultiLevelIBController extends Controller
 //            'total_forex_balance' => mt5_total_balance($user->id),
 //            'total_forex_equity' => mt5_total_equity($user->id),
         ];
-        return view('frontend::partner.dashboard', get_defined_vars());
+        return view('frontend::partner.dashboard');
 
     }
     public function getAccountBalance($name = null, $echo = false)

@@ -45,7 +45,7 @@
                 <div class="max-w-4xl mx-auto text-center">
                     <img src="{{ asset('backend/images/territory_get_started.svg') }}" class="inline-flex mb-5" alt="">
                     <p class="text-base font-semibold mb-3 dark:text-white">
-                        {{ __('Territory Management') }}
+                        {{ __('Department Management') }}
                     </p>
                     <p class="card-text">
                         {{ __('Department Management allows you to organize teams and departments within your company for better coordination and oversight. Use this feature to streamline operations and enhance collaboration across your organization.') }}

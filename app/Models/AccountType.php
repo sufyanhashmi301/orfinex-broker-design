@@ -25,6 +25,7 @@ class AccountType extends Model
 		'accounts_limit',
 		'accounts_range_start',
 		'accounts_range_end',
+		'trading_days',
 		'is_weekend_holding',
 		'is_scalable',
 		'is_refundable',

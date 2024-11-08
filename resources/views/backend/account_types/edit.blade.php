@@ -166,6 +166,17 @@
                         <input type="text" name="accounts_range_end" class="form-control" placeholder="End Range" oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);" min="100000" max="999999" value="{{ $account_type->accounts_range_end }}" />
                     </div>
                     <div class="input-area">
+                        <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
+                        <input
+                            type="number"
+                            name="trading_days"
+                            class="form-control"
+                            placeholder="Minimum Trading Days"
+                            value="{{ $account_type->trading_days }}"
+                            required
+                        />
+                    </div>
+                    <div class="input-area">
                         <label class="form-label">{{ __('Leverage') }}</label>
                         <input type="number" name="leverage" class="form-control" placeholder="leverage e.g 100"
                             value="{{ $account_type->leverage }}" required />

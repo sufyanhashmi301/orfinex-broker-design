@@ -1,4 +1,4 @@
-@if(!blank($activePlans = data_get($investments, 'active', [])))
+@if( count($investments) != 0 )
     <div class="card">
         <div class="card-body p-6 pt-0">
             <div class="overflow-x-auto -mx-6">
@@ -18,17 +18,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach($activePlans as $plan)
+                            @foreach($investments as $investment)
+                                @php
+                                    $investment_snapshot = $investment->accountTypeInvestmentSnapshot;
+                                @endphp
                                 <tr>
-                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule->accountTypePhase->accountType,'title') }}</td>
-                                    <td class="table-td">{{ data_get($plan,'login')}}</td>
-                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule, 'allotted_funds')}}</td>
-                                    <td class="table-td">{{ data_get($plan,'phase_started_at') ?? 'N/A'}}</td>
-                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule,'daily_drawdown_limit') }}</td>
-                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule,'max_drawdown_limit') }}</td>
-                                    <td class="table-td">{{ data_get($plan->accountTypePhaseRule, 'profit_target')}}</td>
+                                    <td class="table-td">{{ $investment_snapshot->account_types_data['title'] }} </td>
+                                    <td class="table-td">{{ $investment->login }}</td>
+                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['allotted_funds'] }}</td>
+                                    <td class="table-td">{{ $investment->phase_started_at }}</td>
+                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit'] }}</td>
+                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['max_drawdown_limit'] }}</td>
+                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['profit_target'] }}</td>
                                     <td class="table-td">
-                                        <a href="{{route('user.investment.trading-stats', ['investment_id' => $plan->id ])}}" class="inline-flex justify-center">
+                                        <a href="{{route('user.investment.trading-stats', ['investment_id' => $investment->id ])}}" class="inline-flex justify-center">
                                         <span class="flex items-center">
                                             <span>{{ __('Trading Stats') }}</span>
                                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>

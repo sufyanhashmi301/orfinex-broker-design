@@ -25,7 +25,7 @@
                                 {{ auth()->user()->full_name }}
                             </h4>
                             <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                {{ isset($invest->forexSchemaPhaseRule->forexSchemaPhase->funded_type) ? $invest->forexSchemaPhaseRule->forexSchemaPhase->funded_type : '0.00' }}
+                                {{ isset($investment->forexSchemaPhaseRule->forexSchemaPhase->funded_type) ? $investment->forexSchemaPhaseRule->forexSchemaPhase->funded_type : '0.00' }}
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                                     {{ __('Account Status:') }}
                                 </span>
                                 <button class="text-right text-slate-900 btn btn-sm btn-primary">
-                                    {{ $invest->status }}
+                                    {{ $investment->status }}
                                 </button>
                             </div>
                         </li>
@@ -92,7 +92,7 @@
                             <div class="flex-1 text-start">
                                 <div class="text-xs font-normal text-slate-600 dark:text-slate-400 space-x-3 mb-1">
                                     <span class="text-slate-900 font-medium">{{ __('Start Date:') }}</span>
-                                    <span class="">{{ $invest->phase_started_at }}</span>
+                                    <span class="">{{ $investment->phase_started_at }}</span>
                                 </div>
                                 {{--                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400 space-x-3">--}}
                                 {{--                                    <span class="text-slate-900 font-medium">{{ __('End Date:') }}</span>--}}
@@ -101,7 +101,7 @@
                             </div>
                         </div>
                         <div class="input-area relative">
-                            <input class="form-control !pr-9" value="{{ isset($invest->login) ? $invest->login : '0.00' }}" id="copyLogin" readonly>
+                            <input class="form-control !pr-9" value="{{ isset($investment->login) ? $investment->login : '0.00' }}" id="copyLogin" readonly>
                             <button class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center copy-button dark:text-slate-200" data-target="copyLogin">
                                 <iconify-icon icon="lucide:copy"></iconify-icon>
                             </button>
@@ -133,7 +133,7 @@
             {{ __('Stats') }}
         </h4>
     </div>
-    <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
+    <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
         <div class="card p-6">
             <div class="flex items-center">
                 <div class="flex-none">
@@ -145,8 +145,11 @@
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
                         {{ __('Balance') }}
                     </div>
+                    @php
+                        $current_balance = $investment->accountTypeInvestmentStat->balance ?? '0.00';
+                    @endphp
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ isset($totalBalance['result']['balance']) ? $totalBalance['result']['balance'] : '0.00' }} {{base_currency()}}
+                        {{ $current_balance }} {{base_currency()}}
                     </h4>
                 </div>
             </div>
@@ -163,7 +166,7 @@
                         {{ __('Equity') }}
                     </div>
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ isset($totalBalance['result']['equity']) ? $totalBalance['result']['equity'] : '0.00' }} {{base_currency()}}
+                        {{ $investment->accountTypeInvestmentStat->current_equity ?? '0.00' }} {{base_currency()}}
                     </h4>
                 </div>
             </div>
@@ -180,7 +183,7 @@
                         {{ __('Profit/Loss') }}
                     </div>
                     @php
-                        $profit = (isset($totalBalance['result']['balance']) ? (int)$totalBalance['result']['balance'] : 0) - ( $investment_snapshot->account_types_phases_rules_data['allotted_funds'] );
+                        $profit = $current_balance - ( $investment_snapshot->account_types_phases_rules_data['allotted_funds'] );
                         $profit = number_format($profit, 2);
 
                     @endphp
@@ -192,14 +195,13 @@
                 </div>
             </div>
         </div>
-        <div class="card p-6">
+        {{-- <div class="card p-6">
             <div class="flex items-center">
                 <div class="flex-none">
                     <div class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
                         <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
                     </div>
                 </div>
-                {{--                {{dd($totalBalance['result'])}}--}}
                 <div class="flex-1 text-start">
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
                         {{ __('Floating Profit') }}
@@ -209,7 +211,7 @@
                     </h4>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <div class="flex justify-between flex-wrap items-center mb-3">
@@ -222,104 +224,132 @@
     </div>
     <div class="card p-6 mb-6">
         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+
+            {{-- Daily DrawDown --}}
+            @php
+                $ddd_status = 'passing';
+                
+                $ddd_loss = ($investment->accountTypeInvestmentStat->current_equity - $first_record_after_midnight->current_equity) * -1;
+                if($ddd_loss <= 0){
+                    $ddd_loss = 0;
+                }
+                
+
+                $remaining_loss_limit = ($investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit'] - $ddd_loss);
+                if($remaining_loss_limit < 0){
+                    $remaining_loss_limit = 'Limit Over';
+                    $ddd_status = 'violated';
+                }else{
+                    $remaining_loss_limit = number_format($remaining_loss_limit, 2) . ' ' . base_currency();
+                }
+            @endphp
             <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
                 <div class="mb-5">
                     <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                        <span class="inline-flex h-2 w-2 bg-success-500 rounded-full"></span>
-                        <span class="text-success-500 text-sm">{{ __('Ongoing') }}</span>
+                        <span class="inline-flex h-2 w-2 {{ $ddd_status == 'violated' ? 'bg-danger-500' : 'bg-slate-500' }} rounded-full"></span>
+                        <span class="{{ $ddd_status == 'violated' ? 'text-danger-500' : 'text-slate-500' }}  text-sm" style="text-transform: capitalize">{{ $ddd_status }}</span>
                     </span>
                     <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                        {{ __('Daily Loss Limit') }}
+                        {{ __('Daily Draw Down') }}
                     </h5>
                 </div>
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Max Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit']  }} {{ base_currency() }}
+                            {{ number_format( $investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit'], 2 )  }} {{ base_currency() }}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Today’s  PNL:') }}</span>
+                        <span>{{ __('Today’s Loss:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($statsUser['result']['todayPNL_Realized']) ? number_format($statsUser['result']['todayPNL_Realized'], 2) : '0.00' }} {{ base_currency() }}
+                            {{ number_format( $ddd_loss, 2 )  }} {{ base_currency() }}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            <?php $loss = isset($statsUser['result']['todayPNL_Realized']) ? $statsUser['result']['todayPNL_Realized'] : 0; ?>
-<<<<<<< HEAD
-                            {{ $investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit'] }} {{ base_currency() }}
-=======
-{{--                            {{dd($loss)}}--}}
-                                {{ number_format($invest->daily_drawdown_limit + $loss,2)}} {{ base_currency() }}
->>>>>>> 907d0ea07e0005bf0dda0e94e223108bbbea639d
+                            {{ $remaining_loss_limit  }} 
                         </span>
                     </li>
                 </ul>
             </div>
+
+            {{-- Maximum DrawDown --}}
+            @php
+                $mdd_status = 'passing';
+                $mdd_loss =  ($investment->accountTypeInvestmentStat->current_equity - $investment_snapshot->account_types_phases_rules_data['allotted_funds']) * -1;
+                if($mdd_loss <= 0){
+                    $mdd_loss = 0;
+                }
+                $remaining_overall_loss_limit = ($investment_snapshot->account_types_phases_rules_data['max_drawdown_limit'] - $mdd_loss);
+                if($remaining_overall_loss_limit <= 0){
+                    $remaining_overall_loss_limit = 'Limit Over';
+                    $mdd_status = 'violated';
+                }else{
+                    $remaining_overall_loss_limit = number_format($remaining_overall_loss_limit, 2) . ' ' . base_currency();
+                }
+
+            @endphp
             <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
                 <div class="mb-5">
                     <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                        <span class="inline-flex h-2 w-2 bg-success-500 rounded-full"></span>
-                        <span class="text-success-500 text-sm">{{ __('Ongoing') }}</span>
+                        <span class="inline-flex h-2 w-2 {{ $mdd_status == 'violated' ? 'bg-danger-500' : 'bg-slate-500' }} rounded-full"></span>
+                        <span class="{{ $mdd_status == 'violated' ? 'text-danger-500' : 'text-slate-500' }}  text-sm" style="text-transform: capitalize">{{ $mdd_status }}</span>
                     </span>
                     <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                        {{ __('Overall Loss Limit') }}
+                        {{ __('Maximum Draw Down') }}
                     </h5>
                 </div>
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Total Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $investment_snapshot->account_types_phases_rules_data['max_drawdown_limit'] ?? '0.00' }} {{base_currency()}}
+                            {{ number_format($investment_snapshot->account_types_phases_rules_data['max_drawdown_limit'], 2) ?? '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Overall PNL:') }}</span>
+                        <span>{{ __('Overall Loss:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ number_format($statsUser['result']['todayPNL_UnRealized'], 2) }} {{base_currency()}}
+                            
+                            {{ number_format($mdd_loss, 2)  }} {{ base_currency() }}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $investment_snapshot->account_types_phases_rules_data['max_drawdown_limit'] - (int)$statsUser['result']['todayPNL_UnRealized'] }} {{base_currency()}}
+                            {{ $remaining_overall_loss_limit }} 
                         </span>
                     </li>
                 </ul>
             </div>
+            
+            {{-- Profit Target --}}
+            @php
+                $pt_status = 'passing';
+                $profit_target = $investment_snapshot->account_types_phases_rules_data['profit_target'];
+
+                // Achievied Profit
+                $current_pt = $investment->accountTypeInvestmentStat->current_equity - ($investment_snapshot->account_types_phases_rules_data['allotted_funds']);
+                if($current_pt < 0) {
+                    $current_pt = 0;
+                }
+
+                if($current_pt >= $profit_target){
+                    $pt_status = 'passed';
+                }
+
+                // remaining profit target
+                $remaining_profit_target = $profit_target - $current_pt;
+                if( ($profit_target - $current_pt) < 0 ) {
+                    $remaining_profit_target = 0;
+                }
+            @endphp
             <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
                 <div class="mb-5">
                     <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                        <span class="inline-flex h-2 w-2 bg-slate-400 rounded-full"></span>
-                        <span class="text-slate-600 text-sm">{{ __('Passed') }}</span>
-                    </span>
-                    <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                        {{ __('Minimum Trades') }}
-                    </h5>
-                </div>
-                <ul class="space-y-3">
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __("Current Trading Days:") }}</span>
-                        <span class="text-slate-900 font-medium">{{$statsUser['result']['tradingDays']}} </span>
-                    </li>
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Minimum Trading Days:') }}</span>
-                        <span class="text-slate-900 font-medium">4</span>
-                    </li>
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Remaining Trading Days:') }}</span>
-                        <span class="text-slate-900 font-medium">@if($statsUser['result']['tradingDays'] >=4) 0 @else {{4 - $statsUser['result']['tradingDays']}} @endif</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
-                <div class="mb-5">
-                    <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
-                        <span class="inline-flex h-2 w-2 bg-slate-400 rounded-full"></span>
-                        <span class="text-slate-600 text-sm">{{ __('Passed') }}</span>
+                        <span class="inline-flex h-2 w-2 {{ $pt_status == 'passed' ? 'bg-success-500' : 'bg-slate-500' }} rounded-full"></span>
+                        <span class="{{ $pt_status == 'passed' ? 'text-success-600' : 'text-slate-600' }}  text-sm" style="text-transform: capitalize">{{ $pt_status }}</span>
                     </span>
                     <h5 class="text-slate-900 dark:text-slate-300 text-base">
                         {{ __('Profit Target') }}
@@ -329,26 +359,65 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Max Profit Target:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            @php
-                                $profit_target = $investment_snapshot->account_types_phases_rules_data['profit_target'];
-                            @endphp
-                            {{ $profit_target ?? 0.00 }} {{base_currency()}}
+                            
+                            {{ number_format($profit_target, 2) ?? 0.00 }} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Achieved Profit:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($statsUser['result']['total_PNL']) ? number_format($statsUser['result']['total_PNL'], 2) : '0.00' }} {{base_currency()}}
+                            @php
+                                
+                            @endphp
+                            {{ number_format($current_pt, 2) ?? '0.00' }} {{base_currency()}}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Profit Target:') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ isset($profit_target) ? $profit_target - (isset($statsUser['result']['total_PNL']) ? number_format($statsUser['result']['total_PNL'], 2) : 0) : '0.00' }} {{base_currency()}}
+                            {{ number_format($remaining_profit_target, 2) }} {{base_currency()}}
                         </span>
                     </li>
                 </ul>
             </div>
+
+            {{-- Trading Days --}}
+            @php
+                $mtd_status = 'passing';
+                $minimum_trading_days = $investment_snapshot->account_types_data['trading_days'];
+                $remaining_trading_days = $minimum_trading_days - $investment->accountTypeInvestmentStat->trading_days;
+
+                if($investment->accountTypeInvestmentStat->trading_days >= $minimum_trading_days){
+                    $mtd_status = 'passed';
+                }
+            @endphp
+            <div class="border border-slate-100 dark:border-slate-700 p-3 rounded">
+                <div class="mb-5">
+                    <span class="flex space-x-2 rtl:space-x-reverse items-center mb-1">
+                        <span class="inline-flex h-2 w-2 {{ $mtd_status == 'passing' ? 'bg-slate-400' : 'bg-success-400' }} rounded-full"></span>
+                        <span class="{{ $mtd_status == 'passing' ? 'text-slate-600' : 'text-success-600' }}  text-sm" style="text-transform: capitalize">{{ $mtd_status }}</span>
+                    </span>
+                    <h5 class="text-slate-900 dark:text-slate-300 text-base">
+                        {{ __('Minimum Trades') }}
+                    </h5>
+                </div>
+                <ul class="space-y-3">
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __("Current Trading Days:") }}</span>
+                        <span class="text-slate-900 font-medium">{{ $investment->accountTypeInvestmentStat->trading_days }} </span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Minimum Trading Days:') }}</span>
+                        
+                        <span class="text-slate-900 font-medium">{{ $minimum_trading_days }}</span>
+                    </li>
+                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                        <span>{{ __('Remaining Trading Days:') }}</span>
+                        <span class="text-slate-900 font-medium">{{ $remaining_trading_days }}</span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 
@@ -623,7 +692,7 @@
                         {{ __('Profit Split') }}
                     </div>
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{--                        {{isset($invest->profit_share_user)}} / {{isset($invest->profit_share_admin)}}--}}
+                        {{--                        {{isset($investment->profit_share_user)}} / {{isset($investment->profit_share_admin)}}--}}
                         80 / 20
                     </h4>
                 </div>
@@ -644,7 +713,7 @@
     {{--                        {{ __('Balance') }}--}}
     {{--                    </div>--}}
     {{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
-    {{--                        {{ isset($invest->max_balance) ? $invest->max_balance : '0.00' }} {{base_currency()}}--}}
+    {{--                        {{ isset($investment->max_balance) ? $investment->max_balance : '0.00' }} {{base_currency()}}--}}
     {{--                    </h4>--}}
     {{--                </div>--}}
     {{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
@@ -652,7 +721,7 @@
     {{--                        {{ __('Profit') }}--}}
     {{--                    </div>--}}
     {{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
-    {{--                        {{ isset($invest->profit) ? $invest->profit : '0.00' }} {{base_currency()}}--}}
+    {{--                        {{ isset($investment->profit) ? $investment->profit : '0.00' }} {{base_currency()}}--}}
     {{--                    </h4>--}}
     {{--                </div>--}}
     {{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
@@ -668,7 +737,7 @@
     {{--                        {{ __('Days') }}--}}
     {{--                    </div>--}}
     {{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
-    {{--                        {{\Carbon\Carbon::parse($invest->term_start)->diffInDays(\Carbon\Carbon::now())}}--}}
+    {{--                        {{\Carbon\Carbon::parse($investment->term_start)->diffInDays(\Carbon\Carbon::now())}}--}}
     {{--                    </h4>--}}
     {{--                </div>--}}
     {{--            </div>--}}
@@ -688,7 +757,7 @@
     {{--                        {{ __('Previous Day Balance') }}--}}
     {{--                    </div>--}}
     {{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
-    {{--                        {{ isset($invest->snap_balance) ? $invest->snap_balance : '0.00' }} {{ base_currency()}}--}}
+    {{--                        {{ isset($investment->snap_balance) ? $investment->snap_balance : '0.00' }} {{ base_currency()}}--}}
     {{--                    </h4>--}}
     {{--                </div>--}}
     {{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}
@@ -696,7 +765,7 @@
     {{--                        {{ __('Current Equity') }}--}}
     {{--                    </div>--}}
     {{--                    <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">--}}
-    {{--                        {{ isset($invest->current_equity) ? $invest->current_equity : '0.00' }} {{ base_currency()}}--}}
+    {{--                        {{ isset($investment->current_equity) ? $investment->current_equity : '0.00' }} {{ base_currency()}}--}}
     {{--                    </h4>--}}
     {{--                </div>--}}
     {{--                <div class="card border border-slate-100 dark:border-slate-700 p-6">--}}

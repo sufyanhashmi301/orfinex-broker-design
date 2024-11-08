@@ -225,6 +225,17 @@
                         />
                     </div>
                     <div class="input-area">
+                        <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
+                        <input
+                            type="number"
+                            name="trading_days"
+                            class="form-control"
+                            placeholder="Minimum Trading Days"
+                            value="{{ old('trading_days') }}"
+                            required
+                        />
+                    </div>
+                    <div class="input-area">
                         <label class="form-label" for="">{{ __('Leverage') }}</label>
                         <input
                             type="number"

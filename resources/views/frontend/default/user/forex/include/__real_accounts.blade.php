@@ -8,6 +8,7 @@
 @else
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($realForexAccounts as $account)
+            
 
             @php
                 $balance = 0;
@@ -19,6 +20,8 @@
                    $equity = $mt5Account->Equity;
                    $leverage = $mt5Account->MarginLeverage;
                 }
+
+                
             @endphp
             <div class="card lg:h-full border trading-account-card">
                 <div class="card-body rounded-md bg-white dark:bg-slate-800 p-6">

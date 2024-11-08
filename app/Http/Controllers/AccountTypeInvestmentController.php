@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Enums\TraderType;
 use Brick\Math\BigDecimal;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class AccountTypeInvestmentController extends Controller
 {
@@ -35,10 +37,8 @@ class AccountTypeInvestmentController extends Controller
             // show all investments if the status is not defined
             $investments = AccountTypeInvestment::traderType()->where('user_id', $user->id)->orderBy('id', 'desc')->get();
         }else{
-            $investments = AccountTypeInvestment::traderType()->where('status', $request->status)->where('user_id', $user->id)->orderBy('id', 'desc')->get();
+            $investments = AccountTypeInvestment::traderType()->where('user_id', $user->id)->where('status', $request->status)->orderBy('id', 'desc')->get();
         }
-
-        $investments = $investments->groupBy('status');
 
         return view('frontend::user.forex.log', compact('investments'));    
     }
@@ -72,40 +72,27 @@ class AccountTypeInvestmentController extends Controller
      * Investment Tradings Statistics
      */
     public function tradingStats($investment_id){
-        $invest = AccountTypeInvestment::find($investment_id);
-        $investment_snapshot = $invest->accountTypeInvestmentSnapshot;
-       
-        if (blank($invest)) {
-            notify()->error(__('Investment not found! Try Again'), 'Error');
-            return redirect()->back();
-          
+        $investment = AccountTypeInvestment::findorFail($investment_id);
+        $investment_snapshot = $investment->accountTypeInvestmentSnapshot;
+
+        // Same day 1st record after 12AM
+        $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)->where('created_at', '>=', Carbon::today())->orderBy('created_at', 'asc')->first();
+
+        
+        // If no record found, fallback to the most recent record
+        if (!$first_record_after_midnight) {
+            $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
         }
 
-        if ($invest->status == InvestmentStatus::ACTIVE) {
-            $invest = $invest->fresh();
+        // dd($first_record_after_midnight)
 
-            $growthPercentage = percentage_of_total_calc(0, $invest->accountTypePhaseRule->allotted_funds);
-
-            $traderType = $invest->trader_type;
-
-            if ($traderType == TraderType::MT5) {
-                $forexApi = new ForexApiService();
-                $data = [
-                    'login' => $invest->login
-                ];
-                $statsUser = $forexApi->statsUser($data);
-                $todayScore = $forexApi->getTodayRiskScore($data);
-                $weeklyScore = $forexApi->getWeekRiskScore($data);
-                $totalScore = $forexApi->getTotalRiskScore($data);
-                $totalBalance = $forexApi->getBalance($data);
-            } 
-            
-            
-
-            return view("frontend::fund_board.active_plan", compact("invest", "investment_snapshot", "growthPercentage", "todayScore", "weeklyScore", "totalScore", "totalBalance", "statsUser"));
+        if ($investment->status == InvestmentStatus::ACTIVE) {
+            return view("frontend::fund_board.active_plan", compact("investment", "investment_snapshot", "first_record_after_midnight"));
         }
 
-        return view("investment.user.pricing.plan", compact("invest", "plans"));
     }
 
     /**

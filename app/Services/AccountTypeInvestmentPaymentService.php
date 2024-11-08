@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Enums\TraderType;
+use App\Models\AccountType;
 use Carbon\CarbonImmutable;
 use App\Enums\InvestmentStatus;
-use App\Models\AccountType;
 use App\Models\AccountTypeInvestment;
+use Illuminate\Support\Facades\Artisan;
 
 class AccountTypeInvestmentPaymentService
 {
@@ -34,13 +35,13 @@ class AccountTypeInvestmentPaymentService
       "firstName" => 'Phase 1 $' . $this->ruleData['allotted_funds'] . '-' . $investment->user->first_name,
       "middleName" => "",
       "lastName" => $investment->user->last_name,
-      "leverage" => $this->accountTypeData['leverage'],
+      "leverage" => (int)$this->accountTypeData['leverage'],
       "rights" => "USER_RIGHT_ALL",
       "country" => $investment->user->country,
-      "city" => $investment->user->city,
+      "city" => $investment->user->city ?? '',
       "state" => "",
-      "zipCode" => $investment->user->zip_code,
-      "address" => $investment->user->address,
+      "zipCode" => $investment->user->zip_code ?? '',
+      "address" => $investment->user->address ?? '',
       "phone" => $investment->user->phone,
       "email" => $investment->user->email,
       "agent" => 0,
@@ -53,11 +54,12 @@ class AccountTypeInvestmentPaymentService
       "investorPassword" => 'SNNH@2024@bol'
     ];
 
-    // dd($user_data);
 
     // API call for creating MT5 user
     $response = $this->forexApiService->createUser($user_data);
-    
+    if($response['success'] == false){
+      dd($response);
+    }
 
     if ($response['success']) {
         $resResult = $response['result'];
@@ -98,6 +100,9 @@ class AccountTypeInvestmentPaymentService
     ];
   
     $response = $this->forexApiService->balanceOperation($data);
+    if($response['success'] == false){
+      dd($response);
+    }
 
     if ($response['success'] && $response['result']['responseCode'] == 10009) {
         return true;
@@ -185,6 +190,10 @@ class AccountTypeInvestmentPaymentService
       $investment->save();
 
     }
+
+    // Fetch and store latest stats and hourly stats 
+    Artisan::call('update:investment-stats');
+    Artisan::call('update:investment-stats --save-record');
 
     return $investment;
 

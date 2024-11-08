@@ -23,13 +23,6 @@ class AccountTypeInvestmentService
       'account_types_phases_rules_data' => $new_investment->accountTypePhaseRule->toArray(),
     ];
 
-    // Resolve the JSON
-    // foreach ($snapshot_data as $key => $value) {
-    //   if (is_array($value)) {
-    //       $snapshot_data[$key] = json_encode($value);
-    //   }
-    // }
-
     return AccountTypeInvestmentSnapshot::create($snapshot_data);
   }
 

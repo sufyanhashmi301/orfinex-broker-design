@@ -53,11 +53,11 @@ class UpdateAccountTypeInvestmentStats extends Command
                 $this->error("Failed to fetch data for group: {$group}");
             }
         }
-
+        // dd($allResults);
         // Step 3: Loop through each AccountTypeInvestment and update stats
         foreach (AccountTypeInvestment::all() as $investment) {
             $matchingResult = $allResults->firstWhere('login', $investment->login);
-
+            
             if ($matchingResult) {
                 $data = [
                     'account_type_investment_id' => $investment->id,

@@ -38,7 +38,7 @@ class ResetData extends Command
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('account_types')->truncate();
-        DB::table('	account_type_investments')->truncate();
+        DB::table('account_type_investments')->truncate();
         DB::table('account_type_investment_hourly_stats_records')->truncate();
         DB::table('account_type_investment_snapshots')->truncate();
         DB::table('account_type_investment_stats')->truncate();
@@ -51,7 +51,6 @@ class ResetData extends Command
         DB::table('advertisement_materials')->truncate();
         DB::table('banners')->truncate();
         DB::table('blogs')->truncate();
-        DB::table('groups')->truncate();
         DB::table('customer_groups')->truncate();
         DB::table('customer_group_has_customers')->truncate();
         DB::table('departments')->truncate();
@@ -81,7 +80,6 @@ class ResetData extends Command
         DB::table('rebate_rules')->truncate();
         DB::table('rebate_rule_symbol_group')->truncate();
         DB::table('risk_profile_tags_users')->truncate();
-        DB::table('risk_profile_tag_user')->truncate();
         DB::table('scheduled_task')->truncate();
         DB::table('schemas')->truncate();
         DB::table('subscriptions')->truncate();

@@ -392,6 +392,15 @@
             </a>
         </li>
 
+        <li class="">
+            <a href="{{ route('admin.leaderboard.index') }}" class="navItem {{ isActive('admin.leaderboard.index') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>
+                    <span>{{ __('Leaderboard') }}</span>
+                </span>
+            </a>
+        </li>
+
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])
             <li class="">

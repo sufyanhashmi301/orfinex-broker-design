@@ -57,6 +57,7 @@ use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\PositionController;
+use App\Http\Controllers\Backend\LeaderboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -163,7 +164,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Route::delete('account-type/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('account-type.delete');
 
 // =============================== Optimization ===============================
-    
+
 
     Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
@@ -473,6 +474,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
     Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
     Route::get('active-positions', function () {
         return view('backend.control_center.active_positions');

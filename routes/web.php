@@ -381,7 +381,10 @@ Route::get('user/leaderboard', function () {
     return view('frontend::leaderboard.index');
 })->name('user.leaderboard');
 
-
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
+
+Route::get('user/billing', function () {
+    return view('frontend::billing.index');
+})->name('user.billing');

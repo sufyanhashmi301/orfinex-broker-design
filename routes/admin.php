@@ -275,6 +275,8 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('site', 'siteTheme')->name('site');
         Route::get('global', 'globalSetting')->name('global');
         Route::get('colors', 'colorsSetting')->name('colors');
+        Route::get('colors', 'colorsSetting')->name('colors');
+        Route::get('fonts', 'fontSetting')->name('fonts');
         Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
         Route::get('status-update', 'statusUpdate')->name('status-update');
@@ -317,6 +319,11 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('site-maintenance', 'siteMaintenance')->name('site-maintenance');
         Route::get('transfers', 'transfers')->name('transfers');
         Route::get('gdpr', 'gdpr')->name('gdpr');
+        Route::get('dev-mode', 'devMode')->name('devMode');
+        Route::get('clear-cache', 'clearCache')->name('clearCache');
+        Route::get('api-access', 'apiAccess')->name('apiAccess');
+        Route::get('web-hook', 'webHook')->name('webHook');
+        Route::get('end-to-end-encryption', 'endToEndEncryption')->name('endToEndEncryption');
 
         Route::get('slack', 'slackSetting')->name('slack');
 
@@ -527,6 +534,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('changelog', function () {
         return view('backend.changelog.index');
     })->name('changelog');
+
+    Route::get('settings/report-issues', function () {
+        return view('backend.system.report_issues');
+    })->name('reportIssues');
 
 
 });

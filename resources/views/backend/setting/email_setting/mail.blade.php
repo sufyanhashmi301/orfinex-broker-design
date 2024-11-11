@@ -4,70 +4,101 @@
 @endsection
 @section('email-content')
     <div class="card">
-        <div class="card-header">
+        <div class="card-header noborder">
             <div class="flex-1">
-                <img src="{{ asset('backend/images/smtp-icon.png') }}" class="mb-3" alt="">
+                <h4 class="font-medium text-xl capitalize dark:text-white inline-block mb-1">{{ __('SMTP Configuration') }}</h4>
                 <p class="card-text">
-                    {{ __('Configure your SMTP server to enable automated email notifications for your customers, keeping them informed about transactions, payments, and important reminders.') }}
+                    {{ __('Configure your SMTP server for reliable email delivery') }}
                 </p>
             </div>
-            <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                {{ __('Activated') }}
+            <span class="badge badge-primary capitalize">
+                {{ __('Recommended') }}
             </span>
         </div>
-        <div class="card-body p-6">
-            <div class="space-y-5">
-                <div>
-                    <h6 class="text-lg font-medium mb-[6px] dark:text-white text-slate-900 mb-3">
-                        {{ __('Key Benefits:') }}
-                    </h6>
-                    <ul>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Instantly notify customers about transaction statuses, payment confirmations, and reminders via email.') }}</span>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Enable email notifications for both customers and their designated contact persons, ensuring smooth communication.') }}</span>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h6 class="text-lg font-medium mb-[6px] dark:text-white text-slate-900">
-                        {{ __('Before Connecting Your SMTP Server:') }}
-                    </h6>
-                    <p class="text-sm font-semibold dark:text-white mb-2">{{ __('To integrate the SMTP mail server with your CRM, please follow these steps.') }}</p>
-                    <ul>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Create a Mail Server Account If you don’t already have one, sign up for a third-party mail server provider (e.g., SendGrid, Mailgun).') }}</span>
-                            <a href="https://sendgrid.com/en-us" class="text-success-500">{{ __('Sign up Now') }}</a>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Authenticate Your Domain Ensure your domain or individual email addresses are authenticated within your email provider’s settings to prevent delivery issues.') }}</span>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('Generate SMTP Credentials Create and securely store the SMTP credentials specific to your chosen email provider.') }}</span>
-                        </li>
-                        <li class="text-sm text-slate-600 dark:text-slate-300 flex space-x-2 items-center py-1">
-                            <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
-                            <span>{{ __('For more information on how to integrate SMTP with your CRM, refer to the platform documentation or visit.') }}</span>
-                        </li>
-                    </ul>
+        <div class="card-body p-6 pt-3">
+            <div class="font-normal text-sm rounded-md bg-white border border-secondary-500 dark:bg-slate-800 p-4">
+                <div class="flex space-x-3">
+                    <iconify-icon class="text-lg flex-0" icon="lucide:triangle-alert"></iconify-icon>
+                    <p class="flex-1 text-sm dark:text-slate-300">
+                        {{ __('SMTP servers provide the most reliable way to send automated emails. We recommend using professional providers like SendGrid or Mailgun for best delivery rates.') }}
+                    </p>
                 </div>
             </div>
-            <div class="flex items-center justify-between gap-5 mt-10">
+            <div class="mt-5">
+                <ul class="space-y-5">
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ 1 }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Create Mail Server Account') }}
+                                </h6>
+                                <p class="dark:text-slate-300 mb-1">
+                                    {{ __('Sign up for a third-party mail server provider (SendGrid, Mailgun, etc.)') }}
+                                </p>
+                                <a href="https://sendgrid.com/en-us" class="inline-flex items-center text-sm font-medium dark:text-white">
+                                    {{ __('Sign up Now') }}
+                                    <iconify-icon class="ml-1" icon="lucide:external-link"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('2') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Domain Authentication') }}
+                                </h6>
+                                <p class="dark:text-slate-300">
+                                    {{ __('Verify your domain ownership through DNS records to ensure proper delivery') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('3') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Generate SMTP Credentials') }}
+                                </h6>
+                                <p class="dark:text-slate-300">
+                                    {{ __('Create and securely store your SMTP credentials from your provider') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="bg-body dark:bg-body rounded-lg p-4">
+                        <div class="flex">
+                            <div class="w-6 h-6 flex items-center justify-center bg-primary bg-opacity-30 text-primary rounded-full mr-2">
+                                {{ __('4') }}
+                            </div>
+                            <div class="flex-1 text-sm">
+                                <h6 class="text-sm font-semibold dark:text-white mb-1">
+                                    {{ __('Configure Settings') }}
+                                </h6>
+                                <p class="dark:text-slate-300">
+                                    {{ __('Enter your SMTP server details, port, encryption type, and authentication') }}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex items-center justify-end gap-3 mt-10">
                 <a href="javascript:;" class="btn btn-dark inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#mailSettings">
+                    <iconify-icon class="text-lg mr-2" icon="mdi:connection"></iconify-icon>
                     {{ __('Connect') }}
-                </a>
-                <a href="javascript:;" class="btn btn-outline-dark inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#mailConnection">
-                    {{ __('Connection Check') }}
                 </a>
             </div>
         </div>
     </div>
-
 
 @endsection

@@ -28,9 +28,16 @@ class ThemeController extends Controller
         return view('backend.theme.global');
     }
 
-    public function colorsSetting()
+    public function colorsSetting(Request $request)
     {
-        return view('backend.theme.colors');
+        $type = $request->query('type');
+        // Pass the 'type' variable to the view
+        return view('backend.theme.colors', compact('type'));
+    }
+
+    public function fontSetting()
+    {
+        return view('backend.theme.fonts');
     }
 
     public function dynamicLanding()

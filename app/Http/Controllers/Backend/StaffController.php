@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -41,9 +42,14 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $staffs = Admin::paginate(10);
+        $loggedInUser = Auth::user();
+        $staffs = Admin::all();
 
-        return view('backend.staff.index', compact('staffs'));
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
+        $departments = Department::with('children')->whereNull('parent_id')->get();
+        $designations = Designation::with('children')->whereNull('parent_id')->get();
+
+        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'roles', 'departments', 'designations'));
     }
 
     public function create()

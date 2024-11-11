@@ -55,16 +55,205 @@ return [
             ],
         ],
     ],
-
-    'colors' => [
-        'title' => 'Theme Colors',
-
+    'light_colors' => [
+        'title' => 'Light Theme Colors',
+        'elements' => [
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'body_bg_color', // unique name for field
+                'label' => 'Body Color', // you know what label it is
+                'description' => 'Select the body background color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#f1f5f9', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'base_color', // unique name for field
+                'label' => 'Base Color', // you know what label it is
+                'description' => 'Select the base color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'sidebar_bg', // unique name for field
+                'label' => 'Sidebar Color', // you know what label it is
+                'description' => 'Select the sidebar background color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'sidebar_color', // unique name for field
+                'label' => 'Sidebar text', // you know what label it is
+                'description' => 'Select the sidebar text color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'active_menu_bg', // unique name for field
+                'label' => 'Active menu', // you know what label it is
+                'description' => 'Select the active menu background color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'active_menu_color', // unique name for field
+                'label' => 'Active menu text', // you know what label it is
+                'description' => 'Select the active menu text color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'secondary_btn_bg', // unique name for field
+                'label' => 'Base button', // you know what label it is
+                'description' => 'Select the base button background color',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#f3f4f6', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'secondary_btn_color', // unique name for field
+                'label' => 'Base button text', // you know what label it is
+                'description' => 'Select the base button text color',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_btn_bg', // unique name for field
+                'label' => 'Primary button', // you know what label it is
+                'description' => 'Select the primary button background color',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_btn_color', // unique name for field
+                'label' => 'Primary button text', // you know what label it is
+                'description' => 'Select the primary button text color',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+        ],
+    ],
+    'dark_colors' => [
+        'title' => 'Dark Theme Colors',
+        'elements' => [
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'body_bg_color_dark', // unique name for field
+                'label' => 'Body Color', // you know what label it is
+                'description' => 'Select the body background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#11171f', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'base_color_dark', // unique name for field
+                'label' => 'Base Color', // you know what label it is
+                'description' => 'Select the base color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#181e26', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'sidebar_bg_dark', // unique name for field
+                'label' => 'Sidebar Color', // you know what label it is
+                'description' => 'Select the sidebar background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'sidebar_color_dark', // unique name for field
+                'label' => 'Sidebar text', // you know what label it is
+                'description' => 'Select the sidebar text color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'active_menu_bg_dark', // unique name for field
+                'label' => 'Active menu', // you know what label it is
+                'description' => 'Select the active menu background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'active_menu_color_dark', // unique name for field
+                'label' => 'Active menu text', // you know what label it is
+                'description' => 'Select the active menu text color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'secondary_btn_bg_dark', // unique name for field
+                'label' => 'Base button', // you know what label it is
+                'description' => 'Select the base button background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#f3f4f6', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'secondary_btn_color_dark', // unique name for field
+                'label' => 'Base button text', // you know what label it is
+                'description' => 'Select the base button text color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_btn_bg_dark', // unique name for field
+                'label' => 'Primary button', // you know what label it is
+                'description' => 'Select the primary button background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#FED000', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'primary_btn_color_dark', // unique name for field
+                'label' => 'Primary button text', // you know what label it is
+                'description' => 'Select the primary button text color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+        ],
+    ],
+    'misc_colors' => [
+        'title' => 'Misc Colors',
         'elements' => [
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'primary_color', // unique name for field
                 'label' => 'Primary Color', // you know what label it is
+                'description' => 'Select the primary color for theme',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#0f172a', // default value if you want
             ],
@@ -73,44 +262,60 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'secondary_color', // unique name for field
                 'label' => 'Secondary Color', // you know what label it is
+                'description' => 'Select the secondary color for theme',
                 'rules' => 'required', // validation rule of laravel
-                'value' => '#0f172a', // default value if you want
+                'value' => '#f1f5f9', // default value if you want
             ],
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'active_menu_bg', // unique name for field
-                'label' => 'Active menu bg', // you know what label it is
+                'name' => 'success_color', // unique name for field
+                'label' => 'Success Color', // you know what label it is
+                'description' => 'Select the success color for theme',
                 'rules' => 'required', // validation rule of laravel
-                'value' => '#0f172a', // default value if you want
+                'value' => '#0FB60B', // default value if you want
             ],
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'active_menu_color', // unique name for field
-                'label' => 'Active menu text color', // you know what label it is
+                'name' => 'warning_color', // unique name for field
+                'label' => 'Warning Color', // you know what label it is
+                'description' => 'Select the warning color for theme',
                 'rules' => 'required', // validation rule of laravel
-                'value' => '#ffffff', // default value if you want
+                'value' => '#FFBB0D', // default value if you want
             ],
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'primary_btn_bg', // unique name for field
-                'label' => 'Primary button bg', // you know what label it is
+                'name' => 'danger_color', // unique name for field
+                'label' => 'Danger Color', // you know what label it is
+                'description' => 'Select the danger color for theme',
                 'rules' => 'required', // validation rule of laravel
-                'value' => '#0f172a', // default value if you want
-            ],
-            [
-                'type' => 'color', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'primary_btn_color', // unique name for field
-                'label' => 'Primary button text color', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => '#ffffff', // default value if you want
+                'value' => '#DC0000', // default value if you want
             ],
         ],
     ],
-
+    'fonts_settings' => [
+        'title' => 'Fonts Settings',
+        'elements' => [
+            [
+                'type' => 'radio', // Change type to 'radio'
+                'data' => 'string',
+                'name' => 'font_family',
+                'label' => 'Font Family',
+                'description' => 'Select your preferred font family for the CRM interface.',
+                'rules' => 'required', // Include options
+                'value' => 'Inter', // Default value
+                'options' => [
+                    'Inter' => 'Inter',
+                    'Lato' => 'Lato',
+                    'Montserrat' => 'Montserrat',
+                    'Poppins' => 'Poppins',
+                    'Roboto' => 'Roboto',
+                ],
+            ],
+        ]
+    ],
     'common_settings' => [
         'title' => 'Company Settings',
 
@@ -382,14 +587,6 @@ return [
                 'label' => 'Site Back to Top', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'checkbox', // input fields type
-                'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'debug_mode', // unique name for field
-                'label' => 'Development Mode', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 0, // default value if you want
             ],
             [
                 'type' => 'checkbox', // input fields type
@@ -1330,6 +1527,32 @@ return [
                 'value' => 'Please allow us to collect data about how you use our website. We will use it to improve our website, make your browsing experience and our business decisions better. Learn more', // default value if you want
             ],
         ],
+    ],
+    'dev_mode' => [
+        'title' => 'Development Mode',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'debug_mode', // unique name for field
+                'label' => 'Development Mode', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+        ]
+    ],
+    'end_to_end_encryption' => [
+        'title' => 'End To End Encryption',
+        'elements' => [
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'enc_mode', // unique name for field
+                'label' => 'End To End Encryption', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+        ]
     ],
     'company_misc' => [
         'title' => 'Misc Settings',

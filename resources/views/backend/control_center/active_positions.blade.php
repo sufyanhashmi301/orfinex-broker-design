@@ -1,4 +1,4 @@
-@extends('backend.layouts.app')
+@extends('backend.layouts.rms')
 @section('title')
     {{ __('Active Positions') }}
 @endsection

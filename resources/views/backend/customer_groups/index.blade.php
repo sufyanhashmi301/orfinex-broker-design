@@ -84,15 +84,14 @@
                 <div class="max-w-4xl mx-auto text-center">
                     <div id="lottie-container" style="display: inline-flex; width: 350px; height: 350px;"></div>
                     <p class="text-base font-semibold mb-3 dark:text-white">
-                        {{ __('Department Management') }}
+                        {{ __('Customer Group Management') }}
                     </p>
                     <p class="card-text">
                         {{ __('Customer Group Management enables you to categorize clients for targeted service and streamlined management. Use this feature to efficiently organize customer segments while optimizing your workflow.') }}
                     </p>
                     <div class="text-center mt-5">
-                        <a href="javascript:;" type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="material-symbols:resume"></iconify-icon>
-                            {{ __('Resume') }}
+                        <a href="{{route('admin.customer-groups.create')}}" type="submit" class="btn btn-sm btn-dark inline-flex items-center justify-center">
+                            {{ __('Create New Group') }}
                         </a>
                     </div>
                 </div>

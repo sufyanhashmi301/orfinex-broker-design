@@ -100,8 +100,8 @@ class ForexSchemaController extends Controller
             'account_limit' => 'required|integer|min:1|max:50',
             'min_amount' => 'nullable|integer|min:0|max:500000',
             'priority' => 'required|integer',
-            'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
-            'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)], ['integer']),
+            'start_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
+            'end_range' => array_merge(setting('is_forex_group_range', 'global') ? ['required', new MinDigits(5)] : ['nullable', new MinDigits(5)], ['integer']),
         ], [
             'real_swap_free.required_without_all' => 'At least one field must be filled of groups.',
             'real_islamic.required_without_all' => 'At least one field must be filled of groups.',

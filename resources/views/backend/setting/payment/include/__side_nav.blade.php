@@ -1,11 +1,6 @@
 @section('submenu')
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
         <li>
-            <a href="{{ route('admin.gateway.automatic') }}" class="navItem {{ isActive('admin.gateway.automatic') }}">
-                {{ __('Payment Gateways') }}
-            </a>
-        </li>
-        <li>
             <a href="{{ route('admin.deposit.method.list','auto') }}" class="navItem {{ isActive('admin.deposit.method*') }}">
                 {{ __('Payment Methods') }}
             </a>

@@ -21,7 +21,7 @@ class GatewayController extends Controller
 
     public function automatic(Request $request)
     {
-        $gateways = Gateway::paginate(12);
+        $gateways = Gateway::all();
         return view('backend.automatic_gateway.index', compact('gateways'));
     }
 

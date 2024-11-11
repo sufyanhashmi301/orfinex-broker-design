@@ -101,7 +101,7 @@ class ResetData extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $rank = Ranking::find(1);
-        $sitename = 'prop-demo.brokeret';
+        $sitename = 'propfunders';
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
@@ -111,7 +111,7 @@ class ResetData extends Command
             'country' => 'United Arab Emirates',
             'phone' => '+971',
             'email' => 'user@' . $sitename . '.com',
-            'password' => Hash::make(12345678),
+            'password' => Hash::make('user@12345'),
             'kyc' => 0,
             'email_verified_at' => Carbon::now(),
         ];
@@ -123,7 +123,7 @@ class ResetData extends Command
             'first_name' => 'Super',
             'last_name' => 'Admin',
             'email' => 'admin@' . $sitename . '.com',
-            'password' => Hash::make(12345678),
+                'password' => Hash::make('admin@12345'),
             'role' => 1,
         ]);
         $data = [

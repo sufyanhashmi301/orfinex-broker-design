@@ -350,7 +350,7 @@
 @section('script')
     <script>
         $( document ).ready(function() {
-            $('#comingSoonModal').modal('show');
+            // $('#comingSoonModal').modal('show');
         });
     </script>
 @endsection

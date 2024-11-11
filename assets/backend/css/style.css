@@ -154,3 +154,39 @@
     --tw-bg-opacity: 1;
     background-color: rgb(30 41 59 / var(--tw-bg-opacity));
 }
+.custom-tabs .btn {
+    border-radius: 0;
+    min-width: unset;
+}
+
+.custom-tabs li:first-child .btn {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.custom-tabs li:last-child .btn {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+.custom-tabs .btn-outline-primary {
+    border-color: rgba(0, 0, 0, 0.1);
+    color: rgba(63, 63, 61, 0.7);
+}
+
+.dark .custom-tabs .btn-outline-primary {
+    --tw-border-opacity: 1;
+    border-color: rgb(51 65 85 / var(--tw-border-opacity));
+    --tw-text-opacity: 1;
+    color: rgb(203 213 225 / var(--tw-text-opacity));
+}
+
+.custom-tabs .btn.active {
+    background: #FED000;
+    border-color: #FED000;
+    color: #121212;
+}
+
+.custom-tabs .btn-outline-primary:hover {
+    background-color: rgba(254, 208, 0, 0.35);
+}

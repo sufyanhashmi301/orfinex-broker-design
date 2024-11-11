@@ -61,14 +61,23 @@
         </li>
 
         <li>
-            <a href="{{ route('user.investments.index') }}" class="navItem {{ isActive('user.investments.index') }}">
+    
+            <a href="{{ route('user.wallet.index') }}" class="navItem loaderBtn {{ isActive('user.wallet*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="solar:wallet-linear"></iconify-icon>
+                    <span>{{ __('Wallets') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
                     <span>{{ __('My Accounts') }}</span>
                 </span>
             </a>
         </li>
-
 
         @if(setting('is_webterminal','global'))
             <li>
@@ -112,11 +121,19 @@
         </li>--}}
 
         <li>
-            <a href="{{ route('user.withdraw.view') }}"
-               class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+            <a href="{{ route('user.withdraw.view') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
                     <span>{{ __('Payout') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('user.billing') }}" class="navItem {{ isActive('user.billing') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="uil:bill"></iconify-icon>
+                    <span>{{ __('Billing') }}</span>
                 </span>
             </a>
         </li>
@@ -195,6 +212,15 @@
 {{--        </li>--}}
 
         <li>
+            <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                    <span>{{ __('Partner Area') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
             <a href="{{ route('user.setting.profile') }}" class="navItem {{ isActive('user.setting*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
@@ -214,14 +240,12 @@
         <li>
             <a href="javascript:;" id="themeMood" class="navItem">
                 <span class="dark:flex items-center hidden">
-                    <iconify-icon class="nav-icon" id="sunIcon"
-                                  icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
-                    <span>Light Mode</span>
+                    <iconify-icon class="nav-icon" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    <span>{{ __('Light Mode') }}</span>
                 </span>
                 <span class="dark:hidden flex items-center">
-                    <iconify-icon class="nav-icon" id="moonIcon"
-                                  icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
-                    <span>Dark Mode</span>
+                    <iconify-icon class="nav-icon" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                    <span>{{ __('Dark Mode') }}</span>
                 </span>
             </a>
         </li>

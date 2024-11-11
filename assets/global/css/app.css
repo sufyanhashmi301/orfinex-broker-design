@@ -3853,6 +3853,9 @@ textarea.form-control.is-invalid{
 .top-24{
   top: 6rem;
 }
+.right-4 {
+  right: 1rem;
+}
 .right-8{
   right: 2rem;
 }

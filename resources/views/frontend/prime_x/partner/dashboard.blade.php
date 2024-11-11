@@ -18,11 +18,8 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_referral'] }}
+                                0
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
-                                +452%
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -36,11 +33,8 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('23,25.00 USD') }}
+                                {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
-                                +452%
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -54,11 +48,8 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('73,45.00 USD') }}
+                                {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-success-500 dark:text-slate-300 mb-1">
-                                +452%
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -74,9 +65,6 @@
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                                 {{ __('0.00 USD') }}
                             </h6>
-                            <span class="font-normal text-xs text-danger-500 dark:text-slate-300 mb-1">
-                                -52%
-                            </span>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
                             {{ __('This Month') }}
@@ -89,29 +77,17 @@
             <div class="card h-full">
                 <div class="card-body h-full flex flex-col p-6">
                     <p class="text-slate-900 dark:text-white text-sm font-medium mb-10">
-                        {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
+                        {{ __('Vault ID: 7324303029') }}
                     </p>
                     <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-2">
                         {{ __('Your Current Balance') }}
                     </p>
                     <h6 class="block mb- text-3xl text-slate-900 dark:text-white font-medium leading-none">
-                        {{ $affiliateBalance }} {{$currency}}
+                        0 {{$currency}}
                     </h6>
                     <a href="{{route('user.withdraw.view')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto mb-2">
                         {{ __('Withdraw') }}
                     </a>
-                    <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
-                            <span class="text-slate-600 dark:text-slate-300 text-sm block">
-                                {{ __('Sales: 75%') }}
-                            </span>
-                        </div>
-                        <div class="bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">
-                            <span class="text-slate-600 dark:text-slate-300 text-sm block">
-                                {{ __('Referral: 75%') }}
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -124,7 +100,7 @@
                     {{ __('Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_deposit'] }} {{$currency}}
+                    {{ __('60') }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -134,7 +110,7 @@
                     {{ __('Withdrawal') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_withdraw'] }} {{$currency}}
+                    0 {{$currency}}
                 </h6>
             </div>
         </div>
@@ -144,7 +120,7 @@
                     {{ __('Net Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['net_deposit'] }} {{$currency}}
+                    {{ __('60') }} {{$currency}}
                 </h6>
             </div>
         </div>
@@ -154,7 +130,7 @@
                     {{ __('Rebate') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_rebate'] }} {{$currency}}
+                    0 {{$currency}}
                 </h6>
             </div>
         </div>
@@ -164,7 +140,7 @@
                     {{ __('Volume') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_volume'] }} {{$currency}}
+                    0 {{$currency}}
                 </h6>
             </div>
         </div>
@@ -199,7 +175,7 @@
                 </div>
                 <div class="input-area">
                     <div class="relative">
-                        <input type="text" class="form-control !pr-32" id="referral-input" value="{{ $getReferral->link }}" readonly>
+                        <input type="text" class="form-control !pr-32" id="referral-input" value="abc123" readonly>
                         <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
                             <a href="javascript:;" class="copy-button" type="button" data-target="#referral-input">{{ __('Copy Link') }}</a>
                         </span>
@@ -211,7 +187,7 @@
                     <h4 class="card-title">{{ __('Account Based') }}</h4>
                     <div class="input-area relative min-w-[184px]">
                         <select name="level_order" class="select2 form-control w-full">
-                            @for ($i = 0; $i <= $maxLevelOrder; $i++)
+                            @for ($i = 0; $i <= 3; $i++)
                                 <option value="{{ $i }}">{{ __('Level ' . $i) }}</option>
                             @endfor
                         </select>

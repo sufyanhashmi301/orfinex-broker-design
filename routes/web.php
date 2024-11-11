@@ -129,7 +129,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     // Multi Level
     Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
-        Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
+//        Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
+        Route::get('dashboard', [MultiLevelIBController::class, 'dashboard'])->name('dashboard');
         Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
 
     });
@@ -176,6 +177,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     Route::group(['middleware' => 'KYC'], function () {
         Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+        Route::get('referral/members', [ReferralController::class, 'referralMembers'])->name('referral.members');
         Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
         Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
 
@@ -379,7 +381,10 @@ Route::get('user/leaderboard', function () {
     return view('frontend::leaderboard.index');
 })->name('user.leaderboard');
 
-
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
+
+Route::get('user/billing', function () {
+    return view('frontend::billing.index');
+})->name('user.billing');

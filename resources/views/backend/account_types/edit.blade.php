@@ -177,6 +177,19 @@
                         />
                     </div>
                     <div class="input-area">
+                        <label class="form-label" for="">{{ __('Company Profit Share (%)') }}</label>
+                        <input
+                            type="number"
+                            name="profit_share"
+                            class="form-control"
+                            placeholder="50"
+                            value="{{ $account_type->profit_share }}"
+                            min="1"
+                            max="100"
+                            required
+                        />
+                    </div>
+                    <div class="input-area">
                         <label class="form-label">{{ __('Leverage') }}</label>
                         <input type="number" name="leverage" class="form-control" placeholder="leverage e.g 100"
                             value="{{ $account_type->leverage }}" required />

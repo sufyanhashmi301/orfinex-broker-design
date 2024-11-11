@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
+use App\Models\AccountTypeInvestmentPhaseApproval;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class AccountTypeInvestmentController extends Controller
 {
 
-    protected $investment;
+    public $investment;
 
     public function __construct(AccountTypeInvestmentService $investment) {
         $this->investment = $investment;
@@ -29,8 +30,9 @@ class AccountTypeInvestmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
+
         $user = auth()->user();
 
         if(!isset($request->status)){
@@ -41,6 +43,12 @@ class AccountTypeInvestmentController extends Controller
         }
 
         return view('frontend::user.forex.log', compact('investments'));    
+    }
+
+    public function adminIndex() {
+        $investment_phase_records = AccountTypeInvestmentPhaseApproval::get();
+
+        return view('backend.investments.index', compact('investment_phase_records'));
     }
 
     /**
@@ -72,26 +80,15 @@ class AccountTypeInvestmentController extends Controller
      * Investment Tradings Statistics
      */
     public function tradingStats($investment_id){
-        $investment = AccountTypeInvestment::findorFail($investment_id);
-        $investment_snapshot = $investment->accountTypeInvestmentSnapshot;
-
-        // Same day 1st record after 12AM
-        $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)->where('created_at', '>=', Carbon::today())->orderBy('created_at', 'asc')->first();
-
         
-        // If no record found, fallback to the most recent record
-        if (!$first_record_after_midnight) {
-            $first_record_after_midnight = AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $investment->id)
-                ->orderBy('created_at', 'desc')
-                ->first();
-
+        if(AccountTypeInvestment::find($investment_id)->login == null) {
+            abort(403);
         }
 
-        // dd($first_record_after_midnight)
+        $investment_array = $this->investment->tradingStats($investment_id);
 
-        if ($investment->status == InvestmentStatus::ACTIVE) {
-            return view("frontend::fund_board.active_plan", compact("investment", "investment_snapshot", "first_record_after_midnight"));
-        }
+        return view("frontend::fund_board.active_plan")->with($investment_array);
+
 
     }
 

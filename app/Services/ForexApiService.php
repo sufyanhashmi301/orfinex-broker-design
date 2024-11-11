@@ -73,6 +73,12 @@ class ForexApiService
         return $this->post($endpoint, $data);
     }
 
+    public function updateTradingActivity($data)
+    {
+        $endpoint = 'user/tradingactivity';
+        return $this->post($endpoint, $data);
+    }
+
     public function updateUserGroup($data)
     {
         $endpoint = 'user/updateMT5Group';

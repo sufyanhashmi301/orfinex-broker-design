@@ -9,10 +9,8 @@ interface InvestmentStatus
     const NONE = 'none';
     const PENDING = 'pending';
     const ACTIVE = 'active';
-    const INACTIVE = 'inactive';
-    const COMPLETED = 'completed';
-    const CANCELLED = 'cancelled';
+    const PASSED = 'passed';
     const VIOLATED = 'violated';
-    const MERGED = 'merged';
-    const CONVERT_TO_ORFIN = 'convert_to_orfin';
+
+    const PROMOTION_REQUEST = 'promotion_request';
 }

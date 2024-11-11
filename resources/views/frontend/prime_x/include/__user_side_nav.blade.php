@@ -61,7 +61,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index') }}">
+            <a href="{{ route('user.investments.index') }}" class="navItem {{ isActive('user.investments.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
                     <span>{{ __('My Accounts') }}</span>

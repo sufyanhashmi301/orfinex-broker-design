@@ -7,18 +7,21 @@ use App\Models\AccountType;
 use Carbon\CarbonImmutable;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
+use App\Enums\InvestmentPhaseApproval;
 use Illuminate\Support\Facades\Artisan;
 
 class AccountTypeInvestmentPaymentService
 {
 
+  protected $investment_phase_approve;
   protected $forexApiService;
   protected $accountTypeData;
   protected $phaseData;
   protected $ruleData;
 
-  public function __construct(ForexApiService $forexApiService)
+  public function __construct(ForexApiService $forexApiService, InvestmentPhaseApprovalService $investment_phase_approve)
   {
+    $this->investment_phase_approve = $investment_phase_approve;
     $this->forexApiService = $forexApiService;
   }
 
@@ -32,7 +35,7 @@ class AccountTypeInvestmentPaymentService
     $user_data = [
       "login" => $login_id,
       "group" => $investment->platform_group,
-      "firstName" => 'Phase 1 $' . $this->ruleData['allotted_funds'] . '-' . $investment->user->first_name,
+      "firstName" => 'Phase ' . $investment->getPhaseSnapshotData()['phase_step'] . ' $' . $this->ruleData['allotted_funds'] . '-' . $investment->user->first_name,
       "middleName" => "",
       "lastName" => $investment->user->last_name,
       "leverage" => (int)$this->accountTypeData['leverage'],
@@ -54,7 +57,6 @@ class AccountTypeInvestmentPaymentService
       "investorPassword" => 'SNNH@2024@bol'
     ];
 
-
     // API call for creating MT5 user
     $response = $this->forexApiService->createUser($user_data);
     if($response['success'] == false){
@@ -70,8 +72,11 @@ class AccountTypeInvestmentPaymentService
                 "login" => $mt5_login,
                 "rights" => 'USER_RIGHT_ENABLED',
             ];
-            $this->forexApiService->setUserRights($user_rights_data);
-
+            $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
+            if($user_rights_response['success'] == false){
+              dd($response);
+            }
+            
             $investment->main_password = $password;
             $investment->save();
             return $mt5_login;
@@ -123,7 +128,7 @@ class AccountTypeInvestmentPaymentService
   
     $latest_investments = AccountTypeInvestment::whereHas('accountTypePhaseRule', function($query) use ($phase_ids) {
         $query->whereIn('account_type_phase_id', $phase_ids);
-      })->whereIn('status', [InvestmentStatus::ACTIVE, InvestmentStatus::VIOLATED])->latest('login')->first();
+      })->whereIn('status', [InvestmentStatus::ACTIVE, InvestmentStatus::VIOLATED, InvestmentStatus::PASSED])->latest('login')->first();
 
     // Suggesting the login ID of investment w.r.t account range
     if($latest_investments) {
@@ -148,6 +153,7 @@ class AccountTypeInvestmentPaymentService
     }else{
         $login = $this->accountTypeData['accounts_range_start'];
     }
+    
 
     if($investment->trader_type == TraderType::MT5) {
       return $this->createMT5Account($investment, $login, $password);
@@ -161,14 +167,12 @@ class AccountTypeInvestmentPaymentService
   public function investmentActive($account_type_investment_id){
 
     $investment = AccountTypeInvestment::findOrFail($account_type_investment_id);
-    $account_type = $investment->accountTypePhaseRule->accountTypePhase->accountType;
 
     // set the snapshot data of the investment
     $snapshot = $investment->accountTypeInvestmentSnapshot;
-    $this->accountTypeData = $snapshot->account_types_data;
-    $this->phaseData = $snapshot->account_types_phases_data;
-    $this->ruleData = $snapshot->account_types_phases_rules_data;  
-    
+    $this->accountTypeData = $investment->getAccountTypeSnapshotData();
+    $this->phaseData = $investment->getPhaseSnapshotData();
+    $this->ruleData = $investment->getRuleSnapshotData();
     
     // create trading account
     $trading_account_login_id = $this->createTradingAccount($investment);
@@ -178,7 +182,7 @@ class AccountTypeInvestmentPaymentService
       $deposit = $this->tradingAccountDeposit($trading_account_login_id, $investment);
     }
 
-    // If deposit is successful, update the Investment table
+    // If deposit is successful, update the Investment table and add the record to investment_phase_approvals_table
     if ($deposit) {
       $time_now = CarbonImmutable::now();
 

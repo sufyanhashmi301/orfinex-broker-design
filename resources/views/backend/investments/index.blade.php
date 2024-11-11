@@ -1,6 +1,6 @@
-@extends('frontend::layouts.user')
+@extends('backend.layouts.app')
 @section('title')
-    {{ __('Schema Logs') }}
+    {{ __('All Investments') }}
 @endsection
 @section('content')
     <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
@@ -54,14 +54,8 @@
         <div class="col-span-12">
             <div class="tab-content" id="trading-accounts">
                 <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
-                    @include('frontend::.user.forex.include.__real_accounts')
+                    @include('backend.investments.includes.__all_accounts')
                 </div>
-                {{-- <div class="tab-pane fade" id="tabs-demoAccounts" role="tabpanel" aria-labelledby="tabs-demoAccounts-tab">
-                    @include('frontend::.user.forex.include.__demo_accounts')
-                </div>
-                <div class="tab-pane fade" id="tabs-archivedAccounts" role="tabpanel" aria-labelledby="tabs-archivedAccounts-tab">
-                    @include('frontend::.user.forex.include.__archive_accounts')
-                </div> --}}
             </div>
         </div>
     </div>

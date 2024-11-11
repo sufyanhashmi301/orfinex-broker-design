@@ -64,7 +64,6 @@ class DashboardController extends Controller
         $investments = ForexSchemaInvestment::traderType()->whereIn('status', [
             InvestmentStatus::PENDING,
             InvestmentStatus::ACTIVE,
-            InvestmentStatus::COMPLETED,
             InvestmentStatus::VIOLATED
         ])->where('user_id', $user->id)
             ->orderBy('id', 'desc')->get();

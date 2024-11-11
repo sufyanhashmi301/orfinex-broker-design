@@ -52,6 +52,7 @@ class AccountTypePhaseService
             $phases_data = [
                 'account_type_id' => $account_type_id,
                 'type' => $phase['type'],
+                'phase_approval_method' => $phase['phase_approval_method'],
                 'phase_step' => $phase['phase_step'],
                 'validity_period' => $phase['validity_period'],
                 'term_type' => InterestPeriod::MONTHLY,
@@ -118,6 +119,7 @@ class AccountTypePhaseService
                 ['id' => $phase['id'] ?? null],
                 [
                     'type' => $phase['type'],
+                    'phase_approval_method' => $phase['phase_approval_method'],
                     'phase_step' => $phase['phase_step'],
                     'validity_period' => $phase['validity_period'],
                     'term_type' => InterestPeriod::MONTHLY,

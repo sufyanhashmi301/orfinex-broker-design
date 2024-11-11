@@ -13,6 +13,7 @@ class AccountTypePhase extends Model
 		'account_type_id',
 		'phase',
 		'phase_step',
+		'phase_approval_method',
 		'type',
         'validity_period',
 		'term_type',

@@ -1,63 +1,65 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\AccountTypeController;
-use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\Backend\AppController;
+use App\Http\Controllers\Backend\KycController;
+use App\Http\Controllers\Backend\SmsController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BlogController;
-use App\Http\Controllers\Backend\BlackListCountryController;
-use App\Http\Controllers\Backend\CustomCssController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\DepositController;
-use App\Http\Controllers\Backend\DiscountController;
-use App\Http\Controllers\Backend\EmailTemplateController;
-use App\Http\Controllers\Backend\GatewayController;
-use App\Http\Controllers\Backend\IBSchemaController;
-use App\Http\Controllers\Backend\ImportController;
-use App\Http\Controllers\Backend\AccountsController;
-use App\Http\Controllers\Backend\KycController;
-use App\Http\Controllers\Backend\LanguageController;
-use App\Http\Controllers\Backend\LevelReferralController;
 use App\Http\Controllers\Backend\LinkController;
-use App\Http\Controllers\Backend\NavigationController;
-use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\PageController;
-use App\Http\Controllers\Backend\PluginController;
-use App\Http\Controllers\Backend\ProfitController;
-use App\Http\Controllers\Backend\ProfitDeductionController;
-use App\Http\Controllers\Backend\RankingController;
-use App\Http\Controllers\Backend\ReferralController;
-use App\Http\Controllers\Backend\RiskProfileTagController;
 use App\Http\Controllers\Backend\RoleController;
-use App\Http\Controllers\Backend\ScheduleController;
-use App\Http\Controllers\Backend\ForexSchemaController;
-use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\SmsController;
-use App\Http\Controllers\Backend\SocialController;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\ThemeController;
-use App\Http\Controllers\Backend\TicketController;
-use App\Http\Controllers\Backend\TransactionController;
-use App\Http\Controllers\Backend\UserController;
-use App\Http\Controllers\Backend\WithdrawController;
-use App\Http\Controllers\Backend\IBController;
-use App\Http\Controllers\Backend\KYCLevelsController;
-use App\Http\Controllers\Backend\SecurityController;
-use App\Http\Controllers\Backend\CountryController;
-use App\Http\Controllers\Backend\CustomerGroupController;
-use App\Http\Controllers\Backend\DepartmentController;
-use App\Http\Controllers\Backend\DesignationController;
-use App\Http\Controllers\Backend\RebateRuleController;
-use App\Http\Controllers\Backend\MultiLevelController;
-use App\Http\Controllers\Backend\IslamicMultiLevelController;
-use App\Http\Controllers\Backend\SymbolController;
-use App\Http\Controllers\Backend\SymbolGroupController;
-use App\Http\Controllers\Backend\Mt5DealController;
-use App\Http\Controllers\Backend\TicketStatusController;
-use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\Backend\ImportController;
+use App\Http\Controllers\Backend\PluginController;
+use App\Http\Controllers\Backend\ProfitController;
+use App\Http\Controllers\Backend\SocialController;
+use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\TicketController;
+use App\Http\Controllers\Backend\CountryController;
+use App\Http\Controllers\Backend\DepositController;
+use App\Http\Controllers\Backend\GatewayController;
+use App\Http\Controllers\Backend\Mt5DealController;
+use App\Http\Controllers\Backend\RankingController;
+use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\AccountsController;
+use App\Http\Controllers\Backend\DiscountController;
+use App\Http\Controllers\Backend\IBSchemaController;
+use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PositionController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\ReferralController;
+use App\Http\Controllers\Backend\ScheduleController;
+use App\Http\Controllers\Backend\SecurityController;
+use App\Http\Controllers\Backend\WithdrawController;
+use App\Http\Controllers\Backend\CustomCssController;
+use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\KYCLevelsController;
+use App\Http\Controllers\Backend\DepartmentController;
+use App\Http\Controllers\Backend\MultiLevelController;
+use App\Http\Controllers\Backend\NavigationController;
+use App\Http\Controllers\Backend\RebateRuleController;
+use App\Http\Controllers\Backend\DesignationController;
+use App\Http\Controllers\Backend\ForexSchemaController;
+use App\Http\Controllers\Backend\SymbolGroupController;
+use App\Http\Controllers\Backend\TransactionController;
+use App\Http\Controllers\Backend\NotificationController;
+use App\Http\Controllers\Backend\TicketStatusController;
+use App\Http\Controllers\AccountTypeInvestmentController;
+use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\Backend\EmailTemplateController;
+use App\Http\Controllers\Backend\LevelReferralController;
+use App\Http\Controllers\Backend\RiskProfileTagController;
+use App\Http\Controllers\Backend\TicketPriorityController;
+use App\Http\Controllers\Backend\ProfitDeductionController;
+use App\Http\Controllers\Backend\BlackListCountryController;
+use App\Http\Controllers\Backend\IslamicMultiLevelController;
+use App\Http\Controllers\Backend\AdvertisementMaterialController;
+use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,6 +161,12 @@ Route::middleware(['2fa_admin'])->group(function () {
 // =============================== Optimization ===============================
     // Account Types
     Route::resource('account-type', AccountTypeController::class);
+    Route::get('investment-phases-log', [AccountTypeInvestmentController::class, 'adminIndex'])->name('investments.index'); // Investments Shown
+
+    // Investment Phase Approvals
+    Route::get('phase-approval-request/{investment_id}', [AccountTypeInvestmentPhaseApprovalController::class, 'phaseApprovalRequest'])->name('investment-phase.approval-request');
+
+
     // Route::resource('account-type', ForexSchemaController::class);
     // Route::delete('account-type/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('account-type.delete');
 

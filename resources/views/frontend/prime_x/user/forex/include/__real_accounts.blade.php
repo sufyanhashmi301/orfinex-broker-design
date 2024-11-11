@@ -9,37 +9,55 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Login') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Fund') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Activation Date') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Daily Drawdown') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Allotted Funds') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Phase Type') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Phase Step') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Phase Started At') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Daily Drawdown') }}</th>
                                     <th scope="col" class="table-th">{{ __('Max Drawdown') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Profit Target') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('Detail') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach($investments as $investment)
-                                @php
-                                    $investment_snapshot = $investment->accountTypeInvestmentSnapshot;
-                                @endphp
-                                <tr>
-                                    <td class="table-td">{{ $investment_snapshot->account_types_data['title'] }} </td>
-                                    <td class="table-td">{{ $investment->login }}</td>
-                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['allotted_funds'] }}</td>
-                                    <td class="table-td">{{ $investment->phase_started_at }}</td>
-                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['daily_drawdown_limit'] }}</td>
-                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['max_drawdown_limit'] }}</td>
-                                    <td class="table-td">{{ $investment_snapshot->account_types_phases_rules_data['profit_target'] }}</td>
-                                    <td class="table-td">
-                                        <a href="{{route('user.investment.trading-stats', ['investment_id' => $investment->id ])}}" class="inline-flex justify-center">
-                                        <span class="flex items-center">
-                                            <span>{{ __('Trading Stats') }}</span>
-                                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
-                                        </span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                @foreach($investments as $investment)
+                                    @php
+                                        $accountTypeData = $investment->getAccountTypeSnapshotData();
+                                        $phaseData = $investment->getPhaseSnapshotData();
+                                        $ruleData = $investment->getRuleSnapshotData();
+                                    @endphp
+                                    <tr>
+                                        <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
+                                        <td class="table-td">{{ $investment->login ?? 'N/A'}}</td>
+                                        <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td>
+                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ str_replace('_', ' ', $phaseData['type']) }}</span></td>
+                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase {{ $phaseData['phase_step'] }}</span></td>
+                                        <td class="table-td">{{ $investment->phase_started_at ?? 'N/A'}}</td>
+                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ $investment->status }}</span></td>
+                                        {{-- <td class="table-td">{{ $ruleData['daily_drawdown_limit'] ?? '' }}</td>
+                                        <td class="table-td">{{ $ruleData['max_drawdown_limit'] ?? '' }}</td>
+                                        <td class="table-td">{{ $ruleData['profit_target'] ?? '' }}</td> --}}
+                                        <td class="table-td">
+                                            @if ($investment->status == \App\Enums\InvestmentStatus::ACTIVE || 
+                                                 $investment->status == \App\Enums\InvestmentStatus::PASSED ||
+                                                 $investment->status == \App\Enums\InvestmentStatus::VIOLATED 
+                                                )
+                                                <a href="{{ route('user.investment.trading-stats', ['investment_id' => $investment->id ]) }}" class="inline-flex justify-center">
+                                                    <span class="flex items-center">
+                                                        <span>{{ __('Trading Stats') }}</span>
+                                                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                    </span>
+                                                </a>
+                                            @else
+                                                <span class="flex items-center">
+                                                    <span>{{ __('-') }}</span>
+                                                </span>
+                                            @endif
+                                            
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

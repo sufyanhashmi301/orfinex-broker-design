@@ -142,25 +142,13 @@
             for(let i=0; i < latest_phase_rules_count; i++){
                 let new_rule_data = {
                     'phase_index': phase_index,
+                    'allotted_funds': $('#phases-data').find('.allotted-funds-field[name="phases[0][rules][' + i + '][allotted_funds]"]').attr('data-value'),
                     'rule_index': i,
                     'phase_data_element': new_rules_table
-                  }
-                  new_rule_row(new_rule_data, true)
+                }
+                new_rule_row(new_rule_data, true)
+
             }
-
-
-            // empty the rows
-            // for(let i=0; i < new_rules_table.find('input').length; i++){
-            //     let rule_input = new_rules_table.find('input').eq(i)
-            //     if(rule_input.attr('type') == 'checkbox'){
-            //         rule_input.prop('checked', false)
-            //         rule_input.attr('data-value', 0)
-            //     }else{
-            //         rule_input.val('')
-            //         rule_input.attr('data-value', '')
-            //     }
-            // }
-            
 
             $('#phases-data').append(new_rules_table)
 

@@ -6,6 +6,7 @@ use App\Rules\MinDigits;
 use App\Enums\AccountTypePhase;
 use Illuminate\Validation\Rule;
 use App\Enums\FundedSchemeTypes;
+use App\Enums\PhaseApproval;
 use App\Rules\RequiredPhaseTypes;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -48,6 +49,7 @@ class AccountTypeRequest extends FormRequest
                 ['integer']
             ),
             'trading_days' => 'required|integer',
+            'profit_share' => 'required|min:1|max:100|integer',
             'platform_group' => 'required',
             'type' => 'required',
             'phases' => ['required', 'array', new RequiredPhaseTypes()],
@@ -61,6 +63,15 @@ class AccountTypeRequest extends FormRequest
                 
             ],
             'phases.*.phase_step' => 'required|numeric',
+            'phases.*.phase_approval_method' => [
+                'required',
+                'string',
+                Rule::in([
+                    PhaseApproval::ADMIN,
+                    PhaseApproval::AUTO,
+                    PhaseApproval::PAYMENT,
+                ])
+            ],
             'phases.*.validity_period' => 'required|integer|min:1|max:12',
             'phases.*.server' => 'required|string',
             'phases.*.rules' => 'required|array|min:1', // Ensuring at least one rule is set

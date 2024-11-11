@@ -49,6 +49,16 @@
 
           </div>
         </div>
+
+        <div class="input-area">
+          <label class="form-label" for="">{{ __('Phase Approval') }}</label>
+          <select readonly style="pointer-events: none" name="phases[0][phase_approval_method]" class="cursor-pointer phase-approval-method form-control w-full">
+            <option value="{{ \App\Enums\PhaseApproval::PAYMENT }}" class="on_payment_approval" {{ old('phases.0.phase_approval_method', 'payment') == 'payment' ? 'selected' : '' }}>On Payment Approval</option>
+            <option value="{{ \App\Enums\PhaseApproval::AUTO }}" {{ old('phases.0.phase_approval_method') == 'auto' ? 'selected' : '' }}>Auto Approval</option>
+            <option value="{{ \App\Enums\PhaseApproval::ADMIN }}" {{ old('phases.0.phase_approval_method') == 'admin' ? 'selected' : '' }}>Admin Approval</option>
+          </select>
+        </div>
+
         <div class="input-area">
           <label class="form-label" for="">{{ __('Validity Period') }}</label>
           <select name="phases[0][validity_period]" class="cursor-pointer validity-period form-control w-full">
@@ -263,6 +273,13 @@
       new_phase.find('.phase-type').removeAttr('checked')
       new_phase.find('.phase-type').first().prop('checked', true)
 
+      // Phase approval method
+      new_phase.find('.phase-approval-method').attr('name', `phases[${no_of_phases - 1}][phase_approval_method]`)
+      new_phase.find('.phase-approval-method').removeAttr('style')
+      new_phase.find('.phase-approval-method').removeAttr('readonly')
+      new_phase.find('.phase-approval-method .on_payment_approval').eq(0).remove()
+      new_phase.find('.phase-approval-method option[value="auto_approval"]').prop('selected', true)
+
       // Validity Period
       new_phase.find('.validity-period').attr('name', `phases[${no_of_phases - 1}][validity_period]`)
 
@@ -328,7 +345,7 @@
 
       const newRow = `<tr>
           ${ updating ? updating_phases_html : '' }
-          <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+          <td class="table-td"><input type="text" ${ phase_index != 0 ? 'readonly' : '' } name="phases[${phase_index}][rules][${rule_index}][allotted_funds]" class="form-control validate-number allotted-funds-field" data-value="${ phase_index == 0 ? '' : data['allotted_funds'] }" oninput="this.value = validateDouble(this.value)" /></td>
           <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
           <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
           <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
@@ -457,6 +474,20 @@
 
               }
 
+            }
+
+          }
+
+          // update all the allotted_fund fields in the next phases (if any)
+          let phase_1_data = $('#phases-data').find('table').eq(0)
+          for(let i=1; i < no_of_phases; i++ ) {
+            let phase = $('#phases-data').find('table').eq(i)
+            
+            for(let j=0; j < phase.find('tr').length; j++){
+              let allotted_funds_field = phase.find('tbody tr').eq(j).find('.allotted-funds-field')
+              let data_value = phase_1_data.find('.allotted-funds-field[name="phases[0][rules][' + j + '][allotted_funds]"]').attr('data-value')
+              
+              allotted_funds_field.attr('data-value', data_value)
             }
 
           }

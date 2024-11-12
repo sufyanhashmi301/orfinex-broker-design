@@ -111,13 +111,6 @@
                         'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
                         'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
                         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
-                            @can('automatic-gateway-manage')
-                                <li>
-                                    <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                                        {{ __('Payment Gateways') }}
-                                    </a>
-                                </li>
-                            @endcan
                             <li>
                                 <a href="{{ route('admin.deposit.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Payment Methods') }}
@@ -194,6 +187,52 @@
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
                     <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="gala:settings"></iconify-icon>
+                        {{ __('Customization') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li>
+                        <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Custom Colors') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.theme.fonts') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Custom Fonts') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Routes')}}
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Dynamic Content')}}
+                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('Coming Soon') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="uil:processor"></iconify-icon>
                         {{ __('Platform') }}
                     </span>
@@ -241,11 +280,6 @@
                     <li>
                         <a href="{{ route('admin.settings.mail') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Email') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Notification') }}
                         </a>
                     </li>
                     <li>
@@ -298,6 +332,14 @@
                             </span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.settings.endToEndEncryption') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Data Encryption') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -313,9 +355,9 @@
             <div class="card-body p-3">
                 <ul class="space-y-3">
                     <li class="">
-                        <a href="{{ route('admin.clear-cache') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.settings.clearCache') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Clear Cache') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -323,7 +365,15 @@
                     <li class="">
                         <a href="{{ route('admin.application-info') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Application Details') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.settings.devMode') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Dev Mode') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
@@ -331,8 +381,62 @@
                     <li class="">
                         <a href="{{ route('admin.changelog') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Changelog') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.reportIssues') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Report Issue') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="fluent:settings-cog-multiple-24-regular"></iconify-icon>
+                        {{ __('Integrations') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Plugins') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Payment Gateways') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('API Access')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.webHook') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Web Hooks')}}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>
@@ -379,22 +483,6 @@
             </div>
         </div>
     </div>
-@endsection
-@section('style')
-    <style>
-        .badge-secondary {
-            background-color: rgba(205, 205, 205, 0.29);
-            color: #828289;
-        }
-        .badge-warning {
-            background-color: rgba(254, 208, 0, 0.52);
-            color: #5F4D00;
-        }
-        .badge-success {
-            background-color: rgba(0, 236, 66, 0.29);
-            color: #008133;
-        }
-    </style>
 @endsection
 @section('script')
     <script>

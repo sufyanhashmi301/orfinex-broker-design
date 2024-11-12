@@ -75,14 +75,14 @@
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
-                            <tr>
-                                <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                <th scope="col" class="table-th">{{ __('Account') }}</th>
-                                <th scope="col" class="table-th">{{ __('Wallet') }}</th>
-                                <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                <th scope="col" class="table-th">{{ __('Fee') }}</th>
-                                <th scope="col" class="table-th">{{ __('Amount') }}</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Wallet') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                </tr>
                             </thead>
                             <tbody>
                             <tr>

@@ -65,7 +65,7 @@
                                             
                                         </td>
 
-                                        <td class="table-td">{{ $record->accountTypeInvestment->updated_at }}</td>
+                                        <td class="table-td">{{ $record->updated_at }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

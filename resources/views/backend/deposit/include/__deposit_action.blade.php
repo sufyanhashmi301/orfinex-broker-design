@@ -37,13 +37,14 @@
 
         </div>
     @endif
-    <br>
 
-    <ul class="list-group mb-4">
+    <ul class="rounded border dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700 px-3 mb-4">
+        <li class="block text-sm py-[8px]">
+            {{ __('Method: ') . $data->method }}
+        </li>
         @foreach( json_decode($data->manual_field_data) as $key => $value)
-            <li class="list-group-item dark:text-slate-300 py-1 px-2 rounded border dark:border-slate-700">
-                {{ $key }}:
-
+            <li class="block py-[8px]">
+                <label for="" class="form-label">{{ $key }}:</label>
                 @if($value != new stdClass())
                     @if( file_exists('assets/'.$value))
                         <img src="{{ asset($value) }}" alt=""/>

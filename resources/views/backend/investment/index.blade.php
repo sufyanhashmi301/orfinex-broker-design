@@ -300,6 +300,24 @@
                 });
             });
 
+            // Handler for pagination links inside the modal
+            $('body').on('click', '#dealsModalBody nav a', function(event) {
+                event.preventDefault();
+
+                var url = $(this).attr('href'); // Get the href attribute from the pagination link
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $('#dealsModalBody').html(response); // Update the modal content
+                    },
+                    error: function() {
+                        alert('Failed to fetch data');
+                    }
+                });
+            });
+
         })(jQuery);
 
         $(document).ready(function() {

@@ -158,6 +158,9 @@
             </div>
         @endif
     @endif
+    @if(request()->routeIs('user.referral.members'))
+            @include('frontend::referral.include.__members')
+    @endif
     @if(request()->routeIs('user.referral.advertisement.material'))
         @include('frontend::referral.include.__advertisement_material')
     @endif
@@ -167,7 +170,6 @@
     @if(request()->routeIs('user.referral.reports'))
         @include('frontend::referral.include.__reports')
     @endif
-    {{--    @if(!isset(auth()->user()->ib_status))--}}
     {{-- IB account modal --}}
     @include('frontend::referral.modal.__ib_form')
     {{--    @endif--}}

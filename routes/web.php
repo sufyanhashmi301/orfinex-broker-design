@@ -162,7 +162,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     //support ticket
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
         Route::get('index', 'index')->name('index');
-        Route::get('new', 'new')->name('new');
+        Route::get('new', 'newTicket')->name('new');
         Route::post('new-store', 'store')->name('new-store');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
@@ -171,6 +171,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
     Route::group(['middleware' => 'KYC'], function () {
         Route::get('referral', [ReferralController::class, 'referral'])->name('referral');
+        Route::get('referral/members', [ReferralController::class, 'referralMembers'])->name('referral.members');
         Route::get('referral/advertisement/material', [ReferralController::class, 'advertisementMaterial'])->name('referral.advertisement.material');
         Route::get('download/image/{filename}', [ReferralController::class, 'download'])->where('filename', '.*')->name('image.download');
 

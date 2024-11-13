@@ -47,12 +47,15 @@
                             <div class="overflow-hidden basicTable_wrapper">
                                 <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                     <thead class=" border-t border-slate-100 dark:border-slate-800">
-                                        <th scope="col" class="table-th">{{ __('Description') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Method') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Amount') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Fee') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                        <tr>
+                                            <th scope="col" class="table-th">{{ __('Description') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Account') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                        </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                         @foreach($withdraws as $raw)
@@ -94,9 +97,9 @@
                                                         <div class="flex-1 text-start">
                                                             <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
                                                                 {{ $raw->description }} @if(!in_array($raw->approval_cause,['none',""]))
-                                                                    <span class="optional-msg" data-bs-toggle="tooltip" title="" data-bs-original-title="{{ $raw->approval_cause }}">
-                                                                <i icon-name="mail"></i>
-                                                            </span>
+                                                                    <span class="toolTip onTop optional-msg" data-tippy-content="{{ $raw->approval_cause }}">
+                                                                        <iconify-icon icon="lucide:mail"></iconify-icon>
+                                                                    </span>
                                                                 @endif
                                                             </h4>
                                                             <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
@@ -109,19 +112,7 @@
                                                     {{ $raw->tnx }}
                                                 </td>
                                                 <td class="table-td">
-                                                    <div class="flex items-center">
-                                                        <div class="flex-none">
-                                                            <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                                {{--                                                        @if($transaction->depositMethod->title)--}}
-                                                                <img src="{{asset(transaction_method_image($raw))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex-1 text-start">
-                                                            <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                                {{transaction_method_name($raw)}}
-                                                            </h4>
-                                                        </div>
-                                                    </div>
+                                                    {{ $raw->target_id }}
                                                 </td>
                                                 <td class="table-td">
                                                     <span class="font-medium">
@@ -129,31 +120,25 @@
                                                     </span>
                                                 </td>
                                                 <td class="table-td">
+                                                    {{transaction_method_name($raw)}}
+                                                </td>
+                                                <td class="table-td">
                                                     <span class="font-medium">
                                                         -{{ $raw->charge }} {{ $currency }}
                                                     </span>
                                                 </td>
                                                 <td class="table-td">
-                                                    <span class="block text-left">
-                                                        <span class="inline-block text-center mx-auto py-1">
-                                                            <span class="flex items-center space-x-3 rtl:space-x-reverse">
-                                                                @switch($raw->status->value)
-                                                                    @case('pending')
-                                                                        <span class="h-[6px] w-[6px] bg-warning rounded-full inline-block ring-4 ring-opacity-30 ring-warning-500"></span>
-                                                                        <span>{{ __('Pending') }}</span>
-                                                                        @break
-                                                                    @case('success')
-                                                                        <span class="h-[6px] w-[6px] bg-success rounded-full inline-block ring-4 ring-opacity-30 ring-success-500"></span>
-                                                                        <span>{{ __('Success') }}</span>
-                                                                        @break
-                                                                    @case('failed')
-                                                                        <span class="h-[6px] w-[6px] bg-danger rounded-full inline-block ring-4 ring-opacity-30 ring-danger-500"></span>
-                                                                        <span>{{ __('Canceled') }}</span>
-                                                                        @break
-                                                                @endswitch
-                                                            </span>
-                                                        </span>
-                                                    </span>
+                                                    @switch($raw->status->value)
+                                                        @case('pending')
+                                                        <span class="badge-warning bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Pending') }}</span>
+                                                        @break
+                                                        @case('success')
+                                                        <span class="badge-success bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Success') }}</span>
+                                                        @break
+                                                        @case('failed')
+                                                        <span class="badge-danger bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Canceled') }}</span>
+                                                        @break
+                                                    @endswitch
                                                 </td>
 
                                             </tr>

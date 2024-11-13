@@ -332,7 +332,7 @@
                         $('.amount').text((Number(amount)))
                         var charge = data.charge_type === 'percentage' ? calPercentage(amount, data.charge) : data.charge
                         $('.charge2').text(charge + ' ' + currency)
-                        $('.total').text((Number(amount) + Number(charge)) + ' ' + currency)
+                        $('.total').text((Number(amount) - Number(charge)) + ' ' + currency)
                     }
 
                     if (data.credentials !== undefined) {
@@ -352,7 +352,7 @@
                     var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
                     $('.charge2').text(charge + ' ' + currency)
 
-                    var total = (Number(amount) + Number(charge));
+                    var total = Number(amount) ;
 
                     $('.total').text(total + ' ' + currency)
 
@@ -371,7 +371,7 @@
                     var charge = globalData.charge_type === 'percentage' ? calPercentage(amount, globalData.charge) : globalData.charge
                     $('.charge2').text(charge + ' ' + currency)
 
-                    var total = (Number(amount) + Number(charge));
+                    var total = Number(amount);
 
                     $('.total').text(total + ' ' + currency)
 

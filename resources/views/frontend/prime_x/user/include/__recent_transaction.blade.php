@@ -30,10 +30,11 @@
                                     <tr>
                                         <th scope="col" class="table-th">{{ __('Description') }}</th>
                                         <th scope="col" class="table-th">{{ __('Transactions ID') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Method') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Account') }}</th>
                                         <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Fee') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -41,41 +42,76 @@
                                     @foreach($recentTransactions as $transaction )
                                     <tr>
                                         <td class="table-td">
-                                            {{ ucfirst($transaction->description) }}
-
-                                        </td>
-                                        <td class="table-td">{{ $transaction->tnx }}</td>
-                                        <td class="table-td">
                                             <div class="flex items-center">
                                                 <div class="flex-none">
-                                                    <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-{{--                                                        @if($transaction->depositMethod->title)--}}
-                                                        <img src="{{asset(transaction_method_image($transaction))}}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                    <div class="w-10 h-10 lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mr-2">
+                                                        @switch($transaction->type->value)
+                                                            @case('send_money')
+                                                            <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                            @break
+                                                            @case('send_money_internal')
+                                                            <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                                            @break
+                                                            @case('receive_money')
+                                                            <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                            @break
+                                                            @case('send_money_internal')
+                                                            <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                                                            @break
+                                                            @case('deposit')
+                                                            <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                            @break
+                                                            @case('manual_deposit')
+                                                            <iconify-icon icon="octicon:download-16"></iconify-icon>
+                                                            @break
+                                                            @case('investment')
+                                                            <iconify-icon icon="fluent:arrow-swap-24-regular"></iconify-icon>
+                                                            @break
+                                                            @case('withdraw')
+                                                            <iconify-icon icon="akar-icons:arrow-back"></iconify-icon>
+                                                            @break
+                                                            @default()
+                                                            <iconify-icon icon="lucide:backpack"></iconify-icon>
+                                                        @endswitch
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">
                                                     <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                        {{transaction_method_name($transaction)}}
+                                                        {{ $transaction->description }} @if(!in_array($transaction->approval_cause,['none',""]))
+                                                            <span class="toolTip onTop optional-msg" data-tippy-content="{{ $transaction->approval_cause }}">
+                                                                <iconify-icon icon="lucide:mail"></iconify-icon>
+                                                            </span>
+                                                        @endif
                                                     </h4>
+                                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                        {{ $transaction->created_at }}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
+                                        <td class="table-td">{{ $transaction->tnx }}</td>
+                                        <td class="table-td">
+                                            {{ $transaction->target_id }}
+                                        </td>
+                                        <td class="table-td">
+                                            <strong class="{{ $transaction->type !== 'subtract' && $transaction->type !== 'investment' && $transaction->type !==  'withdraw' && $transaction->type !==  'send_money' ? 'text-success': 'text-danger'}}">
+                                                {{ txn_type($transaction->type->value,['+','-']) .$transaction->amount.' '.$currency }}
+                                            </strong>
+                                        </td>
+                                        <td class="table-td">
+                                            {{ $transaction->method }}
+                                        </td>
+                                        <td class="table-td">
+                                            {{$transaction->charge.' '.$currency }}
+                                        </td>
                                         <td class="table-td">
                                             @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
-                                                <span class="badge bg-slate-100 text-slate-900 capitalize pill">{{ __('Pending') }}</span>
+                                                <span class="badge-warning capitalize rounded px-2 py-1">{{ __('Pending') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
-                                                <span class="badge badge-primary capitalize pill">{{ __('Success') }}</span>
+                                                <span class="badge-success bg-opacity-30 capitalize rounded px-2 py-1">{{ __('Success') }}</span>
                                             @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)
-                                                <span class="badge bg-danger text-slate-900 capitalize pill">{{ __('canceled') }}</span>
+                                                <span class="badge-danger bg-opacity-30 capitalize rounded px-2 py-1">{{ __('canceled') }}</span>
                                             @endif
-                                        </td>
-                                        <td class="table-td">
-                                            {{$transaction->charge}}
-                                        </td>
-                                        <td class="table-td">
-                                            <span class="{{ txn_type($transaction->type->value,['green-color','red-color']) }}">
-                                                {{ txn_type($transaction->type->value,['+','-']) .$transaction->amount.' '.$currency }}
-                                            </span>
                                         </td>
                                     </tr>
                                     @endforeach

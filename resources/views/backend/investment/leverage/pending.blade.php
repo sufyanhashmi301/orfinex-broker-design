@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    @include('backend.investment.leverage.include.__leverage_confirm') 
+    @include('backend.investment.leverage.include.__leverage_confirm')
 @endsection
 
 @section('script')
@@ -117,7 +117,7 @@
     });
 });
     $('#dataTable').DataTable({
-            dom: "<'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5'lip>",
+            dom: "<'min-w-full't><'flex justify-between items-center border-t border-slate-100 dark:border-slate-700 px-4 py-5 mt-auto'lip>",
             processing: true,
             searching: false,
             lengthChange: false,

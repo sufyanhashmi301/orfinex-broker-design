@@ -1147,7 +1147,7 @@ return [
             ],
         ],
     ],
-    'internal' => [
+    'transfer_internal' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
             [
@@ -1200,50 +1200,49 @@ return [
             ],
         ],
     ],
-    'deposit_settings' => [
-        'title' => 'Deposit Settings',
-        'elements' => [
-
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'pending_deposit_limit', // unique name for field
-                'label' => 'Pending Deposit Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 3, // default value if you want
-            ]
-        ],
-    ],
-    'withdraw_settings' => [
-        'title' => 'Withdraw Settings',
-        'elements' => [
-
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'pending_withdraw_limit', // unique name for field
-                'label' => 'Pending Withdraw Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 3, // default value if you want
-            ]
-        ],
-    ],
-    'forex_account_settings' => [
-        'title' => 'Forex Accounts Settings',
-        'elements' => [
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'forex_account_create_limit', // unique name for field
-                'label' => 'Forex Account Limit', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 10, // default value if you want
-            ],
-        ],
-    ],
-    'external' => [
+    'transfer_external' => [
         'title' => 'Site Fee, Limit and Bonus Settings',
         'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'external_min_send', // unique name for field
+                'label' => 'External Minimum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 1, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'external_max_send', // unique name for field
+                'label' => 'External Maximum Transfer', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'external_send_charge', // unique name for field
+                'label' => 'External Transfer Charge', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'external_send_charge_type', // unique name for field
+                'label' => 'External Transfer Type', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 90000, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'int', // data type, string, int, boolean
+                'name' => 'external_send_daily_limit', // unique name for field
+                'label' => 'Transfers Per Day', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 6, // default value if you want
+            ],
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
@@ -1267,46 +1266,6 @@ return [
                 'label' => 'Status', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'external_min_send', // unique name for field
-                'label' => 'External Minimum Transfer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'external_max_send', // unique name for field
-                'label' => 'External Maximum Transfer', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 90000, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'external_send_charge_type', // unique name for field
-                'label' => 'External Transfer Type', // you know what label it is
-                'rules' => 'required', // validation rule of laravel
-                'value' => 90000, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'double', // data type, string, int, boolean
-                'name' => 'external_transfer_charge', // unique name for field
-                'label' => 'External Transfer Charge', // you know what label it is
-                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
-                'value' => 90000, // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'int', // data type, string, int, boolean
-                'name' => 'external_send_daily_limit', // unique name for field
-                'label' => 'Transfers Per Day', // you know what label it is
-                'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
-                'value' => 6, // default value if you want
             ],
         ],
     ],
@@ -1369,6 +1328,47 @@ return [
                 'label' => 'Investment Cancellation Daily Limit', // you know what label it is
                 'rules' => 'required|regex:/^\d+(\.\d{1,2})?$/', // validation rule of laravel
                 'value' => 6, // default value if you want
+            ],
+        ],
+    ],
+    'deposit_settings' => [
+        'title' => 'Deposit Settings',
+        'elements' => [
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'pending_deposit_limit', // unique name for field
+                'label' => 'Pending Deposit Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 3, // default value if you want
+            ]
+        ],
+    ],
+    'withdraw_settings' => [
+        'title' => 'Withdraw Settings',
+        'elements' => [
+
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'pending_withdraw_limit', // unique name for field
+                'label' => 'Pending Withdraw Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 3, // default value if you want
+            ]
+        ],
+    ],
+    'forex_account_settings' => [
+        'title' => 'Forex Accounts Settings',
+        'elements' => [
+            [
+                'type' => 'text', // input fields type
+                'data' => 'double', // data type, string, int, boolean
+                'name' => 'forex_account_create_limit', // unique name for field
+                'label' => 'Forex Account Limit', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 10, // default value if you want
             ],
         ],
     ],

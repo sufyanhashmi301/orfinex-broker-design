@@ -29,6 +29,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\WithdrawHistoryExport;
+
 use Session;
 use Txn;
 use Validator;
@@ -506,5 +509,9 @@ class WithdrawController extends Controller
         })->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
         return view('frontend::withdraw.log', compact('withdraws'));
+    }
+    public function export(Request $request)
+    {
+      return Excel::download(new WithdrawHistoryExport($request), 'Withdraw-History.xlsx');
     }
 }

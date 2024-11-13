@@ -19,6 +19,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TransferHistoryExport;
+
 use Session;
 use Txn;
 use Validator;
@@ -582,4 +585,8 @@ class SendMoneyController extends Controller
 
         return view('frontend::send_money.log', compact('sendMoneys'));
     }
+    public function export(Request $request)
+  {
+    return Excel::download(new TransferHistoryExport($request), 'Transfer-History.xlsx');
+  }
 }

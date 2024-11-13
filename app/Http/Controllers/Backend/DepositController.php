@@ -217,10 +217,12 @@ class DepositController extends Controller
     {
 
         if ($request->ajax()) {
+            $filters = $request->only(['email', 'status',  'created_at']);
+
             $data = Transaction::where('status', 'pending')->where(function ($query) {
                 return $query->where('type', TxnType::ManualDeposit)
                     ->orWhere('type', TxnType::Investment);
-            })->latest();
+            })->latest()->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()

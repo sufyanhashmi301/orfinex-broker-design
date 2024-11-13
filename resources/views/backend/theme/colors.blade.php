@@ -7,6 +7,7 @@
         $type = request()->query('type');
         $section = $type;
         $fields = config("setting.$section");
+        
     ?>
 
     <div class="flex justify-between flex-wrap items-center mb-6">

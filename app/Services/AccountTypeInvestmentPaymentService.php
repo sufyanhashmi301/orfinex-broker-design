@@ -9,6 +9,7 @@ use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
 use App\Enums\InvestmentPhaseApproval;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Client\RequestException;
 
 class AccountTypeInvestmentPaymentService
 {
@@ -25,15 +26,24 @@ class AccountTypeInvestmentPaymentService
     $this->forexApiService = $forexApiService;
   }
 
+  private function createUserApiCall($user_data) {
+    try {
+      $response = $this->forexApiService->createUser($user_data);
+      return $response;
+    } catch (RequestException $e) {
+        abort($e->getCode());
+    }
+  }
+
   /**
    * Create MT5 account Via API call using ForexApiService
    * createTradingAccount() helper
    */
   private function createMT5Account($investment, $login_id, $password) {
-
+    // dd($login_id);
     // will replace the values by static table later
     $user_data = [
-      "login" => $login_id,
+      "login" => 0,
       "group" => $investment->platform_group,
       "firstName" => 'Phase ' . $investment->getPhaseSnapshotData()['phase_step'] . ' $' . $this->ruleData['allotted_funds'] . '-' . $investment->user->first_name,
       "middleName" => "",
@@ -58,10 +68,46 @@ class AccountTypeInvestmentPaymentService
     ];
 
     // API call for creating MT5 user
-    $response = $this->forexApiService->createUser($user_data);
-    if($response['success'] == false){
-      dd($response);
-    }
+    // // then again start from here for only 3 times
+    // $response = $this->createUserApiCall($user_data);
+    
+    // if($response['success'] == false){
+    //   if($response['messages'][0] == 'Account already exists') {
+    //     sleep(1);
+    //     // if this is true
+    //   }
+      
+    // }
+
+    $retryCount = 0;
+    $maxRetries = 3;
+    
+    // Start a loop that will execute up to 3 times
+    do {
+        // Make the API call
+        $response = $this->createUserApiCall($user_data);
+
+        // Check if the API response was not successful
+        if ($response['success'] == false && isset($response['messages'][0]) && $response['messages'][0] == 'Account already exists') {
+            // If "Account already exists", increment the retry counter
+            $retryCount++;
+
+            // Sleep for 1 second before retrying
+            sleep(1);
+        } else {
+            // If the response is successful or the error is not "Account already exists", break the loop
+            break;
+        }
+
+    // Continue the loop while the retry counter is less than the maximum retries
+    } while ($retryCount < $maxRetries);
+
+    // if it still fails after $maxRetries tries
+    if ($response['success'] == false) {
+      abort(400);
+    } 
+
+    
 
     if ($response['success']) {
         $resResult = $response['result'];
@@ -131,28 +177,29 @@ class AccountTypeInvestmentPaymentService
       })->whereIn('status', [InvestmentStatus::ACTIVE, InvestmentStatus::VIOLATED, InvestmentStatus::PASSED])->latest('login')->first();
 
     // Suggesting the login ID of investment w.r.t account range
-    if($latest_investments) {
+    // if($latest_investments) {
         
-        if(isset($latest_investments->login) && $latest_investments->login >= $investment->accountTypePhaseRule->accountTypePhase->accountType->accounts_range_end){
+    //     if(isset($latest_investments->login) && $latest_investments->login >= $investment->accountTypePhaseRule->accountTypePhase->accountType->accounts_range_end){
             
-            $message = __('The account creation range is completed of :title account type.', ['title'=> $this->accountTypeData['title']]);
-            notify()->error($message, 'Error');
-            return redirect()->back();
+    //         $message = __('The account creation range is completed of :title account type.', ['title'=> $this->accountTypeData['title']]);
+    //         notify()->error($message, 'Error');
+    //         return redirect()->back();
 
-        }elseif(isset($latest_investments->login)) {
+    //     }elseif(isset($latest_investments->login)) {
 
-            $login = ++$latest_investments->login;
-            $investment_for_login = AccountTypeInvestment::where('login', $login)->exists();
+    //         $login = ++$latest_investments->login;
+    //         $investment_for_login = AccountTypeInvestment::where('login', $login)->exists();
 
-            if($investment_for_login){
-                ++$login;
-            }
+    //         if($investment_for_login){
+    //             ++$login;
+    //         }
 
-        }
+    //     }
 
-    }else{
-        $login = $this->accountTypeData['accounts_range_start'];
-    }
+    // }else{
+    //     $login = $this->accountTypeData['accounts_range_start'];
+    // }
+      $login = 0;
     
 
     if($investment->trader_type == TraderType::MT5) {

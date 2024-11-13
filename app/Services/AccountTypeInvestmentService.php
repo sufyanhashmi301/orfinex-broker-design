@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\AccountType;
+use Illuminate\Support\Str;
 use App\Enums\InvestmentStatus;
 use App\Enums\TradingObjective;
 use App\Models\AccountTypePhase;
@@ -28,6 +29,17 @@ class AccountTypeInvestmentService
       $this->investment_phase_approve = $investment_phase_approve;
       $this->investment_payment = $investment_payment;
       $this->forexApiService = $forexApiService;
+  }
+
+  /**
+   * To generate a unique id for investments
+   */
+  function generateUniqueString($length = 8) {
+    do {
+        $uniqueString = Str::random($length);
+    } while (AccountTypeInvestment::where('unique_id', $uniqueString)->exists()); // Replace `ModelName` and `column_name`
+    
+    return $uniqueString;
   }
 
   /**
@@ -74,6 +86,7 @@ class AccountTypeInvestmentService
 
       // data
       $data = [
+          'unique_id' => $this->generateUniqueString(),
           'user_id' => Auth::id(),
           'currency' => $currency,
           'account_type_phase_id' => $rule->accountTypePhase->id,
@@ -87,6 +100,8 @@ class AccountTypeInvestmentService
 
     // Creating Investment and its snapshot
     $new_investment = AccountTypeInvestment::create($data);
+
+    // Investment phase log
     if($copy_snapshot_id == 0) {
       $phase_approval_data[0] = [
         'account_type_investment_id' => $new_investment->id,
@@ -268,7 +283,11 @@ class AccountTypeInvestmentService
                         ->first();
 
       // Check if the next phase investment is already created, then return
-      $check_user_and_next_phase_exists = AccountTypeInvestment::where(['user_id' => Auth::id(), 'account_type_phase_id' => $next_phase['id']])->exists();
+      $check_user_and_next_phase_exists = AccountTypeInvestment::where([
+                                                                    'user_id' => Auth::id(), 
+                                                                    'account_type_phase_id' => $next_phase['id'], 
+                                                                    'unique_id' =>     $passed_investment->unique_id
+                                                                  ])->exists();
       if($check_user_and_next_phase_exists) {
         return true;
       }
@@ -279,6 +298,7 @@ class AccountTypeInvestmentService
       // --- Create the investment along with the snapshot ---
       $currency = setting('site_currency', 'global');
       $new_investment_data = [
+        'unique_id' => $passed_investment->unique_id,
         'user_id' => Auth::id(),
         'currency' => $currency,
         'account_type_phase_id' => $next_phase['id'],

@@ -80,14 +80,15 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
                 'action' => 1
             ];
       
-            // Save the entry in investment phase approvals table
+            // Save the entry in investment phase approvals tablep
             $this->investment_phase_approve->createRecord($phase_approval_data[0]);
+            
             // Update the action of the current one to 1 
-            // AccountTypeInvestmentPhaseApproval::where([
-            //     'account_type_investment_id' => $active_investment->id,
-            //     'account_type_phase_id' => $active_investment->getPhaseSnapshotData()['id'],
-            //     'account_type_investment_id' => InvestmentPhaseApprovalEnum::ADMIN_APPROVE,
-            // ])->first()->update(['action' => 1]);
+            AccountTypeInvestmentPhaseApproval::where([
+                'account_type_investment_id' => $investment->id,
+                'account_type_phase_id' => $investment->getPhaseSnapshotData()['id'],
+                'status' => InvestmentPhaseApprovalEnum::ADMIN_APPROVE,
+            ])->first()->update(['action' => 1]);
 
             if($active_investment->status == InvestmentStatus::ACTIVE) {
                 notify()->success('Investment Phase is successfully approved');

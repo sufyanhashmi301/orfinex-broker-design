@@ -275,7 +275,7 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('site', 'siteTheme')->name('site');
         Route::get('global', 'globalSetting')->name('global');
         Route::get('colors', 'colorsSetting')->name('colors');
-        Route::get('colors', 'colorsSetting')->name('colors');
+        // Route::get('colors', 'colorsSetting')->name('colors');
         Route::get('fonts', 'fontSetting')->name('fonts');
         Route::get('dynamic-landing', 'dynamicLanding')->name('dynamic-landing');
 
@@ -302,6 +302,7 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
+        
         Route::post('update', 'update')->name('update');
 
         Route::get('plugin/{name}', [PluginController::class, 'plugin'])->name('plugin');

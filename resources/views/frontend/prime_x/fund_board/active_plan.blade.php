@@ -234,7 +234,8 @@
         @if ( $trading_objectives['daily_drawdown_status'] != 'violated' && 
               $trading_objectives['max_drawdown_status'] != 'violated' &&
               $trading_objectives['profit_target_status'] == 'passed' &&
-              $trading_objectives['minimum_trading_days_status'] == 'passed'
+              $trading_objectives['minimum_trading_days_status'] == 'passed' &&
+              $investment->getPhaseSnapshotData()['type'] != 'funded_phase'
             )
             <div class="pb-2 ">
                 <b><span class="text-sm"> <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> Close all active trades to get promoted to next phase!</span></b>

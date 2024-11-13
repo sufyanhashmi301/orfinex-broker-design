@@ -10,6 +10,7 @@ class AccountTypeInvestment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'unique_id',
         'user_id',
         'currency',
         'account_type_id',

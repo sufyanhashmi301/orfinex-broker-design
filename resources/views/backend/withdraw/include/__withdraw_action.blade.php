@@ -20,7 +20,6 @@
 </ul>
 
 <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
-
     @foreach( json_decode($data->manual_field_data,true) as $name => $data)
         <li class="list-group-item dark:text-slate-300 block py-2 px-3">
             {{ $name }}: @if( $data['type'] == 'file' )

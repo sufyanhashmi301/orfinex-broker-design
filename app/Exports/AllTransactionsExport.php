@@ -55,10 +55,10 @@ class AllTransactionsExport implements FromQuery, WithHeadings, WithMapping
             'Account',
             'Transaction ID',
             'Type',
-            'Pay Amount',
-            'Final Amount',
             'Amount',
             'Fee',
+            'Pay Amount',
+            'Final Amount',
             'Status',
             'Date',
         ];
@@ -76,10 +76,10 @@ class AllTransactionsExport implements FromQuery, WithHeadings, WithMapping
             $transaction->target_id . ' (' . ucwords(str_replace('_', ' ', $transaction->target_type)) . ')',  // Target ID with formatted target type
             $transaction->tnx,
             ucfirst(str_replace('_', ' ', $transaction->type->value)),
-            $transaction->pay_amount . ' ' . $transaction->pay_currency,
-            $transaction->final_amount . ' USD',
             $transaction->amount . ' USD',
             $transaction->charge . ' USD',
+            $transaction->pay_amount . ' ' . $transaction->pay_currency,
+            $transaction->final_amount . ' USD',
             ucfirst($transaction->status->value),
             $transaction->created_at,
         ];

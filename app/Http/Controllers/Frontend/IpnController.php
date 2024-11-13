@@ -151,6 +151,11 @@ class IpnController extends Controller
             case 'DONE':
                 $txnInfo->update([
 //                    'txid' => $txid,
+                    'amount' => $input['finalAmount'],
+//                    'charge' => $input['processingFee'],
+                    'final_amount' => $input['finalAmount'],
+                    'pay_amount' => $input['netAmount'],
+                    'pay_currency' => $input['transactionCurrency'],
                     'manual_field_data' => $input,
                     'approval_cause' => __('Transaction is Completed'),
                 ]);

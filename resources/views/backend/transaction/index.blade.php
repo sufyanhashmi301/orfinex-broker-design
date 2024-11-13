@@ -184,8 +184,8 @@
                     url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
                     method: 'GET',
                     success: function(response) {
-                        $('.deposit-action').append(response)
-                        imagePreview()
+                        $('.deposit-action').append(response);
+                        imagePreview();
                         $('#transaction-action-modal').modal('show');
 
                     }

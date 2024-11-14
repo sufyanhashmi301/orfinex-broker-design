@@ -25,12 +25,22 @@
                                 <input type="text" class="form-control" id="search" placeholder="{{ __('Search') }}"
                                     value="{{ request('query') }}"
                                     name="query"/>
-                                <input type="date" class="form-control flatpickr flatpickr-input active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
+                                <input type="date" class="form-control active" data-mode="range" name="date" value="{{ request()->get('date') }}"/>
                                 <button type="submit" class="btn btn-dark btn-sm">
                                     <i icon-name="search"></i>
                                     {{ __('Search') }}
                                 </button>
                             </div>
+
+                        </form>
+                        <form method="POST" action="{{ route('user.transactions.export') }}">
+                            @csrf
+                            <input type="hidden" name="query" value="{{ request('query') }}">
+                            <input type="hidden" name="date" value="{{ request('date') }}">
+                            <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                                {{ __('Export') }}
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -178,6 +188,15 @@
                                 <iconify-icon icon="lucide:search"></iconify-icon>
                             </button>
                         </div>
+                    </form>
+                    <form method="POST" action="{{ route('user.transactions.export') }}">
+                        @csrf
+                        <input type="hidden" name="query" value="{{ request('query') }}">
+                        <input type="hidden" name="date" value="{{ request('date') }}">
+                        <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                            <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                            {{ __('Export') }}
+                        </button>
                     </form>
                 </div>
                 <div class="contents space-y-3">

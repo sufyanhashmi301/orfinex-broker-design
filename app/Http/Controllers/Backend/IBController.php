@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\IbQuestion;
 use App\Models\IbSchema;
+use App\Exports\ApprovedIbExport;
+use App\Exports\PendingIbExport;
+use App\Exports\RejectedIbExport;
+use App\Exports\IbExport;
 use App\Models\User;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
@@ -15,6 +19,8 @@ use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class IBController extends Controller
 {
@@ -82,6 +88,23 @@ class IBController extends Controller
 
         return redirect()->route('admin.ib-form.index');
     }
+
+
+    
+    public function export(Request $request, $type)
+    {
+        switch ($type) {
+            case 'approved':
+                return Excel::download(new ApprovedIbExport($request), 'approved-ib.xlsx');
+            case 'pending':
+                return Excel::download(new PendingIbExport($request), 'pending-ib.xlsx');
+            case 'rejected':
+                return Excel::download(new RejectedIbExport($request), 'rejected-ib.xlsx');
+            default:
+                return Excel::download(new IbExport($request), 'ib.xlsx');
+        }
+    }
+
 
     public function IbPendingList(Request $request)
     {

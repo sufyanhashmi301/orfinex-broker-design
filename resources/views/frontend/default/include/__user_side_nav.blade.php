@@ -80,7 +80,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.deposit.amount') }}" class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
+            <a href="{{ route('user.deposit.methods') }}" class="navItem @if( Route::currentRouteName() != 'user.deposit.log') {{ isActive('user.deposit*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:download"></iconify-icon>
                     <span>{{ __('Deposit') }}</span>

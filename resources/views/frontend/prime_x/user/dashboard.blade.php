@@ -66,7 +66,7 @@
     <div class="md:block hidden desktop-screen-show">
         @include('frontend::user.include.__user_card')
         <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
-            <a href="{{ route('user.deposit.amount') }}" class="card loaderBtn">
+            <a href="{{ route('user.deposit.methods') }}" class="card loaderBtn">
                 <div class="card-body flex flex-col items-center justify-center p-8">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="heroicons-outline:download"></iconify-icon>

@@ -24,7 +24,7 @@
                         </td>
                         <td class="table-td">
                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                <a href="{{route('user.deposit.amount')}}" class="toolTip onTop action-btn dropdown-deposit-demo-account"
+                                <a href="{{route('user.deposit.methods')}}" class="toolTip onTop action-btn dropdown-deposit-demo-account"
                                    data-tippy-content="Deposit"
                                    data-tippy-theme="dark"
                                    data-bs-toggle="modal"

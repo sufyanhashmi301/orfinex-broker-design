@@ -79,7 +79,7 @@
                             <span>{{ $account->currency }}</span>
                         </p>
                         <div class="action-btns flex items-center gap-3">
-                            <a href="{{ route('user.deposit.amount') }}" class="btn btn-sm btn-outline-dark loaderBtn mt-0">
+                            <a href="{{ route('user.deposit.methods') }}" class="btn btn-sm btn-outline-dark loaderBtn mt-0">
                                 <span class="flex items-center">
                                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="octicon:download-16"></iconify-icon>
                                     <span>{{ __('Deposit') }}</span>

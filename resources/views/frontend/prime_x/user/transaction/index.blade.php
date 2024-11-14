@@ -13,7 +13,7 @@
                     <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                         {{ __("You don't have any transactions yet.") }}
                     </p>
-                    <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
+                    <a href="{{ route('user.deposit.methods') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                         {{ __('Deposit Now') }}
                     </a>
                 </div>

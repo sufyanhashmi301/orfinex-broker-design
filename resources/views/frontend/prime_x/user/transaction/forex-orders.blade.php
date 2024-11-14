@@ -19,7 +19,7 @@
             <p class="text-lg text-center text-slate-600 dark:text-slate-100 my-3">
                 {{ __('You don\'t have any transaction yet.') }}
             </p>
-            <a href="{{ route('user.deposit.amount') }}" class="btn btn-primary inline-flex items-center justify-center min-w-[170px]">
+            <a href="{{ route('user.deposit.methods') }}" class="btn btn-primary inline-flex items-center justify-center min-w-[170px]">
                 {{ __('Deposit Now') }}
             </a>
         </div>
@@ -33,10 +33,10 @@
             <p class="text-lg text-center text-slate-600 dark:text-slate-100 my-3">
                 {{ __('Kindly select the account to view the orders or') }}
             </p>
-            <a href="{{ route('user.deposit.amount') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center min-w-[170px]">
+            <a href="{{ route('user.deposit.methods') }}" class="btn btn-primary loaderBtn inline-flex items-center justify-center min-w-[170px]">
                 {{ __('Deposit Now') }}
             </a>
-        </div>        
+        </div>
         @else
         <div class="card desktop-screen-show md:block hidden">
             <div class="card-body p-6">
@@ -60,7 +60,7 @@
                             </div>
                         </form>
                     </div>
-                </div>                
+                </div>
                 <div class="overflow-x-auto -mx-6">
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden basicTable_wrapper">
@@ -188,10 +188,10 @@
                                 {{ $transaction->PriceOrder }}
                             </div>
                             <div class="transaction-amount mb-1 dark:text-white">
-                                {{ $transaction->RateMargin }} 
+                                {{ $transaction->RateMargin }}
                             </div>
                             <div class="transaction-amount mb-1 dark:text-white">
-                                {{ $transaction->PositionId }} 
+                                {{ $transaction->PositionId }}
                             </div>
                         </div>
                     </div>

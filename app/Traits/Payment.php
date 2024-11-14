@@ -134,7 +134,7 @@ trait Payment
             'title' => "$symbol $tnxInfo->amount Deposit $title",
             'p' => "The amount has been $title added into your account",
             'strong' => 'Transaction ID: '.$tnx,
-            'action' => route('user.deposit.amount'),
+            'action' => route('user.deposit.methods'),
             'a' => 'Deposit again',
             'view_name' => 'deposit',
         ];

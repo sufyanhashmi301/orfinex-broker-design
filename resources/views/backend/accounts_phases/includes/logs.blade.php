@@ -7,10 +7,11 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
+                                  <th scope="col" class="table-th">{{ __('Account Unique ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Login') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Allotted Funds') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Allotted Funds') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('Phase Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Phase Step') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Phase Started At') }}</th> --}}
@@ -30,10 +31,11 @@
                                         $ruleData = $record->accountTypeInvestment->getRuleSnapshotData();
                                     @endphp
                                     <tr>
-                                        <td class="table-td">{{ $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name }}</td>
+                                        <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$record->accountTypeInvestment->unique_id}}">{{ $record->accountTypeInvestment->unique_id }}</a> </b></td>
+                                        <td class="table-td"> {{ $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name }} </td>
                                         <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
                                         <td class="table-td">{{ $record->accountTypeInvestment->login ?? 'N/A'}}</td>
-                                        <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td>
+                                        {{-- <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td> --}}
                                         <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ str_replace('_', ' ', $phaseData['type']) }}</span></td>
                                         <td class="table-td"><span class="badge" style="color: #fff; background: #333">Phase {{ $phaseData['phase_step'] }}</span></td>
                                         {{-- <td class="table-td">{{ $record->accountTypeInvestment->phase_started_at ?? 'N/A'}}</td> --}}
@@ -49,8 +51,8 @@
                                         <td class="table-td" style="width: 300px">
                                             @if ($record->status == \App\Enums\InvestmentPhaseApproval::ADMIN_APPROVE && $record->action == 0)
                                                 <div class="btn-group">
-                                                  <a href="{{ route('admin.investment-phase.approval-request', ['operation' => 'approve', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
-                                                  <a href="{{ route('admin.investment-phase.approval-request', ['operation' => 'reject', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
+                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
+                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
                                                 </div>
                                                 
                                             @else
@@ -80,7 +82,7 @@
         <div class="flex items-center justify-center flex-col gap-3">
             <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
             <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
-                {{ __("You don't have any Active account.") }}
+                {{ __("Nothing to see here.") }}
             </p>
         </div>
     </div>

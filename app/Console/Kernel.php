@@ -7,6 +7,7 @@ use App\Console\Commands\FetchInvestmentDailyScore;
 use App\Console\Commands\FetchWeeklyTradeStats;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
+use App\Console\Commands\PromoteOrViolateAccount;
 use App\Console\Commands\ResetData;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -49,5 +50,6 @@ class Kernel extends ConsoleKernel
         FetchWeeklyTradeStats::class,
         FetchWeeklyTradeStats::class,
         FetchInvestmentDailyScore::class,
+        PromoteOrViolateAccount::class
     ];
 }

@@ -162,10 +162,10 @@ Route::middleware(['2fa_admin'])->group(function () {
 // =============================== Optimization ===============================
     // Account Types
     Route::resource('account-type', AccountTypeController::class);
-    Route::get('investment-phases-log', [AccountTypeInvestmentController::class, 'adminIndex'])->name('investments.index'); // Investments Shown
+    Route::get('accounts-phases-log', [AccountTypeInvestmentController::class, 'adminAccountsPhasesLog'])->name('accounts-phases.log'); // Accounts
 
     // Investment Phase Approvals
-    Route::get('phase-approval-request/{investment_id}', [AccountTypeInvestmentPhaseApprovalController::class, 'phaseApprovalRequest'])->name('investment-phase.approval-request');
+    Route::get('phase-approval-request/{investment_id}', [AccountTypeInvestmentPhaseApprovalController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
 
 
     // Route::resource('account-type', ForexSchemaController::class);

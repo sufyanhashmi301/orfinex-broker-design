@@ -131,11 +131,6 @@
                                 {{ __('Funded') }}
                             </a>
                         </li>
-                        {{-- <li>
-                            <a href="{{route('admin.account-type.index')}}" class="">
-                                {{ __('Direct Funded') }}
-                            </a>
-                        </li> --}}
                         <li>
                             <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::AUTO_EXPIRE]) }}"
                             class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::AUTO_EXPIRE ? 'active' : '' }}">
@@ -143,22 +138,38 @@
                             </a>
                         </li>
                     @endcan
-                    {{--@can('schema-edit')
-                        <li>
-                            <a href="{{route('admin.ibAccountType.index')}}" class="{{ isActive('admin.ibAccountType*') }}">
-                                {{ __('IB Account Type') }}
-                            </a>
-                        </li>
-                    @endcan--}}
-
-                    {{--                        @can('schema-edit')--}}
-{{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
-{{--                            <a href="{{route('admin.profit.deduction.index')}}"><i--}}
-{{--                                    icon-name="airplay"></i><span>{{ __('Manage Profits') }}</span></a>--}}
-{{--                        </li>--}}
-                    {{--                        @endcan--}}
 
                 </ul>
+            </li>
+
+            {{-- Accounts Phases -> Approval requests, logs etc... --}}
+            {{-- <li class="{{ isActive(['admin.']) }}">
+                <a href="javascript:void(0);" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:album"></iconify-icon>
+                        <span>{{ __('Accounts Phases') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('schema-edit')
+                        <li>
+                            <a href="{{ route('admin.accounts-phases.log') }}"
+                            class="{{ isActive('admin.accounts-phases*') }}">
+                                {{ __('Logs') }}
+                            </a>
+                        </li>
+                    @endcan
+
+                </ul>
+            </li> --}}
+            <li class="">
+                <a href="{{route('admin.accounts-phases.log')}}" class="navItem {{ isActive('admin.accounts-phases.log') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:cast"></iconify-icon>
+                        <span>{{ __('Accounts Activities') }}</span>
+                    </span>
+                </a>
             </li>
 
             @can('investment-list')

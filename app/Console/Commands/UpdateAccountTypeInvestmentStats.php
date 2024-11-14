@@ -7,6 +7,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use App\Services\ForexApiService;
 use App\Models\AccountTypeInvestment;
+use Illuminate\Support\Facades\Artisan;
 
 class UpdateAccountTypeInvestmentStats extends Command
 {
@@ -86,6 +87,7 @@ class UpdateAccountTypeInvestmentStats extends Command
 
         if($hourly_shceduled) {
             $this->info('Investment stats stored successfully!');
+            Artisan::call('account:promote-or-violate');
         }else{
             $this->info('Investment stats updated successfully!');
         }

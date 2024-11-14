@@ -284,7 +284,6 @@ class AccountTypeInvestmentService
 
       // Check if the next phase investment is already created, then return
       $check_user_and_next_phase_exists = AccountTypeInvestment::where([
-                                                                    'user_id' => Auth::id(), 
                                                                     'account_type_phase_id' => $next_phase['id'], 
                                                                     'unique_id' =>     $passed_investment->unique_id
                                                                   ])->exists();
@@ -299,7 +298,7 @@ class AccountTypeInvestmentService
       $currency = setting('site_currency', 'global');
       $new_investment_data = [
         'unique_id' => $passed_investment->unique_id,
-        'user_id' => Auth::id(),
+        'user_id' => $passed_investment->user_id,
         'currency' => $currency,
         'account_type_phase_id' => $next_phase['id'],
         'account_type_phase_rule_id' => $next_phase_rule['id'],

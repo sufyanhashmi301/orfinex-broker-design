@@ -26,6 +26,10 @@
                                         $accountTypeData = $investment->getAccountTypeSnapshotData();
                                         $phaseData = $investment->getPhaseSnapshotData();
                                         $ruleData = $investment->getRuleSnapshotData();
+
+                                        $stats = $investment->accountTypeInvestmentStat;
+                                        $hourly_stats = $investment->accountTypeInvestmentHourlyStatsRecord;
+                                        
                                     @endphp
                                     <tr>
                                         <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
@@ -43,12 +47,20 @@
                                                  $investment->status == \App\Enums\InvestmentStatus::PASSED ||
                                                  $investment->status == \App\Enums\InvestmentStatus::VIOLATED 
                                                 )
-                                                <a href="{{ route('user.investment.trading-stats', ['investment_id' => $investment->id ]) }}" class="inline-flex justify-center">
+                                                {{-- check if the stats exists --}}
+                                                @if (isset($stats) && count($hourly_stats) != 0 )
+                                                    <a href="{{ route('user.investment.trading-stats', ['investment_id' => $investment->id ]) }}" class="inline-flex justify-center">
+                                                        <span class="flex items-center">
+                                                            <span>{{ __('Trading Stats')}}</span>
+                                                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                        </span>
+                                                    </a>
+                                                @else
                                                     <span class="flex items-center">
-                                                        <span>{{ __('Trading Stats') }}</span>
-                                                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                        <span>{{ __('Account Stats Loading') }}</span>
                                                     </span>
-                                                </a>
+                                                @endif
+                                               
                                             @else
                                                 <span class="flex items-center">
                                                     <span>{{ __('-') }}</span>

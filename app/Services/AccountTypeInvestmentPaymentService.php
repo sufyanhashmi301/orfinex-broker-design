@@ -67,18 +67,6 @@ class AccountTypeInvestmentPaymentService
       "investorPassword" => 'SNNH@2024@bol'
     ];
 
-    // API call for creating MT5 user
-    // // then again start from here for only 3 times
-    // $response = $this->createUserApiCall($user_data);
-    
-    // if($response['success'] == false){
-    //   if($response['messages'][0] == 'Account already exists') {
-    //     sleep(1);
-    //     // if this is true
-    //   }
-      
-    // }
-
     $retryCount = 0;
     $maxRetries = 3;
     
@@ -107,6 +95,7 @@ class AccountTypeInvestmentPaymentService
       abort(400);
     } 
 
+    // dd($response);
     
 
     if ($response['success']) {

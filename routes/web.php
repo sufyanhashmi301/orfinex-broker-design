@@ -104,6 +104,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
     Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
     Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
+    Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
+
+
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
@@ -113,6 +116,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
+        Route::post('log/export', [DepositController::class, 'export'])->name('log.export');
+
     });
 
     // Multi Level
@@ -128,6 +133,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
         Route::post('internal-now', 'sendMoneyInternalNow')->name('internal-now');
         Route::get('log', 'sendMoneyLog')->name('log');
+        Route::post('log/export', 'export')->name('log.export');
+
     });
 
     //User Wallet Management
@@ -147,6 +154,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
+        Route::post('log/export', 'export')->name('log.export');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');

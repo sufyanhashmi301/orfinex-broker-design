@@ -127,6 +127,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('action-now', 'actionNow')->name('action.now');
         Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
         Route::get('all', 'kycAll')->name('all');
+        Route::post('export/{type?}', 'export')->name('export');
     });
 //===============================  System Tag ==================================
     Route::resource('system-tag', SystemTagController::class);
@@ -161,6 +162,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('multi/update', 'updateMIbMember')->name('multi.update');
         Route::post('reject', 'rejectIbMember')->name('reject');
         Route::post('save/form', 'saveForm')->name('save.form');
+        Route::post('export/{type?}', 'export')->name('export');
+
     });
 
     //===============================  Role Management ==================================
@@ -195,6 +198,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
+    Route::post('forex-accounts/export/{type?}', [AccountsController::class, 'export'])->name('forex-accounts.export');
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');

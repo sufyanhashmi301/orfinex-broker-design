@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
+                    <a href="{{route('user.deposit.methods')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="hugeicons:credit-card-pos"></iconify-icon>
                             <span>{{ __('Deposit') }}</span>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.deposit.amount')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
+                    <a href="{{route('user.deposit.methods')}}" class="btn btn-sm btn-outline-dark loaderBtn inline-flex items-center justify-center">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="hugeicons:credit-card-pos"></iconify-icon>
                             <span>{{ __('Deposit') }}</span>

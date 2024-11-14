@@ -35,7 +35,7 @@
                         <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
                             You don't have any transaction yet.
                         </p>
-                        <a href="{{ route('user.deposit.amount') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
+                        <a href="{{ route('user.deposit.methods') }}" class="btn btn-dark inline-flex items-center justify-center min-w-[170px]">
                             Deposit Now
                         </a>
                     </div>

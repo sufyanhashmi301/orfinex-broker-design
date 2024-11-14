@@ -13,7 +13,7 @@
                 </a>
             </div>
             <div class="single text-center py-2">
-                <a href="{{ route('user.deposit.amount') }}">
+                <a href="{{ route('user.deposit.methods') }}">
                     <img src="{{ asset('frontend/materials/deposit.png') }}" class="h-7 mx-auto" alt="">
                     <div class="text-sm dark:text-white">{{ __('Deposit') }}</div>
                 </a>

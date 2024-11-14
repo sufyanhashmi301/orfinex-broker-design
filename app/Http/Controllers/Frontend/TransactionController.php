@@ -6,9 +6,14 @@ use App\Enums\ForexAccountStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
 use App\Models\Transaction;
+use App\Exports\AllTransactionsExport;
 use App\Traits\ForexApiTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
+
+
 
 class TransactionController extends Controller
 {
@@ -28,6 +33,12 @@ class TransactionController extends Controller
 
         return view('frontend::user.transaction.index', compact('transactions'));
     }
+
+    public function export(Request $request)
+{
+    return Excel::download(new AllTransactionsExport($request), 'All-History.xlsx');
+}
+
 
     public function forexTransactions()
     {

@@ -1,6 +1,6 @@
 <p class="text-slate-400 dark:text-slate-50 text-sm mb-1">{{ __('Actions') }}</p>
 <div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">
-    <a href="{{ route('user.deposit.amount') }}" class="card rounded-md p-4 px-2 text-center">
+    <a href="{{ route('user.deposit.methods') }}" class="card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
             <iconify-icon icon="heroicons-outline:download"></iconify-icon>
         </div>

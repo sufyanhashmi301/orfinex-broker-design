@@ -48,7 +48,7 @@
 </div>
 
 <div class="grid grid-cols-3 gap-2 mob-shortcut-btn mb-3">
-    <a href="{{ route('user.deposit.amount') }}" class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+    <a href="{{ route('user.deposit.methods') }}" class="bg-info-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
         <div class="mx-auto text-2xl">
             <iconify-icon icon="lucide:download"></iconify-icon>
         </div>

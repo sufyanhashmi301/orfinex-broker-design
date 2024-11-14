@@ -1,7 +1,7 @@
 <a href="{{ route('user.dashboard') }}" class="{{ isActive('user.dashboard') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:layout-dashboard"></iconify-icon>
 </a>
-<a href="{{ route('user.deposit.amount') }}" class="{{ isActive('user.deposit*') }}">
+<a href="{{ route('user.deposit.methods') }}" class="{{ isActive('user.deposit*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:download"></iconify-icon>
 </a>
 <a href="{{ route('user.schema') }}" class="{{ isActive('user.schema*') }}">

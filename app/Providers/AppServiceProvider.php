@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        $this->app->bind('path.public', function() {
+            return base_path() . '/public';
+        });
+
         if(is_force_https()){
             URL::forceScheme('https');
         }

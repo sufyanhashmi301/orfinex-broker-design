@@ -32,6 +32,7 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
+use App\Http\Controllers\Frontend\ContractController;
 
 /*
 |--------------------------------------------------------------------------
@@ -284,6 +285,10 @@ Route::get('user/transfer', [TransferController::class, 'index'])->name('user.tr
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
 
+Route::get('user/contracts', [ContractController::class, 'index'])->name('user.contracts');
+Route::get('user/contract/{id}', [ContractController::class, 'show'])->name('contract.show');
+Route::post('/contract/store', [ContractController::class, 'storeContract'])->name('user.contract.store');
+
 
 Route::get('user/agreements', function () {
     return view('frontend::user.setting.agreements.index');
@@ -365,10 +370,6 @@ Route::get('user/active-plans', function () {
     return view('frontend::fund_board.active_plan_design');
 })->name('user.activePlan');
 
-Route::get('user/contracts', function () {
-    return view('frontend::contracts.index');
-})->name('user.contracts');
-
 Route::get('user/certificates', function () {
     return view('frontend::certificates.index');
 })->name('user.certificates');
@@ -388,3 +389,16 @@ Route::get('user/webterminal', function () {
 Route::get('user/billing', function () {
     return view('frontend::billing.index');
 })->name('user.billing');
+
+Route::get('signature', function () {
+    return view('frontend::contracts.signature');
+})->name('signature');
+
+Route::get('/test-dompdf', function () {
+    try {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML('<h1>Hello World</h1>');
+        return $pdf->download('test.pdf');
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});

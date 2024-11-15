@@ -44,6 +44,7 @@ use App\Http\Controllers\Frontend\MultiLevelIBController;
 |
 */
 
+
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
 

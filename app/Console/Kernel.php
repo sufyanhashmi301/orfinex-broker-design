@@ -5,7 +5,9 @@ namespace App\Console;
 use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
 use App\Console\Commands\FetchInvestmentDailyScore;
 use App\Console\Commands\FetchWeeklyTradeStats;
+use App\Console\Commands\GenerateAccountTypeInvestmentSnapshots;
 use App\Console\Commands\IBProfitRecord;
+use App\Console\Commands\MigrateDBData;
 use App\Console\Commands\MultiIbBonus;
 use App\Console\Commands\PromoteOrViolateAccount;
 use App\Console\Commands\ResetData;
@@ -50,6 +52,8 @@ class Kernel extends ConsoleKernel
         FetchWeeklyTradeStats::class,
         FetchWeeklyTradeStats::class,
         FetchInvestmentDailyScore::class,
-        PromoteOrViolateAccount::class
+        PromoteOrViolateAccount::class,
+        MigrateDBData::class,
+        GenerateAccountTypeInvestmentSnapshots::class
     ];
 }

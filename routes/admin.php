@@ -61,6 +61,8 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
 use App\Http\Controllers\Backend\LeaderboardController;
+use App\Http\Controllers\LeaderboardBadgeController;
+use App\Models\LeaderboardBadge;
 
 /*
 |--------------------------------------------------------------------------
@@ -162,14 +164,15 @@ Route::middleware(['2fa_admin'])->group(function () {
 // =============================== Optimization ===============================
     // Account Types
     Route::resource('account-type', AccountTypeController::class);
-    Route::get('accounts-phases-log', [AccountTypeInvestmentController::class, 'adminAccountsPhasesLog'])->name('accounts-phases.log'); // Accounts
+    Route::get('accounts-phases-log', [AccountTypeInvestmentController::class, 'adminAccountsPhasesLog'])->name('accounts-phases.log');
 
     // Investment Phase Approvals
     Route::get('phase-approval-request/{investment_id}', [AccountTypeInvestmentPhaseApprovalController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
 
+    // leaderboards
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    Route::post('/leaderboard-badges/store', [LeaderboardBadgeController::class, 'store'])->name('leaderboard-badge.store');
 
-    // Route::resource('account-type', ForexSchemaController::class);
-    // Route::delete('account-type/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('account-type.delete');
 
 // =============================== Optimization ===============================
 
@@ -490,7 +493,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
     Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
-    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    
 
     Route::get('active-positions', function () {
         return view('backend.control_center.active_positions');

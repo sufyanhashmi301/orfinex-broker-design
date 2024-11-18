@@ -28,8 +28,8 @@ class MigrateDBData extends Command
         $growmoreoriginal = DB::connection('growmoreoriginal'); // growmoreoriginal DB connection
 
         // Fetch data from growmore
-        $records = $growmore->table('forex_schema_investments')->where('group', 'real\\plan1a-100k')->get();
-
+        $records = $growmore->table('forex_schema_investments')->where('group', 'real\\plan1a-100k')->where('id', '>', 1202)->get();
+        // dd($records);
         foreach ($records as $record) {
             // Check account_type_phase_id from account_type_phase_rules table
             $accountTypePhaseId = $growmore->table('forex_schema_phase_rules')

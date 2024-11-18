@@ -232,8 +232,8 @@ class AccountTypeInvestmentPaymentService
     }
 
     // Fetch and store latest stats and hourly stats 
-    Artisan::call('update:investment-stats');
-    Artisan::call('update:investment-stats --save-record');
+    // Artisan::call('update:investment-stats');
+    // Artisan::call('update:investment-stats --save-record');
 
     return $investment;
 

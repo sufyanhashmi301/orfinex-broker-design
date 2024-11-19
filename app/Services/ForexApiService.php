@@ -184,7 +184,7 @@ class ForexApiService
     }
 
     // To check the current Credit
-    public function getCurrentCredit($data){
+        public function getCurrentCredit($data){
         $response = $this->getBalance($data);
         if ($response['success'] === true) {
             return BigDecimal::of($response['result']['credit']);

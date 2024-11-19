@@ -14,6 +14,7 @@ use App\Models\Invest;
 use App\Models\User;
 use App\Services\ForexApiService;
 use App\Traits\NotifyTrait;
+use Brick\Math\BigDecimal;
 use DataTables;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -373,16 +374,37 @@ class   AccountsController extends Controller
     return response()->json(['message' => $message]);
 }
 
-public function allLeverage(Request $request)
-{
-    // Fetch all leverage updates with their associated user and forexAccount relationships
-    $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')->get();
+    public function resetCredit($login)
+    {
+//        $login = 200023;
+        try {
+//            $forexAccount = ForexAccount::where('login',$login)->first();
+            $credit = $this->forexApiService->getCurrentCredit([
+                'login' => $login
+            ]);
+          if($credit->isGreaterThan(BigDecimal::of(0))){
+              $data = [
+                  'login' => $login,
+                  'Amount' => $credit,
+                  'type' => 2, //witdraw
+                  'TransactionComments' => 'reset credit by admin'
+              ];
+              $creditResponse = $this->forexApiService->creditOperation($data);
+//              dd($credit,$creditResponse);
+              if ($creditResponse['success']) {
+                  return response()->json(['success' => true, 'message' => 'User credit data reset successfully.']);
+              }
+          }
+            // Reset logic here, e.g., clearing specific data fields
+            return response()->json(['success' => true, 'message' => 'User credit data reset successfully.']);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to reset user credit data.'], 500);
+        }
+    }
 
-    return view('backend.investment.leverage.all', compact('leverageUpdates'));
-}
 
 
-public function handleAllLeverage(Request $request)
+    public function handleAllLeverage(Request $request)
 {
     $request->validate([
         'action' => 'required|string',

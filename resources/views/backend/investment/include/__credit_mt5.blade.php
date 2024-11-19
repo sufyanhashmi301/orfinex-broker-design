@@ -1,6 +1,6 @@
 @php
     $credit=0;
-    $account = DB::connection('mt5_db')
+    $account = DB::connection('mt5_db2')
                 ->table('mt5_accounts')
                 ->where('Login', $login)
                 ->first();

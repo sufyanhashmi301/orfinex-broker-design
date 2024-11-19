@@ -10,12 +10,14 @@
     </style>
 @endsection
 @section('filters')
-    <form id="filter-form" method="POST" action="{{ route('admin.forex-accounts.export',['type' => ($type === 'real' ? 'real' : 'all')]) }}">
+    <form id="filter-form" method="POST"
+          action="{{ route('admin.forex-accounts.export',['type' => ($type === 'real' ? 'real' : 'all')]) }}">
         @csrf
         <div class="flex justify-between flex-wrap items-center">
             <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                 <div class="flex-1 input-area relative">
-                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full"
+                           placeholder="Search by Name, Username, Email">
                 </div>
                 <div class="flex-1 input-area relative">
                     <input type="text" name="login" id="login" class="form-control h-full" placeholder="Account Number">
@@ -29,24 +31,31 @@
                     </select>
                 </div>
                 <div class="flex-1 input-area relative">
-                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full"
+                           placeholder="Created At">
                 </div>
             </div>
             <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                 <div class="input-area relative">
-                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                    <button type="submit" id="filter"
+                            class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
+                                      icon="lucide:filter"></iconify-icon>
                         {{ __('Filter') }}
                     </button>
                 </div>
                 <div class="input-area relative">
-                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                    <button type="button"
+                            class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light"
+                                      icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
                 </div>
                 <div class="input-area relative">
-                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                    <button type="button"
+                            class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white"
+                            data-bs-toggle="modal" data-bs-target="#configureModal">
                         <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
                     </button>
                 </div>
@@ -61,7 +70,8 @@
         </h4>
     </div>
     <li class="nav-item !ml-auto">
-        <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+        <a href="javascript:;"
+           class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
             <span class="flex items-center">
                 <span>{{ __('More') }}</span>
                 <iconify-icon icon="lucide:chevron-down" class="text-base ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
@@ -72,8 +82,14 @@
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 gap-x-2">
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
-                    <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <div
+                        class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-credit-card">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
                     </div>
                     <div class="content">
                         <p class="text-sm dark:text-white my-2">Total Accounts</p>
@@ -83,8 +99,14 @@
             </div>
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
-                    <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <div
+                        class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-credit-card">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
                     </div>
                     <div class="content">
                         <p class="text-sm dark:text-white my-2">With Balance</p>
@@ -94,8 +116,14 @@
             </div>
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
-                    <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <div
+                        class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-credit-card">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
                     </div>
                     <div class="content">
                         <p class="text-sm dark:text-white my-2">With Bonus</p>
@@ -105,8 +133,14 @@
             </div>
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
-                    <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <div
+                        class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-credit-card">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
                     </div>
                     <div class="content">
                         <p class="text-sm dark:text-white my-2">Without Balance</p>
@@ -116,8 +150,14 @@
             </div>
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
-                    <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <div
+                        class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-credit-card">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
                     </div>
                     <div class="content">
                         <p class="text-sm dark:text-white my-2">Without Bonus</p>
@@ -127,8 +167,14 @@
             </div>
             <div class="bg-slate-50 dark:bg-body rounded p-4">
                 <div class="flex flex-col text-center">
-                    <div class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
+                    <div
+                        class="mx-auto h-10 w-10 flex flex-col items-center justify-center rounded-full lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 text-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-check-check">
+                            <path d="M18 6 7 17l-5-5"/>
+                            <path d="m22 10-7.5 7.5L13 16"/>
+                        </svg>
                     </div>
                     <div class="content">
                         <p class="text-sm dark:text-white my-2">Inactive Accounts</p>
@@ -145,21 +191,22 @@
                 <span class="col-span-4 hidden"></span>
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
+                               id="dataTable">
                             <thead>
-                                <tr>
-                                    <th scope="col" class="table-th">{{ __('Account Number') }}</th>
-                                    <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Account Type') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Group') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Currency') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Leverage') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Agent/IB Number') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Created At') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Actions') }}</th>
-                                </tr>
+                            <tr>
+                                <th scope="col" class="table-th">{{ __('Account Number') }}</th>
+                                <th scope="col" class="table-th">{{ __('User') }}</th>
+                                <th scope="col" class="table-th">{{ __('Account Type') }}</th>
+                                <th scope="col" class="table-th">{{ __('Group') }}</th>
+                                <th scope="col" class="table-th">{{ __('Currency') }}</th>
+                                <th scope="col" class="table-th">{{ __('Leverage') }}</th>
+                                <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                <th scope="col" class="table-th">{{ __('Agent/IB Number') }}</th>
+                                <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                <th scope="col" class="table-th">{{ __('Created At') }}</th>
+                                <th scope="col" class="table-th">{{ __('Actions') }}</th>
+                            </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
@@ -176,9 +223,11 @@
     </div>
 
     {{--Modal for active trades--}}
-    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="openTradesModal" tabindex="-1" aria-labelledby="openTradesModal" aria-hidden="true">
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+         id="openTradesModal" tabindex="-1" aria-labelledby="openTradesModal" aria-hidden="true">
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative modal-xl relative w-auto pointer-events-none">
-            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+            <div
+                class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                 <div class="flex items-start justify-between gap-3 p-5">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
@@ -189,9 +238,14 @@
                             <span id="account-number">876960</span>
                         </p>
                     </div>
-                    <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
-                        <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    <button type="button"
+                            class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white"
+                            data-bs-dismiss="modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="#000000" viewbox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clip-rule="evenodd"></path>
                         </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
@@ -205,6 +259,8 @@
     <div class="hidden mt-5" id="filters_div">
         @yield('filters')
     </div>
+    @include('backend.investment.include.reset_credit')
+
 @endsection
 @section('script')
     <script>
@@ -333,5 +389,43 @@
                 }
             });
         });
+
+                // Open confirmation modal on reset button click
+        $('body').on('click', '.reset-data-btn', function () {
+            userId = $(this).data('id'); // Get user ID from button
+             $('#reset_credit_login').text(userId); // Get user ID from button
+            $('#resetConfirmationModal').modal('show'); // Show the modal
+        });
+
+        // Handle confirmation button click
+        $('#confirmResetBtn').click(function () {
+            if (userId) {
+                const apiUrl = `{{ route('admin.reset.credit', ':id') }}`.replace(':id', userId); // API endpoint
+
+                // Make AJAX request to reset data
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Include CSRF token
+                    },
+                    success: function (response) {
+                        $('#resetConfirmationModal').modal('hide'); // Hide the modal
+{{--                        alert('Data has been successfully reset.');--}}
+                            tNotify('success', 'Data has been successfully reset');
+                       location.reload(); // Optionally reload the page
+                    },
+                    error: function (xhr) {
+                       $('#resetConfirmationModal').modal('hide');
+                       tNotify('warning', 'Failed to reset data. Please try again');
+
+
+                    }
+                    });
+                    }
+                    });
+
+
+
     </script>
 @endsection

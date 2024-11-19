@@ -63,7 +63,7 @@
     </div>
 </div>
 
-
+@include('backend.investment.include.reset_credit')
 @push('single-script')
     <script>
         (function ($) {
@@ -146,5 +146,40 @@
             });
         });
 
-    </script>
+
+        // Open confirmation modal on reset button click
+        $('body').on('click', '.reset-data-btn', function () {
+            userId = $(this).data('id'); // Get user ID from button
+             $('#reset_credit_login').text(userId); // Get user ID from button
+            $('#resetConfirmationModal').modal('show'); // Show the modal
+        });
+
+        // Handle confirmation button click
+        $('#confirmResetBtn').click(function () {
+            if (userId) {
+                const apiUrl = `{{ route('admin.reset.credit', ':id') }}`.replace(':id', userId); // API endpoint
+
+                // Make AJAX request to reset data
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Include CSRF token
+                    },
+                    success: function (response) {
+                        $('#resetConfirmationModal').modal('hide'); // Hide the modal
+{{--                        alert('Data has been successfully reset.');--}}
+                            tNotify('success', 'Data has been successfully reset');
+                       location.reload(); // Optionally reload the page
+                   },
+                   error: function (xhr) {
+                       $('#resetConfirmationModal').modal('hide');
+                       tNotify('warning', 'Failed to reset data. Please try again');
+
+
+                   }
+               });
+           }
+       });
+</script>
 @endpush

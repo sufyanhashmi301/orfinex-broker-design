@@ -377,9 +377,10 @@ class ForexAccountController extends GatewayController
     public function testForexAccount(Request $request)
     {
         $data = [
-            'login' => 874641
+            'login' => 601055
         ];
         $response = $this->forexApiService->getBalance($data);
+        dd($response);
 
             $reportFlag = 0;//(0 for all, 1 for buy, 2 for sell)
             $timeInSeconds = 360;

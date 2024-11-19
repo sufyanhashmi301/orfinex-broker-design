@@ -101,7 +101,7 @@ return [
             'password' => env('OLD_DB_PASSWORD', ''),
             // ... other configurations for the old database
         ],
-        'mt5_db' => [
+        'mt5_db2' => [
             'driver'    => 'mysql',
             'host'      => env('MT5_DB_HOST', '127.0.0.1'),
             'port'      => env('MT5_DB_PORT', '3306'),
@@ -114,7 +114,7 @@ return [
             'strict'    => true,
             'engine'    => null,
             'options'   => [
-                \PDO::ATTR_PERSISTENT => true, // Enable persistent connections
+                \PDO::ATTR_PERSISTENT => false, // Enable persistent connections
             ],
         ],
 

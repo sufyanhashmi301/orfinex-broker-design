@@ -31,7 +31,7 @@ class SumsubController extends Controller
 //                dd($testObject);
                 $applicantId = $testObject->createApplicant($externalUserId, $levelName);
 //                dd($applicantId);
-                $test = $testObject->getApplicantStatus($applicantId);
+//                $test = $testObject->getApplicantStatus($applicantId);
 //                dd($applicantId,$test);
                 $accessTokenInfo = $testObject->getAccessToken($externalUserId, $levelName);
 

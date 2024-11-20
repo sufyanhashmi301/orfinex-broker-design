@@ -38,7 +38,7 @@
 {{--                        {{ __('+452%') }}--}}
 {{--                    </div>--}}
                     <div class="w-full text-slate-900 dark:text-white text-xl font-medium">
-                        0
+                        {{user_balance()}}
                     </div>
                 </div>
             </div>

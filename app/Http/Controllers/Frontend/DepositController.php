@@ -186,7 +186,7 @@ class DepositController extends GatewayController
         $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
 
     }
-
+ /
     return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 }
 

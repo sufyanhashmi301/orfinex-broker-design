@@ -70,6 +70,7 @@ class ForexSchema extends Model
 		'demo_islamic',
 		'is_withdraw',
 		'is_ib_partner',
+		'ib_group_id',
 		'is_internal_transfer',
 		'is_external_transfer',
 		'is_bonus',
@@ -89,6 +90,10 @@ class ForexSchema extends Model
 	{
 		return $this->hasMany(ForexAccount::class);
 	}
+    public function ibGroup()
+    {
+        return $this->belongsTo(IbGroup::class, 'ib_group_id', 'id');
+    }
 
 	public function bonuses(){
 			return $this->belongsToMany(Bonus::class);

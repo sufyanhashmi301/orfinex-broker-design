@@ -64,8 +64,8 @@
             @endif
             @if(setting('enc_mode', 'end_to_end_encryption'))
             <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
-                <span class="toolTip onTop" style="line-height: 0" 
-                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">           
+                <span class="toolTip onTop" style="line-height: 0"
+                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">
                         <span id="lottie-container" style="display: inline-flex; width: 24px; height: 24px;"></span>
                 </span>
             </div>
@@ -168,7 +168,7 @@
 </div>
 @if(setting('kyc_verification','permission'))
     {{-- Kyc Info--}}
-    @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings', 'user.ticket*']))
+    @if(!Route::is(['webterminal', 'user.follower_access', 'user.provider_access', 'user.ratings', 'user.ticket*', 'user.kyc*']))
         <div class="md:block hidden">
             @include('frontend::user.include.__kyc_info')
         </div>

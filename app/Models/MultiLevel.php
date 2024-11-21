@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -46,10 +47,17 @@ class MultiLevel extends Model
 		'description',
 		'status'
 	];
-
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', true);
+    }
 	public function forexSchema()
 	{
 		return $this->belongsTo(ForexSchema::class, 'forex_scheme_id');
+	}
+	public function userIbRules()
+	{
+		return $this->hasMany(UserIbRule::class, 'multi_level_id');
 	}
 
     public function rebateRule()

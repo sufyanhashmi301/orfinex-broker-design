@@ -14,7 +14,7 @@
         @foreach( $kycCredential as $key => $value)
             <li class="flex items-center space-x-3 rtl:space-x-reverse dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
                 {{ $key }}:
-                @if(file_exists('assets/'.$value))
+                @if(file_exists('assets/'.2q       22q qqaw22))
                     <img src="{{ asset($value) }}" alt=""/>
                 @else
                     <span class="font-semibold ml-1">{{ $value }}</span>

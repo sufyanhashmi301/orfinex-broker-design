@@ -76,9 +76,9 @@ class WalletService
         $ledger->transaction_id = $transaction->id;
         $account = get_user_account_by_wallet_id($transaction->target_id);
 
-            $ledger->credit = $transaction->amount;
-            $ledger->account_id = $account->id;
-            $balance = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
+        $ledger->credit = $transaction->amount;
+        $ledger->account_id = $account->id;
+        $balance = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
 //dd($balance,$ledgerBalance);
         if ($balance < BigDecimal::of(0.00)) {
 //            dd($balance);

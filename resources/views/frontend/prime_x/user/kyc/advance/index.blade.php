@@ -20,9 +20,16 @@
     </div>
     @else
     {{-- Sumsub account verification --}}
-    <div id="sumsub-websdk-container"></div>
+    <div id="sumsub-websdk-container" class="basicTable_wrapper"></div>
     @endif
 </div>
+@endsection
+@section('style')
+    <style>
+        #sumsub-websdk-container iframe {
+            min-height: 100%;
+        }
+    </style>
 @endsection
 @section('script')
 

@@ -404,7 +404,6 @@ class WithdrawController extends Controller
             notify()->success('Reject successfully');
         }
 
-
             $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
             $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);
 

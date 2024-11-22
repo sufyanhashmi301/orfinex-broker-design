@@ -24,6 +24,13 @@
     @endif
 </div>
 @endsection
+@section('style')
+    <style>
+        #sumsub-websdk-container iframe {
+            min-height: calc(100vh - 140px);
+        }
+    </style>
+@endsection
 @section('script')
 
 <script>
@@ -43,7 +50,7 @@ const launchWebSdk = (accessToken) => {
     }).withOptions({ addViewportTag: false, adaptIframeHeight: true })
         .on('{{ __('idCheck.onApplicantStatusChanged') }}', (payload) => {
             console.log('{{ __('onStepCompleted') }}', payload);
-            if (payload.confirmed === true && '{{auth()->user()->kyc}}' === '0') {
+            if (payload.confirmed === true && '{{auth()->user()->kyc}}' < '4') {
                 $.ajax({
                     url: "{{ route('user.kyc.status') }}",
                     method: 'POST',
@@ -66,7 +73,7 @@ const launchWebSdk = (accessToken) => {
     snsWebSdkInstance.launch('#sumsub-websdk-container');
 }
 
-if ('{{auth()->user()->kyc}}' === '0' && '{{$sumsubstatus}}' === '1') {
+if ('{{auth()->user()->kyc}}' < '4' && '{{$sumsubstatus}}' === '1') {
     launchWebSdk('{{auth()->user()->kyc_token}}')
     // launchWebSdk('_act-sbx-jwt-eyJhbGciOiJub25lIn0.eyJqdGkiOiJfYWN0LXNieC1jMGQzMjg5MS05OTk5LTQzOGQtYjRjZC0xYmI5MjQ0ZmY4YzktdjIiLCJ1cmwiOiJodHRwczovL2FwaS5zdW1zdWIuY29tIn0.-v2')
 }

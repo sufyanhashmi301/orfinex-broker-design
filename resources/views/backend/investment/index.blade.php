@@ -9,12 +9,65 @@
         }
     </style>
 @endsection
+@section('filters')
+    <form id="filter-form" method="POST" action="{{ route('admin.forex-accounts.export',['type' => ($type === 'real' ? 'real' : 'all')]) }}">
+        @csrf
+        <div class="flex justify-between flex-wrap items-center">
+            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="text" name="login" id="login" class="form-control h-full" placeholder="Account Number">
+                </div>
+                <div class="flex-1 input-area relative">
+                    <select name="status" class="form-control h-full" id="status">
+                        <option value="">Status</option>
+                        <option value="success">Success</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Cancelled</option>
+                    </select>
+                </div>
+                <div class="flex-1 input-area relative">
+                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
+                </div>
+            </div>
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="input-area relative">
+                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                        {{ __('Filter') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+                <div class="input-area relative">
+                    <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
+                        <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+@endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
             {{ __('All :type Accounts',['type'=>ucfirst($type)]) }}
         </h4>
     </div>
+    <li class="nav-item !ml-auto">
+        <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+            <span class="flex items-center">
+                <span>{{ __('More') }}</span>
+                <iconify-icon icon="lucide:chevron-down" class="text-base ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
+            </span>
+        </a>
+    </li>
     <div class="innerMenu card p-4 mb-5">
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 gap-x-2">
             <div class="position-relative bg-slate-50 dark:bg-body rounded p-4">
@@ -149,7 +202,9 @@
             </div>
         </div>
     </div>
-
+    <div class="hidden mt-5" id="filters_div">
+        @yield('filters')
+    </div>
 @endsection
 @section('script')
     <script>
@@ -176,7 +231,17 @@
                 },
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.forex-accounts',['type'=>'real']) }}",
+                ajax: {
+                    url: "{{ route('admin.forex-accounts',['type'=>'real']) }}",
+                    data: function (d) {
+                        d.global_search = $('#global_search').val();
+                        d.login = $('#login').val();
+                        d.country = $('#country').val();
+                        d.status = $('#status').val();
+                        d.created_at = $('#created_at').val();
+                        d.tag = $('#tag').val();
+                    }
+                },
                 columns: [
                     {data: 'login', name: 'login'},
                     {data: 'username', name: 'username'},
@@ -191,6 +256,22 @@
                     {data: 'created_at', name: 'created_at'},
                     {data: 'action', name: 'action'},
                 ]
+            });
+
+            $('#country').select2({
+                placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute
+
+            });
+            $('#tag').select2({
+                placeholder: $('#tag').data('placeholder'), // Retrieve the placeholder text from the data attribute
+
+            });
+            $('#filter').click(function () {
+                table.draw();
+            });
+
+            $('#global_search').keyup(function() {
+                table.draw();
             });
 
             $('body').on('click', '.open-trades-modal', function(event) {
@@ -238,5 +319,19 @@
             });
 
         })(jQuery);
+
+        $(document).ready(function() {
+            $('.filter-toggle-btn').click(function() {
+                const $content = $('#filters_div');
+
+                if ($content.hasClass('hidden')) {
+                    $content.removeClass('hidden').slideDown();
+                } else {
+                    $content.slideUp(function() {
+                        $content.addClass('hidden');
+                    });
+                }
+            });
+        });
     </script>
 @endsection

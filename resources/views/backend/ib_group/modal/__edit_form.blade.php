@@ -11,6 +11,16 @@
         <textarea name="desc" class="form-control mb-0" rows="6" placeholder="Details">{{ old('desc', $ibGroup->desc) }}</textarea>
     </div>
     <div class="input-area">
+        <label for="forex_schema_id" class="form-label">{{ __('Attach Forex Schema (Optional)') }}</label>
+        <select name="forex_schema_id" id="forex_schema_id" class="form-control">
+            <option value="">{{ __('Select Forex Schema') }}</option>
+            @foreach($activeForexSchemas as $schema)
+                <option value="{{ $schema->id }}" @if($schema->ib_group_id == $ibGroup->id) selected @endif>{{ $schema->title }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="input-area">
         <div class="flex items-center space-x-7 flex-wrap">
             <label class="form-label !w-auto pt-0 !mb-0">
                 {{ __('Status:') }}

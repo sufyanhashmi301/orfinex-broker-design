@@ -19,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        \App\Events\IBDistributionEvent::class => [
+            \App\Listeners\ProcessIBDistribution::class,
+        ],
         UserReferred::class => [
             RewardUser::class,
         ],

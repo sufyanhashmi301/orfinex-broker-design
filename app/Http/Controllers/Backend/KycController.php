@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\KycLevelSlug;
 use App\Enums\KYCStatus;
 use App\Http\Controllers\Controller;
+use App\Exports\LevelTwoPendingExport;
+use App\Exports\LevelThreePendingExport;
+use App\Exports\RejectedKycExport;
+use App\Exports\AllKycExport;
 use App\Models\Kyc;
 use App\Models\KycLevel;
 use App\Models\Kyclevelsetting;
@@ -20,6 +24,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 
 class KycController extends Controller
@@ -206,9 +211,10 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
+            $filters = $request->only(['global_search', 'status',  'created_at']);
             $data = User::where('kyc', KYCStatus::Pending->value)
             ->latest('updated_at');
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', 'backend.kyc.include.__time')
@@ -226,9 +232,11 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
+            $filters = $request->only(['global_search', 'status',  'created_at']);
             $data = User::where('kyc_level3_credential','!=',NULL)
             ->where('kyc', KYCStatus::PendingLevel3->value)
             ->latest('updated_at');
+            $data->applyFilters($filters);
             //->get();
 
             return Datatables::of($data)
@@ -258,8 +266,9 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
+            $filters = $request->only(['global_search', 'status',  'created_at']);
             $data = User::where('kyc', KYCStatus::Rejected->value)->latest();
-
+            // $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', 'backend.kyc.include.__time')
@@ -432,8 +441,9 @@ class KycController extends Controller
     {
 
         if ($request->ajax()) {
+            $filters = $request->only(['global_search', 'status',  'created_at']);
             $data = User::whereNotNull('kyc_credential')->latest();
-
+            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', 'backend.kyc.include.__time')
@@ -446,5 +456,19 @@ class KycController extends Controller
         }
 
         return view('backend.kyc.all');
+    }
+
+    public function export(Request $request, $type)
+    {
+        switch ($type) {
+            case 'level2':
+                return Excel::download(new LevelTwoPendingExport($request), 'level2-pending-kyc.xlsx');
+            case 'level3':
+                return Excel::download(new LevelThreePendingExport($request), 'level3-pending-kyc.xlsx');
+            case 'rejected':
+               return Excel::download(new RejectedKycExport($request), 'rejected-kyc.xlsx');
+            default:
+                return Excel::download(new AllKycExport($request), 'all-kyc.xlsx');
+        }
     }
 }

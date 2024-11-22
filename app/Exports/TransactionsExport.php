@@ -29,7 +29,7 @@ class TransactionsExport implements FromQuery, WithHeadings, WithMapping
         $query = Transaction::query()
             ->applyFilters($filters);
     
-        return $query->select('user_id', 'tnx', 'type', 'target_id', 'pay_amount', 'final_amount','pay_currency','charge', 'description', 'status','created_at');
+        return $query->select('user_id', 'tnx', 'type', 'description', 'status','created_at');
 
     }
 

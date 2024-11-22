@@ -16,9 +16,12 @@ use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
+use App\Exports\DepositsHistoryExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+
 use Txn;
 use Validator;
 
@@ -183,7 +186,6 @@ class DepositController extends GatewayController
         $this->pushNotify('manual_deposit_request', $shortcodes, route('user.deposit.log'), $user->id);
 
     }
-
     return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 }
 
@@ -265,4 +267,8 @@ class DepositController extends GatewayController
 
         return view('frontend::deposit.log', compact('deposits'));
     }
+    public function export(Request $request)
+  {
+    return Excel::download(new DepositsHistoryExport($request), 'deposit-History.xlsx');
+  }
 }

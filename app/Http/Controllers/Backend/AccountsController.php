@@ -6,6 +6,8 @@ use App\Enums\ForexAccountStatus;
 use App\Enums\IBStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ForexAccount;
+use App\Exports\RealAccountExport;
+use App\Exports\DemoAccountExport;
 use App\Models\LeverageUpdate;
 use App\Models\ForexSchema;
 use App\Models\Invest;
@@ -22,6 +24,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class   AccountsController extends Controller
 {
@@ -49,13 +53,13 @@ class   AccountsController extends Controller
     {
 //        dd($request->all(),$type,$id);
         if ($request->ajax()) {
-
+//            $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
             if ($id) {
                 $data = ForexAccount::with('schema')->where('user_id', $id)->where('account_type', $type)->latest();
             } else {
                 $data = ForexAccount::query()->with('schema')->where('account_type', $type)->latest();
             }
-//dd($data);
+//            $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('ib_number', 'backend.user.include.__ib_number')
@@ -106,6 +110,17 @@ class   AccountsController extends Controller
             'unActiveAccounts' => $unActiveAccounts,
         ];
         return view('backend.investment.index', compact('data', 'type'));
+    }
+
+
+    public function export(Request $request, $type)
+    {
+        switch ($type) {
+            case 'real':
+                return Excel::download(new RealAccountExport($request), 'real-accounts.xlsx');
+            default:
+                return Excel::download(new DemoAcoountExport($request), 'demo-accounts.xlsx');
+        }
     }
 
 
@@ -287,16 +302,16 @@ class   AccountsController extends Controller
         return redirect()->back();
     }
 
-    
+
     public function pendingLeverage(Request $request)
     {
         $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
             ->where('status', 0)
             ->get();
-    
+
         return view('backend.investment.leverage.pending', compact('leverageUpdates'));
     }
-    
+
     public function handlePendingLeverage(Request $request)
 {
     // Validate the request

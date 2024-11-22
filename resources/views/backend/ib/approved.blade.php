@@ -6,7 +6,7 @@
     $riskProfileTags = getRiskProfileTag();
 @endphp
 @section('filters')
-    <form id="filter-form" method="POST" action="{{ route('admin.user.export',['type' => 'all']) }}">
+    <form id="filter-form" method="POST" action="{{ route('admin.ib.export',['type' => 'approved']) }}">
         @csrf
         <div class="flex justify-between flex-wrap items-center">
             <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">

@@ -28,6 +28,7 @@ use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\UserIbRuleController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 
@@ -81,7 +82,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
     });
     Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
-    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycaddBonusStatus'])->name('kyc.status');
+    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
 
@@ -104,6 +105,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
     Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
     Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
+    Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
+
+
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
@@ -113,12 +117,19 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
         Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
+        Route::post('log/export', [DepositController::class, 'export'])->name('log.export');
+
     });
 
     // Multi Level
     Route::group(['prefix' => 'multi-level/ib', 'as' => 'multi-level.ib.'], function () {
         Route::get('dashboard', [MultiLevelIBController::class, 'index'])->name('dashboard');
+        Route::get('rules', [MultiLevelIBController::class, 'rules'])->name('rules');
         Route::post('/get-schemes', [MultiLevelIBController::class, 'getSchemes'])->name('get.schemes');
+        Route::post('/get-scheme-rules', [MultiLevelIBController::class, 'getSchemeRules'])->name('get.scheme.rules');
+    });
+    Route::group(['prefix' => 'ib/rule', 'as' => 'ib.rule.'], function () {
+        Route::post('/store', [UserIbRuleController::class, 'store'])->name('store');
     });
 
     //Send Money
@@ -128,6 +139,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('/internal', 'sendMoneyInternal')->name('internal-view');
         Route::post('internal-now', 'sendMoneyInternalNow')->name('internal-now');
         Route::get('log', 'sendMoneyLog')->name('log');
+        Route::post('log/export', 'export')->name('log.export');
+
     });
 
     //User Wallet Management
@@ -147,6 +160,7 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::post('now', 'withdrawNow')->name('now');
         Route::get('log', 'withdrawLog')->name('log');
+        Route::post('log/export', 'export')->name('log.export');
     });
     //email check
     Route::get('exist/{email}', [UserController::class, 'userExist'])->name('exist');

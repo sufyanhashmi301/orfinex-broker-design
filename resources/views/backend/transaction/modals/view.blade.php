@@ -35,24 +35,20 @@
             <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
         </div>
     @endif
-    <br>
-
     <ul class="list-group mb-4">
-
-    @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
-        @foreach( json_decode($data->manual_field_data) as $key => $value)
-            <li class="list-group-item dark:text-slate-300 py-1 px-2 rounded border">
-                {{ $key }}:
-
-                @if($value != new stdClass())
-                    @if( file_exists('assets/'.$value))
-                        <img src="{{ asset($value) }}" alt=""/>
-                    @else
-                        <strong>{{ $value }}</strong>
+        @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
+            @foreach( json_decode($data->manual_field_data) as $key => $value)
+                <li class="list-group-item dark:text-slate-300 py-1 px-2 rounded border">
+                    <label for="" class="form-label">{{ $key }}:</label>
+                    @if($value != new stdClass())
+                        @if( file_exists('assets/'.$value))
+                            <img src="{{ asset($value) }}" alt=""/>
+                        @else
+                            <strong>{{ $value }}</strong>
+                        @endif
                     @endif
-                @endif
-            </li>
-        @endforeach
+                </li>
+            @endforeach
         @endif
     </ul>
 

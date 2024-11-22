@@ -6548,6 +6548,9 @@ textarea.form-control.is-invalid{
 .bg-opacity-\[0\.11\]{
   --tw-bg-opacity: 0.11;
 }
+.bg-opacity-10{
+  --tw-bg-opacity: 0.1;
+}
 .bg-opacity-20{
   --tw-bg-opacity: 0.2;
 }

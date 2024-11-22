@@ -55,6 +55,7 @@
                                         <td>
                                             <div class="badge bg-warning text-warning bg-opacity-30 capitalize">Pending</div>
                                         </td>
+                                        @can('list-action')
                                         <td>
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 @if ($update->status == 1)
@@ -94,6 +95,7 @@
                                                 @endif
                                             </div>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

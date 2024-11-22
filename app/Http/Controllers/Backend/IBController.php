@@ -30,6 +30,10 @@ class IBController extends Controller
 
     public function __construct(ForexApiService $forexApiService)
     {
+        $this->middleware('permission:ib-list|ib-action|ib-form-manage|advertisement-material-edit', ['only' => ['index', 'update','IbPendingList','IbApprovedList','IbRejectedList','IbAllList']]);
+         $this->middleware('permission:ib-list', ['only' => ['IbPendingList','IbApprovedList','IbRejectedList','IbAllList']]);
+         $this->middleware('permission:ib-form-manage', ['only' => ['saveForm']]);
+         $this->middleware('permission:ib-export', ['only' => ['export']]);
         $this->forexApiService = $forexApiService;
     }
 

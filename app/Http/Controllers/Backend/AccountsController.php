@@ -40,7 +40,7 @@ class   AccountsController extends Controller
     public function __construct(ForexApiService $forexApiService)
     {
         $this->forexApiService = $forexApiService;
-        $this->middleware('permission:investment-list');
+        $this->middleware('permission:accounts-list');
 
     }
 

@@ -51,6 +51,7 @@ class WithdrawController extends Controller
         $this->middleware('permission:withdraw-list|withdraw-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:withdraw-action', ['only' => ['withdrawAction', 'actionNow']]);
         $this->middleware('permission:withdraw-schedule', ['only' => ['schedule', 'scheduleUpdate']]);
+        $this->middleware('permission:withdraw-export', ['only' => ['export', 'pendingExport']]);
         $this->forexApiService = $forexApiService;
 
     }

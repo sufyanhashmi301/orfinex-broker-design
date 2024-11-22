@@ -32,9 +32,10 @@ class ForexSchemaController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:schema-list|schema-create|schema-edit', ['only' => ['index', 'store']]);
-//        $this->middleware('permission:schema-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:schema-edit', ['only' => ['edit', 'update']]);
+       $this->middleware('permission:schema-list|schema-create|schema-edit', ['only' => ['index', 'store']]);
+       $this->middleware('permission:schema-create', ['only' => ['create', 'store']]);
+       $this->middleware('permission:schema-edit', ['only' => ['edit', 'update']]);
+       $this->middleware('permission:schema-delete', ['only' => ['destroy']]);
     }
 
     /**

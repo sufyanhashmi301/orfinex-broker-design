@@ -1,52 +1,108 @@
 @extends('backend.links.index')
-@section('title')
-    {{ __('Platform Links') }}
+@section('page-title')
+    <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+        {{ __('Platform Links') }}
+    </h4>
+    <a href="javascript:;" class="btn btn-sm btn-dark inline-flex items-center justify-center" data-bs-toggle="modal" data-bs-target="#newPlatformLinkModal">
+        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
+        {{ __('Add New') }}
+    </a>
 @endsection
 @section('links-content')
-    <?php
-        $section = 'platform_links';
-        $fields = config('setting.platform_links');
-        //   dd($fields);
-    ?>
     <div class="card">
-        <div class="card-body p-6">
-            @include('backend.setting.site_setting.include.form.__open_action')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    @foreach($fields['elements']  as $key => $field)
-                        @if($key % 2 == 0)
-                            <div class="input-area">
-                                <label for="" class="form-label">{{ __($field['label']) }}</label>
-                                <div class="relative">
-                        @endif
-                        @if($field['type'] == 'checkbox')
-                            <input type="hidden" name="{{$field['name']}}" value="0">
-                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full flex items-center justify-center">
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="{{$field['name']}}" value="1" @if(oldSetting($field['name'],$section)) checked @endif class="sr-only peer">
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                </label>
-                            </span>
-                        @elseif($field['type'] == 'url')
-                            <input
-                                type="{{$field['type']}}"
-                                name="{{ $field['name'] }}"
-                                class="form-control !pl-16.5 {{ $errors->has($field['name']) ? 'has-error' : '' }}"
-                                value="{{oldSetting($field['name'],$section)}}"
-                                placeholder="URL"
-                            />
-                            <span class="absolute left-0 top-1/2 px-3 -translate-y-1/2 h-full border-r border-r-slate-200 dark:border-r-slate-700 dark:text-slate-300 flex items-center justify-center">
-                                {{ __('URL') }}
-                            </span>
-                        @else
-                            <input type="{{$field['type']}}" name="{{ $field['name'] }}" class="form-control !pr-24 @if($errors->has($field['name'])) has-error @endif" placeholder="URL" value="{{oldSetting($field['name'],$section)}}">
-                        @endif
-                        @if($key % 2 == 1)
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
+        <div class="card-body px-6 pt-3">
+            <div class="overflow-x-auto -mx-6 dashcode-data-table">
+                <span class=" col-span-8 hidden"></span>
+                <span class="  col-span-4 hidden"></span>
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="platformLink-dataTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                <th scope="col" class="table-th">{{ __('URL') }}</th>
+                                <th scope="col" class="table-th">{{ __('Platform') }}</th>
+                                <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                <th scope="col" class="table-th">{{ __('Action') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            @include('backend.setting.site_setting.include.form.__close_action')
+            </div>
         </div>
     </div>
+
+    {{--Modal for new platform link--}}
+    @include('backend.links.modal.__new_platform_link')
+
+    {{--Modal for update platform link--}}
+    @include('backend.links.modal.__edit_platform_link')
+
+    {{--Modal for delete platform link--}}
+    @include('backend.links.modal.__delete_platform_link')
+@endsection
+@section('script')
+    <script !src="">
+        (function ($) {
+            "use strict";
+            var table = $('#platformLink-dataTable').DataTable();
+            table.destroy();
+            var table = $('#platformLink-dataTable').DataTable({
+                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                searching: false,
+                lengthChange: false,
+                info: true,
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                    },
+                    search: "Search:"
+                },
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: "{{ route('admin.links.platform.index') }}",
+                columns: [
+                    {data: 'title', name: 'title'},
+                    {data: 'link', name: 'link'},
+                    {data: 'platform', name: 'platform'},
+                    {data: 'status', name: 'status'},
+                    {data: 'action', name: 'action'},
+                ]
+            });
+        })(jQuery);
+
+        $('body').on('click', '.editBtn', function (event){
+            "use strict";
+            event.preventDefault();
+            $('#edit-platform-body').empty();
+            var recordId = $(this).data('id');
+            var url = "{{ route('admin.links.platform.edit', ':id') }}".replace(':id', recordId);
+
+            $.get(url, function (response) {
+                $('#editPlatformLinkModal').modal('show');
+                $('#edit-platform-body').append(response);
+            });
+        });
+
+        $('body').on('click', '.deleteBtn', function (event) {
+            "use strict";
+            event.preventDefault();
+            var id = $(this).data('id');
+
+            var url = '{{ route("admin.links.platform.destroy", ":id") }}';
+            url = url.replace(':id', id);
+            $('#platformLinkDeleteForm').attr('action', url)
+
+            $('#deletePlatformLink').modal('show');
+
+        });
+    </script>
 @endsection

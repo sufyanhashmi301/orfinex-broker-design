@@ -1,6 +1,6 @@
 <!-- Confirmation Modal -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addNotesModal" tabindex="-1" aria-labelledby="addNotesModalLabel" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-start justify-between gap-3 p-5">
                 <div>
@@ -24,7 +24,7 @@
                     <div class="space-y-5">
                         <div class="input-area relative">
                             <label for="notes" class="form-label">{{ __('Note Description') }}</label>
-                            <textarea type="text" name="notes" class="form-control" rows="4" required></textarea>
+                            <textarea type="text" name="notes" class="form-control basicTinymce" rows="4" required></textarea>
                             <!-- Error Display -->
                             <div class="text-danger">
                                 @error('notes')

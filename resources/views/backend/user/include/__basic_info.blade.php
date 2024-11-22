@@ -33,8 +33,6 @@
                         </select>
                     </div>
 
-
-
                     <div class="input-area relative">
                         <label for="" class="form-label">{{ __('Phone:') }}</label>
                         <input type="text" name="phone" class="form-control" value="{{ safe($user->phone) }}" >
@@ -130,7 +128,7 @@
 
                     <div class="input-area relative lg:col-span-3">
                         <label for="" class="form-label">{{ __('Comment:') }}</label>
-                        <textarea type="text"  name="comment" class="form-control" rows="5"> {{ $user->comment }}</textarea>
+                        <textarea type="text"  name="comment" class="form-control basicTinymce" rows="5"> {{ $user->comment }}</textarea>
                     </div>
                     <div class="input-area relative text-right lg:col-span-3">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

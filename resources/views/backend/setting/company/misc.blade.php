@@ -33,7 +33,7 @@
                             <label class="form-label pt-0">
                                 {{ __($field['label']) }}
                             </label>
-                            <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
+                            <textarea name="{{ $field['name'] }}" class="form-control basicTinymce @if($errors->has($field['name'])) has-error @endif">
                                 {{oldSetting($field['name'],$section)}}
                             </textarea>
                         </div>
@@ -56,4 +56,24 @@
             @include('backend.setting.site_setting.include.form.__close_action')
         </div>
     </div>
+@endsection
+@section('script')
+    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
+    <script>
+
+        tinymce.init({
+            selector: 'textarea.basicTinymce',
+            height: 300,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+    </script>
 @endsection

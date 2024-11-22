@@ -5745,6 +5745,9 @@ textarea.form-control.is-invalid{
 .text-ellipsis{
   text-overflow: ellipsis;
 }
+.text-nowrap{
+  text-wrap: nowrap;
+}
 .whitespace-normal{
   white-space: normal;
 }

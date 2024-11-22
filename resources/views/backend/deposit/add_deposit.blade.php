@@ -90,7 +90,7 @@
                             <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text" name="amount" class="form-control !text-lg"
+                                    <input type="text" name="amount" class="form-control"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
                                            aria-describedby="basic-addon1">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
@@ -100,7 +100,7 @@
                             <div class="input-area col-span-12 conversion hidden">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text"  class="form-control !text-lg"
+                                    <input type="text"  class="form-control"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
                                            aria-describedby="basic-addon2">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
@@ -108,8 +108,11 @@
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
 {{--                            <div class="manual-row"></div>--}}
+                            <div class="input-area col-span-12">
+                                <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
+                                <textarea name="approval_cause" class="form-control basicTinymce" rows="5"></textarea>
+                            </div>
                             <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label opacity-0">{{ __('Auto Approve') }}</label>
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
                                         {{ __('Auto Approve') }}
@@ -122,10 +125,6 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="input-area col-span-12">
-                                <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
-                                <textarea name="approval_cause" class="form-control" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -382,18 +381,18 @@
 
                 });
                 $(document).ready(function() {
-            $('.filter-toggle-btn').click(function() {
-                const $content = $('#filters_div');
+                    $('.filter-toggle-btn').click(function() {
+                        const $content = $('#filters_div');
 
-                if ($content.hasClass('hidden')) {
-                    $content.removeClass('hidden').slideDown();
-                } else {
-                    $content.slideUp(function() {
-                        $content.addClass('hidden');
+                        if ($content.hasClass('hidden')) {
+                            $content.removeClass('hidden').slideDown();
+                        } else {
+                            $content.slideUp(function() {
+                                $content.addClass('hidden');
+                            });
+                        }
                     });
-                }
-            });
-        });
+                });
             // });
 
     </script>

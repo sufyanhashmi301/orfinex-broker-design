@@ -426,7 +426,6 @@
 @endsection
 @section('script')
     {{-- <script src="{{ asset('backend/js/choices.min.js') }}"></script> --}}
-
     <script>
         $(document).ready(function() {
             $("select.select2").select2({

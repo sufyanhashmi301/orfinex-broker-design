@@ -77,7 +77,7 @@
                             </div>
                             <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('Comments') }}</label>
-                                <textarea name="" class="form-control" rows="5"></textarea>
+                                <textarea name="" class="form-control basicTinymce" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">

@@ -106,52 +106,17 @@
                                         <tr>
                                             <th scope="col" class="table-th">{{ __('Date') }}</th>
                                             <th scope="col" class="table-th">{{ __('User') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                             <th scope="col" class="table-th">{{ __('Account') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Transaction') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                             <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
                                             <th scope="col" class="table-th">{{ __('Action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                                        <tr>
-                                            <td>Oct 08, 2024 08:54</td>
-                                            <td>
-                                                <a href="" class="flex">
-                                                    <span class="w-8 h-8 rounded-[100%] bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize ltr:mr-3 rtl:ml-3">
-                                                        NA
-                                                    </span>
-                                                    <div>
-                                                        <span class="text-sm text-slate-900 dark:text-white block capitalize">
-                                                            Sufyan9079
-                                                        </span>
-                                                        <span class="text-xs text-slate-500 dark:text-slate-300">
-                                                            sufyanhashmi301@gmail.com
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                            </td>
-                                            <td>8187660384</td>
-                                            <td>
-                                                <span class="text-slate-500 dark:text-slate-400">
-                                                    <span class="block font-medium text-slate-600 dark:text-slate-300">20 USD</span>
-                                                    <span class="block text-slate-500 text-xs">TID: 8HG654Pk32</span>
-                                                </span>
-                                            </td>
-                                            <td>USDT Test</td>
-                                            <td>
-                                                <div class="badge bg-warning text-warning bg-opacity-30 capitalize">
-                                                    Pending
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span type="button" data-id="" id="deposit-action">
-                                                    <button class="action-btn" data-bs-toggle="tooltip" title="" data-bs-original-title="Approval Process">
-                                                        <iconify-icon icon="lucide:eye"></iconify-icon>
-                                                    </button>
-                                                </span>
-                                            </td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -165,11 +130,25 @@
             </div>
         </div>
     </div>
+    @can('transaction-action')
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+            <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+                <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-body popup-body">
+                        <div class="popup-body-text deposit-action p-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('script')
     <script !src="">
         (function ($) {
             "use strict";
+
             var table = $('#dataTable')
                 .on('processing.dt', function (e, settings, processing) {
                     $('#processingIndicator').css('display', processing ? 'block' : 'none');
@@ -188,8 +167,51 @@
                         search: "Search:"
                     },
                     processing: true,
+                    serverSide: true,
                     autoWidth: false,
-                })
+                    ajax: {
+                        url: "{{ route('admin.withdraw.history') }}",
+                        data: function (d) {
+                            d.email = $('#email').val();
+                            d.status = $('#status').val();
+                            d.status = $('#status').val();
+                            d.created_at = $('#created_at').val();
+
+                        }
+                    },
+
+                    columns: [
+                        {data: 'created_at', name: 'created_at'},
+                        {data: 'username', name: 'username'},
+                        {data: 'tnx', name: 'tnx'},
+                        {data: 'target_id', name: 'target_id'},
+                        {data: 'amount', name: 'amount'},
+                        {data: 'charge', name: 'charge'},
+                        {data: 'method', name: 'method'},
+                        {data: 'status', name: 'status'},
+                        {data: 'action', name: 'action'},
+                    ]
+                });
+            $('#filter').click(function () {
+                table.draw();
+            });
+            $('body').on('click', '#deposit-action', function () {
+                $('.deposit-action').empty();
+
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function(response) {
+                        $('.deposit-action').append(response)
+                        imagePreview()
+                        $('#transaction-action-modal').modal('show');
+
+                    }
+                });
+            });
         })(jQuery);
+
+
     </script>
 @endsection

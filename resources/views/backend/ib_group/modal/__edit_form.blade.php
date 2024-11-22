@@ -8,7 +8,7 @@
     </div>
     <div class="input-area">
         <label for="" class="form-label">{{ __('Details (Optional)') }}</label>
-        <textarea name="desc" class="form-control mb-0" rows="6" placeholder="Details">{{ old('desc', $ibGroup->desc) }}</textarea>
+        <textarea name="desc" class="form-control basicTinymce mb-0" rows="6" placeholder="Details">{{ old('desc', $ibGroup->desc) }}</textarea>
     </div>
     <div class="input-area">
         <label for="forex_schema_id" class="form-label">{{ __('Attach Forex Schema (Optional)') }}</label>

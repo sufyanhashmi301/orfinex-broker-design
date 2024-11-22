@@ -19,11 +19,11 @@
                         <div class="space-y-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Title') }}</label>
-                                <input type="text" name="title" class="form-control" placeholder="Document Title">
+                                <input type="text" name="title" class="form-control" placeholder="Platform Title">
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Link') }}</label>
-                                <input type="url" name="link" class="form-control" placeholder="Document link">
+                                <input type="url" name="link" class="form-control" placeholder="Platform link">
                             </div>
                             <div class="input-area relative">
                                 <label for="" class="form-label">

@@ -33,4 +33,9 @@ class IbGroup extends Model
     {
         return $this->belongsToMany(MultiLevel::class, 'ib_group_multi_level', 'ib_group_id', 'multi_level_id'); // Update with your pivot table name if needed
     }
+
+    public function forexSchemas()
+    {
+        return $this->hasMany(ForexSchema::class, 'ib_group_id', 'id');
+    }
 }

@@ -38,7 +38,7 @@
                                 <p class="dark:text-slate-300 mb-1">
                                     {{ __('Sign up for a third-party mail server provider (SendGrid, Mailgun, etc.)') }}
                                 </p>
-                                <a href="https://sendgrid.com/en-us" class="inline-flex items-center text-sm font-medium dark:text-white">
+                                <a href="https://sendgrid.com/en-us" class="inline-flex items-center text-sm font-medium dark:text-white" target="_blank">
                                     {{ __('Sign up Now') }}
                                     <iconify-icon class="ml-1" icon="lucide:external-link"></iconify-icon>
                                 </a>

@@ -38,7 +38,7 @@
                                 <p class="dark:text-slate-300 mb-1">
                                     {{ __('Go to Gmail settings and enable IMAP to allow third-party access') }}
                                 </p>
-                                <a href="https://sendgrid.com/en-us" class="inline-flex items-center text-sm font-medium dark:text-white">
+                                <a href="https://workspace.google.com/intl/en-US/gmail/" class="inline-flex items-center text-sm font-medium dark:text-white" target="_blank">
                                     {{ __('View Gmail Settings') }}
                                     <iconify-icon class="ml-1" icon="lucide:external-link"></iconify-icon>
                                 </a>

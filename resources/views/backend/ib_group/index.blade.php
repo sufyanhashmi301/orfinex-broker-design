@@ -22,6 +22,7 @@
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Group Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Schema') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
@@ -36,6 +37,17 @@
                                             <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Active') }}</div>
                                         @else
                                             <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">{{ __('Disabled') }}</div>
+                                        @endif
+                                    </td>
+                                    <td class="table-td">
+                                        @if($ibGroup->forexSchemas->isNotEmpty())
+                                            <ul>
+                                                @foreach($ibGroup->forexSchemas as $schema)
+                                                    <li>{{ $schema->title }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <span>{{ __('No schemas attached') }}</span>
                                         @endif
                                     </td>
                                     <td class="table-td">

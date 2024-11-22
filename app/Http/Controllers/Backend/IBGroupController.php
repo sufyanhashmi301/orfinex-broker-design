@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\ForexSchema;
 use App\Models\IbGroup;
 use App\Traits\NotifyTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -21,8 +22,13 @@ class IBGroupController extends Controller
      */
     public function index()
     {
-        $ibGroups = IbGroup::paginate(10); // Get paginated results
-        return view('backend.ib_group.index', compact('ibGroups')); // Return the view with data
+        $ibGroups = IbGroup::with('forexSchemas')->paginate(10); // Load related forexSchemas
+        $activeForexSchemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
+        ->orderBy('priority', 'asc')
+            ->get();
+        return view('backend.ib_group.index', compact('ibGroups','activeForexSchemas')); // Return the view with data
+
+
     }
 
     /**
@@ -43,10 +49,10 @@ class IBGroupController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation for creating a new IbGroup
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:ib_groups,name',
             'status' => 'required|boolean',
+            'forex_schema_id' => 'nullable|exists:forex_schemas,id',
         ]);
 
         if ($validator->fails()) {
@@ -54,13 +60,26 @@ class IBGroupController extends Controller
             return redirect()->back();
         }
 
-        // Create the new IbGroup record
-        $status = $request->input('status', 1); // Default status to active (1) if not provided
-        $ibGroup = IbGroup::create($request->only(['name', 'desc']) + ['status' => $status]);
+        $forexSchemaId = $request->input('forex_schema_id');
+//        dd($forexSchemaId);
+        if ($forexSchemaId) {
+            $forexSchema = ForexSchema::find($forexSchemaId);
+            if ($forexSchema->ib_group_id) {
+                notify()->error(__('This Forex Schema is already attached to IB Group: ') . $forexSchema->ibGroup->name, 'Error');
+                return redirect()->back();
+            }
+        }
 
+        $ibGroup = IbGroup::create($request->only(['name', 'desc']) + ['status' => $request->input('status', 1)]);
+
+        if ($forexSchemaId) {
+
+            $forexSchema->update(['ib_group_id' => $ibGroup->id]); // Attach the schema
+        }
         notify()->success($ibGroup->name . ' ' . __('IB Group Created'));
         return redirect()->route('admin.ib-group.index');
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -75,7 +94,10 @@ class IBGroupController extends Controller
             notify()->error(__('IB Group not found'), 'Error');
             return redirect()->route('admin.ib-group.index');
         }
-        return view('backend.ib_group.modal.__edit_form', compact('ibGroup'));
+        $activeForexSchemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
+        ->orderBy('priority', 'asc')
+            ->get();
+        return view('backend.ib_group.modal.__edit_form', compact('ibGroup','activeForexSchemas'));
     }
 
     /**
@@ -87,10 +109,10 @@ class IBGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validation for updating an existing IbGroup
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:ib_groups,name,' . $id,
             'status' => 'required|boolean',
+            'forex_schema_id' => 'nullable|exists:forex_schemas,id',
         ]);
 
         if ($validator->fails()) {
@@ -104,7 +126,17 @@ class IBGroupController extends Controller
             return redirect()->route('admin.ib-group.index');
         }
 
-        // Update the IB Group with the provided data
+        $forexSchemaId = $request->input('forex_schema_id');
+        if ($forexSchemaId) {
+            $forexSchema = ForexSchema::find($forexSchemaId);
+            if ($forexSchema->ib_group_id && $forexSchema->ib_group_id != $ibGroup->id) {
+                notify()->error(__('This Forex Schema is already attached to IB Group: ') . $forexSchema->ibGroup->name, 'Error');
+                return redirect()->back();
+            }
+
+            $forexSchema->update(['ib_group_id' => $ibGroup->id]); // Reattach the schema
+        }
+
         $ibGroup->update($request->only(['name', 'desc', 'status']));
 
         notify()->success($ibGroup->name . ' ' . __('IB Group Updated'));

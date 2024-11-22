@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editNotesModal" tabindex="-1" aria-labelledby="editNotesModalLabel" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="flex items-start justify-between gap-3 p-5">
                 <div>
@@ -23,7 +23,7 @@
                     @method('PUT')
                     <div class="mb-3">
                         <label for="edit_notes" class="form-label">{{ __('Note Description') }}</label>
-                        <textarea name="notes" class="form-control" id="edit_notes" rows="4" required></textarea>
+                        <textarea name="notes" class="form-control basicTinymce" id="edit_notes" rows="4" required></textarea>
                         <!-- Error Display -->
                         <div class="text-danger">
                             @error('notes')

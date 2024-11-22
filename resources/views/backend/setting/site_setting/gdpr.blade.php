@@ -45,7 +45,7 @@
                                 <label class="form-label pt-0">
                                     {{ __($field['label']) }}
                                 </label>
-                                <textarea name="{{ $field['name'] }}" class="form-control @if($errors->has($field['name'])) has-error @endif" rows="6">
+                                <textarea name="{{ $field['name'] }}" class="form-control basicTinymce @if($errors->has($field['name'])) has-error @endif" rows="6">
                                     {{oldSetting($field['name'],$section)}}
                                 </textarea>
                             </div>

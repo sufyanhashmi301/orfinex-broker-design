@@ -20,7 +20,7 @@
                         @csrf
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
                             <div class="col-span-2">
-                                <div class="input-area">
+                                <div class="input-area lg:w-1/2 max-w-full">
                                     <label class="form-label" for="">{{ __('Ranking Icon:') }}</label>
                                     <div class="wrap-custom-file">
                                         <input type="file" name="icon" id="icon" accept=".gif, .jpg, .png"/>
@@ -121,7 +121,7 @@
                             <div class="col-span-2">
                                 <div class="input-area">
                                     <label for="" class="form-label">{{ __('Description:') }}</label>
-                                    <textarea name="description" class="form-control" rows="5" placeholder="Description">
+                                    <textarea name="description" class="form-control basicTinymce" rows="5" placeholder="Description">
                                         {{ old('description') }}
                                     </textarea>
                                 </div>

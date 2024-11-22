@@ -25,7 +25,7 @@
                         </div>
                         <div class="web-form-field full-field">
                             <label class="form-label">Issue Description</label>
-                            <textarea id="description" class="form-control" name="desc" rows="4" style="height: 80px"></textarea>
+                            <textarea id="description" class="form-control basicTinymce" name="desc" rows="4" style="height: 80px"></textarea>
                         </div>
                         <div class="web-form-field full-field">
                             <label class="form-label">Attach File</label>

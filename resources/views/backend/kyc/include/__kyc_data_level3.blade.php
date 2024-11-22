@@ -12,10 +12,11 @@
 <div class="p-6 pt-0">
     <ul class="list-item space-y-3 h-full overflow-x-auto">
         @foreach( $kycCredential as $key => $value)
-            <li class="flex items-center space-x-3 rtl:space-x-reverse dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
-                {{ $key }}:
+            <li class="dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
+                <span class="font-medium mb-2">{{ $key }}:</span>
                 @if(file_exists('assets/'.$value))
-                    <img src="{{ asset($value) }}" alt=""/>
+                    <a href="{{ asset($value) }}" class="btn-link" target="_blank">{{ $value }}</a>
+                    {{--<img src="{{ asset($value) }}" alt=""/>--}}
                 @else
                     <span class="font-semibold ml-1">{{ $value }}</span>
                 @endif

@@ -4,7 +4,7 @@
     aria-labelledby="sendEmailModalLabel"
     aria-hidden="true"
 >
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative rounded-lg shadow">
                 <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-700">
@@ -33,7 +33,7 @@
                         </div>
                         <div class="site-input-area relative">
                             <label for="" class="form-label">{{ __('Email Details') }}</label>
-                            <textarea name="message" class="form-control" rows="5"></textarea>
+                            <textarea name="message" class="form-control basicTinymce" rows="5"></textarea>
                         </div>
 
                         <div class="input-area text-right">

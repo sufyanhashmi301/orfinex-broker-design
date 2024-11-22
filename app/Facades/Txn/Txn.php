@@ -534,7 +534,7 @@ class Txn
 
 
             if (!$deductionApplied) {
-                // If deduction fails, return fa lse or handle error
+                // If deduction fails, return false or handle error
                 return false;
             }
         }
@@ -566,11 +566,27 @@ class Txn
         if ($deductionStatus === 'Deducted') {
             return true; // Deduction already applied
         }
+        $targetId = $transaction->target_id;
 
         // Apply deduction based on the target type (Forex or Wallet)
         if ($transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+        $totalAmount = BigDecimal::of($transaction->final_amount);
+        $forexApiService = new ForexApiService();
+        $balance = $forexApiService->getValidatedBalance(['login' => $targetId]);
+//        dd($totalAmount,$balance);
+        if ($totalAmount->compareTo($balance) > 0) {
+            notify()->error(__('Insufficient Balance in Your Forex Account'), 'Error');
+            return false;
+        }
             return $this->deductForexAccount($transaction);
         } elseif ($transaction->target_type == TxnTargetType::Wallet->value) {
+        $wallet = get_user_account_by_wallet_id($targetId, $transaction->user_id);
+        $balance = BigDecimal::of($wallet->amount);
+        $totalAmount = BigDecimal::of($transaction->final_amount);
+        if ($totalAmount->compareTo($balance) > 0) {
+            notify()->error(__('Insufficient Balance in Your Wallet'), 'Error');
+            return false;
+        }
             return $this->deductWalletAccount($transaction);
         }
 
@@ -596,8 +612,8 @@ class Txn
 
         $forexApiService = new ForexApiService();
         $withdrawResponse = $forexApiService->balanceOperation($data);
-
-        if ($withdrawResponse['success']) {
+//        dd($withdrawResponse);
+        if ($withdrawResponse['success'] && $withdrawResponse['result']['responseCode'] == 10009) {
             // Mark deduction as applied
             $manualFieldData = json_decode($transaction->manual_field_data, true);
             $manualFieldData['Deduction Status'] = [
@@ -614,8 +630,7 @@ class Txn
         } else {
             // Notify admin and log the error
             notify()->error(__('Insufficient Balance in the Forex Account'), 'Error');
-            Log::error("Forex deduction failed for transaction ID {$transaction->id}: Insufficient balance");
-
+//            Log::error("Forex deduction failed for transaction ID {$transaction->id}: Insufficient balance");
             return false;
         }
     }

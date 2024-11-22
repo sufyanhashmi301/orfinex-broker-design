@@ -161,7 +161,9 @@
                                         {{ safe($user->username) }}
                                     </td>
                                     <td class="table-td">
-                                        {{ safe($user->email) }}
+                                        <span class="lowercase">
+                                            {{ safe($user->email) }}
+                                        </span>
                                     </td>
                                     <td class="table-td">
                                         <strong>{{ $currencySymbol . $user->balance }}</strong>

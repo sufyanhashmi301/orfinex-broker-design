@@ -17,6 +17,7 @@
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Type') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -58,6 +59,7 @@
                     {data: 'created_at', name: 'created_at'},
                     {data: 'tnx', name: 'tnx'},
                     {data: 'type', name: 'type'},
+                    {data: 'target_id', name: 'target_id'},
                     {data: 'final_amount', name: 'final_amount'},
                     {data: 'method', name: 'method'},
                     {data: 'status', name: 'status'},

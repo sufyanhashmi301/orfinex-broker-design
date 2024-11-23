@@ -9,6 +9,16 @@ class LeaderboardRanking extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'leaderboard_rankings_category_id',
+        'ranking',
+        'user_name',
+        'profit',
+        'equity',
+        'account_size',
+        'gain',
+    ];
+
     public function leaderboardRankingsCategory() {
         return $this->belongsTo(leaderboardRankingsCategory::class);
     }

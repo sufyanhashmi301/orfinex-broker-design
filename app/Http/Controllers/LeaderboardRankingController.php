@@ -24,7 +24,17 @@ class LeaderboardRankingController extends Controller
      */
     public function create()
     {
-        //
+        LeaderboardRanking::create([
+            'leaderboard_rankings_category_id' => 0,
+            'ranking' => LeaderboardRanking::max('ranking') + 1,
+            'user_name' => 'New User',
+            'profit' => '0',
+            'equity' => '0',
+            'account_size' => '0',
+            'gain' => '0%',
+        ]);
+        notify('Leaderboard ranking created successfully!', 'Success');
+        return redirect()->back();
     }
 
     /**
@@ -35,7 +45,9 @@ class LeaderboardRankingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        LeaderboardRanking::where('id', $request->id)->update($request->except('_token'));
+        notify('Leaderboard ranking updated successfully!', 'Success');
+        return redirect()->back();
     }
 
     /**
@@ -80,6 +92,8 @@ class LeaderboardRankingController extends Controller
      */
     public function destroy(LeaderboardRanking $leaderboardRanking)
     {
-        //
+        $leaderboardRanking->delete();
+        notify('Leaderboard ranking deleted successfully!', 'Success');
+        return redirect()->back();
     }
 }

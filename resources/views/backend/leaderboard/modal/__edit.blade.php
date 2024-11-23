@@ -5,7 +5,7 @@
                 <div class="flex items-start justify-between gap-3 p-5">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
-                            {{ __('Edit ') }}
+                            {{ __('Edit Leaderboard Ranking') }}
                             <span id="modalTitle"></span>
                         </h3>
                     </div>
@@ -17,22 +17,49 @@
                     </button>
                 </div>
                 <div class="p-6 pt-3">
-                    <form action="" method="post">
+                    <form action="{{ route('admin.leaderboard-rankings.store') }}" method="post">
+                        @csrf
                         <div class="space-y-5">
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('Title') }}</label>
-                                <input type="text" name="" id="titleInput" class="form-control" readonly>
+                                <label for="" class="form-label">{{ __('Ranking') }}</label>
+                                <input type="text" name="ranking" id="ranking-input" class="form-control">
                             </div>
                             <div class="input-area">
-                                <label for="" class="form-label">{{ __('User') }}</label>
-                                <select name="" class="select2 form-control" data-placeholder="Select User">
-                                    <option value="1">{{ __('Jagroop D') }}</option>
-                                    <option value="2">{{ __('Diego C') }}</option>
-                                    <option value="3">{{ __('Mayank S') }}</option>
-                                    <option value="4">{{ __('Kai S') }}</option>
-                                    <option value="5">{{ __('Ranger A') }}</option>
+                                <label for="" class="form-label">{{ __('Name') }}</label>
+                                <input type="text" name="user_name" id="user_name-input" class="form-control">
+                            </div>
+                            
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Profit') }}</label>
+                                <input type="text" name="profit" id="profit-input" class="form-control">
+                            </div>
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Equity') }}</label>
+                                <input type="text" name="equity" id="equity-input" class="form-control">
+                            </div>
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Account Size') }}</label>
+                                <input type="text" name="account_size" id="account_size-input" class="form-control">
+                            </div>
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Gain') }}</label>
+                                <input type="text" name="gain" id="gain-input" class="form-control">
+                            </div>
+
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Category') }}</label>
+                                <select name="leaderboard_rankings_category_id" class="select2  form-control" id="category-input" data-placeholder="Select Category">
+                                    @foreach ($rankings_categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
+                            
+                            <input type="hidden" value="" name="id" id="ranking_id-input">
+      
+
+
+                            
                         </div>
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
@@ -53,3 +80,5 @@
         </div>
     </div>
 </div>
+
+

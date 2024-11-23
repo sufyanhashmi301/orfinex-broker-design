@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('leaderboard_rankings', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('leaderboard_rankings_id');
+            $table->unsignedBigInteger('leaderboard_rankings_category_id')->nullable();
             $table->integer('ranking');
             $table->string('user_name');
-            $table->decimal('profit', 8, 2);
-            $table->decimal('equity', 8, 2);
+            $table->string('profit');
+            $table->string('equity');
             $table->string('account_size');
             $table->string('gain');
 

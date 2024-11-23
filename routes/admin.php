@@ -62,6 +62,7 @@ use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\LeaderboardBadgeController;
+use App\Http\Controllers\LeaderboardRankingController;
 use App\Models\LeaderboardBadge;
 
 /*
@@ -172,7 +173,9 @@ Route::middleware(['2fa_admin'])->group(function () {
     // leaderboards
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
     Route::post('/leaderboard-badges/store', [LeaderboardBadgeController::class, 'store'])->name('leaderboard-badge.store');
-
+    Route::post('/leaderboard-rankings/store', [LeaderboardRankingController::class, 'store'])->name('leaderboard-rankings.store');
+    Route::get('/leaderboard-rankings/create', [LeaderboardRankingController::class, 'create'])->name('leaderboard-rankings.create');
+    Route::delete('/leaderboard-rankings/delete/{leaderboardRanking}', [LeaderboardRankingController::class, 'destroy'])->name('leaderboard-rankings.delete');
 
 // =============================== Optimization ===============================
 

@@ -17,6 +17,12 @@ class LeaderboardBadgesSeeder extends Seeder
      */
     public function run()
     {
+
+        DB::table('leaderboard_badges')->truncate();
+        DB::table('leaderboard_rankings_categories')->truncate();
+        DB::table('leaderboard_rankings')->truncate();
+
+        // leaderboard badges Seeder
         $data = [
             [
                 'title' => 'Highest Payout',
@@ -92,7 +98,54 @@ class LeaderboardBadgesSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
         ];
-
         DB::table('leaderboard_badges')->insert($data);
+
+        // leaderboard ranking categories seeder
+        $data2 = [
+            [
+                'name' => '10k',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => '25k',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => '50k',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => '100k',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ];
+        DB::table('leaderboard_rankings_categories')->insert($data2);
+
+        // leaderboard rankings entries (fixed 5 for now)
+        $data3 = [];
+        for($i=0; $i < 5; $i++){
+
+            $temp = [
+                'leaderboard_rankings_category_id' => DB::table('leaderboard_rankings_categories')->first()->id,
+                'ranking' => $i + 1,
+                'user_name' => 'Debra',
+                'profit' => '$7188',
+                'equity' => '$9194',
+                'account_size' => '$7492',
+                'gain' => '7%',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ];
+
+            array_push($data3, $temp);
+  
+        }
+        DB::table('leaderboard_rankings')->insert($data3);
+        
+
     }
 }

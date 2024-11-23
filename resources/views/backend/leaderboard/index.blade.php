@@ -201,40 +201,36 @@
             {{ __('Best account in profit') }}
         </h4>
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
+
             <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary active">
+                <a href="{{ route('admin.leaderboard.index') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ empty(request('category')) ? 'active' : '' }}
+">
                     All
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    10k
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    25k
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    50k
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:;" class="btn btn-sm inline-flex justify-center btn-outline-primary">
-                    100k
-                </a>
-            </li>
+
+            @foreach ($rankings_categories as $category)
+                <li class="nav-item">
+                    <a href="{{ route('admin.leaderboard.index', ['category' => $category->id ]) }}"  class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request('category') == $category->id ? 'active' : '' }}">
+                        {{ $category->name }}
+                    </a>
+                </li>
+            @endforeach
+            
         </ul>
     </div>
 
+    {{-- Button to save changes --}}
+    <a href="{{ route('admin.leaderboard-rankings.create') }}" class="btn mb-3 save-badges-changes btn-primary float-right">Add Row</a>
+    <br style="clear: both">
     <div class="card mb-6">
         <div class="card-body p-6 pt-3">
             <!-- BEGIN: Company Table -->
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden ">
+                        {{-- {{dd($rankings)}} --}}
+                        @if(count($rankings) > 0)
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
@@ -244,77 +240,45 @@
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account size') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gain %') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Category') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="table-td">{{ 1 }}</td>
-                                    <td class="table-td">{{ __('Debra') }}</td>
-                                    <td class="table-td">{{ __('$7188') }}</td>
-                                    <td class="table-td">{{ __('$9194') }}</td>
-                                    <td class="table-td">{{ __('$7492') }}</td>
-                                    <td class="table-td">{{ __('7%') }}</td>
-                                    <td class="table-td">
-                                        <button class="action-btn" type="button">
-                                            <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="table-td">{{ 2 }}</td>
-                                    <td class="table-td">{{ __('Debra') }}</td>
-                                    <td class="table-td">{{ __('$7188') }}</td>
-                                    <td class="table-td">{{ __('$9194') }}</td>
-                                    <td class="table-td">{{ __('$7492') }}</td>
-                                    <td class="table-td">{{ __('7%') }}</td>
-                                    <td class="table-td">
-                                        <button class="action-btn" type="button">
-                                            <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="table-td">{{ 3 }}</td>
-                                    <td class="table-td">{{ __('Debra') }}</td>
-                                    <td class="table-td">{{ __('$7188') }}</td>
-                                    <td class="table-td">{{ __('$9194') }}</td>
-                                    <td class="table-td">{{ __('$7492') }}</td>
-                                    <td class="table-td">{{ __('7%') }}</td>
-                                    <td class="table-td">
-                                        <button class="action-btn" type="button">
-                                            <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="table-td">{{ 4 }}</td>
-                                    <td class="table-td">{{ __('Debra') }}</td>
-                                    <td class="table-td">{{ __('$7188') }}</td>
-                                    <td class="table-td">{{ __('$9194') }}</td>
-                                    <td class="table-td">{{ __('$7492') }}</td>
-                                    <td class="table-td">{{ __('7%') }}</td>
-                                    <td class="table-td">
-                                        <button class="action-btn" type="button">
-                                            <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="table-td">{{ 5 }}</td>
-                                    <td class="table-td">{{ __('Debra') }}</td>
-                                    <td class="table-td">{{ __('$7188') }}</td>
-                                    <td class="table-td">{{ __('$9194') }}</td>
-                                    <td class="table-td">{{ __('$7492') }}</td>
-                                    <td class="table-td">{{ __('7%') }}</td>
-                                    <td class="table-td">
-                                        <button class="action-btn" type="button">
-                                            <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @foreach ($rankings as $ranking)
+                                    <tr class="leaderboard-ranking">
+                                        <td class="table-td rank-field">{{ $ranking->ranking }}</td>
+                                        <td class="table-td user_name-field">{{ $ranking->user_name }}</td>
+                                        <td class="table-td profit-field">{{ $ranking->profit }}</td>
+                                        <td class="table-td equity-field">{{ $ranking->equity }}</td>
+                                        <td class="table-td account_size-field">{{ $ranking->account_size }}</td>
+                                        <td class="table-td gain-field">{{ $ranking->gain }}</td>
+                                        @if (empty($ranking->leaderboardRankingsCategory->id))
+                                            <td class="table-td category-field" data-value="0">-</td>
+                                        @else
+                                            <td class="table-td category-field" data-value="{{ $ranking->leaderboardRankingsCategory->id }}">{{ $ranking->leaderboardRankingsCategory->name }}</td>
+                                        @endif
+                                        <td class="table-td">
+                                            <button class="rankings-action-btn" data-id="{{ $ranking->id }}" type="button" data-bs-toggle="modal" data-bs-target="#editLeaderBoardModal">
+                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                            </button>
+                                            <form style="display: inline" action="{{ route('admin.leaderboard-rankings.delete', ['leaderboardRanking' => $ranking->id]) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="ml-3" data-id="{{ $ranking->id }}" type="button">
+                                                    <iconify-icon icon="lucide:trash"></iconify-icon>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                
+                              
                             </tbody>
                         </table>
+                        @else
+                            <center>No Leaderboard Data</center>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -326,6 +290,7 @@
 @endsection
 @section('script')
 
+    {{-- Badges Module  --}}
     <script>
         $('.field').on('keyup', function(){
             $('.save-badges-changes').removeAttr('disabled')
@@ -371,22 +336,28 @@
 
     </script>
 
+    {{-- Rankings Module --}}
     <script>
 
+        $('.rankings-action-btn').on('click', function() {
+            let ranking_container = $(this).parents('.leaderboard-ranking')
+            let rank = ranking_container.find('.rank-field').text()
+            let user_name = ranking_container.find('.user_name-field').text()
+            let profit = ranking_container.find('.profit-field').text()
+            let equity = ranking_container.find('.equity-field').text()
+            let account_size = ranking_container.find('.account_size-field').text()
+            let gain = ranking_container.find('.gain-field').text()
+            let category = ranking_container.find('.category-field').attr('data-value')
 
+            $('#ranking-input').val(rank)
+            $('#user_name-input').val(user_name)
+            $('#profit-input').val(profit)
+            $('#equity-input').val(equity)
+            $('#account_size-input').val(account_size)
+            $('#gain-input').val(gain)
+            $('#category-input').val(category).trigger('change');
+            $('#ranking_id-input').val($(this).attr('data-id'))
+        })
 
-        // $(document).ready(function() {
-        //     // When the "Open Modal" button is clicked
-        //     $('.editBtn').click(function () {
-
-        //         var title = $(this).data('title');
-
-        //         $('#modalTitle').text(title);
-        //         $('#titleInput').val(title);
-
-        //         $('#editLeaderBoardModal').modal('show');
-
-        //     });
-        // })
     </script>
 @endsection

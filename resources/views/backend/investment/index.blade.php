@@ -99,9 +99,8 @@
                     <div class="flex-1 input-area relative">
                         <select name="status" class="form-control h-full" id="status">
                             <option value="">Status</option>
-                            <option value="success">Success</option>
-                            <option value="pending">Pending</option>
-                            <option value="failed">Cancelled</option>
+                            <option value="active">active</option>
+                            <option value="archive">archive</option>
                         </select>
                     </div>
                     <div class="flex-1 input-area relative">
@@ -110,14 +109,14 @@
                 </div>
                 <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                     <div class="input-area relative">
-                        <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                             {{ __('Filter') }}
                         </button>
                     </div>
                     @can('accounts-export')
                     <div class="input-area relative">
-                        <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <button type="export" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                             {{ __('Export') }}
                         </button>
@@ -227,7 +226,6 @@
                     data: function (d) {
                         d.global_search = $('#global_search').val();
                         d.login = $('#login').val();
-                        d.country = $('#country').val();
                         d.status = $('#status').val();
                         d.created_at = $('#created_at').val();
                         d.tag = $('#tag').val();
@@ -310,5 +308,18 @@
             });
 
         })(jQuery);
+        $(document).ready(function() {
+                    $('.filter-toggle-btn').click(function() {
+                        const $content = $('#filters_div');
+
+                        if ($content.hasClass('hidden')) {
+                            $content.removeClass('hidden').slideDown();
+                        } else {
+                            $content.slideUp(function() {
+                                $content.addClass('hidden');
+                            });
+                        }
+                    });
+                });
     </script>
 @endsection

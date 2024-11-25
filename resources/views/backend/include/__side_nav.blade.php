@@ -430,7 +430,7 @@
                     </a>
                 </li>
                 @endcan
-                @can('rebute-rules-list')
+                @can('rebate-rules-list')
                 <li class="">
                     <a href="{{ route('admin.rebate-rules.index') }}" class="{{ isActive('admin.rebate-rules*') }}">
                         {{ __('Rebate Rules') }}

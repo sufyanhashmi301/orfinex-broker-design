@@ -59,17 +59,25 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Accounts Management', 'name' => 'accounts-list'],
             ['category' => 'Accounts Management', 'name' => 'leverage-list'],
-            ['category' => 'Accounts Management', 'name' => 'list-action'],
+            ['category' => 'Accounts Management', 'name' => 'accounts-action'],
+            ['category' => 'Accounts Management', 'name' => 'leverage-action'],
             ['category' => 'Accounts Management', 'name' => 'accounts-export'],
 
             ['category' => 'Transaction Management', 'name' => 'transaction-list'],
             ['category' => 'Transaction Management', 'name' => 'transaction-action'],
             ['category' => 'Transaction Management', 'name' => 'transaction-export'],
 
+            ['category' => 'Partnership Levels Management', 'name' => 'levels-list'],
+
             ['category' => 'Partnership Symbols', 'name' => 'symbols-list'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-create'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-edit'],
             ['category' => 'Partnership Symbols', 'name' => 'symbol-group-delete'],
+
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-list'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
 
             ['category' => 'Deposit Management', 'name' => 'automatic-gateway-manage'],
             ['category' => 'Deposit Management', 'name' => 'manual-gateway-manage'],

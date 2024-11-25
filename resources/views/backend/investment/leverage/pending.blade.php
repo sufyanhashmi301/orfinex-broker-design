@@ -55,7 +55,7 @@
                                         <td>
                                             <div class="badge bg-warning text-warning bg-opacity-30 capitalize">Pending</div>
                                         </td>
-                                        @can('list-action')
+                                        @can('leverage-action')
                                         <td>
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 <button type="button" data-id="{{ $update->id }}" data-action="approve" class="btn btn-sm btn-light inline-flex items-center leverageAction">

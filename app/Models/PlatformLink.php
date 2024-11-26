@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class PlatformLink extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'link', 'platform', 'status'];
+    protected $fillable = ['title', 'link', 'platform', 'os', 'status'];
 }

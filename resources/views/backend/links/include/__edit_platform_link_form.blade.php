@@ -29,6 +29,19 @@
                 @endforeach
             </select>
         </div>
+        <div class="input-area relative">
+            <label for="" class="form-label">
+                {{ __('Operating System') }}
+            </label>
+            <select name="os" class="form-control">
+                <option value="window" @selected($platformLink->os == 'window')>{{ __('Window') }}</option>
+                <option value="mac" @selected($platformLink->os == 'mac')>{{ __('MAC') }}</option>
+                <option value="android" @selected($platformLink->os == 'android')>{{ __('Android') }}</option>
+                <option value="ios" @selected($platformLink->os == 'ios')>{{ __('iOS') }}</option>
+                <option value="android_apk" @selected($platformLink->os == 'android_apk')>{{ __('Android APK') }}</option>
+                <option value="web" @selected($platformLink->os == 'web')>{{ __('Web') }}</option>
+            </select>
+        </div>
         <div class="input-area">
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto pt-0">

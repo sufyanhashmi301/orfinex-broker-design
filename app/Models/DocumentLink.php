@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class DocumentLink extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'link', 'status'];
+    protected $fillable = ['title', 'link', 'slug', 'is_deleteable', 'status'];
+
 }

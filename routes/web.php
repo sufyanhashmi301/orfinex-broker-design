@@ -283,7 +283,8 @@ Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers
 
 
 Route::get('user/agreements', function () {
-    return view('frontend::user.setting.agreements.index');
+    $documentLinks = App\Models\DocumentLink::where('status', 1)->get();
+    return view('frontend::user.setting.agreements.index', compact('documentLinks'));
 })->name('user.agreements');
 
 Route::get('user/margin-account', function () {

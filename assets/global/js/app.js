@@ -791,9 +791,6 @@
     grabCursor: true
   });
 
-  // Dragula for Kanban
-  dragula([document.getElementById("todo"), document.getElementById("progress"), document.getElementById("done")]);
-
   // Step From
   $("#example-basic").steps({
     headerTag: "h3",

@@ -17,6 +17,7 @@ use App\Models\LevelReferral;
 use App\Models\LeverageUpdate;
 use App\Models\Schema;
 use App\Models\User;
+use App\Models\PlatformLink;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Services\ForexApiService;
 use App\Rules\ForexLoginBelongsToUserGeneral;
@@ -371,7 +372,10 @@ class ForexAccountController extends GatewayController
             ->orderBy('balance', 'desc')
             ->get();
 
-        return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts'));
+        $activePlatform = setting('active_trader_type', 'features');
+        $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
+
+        return view('frontend::user.forex.log', compact('realForexAccounts', 'demoForexAccounts', 'archiveForexAccounts', 'platformLinks'));
     }
 
     public function testForexAccount(Request $request)

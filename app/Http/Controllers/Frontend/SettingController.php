@@ -8,6 +8,7 @@ use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
+use App\Models\UserLanguage;
 
 class SettingController extends Controller
 {
@@ -159,5 +160,36 @@ class SettingController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    public function communication()
+    {
+        $user = \Auth::user();
+        $selectedLanguage = UserLanguage::where('user_id', $user->id)->first()->language ?? 'english';
+
+        return view('frontend::user.setting.communication.index', compact('selectedLanguage'));
+    }
+
+    public function updateLanguage(Request $request)
+    {
+        $request->validate([
+            'language' => 'required',
+        ]);
+
+        $user = \Auth::user();
+        $userLanguage = UserLanguage::where('user_id', $user->id)->first();
+
+        if ($userLanguage) {
+            $userLanguage->language = $request->language;
+            $userLanguage->save();
+        } else {
+            UserLanguage::create([
+                'user_id' => $user->id,
+                'language' => $request->language,
+            ]);
+        }
+
+        notify()->success(__('Language Selected successfully'));
+        return redirect()->back();
     }
 }

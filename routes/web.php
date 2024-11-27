@@ -205,9 +205,8 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
 
-        Route::get('/communication', function () {
-            return view('frontend::user.setting.communication.index');
-        })->name('communication');
+        Route::get('/communication', 'communication')->name('communication');
+        Route::post('/communication-language', 'updateLanguage')->name('communication.language');
     });
 });
 

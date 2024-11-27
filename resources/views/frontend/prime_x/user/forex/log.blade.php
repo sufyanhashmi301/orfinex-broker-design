@@ -66,6 +66,57 @@
         </div>
     </div>
 
+    <h4 class="font-medium text-xl capitalize text-slate-900 my-5">
+        {{ __('Download Platform') }}
+    </h4>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        @foreach($platformLinks as $platformLink)
+            <div class="card p-4">
+                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                    <div class="flex-1 flex items-center space-x-2 rtl:space-x-reverse">
+                        <div class="flex-none">
+                            @switch($platformLink->os)
+                                @case('window')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:window-sharp"></iconify-icon>
+                                @break
+                                @case('mac')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:app-store-ios"></iconify-icon>
+                                @break
+                                @case('android')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="ion:logo-google-playstore"></iconify-icon>
+                                @break
+                                @case('ios')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:apple"></iconify-icon>
+                                @break
+                                @case('android_apk')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:android"></iconify-icon>
+                                @break
+                                @case('web')
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="mdi:web"></iconify-icon>
+                                @break
+                                @default()
+                                <iconify-icon class="text-2xl dark:text-slate-300" icon="lucide:app-window"></iconify-icon>
+                            @endswitch
+                        </div>
+                        <div class="flex-1">
+                        <span class="block text-slate-600 text-sm font-semibold dark:text-slate-300">
+                            {{ $platformLink->title }}
+                        </span>
+                            <span class="block font-normal text-xs text-slate-500">
+                            {{ __('for') . ' ' . $platformLink->os }}
+                        </span>
+                        </div>
+                    </div>
+                    <div class="flex-none">
+                        <a href="{{ $platformLink->link }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
     <!-- Modal for Account details -->
     @include('frontend::.user.forex.modal.__trade')
 

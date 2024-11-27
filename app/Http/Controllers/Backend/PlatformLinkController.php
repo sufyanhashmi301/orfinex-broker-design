@@ -63,6 +63,7 @@ class PlatformLinkController extends Controller
             'title' => 'required',
             'link' => 'required',
             'platform' => 'required',
+            'os' => 'required',
             'status' => 'required',
         ]);
 
@@ -75,6 +76,7 @@ class PlatformLinkController extends Controller
             'title' => $input['title'],
             'link' => $input['link'],
             'platform' => $input['platform'],
+            'os' => $input['os'],
             'status' => $input['status'],
         ];
 
@@ -120,6 +122,7 @@ class PlatformLinkController extends Controller
             'title' => 'required',
             'link' => 'required',
             'platform' => 'required',
+            'os' => 'required',
             'status' => 'required',
         ]);
 
@@ -133,6 +136,7 @@ class PlatformLinkController extends Controller
             'title' => $input['title'],
             'link' => $input['link'],
             'platform' => $input['platform'],
+            'os' => $input['os'],
             'status' => $input['status'],
         ];
 

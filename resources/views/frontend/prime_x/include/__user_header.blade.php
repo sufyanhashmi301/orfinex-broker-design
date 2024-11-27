@@ -81,11 +81,11 @@
                                 <span>{{auth()->user()->full_name}}</span><br>
                                 <span class="flex items-center justify-end text-slate-400 text-sm font-normal">
                                     {{ $user->rank->ranking }}
-                                    <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
+                                    <iconify-icon class="text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
                                 </span>
                             </div>
                         </div>
-                        <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 border-2" style="border-color: #FED000;">
+                        <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 border-2 border-primary">
                             <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
                         </div>
                     </button>

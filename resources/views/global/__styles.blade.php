@@ -286,4 +286,7 @@
     .dark .tickets-list__container li.current {
         background-color: rgba({{ implode(' ', getColorFromSettings('base_color_dark')) }} / var(--tw-bg-opacity));
     }
+    .fill-primary {
+        fill: rgba({{ implode(' ', getColorFromSettings('primary_color')) }} / var(--tw-bg-opacity));
+    }
 </style>

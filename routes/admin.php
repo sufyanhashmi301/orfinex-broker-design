@@ -577,6 +577,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.setting.customization.dynamic_content');
     })->name('dynamicContent');
 
+    Route::get('leads', function () {
+        $tags = App\Models\RiskProfileTag::where('status', true)->get();
+        return view('backend.lead.index', compact('tags'));
+    })->name('customerLead');
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');;

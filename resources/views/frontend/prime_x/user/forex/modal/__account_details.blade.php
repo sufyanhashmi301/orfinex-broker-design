@@ -2,7 +2,7 @@
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative bg-white rounded-lg shadow dark:bg-dark">
-                <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600">
+                <div class="flex items-center justify-between rounded-t p-5">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize" id="account-info-account_name">
                             {{ __('Account Title') }}
@@ -19,34 +19,56 @@
                     </button>
                 </div>
                 <div class="p-6 space-y-4">
-                    <ul class="account-details-list divide-y divide-slate-100 dark:divide-slate-700 h-full">
-                        <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">{{ __('Server') }} :</span>
-                            <span class="ml-auto dark:text-white">
-                                <span id="account-info-server"></span>
-                            </span>
-                        </li>
-                        <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">{{ __('Leverage') }} :</span>
+                    <ul class="account-details-list h-full">
+                        <li class="flex items-baseline relative overflow-hidden py-3">
+                            <span class="font-medium dark:text-white">{{ __('Leverage') }}</span>
+                            <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                             <span class="ml-auto dark:text-white">
                                 1:<span id="account-info-leverage" class="dropdown-update-leverage"
                                         data-login="" data-id=""
                                         data-action="{{ route('user.forex.get.leverage') }}"></span>
                             </span>
                         </li>
-                        <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">{{ __('Balance') }} :</span>
+                        <li class="flex items-baseline relative overflow-hidden py-3">
+                            <span class="font-medium dark:text-white">{{ __('Balance') }}</span>
+                            <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                             <span class="ml-auto dark:text-white" id="account-info-balance">16.45</span>
                         </li>
-                        <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">{{ __('Free Margin') }} :</span>
+                        <li class="flex items-baseline relative overflow-hidden py-3">
+                            <span class="font-medium dark:text-white">{{ __('Free Margin') }}</span>
+                            <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                             <span class="ml-auto dark:text-white" id="account-info-free-margin">24.68</span>
                         </li>
-                        <li class="flex items-center py-3">
-                            <span class="font-medium dark:text-white">{{ __('Equity') }} :</span>
+                        <li class="flex items-baseline relative overflow-hidden py-3">
+                            <span class="font-medium dark:text-white">{{ __('Equity') }}</span>
+                            <span class="flex-1 h-full border-b border-dashed mx-1"></span>
                             <span class="ml-auto dark:text-white">
                                 <span id="account-info-equity">24.68</span>
                             </span>
+                        </li>
+                        <li class="flex items-center py-3">
+                            <div class="flex-1 flex items-baseline mr-2">
+                                <span class="font-medium dark:text-white">{{ __('Server') }}</span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="ml-auto dark:text-white">
+                                    <span id="account-info-server"></span>
+                                </span>
+                            </div>
+                            <button type="button" class="action-btn copyBtn" data-target="account-info-server">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
+                        </li>
+                        <li class="flex items-center py-3">
+                            <div class="flex-1 flex items-baseline mr-2">
+                                <span class="font-medium dark:text-white">{{ __('Login') }}</span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="ml-auto dark:text-white">
+                                    <span id="account-info__login"></span>
+                                </span>
+                            </div>
+                            <button type="button" class="action-btn copyBtn" data-target="account-info__login">
+                                <iconify-icon icon="lucide:copy"></iconify-icon>
+                            </button>
                         </li>
                     </ul>
                 </div>

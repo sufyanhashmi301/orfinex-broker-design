@@ -38,4 +38,9 @@ class RiskProfileTag extends Model
     {
         return $this->belongsToMany(User::class, 'risk_profile_tag_user');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'risk_profile_tag_user');
+    }
 }

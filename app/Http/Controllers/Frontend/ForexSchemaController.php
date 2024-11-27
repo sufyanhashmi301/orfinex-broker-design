@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\Schema;
 use App\Models\User;
+use App\Models\PlatformLink;
 use App\Traits\ForexApiTrait;
 
 class ForexSchemaController extends Controller
@@ -25,7 +26,10 @@ class ForexSchemaController extends Controller
             ->get();
 //        dd($schemas);
 
-        return view('frontend::forex_schema.index', compact('schemas'));
+        $activePlatform = setting('active_trader_type', 'features');
+        $platformLinks = PlatformLink::where('platform', $activePlatform)->where('status', 1)->get();
+
+        return view('frontend::forex_schema.index', compact('schemas', 'platformLinks'));
     }
 
     public function schemaPreview($id)

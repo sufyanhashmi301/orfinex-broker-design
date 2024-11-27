@@ -16,6 +16,7 @@
                 <div class="p-6">
                     <form action="{{ route('admin.links.document.store') }}" method="post">
                         @csrf
+                        <input type="hidden" name="is_deleteable" value="1">
                         <div class="space-y-5">
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Title') }}</label>

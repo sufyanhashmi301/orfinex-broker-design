@@ -16,50 +16,34 @@
             </div>
         @endif
     </div>
-    @include('backend.setting.plugin.include.__menu')
+    {{--@include('backend.setting.plugin.include.__menu')--}}
 
-    <div class="col-span-12">
-        <div class="card">
-            <div class="card-body p-6 space-y-4">
-                <p class="paragraph text-xs dark:text-slate-300">
-                    <iconify-icon class="text-sm mr-2 text-warning" icon="lucide:info"></iconify-icon>{{ __('You can') }}
-                    <strong>{{ __('Enable or Disable') }}</strong> {{ __('any of the plugin') }}
-                </p>
-                @foreach($plugins as $plugin)
-                    <div class="single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
-                        <div class="gateway-name flex items-center gap-2">
-                            <div class="gateway-icon mr-4">
-                                <img class="h-7" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+        @foreach($plugins as $plugin)
+            <div class="card border hover:shadow-lg">
+                <div class="card-header items-center noborder !p-4">
+                    <img class="inline-block h-10" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
+                    <button type="button" class="action-btn cursor-pointer editPlugin dark:text-slate-300" data-id="{{$plugin->id}}">
+                        <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                    </button>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-base font-medium dark:text-white mr-1">{{ $plugin->name }}</h4>
+                        @if($plugin->status)
+                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                {{ __('Activated') }}
                             </div>
-                            
-                            <div class="gateway-title">
-                                <h4 class="text-sm">{{ $plugin->name }}</h4>
-                                <p class="text-xs dark:text-slate-300">{{ $plugin->description }}</p>
+                        @else
+                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                {{ __('DeActivated') }}
                             </div>
-                        </div>
-                        <div class="gateway-right flex items-center gap-2">
-                            <div class="gateway-status">
-                                @if($plugin->status)
-                                    <div class="badge bg-success text-success bg-opacity-30 capitalize">
-                                        {{ __('Activated') }}
-                                    </div>
-                                @else
-                                    <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
-                                        {{ __('DeActivated') }}
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="gateway-edit">
-                                <a type="button" class="action-btn cursor-pointer editPlugin dark:text-slate-300" data-id="{{$plugin->id}}">
-                                    <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                                </a>
-                            </div>
-                        </div>
+                        @endif
                     </div>
-                @endforeach
-
+                    <p class="text-sm dark:text-slate-300">{{ $plugin->description }}</p>
+                </div>
             </div>
-        </div>
+        @endforeach
     </div>
 
     <!-- Modal for Edit Plugin -->

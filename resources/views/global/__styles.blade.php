@@ -28,7 +28,7 @@
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menus .navItem, .dark .sidebar-menu > li .icon-arrow, .mobileUserInfo > *, .sidebarCloseIcon {
+    .dark .sidebar-menus .navItem, .dark .sidebar-menu > li .icon-arrow, .dark .mobileUserInfo > *, .dark .sidebarCloseIcon {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }

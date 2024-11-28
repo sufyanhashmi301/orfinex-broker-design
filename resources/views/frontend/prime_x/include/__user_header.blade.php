@@ -146,7 +146,7 @@
                 @endauth
                 <!-- Notifications Dropdown area -->
 
-                <div class="relative">
+                <div class="md:block hidden relative">
                     <select name="language" class="form-control !py-1 min-w-max" onchange="window.location.href=this.options[this.selectedIndex].value;">
                         @foreach(\App\Models\Language::where('status',true)->get() as $lang)
                             <option value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>

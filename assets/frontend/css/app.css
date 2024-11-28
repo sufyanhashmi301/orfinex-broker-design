@@ -15951,6 +15951,9 @@ ul.custom-list ul li{
   .md\:min-h-\[300px\]{
     min-height: 300px;
   }
+  .md\:w-auto{
+    width: auto;
+  }
   .md\:w-\[calc\(100\%-320px\)\]{
     width: calc(100% - 320px);
   }

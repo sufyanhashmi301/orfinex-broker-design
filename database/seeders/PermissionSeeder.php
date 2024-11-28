@@ -146,6 +146,33 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Groups', 'name' => 'customer-group-edit'],
             ['category' => 'Customer Groups', 'name' => 'customer-group-delete'],
 
+            ['category' => 'Document Links Setting', 'name' => 'document-link-list'],
+            ['category' => 'Document Links Setting', 'name' => 'document-link-create'],
+            ['category' => 'Document Links Setting', 'name' => 'document-link-edit'],
+            ['category' => 'Document Links Setting', 'name' => 'document-link-delete'],
+
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-list'],
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-create'],
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-edit'],
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-delete'],
+
+            ['category' => 'Company Settings', 'name' => 'company-setting'],
+            ['category' => 'Company Settings', 'name' => 'company-edit'],
+            ['category' => 'Company Settings', 'name' => 'misc-setting'],
+            ['category' => 'Company Settings', 'name' => 'misc-edit'],
+            ['category' => 'Company Settings', 'name' => 'company-permissions-setting'],
+            ['category' => 'Company Settings', 'name' => 'company-permissions-edit'],
+
+            ['category' => 'Departments Setting', 'name' => 'departments-list'],
+            ['category' => 'Departments Setting', 'name' => 'department-create'],
+            ['category' => 'Departments Setting', 'name' => 'department-edit'],
+            ['category' => 'Departments Setting', 'name' => 'department-delete'],
+
+            ['category' => 'Designations Setting', 'name' => 'designations-list'],
+            ['category' => 'Designations Setting', 'name' => 'designation-create'],
+            ['category' => 'Designations Setting', 'name' => 'designation-edit'],
+            ['category' => 'Designations Setting', 'name' => 'designation-delete'],
+
 
         ];
 

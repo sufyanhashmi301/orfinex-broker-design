@@ -3,10 +3,12 @@
     {{ __('Designations') }}
 @endsection
 @section('title-btn')
+@can('designation-create')
     <a href="#" class="btn btn-sm btn-primary inline-flex items-center justify-center addDesignation">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
+@endcan
 @endsection
 @section('company-content')
 
@@ -40,9 +42,15 @@
         </div>
     </div>
     <!-- Modal for Delete deleteDepartment -->
+    @can('designation-create')
     @include('backend.designations.include.__create')
+    @endcan
+    @can('designation-edit')
     @include('backend.designations.include.__edit')
+    @endcan
+    @can('designation-delete')
     @include('backend.designations.include.__delete')
+    @endcan
     <!-- Modal for Delete deleteDepartment-->
 @endsection
 @section('organization-script')

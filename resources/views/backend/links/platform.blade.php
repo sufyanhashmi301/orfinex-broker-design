@@ -3,10 +3,12 @@
     <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
         {{ __('Platform Links') }}
     </h4>
+    @can('platform-link-create')
     <a href="javascript:;" class="btn btn-sm btn-dark inline-flex items-center justify-center" data-bs-toggle="modal" data-bs-target="#newPlatformLinkModal">
         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
+    @endcan
 @endsection
 @section('links-content')
     <div class="card">
@@ -37,13 +39,17 @@
     </div>
 
     {{--Modal for new platform link--}}
+    @can('platform-link-create')
     @include('backend.links.modal.__new_platform_link')
-
+    @endcan
     {{--Modal for update platform link--}}
+    @can('platform-link-edit')
     @include('backend.links.modal.__edit_platform_link')
-
+    @endcan
     {{--Modal for delete platform link--}}
+    @can('platform-link-delete')
     @include('backend.links.modal.__delete_platform_link')
+    @endcan
 @endsection
 @section('script')
     <script !src="">

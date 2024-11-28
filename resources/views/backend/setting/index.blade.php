@@ -31,21 +31,25 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['company-setting', 'misc-setting', 'company-permissions-setting', 'departments-list', 'designations-list'])
                     <li>
                         <a href="{{ route('admin.settings.company') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Company') }}
                         </a>
                     </li>
+                    @endcanany
                     <li>
                         <a href="{{ route('admin.country.all') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Country') }}
                         </a>
                     </li>
+                    @canany(['document-link-list','platform-link-list'])
                     <li>
                         <a href="{{ route('admin.links.document.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Doc & Links') }}
                         </a>
                     </li>
+                    @endcanany
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Social Logins') }}

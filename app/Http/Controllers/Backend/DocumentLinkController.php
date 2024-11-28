@@ -10,6 +10,16 @@ use DataTables;
 
 class DocumentLinkController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:document-link-list', ['only' => ['index']]);
+         $this->middleware('permission:document-link-create', ['only' => ['store']]);
+         $this->middleware('permission:document-link-edit', ['only' => ['update']]);
+         $this->middleware('permission:document-link-delete', ['only' => ['destroy']]);
+    }
+    
+
     public function index(Request $request)
     {
 

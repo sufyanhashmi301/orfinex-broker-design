@@ -31,11 +31,11 @@
                     <div class="flex items-center justify-between mb-3">
                         <h4 class="text-base font-medium dark:text-white mr-1">{{ $plugin->name }}</h4>
                         @if($plugin->status)
-                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                            <div class="badge badge-success capitalize">
                                 {{ __('Activated') }}
                             </div>
                         @else
-                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                            <div class="badge badge-danger capitalize">
                                 {{ __('DeActivated') }}
                             </div>
                         @endif

@@ -62,14 +62,14 @@
                     </a>
                 @endif
             @endif
-            @if(setting('enc_mode', 'end_to_end_encryption'))
-            <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
-                <span class="toolTip onTop" style="line-height: 0"
-                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">
-                        <span id="lottie-container" style="display: inline-flex; width: 24px; height: 24px;"></span>
-                </span>
-            </div>
-            @endif
+{{--            @if(setting('enc_mode', 'end_to_end_encryption'))--}}
+{{--            <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">--}}
+{{--                <span class="toolTip onTop" style="line-height: 0"--}}
+{{--                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">--}}
+{{--                        <span id="lottie-container" style="display: inline-flex; width: 24px; height: 24px;"></span>--}}
+{{--                </span>--}}
+{{--            </div>--}}
+{{--            @endif--}}
             <!-- end vertcial -->
 
             <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">

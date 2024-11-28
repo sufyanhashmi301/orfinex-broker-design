@@ -36,11 +36,11 @@
                                     </td>
                                     <td class="table-td">
                                         @if( $kyc->status)
-                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                            <div class="badge badge-success capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                            <div class="badge badge-danger capitalize">
                                                 {{ __('Disabled') }}
                                             </div>
                                         @endif

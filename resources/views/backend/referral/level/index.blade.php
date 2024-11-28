@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                        <div class="badge badge-success capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
@@ -149,7 +149,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                        <div class="badge badge-success capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>
@@ -226,7 +226,7 @@
                                 </div>
                                 <div class="gateway-right flex items-center">
                                     <div class="gateway-status mr-7">
-                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                        <div class="badge badge-success capitalize">
                                             {{ $raw->bounty }}%
                                         </div>
                                     </div>

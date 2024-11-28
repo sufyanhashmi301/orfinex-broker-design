@@ -1,8 +1,8 @@
 @switch($status)
     @case(1)
-        <span class="badge bg-success text-success bg-opacity-30 capitalize">{{ __('Active') }}</span>
+        <span class="badge badge-success capitalize">{{ __('Active') }}</span>
         @break
     @case(2)
-        <span class="badge bg-danger text-danger bg-opacity-30 capitalize">{{ __('Inactive') }}</span>
+        <span class="badge badge-danger capitalize">{{ __('Inactive') }}</span>
         @break
 @endswitch

@@ -286,7 +286,7 @@
 {{--                                </td>--}}
 {{--                                <td>--}}
 {{--                                    <div--}}
-{{--                                        class="site-badge {{ $invest->capital_back ? 'success' : 'pending' }}">{{ $invest->capital_back ? 'Yes' : 'No' }}</div>--}}
+{{--                                        class="badge {{ $invest->capital_back ? 'badge-success' : 'badge-warning' }}">{{ $invest->capital_back ? 'Yes' : 'No' }}</div>--}}
 {{--                                </td>--}}
 {{--                                <td>--}}
 
@@ -297,7 +297,7 @@
 {{--                                                    id="hours{{ $invest->id }}"></span>H : <span--}}
 {{--                                                    id="minutes{{ $invest->id }}"></span>M : <span--}}
 {{--                                                    id="seconds{{ $invest->id }}"></span>S</strong>--}}
-{{--                                            <span class="site-badge primary-bg ms-2"--}}
+{{--                                            <span class="badge badge-primary ms-2"--}}
 {{--                                                  id="percentage{{ $invest->id }}"></span>--}}
 {{--                                        </div>--}}
 {{--                                        <div class="progress investment-timeline">--}}
@@ -347,7 +347,7 @@
 {{--                                        @endpush--}}
 
 {{--                                    @elseif($invest->status == App\Enums\InvestStatus::Completed)--}}
-{{--                                        <div class="site-badge success">{{ __('Completed') }}</div>--}}
+{{--                                        <div class="badge badge-success">{{ __('Completed') }}</div>--}}
 {{--                                        <div class="progress investment-timeline">--}}
 {{--                                            <div--}}
 {{--                                                class="progress-bar progress-bar-striped progress-bar-animated"--}}
@@ -355,9 +355,9 @@
 {{--                                                aria-valuemax="100" style="width: 100%"></div>--}}
 {{--                                        </div>--}}
 {{--                                    @elseif($invest->status == App\Enums\InvestStatus::Pending)--}}
-{{--                                        <div class="site-badge pending">{{ __('Pending') }}</div>--}}
+{{--                                        <div class="badge badge-warning">{{ __('Pending') }}</div>--}}
 {{--                                    @else--}}
-{{--                                        <div class="site-badge pending">{{ __('Canceled') }}</div>--}}
+{{--                                        <div class="badge badge-danger">{{ __('Canceled') }}</div>--}}
 {{--                                    @endif--}}
 {{--                                </td>--}}
 {{--                            </tr>--}}

@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="flex flex-wrap sm:justify-end justify-center items-center gap-3">
-                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
+                <div class="md:w-auto w-full text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
                     <p class="text-xl text-slate-900 dark:text-white mb-2">
                         ${{auth()->user()->totalForexBalance()}}
                     </p>
@@ -26,7 +26,7 @@
                         {{ __('Balance') }}
                     </p>
                 </div>
-                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
+                <div class="md:w-auto w-full text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
                     <p class="text-xl text-slate-900 dark:text-white mb-2">
                         ${{auth()->user()->totalForexEquity()}}
                     </p>
@@ -34,7 +34,7 @@
                         {{ __('Equity') }}
                     </p>
                 </div>
-                <div class="text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
+                <div class="md:w-auto w-full text-center bg-slate-50 dark:bg-body rounded py-3 px-6">
                     <p class="text-xl text-slate-900 dark:text-white mb-2">
                         0
                     </p>

@@ -97,7 +97,6 @@
             id="kyc-action-modal"
             tabindex="-1"
             aria-labelledby="kyc-action-modal"
-            aria-hidden="true"
         >
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">

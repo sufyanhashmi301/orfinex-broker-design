@@ -57,11 +57,11 @@
                                     </td>
                                     <td class="table-td">
                                         @if($ranking->status)
-                                            <div class="badge bg-warning text-warning bg-opacity-30 capitalize">
+                                            <div class="badge badge-warning capitalize">
                                                 {{ __('Active') }}
                                             </div>
                                         @else
-                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                            <div class="badge badge-danger capitalize">
                                                 {{ __('Disabled') }}
                                             </div>
                                         @endif

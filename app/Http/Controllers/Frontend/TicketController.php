@@ -25,7 +25,7 @@ class TicketController extends Controller
 
     }
 
-    public function new()
+    public function newTicket()
     {
         return view('frontend::ticket.new');
     }

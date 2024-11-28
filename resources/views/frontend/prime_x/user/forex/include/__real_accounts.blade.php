@@ -11,13 +11,13 @@
     <div class="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($realForexAccounts as $account)
             <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
-                <div class="card-body rounded-md px-3 pb-3">
-                    <div class="flex items-center justify-between border-b dark:border-slate-700 p-3 -mx-3">
-                        <h5 class="text-xl mb-0 dark:text-white">{{ $account->account_name }}</h5>
-                        @include('frontend::.user.forex.dropdown-menu')
-                    </div>
+                <div class="card-body">
                     <div class="grid-view-layout">
-                        <ul class="h-full">
+                        <div class="flex items-center justify-between border-b dark:border-slate-700 p-3">
+                            <h5 class="text-xl mb-0 dark:text-white">{{ $account->account_name }}</h5>
+                            @include('frontend::.user.forex.dropdown-menu')
+                        </div>
+                        <ul class="h-full p-3">
                             <li class="flex items-baseline relative overflow-hidden py-3">
                                 <span class="text-sm text-slate-600 dark:text-slate-300">
                                     {{ __('Number') }}
@@ -74,7 +74,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="list-view-layout">
+                    <div class="list-view-layout p-6">
                         <div class="flex items-center">
                             <span class="badge badge-primary  bg-opacity-30 capitalize">
                                 {{ ucfirst(data_get($account, 'account_type')) }}

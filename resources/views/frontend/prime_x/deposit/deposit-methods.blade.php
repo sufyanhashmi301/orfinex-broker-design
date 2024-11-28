@@ -11,7 +11,7 @@
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($gateways as $gateway)
             @php
-                $icon = $gateway->icon;
+                $icon = $gateway->logo;
                 if (null != $gateway->gateway_id && $gateway->icon == ''){
                     $icon = $gateway->gateway->logo;
                 }

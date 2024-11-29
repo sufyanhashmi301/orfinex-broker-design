@@ -1,3 +1,2 @@
-<strong> {{ $schema['title'] }}
-</strong>
+<strong> {{ $schema['title'] }}</strong>
 

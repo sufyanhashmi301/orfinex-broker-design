@@ -572,6 +572,7 @@ class SendMoneyController extends Controller
         $charge = setting('internal_send_charge', 'fee');
         return $chargeType === 'percentage' ? ($amount * ($charge / 100)) : $charge;
     }
+
     public function sendMoneyLog(Request $request)
     {
 
@@ -585,8 +586,9 @@ class SendMoneyController extends Controller
 
         return view('frontend::send_money.log', compact('sendMoneys'));
     }
+
     public function export(Request $request)
-  {
-    return Excel::download(new TransferHistoryExport($request), 'Transfer-History.xlsx');
-  }
+    {
+        return Excel::download(new TransferHistoryExport($request), 'Transfer-History.xlsx');
+    }
 }

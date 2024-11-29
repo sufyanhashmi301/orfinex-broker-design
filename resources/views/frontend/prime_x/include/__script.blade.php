@@ -68,6 +68,15 @@
         calculateHeights();
         // $(window).resize(calculateHeights);
     });
+
+    var animation = lottie.loadAnimation({
+        container: document.getElementById('secure-data'), // ID of the div where the animation will render
+        renderer: 'svg',  // Render the animation in SVG format
+        loop: true,       // Loop the animation
+        autoplay: true,   // Autoplay the animation
+        path: '{{ asset('global/json/secure.json') }}' // Path to your JSON file
+    });
+
 </script>
 
 @php

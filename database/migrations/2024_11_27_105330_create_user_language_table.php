@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('platform_links', function (Blueprint $table) {
+        Schema::create('user_languages', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('link');
-            $table->string('platform');
-            $table->string('os');
-            $table->integer('status')->default(0);
+            $table->unsignedBigInteger('user_id');
+            $table->string('language');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('platform_links');
+        Schema::dropIfExists('user_languages');
     }
 };

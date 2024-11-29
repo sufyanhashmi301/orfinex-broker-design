@@ -370,12 +370,13 @@ class WithdrawController extends Controller
 
             // Simulate balance operation via Forex API
             $withdrawResponse = $this->forexApiService->balanceOperation($data);
-            if ($withdrawResponse['success']) {
+            if ($withdrawResponse['success']  && $withdrawResponse['result']['responseCode'] == 10009) {
                 $isDeducted = true; // Deduction applied
                 Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, __('Pending Request'));
             } else {
                 // Mark the transaction as failed if deduction fails
                 Txn::update($txnInfo->tnx, TxnStatus::Failed, $txnInfo->user_id, __('Insufficient Withdrawable Balance'));
+                notify()->error(__('Insufficient Balance in Your account'), 'Error');
                 return redirect()->back()->withInput();
             }
         } else {

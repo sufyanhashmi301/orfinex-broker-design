@@ -58,8 +58,8 @@ class RegisteredUserController extends Controller
 
         $input = $request->all();
 
-        $level = $request->level;
-        $multiLevel = $level ? decrypt($request->level) : null;
+        $schemaID = $request->schema;
+        $schemaID = $schemaID ? decrypt($request->schema) : null;
         $location = getLocation();
         $phone = $isPhone ? ($isCountry ? explode(':', $input['country'])[1] : $location->dial_code).' '.$input['phone'] : $location->dial_code.' ';
         $country = $isCountry ? explode(':', $input['country'])[0] : $location->name;
@@ -100,7 +100,7 @@ class RegisteredUserController extends Controller
 //            $multiLevel = null;
 //        }
         //referral code
-        event(new UserReferred($request->cookie('invite'), $user,$multiLevel));
+        event(new UserReferred($request->cookie('invite'), $user,$schemaID));
 
         if (setting('referral_signup_bonus', 'permission') && (float) setting('signup_bonus', 'fee') > 0) {
             $signupBonus = (float) setting('signup_bonus', 'fee');

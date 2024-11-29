@@ -58,4 +58,11 @@ class RebateRule extends Model
 					->withPivot('id')
 					->withTimestamps();
 	}
+    public function ibGroups()
+    {
+        // Ensure this matches the pivot table's structure
+        return $this->belongsToMany(IbGroup::class, 'ib_group_rebate_rule', 'rebate_rule_id', 'ib_group_id');
+    }
+
+
 }

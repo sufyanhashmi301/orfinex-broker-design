@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,15 +26,41 @@ class IbGroup extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class, 'ib_group_user'); // Update with your pivot table if needed
-    }
-    public function multiLevels()
-    {
-        return $this->belongsToMany(MultiLevel::class, 'ib_group_multi_level', 'ib_group_id', 'multi_level_id'); // Update with your pivot table name if needed
+        return $this->belongsToMany(User::class, 'user_ib_rules')
+            ->withPivot('rebate_rule_id', 'sub_ib_share') // Add pivot attributes
+            ->withTimestamps();
     }
 
+    /**
+     * Multi-level relationship.
+     */
+    public function multiLevels()
+    {
+        return $this->belongsToMany(MultiLevel::class, 'ib_group_multi_level', 'ib_group_id', 'multi_level_id');
+    }
+
+    /**
+     * Forex Schemas relationship.
+     */
     public function forexSchemas()
     {
         return $this->hasMany(ForexSchema::class, 'ib_group_id', 'id');
     }
+
+    /**
+     * Rebate Rules relationship.
+     */
+    public function rebateRules()
+    {
+        return $this->belongsToMany(RebateRule::class, 'ib_group_rebate_rule', 'ib_group_id', 'rebate_rule_id');
+    }
+
+    /**
+     * User IB Rules relationship.
+     */
+    public function userIbRules()
+    {
+        return $this->hasMany(UserIbRule::class, 'ib_group_id');
+    }
 }
+

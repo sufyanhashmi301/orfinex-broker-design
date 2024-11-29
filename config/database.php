@@ -101,21 +101,18 @@ return [
             'password' => env('OLD_DB_PASSWORD', ''),
             // ... other configurations for the old database
         ],
-        'mt5_db' => [
+        'mt5_db2' => [
             'driver'    => 'mysql',
             'host'      => env('MT5_DB_HOST', '127.0.0.1'),
             'port'      => env('MT5_DB_PORT', '3306'),
             'database'  => env('MT5_DB_DATABASE', 'forge'),
             'username'  => env('MT5_DB_USERNAME', 'forge'),
             'password'  => env('MT5_DB_PASSWORD', ''),
-//            'charset'   => 'utf8mb4',
-//            'collation' => 'utf8mb4_unicode_ci',
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix'    => '',
             'strict'    => true,
             'engine'    => null,
-            'options'   => [
-                \PDO::ATTR_PERSISTENT => true, // Enable persistent connections
-            ],
         ],
 
     ],

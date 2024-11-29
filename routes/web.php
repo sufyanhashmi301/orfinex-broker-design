@@ -29,6 +29,7 @@ use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\UserIbRuleController;
+use App\Http\Controllers\Frontend\PositionController;
 use Illuminate\Support\Facades\Route;
 use App\Traits\ForexApiTrait;
 
@@ -98,6 +99,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
 
         Route::get('log', [ForexAccountController::class, 'depositLog'])->name('log');
         Route::get('stats', [ForexAccountController::class, 'accountStats'])->name('stats');
+
+        Route::get('ordersHistory', [PositionController::class, 'index'])->name('ordersHistory');
+        Route::get('orders', [PositionController::class, 'getOrders'])->name('getOrders');
     });
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');

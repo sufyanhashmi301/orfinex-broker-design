@@ -22,7 +22,7 @@ class SymbolController extends Controller
     {
         if ($request->ajax()) {
 
-            $data = DB::connection('mt5_db2')
+            $data = DB::connection('mt5_db')
             ->table('mt5_symbols')
             ->select('Symbol_ID','Symbol','Path','Description','ContractSize');
             $existingSymbols = Symbol::pluck('symbol')->toArray();

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Console\Commands;
 
 
@@ -8,9 +9,12 @@ use App\Models\ForexAccount;
 use App\Models\Ledger;
 use App\Models\MetaDeal;
 use App\Enums\TxnStatus;
+use App\Enums\TxnTargetType;
 use App\Enums\TxnType;
 use App\Models\ReferralRelationship;
 use App\Models\User;
+use App\Models\UserIbRule;
+use App\Services\WalletService;
 use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -23,18 +27,19 @@ use Txn;
 class MultiLevelRebateDistribution extends Command
 {
     protected $signature = 'rebate:distribution';
-    protected $description = 'Multi level rebate distribution';
+    protected $description = 'IB rebate distribution';
 
     public function handle()
     {
         DB::beginTransaction();
         try {
-            $ReferralRelationships = ReferralRelationship::whereNotNull('multi_level_id')->with('referralLink')->get();
-
+//            $ReferralRelationships = ReferralRelationship::whereNotNull('multi_level_id')->with('referralLink')->get();
+            $ReferralRelationships = ReferralRelationship::with('referralLink')
+                ->where('user_id', 7193)->get();
+//            dd($ReferralRelationships);
             foreach ($ReferralRelationships as $ReferralRelationship) {
                 $this->processReferralRelationship($ReferralRelationship);
             }
-
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -47,36 +52,40 @@ class MultiLevelRebateDistribution extends Command
 
     protected function processReferralRelationship($ReferralRelationship)
     {
+        $parentIbGroup = $ReferralRelationship->referralLink->user->ibGroup;
+//        dd($parentIbGroup);
+        if (!$parentIbGroup) {
+            return false;
+        }
+//dd('s');
         $childUserId = $ReferralRelationship->user_id;
 //        dd($childUserId);
         $realForexAccounts = ForexAccount::realActiveAccount($childUserId)
             ->orderBy('balance', 'desc')
             ->get();
 //        dd($realForexAccounts);
-        $childUser = User::find($childUserId);
+        $sysmbols = $this->getUserAssignedSymbols($ReferralRelationship);
+
         foreach ($realForexAccounts as $realForexAccount) {
-            $sysmbols = $this->getUserAssignedSymbols($ReferralRelationship);
+//            dd($sysmbols);
             $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime,$sysmbols);
-            dd($sysmbols,$lastDealTime);
+            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $sysmbols);
+//            dd($ReferralRelationship);
             $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship);
         }
     }
 
-    protected function getUserAssignedSymbols($ReferralRelationship)
+    protected function getUserAssignedSymbols(ReferralRelationship $referralRelationship): array
     {
-        return $ReferralRelationship->multiLevel->rebateRule()
+        return $referralRelationship->referralLink->user->ibGroup->rebateRules()
             ->with('symbolGroups.symbols')
             ->get()
-            ->flatMap(function ($rebateRule) {
-                return $rebateRule->symbolGroups->flatMap(function ($symbolGroup) {
-                    return $symbolGroup->symbols;
-                });
-            })
-            ->pluck('symbol') // Assuming 'symbol_name' is the column you want to extract
-            ->unique() // To ensure no duplicate symbols
-            ->toArray();
+            ->flatMap(fn($rebateRule) => $rebateRule->symbolGroups->flatMap(fn($symbolGroup) => $symbolGroup->symbols))
+            ->pluck('symbol') // Extracts the 'symbol' column
+            ->unique() // Removes duplicates
+            ->toArray(); // Converts to an array
     }
+
     protected function getLastDeal($childUserId, $login)
     {
         return MetaDeal::where('login', $login)
@@ -85,15 +94,15 @@ class MultiLevelRebateDistribution extends Command
             ->value('time') ?: Carbon::now()->startOfDay();
     }
 
-    protected function getMT5Deals($login, $lastDealTime,$sysmbols)
+    protected function getMT5Deals($login, $lastDealTime, $sysmbols)
     {
         $table = 'mt5_deals_' . Carbon::now()->year;
 
-        return DB::connection('mt5_db')
+        return DB::connection('mt5_db2')
             ->table($table)
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)
-//            ->whereIn('Symbol', $sysmbols)
+            ->whereIn('Symbol', $sysmbols)
             ->where('Time', '>', $lastDealTime)
             ->where('Volume', '>', 0)
             ->whereColumn('Volume', 'VolumeClosed')
@@ -116,6 +125,8 @@ class MultiLevelRebateDistribution extends Command
                 'time' => $deal->Time
             ];
             $metaDeal = MetaDeal::create($data);
+//            dd($deal,$metaDeal);
+
             $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship);
         }
     }
@@ -123,84 +134,80 @@ class MultiLevelRebateDistribution extends Command
     protected function distributeRebate($metaDeal, $childUserId, $ReferralRelationship)
     {
         $parentId = $ReferralRelationship->referralLink->user_id;
-        $parentUser = User::find($parentId);
         $childUser = User::find($childUserId);
+//dd($metaDeal);
+        $share = $this->calculateRebate($metaDeal->symbol, $ReferralRelationship);
+        $parentRebateBonus = $share['parentShare'];
+        $childShareBonus = $share['childShare'];
 
-        $parentRebateBonus = $this->calculateRebate($metaDeal->lot_share, $ReferralRelationship);
-        // Retrieve and convert the current balance to BigDecimal
-//        $currentBalance = BigDecimal::of($parentUser->multi_ib_balance);
-//
-//        // Calculate the new balance
-//        $newBalance = $currentBalance->plus($parentRebateBonus);
-//
-//        // Update the user's balance with precision maintained
-//        $parentUser->multi_ib_balance = $newBalance->toScale(4)->__toString(); // Ensure the balance is stored as a string with 4 decimal places
-//        $parentUser->save();
-        $transaction = Txn::newMeta($parentRebateBonus, 0, $parentRebateBonus, 'system', 'Multi Level Bonus via ' . $childUser->full_name, TxnType::MultiLevelBonus, TxnStatus::Pending, null, null,$parentId, $childUserId,'User', [], 'note', $metaDeal->deal);
+        $targetType = TxnTargetType::Wallet->value;
+        $sourceFrom = AccountBalanceType::IB_WALLET;
 
-        $this->addBalance($parentId,$transaction);
+        if ($parentRebateBonus > 0) {
+            $userAccount = get_user_account($parentId, $sourceFrom);
+            $targetId = $userAccount->wallet_id;
+            $transaction = Txn::new($parentRebateBonus, 0, $parentRebateBonus, 'system', 'IB Bonus via ' . $childUser->full_name . ' from account ' . $metaDeal->login, TxnType::IbBonus, TxnStatus::Success, base_currency(), $parentRebateBonus, $parentId, $childUserId, 'User', [], 'note', $targetId, $targetType);
+            $this->addBalance($transaction);
+        }
+        if ($childShareBonus > 0) {
+            $userAccount = get_user_account($childUserId, $sourceFrom);
+            $targetId = $userAccount->wallet_id;
+            $transaction = Txn::new($childShareBonus, 0, $childShareBonus, 'system', 'IB Bonus via ' . $childUser->full_name . ' from account ' . $metaDeal->login, TxnType::IbBonus, TxnStatus::Success, base_currency(), $childShareBonus, $childUserId, $childUserId, 'User', [], 'note', $targetId, $targetType);
+            $this->addBalance($transaction);
+        }
 
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
-
     }
 
-    protected function calculateRebate($lotShare, $ReferralRelationship)
+    protected function calculateRebate($symbol, $ReferralRelationship)
     {
-        $rebateAmount = $ReferralRelationship->multiLevel->rebateRule->first()->rebate_amount;
-        return BigDecimal::of($lotShare)->multipliedBy(BigDecimal::of($rebateAmount));
+//        dd($ReferralRelationship);
+        $rebateRule = $ReferralRelationship->referralLink
+            ->user
+            ->ibGroup
+            ->rebateRules()
+            ->whereHas('symbolGroups.symbols', function ($query) use ($symbol) {
+                $query->where('symbol', $symbol);
+            })
+            ->first();  // Retrieve the first matching rebate rule
+//        dd($symbol,$rebateRule);
+        $parentShare = 0;
+        $childShare = 0;
+//        dd($rebateRule);
+        if ($rebateRule) {
+            $totalRebateAmount = $rebateRule->rebate_amount;
+            $ibShare = UserIbRule::where('rebate_rule_id', $rebateRule->id)->first();
+//            dd($ibShare,$rebateRule->id);
+            if ($ibShare) {
+                $childShare = $ibShare->sub_ib_share;
+            }
+            if ($totalRebateAmount >= $childShare) {
+                $parentShare = $totalRebateAmount - $childShare;
+            } else {
+                $parentShare = $totalRebateAmount;
+            }
+        }
+//        dd($parentShare);
+        return [
+            'parentShare' => $parentShare,
+            'childShare' => $childShare,
+        ];
     }
-    protected function addBalance($parentId, $transaction)
-    {
-        $sourceFrom = AccountBalanceType::IB_WALLET;
 
-        $userAccount = get_user_account($parentId,$sourceFrom);
-//        dd($userAccount);
-        $ledgerBalance = $this->getLedgerBalance($userAccount->id);
-//        dd($ledgerBalance);
-        $this->createLedgerEntry($transaction, $ledgerBalance);
-//        dd('s');
-//        if ($transaction->calc == TransactionCalcType::CREDIT) {
+    protected function addBalance($transaction)
+    {
+        $userAccount = get_user_account_by_wallet_id($transaction->target_id);
+
+        $wallet = new WalletService();
+        $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
+        $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
+        if ($transaction->target_type == TxnTargetType::Wallet->value) {
             $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
             $userAccount->save();
-//        }
-    }
-    private function getLedgerBalance($accountId)
-    {
-        $latestLedgerEntry = Ledger::where('account_id', $accountId)->orderBy('id', 'desc')->first();
-        return data_get($latestLedgerEntry, 'balance', 0.00);
-    }
-    private function createLedgerEntry($transaction, $ledgerBalance)
-    {
-        $ledger = new Ledger();
-        $ledger->meta_transaction_id = $transaction->id;
-//        dd($ledger);
-
-//        if ($transaction->calc == TransactionCalcType::DEBIT) {
-//            $ledger->debit = $transaction->amount;
-//            $ledger->account_id = $transaction->account_from;
-////            dd($ledgerBalance,BigDecimal::of($transaction->total));
-//            $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->total));
-////            dd($ledgerBalance,$balance);
-//        }
-
-//        if ($transaction->calc == TransactionCalcType::CREDIT) {
-            $ledger->credit = $transaction->total;
-            $ledger->account_id = $transaction->account_to;
-            $balance = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
-//        }
-//        dd($balance,BigDecimal::of(0.00));
-
-        if ($balance < BigDecimal::of(0.00)) {
-//            dd($balance);
-            throw new \Exception(__("Unprocessable transaction."));
         }
 
-        $ledger->balance = $balance;
-//        dd($ledger);
-        $ledger->save();
-
-        return $ledger;
     }
+
 
 }

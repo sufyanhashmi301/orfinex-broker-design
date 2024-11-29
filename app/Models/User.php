@@ -50,6 +50,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ib_login',
         'ib_balance',
         'ib_status',
+        'ib_group_id',
         'is_multi_ib',
         'account_limit',
         'kyc',
@@ -273,8 +274,8 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     }
     public function totalRebateMeta($days = null)
     {
-        $sum = $this->metaTransaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::MultiLevelBonus);
+        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::IbBonus);
         });
         if (null != $days) {
             $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
@@ -371,6 +372,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function rank()
     {
         return $this->belongsTo(Ranking::class, 'ranking_id');
+    }
+    public function ibGroup()
+    {
+        return $this->belongsTo(IbGroup::class, 'ib_group_id');
     }
 
     public function ticket()

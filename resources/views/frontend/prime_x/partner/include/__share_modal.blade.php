@@ -1,23 +1,3 @@
-{{--<div class="modal fade" id="editShareModal" tabindex="-1" aria-labelledby="editShareModalLabel" aria-hidden="true">--}}
-{{--    <div class="modal-dialog">--}}
-{{--        <div class="modal-content">--}}
-{{--            <div class="modal-header">--}}
-{{--                <h5 class="modal-title" id="editShareModalLabel">{{ __('Edit Share Percentage') }}</h5>--}}
-{{--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
-{{--            </div>--}}
-{{--            <div class="modal-body">--}}
-{{--                <form id="editShareForm">--}}
-{{--                    <div class="mb-3">--}}
-{{--                        <label for="sharePercentage" class="form-label">{{ __('Share Percentage (%)') }}</label>--}}
-{{--                        <input type="number" class="form-control" id="sharePercentage" name="sharePercentage" max="100" min="0" required>--}}
-{{--                        <input type="hidden" id="levelId" name="levelId">--}}
-{{--                    </div>--}}
-{{--                    <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>--}}
-{{--                </form>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editShareModal" tabindex="-1" aria-labelledby="editShareModalLabel" aria-hidden="true">
     <div class="modal-dialog relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding
@@ -30,13 +10,12 @@
                         </svg>
                         <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
-                    <div class="text-center qrCodeContainer">
+                    <div class="text-center">
                         <form id="editShareForm">
                             <div class="mb-3">
-                                <label for="sharePercentage" class="form-label">{{ __('Share Percentage (%)') }}</label>
-                                <input type="number" class="form-control" id="sharePercentage" name="sharePercentage" max="100" min="0" required>
-                                <input type="hidden" id="levelId" name="levelId">
-                                <input type="hidden" id="context" name="context">
+                                <label for="subIbShare" class="form-label">{{ __('Sub IB Share Amount') }}</label>
+                                <input type="float" class="form-control" id="subIbShare" name="sub_ib_share" min="0" required>
+                                <input type="hidden" id="userIbRuleId" name="id">
                             </div>
                             <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
                         </form>

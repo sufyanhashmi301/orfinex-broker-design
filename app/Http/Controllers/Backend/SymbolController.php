@@ -21,8 +21,8 @@ class SymbolController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            
-            $data = DB::connection('mt5_db')
+
+            $data = DB::connection('mt5_db2')
             ->table('mt5_symbols')
             ->select('Symbol_ID','Symbol','Path','Description','ContractSize');
             $existingSymbols = Symbol::pluck('symbol')->toArray();
@@ -41,13 +41,13 @@ class SymbolController extends Controller
         return view('backend.symbols.all');
     }
 
-    
+
 
     public function store(Request $request)
     {
-        
+
         $symbolId = $request->id;
-        
+
         $result = $this->symbolService->createSymbolFromMt5($symbolId);
 
         if ($result['success']) {

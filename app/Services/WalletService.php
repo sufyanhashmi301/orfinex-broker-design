@@ -74,10 +74,12 @@ class WalletService
     {
         $ledger = new Ledger();
         $ledger->transaction_id = $transaction->id;
+
         $account = get_user_account_by_wallet_id($transaction->target_id);
+        $accountId = $account->id;
 
         $ledger->credit = $transaction->amount;
-        $ledger->account_id = $account->id;
+        $ledger->account_id = $accountId;
         $balance = BigDecimal::of($ledgerBalance)->plus(BigDecimal::of($transaction->amount));
 //dd($balance,$ledgerBalance);
         if ($balance < BigDecimal::of(0.00)) {
@@ -91,6 +93,7 @@ class WalletService
 
         return $ledger;
     }
+
     public function createDebitLedgerEntry($transaction, $ledgerBalance)
     {
         $ledger = new Ledger();
@@ -99,21 +102,21 @@ class WalletService
         // Find the account associated with the wallet ID
         $account = get_user_account_by_wallet_id($transaction->target_id);
 
-            // Set the debit amount for the ledger entry
-            $ledger->debit = $transaction->final_amount;
-            $ledger->account_id = $account->id;
+        // Set the debit amount for the ledger entry
+        $ledger->debit = $transaction->final_amount;
+        $ledger->account_id = $account->id;
 
-            // Deduct the amount from the ledger balance
-            $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->final_amount));
+        // Deduct the amount from the ledger balance
+        $balance = BigDecimal::of($ledgerBalance)->minus(BigDecimal::of($transaction->final_amount));
 //dd($balance);
-            // Ensure that balance does not go below zero
-            if ($balance->isLessThan(BigDecimal::of(0.00))) {
-                throw new \Exception(__("Unprocessable transaction. Insufficient balance."));
-            }
+        // Ensure that balance does not go below zero
+        if ($balance->isLessThan(BigDecimal::of(0.00))) {
+            throw new \Exception(__("Unprocessable transaction. Insufficient balance."));
+        }
 
-            // Update the balance in the ledger
-            $ledger->balance = $balance;
-            $ledger->save();
+        // Update the balance in the ledger
+        $ledger->balance = $balance;
+        $ledger->save();
 
 
         return $ledger;
@@ -158,7 +161,6 @@ class WalletService
         $latestLedgerEntry = Ledger::where('account_id', $accountId)->orderBy('id', 'desc')->first();
         return data_get($latestLedgerEntry, 'balance', 0.00);
     }
-
 
 
 }

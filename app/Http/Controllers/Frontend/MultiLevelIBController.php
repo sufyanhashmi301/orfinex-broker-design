@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\ForexSchema;
 use App\Models\MultiLevel;
+use App\Models\RebateRule;
 use App\Models\UserIbRule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class MultiLevelIBController extends Controller
         $account = get_user_account($user_id,$sourceFrom);
         $accountFromID = $account->id;
         $accountFromName = w2n($sourceFrom);
-        $affiliateBalance = $user->multi_ib_balance;
+        $affiliateBalance = $account->amount;
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
         $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
@@ -66,64 +67,23 @@ class MultiLevelIBController extends Controller
     }
     public function rules()
     {
-        $user = auth()->user();
-        $user_id = $user->id;
-//        $totalMonthlyReferrals = $user->getReferral->monthlyRelationships()->count();
-//        $sourceFrom = AccountBalanceType::IB_WALLET;
-//        $account = get_user_account($user_id,$sourceFrom);
-//        $accountFromID = $account->id;
-//        $accountFromName = w2n($sourceFrom);
-//        $affiliateBalance = $user->multi_ib_balance;
-        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
+        $user = auth()->user(); // Get the authenticated user
 
-        $swapSchemas = ForexSchema::active()  // Use the defined scope for active schemas
-        ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
-        ->orderBy('priority', 'asc')
+        // Fetch UserIbRules with related schemas and rebate rules
+        $userIbRules = UserIbRule::with([
+            'rebateRule',
+            'rebateRule.ibGroups.forexSchemas',
+            'rebateRule.symbolGroups.symbols'
+        ])
+            ->where('user_id', $user->id)
             ->get();
 
-        $maxLevelOrder = MultiLevel::where('status', 1)  // Assuming '1' indicates active status
-            ->select('forex_scheme_id', \DB::raw('COUNT(*) as count'))
-                ->groupBy('forex_scheme_id','type')
-                ->orderByDesc('count')
-                ->first();
-        $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->count : 0;
-        $getReferral = $user->getReferrals()->first();
-        $levelOrder = 1;
-
-        // Fetch data based on selected level
-        $swapMultiLevels = MultiLevel::active()
-            ->whereHas('forexSchema', function ($query) use ($user, $tagNames) {
-                $query->relevantForUser($user->country, $tagNames)
-                    ->where('status', true);
-            })
-            ->where('type', MultiLevelType::SWAP)
-            ->where('level_order', $levelOrder)
-            ->get();
-
-        $swapFreeMultiLevels = MultiLevel::active()
-            ->whereHas('forexSchema', function ($query) use ($user, $tagNames) {
-                $query->relevantForUser($user->country, $tagNames)
-                    ->where('status', true);
-            })
-            ->where('type', MultiLevelType::SWAP_FREE)
-            ->where('level_order', $levelOrder)
-            ->get();
-        // Calculate current total shares for each type
-        $currentTotalShareSwap = UserIbRule::where('user_id', $user->id)
-            ->whereHas('multiLevel', function($query) {
-                $query->where('type', MultiLevelType::SWAP);
-            })
-            ->sum('share');
-
-        $currentTotalShareSwapFree = UserIbRule::where('user_id', $user->id)
-            ->whereHas('multiLevel', function($query) {
-                $query->where('type', MultiLevelType::SWAP_FREE);
-            })
-            ->sum('share');
-
-        return view('frontend::partner.rules', get_defined_vars());
-
+        // Return the data to the view
+        return view('frontend::partner.rules',  [
+            'userIbRules' => $userIbRules,
+        ]);
     }
+
     public function getSchemeRules(Request $request)
     {
         $user = auth()->user();

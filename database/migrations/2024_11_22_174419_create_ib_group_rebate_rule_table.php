@@ -1,10 +1,11 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateIbGroupRebateRuleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +14,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_ib_rules', function (Blueprint $table) {
+        Schema::create('ib_group_rebate_rule', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('ib_group_id');
-            $table->foreignId('rebate_rule_id');
-            $table->double('sub_ib_share')->default(0);//in percentage
+            $table->foreignId('ib_group_id')->constrained('ib_groups')->onDelete('cascade');
+            $table->foreignId('rebate_rule_id')->constrained('rebate_rules')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,7 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_ib_rules');
-
+        Schema::dropIfExists('ib_group_rebate_rule');
     }
-};
+}

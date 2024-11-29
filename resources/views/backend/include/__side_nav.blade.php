@@ -430,6 +430,11 @@
                         {{ __('Rebate Rules') }}
                     </a>
                 </li>
+                <li class="">
+                    <a href="{{ route('admin.ib-group.index') }}" class="{{ isActive('admin.ib-group*') }}">
+                        {{ __('IB Groups') }}
+                    </a>
+                </li>
             </ul>
         </li>
     </ul>

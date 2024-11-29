@@ -11,14 +11,18 @@
         <textarea name="desc" class="form-control basicTinymce mb-0" rows="6" placeholder="Details">{{ old('desc', $ibGroup->desc) }}</textarea>
     </div>
     <div class="input-area">
-        <label for="forex_schema_id" class="form-label">{{ __('Attach Forex Schema (Optional)') }}</label>
-        <select name="forex_schema_id" id="forex_schema_id" class="form-control">
-            <option value="">{{ __('Select Forex Schema') }}</option>
-            @foreach($activeForexSchemas as $schema)
-                <option value="{{ $schema->id }}" @if($schema->ib_group_id == $ibGroup->id) selected @endif>{{ $schema->title }}</option>
+        <label for="rebate_rule_id_edit" class="form-label">{{ __('Attach Rebate Rule(s) (Optional)') }}</label>
+        <select name="rebate_rule_id[]" id="rebate_rule_id_edit" class="select2 form-control w-full h-9" multiple>
+            @foreach($rebateRules as $rule)
+                <option value="{{ $rule->id }}"
+                        @if($ibGroup->rebateRules->contains('id', $rule->id)) selected @endif>
+                    {{ $rule->title }}
+                </option>
             @endforeach
         </select>
     </div>
+
+
 
     <div class="input-area">
         <div class="flex items-center space-x-7 flex-wrap">

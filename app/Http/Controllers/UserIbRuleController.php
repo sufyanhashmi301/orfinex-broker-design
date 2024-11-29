@@ -38,49 +38,37 @@ class UserIbRuleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'level_id' => 'required|exists:multi_levels,id',
-            'share_percentage' => 'required|numeric|min:0|max:100',
-            'context' => 'required|in:swap,swapFree'
+            'id' => 'required|exists:user_ib_rules,id',
+            'sub_ib_share' => 'required|numeric|min:0',
         ]);
 
         $user = auth()->user();
-        $newShare = $request->input('share_percentage');
-        $levelId = $request->input('level_id');
-        $context = $request->input('context');
+        $newShareAmount = $request->input('sub_ib_share');
+        $ruleId = $request->input('id');
 
-        // Determine the type of table to update (swap or swapFree)
-        $type = ($context === 'swap') ? MultiLevelType::SWAP : MultiLevelType::SWAP_FREE;
+        // Fetch the UserIbRule with its associated RebateRule
+        $userIbRule = UserIbRule::with('rebateRule')->findOrFail($ruleId);
+        $rebateAmount = $userIbRule->rebateRule->rebate_amount;
 
-        // Calculate the current total share for the given context, excluding the level being updated
-        $currentTotalShare = UserIbRule::where('user_id', $user->id)
-            ->whereHas('multiLevel', function($query) use ($type) {
-                $query->where('type', $type);
-            })
-            ->where('multi_level_id', '!=', $levelId)
-            ->sum('share');
-
-        // Check if the new total share would exceed 100%
-        if (($currentTotalShare + $newShare) > 100) {
-            return response()->json(['success' => false, 'message' => 'Total share percentage across all levels cannot exceed 100%.']);
+        // Validate that sub_ib_share does not exceed rebate_amount
+        if ($newShareAmount > $rebateAmount) {
+            return response()->json([
+                'success' => false,
+                'message' => "The Sub IB Share amount cannot exceed the rebate amount of $rebateAmount."
+            ]);
         }
 
-        // Update or create the specific level share
-        $userIbRule = UserIbRule::firstOrCreate(
-            [
-                'multi_level_id' => $levelId,
-                'user_id' => $user->id,
-            ],
-            [
-                'share' => $newShare
-            ]
-        );
+        // Update the sub_ib_share amount
+        $userIbRule->update([
+            'sub_ib_share' => $newShareAmount,
+        ]);
 
-            // Return new total share for the specific context
-            return response()->json(['success' => true, 'message' => 'Share percentage updated successfully', 'newTotalShare' => $currentTotalShare + $newShare]);
-//        }
-//
-//        return response()->json(['success' => false, 'message' => 'Unable to update share percentage']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Sub IB Share amount updated successfully.',
+        ]);
     }
+
 
 
 

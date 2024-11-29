@@ -11,7 +11,9 @@ use App\Exports\ApprovedIbExport;
 use App\Exports\PendingIbExport;
 use App\Exports\RejectedIbExport;
 use App\Exports\IbExport;
+use App\Models\RebateRule;
 use App\Models\User;
+use App\Models\UserIbRule;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
@@ -90,7 +92,7 @@ class IBController extends Controller
     }
 
 
-    
+
     public function export(Request $request, $type)
     {
         switch ($type) {
@@ -223,71 +225,80 @@ class IBController extends Controller
 
     public function approveIbMember(Request $request)
     {
-//        dd($request->all());
-        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : (int)$request->get('user_id');
-//       dd($userID);
+        $userID = ($request->get('user_id')) ? (int)$request->get('user_id') : null;
         $isReload = ($request->get('reload')) ? $request->get('reload') : false;
 
         $user = User::find($userID);
+
         if (!blank($user)) {
-//            if ($user->status == UserStatus::INACTIVE) {
-//                throw ValidationException::withMessages(['invalid' => __('User account may not verified or inactive.')]);
-//            }
-            if ($user->ib_status == IBStatus::APPROVED) {
-                $message = __('User has already a member of IB Program');
+            $ibGroup = !empty($request->ib_group_id) ? (int)$request->ib_group_id : null;
+
+            // Validation: Check if the provided IB group is different
+            if ($user->ib_group_id === $ibGroup) {
+                $message = __('The provided IB Group is the same as the current one. No changes made.');
                 if ($request->ajax()) {
-                    return response()->json(['error' => $message, 'reload' => false]);
+                    return response()->json(['title' => 'No Changes', 'error' => $message, 'reload' => false]);
                 } else {
-                    notify()->error($message, 'Error Log');
+                    notify()->info($message, 'No Changes');
                     return redirect()->back();
                 }
             }
-//            $ibSchema = IbSchema::where('type', 'ib')->where('status', true)->first();
-//            if (!$ibSchema) {
-//                return false;
-//            }
-//            $group = $ibSchema->group;
-////            dd($group);
-//            $responseLogin =  $this->createForexAccount($user, $group);
-////            dd($responseLogin);
-//            if ($responseLogin) {
-//                $user->ib_login = $responseLogin;
-                $user->ib_status = IBStatus::APPROVED;
-                $user->save();
 
-                add_child_agent($user);
+            // Update user status and IB group
+            $user->ib_status = IBStatus::APPROVED;
+            $user->ib_group_id = $ibGroup;
+            $user->save();
 
-                $shortcodes = [
-                    '[[full_name]]' => $user->full_name,
-                    '[[email]]' => $user->email,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
-                    '[[status]]' => IBStatus::APPROVED,
-                ];
-                $this->mailNotify($user->email, 'ib_action', $shortcodes);
-                $this->smsNotify('ib_action', $shortcodes, $user->phone);
-                $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
-                $message = __('User has been successfully approved as IB Member');
-                if ($request->ajax()) {
-                    return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
-                } else {
-                    notify()->success($message, 'IB added');
-                    return redirect()->back();
-                }
-//            } else {
-//                $message = __('some error occurred.please try again');
-//                if ($request->ajax()) {
-//                    return response()->json(['error' => $message, 'reload' => false]);
-//                } else {
-//                    notify()->error($message, 'Error Log');
-//
-//                    return redirect()->back();
-//                }
-//            }
+            // Add or Remove Rebate Rules
+            $this->manageUserRebateRules($user, $ibGroup);
+
+            // Notify the user
+            $shortcodes = [
+                '[[full_name]]' => $user->full_name,
+                '[[email]]' => $user->email,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+                '[[status]]' => IBStatus::APPROVED,
+            ];
+            $this->mailNotify($user->email, 'ib_action', $shortcodes);
+            $this->smsNotify('ib_action', $shortcodes, $user->phone);
+            $this->pushNotify('ib_action', $shortcodes, route('user.referral'), $user->id);
+
+            $message = __('User has been successfully approved as IB Member');
+
+            if ($request->ajax()) {
+                return response()->json(['title' => 'Account Approved for IB', 'success' => $message, 'reload' => $isReload]);
+            } else {
+                notify()->success($message, 'IB added');
+                return redirect()->back();
+            }
         }
-        return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
 
+        return response()->json(['error' => __('User not found or invalid user account id.'), 'reload' => false]);
     }
+    protected function manageUserRebateRules($user, $ibGroup)
+    {
+        // Remove existing rebate rules for the user
+        UserIbRule::where('user_id', $user->id)->delete();
+
+        if ($ibGroup) {
+            // Fetch all rebate rules associated with the IB Group
+            $rebateRules = RebateRule::whereHas('ibGroups', function ($query) use ($ibGroup) {
+                $query->where('ib_groups.id', $ibGroup);
+            })->get();
+
+            // Assign rebate rules to the user
+            foreach ($rebateRules as $rebateRule) {
+                UserIbRule::create([
+                    'user_id' => $user->id,
+                    'ib_group_id' => $ibGroup,
+                    'rebate_rule_id' => $rebateRule->id,
+//                    'sub_ib_share' => $rebateRule->rebate_amount // Example: Use rebate amount as sub_ib_share; modify as needed
+                ]);
+            }
+        }
+    }
+
 
     public function updateIbMember(Request $request)
     {

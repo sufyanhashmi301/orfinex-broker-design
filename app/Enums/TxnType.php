@@ -18,8 +18,8 @@ enum TxnType: string
     case Referral = 'referral';
     case SignupBonus = 'signup_bonus';
     case Bonus = 'bonus';
-    case BonusSubtract = 'bonus_subtract'; 
-    case BonusRefund = 'bonus_refund'; 
+    case BonusSubtract = 'bonus_subtract';
+    case BonusRefund = 'bonus_refund';
     case Withdraw = 'withdraw';
     case WithdrawAuto = 'withdraw_auto';
     case ReceiveMoney = 'receive_money';
@@ -28,7 +28,7 @@ enum TxnType: string
     case Refund = 'refund';
     case MultiIB = 'multi_ib';
     case IB = 'ib';
-    case MultiLevelBonus = 'multi_level_bonus';
+    case IbBonus = 'ib_bonus';
 
     public function label(): string
     {
@@ -55,7 +55,7 @@ enum TxnType: string
             self::Refund => 'Refund',
             self::MultiIB => 'Multi IB',
             self::IB => 'IB',
-            self::MultiLevelBonus => 'MultiLevel Bonus',
+            self::IbBonus => 'IB Bonus',
         };
     }
 }

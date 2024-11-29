@@ -17,6 +17,18 @@
                 @endforeach
             </select>
         </div>
+{{--        <div class="input-area relative">--}}
+{{--            <label for="ib_groups" class="form-label">{{ __('Select IB Groups') }}</label>--}}
+{{--            <select name="ib_groups[]" class="select2 form-control w-full" multiple="multiple">--}}
+{{--                @foreach($allIbGroups as $id => $name)--}}
+{{--                    <option value="{{ $id }}" @if(in_array($id, $rebateRule->ibGroups->pluck('id')->toArray())) selected @endif>--}}
+{{--                        {{ $name }}--}}
+{{--                    </option>--}}
+{{--                @endforeach--}}
+{{--            </select>--}}
+{{--            <div class="invalid-feedback" id="ib-groups-error" style="display: none;"></div>--}}
+{{--        </div>--}}
+
         <div class="input-area relative">
             <label for="rule_type_id" class="form-label">{{ __('Rule Type:') }}</label>
             <select name="rule_type_id" class="form-control">

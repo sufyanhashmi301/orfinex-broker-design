@@ -98,7 +98,7 @@ class MultiLevelRebateDistribution extends Command
     {
         $table = 'mt5_deals_' . Carbon::now()->year;
 
-        return DB::connection('mt5_db2')
+        return DB::connection('mt5_db')
             ->table($table)
             ->select(['Login', 'Deal', 'Dealer', 'Order', 'Symbol', 'Time', 'Volume', 'VolumeClosed'])
             ->where('Login', $login)

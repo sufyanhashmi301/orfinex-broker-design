@@ -188,9 +188,9 @@
                     </div>
                 </div>
                 <div>
-                    <button class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] text-white cursor-pointer rounded-lg flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="{{ route('admin.activePositions') }}" class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] text-white cursor-pointer rounded-lg flex flex-col items-center justify-center">
                         <iconify-icon class="text-white text-2xl" icon="mdi:dots-grid"></iconify-icon>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

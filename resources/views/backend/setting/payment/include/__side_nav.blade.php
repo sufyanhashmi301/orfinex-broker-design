@@ -10,11 +10,13 @@
                 {{ __('Withdraw Methods') }}
             </a>
         </li>
+        @can('bonus-list')
         <li>
             <a href="{{ route('admin.bonus.index') }}" class="navItem {{ isActive('admin.bonus*') }}">
                 {{ __('Bonuses') }}
             </a>
         </li>
+        @endcan
         <li>
             <a href="{{ route('admin.settings.currency') }}" class="navItem {{ isActive('admin.settings.currency') }}">
                 {{ __('Currency')}}

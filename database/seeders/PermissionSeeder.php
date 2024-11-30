@@ -173,6 +173,23 @@ class PermissionSeeder extends Seeder
             ['category' => 'Designations Setting', 'name' => 'designation-edit'],
             ['category' => 'Designations Setting', 'name' => 'designation-delete'],
 
+            ['category' => 'Bonus Setting', 'name' => 'bonus-list'],
+            ['category' => 'Bonus Setting', 'name' => 'bonus-create'],
+            ['category' => 'Bonus Setting', 'name' => 'bonus-edit'],
+            ['category' => 'Bonus Setting', 'name' => 'bonus-delete'],
+
+            ['category' => 'Website Setting', 'name' => 'theme-settings'],
+            ['category' => 'Website Setting', 'name' => 'branding-settings'],
+            ['category' => 'Website Setting', 'name' => 'site-settings'],
+            ['category' => 'Website Setting', 'name' => 'banner-settings'],
+            ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],
+            ['category' => 'Website Setting', 'name' => 'maintainance-settings'],
+
+            ['category' => 'System Setting', 'name' => 'clear-cache-settings'],
+            ['category' => 'System Setting', 'name' => 'application-details-settings'],
+            ['category' => 'System Setting', 'name' => 'dev-mode-settings'],
+            ['category' => 'System Setting', 'name' => 'changelog-settings'],
+            ['category' => 'System Setting', 'name' => 'report-issue-settings'],
 
         ];
 

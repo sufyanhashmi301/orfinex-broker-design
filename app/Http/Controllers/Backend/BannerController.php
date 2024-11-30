@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
+
+    
+    public function __construct()
+    {
+        $this->middleware('permission:banner-settings', ['only' => ['index']]);
+    
+    }
+
     public function index()
     {
         $banners = Banner::all();

@@ -267,7 +267,7 @@
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
-                    <span>{{ __('RMS') }}</span>
+                    <span>{{ __('Risk Hub') }}</span>
                 </span>
             </a>
         </li>

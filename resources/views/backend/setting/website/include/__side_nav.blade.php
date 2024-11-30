@@ -1,7 +1,7 @@
 @section('submenu')
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
         <li>
-            <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme') }}">
+            <a href="{{ route('admin.theme.site') }}" class="navItem {{ isActive('admin.theme.site') }}">
                 {{ __('Theme')}}
             </a>
         </li>

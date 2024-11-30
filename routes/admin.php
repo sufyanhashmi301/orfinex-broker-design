@@ -315,6 +315,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
+        Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');
+        Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('update', 'update')->name('update');

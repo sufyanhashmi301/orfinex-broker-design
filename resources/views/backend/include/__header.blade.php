@@ -24,7 +24,7 @@
                         <div class="flex gap-6">
                             <div class="space-y-5">
                                 <p class="flex items-center text-sm font-medium uppercase dark:text-white">
-                                    <iconify-icon class="text-sm mr-2" icon="lucide:layout-dashboard"></iconify-icon>
+                                    <iconify-icon class="text-base mr-2" icon="lucide:layout-dashboard"></iconify-icon>
                                     {{ __('General') }}
                                 </p>
                                 <ul class="space-y-3">
@@ -42,7 +42,7 @@
                             </div>
                             <div class="space-y-5">
                                 <p class="flex items-center text-sm font-medium uppercase dark:text-white">
-                                    <iconify-icon class="text-sm mr-2" icon="lucide:layout-dashboard"></iconify-icon>
+                                    <iconify-icon class="text-base mr-2" icon="mdi:finance"></iconify-icon>
                                     {{ __('Finance') }}
                                 </p>
                                 <ul class="space-y-3">
@@ -70,7 +70,7 @@
                             </div>
                             <div class="space-y-5">
                                 <p class="flex items-center text-sm font-medium uppercase dark:text-white">
-                                    <iconify-icon class="text-sm mr-2" icon="lucide:layout-dashboard"></iconify-icon>
+                                    <iconify-icon class="text-base mr-2" icon="mdi:file-cog-outline"></iconify-icon>
                                     {{ __('Manage') }}
                                 </p>
                                 <ul class="space-y-3">

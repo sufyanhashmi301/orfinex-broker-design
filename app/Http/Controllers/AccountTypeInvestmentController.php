@@ -16,14 +16,17 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Models\AccountTypeInvestmentPhaseApproval;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Services\UserAffiliateService;
 
 class AccountTypeInvestmentController extends Controller
 {
 
     public $investment;
+    public $affiliate;
 
-    public function __construct(AccountTypeInvestmentService $investment) {
+    public function __construct(AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate) {
         $this->investment = $investment;
+        $this->affiliate = $userAffiliate;
     }
 
     /**
@@ -80,7 +83,10 @@ class AccountTypeInvestmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        // temporary
+        $this->affiliate->applyCommission($request->rule_id);
+
         $investment = $this->investment->createInvestment($request);
 
         // to Deposit Page

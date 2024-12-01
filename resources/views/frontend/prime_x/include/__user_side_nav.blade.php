@@ -212,10 +212,10 @@
 {{--        </li>--}}
 
         <li>
-            <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
+            <a href="{{ route('user.affiliate-area.index') }}" class="navItem loaderBtn {{ isActive('user.affiliate-area.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
-                    <span>{{ __('Partner Area') }}</span>
+                    <span>{{ __('Affiliate Area') }}</span>
                 </span>
             </a>
         </li>

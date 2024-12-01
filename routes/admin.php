@@ -60,6 +60,7 @@ use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
+use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\LeaderboardRankingController;
@@ -176,6 +177,11 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/leaderboard-rankings/store', [LeaderboardRankingController::class, 'store'])->name('leaderboard-rankings.store');
     Route::get('/leaderboard-rankings/create', [LeaderboardRankingController::class, 'create'])->name('leaderboard-rankings.create');
     Route::delete('/leaderboard-rankings/delete/{leaderboardRanking}', [LeaderboardRankingController::class, 'destroy'])->name('leaderboard-rankings.delete');
+
+    // Affiliates
+    Route::get('/affiliate-rules', [AffiliateRuleController::class, 'index'])->name('affiliate-rules.index');
+    Route::get('/affiliate-rules/create', [AffiliateRuleController::class, 'create'])->name('affiliate-rules.create');
+    Route::post('/affiliate-rules/store', [AffiliateRuleController::class, 'store'])->name('affiliate-rules.store');
 
 // =============================== Optimization ===============================
 

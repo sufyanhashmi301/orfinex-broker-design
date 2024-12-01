@@ -33,6 +33,7 @@ use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\ContractController;
+use App\Http\Controllers\UserAffiliateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,11 +89,16 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
 
     // ======== Optimizations ========
+    
+    // Investments
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
     Route::get('all-investments/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
     Route::get('investment/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats
 
+    // Affiliate Module
+    Route::get('affiliate-area', [UserAffiliateController::class, 'index'])->name('affiliate-area.index');
 
+    // ======== Optimizations ========
 
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');

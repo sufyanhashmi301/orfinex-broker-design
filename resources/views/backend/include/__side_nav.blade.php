@@ -372,6 +372,15 @@
         @endcanany
 
         <li class="">
+            <a href="{{ route('admin.affiliate-rules.create') }}" class="navItem {{ isActive('admin.affiliate-rules.create') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                    <span>{{ __('Affiliates Management') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li class="">
             <a href="{{ route('admin.discounts.index') }}" class="navItem {{ isActive('admin.discounts.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="bxs:discount"></iconify-icon>

@@ -211,7 +211,7 @@ class DepositController extends Controller
 
     public function pending(Request $request)
     {
-
+        
         if ($request->ajax()) {
             $data = Transaction::where('status', 'pending')->where(function ($query) {
                 return $query->where('type', TxnType::ManualDeposit)

@@ -97,7 +97,7 @@ class ResetData extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $rank = Ranking::find(1);
-        $sitename = 'marketmavens';
+        $sitename = 'mymaamarkets';
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
@@ -109,7 +109,7 @@ class ResetData extends Command
             'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make(12345678),
             'kyc' => 0,
-            'email_verified_at' =>Carbon::now(),
+            'email_verified_at' => Carbon::now(),
         ];
         $user = User::create($dataUser);
 

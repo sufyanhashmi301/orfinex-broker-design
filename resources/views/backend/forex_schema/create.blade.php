@@ -14,7 +14,7 @@
             </a>
         </div>
     </div>
-    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data" class="space-y-5">
+    <form action="{{route('admin.accountType.store')}}" method="post" enctype="multipart/form-data" class="account_form space-y-5">
         @csrf
         <div class="grid grid-cols-12 gap-5">
             <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
@@ -607,6 +607,13 @@
                 var target = $(this).data('target');
                 $(target).toggleClass('hidden');
             });
+
+            $('.account_form').on('keypress', function(event) {
+                if (event.which === 13) { // 13 is the keycode for Enter
+                    event.preventDefault();
+                }
+            });
+
         });
     </script>
 @endsection

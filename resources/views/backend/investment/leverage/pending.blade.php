@@ -55,6 +55,7 @@
                                         <td>
                                             <div class="badge badge-warning capitalize">Pending</div>
                                         </td>
+                                        @can('leverage-action')
                                         <td>
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 <button type="button" data-id="{{ $update->id }}" data-action="approve" class="btn btn-sm btn-light inline-flex items-center leverageAction">
@@ -67,6 +68,7 @@
                                                 </button>
                                             </div>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

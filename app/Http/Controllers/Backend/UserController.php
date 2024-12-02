@@ -58,7 +58,7 @@ class UserController extends Controller
      */
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
+        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-export|customer-balance-add-or-subtract', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);
@@ -66,6 +66,7 @@ class UserController extends Controller
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
         $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
         $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
+        $this->middleware('permission:customer-export', ['only' => ['export']]);
         $this->forexApiService = $forexApiService;
     }
 

@@ -41,6 +41,8 @@ class KycController extends Controller
         $this->middleware('permission:kyc-form-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
         $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
         $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
+        $this->middleware('permission:kyc-export', ['only' => ['export']]);
+
 
     }
 

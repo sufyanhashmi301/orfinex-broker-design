@@ -43,8 +43,10 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
+        $this->middleware('permission:deposit-list|deposit-action|deposit-export', ['only' => ['pending', 'history','export']]);
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
+        $this->middleware('permission:deposit-export', ['only' => ['export']]);
+
     }
 
     //-------------------------------------------  Deposit method start ---------------------------------------------------------------

@@ -1,5 +1,5 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
-<div class="logo-segment mb-3">
+<div class="logo-segment">
     <a class="flex items-center" href="{{route('admin.dashboard')}}">
         @php
             $logoSrc = setting('site_favicon','global')
@@ -18,8 +18,8 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
-    <ul class="sidebar-menu flex flex-column">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-48px)] overflow-y-auto z-50" id="sidebar_menus">
+    <ul class="sidebar-menu flex flex-column mt-3">
         <li>
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">

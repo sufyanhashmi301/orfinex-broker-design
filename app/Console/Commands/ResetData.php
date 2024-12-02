@@ -132,7 +132,5 @@ class ResetData extends Command
         ];
         Notification::create($data);
 
-
-
     }
 }

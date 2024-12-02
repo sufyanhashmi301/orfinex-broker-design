@@ -39,11 +39,11 @@
                                         </td>
                                         <td class="table-td">
                                             @if ($question->status)
-                                                <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                <div class="badge badge-success capitalize">
                                                     {{ __('Active') }}
                                                 </div>
                                             @else
-                                                <div class="badge bg-warning text-warning bg-opacity-30 capitalize">
+                                                <div class="badge badge-warning capitalize">
                                                     {{ __('Disabled') }}
                                                 </div>
                                             @endif

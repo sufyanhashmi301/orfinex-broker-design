@@ -90,7 +90,7 @@
                             <div class="input-area col-span-12">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text" name="amount" class="form-control !text-lg"
+                                    <input type="text" name="amount" class="form-control"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="amount"
                                            aria-describedby="basic-addon1">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon1">{{ $currency }}</span>
@@ -100,7 +100,7 @@
                             <div class="input-area col-span-12 conversion hidden">
                                 <label for="" class="form-label">{{ __('Enter Amount:') }}</label>
                                 <div class="relative">
-                                    <input type="text"  class="form-control !text-lg"
+                                    <input type="text"  class="form-control"
                                            oninput="this.value = validateDouble(this.value)" aria-label="Amount" id="converted-amount"
                                            aria-describedby="basic-addon2">
                                     <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center" id="basic-addon2">{{ $currency }}</span>
@@ -108,8 +108,11 @@
                                 <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
                             </div>
 {{--                            <div class="manual-row"></div>--}}
+                            <div class="input-area col-span-12">
+                                <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
+                                <textarea name="approval_cause" class="form-control basicTinymce" rows="5"></textarea>
+                            </div>
                             <div class="input-area lg:col-span-6 col-span-12">
-                                <label for="" class="form-label opacity-0">{{ __('Auto Approve') }}</label>
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto !mb-0">
                                         {{ __('Auto Approve') }}
@@ -122,10 +125,6 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="input-area col-span-12">
-                                <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
-                                <textarea name="approval_cause" class="form-control" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="action-btns text-right mt-10">
@@ -155,12 +154,13 @@
                                             <th scope="col" class="table-th">{{ __('Date') }}</th>
                                             <th scope="col" class="table-th">{{ __('User') }}</th>
                                             <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Type') }}</th>
                                             <th scope="col" class="table-th">{{ __('Account') }}</th>
                                             <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                             <th scope="col" class="table-th">{{ __('Gateway') }}</th>
+                                            <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                             <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                            <th scope="col" class="table-th">{{ __('Action') }}</th></tr>
+                                            <th scope="col" class="table-th">{{ __('Action') }}</th>
+                                        </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
@@ -177,8 +177,8 @@
             </div>
         </div>
     </div>
-    @can('transaction-action')
-        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
+    @can('deposit-action')
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="deposit-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
                     <div class="modal-body popup-body">
@@ -216,47 +216,44 @@
                     serverSide: true,
                     autoWidth: false,
                     ajax: {
-                        url: "{{ route('admin.transactions') }}",
+                        url: "{{ route('admin.deposit.history') }}",
                         data: function (d) {
                             d.email = $('#email').val();
                             d.status = $('#status').val();
-                            d.type = $('#type').val();
                             d.status = $('#status').val();
                             d.created_at = $('#created_at').val();
 
                         }
                     },
+
                     columns: [
                         {data: 'created_at', name: 'created_at'},
                         {data: 'username', name: 'username'},
                         {data: 'tnx', name: 'tnx'},
-                        {data: 'type', name: 'type'},
                         {data: 'target_id', name: 'target_id'},
                         {data: 'final_amount', name: 'final_amount'},
                         {data: 'method', name: 'method'},
+                        {data: 'charge', name: 'charge'},
                         {data: 'status', name: 'status'},
                         {data: 'action', name: 'action'},
                     ]
                 });
-
             $('#filter').click(function () {
                 table.draw();
             });
+
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();
-
                 var id = $(this).data('id');
-                $.ajax({
-                    url: '{{ route("admin.transactions.view", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                        $('.deposit-action').append(response)
-                        imagePreview()
-                        $('#transaction-action-modal').modal('show');
-
-                    }
+                var url = '{{ route("admin.deposit.action",":id") }}';
+                url = url.replace(':id', id);
+                $.get(url, function (data) {
+                    $('.deposit-action').append(data)
+                    imagePreview()
                 });
-            });
+
+                $('#deposit-action-modal').modal('toggle');
+            })
         })(jQuery);
 
         // $(document).ready(function() {
@@ -382,18 +379,18 @@
 
                 });
                 $(document).ready(function() {
-            $('.filter-toggle-btn').click(function() {
-                const $content = $('#filters_div');
+                    $('.filter-toggle-btn').click(function() {
+                        const $content = $('#filters_div');
 
-                if ($content.hasClass('hidden')) {
-                    $content.removeClass('hidden').slideDown();
-                } else {
-                    $content.slideUp(function() {
-                        $content.addClass('hidden');
+                        if ($content.hasClass('hidden')) {
+                            $content.removeClass('hidden').slideDown();
+                        } else {
+                            $content.slideUp(function() {
+                                $content.addClass('hidden');
+                            });
+                        }
                     });
-                }
-            });
-        });
+                });
             // });
 
     </script>

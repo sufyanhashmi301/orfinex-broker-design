@@ -37,28 +37,28 @@
                                     </td>
                                     <td class="table-td">
                                         <ul class="flex flex-wrap items-center gap-3">
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('EURUSD') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('GBPUSD') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('USDJPY') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('EURCAD') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('AUDCAD') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('EURGBP') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('AUDEUR') }}
                                             </li>
-                                            <li class="badge bg-secondary bg-opacity-30 uppercase">
+                                            <li class="badge badge-secondary uppercase">
                                                 {{ __('USDINR') }}
                                             </li>
                                         </ul>

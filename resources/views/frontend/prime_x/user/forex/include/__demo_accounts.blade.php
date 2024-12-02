@@ -8,68 +8,81 @@
         </div>
     </div>
 @else
-    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+    <div class="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($demoForexAccounts as $account)
             <div class="card lg:h-full border dark:border-slate-700 trading-account-card">
-                <div class="card-body rounded-md p-6">
+                <div class="card-body">
                     <div class="grid-view-layout">
-                        <div class="flex justify-between items-center mb-4">
-                            <h5 class="mb-0 dark:text-white">{{ $account->account_name }}</h5>
+                        <div class="flex items-center justify-between border-b dark:border-slate-700 p-3">
+                            <h5 class="text-xl mb-0 dark:text-white">{{ $account->account_name }}</h5>
                             @include('frontend::.user.forex.dropdown-menu')
                         </div>
-                        <ul class="divide-y divide-slate-100 dark:divide-slate-700 h-full">
-                            <li class="flex items-center py-3">
-                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Number') }}
-                            </span>
-                                <span class="flex-1 text-right text-slate-600 dark:text-slate-300">
-                                {{ $account->login }}
-                            </span>
+                        <ul class="h-full p-3">
+                            <li class="flex items-baseline relative overflow-hidden py-3">
+                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Number') }}
+                                </span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="text-right text-slate-600 dark:text-slate-300">
+                                    {{ $account->login }}
+                                </span>
                             </li>
-                            <li class="flex items-center py-3">
-                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Platform') }}
-                            </span>
-                                <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ __('MT5') }}
-                            </span>
+                            <li class="flex items-baseline relative overflow-hidden py-3">
+                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Platform') }}
+                                </span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                    {{ __('MT5') }}
+                                </span>
                             </li>
-                            <li class="flex items-center py-3">
-                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Balance') }}
-                            </span>
-                                <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                               {{ get_mt5_account_balance($account->login) }} {{ $account->currency }}
-                            </span>
+                            <li class="flex items-baseline relative overflow-hidden py-3">
+                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Server') }}
+                                </span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                    {{ $account->server }}
+                                </span>
                             </li>
-                            <li class="flex items-center py-3">
-                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Leverage') }}
-                            </span>
-                                <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ $account->leverage }}
-                            </span>
+                            <li class="flex items-baseline relative overflow-hidden py-3">
+                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Balance') }}
+                                </span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                   {{ get_mt5_account_balance($account->login) }} {{ $account->currency }}
+                                </span>
                             </li>
-                            <li class="flex items-center py-3">
-                            <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                                {{ __('Equity') }}
-                            </span>
-                                <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                                {{ get_mt5_account_equity($account->login) }}
-                            </span>
+                            <li class="flex items-baseline relative overflow-hidden py-3">
+                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Leverage') }}
+                                </span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                    {{ $account->leverage }}
+                                </span>
+                            </li>
+                            <li class="flex items-baseline relative overflow-hidden py-3">
+                                <span class="text-sm text-slate-600 dark:text-slate-300">
+                                    {{ __('Equity') }}
+                                </span>
+                                <span class="flex-1 h-full border-b border-dashed mx-1"></span>
+                                <span class="text-sm text-right text-slate-600 dark:text-slate-300">
+                                    {{ get_mt5_account_equity($account->login) }}
+                                </span>
                             </li>
                         </ul>
                     </div>
-                    <div class="list-view-layout">
+                    <div class="list-view-layout p-6">
                         <div class="flex items-center">
-                        <span class="badge badge-primary  bg-opacity-30 capitalize">
-                            {{ ucfirst(data_get($account,'account_type')) }}
-                        </span>
-                            <span
-                                class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mx-1">{{ __('MT5') }}</span>
+                            <span class="badge badge-primary  bg-opacity-30 capitalize">
+                                {{ ucfirst(data_get($account,'account_type')) }}
+                            </span>
+                            <span class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mx-1">{{ __('MT5') }}</span>
                             <span class="badge bg-secondary-500 text-secondary-900 bg-opacity-30 capitalize mr-1">
-                            {{ $account->schema->title }}
-                        </span>
+                                {{ $account->schema->title }}
+                            </span>
                             <h6 class="mb-0">
                                 {{ $account->account_name }} / {{ $account->login }}
                             </h6>

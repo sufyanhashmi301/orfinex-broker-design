@@ -246,39 +246,39 @@
             </div>
             {{--            {{dd($maxLevelOrder)}}--}}
             <div class="py-6">
-                <div class="flex justify-between flex-wrap items-center mb-5">
-                    <h4 class="card-title">{{ __('Account Based') }}</h4>
-                    <div class="input-area relative min-w-[184px]">
-                        <select name="level_order" class="select2 form-control w-full">
+{{--                <div class="flex justify-between flex-wrap items-center mb-5">--}}
+{{--                    <h4 class="card-title">{{ __('Account Based') }}</h4>--}}
+{{--                    <div class="input-area relative min-w-[184px]">--}}
+{{--                        <select name="level_order" class="select2 form-control w-full">--}}
 
-                            @for ($i = 0; $i <= $maxLevelOrderCount; $i++)
-                                <option value="{{ $i }}">{{ __('Level ' . $i) }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
+{{--                            @for ($i = 0; $i <= $maxLevelOrderCount; $i++)--}}
+{{--                                <option value="{{ $i }}">{{ __('Level ' . $i) }}</option>--}}
+{{--                            @endfor--}}
+{{--                        </select>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
                 <span id="schemes">
-                    @include('frontend.prime_x.partner.include.__schemes')
+{{--                    @include('frontend.prime_x.partner.include.__schemes')--}}
                 </span>
             </div>
-            <div class="py-6 space-y-5">
-                <div class="flex justify-between flex-wrap items-center">
-                    <h4 class="card-title">{{ __('Agent') }}</h4>
-                </div>
-                <div class="input-area grid grid-cols-12 items-center gap-5">
-                    <div class="lg:col-span-2 col-span-12 form-label !mb-0">
-                        {{ __('Sub IB') }}
-                    </div>
-                    <div class="lg:col-span-10 col-span-12">
-                        <div class="relative">
-                            <input type="text" class="form-control !pr-32" id="subId-input" value="http://khjkahd3y9d30jdksads" readonly>
-                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">
-                                <a href="javascript:;" class="copy-button" type="button" data-target="#subId-input">{{ __('Copy Link') }}</a>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="py-6 space-y-5">--}}
+{{--                <div class="flex justify-between flex-wrap items-center">--}}
+{{--                    <h4 class="card-title">{{ __('Agent') }}</h4>--}}
+{{--                </div>--}}
+{{--                <div class="input-area grid grid-cols-12 items-center gap-5">--}}
+{{--                    <div class="lg:col-span-2 col-span-12 form-label !mb-0">--}}
+{{--                        {{ __('Sub IB') }}--}}
+{{--                    </div>--}}
+{{--                    <div class="lg:col-span-10 col-span-12">--}}
+{{--                        <div class="relative">--}}
+{{--                            <input type="text" class="form-control !pr-32" id="subId-input" value="http://khjkahd3y9d30jdksads" readonly>--}}
+{{--                            <span class="absolute right-0 top-1/2 px-3 -translate-y-1/2 h-full border-none flex items-center justify-center">--}}
+{{--                                <a href="javascript:;" class="copy-button" type="button" data-target="#subId-input">{{ __('Copy Link') }}</a>--}}
+{{--                            </span>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
     </div>
 

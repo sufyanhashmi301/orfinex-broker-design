@@ -108,14 +108,11 @@ return [
             'database'  => env('MT5_DB_DATABASE', 'forge'),
             'username'  => env('MT5_DB_USERNAME', 'forge'),
             'password'  => env('MT5_DB_PASSWORD', ''),
-//            'charset'   => 'utf8mb4',
-//            'collation' => 'utf8mb4_unicode_ci',
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix'    => '',
             'strict'    => true,
             'engine'    => null,
-            'options'   => [
-                \PDO::ATTR_PERSISTENT => true, // Enable persistent connections
-            ],
         ],
 
     ],

@@ -5,7 +5,7 @@
 @endsection
 
 @section('title-btns')
-    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#ibGroupModal">
+    <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#ibGroupModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
@@ -19,35 +19,50 @@
                     <div class="overflow-hidden basicTable_wrapper">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
-                                <tr>
-                                    <th scope="col" class="table-th">{{ __('Group Name') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Schema') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                </tr>
+                            <tr>
+                                <th scope="col" class="table-th">{{ __('Group Name') }}</th>
+{{--                                <th scope="col" class="table-th">{{ __('Schema') }}</th>--}}
+                                <th scope="col" class="table-th">{{ __('Rebate Rules') }}</th>
+                                <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                <th scope="col" class="table-th">{{ __('Action') }}</th>
+
+                            </tr>
                             </thead>
+
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                             @foreach($ibGroups as $ibGroup)
                                 <tr>
                                     <td class="table-td">
                                         <strong>{{ $ibGroup->name }}</strong>
                                     </td>
+
+{{--                                    <td class="table-td">--}}
+{{--                                        @if($ibGroup->forexSchemas->isNotEmpty())--}}
+{{--                                            <ul>--}}
+{{--                                                @foreach($ibGroup->forexSchemas as $schema)--}}
+{{--                                                    <li>{{ $schema->title }}</li>--}}
+{{--                                                @endforeach--}}
+{{--                                            </ul>--}}
+{{--                                        @else--}}
+{{--                                            <span>{{ __('N/A') }}</span>--}}
+{{--                                        @endif--}}
+{{--                                    </td>--}}
+                                    <td class="table-td">
+                                        @if($ibGroup->rebateRules->isNotEmpty())
+                                            <ul>
+                                                @foreach($ibGroup->rebateRules as $rule)
+                                                    <li>{{ $rule->title }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <span>{{ __('N/A') }}</span>
+                                        @endif
+                                    </td>
                                     <td class="table-td">
                                         @if($ibGroup->status)
                                             <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Active') }}</div>
                                         @else
                                             <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">{{ __('Disabled') }}</div>
-                                        @endif
-                                    </td>
-                                    <td class="table-td">
-                                        @if($ibGroup->forexSchemas->isNotEmpty())
-                                            <ul>
-                                                @foreach($ibGroup->forexSchemas as $schema)
-                                                    <li>{{ $schema->title }}</li>
-                                                @endforeach
-                                            </ul>
-                                        @else
-                                            <span>{{ __('No schemas attached') }}</span>
                                         @endif
                                     </td>
                                     <td class="table-td">
@@ -95,6 +110,7 @@
 @endsection
 
 @section('user-management-script')
+
     <script>
         // Edit IB Group
         $('body').on('click', '.edit-ib-group', function (event) {

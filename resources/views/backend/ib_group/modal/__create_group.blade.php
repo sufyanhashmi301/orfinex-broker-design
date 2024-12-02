@@ -1,5 +1,5 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="ibGroupModal" tabindex="-1" aria-labelledby="ibGroupModal" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding
         rounded-md outline-none text-current">
             <div class="modal-body popup-body">
@@ -24,17 +24,18 @@
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">{{ __('Details (Optional)') }}</label>
-                            <textarea name="desc" class="form-control mb-0" rows="6" placeholder="Details about the IB group"></textarea>
+                            <textarea name="desc" class="form-control basicTinymce mb-0" rows="6" placeholder="Details about the IB group"></textarea>
                         </div>
                         <div class="input-area">
-                            <label for="forex_schema_id" class="form-label">{{ __('Attach Forex Schema (Optional)') }}</label>
-                            <select name="forex_schema_id" id="forex_schema_id" class="form-control">
-                                <option value="">{{ __('Select Forex Schema') }}</option>
-                                @foreach($activeForexSchemas as $schema)
-                                    <option value="{{ $schema->id }}">{{ $schema->title }}</option>
+                            <label for="rebate_rule_id" class="form-label">{{ __('Attach Rebate Rule(s) (Optional)') }}</label>
+                            <select name="rebate_rule_id[]" id="rebate_rule_id" class="select2 form-control w-full h-9" multiple>
+                                <option value="">{{ __('Select Rebate Rule') }}</option>
+                                @foreach($rebateRules as $rule)
+                                    <option value="{{ $rule->id }}">{{ $rule->title }}</option>
                                 @endforeach
                             </select>
                         </div>
+
 
                         <div class="input-area">
                             <div class="flex items-center space-x-7 flex-wrap">

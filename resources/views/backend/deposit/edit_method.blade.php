@@ -12,6 +12,7 @@
 @endsection
 
 @section('deposit-content')
+
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
@@ -22,7 +23,7 @@
                         <div class="md:col-span-2">
                             <div class="input-area max-w-xs">
                                 @php
-                                    $icon = $method->icon;
+                                    $icon = $method->logo;
                                     if (null != $method->gateway_id && $method->icon == ''){
                                         $icon = $method->gateway->logo;
                                     }
@@ -280,24 +281,7 @@
 @endsection
 
 @section('payment-script')
-    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
     <script>
-
-        tinymce.init({
-            selector: 'textarea.basicTinymce',
-            height: 500,
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount'
-            ],
-            toolbar: 'undo redo | blocks | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
-        });
-
         var currency = @json(is_custom_rate($method->gateway?->gateway_code));
 
         $("#currency").on('change', function () {
@@ -379,10 +363,15 @@
             // Disable the button and show loading text
             submitButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
 
+            // Create FormData object to handle file input
+            var formData = new FormData(this);
+
             $.ajax({
                 url: form.attr('action'),
-                method: 'POST',  // Make sure it's POST
-                data: form.serialize(),
+                method: 'POST',
+                data: formData, // Use FormData for the request
+                contentType: false, // Required for FormData
+                processData: false, // Prevent jQuery from processing FormData
                 success: function(response) {
                     console.log(response);
                     // Check if the response contains a redirect URL
@@ -397,7 +386,7 @@
                 },
                 error: function(xhr, status, error) {
                     // Capture validation errors
-                    if (xhr.status === 422) {  // Laravel validation error
+                    if (xhr.status === 422) { // Laravel validation error
                         var errors = xhr.responseJSON.errors;
                         var errorMessage = '';
 
@@ -420,6 +409,7 @@
                 }
             });
         });
+
 
 
     </script>

@@ -11,13 +11,13 @@ class UserReferred
     public $referralId;
 
     public $user;
-    public $multiLevelId;
+    public $schemaID;
 
-    public function __construct($referralId, $user,$multiLevelId=null)
+    public function __construct($referralId, $user,$schemaID=null)
     {
         $this->referralId = $referralId;
         $this->user = $user;
-        $this->multiLevelId = $multiLevelId;
+        $this->schemaID = $schemaID;
     }
 
     public function broadcastOn()

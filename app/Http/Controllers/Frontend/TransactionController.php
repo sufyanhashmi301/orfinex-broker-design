@@ -20,24 +20,43 @@ class TransactionController extends Controller
     use ForexApiTrait;
     public function transactions()
     {
-//        dd(request('date'));
-        $transactions = Transaction::search(request('query'), function ($query) {
-            $query->where('user_id', auth()->user()->id)
-                ->when(request('date'), function ($query) {
-                    $query->whereDay('created_at', '=', Carbon::parse(request('date'))->format('d'));
-                });
-        })->where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')
-            ->paginate(10)->withQueryString();
-//            ->get();
-//        dd($transactions);
+        $transactions = Transaction::search(request('query'))
+            ->query(function ($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->when(request('transaction_date'), function ($query) {
+                        $filter = request('transaction_date');
+
+                        if (in_array($filter, ['3_days', '5_days', '15_days'])) {
+                            $daysAgo = substr($filter, 0, strpos($filter, '_'));
+                            $query->where('created_at', '>=', Carbon::now()->subDays($daysAgo)->startOfDay());
+                        } elseif ($filter == '1_month') {
+                            $query->where('created_at', '>=', Carbon::now()->subMonth()->startOfDay());
+                        } elseif ($filter == '3_months') {
+                            $query->where('created_at', '>=', Carbon::now()->subMonths(3)->startOfDay());
+                        }
+                    })
+                    ->when(request('transaction_status'), function ($query) {
+                        $query->where('status', request('transaction_status'));
+                    })
+                    ->when(request('transaction_type'), function ($query) {
+                        $query->where('type', request('transaction_type'));
+                    });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        if (request()->ajax()) {
+            return view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render();
+        }
 
         return view('frontend::user.transaction.index', compact('transactions'));
     }
 
     public function export(Request $request)
-{
-    return Excel::download(new AllTransactionsExport($request), 'All-History.xlsx');
-}
+    {
+        return Excel::download(new AllTransactionsExport($request), 'All-History.xlsx');
+    }
 
 
     public function forexTransactions()

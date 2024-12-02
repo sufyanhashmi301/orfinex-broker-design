@@ -9,7 +9,7 @@ class ReferralRelationship extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['referral_link_id', 'user_id', 'multi_level_id'];
+    protected $fillable = ['referral_link_id', 'user_id', 'multi_level_id', 'forex_schema_id'];
 
     public function referralLink()
     {
@@ -18,6 +18,10 @@ class ReferralRelationship extends Model
     public function multiLevel()
     {
         return $this->belongsTo(MultiLevel::class, 'multi_level_id');
+    }
+    public function forexSchema()
+    {
+        return $this->belongsTo(ForexSchema::class, 'forex_schema_id');
     }
     public function user()
     {

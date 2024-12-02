@@ -15,6 +15,7 @@ use App\Models\Bonus;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
+use App\Models\IbGroup;
 use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
@@ -247,6 +248,7 @@ class UserController extends Controller
         $customerGroups = CustomerGroup::where('status', 1)->get();
         $riskProfileTags = RiskProfileTag::all();
         $kycLevels = KycLevel::where('status', 1)->get();
+        $ibGroups = IbGroup::where('status', 1)->get();
         $kycStatus = KYCStatus::cases();
         //        $users = User::where('id', '<>', $id)
         //            ->where(function ($query) use ($id, $user) {
@@ -271,7 +273,7 @@ class UserController extends Controller
             ->get();
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses', 'ibGroups'));
     }
 
     public function destroy($id)

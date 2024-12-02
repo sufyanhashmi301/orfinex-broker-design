@@ -791,9 +791,6 @@
     grabCursor: true
   });
 
-  // Dragula for Kanban
-  dragula([document.getElementById("todo"), document.getElementById("progress"), document.getElementById("done")]);
-
   // Step From
   $("#example-basic").steps({
     headerTag: "h3",
@@ -843,4 +840,20 @@
       next: '<iconify-icon icon="heroicons-outline:chevron-right"></iconify-icon>'
     }
   });
+
+  tinymce.init({
+    selector: 'textarea.basicTinymce',
+    height: 300,
+    plugins: [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+    ],
+    toolbar: 'undo redo | blocks | ' +
+        'bold italic backcolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent | ' +
+        'removeformat | help',
+    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+  });
+
 })(jQuery);

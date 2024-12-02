@@ -283,6 +283,9 @@ class WithdrawController extends Controller
             $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
+                ->addColumn('created_at', function ($row) {
+                    return '<span class="text-nowrap">' . $row->created_at . '</span>';
+                })
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('amount', 'backend.transaction.include.__txn_amount')
@@ -291,7 +294,7 @@ class WithdrawController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['status', 'type', 'amount', 'username','action'])
+                ->rawColumns(['created_at', 'status', 'type', 'amount', 'username','action'])
                 ->make(true);
         }
 
@@ -399,7 +402,6 @@ class WithdrawController extends Controller
 
             notify()->success('Reject successfully');
         }
-
 
             $this->pushNotify('withdraw_request_user', $shortcodes, route('user.withdraw.log'), $user->id);
             $this->smsNotify('withdraw_request_user', $shortcodes, $user->phone);

@@ -41,50 +41,21 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Type') }}</th>
-{{--                                    <th scope="col" class="table-th">{{ __('Login') }}</th>--}}
-{{--                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>--}}
+                                    <th scope="col" class="table-th">{{ __('IB Group') }}</th>
                                     <th scope="col" class="table-th">{{ __('status') }}</th>
                                     <th scope="col" class="table-th"></th>
-                                    {{--<th scope="col" class="table-th">{{ __('Group') }}</th>--}}
-                                    {{--<th scope="col" class="table-th">{{ __('Balance') }}</th>--}}
-                                    {{--<th scope="col" class="table-th">{{ __('Equity') }}</th>--}}
-                                    {{--<th scope="col" class="table-th">{{ __('Credit') }}</th>--}}
+
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 <tr>
                                     <td class="table-td">
-                                        {{ __('IB') }}
+                                        {{ isset($user->ib_group_id) ? $user->ibGroup->name : 'N/A' }}
                                     </td>
-{{--                                    <td class="table-td">--}}
-{{--                                        {{ $user->ib_login }}--}}
-{{--                                    </td>--}}
-{{--                                    <td class="table-td">--}}
-{{--                                        {{ get_mt5_account_equity($user->ib_login) }}--}}
-{{--                                    </td>--}}
                                     <td class="table-td">
                                         {{ ucfirst($user->ib_status)}}
                                     </td>
                                 </tr>
-{{--                                <tr>--}}
-{{--                                    <td class="table-td">--}}
-{{--                                        {{ __('Multi IB') }}--}}
-{{--                                    </td>--}}
-{{--                                    <td class="table-td">--}}
-{{--                                        {{ $user->multi_ib_login }}--}}
-{{--                                    </td>--}}
-{{--                                    <td class="table-td">--}}
-{{--                                        {{  get_mt5_account_equity($user->multi_ib_login)  }}--}}
-{{--                                    </td>--}}
-{{--                                    <td class="table-td">--}}
-{{--                                        @if(isset($user->multi_ib_login ))--}}
-{{--                                            {{ __('Approved') }}--}}
-{{--                                        @else--}}
-{{--                                            {{ __('Unprocessed') }}--}}
-{{--                                        @endif--}}
-{{--                                    </td>--}}
-{{--                                </tr>--}}
                             </tbody>
                         </table>
                     </div>

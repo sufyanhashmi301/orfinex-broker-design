@@ -97,11 +97,11 @@
                                         <div class="gateway-right flex items-center gap-2">
                                             <div class="gateway-status">
                                                 @if($kycSubLevel->status)
-                                                    <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                    <div class="badge badge-success capitalize">
                                                         {{ __('Active') }}
                                                     </div>
                                                 @else
-                                                    <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                                    <div class="badge badge-danger capitalize">
                                                         {{ __('Deactivated') }}
                                                     </div>
                                                 @endif
@@ -192,11 +192,11 @@
                                                 <div class="gateway-right flex items-center gap-2">
                                                     <div class="gateway-status">
                                                         @if($kyc->status)
-                                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                            <div class="badge badge-success capitalize">
                                                                 {{ __('Active') }}
                                                             </div>
                                                         @else
-                                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                                            <div class="badge badge-danger capitalize">
                                                                 {{ __('Deactivated') }}
                                                             </div>
                                                         @endif
@@ -230,11 +230,11 @@
                                             <div class="gateway-right flex items-center gap-2">
                                                 <div class="gateway-status">
                                                     @if($sumsub->status)
-                                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                        <div class="badge badge-success capitalize">
                                                             {{ __('Active') }}
                                                         </div>
                                                     @else
-                                                        <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                                        <div class="badge badge-danger capitalize">
                                                             {{ __('Deactivated') }}
                                                         </div>
                                                     @endif
@@ -265,11 +265,11 @@
                                                 <div class="gateway-right flex items-center gap-2">
                                                     <div class="gateway-status">
                                                         @if($kyc->status)
-                                                            <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                            <div class="badge badge-success capitalize">
                                                                 {{ __('Active') }}
                                                             </div>
                                                         @else
-                                                            <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                                            <div class="badge badge-danger capitalize">
                                                                 {{ __('Deactivated') }}
                                                             </div>
                                                         @endif

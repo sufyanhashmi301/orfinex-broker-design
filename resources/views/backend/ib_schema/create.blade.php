@@ -106,33 +106,17 @@
     </div>
 @endsection
 @section('script')
-    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
     <script>
-
-        tinymce.init({
-            selector: 'textarea.basicTinymce',
-            height: 500,
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount'
-            ],
-            toolbar: 'undo redo | blocks | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
-        });
 
         (function ($) {
             'use strict';
 
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            // maxItemCount:7,
-            // searchResultLimit:7,
-            // renderChoiceLimit:20
-        });
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+                removeItemButton: true,
+                // maxItemCount:7,
+                // searchResultLimit:7,
+                // renderChoiceLimit:20
+            });
 
         })(jQuery)
     </script>

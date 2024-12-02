@@ -63,6 +63,8 @@ use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\Backend\IBGroupController;
+use App\Http\Controllers\Backend\DocumentLinkController;
+use App\Http\Controllers\Backend\PlatformLinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -313,6 +315,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
+        Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');
+        Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('update', 'update')->name('update');
@@ -400,9 +404,18 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     });
 
     //===============================  Links Settings ==================================
-    Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
-        Route::get('document-links', 'documentLinks')->name('document-links');
-        Route::get('platform-links', 'platformLinks')->name('platform-links');
+    Route::group(['prefix' => 'links', 'as' => 'links.'], function () {
+        Route::get('document', [DocumentLinkController::class, 'index'])->name('document.index');
+        Route::post('document/store', [DocumentLinkController::class, 'store'])->name('document.store');
+        Route::get('document/{id}', [DocumentLinkController::class, 'edit'])->name('document.edit');
+        Route::put('document/update', [DocumentLinkController::class, 'update'])->name('document.update');
+        Route::delete('document/{id}', [DocumentLinkController::class, 'destroy'])->name('document.destroy');
+
+        Route::get('platform', [PlatformLinkController::class, 'index'])->name('platform.index');
+        Route::post('platform/store', [PlatformLinkController::class, 'store'])->name('platform.store');
+        Route::get('platform/{id}', [PlatformLinkController::class, 'edit'])->name('platform.edit');
+        Route::put('platform/update', [PlatformLinkController::class, 'update'])->name('platform.update');
+        Route::delete('platform/{id}', [PlatformLinkController::class, 'destroy'])->name('platform.destroy');
     });
 
     //===============================  Others ==================================
@@ -566,6 +579,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.setting.customization.dynamic_content');
     })->name('dynamicContent');
 
+    Route::get('leads', function () {
+        $tags = App\Models\RiskProfileTag::where('status', true)->get();
+        return view('backend.lead.index', compact('tags'));
+    })->name('customerLead');
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');;

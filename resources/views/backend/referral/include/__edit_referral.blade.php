@@ -3,7 +3,7 @@
     tabindex="-1"
     aria-labelledby="editReferral"
     aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+    <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-center justify-between p-5">
@@ -57,7 +57,7 @@
 
                         <div class="input-area mb-0">
                             <label for="" class="form-label">{{ __('Description:') }}</label>
-                            <textarea name="description" class="form-control description" rows="6"
+                            <textarea name="description" class="form-control basicTinymce description" rows="6"
                                       placeholder="Description"></textarea>
                         </div>
 

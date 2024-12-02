@@ -42,7 +42,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.links.document-links') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.links.document.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Doc & Links') }}
                         </a>
                     </li>
@@ -432,14 +432,6 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    <li class="">
-                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Plugins') }}
-                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
-                                {{ __('Updated') }}
-                            </span>
-                        </a>
-                    </li>
                     @can('automatic-gateway-manage')
                         <li>
                             <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -450,6 +442,30 @@
                             </a>
                         </li>
                     @endcan
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Plugins') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','sms') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{__('SMS Settings') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','notification') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{__('Notification Settings') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
                     <li>
                         <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('API Access')}}

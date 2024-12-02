@@ -19,7 +19,7 @@
                     </div>
                     <div class="input-area">
                         <label for="" class="form-label">{{ __('Email Details') }}</label>
-                        <textarea name="message" class="form-control" rows="6"></textarea>
+                        <textarea name="message" class="form-control basicTinymce" rows="6"></textarea>
                     </div>
 
                     <div class="action-btns text-right">

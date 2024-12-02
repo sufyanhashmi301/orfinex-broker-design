@@ -31,43 +31,50 @@
                             <span class="ml-auto dark:text-white">{{ __('USD') }}</span>
                         </li>
                     </ul>
-                    <div class="flex items-center justify-between flex-wrap gap-3">
-                        @if(setting('desktop_terminal_windows_show','platform_links',false))
-                            <a href="{{setting('desktop_terminal_windows_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
-                                <iconify-icon class="text-xl mr-2" icon="material-symbols:window-sharp"></iconify-icon>
-                                <span>{{ __('Metatrader5 for windows') }}</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        @foreach($platformLinks as $platformLink)
+                            <a href="{{ $platformLink->link }}" class="border dark:border-slate-700 p-2" target="_blank">
+                                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                                    <div class="flex-1 flex items-center space-x-2 rtl:space-x-reverse">
+                                        <div class="flex-none">
+                                            @switch($platformLink->os)
+                                                @case('window')
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:window-sharp"></iconify-icon>
+                                                @break
+                                                @case('mac')
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:app-store-ios"></iconify-icon>
+                                                @break
+                                                @case('android')
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="ion:logo-google-playstore"></iconify-icon>
+                                                @break
+                                                @case('ios')
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="fa6-brands:apple"></iconify-icon>
+                                                @break
+                                                @case('android_apk')
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="material-symbols:android"></iconify-icon>
+                                                @break
+                                                @case('web')
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="mdi:web"></iconify-icon>
+                                                @break
+                                                @default()
+                                                <iconify-icon class="text-2xl dark:text-slate-300" icon="lucide:app-window"></iconify-icon>
+                                            @endswitch
+                                        </div>
+                                        <div class="flex-1">
+                                            <span class="block text-slate-600 text-sm font-semibold dark:text-slate-300">
+                                                {{ $platformLink->title }}
+                                            </span>
+                                            <span class="block font-normal text-xs text-slate-500">
+                                                {{ __('for') . ' ' . $platformLink->os }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-none">
+                                        <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                    </div>
+                                </div>
                             </a>
-                        @endif
-                        @if(setting('desktop_terminal_mac_show','platform_links',false))
-                            <a href="{{setting('desktop_terminal_mac_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
-                                <iconify-icon class="text-xl mr-2" icon="fa6-brands:app-store-ios"></iconify-icon>
-                                <span>{{ __('Metatrader5 for MAC') }}</span>
-                            </a>
-                        @endif
-                        @if(setting('mobile_application_android_show','platform_links',false))
-                            <a href="{{setting('mobile_application_android_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
-                                <iconify-icon class="text-xl mr-2" icon="ion:logo-google-playstore"></iconify-icon>
-                                <span>{{ __('Metatrader5 for Android') }}</span>
-                            </a>
-                        @endif
-                        @if(setting('mobile_application_Android_APK_show','platform_links',false))
-                            <a href="{{setting('mobile_application_Android_APK_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
-                                <iconify-icon class="text-xl mr-2" icon="material-symbols:android"></iconify-icon>
-                                <span>{{ __('Metatrader5 for Android APK') }}</span>
-                            </a>
-                        @endif
-                        @if(setting('mobile_application_iOS_show','platform_links',false))
-                            <a href="{{setting('mobile_application_iOS_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
-                                <iconify-icon class="text-xl mr-2" icon="fa6-brands:apple"></iconify-icon>
-                                <span>{{ __('Metatrader5 for IOS') }}</span>
-                            </a>
-                        @endif
-                        @if(setting('web_terminal_show','platform_links',false))
-                            <a href="{{setting('web_terminal_link','platform_links','javascript:void(0);')}}" target="_blank" class="w-full md:w-[48%] btn btn-sm inline-flex items-center justify-center btn-light">
-                                <iconify-icon class="text-xl mr-2" icon="mdi:web"></iconify-icon>
-                                <span>{{ __('MT5 web trader') }}</span>
-                            </a>
-                        @endif
+                        @endforeach
                     </div>
                 </div>
             </div>

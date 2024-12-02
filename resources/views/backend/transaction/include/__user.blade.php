@@ -10,7 +10,7 @@
         <span class="text-sm text-slate-900 dark:text-white block capitalize">
             {{ safe($user->username) }}
         </span>
-        <span class="text-xs text-slate-500 dark:text-slate-300">
+        <span class="text-xs lowercase text-slate-500 dark:text-slate-300">
             {{$user->email}}
         </span>
     </div>

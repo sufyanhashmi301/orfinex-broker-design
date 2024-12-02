@@ -1490,3 +1490,10 @@ if (!function_exists('getColorFromSettings')) {
     }
 }
 
+if (!function_exists('document_link_by_slug')) {
+    function document_link_by_slug($slug)
+    {
+        return App\Models\DocumentLink::where('slug', $slug)->where('status', 1)->first();
+    }
+}
+

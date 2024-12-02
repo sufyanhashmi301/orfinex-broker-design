@@ -114,11 +114,11 @@
                                             </td>
                                             <td class="table-td">
                                                 @if($swapBasedAccount->status==1)
-                                                    <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                    <div class="badge badge-success capitalize">
                                                         {{ __('Enabled') }}
                                                     </div>
                                                 @else
-                                                    <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                                    <div class="badge badge-danger capitalize">
                                                         {{ __('Disabled') }}
                                                     </div>
                                                 @endif
@@ -185,11 +185,11 @@
                                                 </td>
                                                 <td class="table-td">
                                                     @if($swapfreeAccount->status==1)
-                                                        <div class="badge bg-success text-success bg-opacity-30 capitalize">
+                                                        <div class="badge badge-success capitalize">
                                                             {{ __('Enabled') }}
                                                         </div>
                                                     @else
-                                                        <div class="badge bg-danger text-danger bg-opacity-30 capitalize">
+                                                        <div class="badge badge-danger capitalize">
                                                             {{ __('Disabled') }}
                                                         </div>
                                                     @endif

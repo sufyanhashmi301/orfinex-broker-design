@@ -62,14 +62,14 @@
                     </a>
                 @endif
             @endif
-            @if(setting('enc_mode', 'end_to_end_encryption'))
-            <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
-                <span class="toolTip onTop" style="line-height: 0"
-                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">
-                        <span id="lottie-container" style="display: inline-flex; width: 24px; height: 24px;"></span>
-                </span>
-            </div>
-            @endif
+{{--            @if(setting('enc_mode', 'end_to_end_encryption'))--}}
+{{--            <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">--}}
+{{--                <span class="toolTip onTop" style="line-height: 0"--}}
+{{--                      data-tippy-content="Your data is fully secure with end-to-end encryption, ensuring all transactions and information are protected.">--}}
+{{--                        <span id="lottie-container" style="display: inline-flex; width: 24px; height: 24px;"></span>--}}
+{{--                </span>--}}
+{{--            </div>--}}
+{{--            @endif--}}
             <!-- end vertcial -->
 
             <div class="nav-tools flex items-center lg:space-x-5 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
@@ -81,11 +81,11 @@
                                 <span>{{auth()->user()->full_name}}</span><br>
                                 <span class="flex items-center justify-end text-slate-400 text-sm font-normal">
                                     {{ $user->rank->ranking }}
-                                    <iconify-icon class="text-base ml-1" icon="bxs:badge-check" style="color: #FED000;"></iconify-icon>
+                                    <iconify-icon class="text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
                                 </span>
                             </div>
                         </div>
-                        <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 border-2" style="border-color: #FED000;">
+                        <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full flex-1 border-2 border-primary">
                             <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
                         </div>
                     </button>
@@ -146,7 +146,7 @@
                 @endauth
                 <!-- Notifications Dropdown area -->
 
-                <div class="relative">
+                <div class="md:block hidden relative">
                     <select name="language" class="form-control !py-1 min-w-max" onchange="window.location.href=this.options[this.selectedIndex].value;">
                         @foreach(\App\Models\Language::where('status',true)->get() as $lang)
                             <option value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>

@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('user_ib_rules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('multi_level_id');
-            $table->double('share')->default(0);//in percentage
+            $table->foreignId('ib_group_id');
+            $table->foreignId('rebate_rule_id');
+            $table->double('sub_ib_share')->default(0);//in percentage
             $table->timestamps();
         });
     }

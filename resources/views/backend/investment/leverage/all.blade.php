@@ -53,7 +53,7 @@
                                         <td><strong>{{ $update->forexAccount->equity }}</strong></td>
                                         <td>{{ $update->created_at->format('M d, Y H:i') }}</td>
                                         <td>
-                                            <div class="badge bg-warning text-warning bg-opacity-30 capitalize">Pending</div>
+                                            <div class="badge badge-warning capitalize">Pending</div>
                                         </td>
                                         @can('leverage-action')
                                         <td>

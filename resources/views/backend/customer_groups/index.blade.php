@@ -35,9 +35,9 @@
                                         </td>
                                         <td class="table-td">
                                             @if( $customerGroup->status==1)
-                                                <div class="badge bg-success text-success bg-opacity-30 capitalize">{{ __('Active') }}</div>
+                                                <div class="badge badge-success capitalize">{{ __('Active') }}</div>
                                             @else
-                                                <div class="badge bg-danger text-danger bg-opacity-30 capitalize">{{ __('Disabled') }}</div>
+                                                <div class="badge badge-danger capitalize">{{ __('Disabled') }}</div>
                                             @endif
                                         </td>
                                         <td class="table-td">

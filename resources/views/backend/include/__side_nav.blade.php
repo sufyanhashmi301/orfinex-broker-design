@@ -1,5 +1,5 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
-<div class="logo-segment">
+<div class="logo-segment mb-3">
     <a class="flex items-center" href="{{route('admin.dashboard')}}">
         @php
             $logoSrc = setting('site_favicon','global')
@@ -8,7 +8,7 @@
         @endphp
         <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
         <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
-        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-bold text-slate-900 dark:text-white">
+        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-medium text-white">
             {{ __('Backoffice') }}
         </span>
     </a>
@@ -202,7 +202,7 @@
                     {{--                                        icon-name="alarm-check"></i><span>{{ __('Schedule') }}</span></a>--}}
                     {{--                            </li>--}}
                     {{--                        @endcanany--}}
-    
+
                         <li>
                             <a href="{{route('admin.accountType.index')}}" class="{{ isActive('admin.accountType*') }}">
                                 {{ __('Account Type') }}
@@ -214,7 +214,7 @@
                                 {{ __('IB Account Type') }}
                             </a>
                         </li>
- 
+
 
                     {{--                        @can('schema-edit')--}}
 {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
@@ -262,13 +262,13 @@
 
                 </li>
             @endcan
-    
+
 
         <li>
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
-                    <span>{{ __('RMS') }}</span>
+                    <span>{{ __('Risk Hub') }}</span>
                 </span>
             </a>
         </li>
@@ -352,7 +352,7 @@
                     </ul>
                 </li>
             @endcanany
-    
+
 
         {{-- *************************************************************  Transactions *********************************************************--}}
 
@@ -366,7 +366,7 @@
                     </a>
                 </li>
             @endcan
-   
+
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])
@@ -401,8 +401,8 @@
                 </a>
             </li>
         @endcan --}}
-@canany(['symbols-list', 'rebute-rules-list','levels-list'])
-        <li class="">
+        @canany(['symbols-list', 'rebute-rules-list','levels-list'])
+            <li class="">
             <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="mdi:partnership"></iconify-icon>
@@ -436,7 +436,14 @@
                         {{ __('Rebate Rules') }}
                     </a>
                 </li>
+
                 @endcan
+
+                <li class="">
+                    <a href="{{ route('admin.ib-group.index') }}" class="{{ isActive('admin.ib-group*') }}">
+                        {{ __('IB Groups') }}
+                    </a>
+                </li>
             </ul>
         </li>
         @endcanany

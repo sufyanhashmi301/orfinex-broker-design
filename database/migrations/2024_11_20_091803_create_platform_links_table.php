@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('link');
             $table->string('platform');
+            $table->string('os');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

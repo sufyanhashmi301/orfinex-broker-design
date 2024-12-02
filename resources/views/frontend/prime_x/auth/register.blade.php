@@ -44,7 +44,7 @@
                     <!-- BEGIN: Login Form -->
                     <form method="POST" action="{{ route('register') }}" class="space-y-4">
                         @csrf
-                        <input type="hidden" name="level" value="{{ request('level') ?? old('level') }}" >
+                        <input type="hidden" name="schema" value="{{ request('schema') ?? old('schema') }}" >
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="fromGroup">
                                 <label class="block capitalize form-label">
@@ -186,8 +186,19 @@
                           >
                           <span class="text-slate-500 dark:text-slate-400 text-xs leading-6 capitalize">
                             {{ __('I agree with') }}
-                            <a href="{{ setting('privacy_policy_link', 'global') }}" class="btn-link" target="_blank">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
-                            <a href="{{ setting('client_agreement_link', 'global') }}" class="btn-link" target="_blank">{{ __('Client Agreement') }}</a>
+                            @php
+                              $privacyPolicyLink = document_link_by_slug('privacy_policy');
+                            @endphp
+                            <a href="{{ $privacyPolicyLink ? $privacyPolicyLink->link : '#' }}" class="btn-link" target="_blank">
+                                {{ __('Privacy & Policy') }}
+                            </a>
+                            {{ __('and') }}
+                            @php
+                              $clientAgreementLink = document_link_by_slug('client_agreement');
+                            @endphp
+                            <a href="{{ $clientAgreementLink ? $clientAgreementLink->link : '#' }}" class="btn-link" target="_blank">
+                                {{ __('Client Agreement') }}
+                            </a>
                           </span>
                         </label>
                       </div>

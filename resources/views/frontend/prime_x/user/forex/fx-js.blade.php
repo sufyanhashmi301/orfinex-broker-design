@@ -356,6 +356,7 @@
     //account info in modal
     $('body').on('click', '.dropdown-account-info', function () {
         $('#account-info-login').text($(this).data('login'));
+        $('#account-info__login').text($(this).data('login'));
         $('#account-info-account_name').text($(this).data('account_name'));
         $('#account-info-server').text($(this).data('server'));
         $('#account-schema-title').text($(this).data('schema_title'));
@@ -483,4 +484,22 @@
             }
         })
     }
+
+    $('body').on('click', '.copyBtn', function () {
+        var targetSelector = $(this).data('target');
+        var $input = $('#' + targetSelector);
+
+        var $tempInput = $('<input>').val($input.text()).appendTo('body');
+        $tempInput.select();
+
+        document.execCommand('copy');
+        $tempInput.remove();
+
+        var $button = $(this);
+        $button.addClass('text-success');
+
+        setTimeout(function() {
+            $button.removeClass('text-success');
+        }, 2000);
+    })
 </script>

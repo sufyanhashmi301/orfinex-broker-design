@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $user_id
- * @property int $multi_level_id
- * @property float $share
+ * @property int $rebate_rule_id
+ * @property float $sub_ib_share
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -27,17 +27,37 @@ class UserIbRule extends Model
 
 	protected $casts = [
 		'user_id' => 'int',
-		'multi_level_id' => 'int',
-		'share' => 'float'
+		'ib_group_id' => 'int',
+		'rebate_rule_id' => 'int',
+		'sub_ib_share' => 'float'
 	];
 
 	protected $fillable = [
 		'user_id',
-		'multi_level_id',
-		'share'
+		'ib_group_id',
+		'rebate_rule_id',
+		'sub_ib_share'
 	];
-    public function multiLevel()
+
+
+    public function rebateRule()
     {
-        return $this->belongsTo(MultiLevel::class,'multi_level_id');
+        return $this->belongsTo(RebateRule::class, 'rebate_rule_id');
+    }
+
+    /**
+     * Belongs to a specific IB Group.
+     */
+    public function ibGroup()
+    {
+        return $this->belongsTo(IbGroup::class, 'ib_group_id');
+    }
+
+    /**
+     * Belongs to a specific User.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

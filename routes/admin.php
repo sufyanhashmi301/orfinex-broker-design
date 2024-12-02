@@ -315,6 +315,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('site', 'siteSetting')->name('site');
         Route::get('mail', 'mailSetting')->name('mail');
         Route::get('google-mail', 'googleMailSetting')->name('googleMail');
+        Route::get('sendgrid', 'sendGridSetting')->name('sendGrid');
+        Route::get('ses', 'sesSetting')->name('ses');
         Route::get('forex-api', 'forexApiSetting')->name('forex-api');
         Route::post('mail-connection-test', 'mailConnectionTest')->name('mail.connection.test');
         Route::post('update', 'update')->name('update');
@@ -577,6 +579,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.setting.customization.dynamic_content');
     })->name('dynamicContent');
 
+    Route::get('leads', function () {
+        $tags = App\Models\RiskProfileTag::where('status', true)->get();
+        return view('backend.lead.index', compact('tags'));
+    })->name('customerLead');
 
 });
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');;

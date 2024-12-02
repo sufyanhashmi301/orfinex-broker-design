@@ -43,6 +43,19 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="input-area relative">
+                                <label for="" class="form-label">
+                                    {{ __('Operating System') }}
+                                </label>
+                                <select name="os" class="form-control">
+                                    <option value="window">{{ __('Window') }}</option>
+                                    <option value="mac">{{ __('MAC') }}</option>
+                                    <option value="android">{{ __('Android') }}</option>
+                                    <option value="ios">{{ __('iOS') }}</option>
+                                    <option value="android_apk">{{ __('Android APK') }}</option>
+                                    <option value="web">{{ __('Web') }}</option>
+                                </select>
+                            </div>
                             <div class="input-area">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <label class="form-label !w-auto pt-0">

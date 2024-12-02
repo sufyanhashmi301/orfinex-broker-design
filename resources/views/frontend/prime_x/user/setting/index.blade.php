@@ -55,7 +55,6 @@
             showSelectedDialCode: true,
             utilsScript: "{{ asset('frontend/js/utils.js') }}",
         });
-
-
     </script>
+    @yield('settings-script')
 @endsection

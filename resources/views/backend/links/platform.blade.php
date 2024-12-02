@@ -23,6 +23,7 @@
                             <tr>
                                 <th scope="col" class="table-th">{{ __('Title') }}</th>
                                 <th scope="col" class="table-th">{{ __('URL') }}</th>
+                                <th scope="col" class="table-th">{{ __('Operating System') }}</th>
                                 <th scope="col" class="table-th">{{ __('Platform') }}</th>
                                 <th scope="col" class="table-th">{{ __('Status') }}</th>
                                 <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -78,6 +79,7 @@
                 columns: [
                     {data: 'title', name: 'title'},
                     {data: 'link', name: 'link'},
+                    {data: 'os', name: 'os'},
                     {data: 'platform', name: 'platform'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},

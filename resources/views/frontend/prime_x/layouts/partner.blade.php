@@ -37,6 +37,21 @@
 
             </div>
 
+            <footer class="md:block hidden sticky bottom-0" id="footer">
+                <div class="site-footer px-6 text-slate-500 dark:text-slate-300 py-4 ltr:ml-[248px] rtl:mr-[248px]">
+                    <div class="grid md:grid-cols-2 grid-cols-1 md:gap-5">
+                        <div class="text-center ltr:md:text-start rtl:md:text-right text-sm">
+                            {{ setting('copyright_text', 'common_settings') }}
+                        </div>
+                        <div class="ltr:md:text-right rtl:md:text-end text-center text-sm">
+                            <span class="toolTip onTop" style="line-height: 0" data-tippy-content="Your data is fully secure with advanced end-to-end encryption between you and your broker, ensuring that all sensitive client information and trading activities remain confidential. Technology Provider guarantees no access to or visibility of your encrypted data, safeguarding your privacy and trust.">
+                                <span id="secure-data" style="display: inline-flex; width: 24px; height: 24px;"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
             <!-- Show in 575px in Mobile Screen -->
             <div class="mobile-screen-show md:hidden">
                 <div class="bg-white bg-no-repeat custom-dropshadow footer-bg dark:bg-slate-700 flex justify-around items-center backdrop-filter backdrop-blur-[40px] fixed left-0 bottom-0 w-full z-[9999] bothrefm-0 py-[12px] px-4">

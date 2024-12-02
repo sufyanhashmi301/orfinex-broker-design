@@ -9,6 +9,5 @@
     }
 
 @endphp
-<strong
-    class="green-color">{{ $equity }}</strong>
+<strong class="text-success">{{ $equity }}</strong>
 

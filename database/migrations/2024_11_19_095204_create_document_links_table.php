@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('link');
+            $table->string('slug', 191)->unique();
+            $table->boolean('is_deleteable')->default(true);
             $table->integer('status')->default(0);
             $table->timestamps();
         });

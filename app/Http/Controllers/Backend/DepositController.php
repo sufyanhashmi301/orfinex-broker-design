@@ -200,7 +200,7 @@ class DepositController extends Controller
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-//dd($data);
+//dd($input,$data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);

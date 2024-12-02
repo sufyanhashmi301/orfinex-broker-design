@@ -3,7 +3,7 @@
     <div>
         <strong><span id="days{{ $id }}"></span>D : <span id="hours{{ $id }}"></span>H : <span
                 id="minutes{{ $id }}"></span>M : <span id="seconds{{ $id }}"></span>S</strong>
-        <span class="site-badge primary-bg ms-2" id="percentage{{ $id }}"></span>
+        <span class="badge badge-primary ms-2" id="percentage{{ $id }}"></span>
     </div>
     <div class="progress investment-timeline">
         <div class="progress-bar progress-bar-striped progress-bar-animated" id="time-progress{{ $id }}"
@@ -47,13 +47,13 @@
 
     </script>
 @elseif($status == 'completed')
-    <div class="site-badge success">{{ __('Completed') }}</div>
+    <div class="badge badge-success">{{ __('Completed') }}</div>
     <div class="progress investment-timeline">
         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75"
              aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
     </div>
 @elseif($status == 'pending')
-    <div class="site-badge pending">{{ __('Pending') }}</div>
+    <div class="badge badge-warning">{{ __('Pending') }}</div>
 @elseif($status == 'canceled')
-    <div class="site-badge pending">{{ __('Canceled') }}</div>
+    <div class="badge badge-danger">{{ __('Canceled') }}</div>
 @endif

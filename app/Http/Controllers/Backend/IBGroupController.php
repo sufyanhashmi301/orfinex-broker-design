@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\IbGroup;
+use App\Models\RebateRule;
+use App\Models\UserIbRule;
 use App\Traits\NotifyTrait;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -32,14 +34,14 @@ class IBGroupController extends Controller
 
     public function index()
     {
-        $ibGroups = IbGroup::with('forexSchemas')->paginate(10); // Load related forexSchemas
-        $activeForexSchemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
-        ->orderBy('priority', 'asc')
-            ->get();
-        return view('backend.ib_group.index', compact('ibGroups','activeForexSchemas')); // Return the view with data
-
-
+        $ibGroups = IbGroup::with( 'rebateRules')->paginate(10); // Load related rebate rules
+        $rebateRules = RebateRule::where('status', 1)->get(); // Active rebate rules for dropdowns
+        return view('backend.ib_group.index', compact('ibGroups', 'rebateRules'));
     }
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -62,7 +64,7 @@ class IBGroupController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:ib_groups,name',
             'status' => 'required|boolean',
-            'forex_schema_id' => 'nullable|exists:forex_schemas,id',
+            'rebate_rule_id.*' => 'nullable|exists:rebate_rules,id',
         ]);
 
         if ($validator->fails()) {
@@ -70,25 +72,26 @@ class IBGroupController extends Controller
             return redirect()->back();
         }
 
-        $forexSchemaId = $request->input('forex_schema_id');
-//        dd($forexSchemaId);
-        if ($forexSchemaId) {
-            $forexSchema = ForexSchema::find($forexSchemaId);
-            if ($forexSchema->ib_group_id) {
-                notify()->error(__('This Forex Schema is already attached to IB Group: ') . $forexSchema->ibGroup->name, 'Error');
-                return redirect()->back();
-            }
-        }
+        $rebateRuleIds = $request->input('rebate_rule_id', []);
 
+        // Create the IB Group
         $ibGroup = IbGroup::create($request->only(['name', 'desc']) + ['status' => $request->input('status', 1)]);
 
-        if ($forexSchemaId) {
+        // Attach Rebate Rules
+        $ibGroup->rebateRules()->sync($rebateRuleIds);
 
-            $forexSchema->update(['ib_group_id' => $ibGroup->id]); // Attach the schema
+        // Manage User IB Rules
+        $users = $ibGroup->users; // Assuming there's a `users` relationship in `IbGroup`
+        foreach ($users as $user) {
+            $this->manageUserRebateRules($user, $ibGroup->id);
         }
+
         notify()->success($ibGroup->name . ' ' . __('IB Group Created'));
         return redirect()->route('admin.ib-group.index');
     }
+
+
+
 
 
     /**
@@ -104,10 +107,9 @@ class IBGroupController extends Controller
             notify()->error(__('IB Group not found'), 'Error');
             return redirect()->route('admin.ib-group.index');
         }
-        $activeForexSchemas = ForexSchema::active()->traderType()  // Use the defined scope for active schemas
-        ->orderBy('priority', 'asc')
-            ->get();
-        return view('backend.ib_group.modal.__edit_form', compact('ibGroup','activeForexSchemas'));
+
+        $rebateRules = RebateRule::where('status', 1)->get(); // Get active rebate rules
+        return view('backend.ib_group.modal.__edit_form', compact('ibGroup', 'rebateRules'));
     }
 
     /**
@@ -122,7 +124,7 @@ class IBGroupController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:ib_groups,name,' . $id,
             'status' => 'required|boolean',
-            'forex_schema_id' => 'nullable|exists:forex_schemas,id',
+            'rebate_rule_id.*' => 'nullable|exists:rebate_rules,id',
         ]);
 
         if ($validator->fails()) {
@@ -136,18 +138,19 @@ class IBGroupController extends Controller
             return redirect()->route('admin.ib-group.index');
         }
 
-        $forexSchemaId = $request->input('forex_schema_id');
-        if ($forexSchemaId) {
-            $forexSchema = ForexSchema::find($forexSchemaId);
-            if ($forexSchema->ib_group_id && $forexSchema->ib_group_id != $ibGroup->id) {
-                notify()->error(__('This Forex Schema is already attached to IB Group: ') . $forexSchema->ibGroup->name, 'Error');
-                return redirect()->back();
-            }
+        $rebateRuleIds = $request->input('rebate_rule_id', []);
 
-            $forexSchema->update(['ib_group_id' => $ibGroup->id]); // Reattach the schema
-        }
-
+        // Update IB Group details
         $ibGroup->update($request->only(['name', 'desc', 'status']));
+
+        // Attach Rebate Rules
+        $ibGroup->rebateRules()->sync($rebateRuleIds);
+
+        // Manage User IB Rules
+        $users = $ibGroup->users;
+        foreach ($users as $user) {
+            $this->manageUserRebateRules($user, $ibGroup->id);
+        }
 
         notify()->success($ibGroup->name . ' ' . __('IB Group Updated'));
         return redirect()->route('admin.ib-group.index');
@@ -162,13 +165,66 @@ class IBGroupController extends Controller
     public function destroy($id)
     {
         $ibGroup = IbGroup::find($id);
-        if ($ibGroup) {
-            $ibGroup->delete();
-            notify()->success(__('IB Group Deleted Successfully'));
-        } else {
+        if (!$ibGroup) {
             notify()->error(__('IB Group not found'), 'Error');
+            return redirect()->route('admin.ib-group.index');
         }
 
+        // Manage User IB Rules for cleanup
+        $users = $ibGroup->users;
+        foreach ($users as $user) {
+            $this->manageUserRebateRules($user, null); // Pass null to remove all user rebate rules for this group
+        }
+
+        // Detach rebate rules
+        $ibGroup->rebateRules()->sync([]);
+
+        $ibGroup->delete();
+
+        notify()->success(__('IB Group Deleted Successfully'));
         return redirect()->route('admin.ib-group.index');
     }
+
+    protected function manageUserRebateRules($user, $ibGroup)
+    {
+        if (!$ibGroup) {
+            // Delete all UserIbRules for the user if no IB Group is provided
+            UserIbRule::where('user_id', $user->id)->delete();
+            return;
+        }
+
+        // Fetch all rebate rules associated with the IB Group
+        $rebateRules = RebateRule::whereHas('ibGroups', function ($query) use ($ibGroup) {
+            $query->where('ib_groups.id', $ibGroup);
+        })->get();
+
+        // Fetch existing UserIbRules for the user and IB Group
+        $existingRules = UserIbRule::where('user_id', $user->id)
+            ->where('ib_group_id', $ibGroup)
+            ->get()
+            ->keyBy('rebate_rule_id'); // Key by rebate_rule_id for easier comparison
+
+        $rebateRuleIds = $rebateRules->pluck('id')->toArray();
+
+        // Find missing rules that need to be added
+        $missingRules = array_diff($rebateRuleIds, $existingRules->keys()->toArray());
+
+        foreach ($missingRules as $missingRuleId) {
+            UserIbRule::create([
+                'user_id' => $user->id,
+                'ib_group_id' => $ibGroup,
+                'rebate_rule_id' => $missingRuleId,
+                // Add additional fields if needed, e.g., 'sub_ib_share' => $value
+            ]);
+        }
+
+        // Find extra rules that need to be removed
+        $extraRules = array_diff($existingRules->keys()->toArray(), $rebateRuleIds);
+
+        foreach ($extraRules as $extraRuleId) {
+            $existingRules[$extraRuleId]->delete();
+        }
+    }
+
+
 }

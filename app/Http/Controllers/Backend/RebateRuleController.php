@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRebateRuleRequest;
+use App\Models\IbGroup;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\SymbolGroup;
+use App\Models\UserIbRule;
 use App\Services\RebateRuleService;
 use Illuminate\Http\Request;
 use DataTables;
@@ -30,23 +32,44 @@ class RebateRuleController extends Controller
                         'symbolGroups' => $row->symbolGroups->pluck('title')
                     ])->render();
                 })
+                ->addColumn('ibGroups', function($row) {
+                    return view('backend.rebate_rules.include.__ib_groups', [
+                        'ibGroups' => $row->ibGroups->pluck('name')
+                    ])->render();
+                })
+//                ->addColumn('ibGroups', function ($row) {
+//                    return $row->ibGroups->pluck('name')->join(', '); // Display IB Group names as a comma-separated list
+//                })
                 ->addColumn('status', 'backend.rebate_rules.include.__status')
                 ->addColumn('action', 'backend.rebate_rules.include.__action')
-                ->rawColumns(['symbolGroups','status','action'])
+                ->rawColumns(['symbolGroups','ibGroups','status','ibGroups','action'])
                 ->make(true);
         }
-        return view('backend.rebate_rules.all');
+        $ibGroups = IbGroup::pluck('name', 'id')->toArray(); // Fetch IB Groups
+
+        return view('backend.rebate_rules.all',[ 'ibGroups' => $ibGroups]);
     }
 
     public function create()
     {
-        $symbolGroups = SymbolGroup::pluck('title','id')->toArray();
-        return response()->json(['symbolGroups'=>$symbolGroups]);
+        $symbolGroups = SymbolGroup::pluck('title', 'id')->toArray();
+        $ibGroups = IbGroup::pluck('name', 'id')->toArray(); // Fetch IB Groups
+
+        return response()->json(['symbolGroups' => $symbolGroups, 'ibGroups' => $ibGroups]);
     }
     public function store(StoreRebateRuleRequest $request)
     {
         try {
-            $this->rebateRuleService->createRebateRule($request);
+            $rebateRule = $this->rebateRuleService->createRebateRule($request);
+
+            // Attach IB Groups to the Rebate Rule
+            $rebateRule->ibGroups()->attach($request->ib_groups);
+
+            // Manage UserIbRule for each attached IB Group
+//            foreach ($request->ib_groups as $ibGroupId) {
+//                $this->manageUserRebateRulesForIbGroup($ibGroupId, $rebateRule->id);
+//            }
+
             notify()->success(__('Rebate Rule created successfully.'));
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
@@ -54,12 +77,14 @@ class RebateRuleController extends Controller
         }
     }
 
+
     public function edit($id)
     {
-        $rebateRule = RebateRule::with('symbolGroups')->find($id);
+        $rebateRule = RebateRule::with('symbolGroups', 'ibGroups')->find($id);
         $allSymbolGroups = SymbolGroup::all();
+        $allIbGroups = IbGroup::pluck('name', 'id')->toArray(); // Fetch IB Groups
 
-        return view('backend.rebate_rules.include.__edit_form', compact('rebateRule', 'allSymbolGroups'));
+        return view('backend.rebate_rules.include.__edit_form', compact('rebateRule', 'allSymbolGroups', 'allIbGroups'));
     }
     public function show(RebateRule $rebateRule)
     {
@@ -67,16 +92,30 @@ class RebateRuleController extends Controller
     }
     public function update(StoreRebateRuleRequest $request, $id)
     {
-        $this->rebateRuleService->updateRebateRule($id, $request);
-        notify()->success(__('Rebate Rule updated successfully.'));
-        return redirect()->route('admin.rebate-rules.index');
+//        try {
+            $rebateRule = $this->rebateRuleService->updateRebateRule($id, $request);
+
+            // Sync IB Groups with the Rebate Rule
+            $rebateRule->ibGroups()->sync($request->ib_groups);
+//            dd($request->ib_groups);
+
+            // Manage UserIbRule for each synced IB Group
+//            foreach ($request->ib_groups as $ibGroupId) {
+//                $this->manageUserRebateRulesForIbGroup($ibGroupId, $rebateRule->id);
+//            }
+
+            notify()->success(__('Rebate Rule updated successfully.'));
+            return redirect()->route('admin.rebate-rules.index');
+//        } catch (\Exception $e) {
+//            return redirect()->back()->withErrors($e->getMessage());
+//        }
     }
 
 
     public function destroy(RebateRule $rebateRule)
     {
-        if($rebateRule->multiLevels()->count() > 0) {
-            notify()->error(__('Sorry,Cannot delete this rebate rule because it is still associated with multi-levels. Please detach the levels first'));
+        if($rebateRule->ibGroups()->count() > 0) {
+            notify()->error(__('Sorry,Cannot delete this rebate rule because it is still associated with Ib group. Please detach the levels first'));
             return redirect()->back();
         }
         $this->rebateRuleService->delete($rebateRule);
@@ -109,5 +148,52 @@ class RebateRuleController extends Controller
             'message' => __('Error updating status.')
         ], 404);
     }
+
+    protected function manageUserRebateRulesForIbGroup($ibGroupId, $rebateRuleId)
+    {
+        $ibGroup = IbGroup::with('users')->find($ibGroupId);
+
+        if (!$ibGroup) {
+            return; // Exit if the IB Group doesn't exist
+        }
+
+        $users = $ibGroup->users; // Get all users associated with the IB Group
+//dd($users);
+        foreach ($users as $user) {
+            // Remove all UserIbRule entries if the user has no IB Group assigned
+            if (is_null($user->ib_group_id)) {
+                UserIbRule::where('user_id', $user->id)->delete();
+                continue;
+            }
+
+            // Ensure the user's IB Group matches the current IB Group
+            if ($user->ib_group_id != $ibGroupId) {
+                continue; // Skip this user if the group doesn't match
+            }
+
+            // Check if UserIbRule already exists
+            $existingRule = UserIbRule::where('user_id', $user->id)
+                ->where('ib_group_id', $ibGroupId)
+                ->where('rebate_rule_id', $rebateRuleId)
+                ->first();
+
+            if (!$existingRule) {
+                // Add missing UserIbRule
+                UserIbRule::create([
+                    'user_id' => $user->id,
+                    'ib_group_id' => $ibGroupId,
+                    'rebate_rule_id' => $rebateRuleId,
+                    // Add additional fields if necessary
+                ]);
+            }
+        }
+
+        // Remove extra UserIbRules for this IB Group and users in the group
+        UserIbRule::where('ib_group_id', $ibGroupId)
+            ->where('rebate_rule_id', $rebateRuleId)
+            ->whereIn('user_id', $users->pluck('id')) // Ensure only users in this group are affected
+            ->delete();
+    }
+
 
 }

@@ -22,7 +22,7 @@
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         @foreach($depositMethods as $method)
             @php
-                $icon = $method->icon;
+                $icon = $method->logo;
                 if (null != $method->gateway_id && $method->icon == ''){
                     $icon = $method->gateway->logo;
                 }

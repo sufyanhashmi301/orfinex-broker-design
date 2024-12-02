@@ -1608,7 +1608,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'database_host', // unique name for field
                 'label' => 'Database Host', // label for field
-                'rules' => 'required|min:2|max:50', // validation rule of laravel
+                'rules' => 'required', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
             [

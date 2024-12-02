@@ -1,5 +1,5 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
-<div class="logo-segment">
+<div class="logo-segment mb-3">
     <a class="flex items-center" href="{{route('admin.dashboard')}}">
         @php
             $logoSrc = setting('site_favicon','global')
@@ -8,7 +8,7 @@
         @endphp
         <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
         <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
-        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-bold text-slate-900 dark:text-white">
+        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-medium text-white">
             {{ __('Backoffice') }}
         </span>
     </a>
@@ -267,7 +267,7 @@
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
-                    <span>{{ __('RMS') }}</span>
+                    <span>{{ __('Risk Hub') }}</span>
                 </span>
             </a>
         </li>

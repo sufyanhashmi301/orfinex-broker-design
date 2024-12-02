@@ -74,6 +74,28 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     protected $dates = ['kyc_time'];
 
+    // Optimization ----
+    // User who referred this user
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    // Users referred by this user
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by');
+    }
+
+    public function userAffiliate() {
+        return $this->hasOne(UserAffiliate::class);
+    }
+
+    public function accountTypeInvestment() {
+        return $this->hasMany(AccountTypeInvestment::class);
+    }
+    // Optimization ----
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -243,10 +265,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
     }
 
-    public function referrals()
-    {
-        return $this->hasMany(User::class, 'ref_id');
-    }
+    // public function referrals()
+    // {
+    //     return $this->hasMany(User::class, 'ref_id');
+    // }
 
     public function totalDeposit($days = null)
     {

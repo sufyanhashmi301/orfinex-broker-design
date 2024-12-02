@@ -60,7 +60,11 @@ use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
+use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\LeaderboardController;
+use App\Http\Controllers\LeaderboardBadgeController;
+use App\Http\Controllers\LeaderboardRankingController;
+use App\Models\LeaderboardBadge;
 
 /*
 |--------------------------------------------------------------------------
@@ -162,14 +166,22 @@ Route::middleware(['2fa_admin'])->group(function () {
 // =============================== Optimization ===============================
     // Account Types
     Route::resource('account-type', AccountTypeController::class);
-    Route::get('accounts-phases-log', [AccountTypeInvestmentController::class, 'adminAccountsPhasesLog'])->name('accounts-phases.log'); // Accounts
+    Route::get('accounts-phases-log', [AccountTypeInvestmentController::class, 'adminAccountsPhasesLog'])->name('accounts-phases.log');
 
     // Investment Phase Approvals
     Route::get('phase-approval-request/{investment_id}', [AccountTypeInvestmentPhaseApprovalController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
 
+    // leaderboards
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    Route::post('/leaderboard-badges/store', [LeaderboardBadgeController::class, 'store'])->name('leaderboard-badge.store');
+    Route::post('/leaderboard-rankings/store', [LeaderboardRankingController::class, 'store'])->name('leaderboard-rankings.store');
+    Route::get('/leaderboard-rankings/create', [LeaderboardRankingController::class, 'create'])->name('leaderboard-rankings.create');
+    Route::delete('/leaderboard-rankings/delete/{leaderboardRanking}', [LeaderboardRankingController::class, 'destroy'])->name('leaderboard-rankings.delete');
 
-    // Route::resource('account-type', ForexSchemaController::class);
-    // Route::delete('account-type/{accountTypeId}', [ForexSchemaController::class, 'destroy'])->name('account-type.delete');
+    // Affiliates
+    Route::get('/affiliate-rules', [AffiliateRuleController::class, 'index'])->name('affiliate-rules.index');
+    Route::get('/affiliate-rules/create', [AffiliateRuleController::class, 'create'])->name('affiliate-rules.create');
+    Route::post('/affiliate-rules/store', [AffiliateRuleController::class, 'store'])->name('affiliate-rules.store');
 
 // =============================== Optimization ===============================
 
@@ -492,7 +504,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
     Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
-    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    
 
     Route::get('active-positions', function () {
         return view('backend.control_center.active_positions');

@@ -34,7 +34,7 @@
                         <p class="text-base dark:text-white font-medium mb-2">
                             {{ __("Explore what's important to review first") }}
                         </p>
-                        <div class="flex gap-3">
+                        <div class="flex justify-end gap-3">
                             @can('withdraw-action')
                                 @if($data['withdraw_count'])
                                     <a href="{{ route('admin.withdraw.pending') }}" class="btn btn-sm btn-danger inline-flex items-center justify-center">

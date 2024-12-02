@@ -37,100 +37,100 @@ class ResetData extends Command
      */
     public function handle()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('admins')->truncate();
-        DB::table('users')->truncate();
-        DB::table('accounts')->truncate();
-        DB::table('countries')->truncate();
-        DB::table('advertisement_materials')->truncate();
-        DB::table('banners')->truncate();
-        DB::table('blogs')->truncate();
-        DB::table('groups')->truncate();
-        DB::table('customer_groups')->truncate();
-        DB::table('customer_group_has_customers')->truncate();
-        DB::table('departments')->truncate();
-        DB::table('department_has_staff')->truncate();
-        DB::table('designations')->truncate();
-        DB::table('designation_has_staff')->truncate();
-        DB::table('employments')->truncate();
-        DB::table('ledgers')->truncate();
-        DB::table('ib_questions')->truncate();
-        DB::table('ib_question_answers')->truncate();
-        DB::table('ib_schemas')->truncate();
-        DB::table('ib_transactions')->truncate();
-        DB::table('kyc_levels')->truncate();
-        DB::table('kyc_sub_levels')->truncate();
-        DB::table('kyc_user')->truncate();
-        DB::table('kycs')->truncate();
-        DB::table('black_list_countries')->truncate();
-        DB::table('admin_login_activities')->truncate();
-        DB::table('login_activities')->truncate();
-        DB::table('transactions')->truncate();
-        DB::table('forex_accounts')->truncate();
-        DB::table('ib_transactions')->truncate();
-        DB::table('meta_deals')->truncate();
-        DB::table('meta_transactions')->truncate();
-        DB::table('multi_levels')->truncate();
-        DB::table('multi_level_rebate_rule')->truncate();
-        DB::table('rebate_rules')->truncate();
-        DB::table('rebate_rule_symbol_group')->truncate();
-        DB::table('risk_profile_tags_users')->truncate();
-        DB::table('risk_profile_tag_user')->truncate();
-        DB::table('scheduled_task')->truncate();
-        DB::table('schemas')->truncate();
-        DB::table('subscriptions')->truncate();
-        DB::table('swap_based_accounts')->truncate();
-        DB::table('swap_free_accounts')->truncate();
-        DB::table('symbols')->truncate();
-        DB::table('symbol_groups')->truncate();
-        DB::table('symbol_symbol_group')->truncate();
-        DB::table('invests')->truncate();
-        DB::table('messages')->truncate();
-        DB::table('password_resets')->truncate();
-        DB::table('notifications')->truncate();
-        DB::table('referral_links')->truncate();
-        DB::table('referral_relationships')->truncate();
-        DB::table('user_metas')->truncate();
-        DB::table('tickets')->truncate();
-        DB::table('invests')->truncate();
-        DB::table('withdraw_accounts')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $rank = Ranking::find(1);
+//        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//        DB::table('admins')->truncate();
+//        DB::table('users')->truncate();
+//        DB::table('accounts')->truncate();
+//        DB::table('countries')->truncate();
+//        DB::table('advertisement_materials')->truncate();
+//        DB::table('banners')->truncate();
+//        DB::table('blogs')->truncate();
+//        DB::table('groups')->truncate();
+//        DB::table('customer_groups')->truncate();
+//        DB::table('customer_group_has_customers')->truncate();
+//        DB::table('departments')->truncate();
+//        DB::table('department_has_staff')->truncate();
+//        DB::table('designations')->truncate();
+//        DB::table('designation_has_staff')->truncate();
+//        DB::table('employments')->truncate();
+//        DB::table('ledgers')->truncate();
+//        DB::table('ib_questions')->truncate();
+//        DB::table('ib_question_answers')->truncate();
+//        DB::table('ib_schemas')->truncate();
+//        DB::table('ib_transactions')->truncate();
+//        DB::table('kyc_levels')->truncate();
+//        DB::table('kyc_sub_levels')->truncate();
+//        DB::table('kyc_user')->truncate();
+//        DB::table('kycs')->truncate();
+//        DB::table('black_list_countries')->truncate();
+//        DB::table('admin_login_activities')->truncate();
+//        DB::table('login_activities')->truncate();
+//        DB::table('transactions')->truncate();
+//        DB::table('forex_accounts')->truncate();
+//        DB::table('ib_transactions')->truncate();
+//        DB::table('meta_deals')->truncate();
+//        DB::table('meta_transactions')->truncate();
+//        DB::table('multi_levels')->truncate();
+//        DB::table('multi_level_rebate_rule')->truncate();
+//        DB::table('rebate_rules')->truncate();
+//        DB::table('rebate_rule_symbol_group')->truncate();
+//        DB::table('risk_profile_tags_users')->truncate();
+//        DB::table('risk_profile_tag_user')->truncate();
+//        DB::table('scheduled_task')->truncate();
+//        DB::table('schemas')->truncate();
+//        DB::table('subscriptions')->truncate();
+//        DB::table('swap_based_accounts')->truncate();
+//        DB::table('swap_free_accounts')->truncate();
+//        DB::table('symbols')->truncate();
+//        DB::table('symbol_groups')->truncate();
+//        DB::table('symbol_symbol_group')->truncate();
+//        DB::table('invests')->truncate();
+//        DB::table('messages')->truncate();
+//        DB::table('password_resets')->truncate();
+//        DB::table('notifications')->truncate();
+//        DB::table('referral_links')->truncate();
+//        DB::table('referral_relationships')->truncate();
+//        DB::table('user_metas')->truncate();
+//        DB::table('tickets')->truncate();
+//        DB::table('invests')->truncate();
+//        DB::table('withdraw_accounts')->truncate();
+//        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+//
+//        $rank = Ranking::find(1);
         $sitename = 'mymaamarkets';
-        $dataUser = [
-            'ranking_id' => $rank->id,
-            'rankings' => json_encode([$rank->id]),
-            'first_name' => 'user',
-            'last_name' => $sitename,
-            'username' =>  'user' . rand(10000, 99999),
-            'country' => 'United Arab Emirates',
-            'phone' =>  '+971',
-            'email' => 'user@'.$sitename.'.com',
-            'password' => Hash::make(12345678),
-            'kyc' => 0,
-            'email_verified_at' => Carbon::now(),
-        ];
-        $user = User::create($dataUser);
-
-//        $superAdmin = Admin::create([
-//            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
-//            'name' => 'Super Admin',
-//            'first_name' => 'Super',
-//            'last_name' => 'Admin',
-//            'email' => 'admin@'.$sitename.'.com',
+//        $dataUser = [
+//            'ranking_id' => $rank->id,
+//            'rankings' => json_encode([$rank->id]),
+//            'first_name' => 'user',
+//            'last_name' => $sitename,
+//            'username' =>  'user' . rand(10000, 99999),
+//            'country' => 'United Arab Emirates',
+//            'phone' =>  '+971',
+//            'email' => 'user@'.$sitename.'.com',
 //            'password' => Hash::make(12345678),
-//            'role' => 1,
-//        ]);
-//        $data = [
-//            'icon' => 'user-plus',
-//            'user_id' => 1,
-//            'for' => 'admin',
-//            'title' => 'Welcome to admin',
-//            'notice' => 'Thanks for joining us',
-//            'action_url' => route('admin.user.edit',$superAdmin->id),
+//            'kyc' => 0,
+//            'email_verified_at' => Carbon::now(),
 //        ];
-//        Notification::create($data);
+//        $user = User::create($dataUser);
+
+        $superAdmin = Admin::create([
+            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
+            'name' => 'Super Admin',
+            'first_name' => 'Super',
+            'last_name' => 'Admin',
+            'email' => 'admin@'.$sitename.'.com',
+            'password' => Hash::make('Dubai@MyMAA@2024'),
+            'role' => 1,
+        ]);
+        $data = [
+            'icon' => 'user-plus',
+            'user_id' => 1,
+            'for' => 'admin',
+            'title' => 'Welcome to admin',
+            'notice' => 'Thanks for joining us',
+            'action_url' => route('admin.user.edit',$superAdmin->id),
+        ];
+        Notification::create($data);
 
     }
 }

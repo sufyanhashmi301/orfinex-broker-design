@@ -8,7 +8,7 @@
         @endphp
         <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
         <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
-        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-bold text-slate-900 dark:text-white">
+        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-medium text-white">
             {{ __('RMS') }}
         </span>
     </a>
@@ -18,8 +18,8 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-64px)] overflow-y-auto z-50" id="sidebar_menus">
-    <ul class="sidebar-menu flex flex-column">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-48px)] overflow-y-auto z-50" id="sidebar_menus">
+    <ul class="sidebar-menu flex flex-column mt-3">
         <li>
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">

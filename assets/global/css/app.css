@@ -3952,6 +3952,9 @@ textarea.form-control.is-invalid{
 .-top-\[14px\]{
   top: -14px;
 }
+.\!top-\[10px\]{
+  top: 10px !important;
+}
 .\!top-\[14px\]{
   top: 14px !important;
 }
@@ -4628,6 +4631,12 @@ textarea.form-control.is-invalid{
 }
 .h-\[calc\(100\%-80px\)\]{
   height: calc(100% - 80px);
+}
+.h-\[calc\(100\%-100px\)\]{
+    height: calc(100% - 100px);
+}
+.h-\[calc\(100\%-48px\)\]{
+    height: calc(100% - 48px);
 }
 .h-\[calc\(100\%-64px\)\]{
   height: calc(100% - 64px);
@@ -13177,7 +13186,7 @@ ul.custom-list ul li{
   position: fixed;
   /* top: 0px; */
   z-index: 999;
-  height: calc(100% - 64px);
+  height: calc(100% - 48px);
   width: 200px;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -14293,6 +14302,9 @@ ul.custom-list ul li{
 .hover\:bg-\[\#eee\]:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(238 238 238 / var(--tw-bg-opacity));
+}
+.hover\:bg-opacity-10:hover{
+  --tw-bg-opacity: 0.1;
 }
 .hover\:bg-opacity-80:hover{
   --tw-bg-opacity: 0.8;

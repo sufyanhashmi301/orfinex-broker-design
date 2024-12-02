@@ -25,6 +25,7 @@
                                     <th scope="col" class="table-th">{{ __('ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Rebate Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol Groups') }}</th>
+                                    <th scope="col" class="table-th">{{ __('IB Groups') }}</th>
                                     <th scope="col" class="table-th">{{ __('Total Rebate') }}</th>
                                     <!-- <th scope="col" class="table-th">{{ __('Accounts') }}</th> -->
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -118,6 +119,8 @@
                     {data: 'id', name: 'ID',orderable : false},
                     {data: 'title', name: 'Rebate Name',orderable : false},
                     {data: 'symbolGroups', name: 'Symbol Groups',orderable : false},
+                       { data: 'ibGroups', name: 'IB Groups', orderable: false },
+
                     {data: 'rebate_amount', name: 'Total Rebate',orderable : false},
                     {data: 'status', name: 'Status',orderable : false},
                     {data: 'action', name: 'action',orderable : false},

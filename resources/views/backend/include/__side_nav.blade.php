@@ -8,7 +8,7 @@
         @endphp
         <img src="{{ $logoSrc }}" class="black_logo h-8" alt="logo">
         <img src="{{ $logoSrc }}" class="white_logo h-8" alt="logo">
-        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-bold text-slate-900 dark:text-white">
+        <span class="logo-title ltr:ml-3 rtl:mr-3 text-xl font-Inter font-medium text-white">
             {{ __('Backoffice') }}
         </span>
     </a>
@@ -18,8 +18,8 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-115px)] overflow-y-auto z-50" id="sidebar_menus">
-    <ul class="sidebar-menu flex flex-column">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-100px)] overflow-y-auto z-50" id="sidebar_menus">
+    <ul class="sidebar-menu flex flex-column mt-3">
         <li>
             <a href="{{route('admin.dashboard')}}" class="navItem {{ isActive('admin.dashboard') }}">
                 <span class="flex items-center">
@@ -267,7 +267,7 @@
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
-                    <span>{{ __('RMS') }}</span>
+                    <span>{{ __('Risk Hub') }}</span>
                 </span>
             </a>
         </li>
@@ -428,6 +428,11 @@
                 <li class="">
                     <a href="{{ route('admin.rebate-rules.index') }}" class="{{ isActive('admin.rebate-rules*') }}">
                         {{ __('Rebate Rules') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('admin.ib-group.index') }}" class="{{ isActive('admin.ib-group*') }}">
+                        {{ __('IB Groups') }}
                     </a>
                 </li>
             </ul>

@@ -13,13 +13,13 @@
                 <div class="flex-1 input-area relative">
                     <select name="status" class="form-control h-full" id="status">
                         <option value="">Status</option>
-                        <option value="verified">{{__('Level1'), }}</option>
-                        <option value="pending">{{ __('Pending'),}}</option>
-                        <option value="rejected">{{__('Rejected'), }}</option>
-                        <option value="verified">{{__('Level2'), }}</option>
-                        <option value="pending">{{ __('PendingLevel3'),}}</option>
-                        <option value="rejected">{{__('RejectLevel3'), }}</option>
-                        <option value="rejected">{{__('Level3'), }}</option>
+                        <option value="1">{{__('Level1'), }}</option>
+                        <option value="2">{{ __('Pending'),}}</option>
+                        <option value="3">{{__('Rejected'), }}</option>
+                        <option value="4">{{__('Level2'), }}</option>
+                        <option value="5">{{ __('PendingLevel3'),}}</option>
+                        <option value="6">{{__('RejectLevel3'), }}</option>
+                        <option value="7">{{__('Level3'), }}</option>
                     </select>
                 </div>
 
@@ -35,12 +35,14 @@
                         {{ __('Apply Filter') }}
                     </button>
                 </div>
+                @can('kyc-export')
                 <div class="input-area relative">
                     <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
                 </div>
+                @endcan
                 <div class="input-area relative">
                     <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
                         <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>

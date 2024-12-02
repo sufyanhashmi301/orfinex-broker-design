@@ -7,12 +7,14 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
+        @can('bonus-create')
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <a href="{{ route('admin.bonus.create') }}" class="btn btn-dark btn-sm inline-flex items-center justify-center" type="button">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New Bonus') }}
             </a>
         </div>
+        @endcan
     </div>
     <div class="card">
         <div class="card-body px-6 pt-3">
@@ -58,12 +60,17 @@
                                             <span class="badge bg-{{ $bonus->status == '1' ? 'success' : 'danger' }} text-white capitalize">{{ $bonus->status == '1' ? 'Active' : 'Inactive' }}</span>
                                         </td>
                                         <td class="table-td">
+                                            @can('bonus-edit')
                                             <a href="{{ route('admin.bonus.edit', ["bonu" => $bonus->id]) }}" class="action-btn mr-1" data-bs-toggle="tooltip" style="float: left" title="" data-bs-original-title="Edit Record" aria-label="Edit Record" target="_blank">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </a>
+                                            @endcan
+
+                                            @can('bonus-delete')
                                             <button type="button" data-id="{{ $bonus->id }}" data-name="{{ $bonus->bonus_name }}" class="action-btn deleteBonus" style="float: left">
                                                 <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                             </button>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

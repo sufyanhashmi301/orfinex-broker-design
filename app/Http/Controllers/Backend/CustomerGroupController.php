@@ -14,6 +14,10 @@ class CustomerGroupController extends Controller
 
     public function __construct(CustomerGroupService $customerGroupService)
     {
+        $this->middleware('permission:customer-group-list|customer-group-create|customer-group-edit', ['only' => ['index', 'store']]);
+         $this->middleware('permission:customer-group-create', ['only' => ['store']]);
+         $this->middleware('permission:customer-group-edit', ['only' => ['update']]);
+         $this->middleware('permission:customer-group-delete', ['only' => ['destroy']]);
         $this->customerGroupService = $customerGroupService;
     }
 

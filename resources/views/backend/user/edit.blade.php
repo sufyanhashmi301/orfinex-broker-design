@@ -178,7 +178,7 @@
                                     </a>
                                 </li>
                             @endcanany
-                            @can('investment-list')
+                            @can('accounts-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -210,7 +210,7 @@
                                     {{ __('KYC') }}
                                 </a>
                             </li>
-                            @can('investment-list')
+                            @can('accounts-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -339,7 +339,7 @@
                 @endcanany
 
                 <!-- investments -->
-                @can('investment-list')
+                @can('accounts-list')
                      @include('backend.user.include.__accounts')
                 @endcan
 

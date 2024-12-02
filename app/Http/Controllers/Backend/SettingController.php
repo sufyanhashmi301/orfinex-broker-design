@@ -31,7 +31,11 @@ class SettingController extends Controller
     {
         $this->middleware('permission:site-setting|email-setting', ['only' => ['update']]);
         $this->middleware('permission:site-setting', ['only' => ['siteSetting']]);
+        $this->middleware('permission:maintainance-settings', ['only' => ['siteMaintenance']]);
         $this->middleware('permission:email-setting', ['only' => ['mailSetting']]);
+        $this->middleware('permission:company-setting', ['only' => ['companySetting']]);
+        $this->middleware('permission:misc-setting', ['only' => ['miscSetting']]);
+        $this->middleware('permission:company-permissions-setting', ['only' => ['companyPermissions']]);
 
     }
 

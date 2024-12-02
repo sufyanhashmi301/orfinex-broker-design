@@ -3,13 +3,17 @@
     {{ __('All Rebate Rules') }}
 @endsection
 @section('title-btns')
+@can('symbols-list')
     <a href="{{route('admin.symbols.index')}}" class="btn btn-sm btn-white inline-flex items-center justify-center">
         {{ __('View All Symbols') }}
     </a>
+@endcan
+@can('rebate-rules-create')
     <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center addRebateGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Rebate Rules') }}
     </a>
+@endcan
 @endsection
 @section('symbol-groups-content')
     <div class="card">
@@ -46,9 +50,15 @@
             </div>
         </div>
     </div>
+    @can('rebate-rules-create')
     @include('backend.rebate_rules.modal.__create')
+    @endcan
+    @can('rebate-rules-edit')
     @include('backend.rebate_rules.modal.__edit')
+    @endcan
+    @can('rebate-rules-delete')
     @include('backend.rebate_rules.modal.__delete')
+    @endcan
 @endsection
 @section('script')
 

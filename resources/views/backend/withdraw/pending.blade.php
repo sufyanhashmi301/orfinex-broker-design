@@ -31,12 +31,14 @@
                         {{ __('Apply Filter') }}
                     </button>
                 </div>
+                @can('withdraw-export')
                 <div class="input-area relative">
                     <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
                         {{ __('Export') }}
                     </button>
                 </div>
+                @endcan
                 <div class="input-area relative">
                     <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
                         <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>

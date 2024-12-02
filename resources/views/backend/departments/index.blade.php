@@ -3,10 +3,12 @@
     {{ __('Departments') }}
 @endsection
 @section('title-btn')
+    @can('department-create')
     <a href="#" class="btn btn-sm btn-primary inline-flex items-center justify-center addDepartment">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
+    @endcan
 @endsection
 @section('company-content')
     @if($dataCount > 0)
@@ -62,9 +64,15 @@
     @endif
 
     <!-- Modal for Delete deleteDepartment -->
+    @can('department-create')
     @include('backend.departments.include.__create')
+    @endcan
+    @can('department-delete')
     @include('backend.departments.include.__delete')
+    @endcan
+    @can('department-edit')
     @include('backend.departments.include.__edit')
+    @endcan
     <!-- Modal for Delete deleteDepartment-->
 @endsection
 @section('organization-script')

@@ -30,6 +30,7 @@ class MigrateViaGroups extends Command
 
     public function handle()
     {
+        Artisan::call('reset:data');
         // List of groups to process
         $groups = [
             'MYMA4_B\ST 10',

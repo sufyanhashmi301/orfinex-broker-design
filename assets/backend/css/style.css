@@ -9,6 +9,13 @@
     border-left-color: #13B440;
 }
 
+.app-header, .logo-segment {
+    height: 48px;
+    background: #0f172a !important;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
 .sidebar-menu>li.active>a {
     color: #121212;
     background-color: rgba(229, 255, 245, 1);
@@ -23,6 +30,24 @@
 .sidebar-submenu .navItem.active {
     background-color: #F7F7F7;
     color: #18181B;
+}
+
+.admin-notifications > button {
+    background: transparent;
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.admin-notifications > button iconify-icon {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.admin-notifications > button:hover {
+    border-radius: 0.5rem;
+    --tw-bg-opacity: 0.1;
+    background-color: rgb(248 250 252 / var(--tw-bg-opacity));
+}
+.admin-notifications .dropdown-menu {
+    top: 10px !important;
 }
 
 .group:hover .group-hover\:opacity-100 {

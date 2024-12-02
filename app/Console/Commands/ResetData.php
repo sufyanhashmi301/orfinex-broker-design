@@ -113,24 +113,24 @@ class ResetData extends Command
         ];
         $user = User::create($dataUser);
 
-        $superAdmin = Admin::create([
-            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
-            'name' => 'Super Admin',
-            'first_name' => 'Super',
-            'last_name' => 'Admin',
-            'email' => 'admin@'.$sitename.'.com',
-            'password' => Hash::make(12345678),
-            'role' => 1,
-        ]);
-        $data = [
-            'icon' => 'user-plus',
-            'user_id' => 1,
-            'for' => 'admin',
-            'title' => 'Welcome to admin',
-            'notice' => 'Thanks for joining us',
-            'action_url' => route('admin.user.edit',$superAdmin->id),
-        ];
-        Notification::create($data);
+//        $superAdmin = Admin::create([
+//            'avatar' => 'global/images/3C12ROYcX34e8dcSmzdO.png',
+//            'name' => 'Super Admin',
+//            'first_name' => 'Super',
+//            'last_name' => 'Admin',
+//            'email' => 'admin@'.$sitename.'.com',
+//            'password' => Hash::make(12345678),
+//            'role' => 1,
+//        ]);
+//        $data = [
+//            'icon' => 'user-plus',
+//            'user_id' => 1,
+//            'for' => 'admin',
+//            'title' => 'Welcome to admin',
+//            'notice' => 'Thanks for joining us',
+//            'action_url' => route('admin.user.edit',$superAdmin->id),
+//        ];
+//        Notification::create($data);
 
     }
 }

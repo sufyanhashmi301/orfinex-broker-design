@@ -65,8 +65,8 @@ class UserAffiliateController extends Controller
             
             $user_affiliate_account->highest_commission_earned = 0.00;
 
-            $user_affiliate_account->user_ids_used = '[]';
-            $user_affiliate_account->commission_pending = '[]';
+            $user_affiliate_account->user_ids_used = [];
+            $user_affiliate_account->commission_pending = [];
 
             $user_affiliate_account->referral_link = $this->generateReferralId( User::find(Auth::id())->first_name . ' ' .  User::find(Auth::id())->last_name );
             $user_affiliate_account->save();

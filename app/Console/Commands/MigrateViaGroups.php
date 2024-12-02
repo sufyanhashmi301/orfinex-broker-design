@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\ForexAccountStatus;
 use App\Models\Country;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Services\ForexApiService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -37,20 +39,20 @@ class MigrateViaGroups extends Command
         // List of groups to process
         $groups = [
             'MYMA4_B\ST 10',
-//            'MYMA4_B\ST_15',
-//            'MYMA4_B\ECN_2_5USD',
-//            'MYMA4_B\ECN_2_7USD',
-//            'MYMA4_B\Stnd-20-USD',
-//            'MYMA4_B\Closed Accounts',
-//            'MyMaa\StandardAccount',
-//            'MyMaa\PremiumAccount',
-//            'MyMaa\TraderAccount',
-//            'MyMaa\ECNClassic',
-//            'MyMaa\RawECN',
-//            'MyMaaFix\ECN',
-//            'MyMaaFix\RAW',
-//            'demo\forex.hedged',
-//            'demo\forex',
+            'MYMA4_B\ST_15',
+            'MYMA4_B\ECN_2_5USD',
+            'MYMA4_B\ECN_2_7USD',
+            'MYMA4_B\Stnd-20-USD',
+            'MYMA4_B\Closed Accounts',
+            'MyMaa\StandardAccount',
+            'MyMaa\PremiumAccount',
+            'MyMaa\TraderAccount',
+            'MyMaa\ECNClassic',
+            'MyMaa\RawECN',
+            'MyMaaFix\ECN',
+            'MyMaaFix\RAW',
+            'demo\forex.hedged',
+            'demo\forex',
         ];
 
         $duplicateCount = 0;
@@ -150,7 +152,7 @@ class MigrateViaGroups extends Command
                 }
 
                 // Determine ForexSchema and account type
-                $schema = ForexSchema::where('id', 9)->first();
+                $schema = ForexSchema::where('id', 10)->first();
 
                 if (!$schema) {
                     $this->error("No valid schema found for group {$backupUser['group']}, skipping.");
@@ -172,7 +174,7 @@ class MigrateViaGroups extends Command
                     'balance' => $backupUser['balance'],
                     'equity' => $backupUser['balance'], // Assuming equity is prevDayBalance
                     'credit' => $backupUser['credit'],
-                    'status' => ForexAccount::ONGOING,
+                    'status' => ForexAccountStatus::Ongoing,
                     'created_by' => $user->id,
                     'first_min_deposit_paid' => 0,
                     'trading_platform' => $accountType == 'demo' ? setting('demo_server', 'platform_api') : setting('live_server', 'platform_api'),

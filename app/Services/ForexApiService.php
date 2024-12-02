@@ -288,7 +288,7 @@ class ForexApiService
                 ->retry(3, 100)
                 ->withBody($body, 'application/json')
                 ->post($URL);
-
+            
             return $this->handleResponse($response);
         } catch (RequestException $e) {
             return $this->handleException($e);

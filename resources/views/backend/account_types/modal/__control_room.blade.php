@@ -84,7 +84,7 @@
                                 <input type="text" readonly class="form-control unique_id" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][unique_id]" data-value="{{ $rule->unique_id }}">
                             </td>
                             <td class="table-td">
-                                <input type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][allotted_funds]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->allotted_funds }}" />
+                                <input {{ $phase->phase_step == 1 ? '' : 'readonly'  }} type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][allotted_funds]" class="form-control allotted-funds-field validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->allotted_funds }}" />
                             </td>
                             <td class="table-td">
                                 <input type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->daily_drawdown_limit }}" />

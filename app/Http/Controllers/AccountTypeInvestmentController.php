@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InvestmentPhaseApproval;
 use Carbon\Carbon;
 use App\Enums\TraderType;
 use Brick\Math\BigDecimal;
@@ -15,14 +16,17 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Models\AccountTypeInvestmentPhaseApproval;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Services\UserAffiliateService;
 
 class AccountTypeInvestmentController extends Controller
 {
 
     public $investment;
+    public $affiliate;
 
-    public function __construct(AccountTypeInvestmentService $investment) {
+    public function __construct(AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate) {
         $this->investment = $investment;
+        $this->affiliate = $userAffiliate;
     }
 
     /**
@@ -45,10 +49,21 @@ class AccountTypeInvestmentController extends Controller
         return view('frontend::user.forex.log', compact('investments'));    
     }
 
-    public function adminIndex() {
-        $investment_phase_records = AccountTypeInvestmentPhaseApproval::get();
+    public function adminAccountsPhasesLog(Request $request) {
+        if(isset($request->unique_id)){
+            $uniqueId = $request->unique_id;
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
+                                            $query->where('unique_id', $uniqueId);
+                                        })->orderBy('updated_at', 'DESC')->get();
+        } elseif (isset($request->{'pending-approvals'})) {
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->orderBy('updated_at', 'DESC')->get();
+        } elseif (isset($request->{'violated-acounts'})) {
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::VIOLATED])->orderBy('updated_at', 'DESC')->get();
+        } else{
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::orderBy('updated_at', 'DESC')->get();
+        }
 
-        return view('backend.investments.index', compact('investment_phase_records'));
+        return view('backend.accounts_phases.index', compact('investment_phase_records'));
     }
 
     /**
@@ -68,7 +83,10 @@ class AccountTypeInvestmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        // temporary
+        // $this->affiliate->applyCommission($request->rule_id);
+
         $investment = $this->investment->createInvestment($request);
 
         // to Deposit Page
@@ -80,9 +98,16 @@ class AccountTypeInvestmentController extends Controller
      * Investment Tradings Statistics
      */
     public function tradingStats($investment_id){
-        
-        if(AccountTypeInvestment::find($investment_id)->login == null) {
+        $investment = AccountTypeInvestment::find($investment_id);
+        if($investment->login == null) {
             abort(403);
+        }
+
+        // if account exists but not the stats or hourly stats
+        $hourly_stats = $investment->accountTypeInvestmentHourlyStatsRecord;
+        if( $investment->exists() && (!isset( $investment->accountTypeInvestmentStat) || count($hourly_stats) == 0 ) ){
+            notify()->error('Account Stats are Loading. Please check back later.', 'Error');
+            return redirect()->route('user.investments.index');
         }
 
         $investment_array = $this->investment->tradingStats($investment_id);

@@ -14,17 +14,17 @@
     .dark body, .dark .dark\:bg-body, .dark .app-header, .dark .kyc-alert, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color_dark')) }} / var(--tw-bg-opacity));
     }
-    .sidebar-menus, .logo-segment, .stickySetting_menu {
+    .sidebar-menus, .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg')) }} / var(--tw-bg-opacity));
     }
-    .dark .sidebar-menus, .dark .logo-segment, .dark .stickySetting_menu {
+    .dark .sidebar-menus, .dark .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg_dark')) }} / var(--tw-bg-opacity));
     }
     .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow, .mobileUserInfo > *, .sidebarCloseIcon {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .sidebar-menu .sidebar-submenu > li > a, .logo-title, .sidebar-menu .sidebar-menu-title, .stickySetting_menu a {
+    .sidebar-menu .sidebar-submenu > li > a, .sidebar-menu .sidebar-menu-title, .stickySetting_menu a {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -32,7 +32,7 @@
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menu .sidebar-submenu > li > a, .dark .logo-title, .dark .sidebar-menu .sidebar-menu-title, .dark .stickySetting_menu a {
+    .dark .sidebar-menu .sidebar-submenu > li > a, .dark .sidebar-menu .sidebar-menu-title, .dark .stickySetting_menu a {
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }

@@ -176,6 +176,17 @@
           </div>
 
           <div class="input-area">
+            <label class="form-label" for="">{{ __('Phase Approval') }}</label>
+            <select {!! $phase->phase_step == 1 ? 'readonly style="pointer-events: none"' : '' !!} name="phases[{{ $phase->phase_step - 1 }}][phase_approval_method]" class="cursor-pointer phase-approval-method form-control w-full">
+              @if ($phase->phase_step == 1)
+                <option value="{{ \App\Enums\PhaseApproval::PAYMENT }}" class="on_payment_approval" {{ $phase->phase_approval_method == \App\Enums\PhaseApproval::PAYMENT ? 'selected' : '' }} >On Payment Approval</option>                
+              @endif
+              <option value="{{ \App\Enums\PhaseApproval::AUTO }}" {{ $phase->phase_approval_method == \App\Enums\PhaseApproval::AUTO ? 'selected' : '' }}>Auto Approval</option>
+              <option value="{{ \App\Enums\PhaseApproval::ADMIN }}" {{ $phase->phase_approval_method == \App\Enums\PhaseApproval::ADMIN ? 'selected' : '' }}>Admin Approval</option>
+            </select>
+          </div>
+
+          <div class="input-area">
             <label class="form-label" for="">{{ __('Validity Period') }}</label>
             <select name="phases[{{ $phase->phase_step - 1 }}][validity_period]" class="cursor-pointer validity-period form-control w-full">
               @for ($i = 1; $i <= 12; $i++)

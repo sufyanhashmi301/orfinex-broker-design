@@ -32,6 +32,8 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
+use App\Http\Controllers\Frontend\ContractController;
+use App\Http\Controllers\UserAffiliateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +45,7 @@ use App\Http\Controllers\Frontend\MultiLevelIBController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
@@ -86,11 +89,16 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
 
     // ======== Optimizations ========
+    
+    // Investments
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
     Route::get('all-investments/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
     Route::get('investment/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats
 
+    // Affiliate Module
+    Route::get('affiliate-area', [UserAffiliateController::class, 'index'])->name('affiliate-area.index');
 
+    // ======== Optimizations ========
 
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
     Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
@@ -284,6 +292,10 @@ Route::get('user/transfer', [TransferController::class, 'index'])->name('user.tr
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
 
+Route::get('user/contracts', [ContractController::class, 'index'])->name('user.contracts');
+Route::get('user/contract/{id}', [ContractController::class, 'show'])->name('contract.show');
+Route::post('/contract/store', [ContractController::class, 'storeContract'])->name('user.contract.store');
+
 
 Route::get('user/agreements', function () {
     return view('frontend::user.setting.agreements.index');
@@ -365,10 +377,6 @@ Route::get('user/active-plans', function () {
     return view('frontend::fund_board.active_plan_design');
 })->name('user.activePlan');
 
-Route::get('user/contracts', function () {
-    return view('frontend::contracts.index');
-})->name('user.contracts');
-
 Route::get('user/certificates', function () {
     return view('frontend::certificates.index');
 })->name('user.certificates');
@@ -388,3 +396,16 @@ Route::get('user/webterminal', function () {
 Route::get('user/billing', function () {
     return view('frontend::billing.index');
 })->name('user.billing');
+
+Route::get('signature', function () {
+    return view('frontend::contracts.signature');
+})->name('signature');
+
+Route::get('/test-dompdf', function () {
+    try {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML('<h1>Hello World</h1>');
+        return $pdf->download('test.pdf');
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});

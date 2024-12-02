@@ -6,23 +6,20 @@
     <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a href="#tabs-realAccounts"
-                    class="btn btn-sm inline-flex justify-center btn-outline-primary active"
-                    id="tabs-realAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-realAccounts" role="tab"
-                    aria-controls="tabs-realAccounts" aria-selected="true">{{ __('Active') }}</a>
+                <a href="{{ route('admin.accounts-phases.log') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ url()->current() === route('admin.accounts-phases.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="#tabs-demoAccounts"
-                    class="btn btn-sm inline-flex justify-center btn-outline-primary"
-                    id="tabs-demoAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-demoAccounts" role="tab"
-                    aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending') }}</a>
+                <a href="?pending-approvals" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request()->has('pending-approvals') ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="#tabs-archivedAccounts"
-                    class="btn btn-sm inline-flex justify-center btn-outline-primary"
-                    id="tabs-archivedAccounts-tab" data-bs-toggle="pill" data-bs-target="#tabs-archivedAccounts" role="tab"
-                    aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated') }}</a>
+                <a href="?violated-acounts" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request()->has('violated-acounts') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated Accounts') }}</a>
             </li>
+            @if (request()->has('unique_id'))
+              <li class="nav-item" role="presentation">
+                <a href="?violated-acounts" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request()->has('unique_id') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __( request('unique_id') . ' Logs') }}</a>
+              </li>
+            @endif
+           
         </ul>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <div class="flex justify-between sm:space-x-4 space-x-2">
@@ -54,7 +51,7 @@
         <div class="col-span-12">
             <div class="tab-content" id="trading-accounts">
                 <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
-                    @include('backend.investments.includes.__all_accounts')
+                    @include('backend.accounts_phases.includes.logs')
                 </div>
             </div>
         </div>

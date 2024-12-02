@@ -117,6 +117,37 @@ return [
                 \PDO::ATTR_PERSISTENT => true, // Enable persistent connections
             ],
         ],
+        
+        // DO NOT DELETE (FOR OLD DB DATA MIGRATION)
+        'growmore' => [ // Custom database connection for growmore
+            'driver' => 'mysql',
+            'host' => env('DB_GROWMORE_HOST', '127.0.0.1'),
+            'port' => env('DB_GROWMORE_PORT', '3306'),
+            'database' => env('DB_GROWMORE_DATABASE', 'growmore'),
+            'username' => env('DB_GROWMORE_USERNAME', 'root'),
+            'password' => env('DB_GROWMORE_PASSWORD', ''),
+            'unix_socket' => env('DB_GROWMORE_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
+        'growmoreoriginal' => [ // Second database connection
+            'driver' => 'mysql',
+            'host' => env('DB_GROWMOREORIGINAL_HOST', '127.0.0.1'),
+            'port' => env('DB_GROWMOREORIGINAL_PORT', '3306'),
+            'database' => env('DB_GROWMOREORIGINAL_DATABASE', 'growmoreoriginal'),
+            'username' => env('DB_GROWMOREORIGINAL_USERNAME', 'root'),
+            'password' => env('DB_GROWMOREORIGINAL_PASSWORD', ''),
+            'unix_socket' => env('DB_GROWMOREORIGINAL_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
 
     ],
 

@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AffiliateRuleConfiguration;
 use App\Models\User;
-use App\Models\UserAffiliate;
 use Illuminate\Http\Request;
+use App\Models\UserAffiliate;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserAffiliateService;
+use App\Models\AffiliateRuleConfiguration;
 
 class UserAffiliateController extends Controller
 {
+
+    public $affiliate;
+
+    public function __construct(UserAffiliateService $userAffiliate) {
+        $this->affiliate = $userAffiliate;
+    }
 
     private function generateReferralId($userName) {
         // Step 1: Get the first letters of the user's name
@@ -42,22 +49,30 @@ class UserAffiliateController extends Controller
      */
     public function index()
     {
+
+        
+
         // create affiliate account, if not have one
         if( !UserAffiliate::where('user_id', Auth::id())->exists() ){
             $user_affiliate_account = new UserAffiliate();
             $user_affiliate_account->user_id = Auth::id();
-            $user_affiliate_account->current_balance = 0.00;
+            // $user_affiliate_account->current_balance = 0.00;
             $user_affiliate_account->withdrawable_balance = 0.00;
 
             $user_affiliate_account->total_purchase_amount = 0.00;
             $user_affiliate_account->total_commission = 0.00;
             $user_affiliate_account->commission_withdrawn = 0.00;
-            $user_affiliate_account->commission_pending = 0.00;
+            
             $user_affiliate_account->highest_commission_earned = 0.00;
+
+            $user_affiliate_account->user_ids_used = '[]';
+            $user_affiliate_account->commission_pending = '[]';
 
             $user_affiliate_account->referral_link = $this->generateReferralId( User::find(Auth::id())->first_name . ' ' .  User::find(Auth::id())->last_name );
             $user_affiliate_account->save();
         }
+
+        $this->affiliate->pendingCommissionClearance(Auth::id());
 
         $referrals = User::where('id', Auth::id())->first()->referrals;
         $affiliate_info = User::find( Auth::id() )->userAffiliate;

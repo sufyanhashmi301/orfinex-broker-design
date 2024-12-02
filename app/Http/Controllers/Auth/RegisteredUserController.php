@@ -11,6 +11,7 @@ use App\Models\MultiLevel;
 use App\Models\Page;
 use App\Models\Ranking;
 use App\Models\User;
+use App\Models\UserAffiliate;
 use App\Providers\RouteServiceProvider;
 use App\Rules\Recaptcha;
 use App\Traits\NotifyTrait;
@@ -38,7 +39,8 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-
+        
+       
 
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
@@ -76,6 +78,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($input['password']),
         ]);
 
+        // Assign referring id
+        $referrer = UserAffiliate::where('referral_link', $request->referral);
+        if($referrer->exists()){
+            $user->referred_by = $referrer->first()->id;
+            $user->save();
+        }
+
         if ($rank->bonus > 0) {
             Txn::new($rank->bonus, 0, $rank->bonus, 'system', 'Ranking Bonus From '.$rank->ranking, TxnType::Bonus, TxnStatus::Success, null, null, $user->id);
             $user->increment('profit_balance', $rank->bonus);
@@ -96,16 +105,22 @@ class RegisteredUserController extends Controller
         if(!$multiLevel){
             $multiLevel = null;
         }
-        //referral code
-        event(new UserReferred($request->cookie('invite'), $user,$multiLevel));
 
-        if (setting('referral_signup_bonus', 'permission') && (float) setting('signup_bonus', 'fee') > 0) {
-            $signupBonus = (float) setting('signup_bonus', 'fee');
-            $user->increment('profit_balance', $signupBonus);
-            Txn::new($signupBonus, 0, $signupBonus, 'system', 'Signup Bonus', TxnType::SignupBonus, TxnStatus::Success, null, null, $user->id);
-            Session::put('signup_bonus', $signupBonus);
-        }
-        \Cookie::forget('invite');
+        // Assign the referral
+
+        //referral code
+        // event(new UserReferred($request->cookie('invite'), $user,$multiLevel));
+
+        // if (setting('referral_signup_bonus', 'permission') && (float) setting('signup_bonus', 'fee') > 0) {
+        //     $signupBonus = (float) setting('signup_bonus', 'fee');
+        //     $user->increment('profit_balance', $signupBonus);
+        //     Txn::new($signupBonus, 0, $signupBonus, 'system', 'Signup Bonus', TxnType::SignupBonus, TxnStatus::Success, null, null, $user->id);
+        //     Session::put('signup_bonus', $signupBonus);
+        // }
+        // \Cookie::forget('invite');
+
+
+
         Auth::login($user);
         LoginActivities::add();
 

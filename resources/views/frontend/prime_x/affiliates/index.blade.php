@@ -169,7 +169,18 @@
                     {{ __('Pending Commission') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $affiliate_info->commission_pending }} {{$currency}}
+                    @php
+                        $total_pending = 0;
+                        if($affiliate_info->commission_pending != '[]'){
+                            foreach( $affiliate_info->commission_pending as $obj ) {
+                                if($obj['status'] == 'pending'){
+                                    $total_pending += $obj['commission'];
+                                }
+                            }
+                        }
+                        
+                    @endphp
+                    {{ number_format($total_pending, 2) }} {{$currency}}
                 </h6>
             </div>
         </div>

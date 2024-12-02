@@ -88,7 +88,7 @@
                 <div class="formGroup">
                     <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
                     <div class="relative">
-                        <input class="form-control py-2 h-[48px]" type="text" placeholder="Enter Your Referral Code" name="invite" value="{{ request('invite') ?? old('invite') }}"/>
+                        <input class="form-control py-2 h-[48px]" type="text" placeholder="Enter Your Referral Code" name="referral" {{ request('referral') !== null ? 'readonly' : '' }} value="{{ request('referral') ?? old('referral') }}"/>
                     </div>
                 </div>
             @endif

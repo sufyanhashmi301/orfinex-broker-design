@@ -9,6 +9,11 @@ class UserAffiliate extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'user_ids_used' => 'array',
+        'commission_pending' => 'array'
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }

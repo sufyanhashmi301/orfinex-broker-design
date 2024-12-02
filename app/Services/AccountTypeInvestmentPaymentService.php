@@ -19,11 +19,13 @@ class AccountTypeInvestmentPaymentService
   protected $accountTypeData;
   protected $phaseData;
   protected $ruleData;
+  public $affiliate;
 
-  public function __construct(ForexApiService $forexApiService, InvestmentPhaseApprovalService $investment_phase_approve)
+  public function __construct(ForexApiService $forexApiService, InvestmentPhaseApprovalService $investment_phase_approve, UserAffiliateService $userAffiliate)
   {
     $this->investment_phase_approve = $investment_phase_approve;
     $this->forexApiService = $forexApiService;
+    $this->affiliate = $userAffiliate;
   }
 
   private function createUserApiCall($user_data) {
@@ -230,6 +232,9 @@ class AccountTypeInvestmentPaymentService
       $investment->save();
 
     }
+
+    // apply commissions
+    $this->affiliate->applyCommission($this->ruleData['id']);
 
     // Fetch and store latest stats and hourly stats 
     // Artisan::call('update:investment-stats');

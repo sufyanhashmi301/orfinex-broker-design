@@ -27,6 +27,7 @@ use App\Models\ForexSchemaPhaseRule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\ForexSchemaInvestment;
 use App\Enums\InvestmentPhaseApproval;
+use App\Services\UserAffiliateService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ForexSchemaInvestormService;
 use App\Services\AccountTypeInvestmentService;
@@ -45,12 +46,14 @@ class DepositController extends Controller
      */
     private $investment_payment;
     private $investment_phase_approve;
+    public $affiliate;
 
 
-    public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment)
+    public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, UserAffiliateService $userAffiliate)
     {
         $this->investment_payment = $investment_payment;
         $this->investment_phase_approve = $investment_phase_approve;
+        $this->affiliate = $userAffiliate;
         $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
     }

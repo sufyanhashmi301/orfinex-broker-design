@@ -23,7 +23,7 @@
 
                         <div class="input-area relative">
                             <label for="" class="form-label">
-                                {{ __('Count Mode') }}
+                                {{ __('Refer Count Mode') }}
                             </label>
                             <select name="count_mode" class="select2 form-control w-full">
                                 <option value="active_account" selected>By Active Accounts</option>
@@ -35,7 +35,7 @@
                             <label class="form-label">
                                 Balance Retention Period (days)
                             </label>
-                            <input type="number" value="1" name="balance_retention_period" class="form-control"
+                            <input type="number" value="0" name="balance_retention_period" class="form-control"
                                 placeholder="">
                         </div>
 

@@ -30,6 +30,7 @@ use App\Http\Controllers\Frontend\ForexSchemaController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\ContractController;
@@ -385,9 +386,7 @@ Route::get('user/utilities', function () {
     return view('frontend::utilities.index');
 })->name('user.utilities');
 
-Route::get('user/leaderboard', function () {
-    return view('frontend::leaderboard.index');
-})->name('user.leaderboard');
+Route::get('user/leaderboard', [LeaderboardController::class, 'userIndex'])->name('user.leaderboard');
 
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');

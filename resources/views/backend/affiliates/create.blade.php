@@ -160,8 +160,8 @@
                                 @if (isset($affiliate_rule))
                                     @foreach ($affiliate_rule->affiliateRuleLevel()->orderBy('id', 'ASC')->get() as $index => $level)
                                         <tr class="affiliate-level">
-                                            <td class="table-td"><input type="text" value="{{ $level->level }}" readonly name="affiliate_levels[0][level]" data-index="0" class="form-control" ></td>
-                                            <td class="table-td"><input type="text" value="{{ $level->commission_percentage }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_levels[0][commission_percentage]" data-index="0" class="form-control"></td>
+                                            <td class="table-td"><input type="text" value="{{ $level->level }}" readonly name="affiliate_levels[{{ $index }}][level]" data-index="{{ $index }}" class="form-control" ></td>
+                                            <td class="table-td"><input type="text" value="{{ $level->commission_percentage }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_levels[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
 
                                             @if ($loop->last)
                                                 <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>

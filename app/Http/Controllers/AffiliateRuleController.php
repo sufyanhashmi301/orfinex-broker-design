@@ -41,7 +41,6 @@ class AffiliateRuleController extends Controller
     public function store(Request $request)
     {
         // validate request (another file)
-        dd($request->all());
 
         AffiliateRule::truncate();
         AffiliateRuleConfiguration::truncate();
@@ -78,7 +77,7 @@ class AffiliateRuleController extends Controller
             $affiliate_rule_level->save();
         }
         
-        notify('Affiliate Rule Successfully created!', 'Success');
+        notify('Affiliate Rule Successfully Updated!', 'Success');
         return redirect()->back();
 
 

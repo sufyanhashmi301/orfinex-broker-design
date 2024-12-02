@@ -31,13 +31,13 @@
                         @if ($page == $paginator->currentPage())
                             <li class="inline-block" aria-current="page">
                                 <span class="flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px] p-active">
-                                    {{ __($page) }}
+                                    {{ $page }}
                                 </span>
                             </li>
                         @else
                             <li class="inline-block">
                                 <a class="loaderBtn flex items-center justify-center w-6 h-6 bg-slate-100 dark:bg-slate-700 dark:hover:bg-black-500 text-slate-800 dark:text-white rounded mx-[3px] sm:mx-1 hover:bg-black-500 hover:text-white text-sm font-Inter font-medium transition-all duration-300 relative top-[2px]" href="{{ $url }}">
-                                    {{ __($page) }}
+                                    {{ $page }}
                                 </a>
                             </li>
                         @endif

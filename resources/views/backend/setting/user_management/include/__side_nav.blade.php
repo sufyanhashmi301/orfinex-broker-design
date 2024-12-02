@@ -12,11 +12,13 @@
                 </a>
             </li>
         @endcanany
+        @can('kyc-levels-list')
         <li>
             <a href="{{ route('admin.kyclevels.index') }}" class="navItem {{ isActive('admin.kyclevels.index') }}">
                 {{ __('KYC & Compliance') }}
             </a>
         </li>
+        @endcan
         @canany(['ranking-list','ranking-create','ranking-edit'])
             <li>
                 <a href="{{ route('admin.ranking.index') }}" class="navItem {{ isActive('admin.ranking*') }}">

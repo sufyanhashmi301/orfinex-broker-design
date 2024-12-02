@@ -38,11 +38,13 @@
                         </a>
                     </li>
                     @endcanany
+                    @canany(['all-countries-list','blacklist-countries-list'])
                     <li>
                         <a href="{{ route('admin.country.all') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Country') }}
                         </a>
                     </li>
+                    @endcanany
                     @canany(['document-link-list','platform-link-list'])
                     <li>
                         <a href="{{ route('admin.links.document.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -85,11 +87,13 @@
                             </a>
                         </li>
                     @endcanany
+                    @can('kyc-levels-list')
                     <li>
                         <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('KYC & Compliance') }}
                         </a>
                     </li>
+                    @endcan
                     @canany(['ranking-list','ranking-create','ranking-edit'])
                         <li>
                             <a href="{{ route('admin.ranking.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -228,6 +232,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('custom-colors-settings')
                     <li>
                         <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Custom Colors') }}
@@ -236,6 +241,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('custom-fonts-settings')
                     <li>
                         <a href="{{ route('admin.theme.fonts') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Custom Fonts') }}
@@ -244,6 +251,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('routes-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Routes')}}
@@ -252,6 +261,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('dynamic-content-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Dynamic Content')}}
@@ -260,6 +271,7 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
@@ -533,11 +545,13 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['all-sections-settings', 'blocklist-ip-settings', 'single-session-settings', 'blocklist-email-settings', 'login-expiry-settings'])
                     <li>
                         <a href="{{ route('admin.security.all-sections') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Security')}}
                         </a>
                     </li>
+                    @endcanany
                     @can('language-setting')
                         <li>
                             <a href="{{ route('admin.language.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -553,11 +567,13 @@
                             </span>
                         </a>
                     </li>
+                    @canany(['ticket-priority-list', 'ticket-status-list'])
                     <li>
                         <a href="{{ route('admin.ticket.statuses.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Support Center')}}
                         </a>
                     </li>
+                    @endcanany
                 </ul>
             </div>
         </div>

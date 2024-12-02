@@ -97,6 +97,14 @@
                 </span>
             </a>
         </li>
+        <li>
+            <a href="{{ route('user.multi-level.ib.rules') }}" class="navItem {{ isActive('user.multi-level.ib.rules') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:user-round"></iconify-icon>
+                    <span>{{ __('Sub Ib Rules') }}</span>
+                </span>
+            </a>
+        </li>
 
         <li>
             <a href="{{ route('user.dashboard') }}" class="navItem {{ isActive('user.dashboard') }}">

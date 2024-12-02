@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Add Affiliate Rule') }}
+    {{ __('Affiliates Management') }}
 @endsection
 @section('content')
     <form action="{{ route('admin.affiliate-rules.store') }}" method="post" enctype="multipart/form-data">
@@ -113,7 +113,7 @@
                                             <td class="table-td"><input type="text" value="{{ $config->count_end }}" {{ $loop->last ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_end]" data-index="{{ $index }}" class="form-control"></td>
                                             <td class="table-td"><input type="text" value="{{ $config->commission_percentage }}" name="affiliate_configs[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
 
-                                            @if ($loop->last)
+                                            @if ($loop->last && count($affiliate_rule->affiliateRuleConfiguration) != 1)
                                                 <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>
                                             @endif
                                         </tr>
@@ -163,7 +163,7 @@
                                             <td class="table-td"><input type="text" value="{{ $level->level }}" readonly name="affiliate_levels[{{ $index }}][level]" data-index="{{ $index }}" class="form-control" ></td>
                                             <td class="table-td"><input type="text" value="{{ $level->commission_percentage }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_levels[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
 
-                                            @if ($loop->last)
+                                            @if ($loop->last && count($affiliate_rule->affiliateRuleLevel) != 1)
                                                 <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>
                                             @endif
                                         </tr>
@@ -190,7 +190,7 @@
         </div>
         <div class="mt-10">
             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                {{ __('Add Affiliate Rule') }}
+                {{ __('Update Affiliate Rule') }}
             </button>
         </div>
     </form>

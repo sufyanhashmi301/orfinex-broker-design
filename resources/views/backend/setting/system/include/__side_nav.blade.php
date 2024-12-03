@@ -1,7 +1,7 @@
 @section('submenu')
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
         <li class="">
-            <a href="{{ route('admin.settings.clearCache') }}" class="navItem {{ isActive('admin.settings.clearCache') }}">
+            <a href="javascript:;" class="navItem">
                 {{ __('Clear Cache') }}
             </a>
         </li>

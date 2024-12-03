@@ -96,12 +96,10 @@
                       @if(getPageSetting('country_show'))
                         <div class="formGroup">
                             <label class="block capitalize form-label">{{ __('Select Country*') }}</label>
-                            <div class="relative ">
+                            <div class="relative">
                               <select name="country" id="countrySelect" class="select2 form-control py-2 h-[48px] w-full mt-2">
                                 @foreach( getCountries() as $country)
-                                    <option @if( $location->country_code == $country['country_code']) selected
-                                            @endif value="{{ $country['name'].':'.$country['dial_code'] }}"
-                                            class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
+                                    <option @if( $location->country_code == $country['country_code']) selected @endif value="{{ $country['name'].':'.$country['dial_code'] }}" class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
                                         {{ $country['name']  }}
                                     </option>
                                 @endforeach
@@ -130,8 +128,11 @@
 
                       @if(getPageSetting('referral_code_show'))
                         <div class="formGroup">
-                          <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
-                          <div class="relative">
+                          <div class="flex items-center justify-between">
+                              <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
+                              <a href="javascript:;" class="btn-link referralToggle">{{ __('Show') }}</a>
+                          </div>
+                          <div class="relative hidden" id="referral-input">
                             <input
                                 class="form-control py-2 h-[48px]"
                                 type="text"
@@ -154,6 +155,9 @@
                                             placeholder="{{ __('Enter your password') }}"
                                             required
                                         />
+                                        <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center">
+                                            <iconify-icon class="text-lg" icon="lucide:eye-closed"></iconify-icon>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="formGroup">
@@ -166,6 +170,9 @@
                                             placeholder="{{ __('Enter your password') }}"
                                             required
                                         />
+                                        <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center">
+                                            <iconify-icon class="text-lg" icon="lucide:eye-closed"></iconify-icon>
+                                        </button>
                                     </div>
                                 </div>
                         </div>
@@ -236,10 +243,27 @@
             $('#dial-code').html(country.split(":")[1])
         });
 
-        const input = document.querySelector("#phone");
-        window.intlTelInput(input, {
-            showSelectedDialCode: true,
-            utilsScript: "{{ asset('frontend/js/utils.js') }}",
+        $(document).ready(function() {
+            $('.referralToggle').on('click', function (){
+                $('#referral-input').toggleClass('hidden');
+
+                if ($('#referral-input').hasClass('hidden')) {
+                    $(this).text('Show');
+                } else {
+                    $(this).text('Hide');
+                }
+            })
+
+            $('.toggle-password').on('click', function() {
+                var passwordField = $(this).prev('input');
+
+
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                } else {
+                    passwordField.attr('type', 'password');
+                }
+            });
         });
 
     </script>

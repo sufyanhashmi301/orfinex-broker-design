@@ -54,6 +54,9 @@
                             <label class="block capitalize form-label">{{ __('Password') }}</label>
                             <div class="relative ">
                                 <input type="password" name="password" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter your password') }}" required>
+                                <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center">
+                                    <iconify-icon class="text-lg" icon="lucide:eye-closed"></iconify-icon>
+                                </button>
                             </div>
                         </div>
                         @if($googleReCaptcha)
@@ -99,4 +102,19 @@
     @if($googleReCaptcha)
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     @endif
+
+    <script !src="">
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function() {
+                var passwordField = $(this).prev('input');
+
+
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                } else {
+                    passwordField.attr('type', 'password');
+                }
+            });
+        });
+    </script>
 @endsection

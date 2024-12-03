@@ -54,7 +54,7 @@
                             </div>
                             <div class="input-area relative">
                                 <label class="form-label"
-                                        for="">{{ __('Gateway Supported Currency:') }}</label>
+                                       for="">{{ __('Gateway Supported Currency:') }}</label>
                                 <select name="currency" class="form-control w-100" id="currency">
 
                                 </select>

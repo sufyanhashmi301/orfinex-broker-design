@@ -153,7 +153,7 @@
             <!-- Modal for Send Email-->
         </div>
         <div class="tab-pane fade" id="tabs-changelog" role="tabpanel" aria-labelledby="tabs-changelog-tab">
-            <iframe src="https://brokeret.com/headless/changelog" class="w-full h-screen" frameborder="0"></iframe>
+            <div id="changelog-container"></div>
         </div>
     </div>
 
@@ -172,5 +172,17 @@
                 $('#sendEmail').modal('toggle')
             })
         })(jQuery)
+
+        $(document).ready(function() {
+            $.ajax({
+                url: '{{ route("admin.changelog") }}',
+                method: 'GET',
+                success: function (data) {
+                    // console.log(data);
+                    $('#changelog-container').html(data);
+                }
+            })
+        })
+
     </script>
 @endsection

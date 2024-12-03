@@ -87,10 +87,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
     });
     Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
-    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
 
     // ======== Optimizations ========
-    
+
     // Investments
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
     Route::get('all-investments/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
@@ -408,3 +407,5 @@ Route::get('/test-dompdf', function () {
         return $e->getMessage();
     }
 });
+Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+

@@ -51,8 +51,8 @@
                 <label class="flex items-center cursor-pointer">
                     <input class="hiddens mr-2" type="checkbox" name="remember" />
                     <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">
-                                    {{ __('Keep me signed in') }}
-                                </span>
+                        {{ __('Keep me signed in') }}
+                    </span>
                 </label>
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}" class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium">

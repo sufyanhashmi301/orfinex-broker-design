@@ -234,7 +234,7 @@ class AccountTypeInvestmentPaymentService
     }
 
     // apply commissions
-    $this->affiliate->applyCommission($this->ruleData['id']);
+    $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
 
     // Fetch and store latest stats and hourly stats 
     // Artisan::call('update:investment-stats');

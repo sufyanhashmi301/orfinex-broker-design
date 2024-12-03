@@ -81,7 +81,7 @@ class RegisteredUserController extends Controller
         // Assign referring id
         $referrer = UserAffiliate::where('referral_link', $request->referral);
         if($referrer->exists()){
-            $user->referred_by = $referrer->first()->id;
+            $user->referred_by = $referrer->first()->user->id;
             $user->save();
         }
 

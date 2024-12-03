@@ -85,7 +85,9 @@ class AccountTypeInvestmentController extends Controller
     public function store(Request $request)
     {   
         // temporary
-        // $this->affiliate->applyCommission($request->rule_id);
+        // $buyer_user_id  = Auth::id();
+        // $this->affiliate->applyCommission($request->rule_id, $buyer_user_id);
+        // return redirect()->back();
 
         $investment = $this->investment->createInvestment($request);
 

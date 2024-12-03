@@ -30,7 +30,7 @@ class UserAffiliateService
       }
   
       // Add the current user to the chain
-      $chain[$loop] = ["user_id" => $user->id, "level" => $loop + 1];
+      $chain[$loop] = ["user_id" => $user->id, "level" => $loop ];
   
       // Recursively call for the referrer
       if ($user->referrer) {
@@ -41,7 +41,9 @@ class UserAffiliateService
   }
 
   // Apply commission to direct referrer + levels
-  public function applyCommission($account_type_rule_id) {  
+  public function applyCommission($account_type_rule_id, $buyer_user_id) {  
+
+    
 
     // check if the affiliate rule applys to account type
     $rule = AccountTypePhaseRule::findOrFail($account_type_rule_id);
@@ -50,12 +52,19 @@ class UserAffiliateService
     // getting the latest rule affiliate assigned to accountType if not set to all
     if( !AffiliateRule::whereJsonContains('for_account_type_ids', 'all')->orderBy('id', 'DESC')->exists() ){
       $affiliate_rule = AffiliateRule::whereJsonContains('for_account_type_ids', $account_type_id)->orderBy('id', 'DESC')->first();
-      $affiliate_rule_configuration = $affiliate_rule->affiliateRuleConfiguration;
-      $affiliate_rule_levels = $affiliate_rule->affiliateRuleLevel;
+    }else{
+      $affiliate_rule = AffiliateRule::whereJsonContains('for_account_type_ids', 'all')->orderBy('id', 'DESC')->first();
+    }
+    $affiliate_rule_configuration = $affiliate_rule->affiliateRuleConfiguration;
+    $affiliate_rule_levels = $affiliate_rule->affiliateRuleLevel;
+
+    // is Active?
+    if($affiliate_rule->is_active == 0){
+      return false;
     }
     
     // get the direct refferer
-    $direct_refferer = User::find(Auth::id())->referrer;
+    $direct_refferer = User::find($buyer_user_id)->referrer;
     $refer_count = $direct_refferer->userAffiliate->refer_count + 1;
 
     $direct_refferer_commission_percentage = $affiliate_rule_configuration->where('count_start', '<=', $refer_count)->where('count_end', '>=', $refer_count)->first()->commission_percentage;
@@ -67,16 +76,16 @@ class UserAffiliateService
 
 
     // --- pay the levels (if any) ---
-    $referral_chain = $this->getReferralChain( User::find(Auth::id()) );
+    $referral_chain = $this->getReferralChain( User::find($buyer_user_id) );
 
     
     
     // attach commission percentages and amounts to the whole referral chain
     for( $i=0; $i < count( $referral_chain ); $i++ ) {
 
-      // if( $referral_chain[$i]['level'] == 0 ){
-      //   continue;
-      // }
+      if( $referral_chain[$i]['level'] == 0 ){
+        continue;
+      }
 
       $referral_chain[$i]['commission_percentage'] = $affiliate_rule_levels->where('level', $referral_chain[$i]['level'])->first()->commission_percentage ?? 0;
 
@@ -91,17 +100,17 @@ class UserAffiliateService
     for($i=0; $i < count( $referral_chain ); $i++ ) {
 
       // skip the user from the chain who is purchasing the account
-      // if( $referral_chain[$i]['level'] == 0 ){
-      //   continue;
-      // }
+      if( $referral_chain[$i]['level'] == 0 ){
+        continue;
+      }
 
       // If the commission amount started getting 0 it means max levels have been reached, so break.
       if( $referral_chain[$i]['commission_amount'] == 0 ){
         break;
       }
 
-      // if the user already got the commission by Auth::id() and the count mode is set to customers then no one gets the commission, break.
-      $check_users_ids_used_exists = UserAffiliate::whereJsonContains('user_ids_used', Auth::id())->orderBy('id', 'DESC')->exists();
+      // if the user already got the commission by $buyer_user_id and the count mode is set to customers then no one gets the commission, break.
+      $check_users_ids_used_exists = UserAffiliate::whereJsonContains('user_ids_used', $buyer_user_id)->orderBy('id', 'DESC')->exists();
       if( $affiliate_rule->count_mode == 'customer' && $check_users_ids_used_exists ) {
         break;
       }
@@ -109,9 +118,15 @@ class UserAffiliateService
 
       
       $user_affiliate_info = User::find( $referral_chain[$i]['user_id'] )->userAffiliate;
-      if( $referral_chain[$i]['level'] == 0 ) {
+      
+      if( $referral_chain[$i]['level'] == 1 ) {
         $user_affiliate_info->refer_count = $refer_count;
         $user_affiliate_info->total_purchase_amount = $user_affiliate_info->total_purchase_amount + $total_amount;
+      }
+
+      // to handle null error
+      if($user_affiliate_info == null) {
+        continue;
       }
 
       // Update user affiliate info
@@ -147,10 +162,10 @@ class UserAffiliateService
 
       $user_affiliate_info->save();
 
-      // Add the Auth::id() in user_ids_used if not already existed in the array, and only add to the direct referrer i.e. level=0
-      if(!$check_users_ids_used_exists && $referral_chain[$i]['level'] == 0) {
+      // Add the $buyer_user_id in user_ids_used if not already existed in the array, and only add to the direct referrer i.e. level=1
+      if(!$check_users_ids_used_exists && $referral_chain[$i]['level'] == 1) {
         DB::table('user_affiliates')->where('id', $user_affiliate_info->id)->update([
-          'user_ids_used' => DB::raw("JSON_ARRAY_APPEND(user_ids_used, '$', " . intval(Auth::id()) . ")")
+          'user_ids_used' => DB::raw("JSON_ARRAY_APPEND(user_ids_used, '$', " . intval($buyer_user_id) . ")")
         ]);
       }
 
@@ -227,7 +242,7 @@ class UserAffiliateService
 
   }
 
-  // assign the reffering user
+  
   
 
 }

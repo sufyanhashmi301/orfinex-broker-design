@@ -9,6 +9,7 @@ use App\Models\Ranking;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -96,8 +97,12 @@ class ResetData extends Command
         DB::table('withdraw_accounts')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+
+        Artisan::call('db:seed');
+
         $rank = Ranking::find(1);
-        $sitename = 'marketmavens';
+        $sitename = 'mymaamarkets';
+
         $dataUser = [
             'ranking_id' => $rank->id,
             'rankings' => json_encode([$rank->id]),
@@ -109,7 +114,7 @@ class ResetData extends Command
             'email' => 'user@'.$sitename.'.com',
             'password' => Hash::make(12345678),
             'kyc' => 0,
-            'email_verified_at' =>Carbon::now(),
+            'email_verified_at' => Carbon::now(),
         ];
         $user = User::create($dataUser);
 
@@ -131,8 +136,6 @@ class ResetData extends Command
             'action_url' => route('admin.user.edit',$superAdmin->id),
         ];
         Notification::create($data);
-
-
 
     }
 }

@@ -30,10 +30,10 @@ class RiskProfileTagController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:risk-profile-tag-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
-//        $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
-//        $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
-
+        $this->middleware('permission:risk-profile-list|risk-profile-create|risk-profile-edit', ['only' => ['index', 'store']]);
+        $this->middleware('permission:risk-profile-create', ['only' => ['store']]);
+        $this->middleware('permission:risk-profile-edit', ['only' => ['update']]);
+        $this->middleware('permission:risk-profile-delete', ['only' => ['destroy']]);
     }
 
     /**

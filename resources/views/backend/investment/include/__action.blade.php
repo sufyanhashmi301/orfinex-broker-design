@@ -1,3 +1,4 @@
+@can('accounts-action')
 <div class="flex space-x-3 rtl:space-x-reverse">
     <a href="javascript:;" class="action-btn open-trades-modal" data-login="{{ $login }}">
         <iconify-icon icon="fluent:apps-list-24-filled"></iconify-icon>
@@ -9,3 +10,4 @@
         <iconify-icon icon="material-symbols:restart-alt-rounded"></iconify-icon>
     </a>
 </div>
+@endcan

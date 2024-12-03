@@ -145,6 +145,15 @@ class ForexApiService
         return $this->get($endpoint, $data);
     }
 
+    public function getClientsByGroup($group)
+    {
+        $data = [
+            'group' => $group
+        ];
+        $endpoint = 'user/userbygroup';
+        return $this->getByBody($endpoint, $data);
+    }
+
     public function balanceOperation($data)
     {
         $endpoint = 'useraccount/balanceOperation';

@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Validator;
 class SystemTagController extends Controller
 {
     use NotifyTrait;
+     
+    public function __construct()
+    {
+        $this->middleware('permission:system-tag-list|system-tag-create|system-tag-edit', ['only' => ['index', 'store']]);
+        $this->middleware('permission:system-tag-create', ['only' => ['store']]);
+        $this->middleware('permission:system-tag-edit', ['only' => ['update']]);
+        $this->middleware('permission:system-tag-delete', ['only' => ['destroy']]);
+    }
+
 
     public function index()
     {

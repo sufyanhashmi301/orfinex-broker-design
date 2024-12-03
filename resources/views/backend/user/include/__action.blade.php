@@ -1,5 +1,5 @@
 <div class="flex space-x-3 rtl:space-x-reverse">
-    @canany(['customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status'])
+    @canany(['customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status','customer-edit'])
         <a href="{{route('admin.user.edit',$id)}}" class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Edit User">
             <iconify-icon icon="lucide:edit-3"></iconify-icon>
         </a>

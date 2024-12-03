@@ -6,10 +6,12 @@
     <a href="{{route('admin.symbols.index')}}" class="btn btn-sm btn-white inline-flex items-center justify-center">
         {{ __('View All Symbols') }}
     </a>
+    @can('symbol-group-create')
     <a href="" class="btn btn-sm btn-primary inline-flex items-center justify-center addSymbolGroup" type="button" >
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add Symbol Group') }}
     </a>
+    @endcan
 @endsection
 @section('symbol-groups-content')
     <div class="card">
@@ -53,14 +55,17 @@
     </div>
 
     <!-- Modal for Add New Group -->
+    @can('symbol-group-create')
     @include('backend.symbol_groups.modal.__create')
-
+@endcan
     {{--Modal for edit symbol group--}}
+    @can('symbol-group-edit')
     @include('backend.symbol_groups.modal.__edit')
-
+@endcan
     {{--Modal for delete symbol group--}}
+    @can('symbol-group-delete')
     @include('backend.symbol_groups.modal.__delete')
-
+    @endcan
 @endsection
 @section('script')
 

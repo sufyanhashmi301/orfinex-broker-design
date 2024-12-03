@@ -359,6 +359,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
     });
 
+
+    Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
+
     Route::get('grpd-compliance', function () {
         return view('backend.setting.site_setting.gdpr_compliance');
     })->name('grpdCompliance');
@@ -554,10 +557,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
-
-    Route::get('changelog', function () {
-        return view('backend.system.changelog');
-    })->name('changelog');
 
     Route::get('deposit/misc-setting', function () {
         return view('backend.setting.payment.deposit.misc');

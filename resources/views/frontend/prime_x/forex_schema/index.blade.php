@@ -32,8 +32,8 @@
                 </p>
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
             </div>
-            <div class="bg-slate-50 dark:bg-dark rounded px-3 mb-5">
-                <div class="flex items-center py-3">
+            <div class="h-full space-y-3 bg-slate-50 dark:bg-dark rounded p-3 mb-5">
+                <div class="flex items-center">
                     <span class="flex-1 text-sm font-medium text-slate-600 dark:text-slate-300">
                         {{ __('Initial Deposit') }}
                     </span>
@@ -43,7 +43,7 @@
                         </span>
                     </span>
                 </div>
-                <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mb-3">
+                <p class="text-sm font-medium text-slate-600 dark:text-slate-300">
                     {{ __('Key Features') }}
                 </p>
                 <ul class="space-y-2">

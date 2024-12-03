@@ -170,7 +170,6 @@
                             class="form-control keyFeatureInput"
                             placeholder="Account Type Spread"
                             name="spread"
-                            data-role="tagsinput"
                             value="{{$schema->spread}}"
                             required
                         />
@@ -517,7 +516,8 @@
     <script>
         $(document).ready(function() {
 
-            $('.keyFeatureInput').tagsinput({
+            var elt = $('.keyFeatureInput');
+            elt.tagsinput({
                 maxTags: 5
             });
 

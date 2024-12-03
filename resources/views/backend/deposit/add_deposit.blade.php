@@ -277,7 +277,7 @@
                     $.ajax({
                         url: url, // URL generated from the route helper
                         type: "GET",
-                        dataType: "json",Add Method Logo:
+                        dataType: "json",
                         success: function(data) {
                             // Clear the current options in Account / Wallet dropdown (now target_id)
                             $('select[name="target_id"]').empty();

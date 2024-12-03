@@ -24,12 +24,12 @@ class BlackListCountryController extends Controller
      *
      * @return Response
      */
-    // public function __construct()
-    // {
-    //    $this->middleware('permission:blacklist-countries-list', ['only' => ['index', 'store']]);
-    //    $this->middleware('permission:add-blacklist-countries', ['only' => ['create', 'store']]);
-    //    $this->middleware('permission:blacklist-countries-action', ['only' => ['destroy']]);
-    // }
+    public function __construct()
+    {
+       $this->middleware('permission:blacklist-countries-list', ['only' => ['index', 'store']]);
+       $this->middleware('permission:add-blacklist-countries', ['only' => ['create', 'store']]);
+       $this->middleware('permission:blacklist-countries-action', ['only' => ['destroy']]);
+    }
 
     /**
      * Display a listing of the resource.

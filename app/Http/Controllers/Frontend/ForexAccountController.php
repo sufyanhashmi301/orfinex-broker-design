@@ -128,18 +128,31 @@ class ForexAccountController extends GatewayController
         }
         //Start/End Range of create forex account on MT5
         if (setting('is_forex_group_range', 'global')) {
-            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
+            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBy('login', 'desc')->first();
+
+            // Check if an account exists
             if ($forexAccount) {
-                if ($forexAccount->login >= $schema->end_range) {
-                    $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
-                    notify()->error($message, __('Error'));
-                    return redirect()->back();
+                // Validate if the login is within the range
+                if ($forexAccount->login < $schema->start_range || $forexAccount->login >= $schema->end_range) {
+                    // Reset to start_range if the login is out of range
+                    $login = $schema->start_range;
+                } else {
+                    // Increment login if within range
+                    $login = ++$forexAccount->login;
                 }
-                $login = $forexAccount->login++;
             } else {
+                // Start from start_range if no accounts exist
                 $login = $schema->start_range;
             }
+
+            // Check if the generated login exceeds the range
+            if ($login >= $schema->end_range) {
+                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
+                notify()->error($message, __('Error'));
+                return redirect()->back();
+            }
         }
+
         $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;

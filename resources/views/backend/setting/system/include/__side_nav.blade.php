@@ -26,7 +26,7 @@
 
         @can('changelog-settings')
         <li class="">
-            <a href="{{ route('admin.changelog') }}" class="navItem {{ isActive('admin.changelog') }}">
+            <a href="javascript:;" class="navItem">
                 {{ __('Changelog') }}
             </a>
         </li>

@@ -167,10 +167,9 @@
                         <label class="form-label" for="">{{ __('Account Type Spread:') }}</label>
                         <input
                             type="text"
-                            class="form-control"
+                            class="form-control keyFeatureInput"
                             placeholder="Account Type Spread"
                             name="spread"
-                            data-role="tagsinput"
                             required
                         />
                     </div>
@@ -603,6 +602,12 @@
     <script src="{{ asset('global/js/bootstrap-tagsinput.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            var elt = $('.keyFeatureInput');
+            elt.tagsinput({
+                maxTags: 5
+            });
+
             $('.toggle-checkbox').change(function() {
                 var target = $(this).data('target');
                 $(target).toggleClass('hidden');

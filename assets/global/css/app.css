@@ -5546,6 +5546,9 @@ textarea.form-control.is-invalid{
 .gap-x-2{
   column-gap: 0.5rem;
 }
+.gap-x-10{
+  column-gap: 2.5rem;
+}
 .gap-y-3{
   row-gap: 0.75rem;
 }

@@ -36,6 +36,13 @@ class SettingController extends Controller
         $this->middleware('permission:company-setting', ['only' => ['companySetting']]);
         $this->middleware('permission:misc-setting', ['only' => ['miscSetting']]);
         $this->middleware('permission:company-permissions-setting', ['only' => ['companyPermissions']]);
+        $this->middleware('permission:internal-transfer-display|external-transfer-display', ['only' => ['transfers']]);
+        $this->middleware('permission:meta-trader-display', ['only' => ['platformApiSetting']]);
+        $this->middleware('permission:mt5-webterminal-display', ['only' => ['mt5WebterminalSetting']]);
+        $this->middleware('permission:x9-webterminal-display', ['only' => ['x9WebterminalSetting']]);
+        $this->middleware('permission:copy-trading-setting', ['only' => ['copyTradingSetting']]);
+
+
 
     }
 

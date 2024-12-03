@@ -65,6 +65,8 @@ use App\Http\Controllers\RateController;
 use App\Http\Controllers\Backend\IBGroupController;
 use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
+use App\Http\Controllers\Backend\PlatformApiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -480,21 +482,16 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 
-    Route::get('settings/platform-api/cTrader', function () {
-        return view('backend.setting.platform_api.ctrader');
-    })->name('platform_api.ctrader');
+    Route::get('settings/platform-api/cTrader', [PlatformApiController::class, 'cTrader'])
+    ->name('platform_api.ctrader');
 
-    Route::get('settings/platform-api/db-synchronization', function () {
-        return view('backend.setting.platform_api.db-synchronization');
-    })->name('platform_api.db-synchronization');
+    Route::get('settings/platform-api/db-synchronization', [PlatformApiController::class, 'dbSynchronization'])->name('platform_api.db-synchronization');
 
     Route::get('settings/platform-api/db-x9trader', function () {
         return view('backend.setting.platform_api.db-x9trader');
     })->name('platform_api.dbX9trader');
 
-    Route::get('settings/platform-api/x9trader', function () {
-        return view('backend.setting.platform_api.x9trader');
-    })->name('platform_api.x9trader');
+    Route::get('settings/platform-api/x9trader', [PlatformApiController::class, 'x9Trader'])->name('platform_api.x9trader');
 
     Route::get('announcements', function () {
         return view('backend.announcements.index');

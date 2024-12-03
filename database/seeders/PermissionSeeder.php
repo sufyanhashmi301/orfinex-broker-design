@@ -187,6 +187,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Bonus Setting', 'name' => 'bonus-edit'],
             ['category' => 'Bonus Setting', 'name' => 'bonus-delete'],
 
+            ['category' => 'Transfers Setting', 'name' => 'internal-transfer-display'],
+            ['category' => 'Transfers Setting', 'name' => 'external-transfer-display'],
+            ['category' => 'Transfers Setting', 'name' => 'transfers-action'],
+    
             ['category' => 'Website Setting', 'name' => 'theme-settings'],
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
@@ -228,6 +232,22 @@ class PermissionSeeder extends Seeder
             ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],
             ['category' => 'Website Setting', 'name' => 'maintainance-settings'],
 
+            ['category' => 'Platform API Setting', 'name' => 'meta-trader-display'],
+            ['category' => 'Platform API Setting', 'name' => 'meta-trader-edit'],
+            ['category' => 'Platform API Setting', 'name' => 'c-trader-display'],
+            ['category' => 'Platform API Setting', 'name' => 'c-trader-edit'],
+            ['category' => 'Platform API Setting', 'name' => 'x9-trader-display'],
+            ['category' => 'Platform API Setting', 'name' => 'x9-trader-edit'],
+
+            ['category' => 'DB Synchronization Setting', 'name' => 'db-synchronization-setting'],
+
+            ['category' => 'Web Terminal Setting', 'name' => 'mt5-webterminal-display'],
+            ['category' => 'Web Terminal Setting', 'name' => 'mt5-webterminal-edit'],
+            ['category' => 'Web Terminal Setting', 'name' => 'x9-webterminal-display'],
+            ['category' => 'Web Terminal Setting', 'name' => 'x9-webterminal-edit'],
+
+            ['category' => 'Copy Trading Setting', 'name' => 'copy-trading-setting'],
+            ['category' => 'Copy Trading Setting', 'name' => 'brokeree-edit'],
         ];
 
         foreach ($permissions as $permission) {

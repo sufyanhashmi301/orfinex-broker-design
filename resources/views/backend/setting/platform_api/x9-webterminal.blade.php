@@ -80,7 +80,9 @@
                     @endif
                 @endforeach
             </div>
+            @can('x9-webterminal-edit')
             @include('backend.setting.site_setting.include.form.__close_action')
+            @endcan
         </div>
     </div>
 

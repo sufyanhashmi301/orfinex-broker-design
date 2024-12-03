@@ -286,21 +286,27 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['c-trader-display', 'meta-trader-display', 'x9-trader-display'])
                     <li>
                         <a href="{{ route('admin.settings.platform-api') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform API') }}
                         </a>
                     </li>
+                    @endcanany
+                    @can('db-synchronization-setting')
                     <li>
                         <a href="{{ route('admin.platform_api.db-synchronization') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('DB Synchronization') }}
                         </a>
                     </li>
+                    @endcan
+                    @can('copy-trading-setting')
                     <li>
                         <a href="{{ route('admin.settings.copyTrading') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Copy Trading') }}
                         </a>
                     </li>
+                    @endcan
                     <li>
                         <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform Groups') }}
@@ -314,6 +320,7 @@
                             {{ __('Risk Book') }}
                         </a>
                     </li>
+                    @canany(['mt5-webterminal-display', 'x9-webterminal-display'])
                     <li>
                         <a href="{{ route('admin.settings.webterminal.mt5') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Web Terminal') }}
@@ -322,6 +329,7 @@
                             </span>
                         </a>
                     </li>
+                    @endcanany
                 </ul>
             </div>
         </div>

@@ -151,12 +151,13 @@
                                         <input
                                             class="form-control py-2 h-[48px]"
                                             type="password"
+                                            id="password"
                                             name="password"
                                             placeholder="{{ __('Enter your password') }}"
                                             required
                                         />
-                                        <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center">
-                                            <iconify-icon class="text-lg" icon="lucide:eye-closed"></iconify-icon>
+                                        <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="#password">
+                                            <iconify-icon class="text-lg" icon="heroicons:eye-slash"></iconify-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -166,12 +167,13 @@
                                         <input
                                             class="form-control py-2 h-[48px]"
                                             type="password"
+                                            id="confirm-pass"
                                             name="password_confirmation"
                                             placeholder="{{ __('Enter your password') }}"
                                             required
                                         />
-                                        <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center">
-                                            <iconify-icon class="text-lg" icon="lucide:eye-closed"></iconify-icon>
+                                        <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="#confirm-pass">
+                                            <iconify-icon class="text-lg" icon="heroicons:eye-slash"></iconify-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -253,17 +255,6 @@
                     $(this).text('Hide');
                 }
             })
-
-            $('.toggle-password').on('click', function() {
-                var passwordField = $(this).prev('input');
-
-
-                if (passwordField.attr('type') === 'password') {
-                    passwordField.attr('type', 'text');
-                } else {
-                    passwordField.attr('type', 'password');
-                }
-            });
         });
 
     </script>

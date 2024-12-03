@@ -355,6 +355,8 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     });
 
+    Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
+
 //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
         Route::get('all-sections', 'allSections')->name('all-sections');
@@ -504,7 +506,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
     Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
-    
+
 
     Route::get('active-positions', function () {
         return view('backend.control_center.active_positions');
@@ -545,10 +547,6 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
-
-    Route::get('changelog', function () {
-        return view('backend.changelog.index');
-    })->name('changelog');
 
     Route::get('settings/report-issues', function () {
         return view('backend.system.report_issues');

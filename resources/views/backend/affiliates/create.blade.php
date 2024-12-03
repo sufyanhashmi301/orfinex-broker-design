@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Add Affiliate Rule') }}
+    {{ __('Affiliates Management') }}
 @endsection
 @section('content')
     <form action="{{ route('admin.affiliate-rules.store') }}" method="post" enctype="multipart/form-data">
@@ -18,7 +18,7 @@
                             <label class="form-label">
                                 {{ __('Name') }}
                             </label>
-                            <input type="text" name="name" class="form-control" placeholder="">
+                            <input type="text" name="name" value="{{ $affiliate_rule->name ?? '' }}" class="form-control" placeholder="">
                         </div>
 
                         <div class="input-area relative">
@@ -26,8 +26,8 @@
                                 {{ __('Refer Count Mode') }}
                             </label>
                             <select name="count_mode" class="select2 form-control w-full">
-                                <option value="active_account" selected>By Active Accounts</option>
-                                <option value="customer">By Customers</option>
+                                <option value="active_account" {{ $affiliate_rule->count_mode == 'active_account' ? 'selected' : '' }}>By Active Accounts</option>
+                                <option value="customer" {{ $affiliate_rule->count_mode == 'customer' ? 'selected' : '' }}>By Customers</option>
                             </select>
                         </div>
 
@@ -35,7 +35,7 @@
                             <label class="form-label">
                                 Balance Retention Period (days)
                             </label>
-                            <input type="number" value="0" name="balance_retention_period" class="form-control"
+                            <input type="number" value="{{ $affiliate_rule->balance_retention_period ?? '' }}" name="balance_retention_period" class="form-control"
                                 placeholder="">
                         </div>
 
@@ -44,8 +44,8 @@
                                 Has multiple levels
                             </label>
                             <select name="has_levels" class="select2 form-control w-full has-multiple-levels">
-                                <option value="1" selected>Yes</option>
-                                <option value="0">No</option>
+                                <option value="1" {{ $affiliate_rule->has_levels == '1' ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ $affiliate_rule->has_levels == '0' ? 'selected' : '' }}>No</option>
                             </select>
                         </div>
 
@@ -54,9 +54,12 @@
                                 Apply on Account Types
                             </label>
                             <select name="for_account_type_ids[]" class="select2 form-control w-full" multiple>
-                                <option value="all" selected>All</option>
+                                <option value="all" {{ in_array('all', json_decode($affiliate_rule->for_account_type_ids, true)) ? 'selected' : '' }}>All</option>
                                 @foreach ($account_types as $account_type)
-                                    <option value="{{ $account_type->id }}">{{ $account_type->title }}</option>
+                                    <option value="{{ $account_type->id }}" 
+                                        {{ in_array($account_type->id, json_decode($affiliate_rule->for_account_type_ids, true)) ? 'selected' : '' }}>
+                                        {{ $account_type->title }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -66,8 +69,8 @@
                                 Is Active
                             </label>
                             <select name="is_active" class="select2 form-control w-full">
-                                <option value="1" selected>Yes</option>
-                                <option value="0">No</option>
+                                <option value="1" {{ $affiliate_rule->is_active == '1' ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ $affiliate_rule->is_active == '0' ? 'selected' : '' }}>No</option>
                             </select>
                         </div>
 
@@ -75,7 +78,7 @@
                             <label for="" class="form-label">
                                 Description
                             </label>
-                            <textarea name="description" rows="1" class="form-control"></textarea>
+                            <textarea name="description" rows="1" class="form-control">{{ $affiliate_rule->description }}</textarea>
                         </div>
 
 
@@ -99,17 +102,32 @@
                                     <th scope="col" class="table-th" style="text-align: center"><b>Count End</b></th>
                                     <th scope="col" class="table-th" style="text-align: center"><b>Commission %</b></th>
                                     <th scope="col" class="table-th" style="text-align: center"><b>Delete</b></th>
-
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700 " id="affiliate-rule-config-container">
 
-                                <tr class="affiliate-rule-config">
-                                    <td class="table-td"><input type="text" value="1" readonly name="affiliate_configs[0][count_start]" data-index="0" class="form-control" ></td>
-                                    <td class="table-td"><input type="text" value="9999" readonly name="affiliate_configs[0][count_end]" data-index="0" class="form-control"></td>
-                                    <td class="table-td"><input type="text" name="affiliate_configs[0][commission_percentage]" data-index="0" class="form-control"></td>
-                                    
-                                </tr>
+                                @if (isset($affiliate_rule))
+                                    @foreach ($affiliate_rule->affiliateRuleConfiguration()->orderBy('id', 'ASC')->get() as $index => $config)
+                                        <tr class="affiliate-rule-config">
+                                            <td class="table-td"><input type="text" value="{{ $config->count_start }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_start]" data-index="{{ $index }}" class="form-control" ></td>
+                                            <td class="table-td"><input type="text" value="{{ $config->count_end }}" {{ $loop->last ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_end]" data-index="{{ $index }}" class="form-control"></td>
+                                            <td class="table-td"><input type="text" value="{{ $config->commission_percentage }}" name="affiliate_configs[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
+
+                                            @if ($loop->last && count($affiliate_rule->affiliateRuleConfiguration) != 1)
+                                                <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+
+                                @else
+                                    <tr class="affiliate-rule-config">
+                                        <td class="table-td"><input type="text" value="1" readonly name="affiliate_configs[0][count_start]" data-index="0" class="form-control" ></td>
+                                        <td class="table-td"><input type="text" value="9999" readonly name="affiliate_configs[0][count_end]" data-index="0" class="form-control"></td>
+                                        <td class="table-td"><input type="text" name="affiliate_configs[0][commission_percentage]" data-index="0" class="form-control"></td>
+                                        
+                                    </tr>
+                                @endif
+                                
                                 
                             </tbody>
 
@@ -138,11 +156,28 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700 " id="levels-management-container">
 
-                                <tr class="affiliate-level">
-                                    <td class="table-td"><input type="text" value="1" readonly name="affiliate_levels[0][level]" data-index="0" class="form-control" ></td>
-                                    <td class="table-td"><input type="text" value="100" readonly ="" name="affiliate_levels[0][commission_percentage]" data-index="0" class="form-control"></td>
 
-                                </tr>
+                                @if (isset($affiliate_rule))
+                                    @foreach ($affiliate_rule->affiliateRuleLevel()->orderBy('id', 'ASC')->get() as $index => $level)
+                                        <tr class="affiliate-level">
+                                            <td class="table-td"><input type="text" value="{{ $level->level }}" readonly name="affiliate_levels[{{ $index }}][level]" data-index="{{ $index }}" class="form-control" ></td>
+                                            <td class="table-td"><input type="text" value="{{ $level->commission_percentage }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_levels[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
+
+                                            @if ($loop->last && count($affiliate_rule->affiliateRuleLevel) != 1)
+                                                <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>
+                                            @endif
+                                        </tr>
+
+                                    @endforeach
+
+                                @else
+                                    <tr class="affiliate-level">
+                                        <td class="table-td"><input type="text" value="1" readonly name="affiliate_levels[0][level]" data-index="0" class="form-control" ></td>
+                                        <td class="table-td"><input type="text" value="100" readonly ="" name="affiliate_levels[0][commission_percentage]" data-index="0" class="form-control"></td>
+                                    </tr>
+                                @endif
+
+                               
                                 
                             </tbody>
 
@@ -155,7 +190,7 @@
         </div>
         <div class="mt-10">
             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                {{ __('Add Affiliate Rule') }}
+                {{ __('Update Affiliate Rule') }}
             </button>
         </div>
     </form>
@@ -176,9 +211,10 @@
 
       // new row modifications
       new_row.find('.table-td input').eq(0).val('')
+      new_row.find('.table-td input').eq(2).val('')
       new_row.find('.table-td input').eq(0).prop('readonly', false)
       new_row.find('.delete-td').remove()
-      new_row.append('<td class="table-td delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>')
+      new_row.append('<td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>')
 
       // changing name attrs of new row
       new_row.find('.table-td input').eq(0).attr('name', 'affiliate_configs[' + next_index + '][count_start]')
@@ -186,8 +222,25 @@
       new_row.find('.table-td input').eq(2).attr('name', 'affiliate_configs[' + next_index + '][commission_percentage]')
       new_row.find('.table-td input').attr('data-index', next_index )
 
+      // last row modificaitons
+      $('.affiliate-rule-config:last').find('.delete-td').remove()
+
       // append
       $('#affiliate-rule-config-container').append(new_row)
+    })
+
+    $(document).on('click', '.delete-config', function(){
+        $(this).parents('.affiliate-rule-config').remove()
+        
+        let last_row = $('#affiliate-rule-config-container .affiliate-rule-config:last')
+        last_row.find('.table-td input').eq(1).val('9999')
+        last_row.find('.table-td input').eq(1).prop('readonly', true)
+
+        if($('.affiliate-rule-config').length > 1){
+            last_row.append(
+                '<td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>'
+            )
+        }
     })
 
     $('.add-level').on('click', function() {
@@ -210,7 +263,7 @@
         new_row.find('.table-td input').eq(1).prop('readonly', false)
         new_row.find('.table-td input').eq(1).val('')
         new_row.find('.delete-td').remove()
-        new_row.append('<td class="table-td delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>')
+        new_row.append('<td class="table-td delete-level delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>')
 
         // changing name attrs of new row
         new_row.find('.table-td input').eq(0).attr('name', 'affiliate_levels[' + next_index + '][level]')
@@ -222,6 +275,18 @@
 
         // append
         $('#levels-management-container').append(new_row)
+    })
+
+    $(document).on('click', '.delete-level', function(){
+        $(this).parents('.affiliate-level').remove()
+        
+        let last_row = $('#levels-management-container .affiliate-level:last')
+
+        if($('.affiliate-level').length > 1){
+            last_row.append(
+                '<td class="table-td delete-level delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>'
+            )
+        }
     })
 
     $('.has-multiple-levels').on('change', function(){

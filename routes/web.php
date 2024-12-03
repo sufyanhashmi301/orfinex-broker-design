@@ -30,6 +30,7 @@ use App\Http\Controllers\Frontend\ForexSchemaController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
+use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\ContractController;
@@ -86,10 +87,9 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
     });
     Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
-    Route::post('advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('kyc.status');
 
     // ======== Optimizations ========
-    
+
     // Investments
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
     Route::get('all-investments/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
@@ -385,9 +385,7 @@ Route::get('user/utilities', function () {
     return view('frontend::utilities.index');
 })->name('user.utilities');
 
-Route::get('user/leaderboard', function () {
-    return view('frontend::leaderboard.index');
-})->name('user.leaderboard');
+Route::get('user/leaderboard', [LeaderboardController::class, 'userIndex'])->name('user.leaderboard');
 
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
@@ -409,3 +407,5 @@ Route::get('/test-dompdf', function () {
         return $e->getMessage();
     }
 });
+Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+

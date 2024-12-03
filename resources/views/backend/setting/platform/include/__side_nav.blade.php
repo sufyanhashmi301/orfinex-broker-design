@@ -6,7 +6,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.platform_api.db-synchronization') }}" class="navItem {{ isActive(['admin.platform_api.db-synchronization', 'admin.platform_api.x9trader']) }}">
+            <a href="{{ route('admin.platform_api.db-synchronization') }}" class="navItem {{ in_array(Route::currentRouteName(), ['admin.platform_api.db-synchronization', 'admin.platform_api.dbX9trader']) ? 'active' : '' }}">
                 {{ __('DB Synchronization') }}
             </a>
         </li>

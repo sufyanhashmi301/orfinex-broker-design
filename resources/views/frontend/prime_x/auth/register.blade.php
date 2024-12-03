@@ -86,8 +86,11 @@
 
             @if(getPageSetting('referral_code_show'))
                 <div class="formGroup">
-                    <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
-                    <div class="relative">
+                    <div class="flex items-center justify-between">
+                        <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
+                        <a href="javascript:;" class="btn-link referralToggle">{{ __('Show') }}</a>
+                    </div>
+                    <div class="relative hidden" id="referral-input">
                         <input class="form-control py-2 h-[48px]" type="text" placeholder="Enter Your Referral Code" name="referral" {{ request('referral') !== null ? 'readonly' : '' }} value="{{ request('referral') ?? old('referral') }}"/>
                     </div>
                 </div>
@@ -97,13 +100,19 @@
                     <label class="block capitalize form-label">{{ __('Password*') }}</label
                     >
                     <div class="relative">
-                        <input class="form-control py-2 h-[48px]" type="password" name="password" placeholder="Enter your password" required/>
+                        <input class="form-control py-2 h-[48px]" type="password" name="password" id="password" placeholder="Enter your password" required/>
+                        <button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password dark:text-slate-200" toggle="#password">
+                            <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
+                        </button>
                     </div>
                 </div>
                 <div class="formGroup">
                     <label class="block capitalize form-label" for="password">{{ __('Confirm Password*') }}</label>
                     <div class="relative">
-                        <input class="form-control py-2 h-[48px]" type="password" name="password_confirmation" placeholder="Enter your password" required/>
+                        <input class="form-control py-2 h-[48px]" type="password" name="password_confirmation" id="confirm-pass" placeholder="Enter your password" required/>
+                        <button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center toggle-password dark:text-slate-200" toggle="#confirm-pass">
+                            <iconify-icon icon="heroicons:eye-slash"></iconify-icon>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -153,10 +162,16 @@
             $('#dial-code').html(country.split(":")[1])
         });
 
-        const input = document.querySelector("#phone");
-        window.intlTelInput(input, {
-            showSelectedDialCode: true,
-            utilsScript: "{{ asset('frontend/js/utils.js') }}",
+        $(document).ready(function() {
+            $('.referralToggle').on('click', function (){
+                $('#referral-input').toggleClass('hidden');
+
+                if ($('#referral-input').hasClass('hidden')) {
+                    $(this).text('Show');
+                } else {
+                    $(this).text('Hide');
+                }
+            })
         });
 
     </script>

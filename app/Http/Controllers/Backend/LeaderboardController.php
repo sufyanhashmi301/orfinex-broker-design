@@ -23,4 +23,19 @@ class LeaderboardController extends Controller
 
         return view('backend.leaderboard.index', compact('badges', 'rankings_categories', 'rankings'));
     }
+
+    public function userIndex(Request $request) {
+
+        $badges = LeaderboardBadge::all();
+        $rankings_categories = LeaderboardRankingsCategory::all();
+
+        if(!isset($request->category)) {
+            $rankings = LeaderboardRanking::all();
+        }else{
+            $rankings = LeaderboardRanking::where('leaderboard_rankings_category_id', $request->category)->get();
+        }
+      
+
+        return view('frontend::leaderboard.index', compact('badges', 'rankings_categories', 'rankings'));
+    }
 }

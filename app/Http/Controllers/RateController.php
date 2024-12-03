@@ -18,6 +18,7 @@ class RateController extends Controller
     }
 
     public function get_rate($code){
+//        dd($code);
         $rate = Rate::where('currency_code', $code)->with('country')->first();
 
         if ($rate) {

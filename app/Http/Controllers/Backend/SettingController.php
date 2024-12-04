@@ -30,7 +30,7 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('permission:site-setting|email-setting', ['only' => ['update']]);
-        $this->middleware('permission:site-setting', ['only' => ['siteSetting']]);
+        $this->middleware('permission:site-setting|site-settings', ['only' => ['siteSetting']]);
         $this->middleware('permission:maintainance-settings', ['only' => ['siteMaintenance']]);
         $this->middleware('permission:email-setting', ['only' => ['mailSetting']]);
         $this->middleware('permission:company-setting', ['only' => ['companySetting']]);
@@ -41,6 +41,13 @@ class SettingController extends Controller
         $this->middleware('permission:mt5-webterminal-display', ['only' => ['mt5WebterminalSetting']]);
         $this->middleware('permission:x9-webterminal-display', ['only' => ['x9WebterminalSetting']]);
         $this->middleware('permission:copy-trading-setting', ['only' => ['copyTradingSetting']]);
+        $this->middleware('permission:data-encryption-settings', ['only' => ['endToEndEncryption']]);
+        $this->middleware('permission:clear-cache-settings', ['only' => ['clearCache']]);
+        $this->middleware('permission:dev-mode-settings', ['only' => ['devMode']]);
+        $this->middleware('permission:gdpr-compliance-settings', ['only' => ['grpdCompliance']]);
+        $this->middleware('permission:api-access-setting', ['only' => ['apiAccess']]);
+        $this->middleware('permission:web-hooks-setting', ['only' => ['webHook']]);
+        $this->middleware('permission:currency-setting', ['only' => ['currencySetting']]);
 
 
 
@@ -273,6 +280,10 @@ class SettingController extends Controller
 
     public function  x9WebterminalSetting(){
         return view('backend.setting.platform_api.x9-webterminal');
+    }
+
+    public function  grpdCompliance(){
+        return view('backend.setting.site_setting.gdpr_compliance');
     }
 
     public function testDatabaseConnection(Request $request)

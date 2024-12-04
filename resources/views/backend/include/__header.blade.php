@@ -102,10 +102,10 @@
                                         </li>
                                     @endcan
 
-                                    @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-                                            'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
+                                    @canany(['deposit-list','deposit-action',
+                                            'withdraw-list','withdraw-action','target-manage','referral-create',
                                             'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-                                        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+                                        @canany(['deposit-list','deposit-action'])
                                             <li class="pb-2">
                                                 <a href="{{ route('admin.deposit.method.list','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">

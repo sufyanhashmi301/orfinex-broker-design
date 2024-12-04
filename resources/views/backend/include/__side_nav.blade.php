@@ -71,10 +71,10 @@
         @endcanany
 
         {{-- *************************************************************  Essentials *********************************************************--}}
-        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-        'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
+        @canany(['deposit-list','deposit-action',
+        'withdraw-list','withdraw-action','target-manage','referral-create',
         'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-            @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+            @canany(['deposit-list','deposit-action'])
                 <li class="{{ isActive(['admin.deposit*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -105,7 +105,7 @@
                 </li>
             @endcanany
 
-            @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
+            @canany(['withdraw-list','withdraw-action'])
                 <li class="{{ isActive(['admin.withdraw*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">

@@ -14,16 +14,20 @@
             </a>
         </li>
         @endcan
+        @canany(['mt5-group-list', 'manual-group-list'])
         <li>
             <a href="{{ route('admin.platformGroups') }}" class="navItem {{ isActive('admin.platformGroups') }}">
                 {{ __('Platform Groups') }}
             </a>
         </li>
+        @endcanany
+        @can('risk-book-list')
         <li>
             <a href="{{ route('admin.platform.riskBook') }}" class="navItem {{ isActive('admin.platform.riskBook') }}">
                 {{ __('Risk Book') }}
             </a>
         </li>
+        @endcan
         @can('copy-trading-setting')
         <li>
             <a href="{{ route('admin.settings.copyTrading') }}" class="navItem {{ isActive('admin.settings.copyTrading') }}">

@@ -79,18 +79,14 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
 
-            ['category' => 'Deposit Management', 'name' => 'automatic-gateway-manage'],
-            ['category' => 'Deposit Management', 'name' => 'manual-gateway-manage'],
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
             ['category' => 'Deposit Management', 'name' => 'deposit-export'],
             ['category' => 'Deposit Management', 'name' => 'deposit-action'],
 
             ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
-            ['category' => 'Withdraw Management', 'name' => 'withdraw-method-manage'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
-            ['category' => 'Withdraw Management', 'name' => 'withdraw-schedule'],
-
+        
             ['category' => 'Referral Management', 'name' => 'target-manage'],
             ['category' => 'Referral Management', 'name' => 'referral-create'],
             ['category' => 'Referral Management', 'name' => 'referral-list'],
@@ -182,6 +178,19 @@ class PermissionSeeder extends Seeder
             ['category' => 'User Rankings Setting', 'name' => 'ranking-create'],
             ['category' => 'User Rankings Setting', 'name' => 'ranking-edit'],
 
+            ['category' => 'Deposit Methods Setting', 'name' => 'automatic-gateway-manage'],
+            ['category' => 'Deposit Methods Setting', 'name' => 'manual-gateway-manage'],
+            ['category' => 'Deposit Methods Setting', 'name' => 'deposit-method-create'],
+            ['category' => 'Deposit Methods Setting', 'name' => 'deposit-method-action'],
+
+            ['category' => 'Withdraw Methods Setting', 'name' => 'automatic-withdraw-method'],
+            ['category' => 'Withdraw Methods Setting', 'name' => 'manual-withdraw-method'],
+            ['category' => 'Withdraw Methods Setting', 'name' => 'withdraw-schedule'],
+            ['category' => 'Withdraw Methods Setting', 'name' => 'withdraw-method-create'],
+            ['category' => 'Withdraw Methods Setting', 'name' => 'withdraw-method-action'],
+
+            ['category' => 'Currency Setting', 'name' => 'currency-setting'],
+
             ['category' => 'Bonus Setting', 'name' => 'bonus-list'],
             ['category' => 'Bonus Setting', 'name' => 'bonus-create'],
             ['category' => 'Bonus Setting', 'name' => 'bonus-edit'],
@@ -241,13 +250,43 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'DB Synchronization Setting', 'name' => 'db-synchronization-setting'],
 
+            ['category' => 'Copy Trading Setting', 'name' => 'copy-trading-setting'],
+            ['category' => 'Copy Trading Setting', 'name' => 'brokeree-edit'],
+
+            ['category' => 'Platform Groups Setting', 'name' => 'mt5-group-list'],
+            ['category' => 'Platform Groups Setting', 'name' => 'manual-group-list'],
+            ['category' => 'Platform Groups Setting', 'name' => 'manual-group-create'],
+            ['category' => 'Platform Groups Setting', 'name' => 'manual-group-edit'],
+            ['category' => 'Platform Groups Setting', 'name' => 'manual-group-delete'],
+
+            ['category' => 'Risk Book Setting', 'name' => 'risk-book-list'],
+            ['category' => 'Risk Book Setting', 'name' => 'risk-book-action'],
+
             ['category' => 'Web Terminal Setting', 'name' => 'mt5-webterminal-display'],
             ['category' => 'Web Terminal Setting', 'name' => 'mt5-webterminal-edit'],
             ['category' => 'Web Terminal Setting', 'name' => 'x9-webterminal-display'],
             ['category' => 'Web Terminal Setting', 'name' => 'x9-webterminal-edit'],
+                    
+            ['category' => 'Data Management Setting', 'name' => 'import-settings'],
+            ['category' => 'Data Management Setting', 'name' => 'export-settings'],
+            ['category' => 'Data Management Setting', 'name' => 'data-encryption-settings'],
 
-            ['category' => 'Copy Trading Setting', 'name' => 'copy-trading-setting'],
-            ['category' => 'Copy Trading Setting', 'name' => 'brokeree-edit'],
+            ['category' => 'Payment Gateways Setting', 'name' => 'payment-gateways-list'],
+            ['category' => 'Payment Gateways Setting', 'name' => 'payment-gateways-action'],
+
+            ['category' => 'Plugins Setting', 'name' => 'plugins-list'],
+            ['category' => 'Plugins Setting', 'name' => 'plugins-action'],
+
+            ['category' => 'SMS Setting', 'name' => 'sms-list'],
+            ['category' => 'SMS Setting', 'name' => 'sms-action'],
+
+            ['category' => 'Notification Setting', 'name' => 'notification-list'],
+            ['category' => 'Notification Setting', 'name' => 'notification-action'],
+
+            ['category' => 'Integrations Setting', 'name' => 'api-access-setting'],
+            ['category' => 'Integrations Setting', 'name' => 'web-hooks-setting'],
+
+
         ];
 
         foreach ($permissions as $permission) {

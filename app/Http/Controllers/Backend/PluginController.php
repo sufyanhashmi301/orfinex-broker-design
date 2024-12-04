@@ -15,7 +15,7 @@ class PluginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:plugin-setting');
+        $this->middleware('permission:plugins-list|sms-list|notification-list', ['only' => ['plugin']]);
     }
 
     public function plugin($type)

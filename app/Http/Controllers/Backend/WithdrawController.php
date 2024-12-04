@@ -47,7 +47,8 @@ class WithdrawController extends Controller
 
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:withdraw-method-manage', ['only' => ['methods', 'methodCreate', 'methodStore', 'methodEdit', 'methodUpdate']]);
+        $this->middleware('permission:automatic-withdraw-method|manual-withdraw-method', ['only' => ['methods', 'methodCreate', 'methodStore', 'methodEdit', 'methodUpdate']]);
+        $this->middleware('permission:withdraw-method-create', ['only' => ['methodCreate', 'methodStore']]);
         $this->middleware('permission:withdraw-list|withdraw-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:withdraw-action', ['only' => ['withdrawAction', 'actionNow']]);
         $this->middleware('permission:withdraw-schedule', ['only' => ['schedule', 'scheduleUpdate']]);

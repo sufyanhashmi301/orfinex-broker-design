@@ -361,9 +361,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
     });
 
-    Route::get('grpd-compliance', function () {
-        return view('backend.setting.site_setting.gdpr_compliance');
-    })->name('grpdCompliance');
+    Route::get('grpd-compliance', [SettingController::class, 'grpdCompliance'])->name('grpdCompliance');
 
     //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
@@ -552,9 +550,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
 
-    Route::get('changelog', function () {
-        return view('backend.system.changelog');
-    })->name('changelog');
+    Route::get('changelog', [AppController::class, 'changeLog'])->name('changelog');
 
     Route::get('deposit/misc-setting', function () {
         return view('backend.setting.payment.deposit.misc');
@@ -564,9 +560,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.setting.payment.withdraw.misc');
     })->name('withdraw.miscSetting');
 
-    Route::get('settings/report-issues', function () {
-        return view('backend.system.report_issues');
-    })->name('reportIssues');
+    Route::get('settings/report-issues', [AppController::class, 'reportIssue'])->name('reportIssues');
 
     Route::get('settings/route', function () {
         return view('backend.setting.customization.routes');

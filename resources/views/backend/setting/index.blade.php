@@ -115,32 +115,34 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-                        'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
-                        'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-                        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+                        @canany(['automatic-gateway-manage','manual-gateway-manage'])
                             <li>
                                 <a href="{{ route('admin.deposit.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Deposit Methods') }}
                                 </a>
                             </li>
+                            @endcanany
+                            @canany(['automatic-withdraw-method','manual-withdraw-method', 'withdraw-schedule'])
                             <li>
                                 <a href="{{ route('admin.withdraw.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Withdraw Methods') }}
                                 </a>
                             </li>
                         @endcanany
-                    @endcanany
+                        @can('currency-setting')
                     <li>
                         <a href="{{ route('admin.settings.currency') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Currency') }}
                         </a>
                     </li>
+                    @endcan
+                    @canany(['internal-transfer-display','external-transfer-display'])
                     <li>
                         <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Transfers')}}
                         </a>
                     </li>
+                    @endcanany
                     @can('bonus-list')
                     <li>
                         <a href="{{ route('admin.bonus.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -307,6 +309,7 @@
                         </a>
                     </li>
                     @endcan
+                    @canany(['mt5-group-list', 'manual-group-list'])
                     <li>
                         <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform Groups') }}
@@ -315,11 +318,14 @@
                             </span>
                         </a>
                     </li>
+                    @endcanany
+                    @can('risk-book-list')
                     <li>
                         <a href="{{ route('admin.platform.riskBook') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Risk Book') }}
                         </a>
                     </li>
+                    @endcan
                     @canany(['mt5-webterminal-display', 'x9-webterminal-display'])
                     <li>
                         <a href="{{ route('admin.settings.webterminal.mt5') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -372,6 +378,7 @@
                 </ul>
             </div>
         </div>
+        @canany(['import-settings', 'export-settings', 'data-encryption-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -383,6 +390,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('import-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Import')}}
@@ -391,6 +399,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('export-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Export')}}
@@ -399,6 +409,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('data-encryption-settings')
                     <li>
                         <a href="{{ route('admin.settings.endToEndEncryption') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Data Encryption') }}
@@ -407,9 +419,12 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['clear-cache-settings', 'application-details-settings', 'dev-mode-settings', 'changelog-settings', 'report-issue-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -478,6 +493,8 @@
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['payment-gateways-list', 'plugins-list', 'sms-list', 'notification-list', 'api-access-setting', 'web-hooks-setting'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -489,7 +506,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    @can('automatic-gateway-manage')
+                    @can('payment-gateways-list')
                         <li>
                             <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Payment Gateways') }}
@@ -499,6 +516,7 @@
                             </a>
                         </li>
                     @endcan
+                    @can('plugins-list')
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Plugins') }}
@@ -507,6 +525,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('sms-list')
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','sms') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{__('SMS Settings') }}
@@ -515,6 +535,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('notification-list')
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','notification') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{__('Notification Settings') }}
@@ -523,6 +545,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('api-access-setting')
                     <li>
                         <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('API Access')}}
@@ -531,6 +555,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('web-hooks-setting')
                     <li>
                         <a href="{{ route('admin.settings.webHook') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Web Hooks')}}
@@ -539,9 +565,11 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
+        @endcanany
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">

@@ -22,6 +22,9 @@ class AppController extends Controller
     {
         $this->middleware('permission:subscriber-list|subscriber-mail-send', ['only' => ['subscribers']]);
         $this->middleware('permission:subscriber-mail-send', ['only' => ['mailSendSubscriber', 'mailSendSubscriberNow']]);
+        $this->middleware('permission:application-details-settings', ['only' => ['applicationInfo']]);
+        $this->middleware('permission:changelog-settings', ['only' => ['changeLog']]);
+        $this->middleware('permission:report-issue-settings', ['only' => ['reportIssue']]);
     }
 
     public function subscribers(Request $request)
@@ -159,6 +162,16 @@ class AppController extends Controller
         \Artisan::call('optimize:clear');
 
         return redirect()->back();
+    }
+
+    public function changeLog()
+    {
+        return view('backend.system.changelog');
+    }
+
+    public function reportIssue()
+    {
+        return view('backend.system.report_issues');
     }
 
 }

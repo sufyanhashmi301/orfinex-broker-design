@@ -23,9 +23,11 @@
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
                     <img class="inline-block h-10" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
+                    @canany(['plugins-action', 'notification-action', 'sms-action'])
                     <button type="button" class="action-btn cursor-pointer editPlugin dark:text-slate-300" data-id="{{$plugin->id}}">
                         <iconify-icon icon="lucide:settings-2"></iconify-icon>
                     </button>
+                    @endcanany
                 </div>
                 <div class="card-body p-4 pt-2">
                     <div class="flex items-center justify-between mb-3">

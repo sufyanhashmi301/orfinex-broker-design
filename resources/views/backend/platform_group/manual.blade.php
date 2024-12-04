@@ -39,6 +39,7 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
+                                                @can('manual-group-edit')
                                                 <button class="action-btn editGroupBtn"
                                                         data-id="{{$group->id}}" type="button"
                                                         data-bs-toggle="tooltip" title=""
@@ -46,9 +47,12 @@
                                                         data-bs-original-title="Edit Group">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </button>
+                                                @endcan
+                                                @can('manual-group-delete')
                                                 <button type="button" class="action-btn deleteGroupBtn" data-id="{{ $group->id }}">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </button>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>

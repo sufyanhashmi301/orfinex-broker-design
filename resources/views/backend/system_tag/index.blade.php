@@ -5,10 +5,12 @@
 @endsection
 
 @section('title-btns')
+@can('system-tag-create')
     <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#systemTagModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
+@endcan
 @endsection
 
 @section('customer-content')
@@ -40,12 +42,18 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @can('system-tag-edit')                
                                             <button type="button" class="action-btn edit-system-tag" data-id="{{ $systemTag->id }}">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </button>
+                                            @endcan
+
+                                            @can('system-tag-delete')
                                             <button type="button" data-id="{{ $systemTag->id }}" data-name="{{ $systemTag->name }}" class="action-btn deletesystemTag">
                                                 <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                             </button>
+                                            @endcan
+                            
                                         </div>
                                     </td>
                                 </tr>
@@ -72,14 +80,17 @@
     </div>
 
     <!-- Modal for Create System Tag -->
+    @can('system-tag-create')
     @include('backend.system_tag.modal.__create_tag')
-
+    @endcan
     <!-- Modal for Edit System Tag -->
+    @can('system-tag-edit')
     @include('backend.system_tag.modal.__edit_tag')
-
+    @endcan
     <!-- Modal for Delete System Tag -->
+    @can('system-tag-delete')
     @include('backend.system_tag.modal.__delete_tag')
-
+    @endcan
 @endsection
 
 @section('user-management-script')

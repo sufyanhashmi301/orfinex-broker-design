@@ -3,10 +3,12 @@
     {{ __('Risk Profile Tag') }}
 @endsection
 @section('title-btns')
-    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
+@can('risk-profile-create')
+  <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
+@endcan
 @endsection
 @section('customer-content')
 
@@ -38,12 +40,17 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @can('risk-profile-edit')
                                             <button type="button" class="action-btn" data-id="{{$riskProfileTag->id}}" id="edit">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </button>
+                                            @endcan
+
+                                            @can('risk-profile-delete')
                                             <button type="button" data-id="{{ $riskProfileTag->id }}" data-name="{{ $riskProfileTag->name }}" class="action-btn deleteRiskProfileTag">
                                                 <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                             </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -77,13 +84,19 @@
     </div>
 
     <!-- Modal for Create deleteRiskProfileTagType -->
+    @can('risk-profile-create')
     @include('backend.risk_profile_tag.modal.__create_tag')
+    @endcan
 
     <!-- Modal for Edit deleteRiskProfileTagType -->
+    @can('risk-profile-edit')
     @include('backend.risk_profile_tag.modal.__edit_tag')
+    @endcan
 
     <!-- Modal for Delete deleteRiskProfileTagType -->
+    @can('risk-profile-delete')
     @include('backend.risk_profile_tag.modal.__delete_tag')
+    @endcan
 
 @endsection
 @section('user-management-script')

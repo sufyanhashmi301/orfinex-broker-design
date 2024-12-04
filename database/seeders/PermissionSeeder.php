@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 class PermissionSeeder extends Seeder
 {
@@ -14,10 +15,21 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
+       // Disable foreign key checks
+       DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+       // Truncate the permissions table
+       DB::table('permissions')->truncate();
+
+       // Re-enable foreign key checks
+       DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $permissions = [
 
             ['category' => 'Customer Management', 'name' => 'customer-list'],
+            ['category' => 'Customer Management', 'name' => 'customer-create'],
+            ['category' => 'Customer Management', 'name' => 'customer-edit'],
+            ['category' => 'Customer Management', 'name' => 'customer-export'],
             ['category' => 'Customer Management', 'name' => 'customer-login'],
             ['category' => 'Customer Management', 'name' => 'customer-mail-send'],
             ['category' => 'Customer Management', 'name' => 'customer-basic-manage'],
@@ -27,6 +39,7 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],
             ['category' => 'Kyc Management', 'name' => 'kyc-action'],
+            ['category' => 'Kyc Management', 'name' => 'kyc-export'],
             ['category' => 'Kyc Management', 'name' => 'kyc-form-manage'],
 
             ['category' => 'Role Management', 'name' => 'role-list'],
@@ -39,24 +52,43 @@ class PermissionSeeder extends Seeder
             ['category' => 'Staff Management', 'name' => 'staff-edit'],
             ['category' => 'Staff Management', 'name' => 'staff-delete'],
 
-            ['category' => 'Plan Management', 'name' => 'schedule-manage'],
-            ['category' => 'Plan Management', 'name' => 'schema-list'],
-            ['category' => 'Plan Management', 'name' => 'schema-create'],
-            ['category' => 'Plan Management', 'name' => 'schema-edit'],
-            ['category' => 'Plan Management', 'name' => 'schema-delete'],
+            ['category' => 'Account Type Management', 'name' => 'schema-list'],
+            ['category' => 'Account Type Management', 'name' => 'schema-create'],
+            ['category' => 'Account Type Management', 'name' => 'schema-edit'],
+            ['category' => 'Account Type Management', 'name' => 'schema-delete'],
+
+            ['category' => 'Accounts Management', 'name' => 'accounts-list'],
+            ['category' => 'Accounts Management', 'name' => 'leverage-list'],
+            ['category' => 'Accounts Management', 'name' => 'accounts-action'],
+            ['category' => 'Accounts Management', 'name' => 'leverage-action'],
+            ['category' => 'Accounts Management', 'name' => 'accounts-export'],
 
             ['category' => 'Transaction Management', 'name' => 'transaction-list'],
-            ['category' => 'Transaction Management', 'name' => 'investment-list'],
-            ['category' => 'Transaction Management', 'name' => 'profit-list'],
+            ['category' => 'Transaction Management', 'name' => 'transaction-action'],
+            ['category' => 'Transaction Management', 'name' => 'transaction-export'],
+
+            ['category' => 'Partnership Levels Management', 'name' => 'levels-list'],
+
+            ['category' => 'Partnership Symbols', 'name' => 'symbols-list'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbol-group-create'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbol-group-edit'],
+            ['category' => 'Partnership Symbols', 'name' => 'symbol-group-delete'],
+
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-list'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-create'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
+            ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
 
             ['category' => 'Deposit Management', 'name' => 'automatic-gateway-manage'],
             ['category' => 'Deposit Management', 'name' => 'manual-gateway-manage'],
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
             ['category' => 'Deposit Management', 'name' => 'deposit-action'],
 
             ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-method-manage'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-schedule'],
 
             ['category' => 'Referral Management', 'name' => 'target-manage'],
@@ -64,6 +96,12 @@ class PermissionSeeder extends Seeder
             ['category' => 'Referral Management', 'name' => 'referral-list'],
             ['category' => 'Referral Management', 'name' => 'referral-edit'],
             ['category' => 'Referral Management', 'name' => 'referral-delete'],
+
+            ['category' => 'IB Management', 'name' => 'ib-list'],
+            ['category' => 'IB Management', 'name' => 'ib-action'],
+            ['category' => 'IB Management', 'name' => 'ib-export'],
+            ['category' => 'IB Management', 'name' => 'ib-form-manage'],
+            ['category' => 'IB Management', 'name' => 'advertisement-material-edit'],
 
             ['category' => 'Ranking Management', 'name' => 'ranking-list'],
             ['category' => 'Ranking Management', 'name' => 'ranking-create'],
@@ -87,6 +125,71 @@ class PermissionSeeder extends Seeder
             ['category' => 'Setting Management', 'name' => 'page-setting'],
             ['category' => 'Setting Management', 'name' => 'custom-css'],
             ['category' => 'Setting Management', 'name' => 'email-template'],
+
+            ['category' => 'Risk Profile Tags', 'name' => 'risk-profile-create'],
+            ['category' => 'Risk Profile Tags', 'name' => 'risk-profile-list'],
+            ['category' => 'Risk Profile Tags', 'name' => 'risk-profile-edit'],
+            ['category' => 'Risk Profile Tags', 'name' => 'risk-profile-delete'],
+
+            ['category' => 'System Tags', 'name' => 'system-tag-create'],
+            ['category' => 'System Tags', 'name' => 'system-tag-list'],
+            ['category' => 'System Tags', 'name' => 'system-tag-edit'],
+            ['category' => 'System Tags', 'name' => 'system-tag-delete'],
+
+            ['category' => 'IB Groups', 'name' => 'ib-group-create'],
+            ['category' => 'IB Groups', 'name' => 'ib-group-list'],
+            ['category' => 'IB Groups', 'name' => 'ib-group-edit'],
+            ['category' => 'IB Groups', 'name' => 'ib-group-delete'],
+
+            ['category' => 'Customer Groups', 'name' => 'customer-group-create'],
+            ['category' => 'Customer Groups', 'name' => 'customer-group-list'],
+            ['category' => 'Customer Groups', 'name' => 'customer-group-edit'],
+            ['category' => 'Customer Groups', 'name' => 'customer-group-delete'],
+
+            ['category' => 'Document Links Setting', 'name' => 'document-link-list'],
+            ['category' => 'Document Links Setting', 'name' => 'document-link-create'],
+            ['category' => 'Document Links Setting', 'name' => 'document-link-edit'],
+            ['category' => 'Document Links Setting', 'name' => 'document-link-delete'],
+
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-list'],
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-create'],
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-edit'],
+            ['category' => 'Platform Links Setting', 'name' => 'platform-link-delete'],
+
+            ['category' => 'Company Settings', 'name' => 'company-setting'],
+            ['category' => 'Company Settings', 'name' => 'company-edit'],
+            ['category' => 'Company Settings', 'name' => 'misc-setting'],
+            ['category' => 'Company Settings', 'name' => 'misc-edit'],
+            ['category' => 'Company Settings', 'name' => 'company-permissions-setting'],
+            ['category' => 'Company Settings', 'name' => 'company-permissions-edit'],
+
+            ['category' => 'Departments Setting', 'name' => 'departments-list'],
+            ['category' => 'Departments Setting', 'name' => 'department-create'],
+            ['category' => 'Departments Setting', 'name' => 'department-edit'],
+            ['category' => 'Departments Setting', 'name' => 'department-delete'],
+
+            ['category' => 'Designations Setting', 'name' => 'designations-list'],
+            ['category' => 'Designations Setting', 'name' => 'designation-create'],
+            ['category' => 'Designations Setting', 'name' => 'designation-edit'],
+            ['category' => 'Designations Setting', 'name' => 'designation-delete'],
+
+            ['category' => 'Bonus Setting', 'name' => 'bonus-list'],
+            ['category' => 'Bonus Setting', 'name' => 'bonus-create'],
+            ['category' => 'Bonus Setting', 'name' => 'bonus-edit'],
+            ['category' => 'Bonus Setting', 'name' => 'bonus-delete'],
+
+            ['category' => 'Website Setting', 'name' => 'theme-settings'],
+            ['category' => 'Website Setting', 'name' => 'branding-settings'],
+            ['category' => 'Website Setting', 'name' => 'site-settings'],
+            ['category' => 'Website Setting', 'name' => 'banner-settings'],
+            ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],
+            ['category' => 'Website Setting', 'name' => 'maintainance-settings'],
+
+            ['category' => 'System Setting', 'name' => 'clear-cache-settings'],
+            ['category' => 'System Setting', 'name' => 'application-details-settings'],
+            ['category' => 'System Setting', 'name' => 'dev-mode-settings'],
+            ['category' => 'System Setting', 'name' => 'changelog-settings'],
+            ['category' => 'System Setting', 'name' => 'report-issue-settings'],
 
         ];
 

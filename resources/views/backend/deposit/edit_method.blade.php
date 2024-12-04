@@ -356,6 +356,7 @@
         });
         $('#myForm').on('submit', function(event) {
             event.preventDefault(); // Prevent the default action
+            tinyMCE.triggerSave();
             var form = $(this);
             var submitButton = $('#submitForm');
             console.log(form.serialize());
@@ -365,6 +366,7 @@
 
             // Create FormData object to handle file input
             var formData = new FormData(this);
+
 
             $.ajax({
                 url: form.attr('action'),

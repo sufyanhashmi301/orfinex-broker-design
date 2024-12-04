@@ -19,6 +19,10 @@ class BonusController extends Controller
     protected $kyc_levels;
 
     public function __construct(BonusService $bonusService) {
+        $this->middleware('permission:bonus-list', ['only' => ['index']]);
+        $this->middleware('permission:bonus-create', ['only' => ['store']]);
+        $this->middleware('permission:bonus-edit', ['only' => ['update']]);
+        $this->middleware('permission:bonus-delete', ['only' => ['destroy']]);
         $this->bonusService = $bonusService;
         $this->kyc_levels = KycLevel::where('status', 1)->get();;
     }

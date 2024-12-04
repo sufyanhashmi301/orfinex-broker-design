@@ -186,7 +186,7 @@
         @endcanany
 
         {{-- *************************************************************  Plan Management *********************************************************--}}
-        @canany(['schedule-manage','schema-list','schema-create','schema-edit'])
+        @canany(['schema-list'])
             <li class="{{ isActive(['admin.schedule*','admin.accountType*','admin.ibAccountType*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
@@ -202,20 +202,19 @@
                     {{--                                        icon-name="alarm-check"></i><span>{{ __('Schedule') }}</span></a>--}}
                     {{--                            </li>--}}
                     {{--                        @endcanany--}}
-                    @can('schema-edit')
+
                         <li>
                             <a href="{{route('admin.accountType.index')}}" class="{{ isActive('admin.accountType*') }}">
                                 {{ __('Account Type') }}
                             </a>
                         </li>
-                    @endcan
-                    @can('schema-edit')
+
                         <li>
                             <a href="{{route('admin.ibAccountType.index')}}" class="{{ isActive('admin.ibAccountType*') }}">
                                 {{ __('IB Account Type') }}
                             </a>
                         </li>
-                    @endcan
+
 
                     {{--                        @can('schema-edit')--}}
 {{--                        <li class="side-nav-item {{ isActive('admin.profit.deduction*') }}">--}}
@@ -226,8 +225,8 @@
 
                 </ul>
             </li>
-
-            @can('investment-list')
+            @endcanany
+            @can('accounts-list')
                 <li class="">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
@@ -247,6 +246,7 @@
                                 {{ __('Demo Accounts') }}
                             </a>
                         </li>
+                        @can('leverage-list')
                         <li>
                             <a href="{{route('admin.all-leverage')}}" class="{{ isActive('admin.all-leverage') }}">
                                 {{ __('All Leverage') }}
@@ -257,11 +257,12 @@
                                 {{ __('Pending Leverage') }}
                             </a>
                         </li>
+                        @endcan
                     </ul>
 
                 </li>
             @endcan
-        @endcanany
+
 
         <li>
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
@@ -273,7 +274,7 @@
         </li>
 
         {{-- *************************************************************  Advertisement Management *********************************************************--}}
-        @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
+        {{-- @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit']) --}}
 
             @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
                 <li class="{{ isActive(['admin.referral*']) }}">
@@ -301,7 +302,7 @@
                     </ul>
                 </li>
             @endcanany
-
+            {{-- @endcanany --}}
             @canany(['ib-list','ib-action','ib-form-manage'])
                 <li class="{{ isActive(['admin.ib*']) }}">
                     <a href="javascript:void(0);" class="navItem">
@@ -351,10 +352,10 @@
                     </ul>
                 </li>
             @endcanany
-        @endcanany
+
 
         {{-- *************************************************************  Transactions *********************************************************--}}
-        @canany(['transaction-list','investment-list','profit-list'])
+
             @can('transaction-list')
                 <li class="">
                     <a href="{{route('admin.transactions')}}" class="navItem {{ isActive('admin.transactions') }}">
@@ -365,7 +366,7 @@
                     </a>
                 </li>
             @endcan
-        @endcanany
+
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])
@@ -400,8 +401,8 @@
                 </a>
             </li>
         @endcan --}}
-
-        <li class="">
+        @canany(['symbols-list', 'rebute-rules-list','levels-list'])
+            <li class="">
             <a href="javascript:void(0);" class="navItem">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="mdi:partnership"></iconify-icon>
@@ -410,11 +411,14 @@
                 <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
             <ul class="sidebar-submenu">
+                @can('levels-list')
                 <li>
                     <a href="{{ route('admin.manageLevel') }}" class="{{ isActive('admin.manageLevel') }}">
                         {{ __('Manage Levels') }}
                     </a>
                 </li>
+                @endcan
+                @can('symbols-list')
                 <li class="">
                     <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">
                         {{ __('Symbols') }}
@@ -425,11 +429,16 @@
                         {{ __('Symbol Groups') }}
                     </a>
                 </li>
+                @endcan
+                @can('rebate-rules-list')
                 <li class="">
                     <a href="{{ route('admin.rebate-rules.index') }}" class="{{ isActive('admin.rebate-rules*') }}">
                         {{ __('Rebate Rules') }}
                     </a>
                 </li>
+
+                @endcan
+
                 <li class="">
                     <a href="{{ route('admin.ib-group.index') }}" class="{{ isActive('admin.ib-group*') }}">
                         {{ __('IB Groups') }}
@@ -437,6 +446,7 @@
                 </li>
             </ul>
         </li>
+        @endcanany
     </ul>
 </div>
 <div class="stickySetting_menu sticky bottom-0 px-6 py-4">

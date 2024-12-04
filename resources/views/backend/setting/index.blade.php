@@ -31,21 +31,25 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['company-setting', 'misc-setting', 'company-permissions-setting', 'departments-list', 'designations-list'])
                     <li>
                         <a href="{{ route('admin.settings.company') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Company') }}
                         </a>
                     </li>
+                    @endcanany
                     <li>
                         <a href="{{ route('admin.country.all') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Country') }}
                         </a>
                     </li>
+                    @canany(['document-link-list','platform-link-list'])
                     <li>
                         <a href="{{ route('admin.links.document.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Doc & Links') }}
                         </a>
                     </li>
+                    @endcanany
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Social Logins') }}
@@ -133,6 +137,7 @@
                             {{ __('Transfers')}}
                         </a>
                     </li>
+                    @can('bonus-list')
                     <li>
                         <a href="{{ route('admin.bonus.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Bonuses')}}
@@ -141,6 +146,7 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
@@ -155,11 +161,15 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('theme-settings')
                     <li>
                         <a href="{{ route('admin.theme.site') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Theme') }}
                         </a>
                     </li>
+                    @endcan
+
+                    @can('branding-settings')
                     <li>
                         <a href="{{ route('admin.theme.global') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Branding')}}
@@ -168,16 +178,25 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+
+                    @can('site-settings')
                     <li>
                         <a href="{{ route('admin.settings.site') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Site Settings') }}
                         </a>
                     </li>
+                    @endcan
+
+                    @can('banner-settings')
                     <li>
                         <a href="{{ route('admin.banners') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Banner') }}
                         </a>
                     </li>
+                    @endcan
+
+                    @can('gdpr-compliance-settings')
                     <li>
                         <a href="{{ route('admin.grpdCompliance') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('GDPR Compliance') }}
@@ -186,11 +205,15 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+
+                    @can('maintainance-settings')
                     <li>
                         <a href="{{ route('admin.settings.site-maintenance') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Maintenance') }}
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
@@ -378,6 +401,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('clear-cache-settings')
                     <li class="">
                         <a href="{{ route('admin.settings.clearCache') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Clear Cache') }}
@@ -386,6 +410,9 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+
+                    @can('application-details-settings')
                     <li class="">
                         <a href="{{ route('admin.application-info') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Application Details') }}
@@ -394,6 +421,9 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+
+                    @can('dev-mode-settings')
                     <li class="">
                         <a href="{{ route('admin.settings.devMode') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Dev Mode') }}
@@ -402,14 +432,20 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+
+                    @can('changelog-settings')
                     <li class="">
-                        <a href="{{ route('admin.changelog') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Changelog') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
                     </li>
+                    @endcan
+
+                    @can('report-issue-settings')
                     <li class="">
                         <a href="{{ route('admin.reportIssues') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Report Issue') }}
@@ -418,6 +454,7 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>

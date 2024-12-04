@@ -43,8 +43,10 @@ class DepositController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
+        $this->middleware('permission:deposit-list|deposit-action|deposit-export', ['only' => ['pending', 'history','export']]);
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
+        $this->middleware('permission:deposit-export', ['only' => ['export']]);
+
     }
 
     //-------------------------------------------  Deposit method start ---------------------------------------------------------------
@@ -196,9 +198,9 @@ class DepositController extends Controller
             'country' => isset($input['country']) ? $input['country'] : ['All'],
             'status' => $input['status'],
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
-            'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
+            'payment_details' => isset($input['payment_details']) ? $input['payment_details'] : null,
         ];
-//dd($input,$data);
+//dd($input['payment_details'],$data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);

@@ -3,10 +3,12 @@
     {{ __('Customer Groups') }}
 @endsection
 @section('title-btns')
+@can('customer-group-create')
     <a href="{{route('admin.customer-groups.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New Group') }}
     </a>
+    @endcan
 @endsection
 @section('customer-content')
     @if($customerGroups->isNotEmpty())
@@ -40,12 +42,16 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
+                                                @can('customer-group-edit')
                                                 <a href="{{ route('admin.customer-groups.edit',$customerGroup->id) }}" class="action-btn">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </a>
+                                                @endcan
+                                                @can('customer-group-delete')
                                                 <button type="button" data-id="{{ $customerGroup->id }}" data-name="{{ $customerGroup->name }}" class="action-btn deleteCustomerGroup">
                                                     <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                                 </button>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
@@ -98,7 +104,9 @@
             </div>
         </div>
     @endif
+@can('customer-group-delete')
 @include('backend.customer_groups.include.__delete')
+@endcan
 @endsection
 @section('user-management-script')
     <script>

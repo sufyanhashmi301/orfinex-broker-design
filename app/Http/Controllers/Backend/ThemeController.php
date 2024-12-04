@@ -14,6 +14,11 @@ class ThemeController extends Controller
 {
 
 
+    public function __construct()
+    {
+        $this->middleware('permission:theme-settings', ['only' => ['siteTheme']]);
+        $this->middleware('permission:branding-settings', ['only' => ['globalSetting']]);
+    }
 
     public function siteTheme()
     {

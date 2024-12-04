@@ -33,7 +33,7 @@
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 @foreach($leverageUpdates as $update)
                                     <tr>
-                                        <td>{{ $update->forexAccount->login }}</td>
+                                        <td>{{ isset($update->forexAccount) ? $update->forexAccount->login : 'N/A' }}</td>
                                         <td>
                                             <a href="{{ route('admin.user.edit', $update->user->id) }}" class="flex">
                                                 <span class="w-8 h-8 rounded-full bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex items-center justify-center">
@@ -55,6 +55,7 @@
                                         <td>
                                             <div class="badge badge-warning capitalize">Pending</div>
                                         </td>
+                                        @can('leverage-action')
                                         <td>
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 <button type="button" data-id="{{ $update->id }}" data-action="approve" class="btn btn-sm btn-light inline-flex items-center leverageAction">
@@ -67,6 +68,7 @@
                                                 </button>
                                             </div>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

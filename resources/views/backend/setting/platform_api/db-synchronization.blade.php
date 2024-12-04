@@ -35,7 +35,7 @@
             </li>
         </ul>
     </div>
-    <div class="card form-card hidden" id="form-mysql">
+    <div class="card form-card @if(!setting('database_host','mt5_db_credentials')) hidden @endif" id="form-mysql">
         <div class="card-body p-6">
             <form action="{{ route('admin.settings.update') }}" method="post" id="db-credentials-form">
                 @csrf

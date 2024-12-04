@@ -1408,17 +1408,29 @@ return [
             [
                 'type' => 'radio', // Change type to 'radio'
                 'data' => 'string',
-                'name' => 'active_data_sync_way',
-                'label' => 'Trader Type',
+                'name' => 'leverage_approval',
+                'label' => 'Leverage Approval',
                 'rules' => 'required', // Include options
-                'value' => \App\Enums\TraderType::MT5, // Default value
+                'value' => 'auto', // Default value
                 'options' => [
-                    'mt5' => \App\Enums\TraderType::MT5,
-                    'x9' => \App\Enums\TraderType::X9,
-                    'c_trader' => \App\Enums\TraderType::CTRADER,
-                    'all' => \App\Enums\TraderType::All,
+                    'auto' => 'auto',
+                    'by_admin' => 'By admin',
                 ],
             ],
+//            [
+//                'type' => 'radio', // Change type to 'radio'
+//                'data' => 'string',
+//                'name' => 'active_data_sync_way',
+//                'label' => 'Trader Type',
+//                'rules' => 'required', // Include options
+//                'value' => \App\Enums\TraderType::MT5, // Default value
+//                'options' => [
+//                    'mt5' => \App\Enums\TraderType::MT5,
+//                    'x9' => \App\Enums\TraderType::X9,
+//                    'c_trader' => \App\Enums\TraderType::CTRADER,
+//                    'all' => \App\Enums\TraderType::All,
+//                ],
+//            ],
         ],
 
     ],

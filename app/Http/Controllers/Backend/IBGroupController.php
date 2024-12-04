@@ -22,6 +22,16 @@ class IBGroupController extends Controller
      *
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
+
+    public function __construct()
+     {
+         $this->middleware('permission:ib-group-list|ib-group-create|ib-group-edit', ['only' => ['index', 'store']]);
+         $this->middleware('permission:ib-group-create', ['only' => ['store']]);
+         $this->middleware('permission:ib-group-edit', ['only' => ['update']]);
+         $this->middleware('permission:ib-group-delete', ['only' => ['destroy']]);
+     }
+
+
     public function index()
     {
         $ibGroups = IbGroup::with( 'rebateRules')->paginate(10); // Load related rebate rules

@@ -41,7 +41,9 @@
                     @endif
                 @endforeach
             </div>
+            @can('company-permissions-edit')
             @include('backend.setting.site_setting.include.form.__close_action')
+            @endcan
         </div>
     </div>
 

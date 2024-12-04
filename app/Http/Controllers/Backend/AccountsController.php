@@ -340,7 +340,7 @@ class   AccountsController extends Controller
         // Prepare data for the API call
         $data = [
             'login' => $leverageUpdate->forexAccount->login,
-            'leverage' => $leverageUpdate->updated_leverage,
+            'leverageAmount' => $leverageUpdate->updated_leverage,
         ];
 
         try {
@@ -432,7 +432,7 @@ class   AccountsController extends Controller
             $forexAccount->leverage = $leverageUpdate->updated_leverage;
             $this->forexApiService->setUserLeverage([
                 'login' => $forexAccount->login,
-                'leverage' => $leverageUpdate->updated_leverage,
+                'leverageAmount' => $leverageUpdate->updated_leverage,
             ]);
             $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
             $message = 'Leverage Update Approved and Applied Successfully!';
@@ -442,7 +442,7 @@ class   AccountsController extends Controller
             $forexAccount->leverage = $leverageUpdate->last_leverage; // Restore last leverage
             $this->forexApiService->setUserLeverage([
                 'login' => $forexAccount->login,
-                'leverage' => $leverageUpdate->last_leverage,
+                'leverageAmount' => $leverageUpdate->last_leverage,
             ]);
             $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
             $message = 'Leverage Update Rejected and Restored Successfully!';

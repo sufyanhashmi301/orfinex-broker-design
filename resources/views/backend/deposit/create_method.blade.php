@@ -54,7 +54,7 @@
                             </div>
                             <div class="input-area relative">
                                 <label class="form-label"
-                                        for="">{{ __('Gateway Supported Currency:') }}</label>
+                                       for="">{{ __('Gateway Supported Currency:') }}</label>
                                 <select name="currency" class="form-control w-100" id="currency">
 
                                 </select>
@@ -239,15 +239,17 @@
             });
         }
 
-        // Manual
-        $('.select-manual-currency').on('change', function(){
-            get_rate($(this).val())
-        })
+       (function ($) {
+    $(document).ready(function () {
+        $('.select-manual-currency').on('change', function () {
+            get_rate($(this).val());
+        });
 
-        // Auto
-        $('#currency').on('change', function(){
-            get_rate($(this).val())
-        })
+        $('#currency').on('change', function () {
+            get_rate($(this).val());
+        });
+    });
+})(jQuery);
 
         (function ($) {
             var i = 0;

@@ -96,7 +96,7 @@ class ForexAccountController extends GatewayController
         $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);
         $accountType = $request->account_type;
-        $totalLimit = setting('forex_account_settings', 'forex_account_settings');
+        $totalLimit = setting('forex_account_create_limit', 'forex_account_settings');
         if($user->account_limit > $totalLimit){
             $totalLimit = $user->account_limit;
        }
@@ -128,18 +128,31 @@ class ForexAccountController extends GatewayController
         }
         //Start/End Range of create forex account on MT5
         if (setting('is_forex_group_range', 'global')) {
-            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
+            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBy('login', 'desc')->first();
+
+            // Check if an account exists
             if ($forexAccount) {
-                if ($forexAccount->login >= $schema->end_range) {
-                    $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
-                    notify()->error($message, __('Error'));
-                    return redirect()->back();
+                // Validate if the login is within the range
+                if ($forexAccount->login < $schema->start_range || $forexAccount->login >= $schema->end_range) {
+                    // Reset to start_range if the login is out of range
+                    $login = $schema->start_range;
+                } else {
+                    // Increment login if within range
+                    $login = ++$forexAccount->login;
                 }
-                $login = $forexAccount->login++;
             } else {
+                // Start from start_range if no accounts exist
                 $login = $schema->start_range;
             }
+
+            // Check if the generated login exceeds the range
+//            if ($login >= $schema->end_range) {
+//                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
+//                notify()->error($message, __('Error'));
+//                return redirect()->back();
+//            }
         }
+
         $server = $this->getServe($request,$schema);
         $group = $this->getGroup($user,$request, $schema);
         $password = $request->main_password;
@@ -456,7 +469,6 @@ class ForexAccountController extends GatewayController
         $dataArray['Login'] = $request->login;
 
         if ($request->leverage) {
-//            $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
             $forexAccount = ForexAccount::where('login',$request->login)->first();
             if($forexAccount->leverage == $request->leverage){
                 return response()->json(['error' => __('Kindly provide a different leverage! The leverage :leverage has already been assigned.',['leverage'=>$request->leverage]), 'reload' => false]);
@@ -466,25 +478,40 @@ class ForexAccountController extends GatewayController
                 return response()->json(['error' => __('Kindly provide valid forex account and try again!'), 'reload' => false]);
             }
                 $data = [
-                    'user_id' => auth()->user()->id,
-                    'forex_account_id' => $forexAccount->id,
                     'last_leverage' => $forexAccount->leverage,
                     'updated_leverage' => $request->leverage,
                 ];
-                LeverageUpdate::create($data);
-
-                ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
-                $shortcodes = [
-                    '[[full_name]]' => auth()->user()->full_name,
-                    '[[login]]' => $request->login,
-                    '[[leverage]]' =>  $request->leverage,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
+//            dd(setting('leverage_approval','features'));
+            if(setting('leverage_approval','features')  == 'by_admin') {
+                LeverageUpdate::updateOrCreate(['user_id' => auth()->user()->id,
+                    'forex_account_id' => $forexAccount->id], $data);
+                $mailType   = 'user_pending_leverage';
+                $this->leverageMailNotify($request,$mailType);
+                return response()->json(['success' => __('Leverage update request successfully submitted. An admin will review and process it shortly.'), 'reload' => true]);
+            }else{
+                // Prepare data for the API call
+                $data = [
+                    'login' => $forexAccount->login,
+                    'leverageAmount' => $request->leverage,
                 ];
-//
-                $this->mailNotify(auth()->user()->email, 'user_pending_leverage', $shortcodes);
-                return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
 
+                // Call the API to update leverage
+                $response = $this->forexApiService->setUserLeverage($data);
+
+                // Update leverage in ForexAccount model
+
+                $forexAccount->leverage = $request->leverage;
+                $forexAccount->save();
+
+                $mailType   = 'user_approved_leverage';
+                $this->leverageMailNotify($request,$mailType);
+
+                // Send email notification
+                return response()->json(['success' => __('Leverage Update Approved and Updated Successfully!.'), 'reload' => true]);
+
+                $message = 'Leverage Update Approved and Updated Successfully!';
+            }
+//                ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
         }
 
         if ($request->name) {
@@ -591,6 +618,18 @@ class ForexAccountController extends GatewayController
 
     }
 
+    public function leverageMailNotify($request,$mailType)
+    {
+         $shortcodes = [
+                        '[[full_name]]' => auth()->user()->full_name,
+                        '[[login]]' => $request->login,
+                        '[[leverage]]' =>  $request->leverage,
+                        '[[site_title]]' => setting('site_title', 'global'),
+                        '[[site_url]]' => route('home'),
+
+         ];
+         $this->mailNotify(auth()->user()->email, $mailType, $shortcodes);
+    }
     public function getAccount($login)
     {
 //        dd($login);

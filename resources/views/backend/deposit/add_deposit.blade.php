@@ -263,7 +263,6 @@
             var globalData;
             var currency = @json($currency)
 
-
             // When the user dropdown changes
             $('select[name="user_id"]').on('change', function() {
                 var userId = $(this).val();

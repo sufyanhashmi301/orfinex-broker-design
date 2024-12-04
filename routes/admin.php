@@ -361,6 +361,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
 
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
+    Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
     Route::get('grpd-compliance', function () {
         return view('backend.setting.site_setting.gdpr_compliance');
@@ -510,6 +511,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::resource('symbol-groups', SymbolGroupController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('symbols', SymbolController::class)->only(['index', 'create', 'edit', 'update', 'destroy']);
     Route::post('symbols/store', [SymbolController::class, 'store']);
+    Route::post('all-symbols/store', [SymbolController::class, 'storeAllSymbols']);
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 

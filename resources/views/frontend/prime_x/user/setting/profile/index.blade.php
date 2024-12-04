@@ -21,8 +21,17 @@
                             @endif
                         </div>
                         <div class="text-center">
-                            <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
+                            <div class="flex items-center justify-center text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
                                 {{$user->first_name .' '. $user->last_name}}
+                                @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
+                                    <span class="badge badge-success ml-1">
+                                        {{ __('Verified') }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-danger ml-1">
+                                        {{ __('Unverified') }}
+                                    </span>
+                                @endif
                             </div>
                             <div class="text-sm font-light text-slate-600 dark:text-slate-400">
                                 {{ucwords($user->city)}}@if($user->city != ''), @endif{{ $user->country }}

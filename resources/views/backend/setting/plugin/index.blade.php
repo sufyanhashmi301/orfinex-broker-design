@@ -23,7 +23,7 @@
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
                     <img class="inline-block h-10" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
-                    <button type="button" class="action-btn cursor-pointer editPlugin dark:text-slate-300" data-id="{{$plugin->id}}">
+                    <button type="button" class="action-btn cursor-pointer {{ json_decode($plugin->data) ? 'editPlugin' : 'lockedFeature' }} dark:text-slate-300" data-id="{{$plugin->id}}">
                         <iconify-icon icon="lucide:settings-2"></iconify-icon>
                     </button>
                 </div>
@@ -59,6 +59,26 @@
         </div>
     </div>
     <!-- Modal for Edit Plugin-->
+
+    <!-- Modal for Locked Feature -->
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="lockedFeatureModal" tabindex="-1" aria-labelledby="lockedFeatureModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="modal-body popup-body">
+                    <div class="popup-body-text p-8">
+                        <div class="locked-feature-content"></div>
+                        <div class="action-btns text-center mt-5">
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal for Locked Feature-->
 @endsection
 @section('integrations-script')
 
@@ -74,6 +94,20 @@
                 $('.edit-plugin-section').append($data)
                 $('#editPlugin').modal('show');
 
+            })
+        })
+
+        $('.lockedFeature').on('click', function (e) {
+            "user strict"
+            $('.locked-feature-content').empty();
+
+            $.ajax({
+                url: '{{ route("admin.feature.locked") }}',
+                method: 'GET',
+                success: function (data) {
+                    $('.locked-feature-content').append(data)
+                    $('#lockedFeatureModal').modal('show');
+                }
             })
         })
     </script>

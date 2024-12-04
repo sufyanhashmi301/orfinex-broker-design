@@ -97,7 +97,6 @@ class ResetData extends Command
         DB::table('withdraw_accounts')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-
         Artisan::call('db:seed');
 
         $rank = Ranking::find(1);

@@ -79,9 +79,14 @@
                         <div class="flex-none text-slate-600 dark:text-white text-base font-medium items-center lg:flex hidden overflow-hidden text-ellipsis whitespace-nowrap ltr:mr-[10px] rtl:ml-[10px]">
                             <div class="text-right">
                                 <span>{{auth()->user()->full_name}}</span><br>
-                                <span class="flex items-center justify-end text-slate-400 text-sm font-normal">
-                                    {{ $user->rank->ranking }}
-                                    <iconify-icon class="text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
+                                <span class="flex items-center justify-end text-slate-400 text-xs font-normal">
+                                    @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
+                                        {{ __('Verified') }}
+                                        <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                                    @else
+                                        {{ __('Unverified') }}
+                                        <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                                    @endif
                                 </span>
                             </div>
                         </div>

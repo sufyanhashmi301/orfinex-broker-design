@@ -491,10 +491,11 @@ class ForexAccountController extends GatewayController
                 // Prepare data for the API call
                 $data = [
                     'login' => $forexAccount->login,
-                    'leverage' => $request->leverage,
+                    'leverageAmount' => $request->leverage,
                 ];
+
                 // Call the API to update leverage
-                $this->forexApiService->setUserLeverage($data);
+                $response = $this->forexApiService->setUserLeverage($data);
 
                 // Update leverage in ForexAccount model
 

@@ -96,7 +96,7 @@ class ForexAccountController extends GatewayController
         $mainWalletBalance = user_balance();
         $schema = ForexSchema::find($input['schema_id']);
         $accountType = $request->account_type;
-        $totalLimit = setting('forex_account_settings', 'forex_account_settings');
+        $totalLimit = setting('forex_account_create_limit', 'forex_account_settings');
         if($user->account_limit > $totalLimit){
             $totalLimit = $user->account_limit;
        }
@@ -146,11 +146,11 @@ class ForexAccountController extends GatewayController
             }
 
             // Check if the generated login exceeds the range
-            if ($login >= $schema->end_range) {
-                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
-                notify()->error($message, __('Error'));
-                return redirect()->back();
-            }
+//            if ($login >= $schema->end_range) {
+//                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
+//                notify()->error($message, __('Error'));
+//                return redirect()->back();
+//            }
         }
 
         $server = $this->getServe($request,$schema);

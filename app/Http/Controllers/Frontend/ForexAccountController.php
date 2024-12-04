@@ -468,7 +468,6 @@ class ForexAccountController extends GatewayController
         $dataArray['Login'] = $request->login;
 
         if ($request->leverage) {
-//            $updateUserApiResponse = $this->updateLeverage($request->login, $request->leverage);
             $forexAccount = ForexAccount::where('login',$request->login)->first();
             if($forexAccount->leverage == $request->leverage){
                 return response()->json(['error' => __('Kindly provide a different leverage! The leverage :leverage has already been assigned.',['leverage'=>$request->leverage]), 'reload' => false]);
@@ -478,25 +477,39 @@ class ForexAccountController extends GatewayController
                 return response()->json(['error' => __('Kindly provide valid forex account and try again!'), 'reload' => false]);
             }
                 $data = [
-                    'user_id' => auth()->user()->id,
-                    'forex_account_id' => $forexAccount->id,
                     'last_leverage' => $forexAccount->leverage,
                     'updated_leverage' => $request->leverage,
                 ];
-                LeverageUpdate::create($data);
-
-                ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
-                $shortcodes = [
-                    '[[full_name]]' => auth()->user()->full_name,
-                    '[[login]]' => $request->login,
-                    '[[leverage]]' =>  $request->leverage,
-                    '[[site_title]]' => setting('site_title', 'global'),
-                    '[[site_url]]' => route('home'),
+//            dd(setting('leverage_approval','features'));
+            if(setting('leverage_approval','features')  == 'by_admin') {
+                LeverageUpdate::updateOrCreate(['user_id' => auth()->user()->id,
+                    'forex_account_id' => $forexAccount->id], $data);
+                $mailType   = 'user_pending_leverage';
+                $this->leverageMailNotify($request,$mailType);
+                return response()->json(['success' => __('Leverage update request successfully submitted. An admin will review and process it shortly.'), 'reload' => true]);
+            }else{
+                // Prepare data for the API call
+                $data = [
+                    'login' => $forexAccount->login,
+                    'leverage' => $request->leverage,
                 ];
-//
-                $this->mailNotify(auth()->user()->email, 'user_pending_leverage', $shortcodes);
-                return response()->json(['success' => __('Successfully updated Leverage.'), 'reload' => true]);
+                // Call the API to update leverage
+                $this->forexApiService->setUserLeverage($data);
 
+                // Update leverage in ForexAccount model
+
+                $forexAccount->leverage = $request->leverage;
+                $forexAccount->save();
+
+                $mailType   = 'user_approved_leverage';
+                $this->leverageMailNotify($request,$mailType);
+
+                // Send email notification
+                return response()->json(['success' => __('Leverage Update Approved and Updated Successfully!.'), 'reload' => true]);
+
+                $message = 'Leverage Update Approved and Updated Successfully!';
+            }
+//                ForexAccount::where('login', $request->login)->update(['leverage' => $request->leverage]);
         }
 
         if ($request->name) {
@@ -603,6 +616,18 @@ class ForexAccountController extends GatewayController
 
     }
 
+    public function leverageMailNotify($request,$mailType)
+    {
+         $shortcodes = [
+                        '[[full_name]]' => auth()->user()->full_name,
+                        '[[login]]' => $request->login,
+                        '[[leverage]]' =>  $request->leverage,
+                        '[[site_title]]' => setting('site_title', 'global'),
+                        '[[site_url]]' => route('home'),
+
+         ];
+         $this->mailNotify(auth()->user()->email, $mailType, $shortcodes);
+    }
     public function getAccount($login)
     {
 //        dd($login);

@@ -523,9 +523,14 @@ if (!function_exists('getCountries')) {
 
     function getCountries()
     {
-        $countries = \App\Models\Country::where('status',1)->get();
+        $countries = json_decode(file_get_contents(resource_path() . '/json/CountryCodes.json'), true);
 
-        return $countries;
+        $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
+
+        $filteredCountries = collect($countries)->reject(function ($country) use ($excludedCountries) {
+            return in_array($country["name"], $excludedCountries);
+        })->values();
+        return $filteredCountries;
     }
 }
 if (!function_exists('getCountryCode')) {
@@ -606,7 +611,7 @@ if (!function_exists('getLocation')) {
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
-            return $value['country_code'] == $location['countryCode'];
+            return $value['code'] == $location['countryCode'];
         });
 //dd($location,$currentCountry,getCountries());
         $location = [

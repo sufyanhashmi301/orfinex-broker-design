@@ -8,7 +8,6 @@
         {{ __('View All Symbols') }}
     </a> -->
     <a href="{{route('admin.symbol-groups.index')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" >
-
         {{ __('Symbol Groups') }}
     </a>
 @endsection
@@ -73,9 +72,11 @@
                                     <th scope="col" class="table-th">{{ __('Contact Size') }}</th>
                                     <th scope="col" class="table-th">
                                         <div class="flex items-center">
-                                            <span>{{ __('Enable') }}</span>
-                                            <span class="toolTip onTop leading-none" data-tippy-content="primary tooltip!" data-tippy-theme="dark">
-                                                <iconify-icon class="text-lg ltr:ml-2 rtl:mr-2" icon="lucide:info"></iconify-icon>
+                                            <span class="mr-2">{{ __('Enable') }}</span>
+                                            <span class="toolTip onTop leading-none" data-tippy-content="Enable All" data-tippy-theme="dark">
+                                                <button type="button" id="enableAll" class="action-btn">
+                                                    <iconify-icon icon="lucide:check"></iconify-icon>
+                                                </button>
                                             </span>
                                         </div>
                                     </th>
@@ -133,6 +134,7 @@
                 ]
             });
         })(jQuery);
+
         function insertRecord(dataId) {
             "use strict";
             event.preventDefault();
@@ -153,6 +155,28 @@
             });
 
         }
+
+        $(document).ready(function(){
+            $('#enableAll').click(function() {
+                $.ajax({
+                    url: 'all-symbols/store',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.reload();
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        })
 
     </script>
 @endsection

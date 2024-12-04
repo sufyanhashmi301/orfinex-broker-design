@@ -94,6 +94,7 @@ class ResetData extends Command
         DB::table('user_metas')->truncate();
         DB::table('tickets')->truncate();
         DB::table('invests')->truncate();
+        DB::table('leverage_updates')->truncate();
         DB::table('withdraw_accounts')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 

@@ -312,4 +312,9 @@ class SettingController extends Controller
         }
     }
 
+    public function featureLocked()
+    {
+        return view('global.__feature_locked');
+    }
+
 }

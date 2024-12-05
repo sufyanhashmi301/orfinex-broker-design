@@ -163,8 +163,8 @@ class MultiLevelRebateDistribution extends Command
 //        dd($parentId,$userId);
 
         $shares = $this->calculateRebate($metaDeal->symbol, $relationshipOrGroup);
-        $this->createRebateTransaction($shares['parentShare'], $parentId,$userId, $user->full_name, $metaDeal->login);
-        $this->createRebateTransaction($shares['childShare'],$userId, $userId, $user->full_name, $metaDeal->login);
+        $this->createRebateTransaction($shares['parentShare'] * $metaDeal->lot_share, $parentId,$userId, $user->full_name, $metaDeal->login);
+        $this->createRebateTransaction($shares['childShare'] * $metaDeal->lot_share,$userId, $userId, $user->full_name, $metaDeal->login);
 
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();

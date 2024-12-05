@@ -20,7 +20,7 @@
     .dark .sidebar-menus, .dark .logo-segment, .dark .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg_dark')) }} / var(--tw-bg-opacity));
     }
-    .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow, .mobileUserInfo > *, .sidebarCloseIcon {
+    .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
@@ -28,7 +28,7 @@
         --tw-text-opacity: .80;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color')) }} / var(--tw-text-opacity));
     }
-    .dark .sidebar-menus .navItem, .dark .sidebar-menu > li .icon-arrow, .dark .mobileUserInfo > *, .dark .sidebarCloseIcon {
+    .dark .sidebar-menus .navItem, .dark .sidebar-menu > li .icon-arrow {
         --tw-text-opacity: 1;
         color: rgba({{ implode(' ', getColorFromSettings('sidebar_color_dark')) }} / var(--tw-text-opacity));
     }

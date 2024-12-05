@@ -25,12 +25,10 @@
     <!-- Sidebar Type Button -->
     <div id="sidebar_type" class="cursor-pointer text-slate-900 dark:text-white text-lg">
         <span class="sidebarDotIcon extend-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
-            <div
-                class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150 ring-2 ring-inset ring-offset-4 ring-black-900 dark:ring-slate-400 bg-slate-900 dark:bg-slate-400 dark:ring-offset-slate-700"></div>
+            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150 ring-2 ring-inset ring-offset-4 ring-black-900 dark:ring-slate-400 bg-slate-900 dark:bg-slate-400 dark:ring-offset-slate-700"></div>
         </span>
         <span class="sidebarDotIcon collapsed-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
-            <div
-                class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150"></div>
+            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150"></div>
         </span>
     </div>
     <button class="sidebarCloseIcon text-2xl">
@@ -56,7 +54,7 @@
     <ul class="sidebar-menu">
         <li class="sidebar-menu-title">{{ __('MENU') }}</li>
         <li>
-            <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral') }}">
+            <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem {{ isActive('user.multi-level.ib.dashboard') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:home"></iconify-icon>
                     <span>{{ __('Dashboard') }}</span>

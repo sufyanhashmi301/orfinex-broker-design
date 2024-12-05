@@ -31,7 +31,7 @@ class MultiLevelRebateDistribution extends Command
         try {
             // Step 1: Get users with ib_group_id
             $usersWithIbGroup = User::whereNotNull('ib_group_id')
-                ->where('id',524)
+//                ->where('id',524)
                 ->with('ibGroup')->get();
 
 
@@ -137,7 +137,7 @@ class MultiLevelRebateDistribution extends Command
         return MetaDeal::where('login', $login)
             ->where('user_id', $userId)
             ->latest('time')
-            ->value('time') ?: Carbon::now()->startOfDay()->subDay(1211);
+            ->value('time') ?: Carbon::now()->startOfDay();
     }
 
     protected function getMT5Deals(string $login, $lastDealTime, array $symbols)

@@ -26,6 +26,11 @@ class PermissionSeeder extends Seeder
 
         $permissions = [
 
+            ['category' => 'Role Management', 'name' => 'role-list'],
+            ['category' => 'Role Management', 'name' => 'role-create'],
+            ['category' => 'Role Management', 'name' => 'role-edit'],
+            ['category' => 'Role Management', 'name' => 'role-delete'],
+
             ['category' => 'Customer Management', 'name' => 'customer-list'],
             ['category' => 'Customer Management', 'name' => 'customer-create'],
             ['category' => 'Customer Management', 'name' => 'customer-edit'],
@@ -37,15 +42,18 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'customer-change-password'],
             ['category' => 'Customer Management', 'name' => 'all-type-status'],
 
+            ['category' => 'Deposit Management', 'name' => 'deposit-list'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
+            ['category' => 'Deposit Management', 'name' => 'deposit-action'],
+
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
+            ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
+
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],
             ['category' => 'Kyc Management', 'name' => 'kyc-action'],
             ['category' => 'Kyc Management', 'name' => 'kyc-export'],
             ['category' => 'Kyc Management', 'name' => 'kyc-form-manage'],
-
-            ['category' => 'Role Management', 'name' => 'role-list'],
-            ['category' => 'Role Management', 'name' => 'role-create'],
-            ['category' => 'Role Management', 'name' => 'role-edit'],
-            ['category' => 'Role Management', 'name' => 'role-delete'],
 
             ['category' => 'Staff Management', 'name' => 'staff-list'],
             ['category' => 'Staff Management', 'name' => 'staff-create'],
@@ -63,9 +71,27 @@ class PermissionSeeder extends Seeder
             ['category' => 'Accounts Management', 'name' => 'leverage-action'],
             ['category' => 'Accounts Management', 'name' => 'accounts-export'],
 
+            ['category' => 'Referral Management', 'name' => 'target-manage'],
+            ['category' => 'Referral Management', 'name' => 'referral-create'],
+            ['category' => 'Referral Management', 'name' => 'referral-list'],
+            ['category' => 'Referral Management', 'name' => 'referral-edit'],
+            ['category' => 'Referral Management', 'name' => 'referral-delete'],
+
+            ['category' => 'IB Management', 'name' => 'ib-list'],
+            ['category' => 'IB Management', 'name' => 'ib-action'],
+            ['category' => 'IB Management', 'name' => 'ib-export'],
+            ['category' => 'IB Management', 'name' => 'ib-form-manage'],
+            ['category' => 'IB Management', 'name' => 'advertisement-material-edit'],
+
             ['category' => 'Transaction Management', 'name' => 'transaction-list'],
             ['category' => 'Transaction Management', 'name' => 'transaction-action'],
             ['category' => 'Transaction Management', 'name' => 'transaction-export'],
+
+            ['category' => 'Subscriber Management', 'name' => 'subscriber-list'],
+            ['category' => 'Subscriber Management', 'name' => 'subscriber-mail-send'],
+        
+            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-list'],
+            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-action'],
 
             ['category' => 'Partnership Levels Management', 'name' => 'levels-list'],
 
@@ -79,44 +105,16 @@ class PermissionSeeder extends Seeder
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-edit'],
             ['category' => 'Partnership Rebate Rules', 'name' => 'rebate-rules-delete'],
 
-            ['category' => 'Deposit Management', 'name' => 'deposit-list'],
-            ['category' => 'Deposit Management', 'name' => 'deposit-export'],
-            ['category' => 'Deposit Management', 'name' => 'deposit-action'],
-
-            ['category' => 'Withdraw Management', 'name' => 'withdraw-list'],
-            ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
-            ['category' => 'Withdraw Management', 'name' => 'withdraw-export'],
-        
-            ['category' => 'Referral Management', 'name' => 'target-manage'],
-            ['category' => 'Referral Management', 'name' => 'referral-create'],
-            ['category' => 'Referral Management', 'name' => 'referral-list'],
-            ['category' => 'Referral Management', 'name' => 'referral-edit'],
-            ['category' => 'Referral Management', 'name' => 'referral-delete'],
-
-            ['category' => 'IB Management', 'name' => 'ib-list'],
-            ['category' => 'IB Management', 'name' => 'ib-action'],
-            ['category' => 'IB Management', 'name' => 'ib-export'],
-            ['category' => 'IB Management', 'name' => 'ib-form-manage'],
-            ['category' => 'IB Management', 'name' => 'advertisement-material-edit'],
-
             ['category' => 'Frontend Management', 'name' => 'landing-page-manage'],
             ['category' => 'Frontend Management', 'name' => 'page-manage'],
             ['category' => 'Frontend Management', 'name' => 'footer-manage'],
             ['category' => 'Frontend Management', 'name' => 'navigation-manage'],
 
-            ['category' => 'Subscriber Management', 'name' => 'subscriber-list'],
-            ['category' => 'Subscriber Management', 'name' => 'subscriber-mail-send'],
-
-            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-list'],
-            ['category' => 'Support Ticket Management', 'name' => 'support-ticket-action'],
-
             ['category' => 'Setting Management', 'name' => 'site-setting'],
-            ['category' => 'Setting Management', 'name' => 'email-setting'],
             ['category' => 'Setting Management', 'name' => 'plugin-setting'],
             ['category' => 'Setting Management', 'name' => 'language-setting'],
             ['category' => 'Setting Management', 'name' => 'page-setting'],
             ['category' => 'Setting Management', 'name' => 'custom-css'],
-            ['category' => 'Setting Management', 'name' => 'email-template'],
 
             ['category' => 'Company Settings', 'name' => 'company-setting'],
             ['category' => 'Company Settings', 'name' => 'company-edit'],
@@ -207,39 +205,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],
             ['category' => 'Website Setting', 'name' => 'maintainance-settings'],
 
-            ['category' => 'System Setting', 'name' => 'clear-cache-settings'],
-            ['category' => 'System Setting', 'name' => 'application-details-settings'],
-            ['category' => 'System Setting', 'name' => 'dev-mode-settings'],
-            ['category' => 'System Setting', 'name' => 'changelog-settings'],
-            ['category' => 'System Setting', 'name' => 'report-issue-settings'],
-
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-list'],
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-create'],
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-edit'],
-            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-delete'],
-
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-list'],
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-create'],
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-edit'],
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-delete'],
-
-            ['category' => 'Security Setting', 'name' => 'all-sections-settings'],
-            ['category' => 'Security Setting', 'name' => 'blocklist-ip-settings'],
-            ['category' => 'Security Setting', 'name' => 'single-session-settings'],
-            ['category' => 'Security Setting', 'name' => 'blocklist-email-settings'],
-            ['category' => 'Security Setting', 'name' => 'login-expiry-settings'],
-
             ['category' => 'Customization Setting', 'name' => 'custom-colors-settings'],
             ['category' => 'Customization Setting', 'name' => 'custom-fonts-settings'],
             ['category' => 'Customization Setting', 'name' => 'routes-settings'],
             ['category' => 'Customization Setting', 'name' => 'dynamic-content-settings'],
-
-            ['category' => 'Website Setting', 'name' => 'theme-settings'],
-            ['category' => 'Website Setting', 'name' => 'branding-settings'],
-            ['category' => 'Website Setting', 'name' => 'site-settings'],
-            ['category' => 'Website Setting', 'name' => 'banner-settings'],
-            ['category' => 'Website Setting', 'name' => 'gdpr-compliance-settings'],
-            ['category' => 'Website Setting', 'name' => 'maintainance-settings'],
 
             ['category' => 'Platform API Setting', 'name' => 'meta-trader-display'],
             ['category' => 'Platform API Setting', 'name' => 'meta-trader-edit'],
@@ -266,10 +235,27 @@ class PermissionSeeder extends Seeder
             ['category' => 'Web Terminal Setting', 'name' => 'mt5-webterminal-edit'],
             ['category' => 'Web Terminal Setting', 'name' => 'x9-webterminal-display'],
             ['category' => 'Web Terminal Setting', 'name' => 'x9-webterminal-edit'],
-                    
+
+            ['category' => 'Communications Setting', 'name' => 'email-setting'],
+            ['category' => 'Communications Setting', 'name' => 'collab-tools-setting'],
+
+            ['category' => 'Email Templates Setting', 'name' => 'admin-email-template'],
+            ['category' => 'Email Templates Setting', 'name' => 'user-email-template'],
+            ['category' => 'Email Templates Setting', 'name' => 'email-template-action'],
+
+            ['category' => 'SMS Templates Setting', 'name' => 'admin-sms-template'],
+            ['category' => 'SMS Templates Setting', 'name' => 'user-sms-template'],
+            ['category' => 'SMS Templates Setting', 'name' => 'sms-template-action'],
+
             ['category' => 'Data Management Setting', 'name' => 'import-settings'],
             ['category' => 'Data Management Setting', 'name' => 'export-settings'],
             ['category' => 'Data Management Setting', 'name' => 'data-encryption-settings'],
+
+            ['category' => 'System Setting', 'name' => 'clear-cache-settings'],
+            ['category' => 'System Setting', 'name' => 'application-details-settings'],
+            ['category' => 'System Setting', 'name' => 'dev-mode-settings'],
+            ['category' => 'System Setting', 'name' => 'changelog-settings'],
+            ['category' => 'System Setting', 'name' => 'report-issue-settings'],
 
             ['category' => 'Payment Gateways Setting', 'name' => 'payment-gateways-list'],
             ['category' => 'Payment Gateways Setting', 'name' => 'payment-gateways-action'],
@@ -286,6 +272,25 @@ class PermissionSeeder extends Seeder
             ['category' => 'Integrations Setting', 'name' => 'api-access-setting'],
             ['category' => 'Integrations Setting', 'name' => 'web-hooks-setting'],
 
+            ['category' => 'Security Setting', 'name' => 'all-sections-settings'],
+            ['category' => 'Security Setting', 'name' => 'blocklist-ip-settings'],
+            ['category' => 'Security Setting', 'name' => 'single-session-settings'],
+            ['category' => 'Security Setting', 'name' => 'blocklist-email-settings'],
+            ['category' => 'Security Setting', 'name' => 'login-expiry-settings'],
+            
+            ['category' => 'Language Setting', 'name' => 'language-list'],
+            ['category' => 'Language Setting', 'name' => 'language-create'],
+            ['category' => 'Language Setting', 'name' => 'language-action'],
+
+            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-list'],
+            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-create'],
+            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-edit'],
+            ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-delete'],
+
+            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-list'],
+            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-create'],
+            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-edit'],
+            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-delete'],
 
         ];
 

@@ -451,8 +451,8 @@
 </div>
 <div class="stickySetting_menu sticky bottom-0 px-6 py-4">
     {{-- ************************************************************* Site  Settings *********************************************************--}}
-    @canany(['site-setting','email-setting','plugin-setting','page-manage'])
-        @canany(['site-setting','email-setting','plugin-setting'])
+    @canany(['site-setting','plugin-setting','page-manage'])
+        @canany(['site-setting','plugin-setting'])
             <a href="{{ route('admin.settings.index') }}" class="navItem {{ isActive(['admin.settings*']) }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:settings"></iconify-icon>

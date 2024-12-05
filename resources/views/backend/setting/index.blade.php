@@ -64,6 +64,7 @@
                 </ul>
             </div>
         </div>
+        
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -339,6 +340,7 @@
                 </ul>
             </div>
         </div>
+        @canany(['email-setting', 'collab-tools-setting','admin-email-template', 'user-email-template', 'admin-sms-template', 'user-sms-template'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -350,17 +352,21 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('email-setting')
                     <li>
                         <a href="{{ route('admin.settings.mail') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Email') }}
                         </a>
                     </li>
+                    @endcan
+                    @can('collab-tools-setting')
                     <li>
                         <a href="{{ route('admin.settings.slack') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Collab Tools') }}
                         </a>
                     </li>
-                    @can('email-template')
+                    @endcan
+                    @canany(['admin-email-template', 'user-email-template'])
                         <li>
                             <a href="{{ route('admin.email-template') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Email Templates') }}
@@ -369,15 +375,18 @@
                                 </span>
                             </a>
                         </li>
+                        @endcanany
+                        @canany(['admin-sms-template', 'user-sms-template'])
                         <li>
                             <a href="{{ route('admin.template.sms.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('SMS Templates') }}
                             </a>
                         </li>
-                    @endcan
+                        @endcanany
                 </ul>
             </div>
         </div>
+        @endcanany
         @canany(['import-settings', 'export-settings', 'data-encryption-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
@@ -588,7 +597,7 @@
                         </a>
                     </li>
                     @endcanany
-                    @can('language-setting')
+                    @can('language-list')
                         <li>
                             <a href="{{ route('admin.language.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Language') }}

@@ -7,7 +7,7 @@
             </a>
         </li>
         @endcanany
-        @can('language-setting')
+        @can('language-list')
             <li>
                 <a href="{{ route('admin.language.index') }}" class="navItem {{ isActive('admin.language*') }}">
                     {{ __('Language') }}

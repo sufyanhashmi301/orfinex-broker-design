@@ -31,6 +31,7 @@ class MultiLevelRebateDistribution extends Command
         try {
             // Step 1: Get users with ib_group_id
             $usersWithIbGroup = User::whereNotNull('ib_group_id')
+                ->where('id',524)
                 ->with('ibGroup')->get();
 
 

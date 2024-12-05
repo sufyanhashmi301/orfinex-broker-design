@@ -156,13 +156,13 @@ class MultiLevelRebateDistribution extends Command
 
     protected function distributeRebate(MetaDeal $metaDeal, int $userId, $relationshipOrGroup)
     {
-        $parentId = $relationshipOrGroup->referralLink->user_id ?? $relationshipOrGroup->id;
+        $parentId = $relationshipOrGroup->referralLink->user_id ?? $userId;
         $user = User::find($userId);
 //        dd($parentId,$userId);
 
         $shares = $this->calculateRebate($metaDeal->symbol, $relationshipOrGroup);
-        $this->createRebateTransaction($shares['parentShare'], $parentId, $user->full_name, $metaDeal->login);
-        $this->createRebateTransaction($shares['childShare'], $userId, $user->full_name, $metaDeal->login);
+        $this->createRebateTransaction($shares['parentShare'], $parentId,$userId, $user->full_name, $metaDeal->login);
+        $this->createRebateTransaction($shares['childShare'],$userId, $userId, $user->full_name, $metaDeal->login);
 
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
@@ -179,19 +179,22 @@ class MultiLevelRebateDistribution extends Command
         }
 
         $totalRebateAmount = $rebateRule->rebate_amount;
-        $ibShare = UserIbRule::where('rebate_rule_id', $rebateRule->id)->first();
+        $childShare = 0;
+        if(isset($relationshipOrGroup->referralLink)) {
+            $ibShare = UserIbRule::where('rebate_rule_id', $rebateRule->id)->where('user_id', $relationshipOrGroup->referralLink->user_id)->first();
 
-        $childShare = $ibShare ? $ibShare->sub_ib_share : 0;
+            $childShare = $ibShare ? $ibShare->sub_ib_share : 0;
+        }
         $parentShare = max(0, $totalRebateAmount - $childShare);
 
-        return compact('parentShare', 'childShare');
+        return ['parentShare' => $parentShare, 'childShare' => $childShare];
     }
 
-    protected function createRebateTransaction($amount, $userId, $childUserName, $login)
+    protected function createRebateTransaction($amount,$toUser, $fromUser, $childUserName, $login)
     {
         if ($amount > 0) {
             $targetType = AccountBalanceType::IB_WALLET;
-            $userAccount = get_user_account($userId, $targetType);
+            $userAccount = get_user_account($toUser, $targetType);
             $targetId = $userAccount->wallet_id;
 
             $transaction = Txn::new(
@@ -204,8 +207,8 @@ class MultiLevelRebateDistribution extends Command
                 TxnStatus::Success,
                 base_currency(),
                 $amount,
-                $userId,
-                $userId,
+                $toUser,
+                $fromUser,
                 'User',
                 [],
                 'note',

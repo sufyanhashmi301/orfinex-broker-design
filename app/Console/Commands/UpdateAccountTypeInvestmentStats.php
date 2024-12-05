@@ -60,6 +60,13 @@ class UpdateAccountTypeInvestmentStats extends Command
             $matchingResult = $allResults->firstWhere('login', $investment->login);
             
             if ($matchingResult) {
+
+                // Skip processing if current_equity is null
+                if (!isset($matchingResult['current_Equity'])) {
+                    $this->error("Skipping investment ID {$investment->id} due to null current_equity");
+                    continue;
+                }
+
                 $data = [
                     'account_type_investment_id' => $investment->id,
                     'account_name' => $matchingResult['name'],

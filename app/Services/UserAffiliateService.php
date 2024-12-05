@@ -65,6 +65,17 @@ class UserAffiliateService
     
     // get the direct refferer
     $direct_refferer = User::find($buyer_user_id)->referrer;
+    
+    // if there is no referrer
+    if($direct_refferer == null) {
+      return false;
+    }
+
+    // or if the referrer does not have affiliate account (not possible but good to have checks)
+    if($direct_refferer->userAffiliate == null){
+      return false;
+    }
+
     $refer_count = $direct_refferer->userAffiliate->refer_count + 1;
 
     $direct_refferer_commission_percentage = $affiliate_rule_configuration->where('count_start', '<=', $refer_count)->where('count_end', '>=', $refer_count)->first()->commission_percentage;

@@ -126,6 +126,7 @@ class AccountTypeInvestmentService
 
     $trading_objectives = [];
 
+
     // ---- Daily Drawdown Stats ----
     $trading_objectives['daily_drawdown_status'] = TradingObjective::PASSING;
                 
@@ -212,6 +213,11 @@ class AccountTypeInvestmentService
   public function tradingStats($investment_id){
     $investment = AccountTypeInvestment::where('id', $investment_id)->firstOrFail();
 
+    // Minute Stats dont exist 
+    if($investment->accountTypeInvestmentStat == null) {
+      return true;
+    }
+
     // ->where('status', 'active')
 
     // Same day 1st record after 12AM
@@ -226,6 +232,7 @@ class AccountTypeInvestmentService
     }
 
     // Calculate the trading objectives
+    
     $trading_objectives = $this->tradingObjectives($investment, $first_record_after_midnight);
 
     // Evaluate the trading objectives

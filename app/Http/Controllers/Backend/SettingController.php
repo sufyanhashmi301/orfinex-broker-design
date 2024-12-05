@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
@@ -279,6 +280,23 @@ class SettingController extends Controller
             return response()->json(['status' => 'success', 'message' => 'Connection successful']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function changelog()
+    {
+        $url = 'https://cdn.brokeret.com/crm-assets/json/changelog.json';
+
+        //$response = Http::get($url);
+        $response = Http::withoutVerifying()->get($url);
+
+        if ($response->successful()) {
+
+            $data = $response->json();
+            return view('backend.system.changelog', compact('data'));
+
+        } else {
+            return response()->json(['error' => 'Failed to fetch data from CDN'], 500);
         }
     }
 

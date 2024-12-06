@@ -361,7 +361,11 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mt5/db/test-connection', 'testDatabaseConnection')->name('testConnection');
     });
 
+
     Route::get('grpd-compliance', [SettingController::class, 'grpdCompliance'])->name('grpdCompliance');
+    Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
+    Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
+
 
     //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
@@ -502,6 +506,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::resource('symbol-groups', SymbolGroupController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('symbols', SymbolController::class)->only(['index', 'create', 'edit', 'update', 'destroy']);
     Route::post('symbols/store', [SymbolController::class, 'store']);
+    Route::post('all-symbols/store', [SymbolController::class, 'storeAllSymbols']);
     Route::resource('rebate-rules', RebateRuleController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 
@@ -549,6 +554,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
+
 
     Route::get('changelog', [AppController::class, 'changeLog'])->name('changelog');
 

@@ -53,7 +53,10 @@
                         <div class="fromGroup">
                             <label class="block capitalize form-label">{{ __('Password') }}</label>
                             <div class="relative ">
-                                <input type="password" name="password" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter your password') }}" required>
+                                <input type="password" name="password" id="password" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter your password') }}" required>
+                                <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="#password">
+                                    <iconify-icon class="text-lg" icon="heroicons:eye-slash"></iconify-icon>
+                                </button>
                             </div>
                         </div>
                         @if($googleReCaptcha)

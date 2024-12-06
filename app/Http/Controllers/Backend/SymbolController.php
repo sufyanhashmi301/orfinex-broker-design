@@ -41,8 +41,6 @@ class SymbolController extends Controller
         return view('backend.symbols.all');
     }
 
-
-
     public function store(Request $request)
     {
 
@@ -56,5 +54,27 @@ class SymbolController extends Controller
             return response()->json(['success' => false]);
         }
 
+    }
+
+    public function storeAllSymbols(Request $request)
+    {
+        // Call the method to store all symbols
+        $result = $this->symbolService->storeAllSymbolsFromMt5();
+
+        if ($result['success']) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Successfully stored all symbols.'),
+                'success_count' => $result['success_count'],
+                'failure_count' => $result['failure_count']
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => __('Failed to store some symbols.'),
+                'success_count' => $result['success_count'],
+                'failure_count' => $result['failure_count']
+            ]);
+        }
     }
 }

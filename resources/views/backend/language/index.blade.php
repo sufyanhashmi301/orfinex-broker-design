@@ -12,10 +12,12 @@
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:refresh-ccw"></iconify-icon>
                 {{ __('Sync Missing Translation Keys') }}
             </a>
+            @can('language-create')
             <a href="{{ route('admin.language.create') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                 {{ __('Add New') }}
             </a>
+            @endcan
         </div>
     </div>
 

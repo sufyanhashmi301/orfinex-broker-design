@@ -44,11 +44,13 @@
                                                 @endforeach
                                             </ul>
                                         </td>
+                                        @can('risk-book-action')
                                         <td class="table-td">
                                             <a href="javascript:;" data-id="{{ $riskBook->id }}" class="action-btn editRiskBook">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </a>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                                 <tr>
@@ -73,8 +75,9 @@
     </div>
 
     <!-- Modal for Edit Assign Risk Book -->
+    @can('risk-book-action')
     @include('backend.platform_group.modal.__edit')
-
+    @endcan
 @endsection
 @section('platform-script')
     <script>

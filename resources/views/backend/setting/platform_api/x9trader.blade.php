@@ -137,11 +137,13 @@
                         </div>
                     </div>
                 </div>
+                @can('x9-trader-edit')
                 <div class="mt-10">
                     <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                         {{ __('Save') }}
                     </button>
                 </div>
+                @endcan
             </form>
         </div>
     </div>

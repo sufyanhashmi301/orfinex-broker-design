@@ -3,10 +3,12 @@
     {{ __('Tickets Priority') }}
 @endsection
 @section('header-btn')
+@can('ticket-priority-create')
     <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#priorityModal">
         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
         {{ __('Add Priority') }}
     </a>
+    @endcan
 @endsection
 @section('ticket-content')
     <div class="card">
@@ -36,12 +38,16 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @can('ticket-priority-edit')
                                             <button class="action-btn" id="editPriority" data-id="{{ $priority->id }}">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </button>
+                                            @endcan
+                                            @can('ticket-priority-delete')
                                             <button type="button" data-id="{{ $priority->id }}" data-name="{{ $priority->name }}" class="action-btn deleteTicketPriority">
                                                 <iconify-icon icon="lucide:trash"></iconify-icon>
                                             </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -75,14 +81,17 @@
     </div>
 
     <!-- Modal for Add New Status -->
+    @can('ticket-priority-create')
     @include('backend.ticket.modal.__new_priority')
-
+    @endcan
     <!-- Modal for Update Status -->
+    @can('ticket-priority-edit')
     @include('backend.ticket.modal.__edit_priority')
-
+    @endcan
     <!-- Modal for Delete Status -->
+    @can('ticket-priority-delete')
     @include('backend.ticket.modal.__delete_priority')
-
+    @endcan
 @endsection
 
 @section('script')

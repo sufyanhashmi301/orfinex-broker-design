@@ -36,9 +36,8 @@ class KYCLevelsController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:risk-profile-tag-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
-//        $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
-//        $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
+       $this->middleware('permission:kyc-levels-list', ['only' => ['index']]);
+       $this->middleware('permission:kyc-levels-edit', ['only' => ['edit', 'update']]);
 
     }
 

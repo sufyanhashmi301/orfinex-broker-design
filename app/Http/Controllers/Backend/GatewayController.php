@@ -15,8 +15,7 @@ class GatewayController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:automatic-gateway-manage', ['only' => ['update']]);
-        $this->middleware('permission:automatic-gateway-manage', ['only' => ['automatic']]);
+        $this->middleware('permission:automatic-gateway-manage|payment-gateways-list', ['only' => ['automatic']]);
     }
 
     public function automatic(Request $request)

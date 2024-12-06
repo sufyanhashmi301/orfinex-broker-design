@@ -192,7 +192,7 @@
                             </li>
                             @endif
                             <li>
-                                <a href="{{ setting('company_website', 'common_setting') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-dark dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal" target="_blank">
+                                <a href="{{ setting('company_website', 'common_settings') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-dark dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal" target="_blank">
                                     <iconify-icon icon="tabler:world-www" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
                                     <span class="font-Inter">{{ __('Public website') }}</span>
                                 </a>

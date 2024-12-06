@@ -373,5 +373,5 @@ Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
 
-Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 

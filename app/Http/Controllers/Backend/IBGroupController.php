@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ForexSchema;
 use App\Models\IbGroup;
 use App\Models\RebateRule;
+use App\Models\User;
 use App\Models\UserIbRule;
 use App\Traits\NotifyTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -178,6 +179,7 @@ class IBGroupController extends Controller
 
         // Detach rebate rules
         $ibGroup->rebateRules()->sync([]);
+        User::where('ib_group_id',$id)->update(['ib_group_id'=>null]);
 
         $ibGroup->delete();
 

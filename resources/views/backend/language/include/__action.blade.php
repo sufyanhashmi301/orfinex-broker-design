@@ -1,3 +1,4 @@
+@can('language-action')
 <div class="flex space-x-3 rtl:space-x-reverse">
     <a href="{{ route('admin.language-keyword',$locale) }}" class="action-btn" data-bs-toggle="tooltip"
         title="" data-bs-original-title="Change Value">
@@ -17,3 +18,4 @@
     </span>
     @endif
 </div>
+@endcan

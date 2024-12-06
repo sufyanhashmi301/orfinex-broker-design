@@ -65,6 +65,8 @@ use App\Http\Controllers\RateController;
 use App\Http\Controllers\Backend\IBGroupController;
 use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
+use App\Http\Controllers\Backend\PlatformApiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -360,12 +362,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     });
 
 
+    Route::get('grpd-compliance', [SettingController::class, 'grpdCompliance'])->name('grpdCompliance');
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
     Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
-    Route::get('grpd-compliance', function () {
-        return view('backend.setting.site_setting.gdpr_compliance');
-    })->name('grpdCompliance');
 
     //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
@@ -484,21 +484,16 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 
-    Route::get('settings/platform-api/cTrader', function () {
-        return view('backend.setting.platform_api.ctrader');
-    })->name('platform_api.ctrader');
+    Route::get('settings/platform-api/cTrader', [PlatformApiController::class, 'cTrader'])
+    ->name('platform_api.ctrader');
 
-    Route::get('settings/platform-api/db-synchronization', function () {
-        return view('backend.setting.platform_api.db-synchronization');
-    })->name('platform_api.db-synchronization');
+    Route::get('settings/platform-api/db-synchronization', [PlatformApiController::class, 'dbSynchronization'])->name('platform_api.db-synchronization');
 
     Route::get('settings/platform-api/db-x9trader', function () {
         return view('backend.setting.platform_api.db-x9trader');
     })->name('platform_api.dbX9trader');
 
-    Route::get('settings/platform-api/x9trader', function () {
-        return view('backend.setting.platform_api.x9trader');
-    })->name('platform_api.x9trader');
+    Route::get('settings/platform-api/x9trader', [PlatformApiController::class, 'x9Trader'])->name('platform_api.x9trader');
 
     Route::get('announcements', function () {
         return view('backend.announcements.index');
@@ -560,6 +555,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
 
+
+    Route::get('changelog', [AppController::class, 'changeLog'])->name('changelog');
+
     Route::get('deposit/misc-setting', function () {
         return view('backend.setting.payment.deposit.misc');
     })->name('deposit.miscSetting');
@@ -568,9 +566,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.setting.payment.withdraw.misc');
     })->name('withdraw.miscSetting');
 
-    Route::get('settings/report-issues', function () {
-        return view('backend.system.report_issues');
-    })->name('reportIssues');
+    Route::get('settings/report-issues', [AppController::class, 'reportIssue'])->name('reportIssues');
 
     Route::get('settings/route', function () {
         return view('backend.setting.customization.routes');

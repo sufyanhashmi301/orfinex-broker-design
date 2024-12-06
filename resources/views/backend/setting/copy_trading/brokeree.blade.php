@@ -54,7 +54,9 @@
                     @endif
                 @endforeach
             </div>
+            @can('brokeree-edit')
             @include('backend.setting.site_setting.include.form.__close_action')
+            @endcan
         </div>
     </div>
 @endsection

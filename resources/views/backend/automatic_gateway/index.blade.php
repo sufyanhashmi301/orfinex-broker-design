@@ -13,9 +13,11 @@
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
                     <img class="inline-block h-10" src="{{ $gateway->logo }}" alt="{{ $gateway->name }}"/>
+                    @can('payment-gateways-action')
                     <button class="action-btn" type="button" data-bs-toggle="modal" data-bs-target="#manage-{{$gateway->id}}">
                         <iconify-icon icon="lucide:settings-2"></iconify-icon>
                     </button>
+                    @endcan
                 </div>
                 <div class="card-body p-4 pt-2">
                     <div class="flex items-center justify-between mb-3">
@@ -49,7 +51,9 @@
                 </div>
             </div>
             <!--  Manage Modal -->
+            @can('payment-gateways-action')
             @include('backend.automatic_gateway.include.__manage')
+            @endcan
             <!-- Manage Modal End-->
         @endforeach
     </div>

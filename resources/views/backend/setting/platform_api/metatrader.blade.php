@@ -149,11 +149,13 @@
                         </div>
                     </div>
                 </div>
+                @can('meta-trader-edit')
                 <div class="mt-10">
                     <button type="submit" class="btn btn-dark inline-flex">
                         {{ __(' Save Changes') }}
                     </button>
                 </div>
+                @endcan
 
             </form>
         </div>

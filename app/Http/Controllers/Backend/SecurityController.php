@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 
 class SecurityController extends Controller
 {
+    
+    public function __construct()
+    {
+         $this->middleware('permission:all-sections-settings', ['only' => ['allSections']]);
+         $this->middleware('permission:blocklist-ip-settings', ['only' => ['blocklistIP']]);
+         $this->middleware('permission:single-session-settings', ['only' => ['singleSession']]);
+         $this->middleware('permission:blocklist-email-settings', ['only' => ['blocklistEmail']]);
+         $this->middleware('permission:login-expiry-settings', ['only' => ['loginExpiry']]);
+    }
+
     public static function allSections()
     {
         return view('backend.security.all_sections.index');

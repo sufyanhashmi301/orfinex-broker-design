@@ -3,7 +3,7 @@
     {{ __('Blacklist Countries') }}
 @endsection
 @section('title-btn')
-    @can('schema-create')
+    @can('add-blacklist-countries')
         <a href="{{route('admin.blackListCountry.create')}}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
             {{ __('Add New') }}
@@ -37,7 +37,7 @@
                                             </label>
                                         </td>
                                         <td class="table-td">
-                                            @can('schema-edit')
+                                            @can('blacklist-countries-action')
                                                 {{--<a href="{{route('admin.blackListCountry.edit',$country->id)}}"--}}
                                                 {{--class="round-icon-btn primary-btn">--}}
                                                 {{--<i icon-name="edit-3"></i>--}}

@@ -15,7 +15,9 @@ class EmailTemplateController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:email-template');
+        $this->middleware('permission:admin-email-template', ['only' => ['index', 'store']]);
+         $this->middleware('permission:user-email-template', ['only' => ['userTemplate']]);
+         $this->middleware('permission:email-template-action', ['only' => ['edit','update']]);
     }
 
     public function index(Request $request)

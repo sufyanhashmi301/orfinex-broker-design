@@ -7,11 +7,13 @@
             </a>
         </li>
         @endcanany
+        @canany(['all-countries-list','blacklist-countries-list'])
         <li>
             <a href="{{ route('admin.country.all') }}" class="navItem {{ isActive('admin.country.all') }}">
                 {{ __('Country') }}
             </a>
         </li>
+        @endcanany
         <li>
             <a href="" class="navItem">
                 {{ __('Social Logins')}}

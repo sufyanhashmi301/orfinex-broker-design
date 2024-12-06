@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class SmsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:admin-sms-template', ['only' => ['template']]);
+         $this->middleware('permission:user-sms-template', ['only' => ['userTemplate']]);
+         $this->middleware('permission:sms-template-action', ['only' => ['edit_template']]);
+    }
+
     public function template(Request $request)
     {
 

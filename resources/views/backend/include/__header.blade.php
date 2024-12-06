@@ -102,10 +102,10 @@
                                         </li>
                                     @endcan
 
-                                    @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-                                            'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
+                                    @canany(['deposit-list','deposit-action',
+                                            'withdraw-list','withdraw-action','target-manage','referral-create',
                                             'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-                                        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+                                        @canany(['deposit-list','deposit-action'])
                                             <li class="pb-2">
                                                 <a href="{{ route('admin.deposit.method.list','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
@@ -138,6 +138,11 @@
                     <button id="themeMood" class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] hover:bg-slate-50 hover:bg-opacity-10 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
                         <iconify-icon class="text-white text-xl dark:block hidden" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
                         <iconify-icon class="text-white text-xl dark:hidden block" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                    </button>
+                </div>
+                <div>
+                    <button class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] hover:bg-slate-50 hover:bg-opacity-10 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-toggle="fullscreen">
+                        <iconify-icon class="text-white text-xl" icon="mdi:fullscreen"></iconify-icon>
                     </button>
                 </div>
                 <!-- END: TOggle Theme -->

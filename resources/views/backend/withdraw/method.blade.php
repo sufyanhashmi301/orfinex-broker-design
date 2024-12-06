@@ -7,6 +7,7 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
+        @can('withdraw-method-create')
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             @isset($button)
                 <a href="{{$button['route']}}" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button">
@@ -15,6 +16,7 @@
                 </a>
             @endisset
         </div>
+        @endcan
     </div>
 @endsection
 @section('withdraw-content')
@@ -29,6 +31,7 @@
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
                     <img class="inline-block h-10" src="{{ isset($method->gateway_id) ? $method->gateway->logo : asset($icon) }}" alt="{{ $method->name }}"/>
+                    @can('withdraw-method-action')
                     <div class="dropdown relative">
                         <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="text-lg inline-flex h-6 w-6 flex-col items-center justify-center border border-slate-200 dark:border-slate-700 rounded dark:text-slate-400">
@@ -51,6 +54,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endcan
                 </div>
                 <div class="card-body p-4 pt-2">
                     <div class="flex items-center justify-between mb-3">

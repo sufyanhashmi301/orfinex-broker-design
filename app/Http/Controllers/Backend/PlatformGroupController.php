@@ -16,6 +16,13 @@ class PlatformGroupController extends Controller
 
     public function __construct(PlatformGroupService $platformGroupService)
     {
+        $this->middleware('permission:risk-book-list', ['only' => ['getRiskBook']]);
+         $this->middleware('permission:risk-book-action', ['only' => ['updateRiskBook']]);
+         $this->middleware('permission:mt5-group-list', ['only' => ['index']]);
+         $this->middleware('permission:manual-group-list', ['only' => ['manualGroupListing']]);
+         $this->middleware('permission:manual-group-create', ['only' => ['storeManualGroup']]);
+         $this->middleware('permission:manual-group-edit', ['only' => ['updateManualGroup']]);
+         $this->middleware('permission:manual-group-delete', ['only' => ['deleteManualGroup']]);
         $this->platformGroupService = $platformGroupService;
     }
 

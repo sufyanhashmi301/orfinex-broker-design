@@ -98,7 +98,6 @@ class ResetData extends Command
         DB::table('withdraw_accounts')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-
         Artisan::call('db:seed');
 
         $rank = Ranking::find(1);
@@ -113,7 +112,7 @@ class ResetData extends Command
             'country' => 'United Arab Emirates',
             'phone' =>  '+971',
             'email' => 'user@'.$sitename.'.com',
-            'password' => Hash::make(12345678),
+            'password' => Hash::make('user@12345'),
             'kyc' => 0,
             'email_verified_at' => Carbon::now(),
         ];
@@ -125,7 +124,7 @@ class ResetData extends Command
             'first_name' => 'Super',
             'last_name' => 'Admin',
             'email' => 'admin@'.$sitename.'.com',
-            'password' => Hash::make(12345678),
+            'password' => Hash::make('Dubai@MyMAA@2024'),
             'role' => 1,
         ]);
         $data = [

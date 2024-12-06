@@ -35,7 +35,8 @@ class MultiLevelRebateDistribution extends Command
         try {
 //            $ReferralRelationships = ReferralRelationship::whereNotNull('multi_level_id')->with('referralLink')->get();
             $ReferralRelationships = ReferralRelationship::with('referralLink')
-                ->where('user_id', 7193)->get();
+//                ->where('user_id', 7193)
+                ->get();
 //            dd($ReferralRelationships);
             foreach ($ReferralRelationships as $ReferralRelationship) {
                 $this->processReferralRelationship($ReferralRelationship);
@@ -146,12 +147,14 @@ class MultiLevelRebateDistribution extends Command
         if ($parentRebateBonus > 0) {
             $userAccount = get_user_account($parentId, $sourceFrom);
             $targetId = $userAccount->wallet_id;
+            $parentRebateBonus = $parentRebateBonus * $metaDeal->lot_share;
             $transaction = Txn::new($parentRebateBonus, 0, $parentRebateBonus, 'system', 'IB Bonus via ' . $childUser->full_name . ' from account ' . $metaDeal->login, TxnType::IbBonus, TxnStatus::Success, base_currency(), $parentRebateBonus, $parentId, $childUserId, 'User', [], 'note', $targetId, $targetType);
             $this->addBalance($transaction);
         }
         if ($childShareBonus > 0) {
             $userAccount = get_user_account($childUserId, $sourceFrom);
             $targetId = $userAccount->wallet_id;
+            $childShareBonus = $childShareBonus * $metaDeal->lot_share;
             $transaction = Txn::new($childShareBonus, 0, $childShareBonus, 'system', 'IB Bonus via ' . $childUser->full_name . ' from account ' . $metaDeal->login, TxnType::IbBonus, TxnStatus::Success, base_currency(), $childShareBonus, $childUserId, $childUserId, 'User', [], 'note', $targetId, $targetType);
             $this->addBalance($transaction);
         }
@@ -203,9 +206,9 @@ class MultiLevelRebateDistribution extends Command
         $ledgerBalance = $wallet->getLedgerBalance($userAccount->id);
         $wallet->createCreditLedgerEntry($transaction, $ledgerBalance);
         if ($transaction->target_type == TxnTargetType::Wallet->value) {
-            $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
-            $userAccount->save();
-        }
+        $userAccount->amount = BigDecimal::of($userAccount->amount)->plus(BigDecimal::of($transaction->amount));
+        $userAccount->save();
+    }
 
     }
 

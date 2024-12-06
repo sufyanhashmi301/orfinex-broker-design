@@ -80,9 +80,21 @@
         <div class="xl:col-span-4 col-span-12">
             <div class="card h-full">
                 <div class="card-body h-full flex flex-col gap-3 p-6">
-                    <p class="text-slate-900 dark:text-white text-sm font-medium mb-10">
-                        {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
-                    </p>
+                    <div class="flex items-center justify-between mb-10">
+                        <p class="text-slate-900 dark:text-white text-sm font-medium">
+                            {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
+                        </p>
+                        <div class="flex space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                            <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center" onclick="copyToClipboard('{{ $account->wallet_id }}')">
+                                <iconify-icon class="ltr:mr-2 rtl:ml-2" icon="lucide:copy" ></iconify-icon>
+                                {{ __('Copy ID') }}
+                            </button>
+                            <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center" onclick="copyToClipboard('{{ $account->wallet_id }}')">
+                                <iconify-icon class="ltr:mr-2 rtl:ml-2" icon="lucide:copy"></iconify-icon>
+                                {{ __('Copy Link') }}
+                            </button>
+                        </div>
+                    </div>
                     <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-2">
                         {{ __('Your Current Balance') }}
                     </p>
@@ -302,6 +314,11 @@
 @section('script')
     <script async src="https://static.addtoany.com/menu/page.js"></script>
     <script>
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+        }
+
         let l, e;
         var options = {
             chart: {

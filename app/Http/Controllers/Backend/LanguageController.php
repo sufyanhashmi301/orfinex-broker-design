@@ -29,7 +29,8 @@ class LanguageController extends Controller
 
     public function __construct(Translation $translation)
     {
-        $this->middleware('permission:language-setting');
+        $this->middleware('permission:language-list', ['only' => ['index']]);
+       $this->middleware('permission:language-create', ['only' => ['create', 'store']]);
         $this->translation = $translation;
         $this->languageFilesPath = resource_path('lang');
     }

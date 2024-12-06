@@ -13,7 +13,7 @@
             <div class="card border">
                 <div class="card-body p-6">
                     <div class="text-center mb-5">
-                        <h4 class="card-title mb-5">👋 {{ __('Welcome to '). setting('site_title', 'common_setting') }}</h4>
+                        <h4 class="card-title mb-5">👋 {{ __('Welcome to '). setting('site_title', 'common_settings') }}</h4>
                         <p class="text-slate-500 dark:text-slate-400 text-sm">
                             {{ __('To start using your account, we need to verify your email address. Please check your inbox for the verification email we just sent.') }}
                         </p>
@@ -43,8 +43,8 @@
                         </p>
                         <p class="text-slate-500 dark:text-slate-400 text-sm">
                             {{ __("If you're having trouble or need assistance, contact our support team at ") }}
-                            <a href="mailto:{{ setting('support_email', 'common_setting') }}" class="underline">
-                                {{ setting('support_email', 'common_setting') }}
+                            <a href="mailto:{{ setting('support_email', 'common_settings') }}" class="underline">
+                                {{ setting('support_email', 'common_settings') }}
                             </a>
                         </p>
                         <form method="POST" action="{{ route('logout') }}" class="mt-6">

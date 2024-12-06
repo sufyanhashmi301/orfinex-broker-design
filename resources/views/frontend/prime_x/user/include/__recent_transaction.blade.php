@@ -4,7 +4,7 @@
             <h4 class="card-title">{{ __('Recent Transactions') }}</h4>
             <div>
                 <a href="{{ route('user.transactions') }}" class="btn-link loaderBtn inline-flex items-center">
-                    {{ __('See All Transactions') }}
+                    {{ __('See All') }}
                     <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
                 </a>
             </div>

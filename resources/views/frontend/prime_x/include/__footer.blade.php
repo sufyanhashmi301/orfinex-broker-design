@@ -3,8 +3,7 @@
 @endphp
 
 <footer class="footer dark-blue-bg section-style-2">
-    <div class="bat-right" style="background: url({{ asset($footerContent['right_img']) }}) repeat;"
-         data-aos="fade-down-left" data-aos-duration="2000"></div>
+    <div class="bat-right" style="background: url({{ asset($footerContent['right_img']) }}) repeat;" data-aos="fade-down-left" data-aos-duration="2000"></div>
     <div class="container">
         <div class="row">
             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">

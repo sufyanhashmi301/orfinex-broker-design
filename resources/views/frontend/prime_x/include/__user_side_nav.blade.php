@@ -4,7 +4,8 @@
         <img src="{{ asset(setting('site_logo', 'global')) }}" class="black_logo max-w-[160px]" alt="{{ __('Logo') }}"/>
         <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="white_logo max-w-[160px]" alt="{{ __('Logo') }}"/>
     </a>
-    <div class="md:hidden" style="width: 80%; overflow-x: hidden;">
+
+    <div class="flex itemx-center justify-between md:hidden" style="width: 80%; overflow-x: hidden;">
         <div class="flex items-center">
             <div class="flex-none">
                 <div class="w-8 h-8 rounded-[100%] ltr:mr-2 rtl:ml-2">
@@ -12,45 +13,29 @@
                 </div>
             </div>
             <div class="flex-1 text-start mobileUserInfo">
-                <h4 class="text-sm font-medium whitespace-nowrap">
+                <h4 class="text-sm font-medium whitespace-nowrap dark:text-slate-800 text-white">
                     {{ auth()->user()->full_name }}
                 </h4>
-                <div class="text-xs font-normal">
-                    {{ auth()->user()->email }}
-                </div>
+                <span class="flex items-center text-slate-400 text-xs font-normal">
+                    @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
+                        {{ __('Verified') }}
+                        <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                    @else
+                        {{ __('Unverified') }}
+                        <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                    @endif
+                </span>
             </div>
         </div>
+
     </div>
-    <!-- Sidebar Type Button -->
-<!--<div id="sidebar_type" class="cursor-pointer text-slate-900 dark:text-white text-lg">
-        <span class="sidebarDotIcon extend-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
-            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150 ring-2 ring-inset ring-offset-4 ring-black-900 dark:ring-slate-400 bg-slate-900 dark:bg-slate-400 dark:ring-offset-slate-700"></div>
-        </span>
-        <span class="sidebarDotIcon collapsed-icon cursor-pointer text-slate-900 dark:text-white text-2xl">
-            <div class="h-4 w-4 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-full transition-all duration-150"></div>
-        </span>
-    </div>-->
-    <button class="sidebarCloseIcon text-2xl">
+    <button class="sidebarCloseIcon text-2xl dark:text-slate-800">
         <iconify-icon icon="clarity:window-close-line"></iconify-icon>
     </button>
-
-    <div class="flex items-center justify-center w-full md:hidden mt-3 space-x-2">
-        <a href="{{ route('user.ranking-badge') }}" class="loaderBtn inline-flex btn btn-primary btn-sm">
-            {{ __('Ranking Badge') }}
-        </a>
-        <form method="POST" action="{{ route('logout') }}" id="logout-form">
-            @csrf
-            <a href="{{ url('logout') }}"
-               onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();"
-               class="inline-flex btn btn-base btn-sm">
-                {{ __('Logout') }}
-            </a>
-        </form>
-    </div>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-80px)] overflow-y-auto z-50" id="sidebar_menus">
-    <ul class="sidebar-menu">
+<div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-100px)] overflow-y-auto z-50" id="sidebar_menus">
+    <ul class="sidebar-menu mt-3">
         <li>
             <a href="{{ route('user.dashboard') }}" class="navItem loaderBtn {{ isActive('user.dashboard') }}">
                 <span class="flex items-center">
@@ -176,14 +161,6 @@
 {{--        @endif--}}
 
         <li>
-            <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn {{ isActive('user.setting*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
-                    <span>{{ __('Settings') }}</span>
-                </span>
-            </a>
-        </li>
-        <li>
             <a href="{{ route('user.ticket.index') }}" class="navItem loaderBtn {{ isActive('user.ticket*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:support"></iconify-icon>
@@ -192,17 +169,16 @@
             </a>
         </li>
 
-        <li>
-            <a href="javascript:;" id="themeMood" class="navItem loaderBtn">
-                <span class="dark:flex items-center hidden">
-                    <iconify-icon class="nav-icon" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
-                    <span>{{ __('Light Mode') }}</span>
-                </span>
-                <span class="dark:hidden flex items-center">
-                    <iconify-icon class="nav-icon" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
-                    <span>{{ __('Dark Mode') }}</span>
-                </span>
-            </a>
+        <li class="block md:hidden">
+            <form method="POST" action="{{ route('logout') }}" id="logout-form" class="mt-5 mb-3">
+                @csrf
+                <a href="{{ url('logout') }}" onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();" class="btn btn-base btn-sm block">
+                    <span class="flex items-center justify-center">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="lucide:power"></iconify-icon>
+                        {{ __('Logout') }}
+                    </span>
+                </a>
+            </form>
         </li>
 
         {{-- <li class="">
@@ -218,4 +194,12 @@
             </form>
         </li> --}}
     </ul>
+</div>
+<div class="stickySetting_menu sticky bottom-0 px-6 py-4">
+    <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn {{ isActive('user.setting*') }}">
+        <span class="flex items-center">
+            <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
+            <span>{{ __('Settings') }}</span>
+        </span>
+    </a>
 </div>

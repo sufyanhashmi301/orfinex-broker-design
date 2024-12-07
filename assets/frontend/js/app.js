@@ -67,15 +67,30 @@
   });
 
   // Theme Change by Header Button
-  $("#themeMood").on("click", function () {
-    if (currentTheme === "light") {
-      currentTheme = "dark";
+  $(document).ready(function() {
+    var currentTheme = localStorage.theme || "light";
+
+    if (currentTheme === "dark") {
+        $("html").addClass("dark");
+        $("html").removeClass("light");
     } else {
-      currentTheme = "light";
+        $("html").addClass("light");
+        $("html").removeClass("dark");
     }
-    localStorage.theme = currentTheme;
-    location.reload();
+
+    // Toggle theme on click
+    $("#themeMood").on("click", function () {
+        if (currentTheme === "light") {
+            currentTheme = "dark";
+        } else {
+            currentTheme = "light";
+        }
+
+        localStorage.theme = currentTheme;
+        location.reload();
+    });
   });
+
   $("#grayScale").on("click", function () {
     if ($("html").hasClass("grayScale")) {
       $("html").removeClass("grayScale");

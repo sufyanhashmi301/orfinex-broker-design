@@ -100,6 +100,24 @@ return [
             [
                 'type' => 'color', // input fields type
                 'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_bg', // unique name for field
+                'label' => 'Header Color', // you know what label it is
+                'description' => 'Select the header background color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_color', // unique name for field
+                'label' => 'Header text', // you know what label it is
+                'description' => 'Select the header text color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
                 'name' => 'sidebar_bg', // unique name for field
                 'label' => 'Sidebar Color', // you know what label it is
                 'description' => 'Select the sidebar background color for the light theme',
@@ -191,6 +209,24 @@ return [
                 'description' => 'Select the base color for the dark theme',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#181e26', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_bg_dark', // unique name for field
+                'label' => 'Header Color', // you know what label it is
+                'description' => 'Select the header background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_color_dark', // unique name for field
+                'label' => 'Header text', // you know what label it is
+                'description' => 'Select the header text color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
             ],
             [
                 'type' => 'color', // input fields type

@@ -122,7 +122,6 @@
                               value="{{ old('phone') }}"
                               aria-label="{{ __('Phone Number') }}"
                               aria-describedby="basic-addon1"
-                              value="{{ getLocation()->dial_code }}"
                             >
                           </div>
                         </div>
@@ -218,14 +217,10 @@
                         </button>
                     </form>
                     <!-- END: Login Form -->
-                    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
-                            {{ __('Already have an account?') }}
-                        </div>
-                    </div>
-                    <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-6 uppercase text-sm text-center">
-                        <a href="{{ route('login') }}" class="btn btn-base inline-flex items-center justify-center w-full">
-                            {{ __('Login') }}
+                    <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm text-center">
+                        {{ __("Already have an account? ") }}
+                        <a href="{{ route('login') }}" class="text-slate-900 dark:text-white font-medium uppercase hover:underline">
+                            {{ __('Login now.') }}
                         </a>
                     </div>
                 </div>
@@ -239,7 +234,16 @@
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     @endif
     <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+
     <script>
+
+        const input = document.querySelector("#phone");
+        window.intlTelInput(input, {
+            initialCountry: "auto",
+            showSelectedDialCode: true,
+            utilsScript: "{{ asset('frontend/js/utils.js') }}",
+        });
+
         $('#countrySelect').on('change', function (e) {
             "use strict";
             e.preventDefault();

@@ -47,14 +47,65 @@
                                 {{ setting('support_email', 'common_settings') }}
                             </a>
                         </p>
-                        <form method="POST" action="{{ route('logout') }}" class="mt-6">
-                            @csrf
-                            <button type="submit" class="btn btn-danger block w-full text-center">
-                                {{ __('Log Out') }}
-                            </button>
-                        </form>
+                        @php
+                            $socialLinks = social_links();
+                        @endphp
+                        @if($socialLinks->isNotEmpty())
+                        <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+                            <div class="absolute inline-block bg-white dark:bg-slate-800 dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                                {{ __('Connect With Us') }}
+                            </div>
+                        </div>
+                        <div class="mt-8 w-full">
+                            <ul class="flex items-center justify-center mt-5 gap-2">
+                                @foreach($socialLinks as $socialLink)
+                                    <li>
+                                        <a href="{{ $socialLink->link }}" target="_blank">
+                                            @switch($socialLink->slug)
+                                                @case('facebook_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/facebook.webp" class="h-6" alt="Facebook">
+                                                @break
+                                                @case('twitter_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/x.webp" class="h-6" alt="Twitter">
+                                                @break
+                                                @case('instagram_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/instagram.webp" class="h-6" alt="Instagram">
+                                                @break
+                                                @case('linkedin_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/linkedin.webp" class="h-6" alt="LinkedIn">
+                                                @break
+                                                @case('skype_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/skype.webp" class="h-6" alt="Skype">
+                                                @break
+                                                @case('telegram_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/telegram.webp" class="h-6" alt="Telegram">
+                                                @break
+                                                @case('whatsapp_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/whatsapp.webp" class="h-6" alt="Whatsapp">
+                                                @break
+                                                @case('discord_link')
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/discord.webp" class="h-6" alt="Discord">
+                                                @break
+                                                @default
+                                                <img src="https://cdn.brokeret.com/crm-assets/admin/social/facebook.webp" class="h-6" alt="Social Icon">
+                                            @endswitch
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
                     </div>
                 </div>
+            </div>
+            <div class="flex items-center justify-center font-normal text-slate-500 dark:text-slate-400 mt-10 uppercase text-sm">
+                {{ __('Not ready yet?') }}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-slate-900 dark:text-white font-medium uppercase hover:underline ml-2">
+                        {{ __('Log Out') }}
+                    </button>
+                </form>
             </div>
         </div>
     </div>

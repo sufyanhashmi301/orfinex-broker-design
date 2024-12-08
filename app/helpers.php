@@ -1482,7 +1482,7 @@ if (!function_exists('hexToRgb')) {
         $g = hexdec(substr($hexColor, 2, 2));
         $b = hexdec(substr($hexColor, 4, 2));
 
-        return [$r, $g, $b];
+        return ['r' => $r, 'g' => $g, 'b' => $b];
     }
 }
 
@@ -1495,6 +1495,16 @@ if (!function_exists('getColorFromSettings')) {
     }
 }
 
+if (!function_exists('isDarkColor')) {
+    function isDarkColor($hex)
+    {
+        $rgb = hexToRgb($hex);
+        $luminance = 0.2126 * $rgb['r'] + 0.7152 * $rgb['g'] + 0.0722 * $rgb['b'];
+
+        return $luminance < 128;
+    }
+}
+
 if (!function_exists('document_link_by_slug')) {
     function document_link_by_slug($slug)
     {
@@ -1502,3 +1512,9 @@ if (!function_exists('document_link_by_slug')) {
     }
 }
 
+if (!function_exists('social_links')) {
+    function social_links()
+    {
+        return App\Models\SocialLink::where('status', 1)->get();
+    }
+}

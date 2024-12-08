@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
     @include('frontend::include.__head')
     <body class="font-inter dashcode-app" id="body_class">
         <x:notify-messages/>

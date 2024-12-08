@@ -66,6 +66,7 @@ use App\Http\Controllers\Backend\IBGroupController;
 use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
 use App\Http\Controllers\Backend\PlatformApiController;
+use App\Http\Controllers\Backend\SocialLinkController;
 
 
 /*
@@ -305,6 +306,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
     });
 
+    Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
+        Route::get('settings', 'pageSetting')->name('setting');
+        Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+    });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
         Route::post('store', 'store')->name('store');
@@ -422,6 +427,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('platform/{id}', [PlatformLinkController::class, 'edit'])->name('platform.edit');
         Route::put('platform/update', [PlatformLinkController::class, 'update'])->name('platform.update');
         Route::delete('platform/{id}', [PlatformLinkController::class, 'destroy'])->name('platform.destroy');
+
+        Route::get('social', [SocialLinkController::class, 'index'])->name('social.index');
+        Route::get('social/{id}', [SocialLinkController::class, 'edit'])->name('social.edit');
+        Route::put('social/update', [SocialLinkController::class, 'update'])->name('social.update');
     });
 
     //===============================  Others ==================================
@@ -558,7 +567,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     })->name('fraudProtection');
 
 
-    Route::get('changelog', [AppController::class, 'changeLog'])->name('changelog');
+//    Route::get('changelog', [AppController::class, 'changeLog'])->name('changelog');
 
     Route::get('deposit/misc-setting', function () {
         return view('backend.setting.payment.deposit.misc');

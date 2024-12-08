@@ -8,16 +8,30 @@
     .light body, body, .bg-body {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color')) }} / var(--tw-bg-opacity));
     }
-    .app-header, .kyc-alert .sidebar-wrapper, .submenu-sidebar, .site-footer, .card {
+    .kyc-alert .sidebar-wrapper, .submenu-sidebar, .site-footer, .card {
         background-color: rgba({{ implode(' ', getColorFromSettings('base_color')) }} / var(--tw-bg-opacity));
     }
-    .dark body, .dark .dark\:bg-body, .dark .app-header, .dark .kyc-alert, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
+    .dark body, .dark .dark\:bg-body, .dark .kyc-alert, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color_dark')) }} / var(--tw-bg-opacity));
     }
-    .sidebar-menus, .logo-segment, .stickySetting_menu {
+    .app-header, .logo-segment {
+        background-color: rgba({{ implode(' ', getColorFromSettings('header_bg')) }} / var(--tw-bg-opacity));
+    }
+    .dark .app-header, .dark .logo-segment {
+        background-color: rgba({{ implode(' ', getColorFromSettings('header_bg_dark')) }} / var(--tw-bg-opacity));
+    }
+    .app-header .header-text-color {
+        --tw-text-opacity: 1;
+        color: rgba({{ implode(' ', getColorFromSettings('header_color')) }} / var(--tw-bg-opacity));
+    }
+    .dark .app-header .header-text-color {
+        --tw-text-opacity: 1;
+        color: rgba({{ implode(' ', getColorFromSettings('header_color_dark')) }} / var(--tw-bg-opacity));
+    }
+    .sidebar-menus, .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg')) }} / var(--tw-bg-opacity));
     }
-    .dark .sidebar-menus, .dark .logo-segment, .dark .stickySetting_menu {
+    .dark .sidebar-menus, .dark .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg_dark')) }} / var(--tw-bg-opacity));
     }
     .sidebar-menus .navItem, .sidebar-menu > li .icon-arrow {

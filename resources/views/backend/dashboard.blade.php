@@ -178,7 +178,7 @@
                 url: '{{ route("admin.changelog") }}',
                 method: 'GET',
                 success: function (data) {
-                    // console.log(data);
+                    console.log(data);
                     $('#changelog-container').html(data);
                 }
             })

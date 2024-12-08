@@ -27,8 +27,8 @@
                     <img src="{{ asset(setting('site_favicon','global')) }}" class="black_logo h-8" alt="logo">
                     <img src="{{ asset(setting('site_favicon','global')) }}" class="white_logo h-8" alt="logo">
                 </a>
-                <button class="smallDeviceMenuController lg:h-[32px] lg:w-[32px] lg:dark:bg-slate-100 lg:bg-slate-900 text-white dark:text-slate-900 rounded-lg hidden md:inline-block xl:hidden flex items-center justify-center">
-                    <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] dark:text-slate-900 text-white" icon="heroicons-outline:menu-alt-3"></iconify-icon>
+                <button class="smallDeviceMenuController lg:h-[32px] lg:w-[32px] header-text-color rounded-lg hidden md:inline-block xl:hidden flex items-center justify-center">
+                    <iconify-icon class="leading-none bg-transparent relative text-xl top-[2px] header-text-color" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
             </div>
             @if(Route::is(['user.follower_access', 'user.provider_access', 'user.ratings']))
@@ -58,7 +58,7 @@
             @else
                 <div class="relative">
                     <div class="flex items-center text-left">
-                        <p class="text-white dark:text-slate-800">{{auth()->user()->full_name}}</p>
+                        <p class="header-text-color">{{auth()->user()->full_name}}</p>
                         @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
                             <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
                         @else
@@ -79,14 +79,14 @@
 
             <div class="nav-tools flex items-center md:space-x-4 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
                 <div>
-                    <a href="javascript:;" id="themeMood" class="lg:h-[32px] lg:w-[32px] lg:dark:bg-slate-100 lg:bg-slate-900 dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
-                        <iconify-icon class="dark:text-slate-800 text-white text-xl dark:hidden block" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
-                        <iconify-icon class="dark:text-slate-800 text-white text-xl dark:block hidden" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                    <a href="javascript:;" id="themeMood" class="lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
+                        <iconify-icon class="header-text-color text-xl dark:hidden block" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                        <iconify-icon class="header-text-color text-xl dark:block hidden" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
                     </a>
                 </div>
                 <div class="relative hidden md:block">
-                    <button class="lg:h-[32px] lg:w-[32px] lg:dark:bg-slate-100 lg:bg-slate-900 dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <iconify-icon class="dark:text-slate-800 text-white text-xl" icon="lucide:globe"></iconify-icon>
+                    <button class="lg:h-[32px] lg:w-[32px] cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <iconify-icon class="header-text-color text-xl" icon="lucide:globe"></iconify-icon>
                     </button>
                     <!-- Dropdown menu -->
                     <div class="dropdown-menu z-10 hidden bg-white divide-y divide-slate-100 shadow w-44 border dark:border-slate-700 !top-[10px] rounded-md overflow-hidden">
@@ -115,8 +115,8 @@
                 @endauth
                 <!-- Notifications Dropdown area -->
                 <div>
-                    <button class="item notification-dot lg:h-[32px] lg:w-[32px] lg:dark:bg-slate-100 lg:bg-slate-900 dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] hidden md:flex flex-col items-center justify-center" type="button" data-toggle="fullscreen">
-                        <iconify-icon class="dark:text-slate-800 text-white text-xl" icon="mdi:fullscreen"></iconify-icon>
+                    <button class="item notification-dot lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] hidden md:flex flex-col items-center justify-center" type="button" data-toggle="fullscreen">
+                        <iconify-icon class="header-text-color text-xl" icon="mdi:fullscreen"></iconify-icon>
                     </button>
                 </div>
 
@@ -171,8 +171,8 @@
                 <!-- Profile DropDown Area -->
 
                 <div class="relative hidden md:block">
-                    <button class="lg:h-[32px] lg:w-[32px] lg:dark:bg-slate-100 lg:bg-slate-900 dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <iconify-icon class="dark:text-slate-800 text-white text-2xl" icon="mdi:dots-grid"></iconify-icon>
+                    <button class="lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <iconify-icon class="header-text-color text-2xl" icon="mdi:dots-grid"></iconify-icon>
                     </button>
                     <!-- Dropdown menu -->
                     <div class="dropdown-menu z-10 hidden bg-white divide-y divide-slate-100 shadow w-44 border dark:border-slate-700 !top-[10px] rounded-md overflow-hidden">
@@ -211,7 +211,7 @@
 
                 <!-- END: Header -->
                 <button class="smallDeviceMenuController md:hidden block leading-0">
-                    <iconify-icon class="cursor-pointer dark:text-slate-900 text-white text-2xl" icon="heroicons-outline:menu-alt-3"></iconify-icon>
+                    <iconify-icon class="cursor-pointer header-text-color text-2xl" icon="heroicons-outline:menu-alt-3"></iconify-icon>
                 </button>
                 <!-- end mobile menu -->
             </div>

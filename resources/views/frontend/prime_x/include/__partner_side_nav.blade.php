@@ -1,8 +1,20 @@
 <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden"></div>
 <div class="logo-segment flex-wrap">
     <a href="{{ route('home') }}" class="loaderBtn items-center md:flex hidden">
-        <img src="{{ asset(setting('site_logo', 'global')) }}" class="black_logo max-w-[160px]" alt="{{ __('Logo') }}"/>
-        <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="white_logo max-w-[160px]" alt="{{ __('Logo') }}"/>
+        <span class="black_logo">
+            @if (isDarkColor(setting('header_bg', 'light_colors')))
+                <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="max-w-[160px]" alt="{{ __('Light Logo') }}"/>
+            @else
+                <img src="{{ asset(setting('site_logo', 'global')) }}" class="max-w-[160px]" alt="{{ __('Dark Logo') }}"/>
+            @endif
+        </span>
+        <span class="white_logo">
+            @if (isDarkColor(setting('header_bg_dark', 'light_colors')))
+                <img src="{{ asset(setting('site_logo_light', 'global')) }}" class="max-w-[160px]" alt="{{ __('Light Logo') }}"/>
+            @else
+                <img src="{{ asset(setting('site_logo', 'global')) }}" class="max-w-[160px]" alt="{{ __('Dark Logo') }}"/>
+            @endif
+        </span>
     </a>
 
     <div class="flex itemx-center justify-between md:hidden" style="width: 80%; overflow-x: hidden;">
@@ -13,7 +25,7 @@
                 </div>
             </div>
             <div class="flex-1 text-start mobileUserInfo">
-                <h4 class="text-sm font-medium whitespace-nowrap dark:text-slate-800 text-white">
+                <h4 class="text-sm font-medium whitespace-nowrap header-text-color">
                     {{ auth()->user()->full_name }}
                 </h4>
                 <span class="flex items-center text-slate-400 text-xs font-normal">
@@ -29,7 +41,7 @@
         </div>
 
     </div>
-    <button class="sidebarCloseIcon text-2xl dark:text-slate-800">
+    <button class="sidebarCloseIcon text-2xl header-text-color">
         <iconify-icon icon="clarity:window-close-line"></iconify-icon>
     </button>
 </div>

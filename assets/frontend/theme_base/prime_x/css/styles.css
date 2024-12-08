@@ -9,12 +9,8 @@
 }
 .app-header, .logo-segment {
     height: 48px;
-    background: #0f172a !important;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
-}
-.dark .app-header, .dark .logo-segment {
-    background: #ffffff !important;
 }
 .sidebar-menu > li.active > a {
     color: #121212;

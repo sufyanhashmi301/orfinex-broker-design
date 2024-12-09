@@ -215,7 +215,7 @@
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-transfer-tab"
+                                        id="ib-info"
                                         data-bs-toggle="pill"
                                         data-bs-target="#ib-info"
                                         type="button"
@@ -223,6 +223,7 @@
                                         aria-controls="ib-info"
                                         aria-selected="true"
                                     >
+                                        
                                         {{ __('Partner') }}
                                     </a>
                                 </li>

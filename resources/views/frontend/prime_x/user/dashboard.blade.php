@@ -126,7 +126,7 @@
                     </div>
                 </div>
             </a>
-            <a href="{{ route('user.withdraw.view') }}" class="card">
+            <a href="{{ route('user.withdraw.step1') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="heroicons-outline:upload"></iconify-icon>

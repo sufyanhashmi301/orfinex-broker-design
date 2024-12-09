@@ -427,12 +427,13 @@ class WithdrawController extends Controller
 
         // $reset_balance_data = [
         //     'login' =>'996466',
-        //     'Amount' => '16000',
+        //     'Amount' => '24000',
         //     'type' => 1, //deposit
         //     'TransactionComments' => 'Balance Reset'
         // ];
       
         // $response = $this->forexApiService->balanceOperation($reset_balance_data);
+        // dd('hi');
 
         // if wallets dont exist then retuern false
         $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);

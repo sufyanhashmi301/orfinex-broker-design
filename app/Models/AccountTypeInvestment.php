@@ -33,6 +33,10 @@ class AccountTypeInvestment extends Model
         return $this->belongsTo(AccountTypePhaseRule::class);
     }
 
+    public function accountTypePhase() {
+        return $this->belongsTo(AccountTypePhase::class);
+    }
+
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -52,6 +56,11 @@ class AccountTypeInvestment extends Model
     public function accountTypeInvestmentPhaseApproval() {
         return $this->hasMany(AccountTypeInvestmentPhaseApproval::class);
     }
+
+    public function fundedBalance() {
+        return $this->hasOne(FundedBalance::class);
+    }
+
 
     /**
      * Scopes

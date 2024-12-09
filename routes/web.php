@@ -164,7 +164,11 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         //withdraw methods
         Route::resource('account', WithdrawController::class)->except('show');
         //user withdraw
-        Route::get('/', 'withdraw')->name('view');
+        Route::get('/step-1', 'step1Index')->name('step1');
+
+        Route::get('/payout-request', 'payoutRequest')->name('payout_request');
+
+        Route::get('/step-2', 'withdraw')->name('step2');
         Route::get('details/{accountId}/{amount?}', 'details')->name('details');
         Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::post('now', 'withdrawNow')->name('now');

@@ -48,7 +48,7 @@
         </div>
         <span class="text-sm">{{ __('Payment') }}</span>
     </a>
-    <a href="{{ route('user.withdraw.view') }}" class="card rounded-md p-4 px-2 text-center">
+    <a href="{{ route('user.withdraw.step1') }}" class="card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
             <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
         </div>

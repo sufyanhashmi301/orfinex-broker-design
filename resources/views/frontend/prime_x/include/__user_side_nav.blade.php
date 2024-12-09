@@ -60,7 +60,7 @@
             </a>
         </li>
 
-        <li>
+        {{-- <li>
     
             <a href="{{ route('user.wallet.index') }}" class="navItem loaderBtn {{ isActive('user.wallet*') }}">
                 <span class="flex items-center">
@@ -68,7 +68,7 @@
                     <span>{{ __('Wallets') }}</span>
                 </span>
             </a>
-        </li>
+        </li> --}}
 
         <li>
             <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index') }}">
@@ -121,7 +121,7 @@
         </li>--}}
 
         <li>
-            <a href="{{ route('user.withdraw.view') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+            <a href="{{ route('user.withdraw.step1') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
                     <span>{{ __('Payout') }}</span>

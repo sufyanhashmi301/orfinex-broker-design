@@ -2,42 +2,54 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Enums\ForexAccountStatus;
-use App\Enums\TxnStatus;
+use Txn;
+use Session;
+use Validator;
+use Carbon\Carbon;
 use App\Enums\TxnType;
-use App\Http\Controllers\Controller;
-use App\Models\ForexAccount;
+use App\Models\Wallet;
+use App\Traits\Payment;
+use App\Enums\TxnStatus;
+use App\Enums\WalletType;
+use Brick\Math\BigDecimal;
 use App\Models\Transaction;
-use App\Models\WithdrawAccount;
-use App\Models\WithdrawalSchedule;
-use App\Models\WithdrawMethod;
-use App\Rules\ForexLoginBelongsToUser;
-use App\Services\ForexApiService;
-use App\Traits\ForexApiTrait;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use App\Traits\Payment;
-use Brick\Math\BigDecimal;
-use Carbon\Carbon;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use App\Models\ForexAccount;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\FundedBalance;
+use App\Traits\ForexApiTrait;
+use App\Models\WithdrawMethod;
+use App\Enums\InvestmentStatus;
+use App\Models\WithdrawAccount;
+use App\Services\PayoutService;
 use Illuminate\Validation\Rule;
-use Session;
-use Txn;
-use Validator;
+use App\Enums\ForexAccountStatus;
+use App\Enums\PayoutRequestStatus;
+use App\Services\ForexApiService;
+use App\Models\WithdrawalSchedule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\AccountTypeInvestment;
+use App\Models\PayoutRequest;
+use App\Models\UserAffiliate;
+use Illuminate\Http\RedirectResponse;
+use App\Rules\ForexLoginBelongsToUser;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\Foundation\Application;
 
 class WithdrawController extends Controller
 {
     use ImageUpload, NotifyTrait, Payment, ForexApiTrait;
     protected $forexApiService;
+    protected $payout;
 
-    public function __construct(ForexApiService $forexApiService)
+    public function __construct(ForexApiService $forexApiService, PayoutService $payout)
     {
         $this->forexApiService = $forexApiService;
+        $this->payout = $payout;
     }
     /**
      * Display a listing of the resource.
@@ -103,7 +115,7 @@ class WithdrawController extends Controller
     public function create()
     {
         $withdrawMethods = WithdrawMethod::where('status', true)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereJsonContains('country', auth()->user()->country)
                     ->orWhereJsonContains('country', 'All');
             })->get();
@@ -120,17 +132,15 @@ class WithdrawController extends Controller
      */
     public function edit($id)
     {
-        $withdrawMethods = WithdrawMethod::where(function($query) {
+        $withdrawMethods = WithdrawMethod::where(function ($query) {
             $query->whereJsonContains('country', auth()->user()->country)
                 ->orWhereJsonContains('country', 'All');
         })->get();
-        $withdrawAccount = WithdrawAccount::where('id',get_hash($id))->where('user_id',auth()->user()->id)->first();
-        if($withdrawAccount){
+        $withdrawAccount = WithdrawAccount::where('id', get_hash($id))->where('user_id', auth()->user()->id)->first();
+        if ($withdrawAccount) {
             return view('frontend::withdraw.account.edit', compact('withdrawMethods', 'withdrawAccount'));
         }
         return redirect()->back();
-
-
     }
 
     /**
@@ -183,7 +193,6 @@ class WithdrawController extends Controller
         notify()->success('Successfully Withdraw Account Updated', 'success');
 
         return redirect()->route('user.withdraw.account.index');
-
     }
 
     /**
@@ -214,7 +223,7 @@ class WithdrawController extends Controller
         $method = $withdrawAccount->method;
         $charge = $method->charge;
         $name = $withdrawAccount->method_name;
-        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time .' '. $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
+        $processingTime = (int)$method->required_time > 0 ? 'Processing Time: ' . $withdrawAccount->method->required_time . ' ' . $withdrawAccount->method->required_time_format : 'This Is Automatic Method';
 
         $info = [
             'name' => $name,
@@ -244,8 +253,8 @@ class WithdrawController extends Controller
     public function withdrawNow(Request $request)
     {
 
-//        notify()->error(__('Withdrawals are currently disabled for a short period. We apologize for any inconvenience and will be back soon'), 'Error');
-//        return redirect()->back();
+        //        notify()->error(__('Withdrawals are currently disabled for a short period. We apologize for any inconvenience and will be back soon'), 'Error');
+        //        return redirect()->back();
         if (!setting('user_withdraw', 'permission') || !\Auth::user()->withdraw_status) {
             abort('403', __('Withdraw Disable Now'));
         }
@@ -258,15 +267,15 @@ class WithdrawController extends Controller
             abort('403', __('Today is the off day of withdraw'));
         }
         $input = $request->all();
-//        dd($input);
+        //        dd($input);
         $validator = Validator::make($input, [
-            'target_id' => ['required','integer', new ForexLoginBelongsToUser],
+            'target_id' => ['required', 'integer', new ForexLoginBelongsToUser],
             'withdraw_account' => ['required'],
             'amount' => ['required', 'regex:/^[0-9]+(\.[0-9]{1,4})?$/'],
 
-        ],[
-            'target_id.required'=> __('Kindly select the account to withdraw'),
-//            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
+        ], [
+            'target_id.required' => __('Kindly select the account to withdraw'),
+            //            'target_id.exists' => 'The selected account from does not exist or is not of type real.',
         ]);
 
         if ($validator->fails()) {
@@ -275,10 +284,10 @@ class WithdrawController extends Controller
         }
         $user = Auth::user();
         //daily limit
-        $todayTransaction = Transaction::where('user_id',$user->id)
-            ->where(function($query) {
-                        $query->where('type', TxnType::Withdraw)
-                            ->orWhere('type', TxnType::WithdrawAuto);
+        $todayTransaction = Transaction::where('user_id', $user->id)
+            ->where(function ($query) {
+                $query->where('type', TxnType::Withdraw)
+                    ->orWhere('type', TxnType::WithdrawAuto);
             })
             ->whereDate('created_at', Carbon::today())
             ->count();
@@ -315,25 +324,40 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
         $totalAmount = $totalAmount->toFloat();
-        $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate)  ;
+        $payAmount = ($amount * $withdrawMethod->rate) - ($charge * $withdrawMethod->rate);
 
         $type = $withdrawMethod->type == 'auto' ? TxnType::WithdrawAuto : TxnType::Withdraw;
 
         $targetType = 'forex_withdraw';
-        $txnInfo = Txn::new($input['amount'], $charge, $totalAmount, $withdrawMethod->name,
-            'Withdraw With ' . $withdrawAccount->method_name, $type,
-            TxnStatus::None, $withdrawMethod->currency, $payAmount, $user->id, null, 'User', json_decode($withdrawAccount->credentials, true), 'none', $targetId, $targetType);
+        $txnInfo = Txn::new(
+            $input['amount'],
+            $charge,
+            $totalAmount,
+            $withdrawMethod->name,
+            'Withdraw With ' . $withdrawAccount->method_name,
+            $type,
+            TxnStatus::None,
+            $withdrawMethod->currency,
+            $payAmount,
+            $user->id,
+            null,
+            'User',
+            json_decode($withdrawAccount->credentials, true),
+            'none',
+            $targetId,
+            $targetType
+        );
 
-//
-//        dd(setting('withdraw_deduction', 'features'));
-        if(!setting('withdraw_deduction', 'features')) {
+        //
+        //        dd(setting('withdraw_deduction', 'features'));
+        if (!setting('withdraw_deduction', 'features')) {
             Txn::update($txnInfo->tnx, TxnStatus::Pending, $txnInfo->user_id, 'Pending Request');
-        }else{
+        } else {
             $comment = $withdrawMethod->name . '/' . substr($txnInfo->tnx, -7);
             $data = [
                 'login' => $targetId,
                 'Amount' => $totalAmount,
-                'type' => 2,//withdraw
+                'type' => 2, //withdraw
                 'TransactionComments' => $comment
             ];
             $withdrawResponse = $this->forexApiService->balanceOperation($data);
@@ -345,7 +369,7 @@ class WithdrawController extends Controller
             }
         }
 
-//        dd($withdrawMethod->type);
+        //        dd($withdrawMethod->type);
         if ($withdrawMethod->type == 'auto') {
             $gatewayCode = $withdrawMethod->gateway->gateway_code;
             return self::withdrawAutoGateway($gatewayCode, $txnInfo);
@@ -376,7 +400,6 @@ class WithdrawController extends Controller
         $this->smsNotify('withdraw_request', $shortcodes, $user->phone);
 
         return redirect()->route('user.notify');
-
     }
 
     public function WithdrawApiCall($login, $totalAmount)
@@ -390,13 +413,133 @@ class WithdrawController extends Controller
             'Comment' => "Withdraw/USD",
 
         ];
-//        dd($userAccount,$dataArray);
+        //        dd($userAccount,$dataArray);
         $withdrawResponse = $this->sendApiRequest($withdrawUrl, $dataArray);
-//        dd($userAccount,$withdrawResponse);
+        //        dd($userAccount,$withdrawResponse);
         if ($withdrawResponse ? $withdrawResponse->status() == 200 && $withdrawResponse->object()->data == 0 : false) {
             return true;
         }
+    }
 
+    /**
+     * Payout request
+     */
+    public function payoutRequest(Request $request) {
+
+        // $reset_balance_data = [
+        //     'login' =>'996466',
+        //     'Amount' => '24000',
+        //     'type' => 1, //deposit
+        //     'TransactionComments' => 'Balance Reset'
+        // ];
+      
+        // $response = $this->forexApiService->balanceOperation($reset_balance_data);
+        // dd('hi');
+
+        // if wallets dont exist then retuern false
+        $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);
+        $affiliate_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::AFFILIATE);
+
+        if(!$payout_wallet->exists() || !$affiliate_wallet->exists()){
+            notify()->error('Error submitting the request. Please try again later.', 'Error');
+            return redirect()->back();
+        }
+
+        // All eligible funded balances record.
+        $funded_balances = FundedBalance::where('user_id', Auth::id())->where('profit', '!=', 0)->get();
+
+        $total_user_profit_share_amount = 0;
+        $detail = [];
+        $i = 0;
+        foreach($funded_balances as $fb) {
+            $user_profit_share_amount = ( $fb->profit * $fb->user_profit_share ) / 100;
+            $total_user_profit_share_amount += $user_profit_share_amount;
+
+            $detail[$i]['account_id'] = $fb->accountTypeInvestment->id; 
+            $detail[$i]['login'] = $fb->accountTypeInvestment->login; 
+            $detail[$i]['total_profit'] = $fb->profit; 
+            $detail[$i]['user_profit_percentage'] = $fb->user_profit_share; 
+            $detail[$i]['user_profit_share_amount'] = $user_profit_share_amount; 
+        }
+
+        // Temper handling
+        if($total_user_profit_share_amount == 0){
+            notify()->error('No Available Profit', 'Error');
+            return redirect()->back();
+        }
+
+        // API call to reset the balance to allotted funds
+        foreach($funded_balances as $fb) {
+            $reset_balance_data = [
+                'login' => $fb->accountTypeInvestment->login,
+                'Amount' => $fb->profit,
+                'type' => 0, //deposit
+                'TransactionComments' => 'Balance Reset'
+            ];
+          
+            $response = $this->forexApiService->balanceOperation($reset_balance_data);
+            
+            // 0 the funded balances of all accounts of Auth::id() user and Stats
+            // stats
+            $fb->accountTypeInvestment->accountTypeInvestmentStat->balance = $fb->accountTypeInvestment->accountTypeInvestmentStat->balance - $fb->profit;
+            $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity = $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity - $fb->profit;
+            $fb->accountTypeInvestment->accountTypeInvestmentStat->save();
+            
+            // funded balances
+            // $funded_balance = FundedBalance::find($fb->id);
+            $fb->profit = 0.00;
+            $fb->last_retrieved_profit = 0.00;
+            $fb->save();
+        }
+
+        // create new payout request
+        $payout_request = new PayoutRequest();
+        $payout_request->user_id = Auth::id();
+        $payout_request->wallet_unique_id = $request->wallet_unique_id;
+        $payout_request->user_profit_share_amount = $total_user_profit_share_amount;
+        $payout_request->detail = $detail;
+        $payout_request->status = PayoutRequestStatus::PENDING;
+        $payout_request->save();
+
+        // Create transaction. maybe?
+
+        notify('Payout request has been submitted!', 'Success');
+        return redirect()->back();   
+
+    }
+
+
+    /**
+     * Step 1 
+     */
+    public function step1Index()
+    {
+
+        // Payout Wallet Create if not exists
+        $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);
+        if (!$payout_wallet->exists()) {
+            $payout_wallet = $this->payout->createNewWallet(WalletType::PAYOUT);
+        }
+        $payout_wallet = $payout_wallet->first();
+
+        // Affiliate Wallet Create if not exists
+        $affiliate_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::AFFILIATE);
+        if (!$affiliate_wallet->exists()) {
+            $affiliate_wallet = $this->payout->createNewWallet(WalletType::AFFILIATE);
+        }
+        $affiliate_wallet = $affiliate_wallet->first();
+
+        // All the eligible funded balances entries created/updated
+        $this->payout->updateAllFundedBalance(Auth::id());
+
+        // Update affiliate wallet
+        $affiliate_wallet->available_balance = UserAffiliate::where('user_id', Auth::id())->first()->total_commission;
+        $affiliate_wallet->save();
+
+        // All eligible funded balances record.
+        $funded_balances = FundedBalance::where('user_id', Auth::id())->where('profit', '!=', 0)->get();
+
+        return view('frontend::withdraw.step1', compact('payout_wallet', 'affiliate_wallet', 'funded_balances'));
     }
 
     /**
@@ -415,7 +558,7 @@ class WithdrawController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('frontend::withdraw.now', compact('accounts', 'forexAccounts'));
+        return view('frontend::withdraw.step2', compact('accounts', 'forexAccounts'));
     }
 
     public function withdrawLog()

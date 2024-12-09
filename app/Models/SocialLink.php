@@ -50,7 +50,7 @@ class SocialLink extends Model
 
     public static function getProviderConfig($provider)
     {
-        return self::where('slug', $provider)->where('status', 1)->first();
+        return self::where('driver', $provider)->where('status', 1)->first();
     }
 
 }

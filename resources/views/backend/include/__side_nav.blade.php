@@ -18,7 +18,7 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus py-2 px-4 h-[calc(100%-100px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus py-2 px-4 h-[calc(100%-96px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu flex flex-column mt-3">
         <li>
             <a href="{{route('admin.dashboard')}}" class="navItem {{ isActive('admin.dashboard') }}">
@@ -449,7 +449,7 @@
         @endcanany
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-4">
+<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
     {{-- ************************************************************* Site  Settings *********************************************************--}}
     @canany(['site-setting','plugin-setting','page-manage'])
         @canany(['site-setting','plugin-setting'])

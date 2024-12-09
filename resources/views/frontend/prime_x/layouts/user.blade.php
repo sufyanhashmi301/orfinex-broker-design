@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx" dir="ltr" class="light">
+<html lang="zxx" dir="ltr" class="{{ auth()->user()->user_theme == 'light' ? 'light' : 'dark' }}">
 @include('frontend::include.__head')
 <body class="font-inter dashcode-app" id="body_class">
     @include('notify::components.notify')

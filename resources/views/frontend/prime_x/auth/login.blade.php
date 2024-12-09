@@ -88,6 +88,14 @@
                             {{ __('Sign up now.') }}
                         </a>
                     </div>
+                        @php
+                            $socialLinks = App\Models\SocialLink::activePlatforms();
+                        @endphp
+                        @foreach ($socialLinks as $socialLink)
+                            <a href="{{ route('social.redirect', $socialLink->slug) }}" class="btn btn-{{ strtolower($socialLink->slug) }}">
+                                Login with {{ ucfirst($socialLink->title) }}
+                            </a>
+                        @endforeach
                 </div>
             </div>
         </div>

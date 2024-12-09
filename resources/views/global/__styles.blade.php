@@ -22,11 +22,11 @@
     }
     .app-header .header-text-color {
         --tw-text-opacity: 1;
-        color: rgba({{ implode(' ', getColorFromSettings('header_color')) }} / var(--tw-bg-opacity));
+        color: rgba({{ implode(' ', getColorFromSettings('header_color')) }} / var(--tw-text-opacity));
     }
     .dark .app-header .header-text-color {
         --tw-text-opacity: 1;
-        color: rgba({{ implode(' ', getColorFromSettings('header_color_dark')) }} / var(--tw-bg-opacity));
+        color: rgba({{ implode(' ', getColorFromSettings('header_color_dark')) }} / var(--tw-text-opacity));
     }
     .sidebar-menus, .stickySetting_menu {
         background-color: rgba({{ implode(' ', getColorFromSettings('sidebar_bg')) }} / var(--tw-bg-opacity));

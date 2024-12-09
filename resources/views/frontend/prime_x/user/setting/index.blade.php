@@ -25,8 +25,8 @@
                     </li>
                     @endif
                     <li class="nav-item">
-                        <a href="{{ route('user.setting.communication') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.communication') }}">
-                            {{ __('Communication') }}
+                        <a href="{{ route('user.setting.preference') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary loaderBtn {{ isActive('user.setting.preference') }}">
+                            {{ __('Preference') }}
                         </a>
                     </li>
                     <li class="nav-item">

@@ -46,7 +46,7 @@
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
-<div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-100px)] overflow-y-auto z-50" id="sidebar_menus">
+<div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-96px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu mt-3">
         <li>
             <a href="{{ route('user.dashboard') }}" class="navItem loaderBtn {{ isActive('user.dashboard') }}">
@@ -207,8 +207,8 @@
         </li> --}}
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-4">
-    <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn {{ isActive('user.setting*') }}">
+<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
+    <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn">
         <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
             <span>{{ __('Settings') }}</span>

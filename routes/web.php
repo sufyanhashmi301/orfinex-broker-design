@@ -208,8 +208,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
 
-        Route::get('/communication', 'communication')->name('communication');
-        Route::post('/communication-language', 'updateLanguage')->name('communication.language');
+        Route::get('/preference', 'preference')->name('preference');
+        Route::post('/preference-language', 'updateLanguage')->name('preference.language');
+        Route::post('/preference-theme', 'updateUserTheme')->name('preference.theme');
     });
 });
 

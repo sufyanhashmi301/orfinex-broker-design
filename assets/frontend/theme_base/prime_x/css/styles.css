@@ -12,6 +12,9 @@
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
 }
+.stickySetting_menu {
+    height: 48px;
+}
 .sidebar-menu > li.active > a {
     color: #121212;
     background-color: rgba(254, 208, 0, 0.35);

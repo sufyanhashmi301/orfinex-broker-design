@@ -34,6 +34,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Models\PayoutRequest;
+use App\Models\UserAffiliate;
 use Illuminate\Http\RedirectResponse;
 use App\Rules\ForexLoginBelongsToUser;
 use Illuminate\Contracts\View\Factory;
@@ -530,6 +531,10 @@ class WithdrawController extends Controller
 
         // All the eligible funded balances entries created/updated
         $this->payout->updateAllFundedBalance(Auth::id());
+
+        // Update affiliate wallet
+        $affiliate_wallet->available_balance = UserAffiliate::where('user_id', Auth::id())->first()->total_commission;
+        $affiliate_wallet->save();
 
         // All eligible funded balances record.
         $funded_balances = FundedBalance::where('user_id', Auth::id())->where('profit', '!=', 0)->get();

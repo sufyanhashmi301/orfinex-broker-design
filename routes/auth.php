@@ -47,7 +47,7 @@ Route::middleware('guest')->group(function () {
 
 
         Route::get('{provider}/redirect', [SocialiteController::class, 'redirect'])->name('social.redirect');
-            Route::get('{provider}/callback', [SocialiteController::class, 'callback'])->name('social.callback');
+            Route::get('{provider}/callback', [RegisteredUserController::class, 'store'])->name('social.callback');
 
 });
 

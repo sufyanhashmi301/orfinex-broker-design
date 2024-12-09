@@ -210,12 +210,12 @@
                                     {{ __('KYC') }}
                                 </a>
                             </li>
-                            @can('accounts-list')
+{{--                            @can('accounts-list')--}}
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="ib-info"
+                                        id="pills-transfer-tab1"
                                         data-bs-toggle="pill"
                                         data-bs-target="#ib-info"
                                         type="button"
@@ -223,11 +223,10 @@
                                         aria-controls="ib-info"
                                         aria-selected="true"
                                     >
-                                        
                                         {{ __('Partner') }}
                                     </a>
                                 </li>
-                            @endcan
+{{--                            @endcan--}}
 
                             @can('transaction-list')
                                 <li class="nav-item" role="presentation">
@@ -348,13 +347,13 @@
                 @include('backend.user.include.__kycTab')
 
                 <!-- IB -->
-                @can('IB-List')
+{{--                @can('IB-List')--}}
                     @include('backend.user.include.__ib_info')
                     @include('backend.user.include.__ib_approve')
 {{--                    @include('backend.user.include.__ib_update')--}}
 {{--                    @include('backend.user.include.__mib_add')--}}
 {{--                    @include('backend.user.include.__mib_update')--}}
-                @endcan
+{{--                @endcan--}}
 
                 <!-- earnings -->
                 @can('profit-list')

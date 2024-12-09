@@ -60,7 +60,7 @@
             </a>
         </li>
 
-        <li>
+        {{-- <li>
     
             <a href="{{ route('user.wallet.index') }}" class="navItem loaderBtn {{ isActive('user.wallet*') }}">
                 <span class="flex items-center">
@@ -68,7 +68,7 @@
                     <span>{{ __('Wallets') }}</span>
                 </span>
             </a>
-        </li>
+        </li> --}}
 
         <li>
             <a href="{{ route('user.investments.index', ['status' => 'active']) }}" class="navItem {{ isActive('user.investments.index') }}">

@@ -64,6 +64,7 @@ use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\LeaderboardRankingController;
+use App\Http\Controllers\PayoutRequestController;
 use App\Models\LeaderboardBadge;
 
 /*
@@ -182,6 +183,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/affiliate-rules', [AffiliateRuleController::class, 'index'])->name('affiliate-rules.index');
     Route::get('/affiliate-rules/create', [AffiliateRuleController::class, 'create'])->name('affiliate-rules.create');
     Route::post('/affiliate-rules/store', [AffiliateRuleController::class, 'store'])->name('affiliate-rules.store');
+
+    // Payout Requests
+    Route::get('/payout-requests', [PayoutRequestController::class, 'index'])->name('payout_requests.index');
+    Route::get('/payout-request/{payout_request_id}', [PayoutRequestController::class, 'action'])->name('payout_request.action');
 
 // =============================== Optimization ===============================
 

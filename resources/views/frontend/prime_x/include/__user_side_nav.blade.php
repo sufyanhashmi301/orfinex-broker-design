@@ -121,7 +121,7 @@
         </li>--}}
 
         <li>
-            <a href="{{ route('user.withdraw.view') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
+            <a href="{{ route('user.withdraw.step1') }}" class="navItem @if( Route::currentRouteName() != 'user.withdraw.log') {{ isActive('user.withdraw*') }} @endif">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
                     <span>{{ __('Payout') }}</span>

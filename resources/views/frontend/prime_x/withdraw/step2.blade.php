@@ -17,13 +17,20 @@
                     <div class="progress_bar mb-5"></div>
                     <div class="">
                         <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 1') }}</div>
+                        <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Select Payout') }}</h4>
+                    </div>
+                </div>
+                <div class="single-step current">
+                    <div class="progress_bar mb-5"></div>
+                    <div class="">
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Withdraw Amount') }}</h4>
                     </div>
                 </div>
                 <div class="single-step">
                     <div class="progress_bar mb-5"></div>
                     <div class="">
-                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 2') }}</div>
+                        <div class="text-sm text-slate-600 dark:text-slate-300 mb-2">{{ __('Step - 3') }}</div>
                         <h4 class="leading-none text-xl text-dark dark:text-white">{{ __('Success') }}</h4>
                     </div>
                 </div>
@@ -52,13 +59,14 @@
                                                 disabled>
                                             --{{ __('Select Account') }}--
                                         </option>
-                                        @foreach($forexAccounts as $forexAccount)
+                                        {{-- @foreach($forexAccounts as $forexAccount)
                                             <option value="{{ $forexAccount->login }}" data-type="forex"
                                                     class="inline-block font-Inter font-normal text-sm text-slate-600">
                                                 {{ $forexAccount->login }} - {{ $forexAccount->account_name }}
                                                 ({{ get_mt5_account_equity($forexAccount->login)  }} {{$currency}})
                                             </option>
-                                        @endforeach
+                                        @endforeach --}}
+                                        <option value="44444">Account</option>
                                         @if(auth()->user()->is_multi_ib == 1 && isset(auth()->user()->multi_ib_login))
                                             @include('frontend::common.include.__mib_dropdown' )
                                         @endif

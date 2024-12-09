@@ -351,6 +351,16 @@
             @endcanany
 
             @canany(['withdraw-list','withdraw-method-manage','withdraw-action','withdraw-schedule'])
+
+                <li class="">
+                    <a href="{{route('admin.payout_requests.index', ["status" => 'all'])}}" class="navItem {{ isActive('admin.payout_requests.index') }}">
+                        <span class="flex items-center">
+                            <iconify-icon class="nav-icon" icon="heroicons-outline:upload"></iconify-icon>
+                            <span>{{ __('Payout Requests') }}</span>
+                        </span>
+                    </a>
+                </li>
+
                 <li class="{{ isActive(['admin.withdraw*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">

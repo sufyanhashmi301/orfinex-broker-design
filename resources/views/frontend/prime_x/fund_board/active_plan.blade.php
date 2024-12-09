@@ -234,11 +234,15 @@
         @if ( $trading_objectives['daily_drawdown_status'] != 'violated' && 
               $trading_objectives['max_drawdown_status'] != 'violated' &&
               $trading_objectives['profit_target_status'] == 'passed' &&
-              $trading_objectives['minimum_trading_days_status'] == 'passed' &&
-              $investment->getPhaseSnapshotData()['type'] != 'funded_phase'
+              $trading_objectives['minimum_trading_days_status'] == 'passed'
             )
             <div class="pb-2 ">
-                <b><span class="text-sm"> <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> Close all active trades to get promoted to next phase!</span></b>
+                @if ($investment->getPhaseSnapshotData()['type'] == 'funded_phase')
+                    {{-- <b><span class="text-sm"> <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> Close all active trades to update the balance in payout wallet!</span></b> --}}
+                @else
+                    <b><span class="text-sm"> <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> Close all active trades to get promoted to next phase!</span></b>
+                @endif
+                
             </div>
         @endif
         <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
@@ -370,7 +374,7 @@
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Trading Days') }}</span>
-                        <span class="text-slate-900 font-medium">{{ $trading_objectives['remaining_trading_days'] }}</span>
+                        <span class="text-slate-900 font-medium">{{ $trading_objectives['remaining_trading_days'] < 0 ? 0 : $trading_objectives['remaining_trading_days'] }}</span>
                     </li>
                 </ul>
             </div>

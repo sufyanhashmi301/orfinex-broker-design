@@ -16,7 +16,7 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\InvestmentPhaseApprovalService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
-
+use App\Models\FundedBalance;
 
 class AccountTypeInvestmentService
 {
@@ -24,11 +24,13 @@ class AccountTypeInvestmentService
   private $investment_phase_approve;
   private $investment_payment;
   protected $forexApiService;
+  protected $payout;
 
-  public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService) {
+  public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout) {
       $this->investment_phase_approve = $investment_phase_approve;
       $this->investment_payment = $investment_payment;
       $this->forexApiService = $forexApiService;
+      $this->payout = $payout;
   }
 
   /**
@@ -356,8 +358,17 @@ class AccountTypeInvestmentService
       }
 
     }else{
-      // no more phases
-      // dd('Funded Phase Completed');
+      // payout phase
+      
+      // Create Funded Balance Entry if no existing
+      $funded_balance_exists = FundedBalance::where('user_id', Auth::id())->where('account_type_investment_id', $passed_investment->id)->exists();
+      if(!$funded_balance_exists) {
+        $this->payout->fundedBalanceInit($passed_investment->id);
+      }
+
+      // update the profit values of funded balance
+      $this->payout->updateFundedBalance($passed_investment);
+      
     }
 
   }

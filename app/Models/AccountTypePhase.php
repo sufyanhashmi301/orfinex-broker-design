@@ -27,4 +27,8 @@ class AccountTypePhase extends Model
     public function accountTypePhaseRules(){
         return $this->hasMany(AccountTypePhaseRule::class);
     }
+
+    public function accountTypeInvestment() {
+        return $this->hasMany(AccountTypeInvestment::class);
+    }
 }

@@ -210,7 +210,7 @@
                                     {{ __('KYC') }}
                                 </a>
                             </li>
-{{--                            @can('accounts-list')--}}
+                            @can('accounts-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -226,7 +226,7 @@
                                         {{ __('Partner') }}
                                     </a>
                                 </li>
-{{--                            @endcan--}}
+                            @endcan
 
                             @can('transaction-list')
                                 <li class="nav-item" role="presentation">
@@ -350,9 +350,6 @@
 {{--                @can('IB-List')--}}
                     @include('backend.user.include.__ib_info')
                     @include('backend.user.include.__ib_approve')
-{{--                    @include('backend.user.include.__ib_update')--}}
-{{--                    @include('backend.user.include.__mib_add')--}}
-{{--                    @include('backend.user.include.__mib_update')--}}
 {{--                @endcan--}}
 
                 <!-- earnings -->

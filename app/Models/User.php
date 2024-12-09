@@ -67,6 +67,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ref_id',
         'password',
         'notes',
+        'user_theme',
     ];
 
     protected $appends = [

@@ -34,8 +34,11 @@
                 </select>
             </div>
             <div class="input-area relative">
-                <select name="" class="form-control">
+                <select id="forex-account" class="form-control">
                     <option value="">{{ __('All accounts') }}</option>
+                    @foreach($realForexAccounts as $account)
+                        <option value="{{ $account->login }}">{{ $account->account_name }}</option>
+                    @endforeach
                 </select>
             </div>
             <form method="POST" action="{{ route('user.transactions.export') }}">
@@ -173,10 +176,11 @@
 @section('script')
     <script !src="">
 
-        $('#transaction-date, #transaction-status, #transaction-type').on('change', function() {
+        $('#transaction-date, #transaction-status, #transaction-type, #forex-account').on('change', function() {
             const status = $('#transaction-status').val();
             const type = $('#transaction-type').val();
             const date = $('#transaction-date').val();
+            const account = $('#forex-account').val();
 
             $.ajax({
                 url: '{{ route("user.transactions") }}',
@@ -185,6 +189,7 @@
                     transaction_status: status,
                     transaction_type: type,
                     transaction_date: date,
+                    forex_account: account,
                 },
                 success: function (response) {
                     $('#transaction-table-body').html(response); // Update the table body

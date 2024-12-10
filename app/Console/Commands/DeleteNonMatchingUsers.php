@@ -19,7 +19,7 @@ class DeleteNonMatchingUsers extends Command
      *
      * @var string
      */
-    protected $description = 'List users from accounts_1 not in users or forex_accounts, then delete unmatched users and their related data';
+    protected $description = 'List users from accounts_1 not in users or forex_accounts, delete unmatched users and extra forex_accounts for retained users';
 
     /**
      * Execute the console command.
@@ -37,6 +37,7 @@ class DeleteNonMatchingUsers extends Command
                 return;
             }
 
+            // Step 2: Find accounts_1 entries not in users or forex_accounts
             $missingAccounts = $accounts1Data->filter(function ($account) {
                 $userExists = DB::table('users')
                     ->where('email', $account->email)
@@ -61,7 +62,6 @@ class DeleteNonMatchingUsers extends Command
                 );
             }
 
-
             // Step 3: Fetch users to retain based on accounts_1
             $userIdsToRetain = DB::table('forex_accounts')
                 ->join('users', 'forex_accounts.user_id', '=', 'users.id')
@@ -74,7 +74,20 @@ class DeleteNonMatchingUsers extends Command
                 return;
             }
 
-            // Step 4: Find user IDs to delete
+            // Step 4: Delete extra forex_accounts for retained users
+            $forexAccountsToDelete = DB::table('forex_accounts')
+                ->whereIn('user_id', $userIdsToRetain)
+                ->whereNotIn('login', $accounts1Data->pluck('login'))
+                ->pluck('id');
+
+            if ($forexAccountsToDelete->isNotEmpty()) {
+                DB::table('forex_accounts')->whereIn('id', $forexAccountsToDelete)->delete();
+                $this->info("Deleted {$forexAccountsToDelete->count()} extra forex_accounts for retained users.");
+            } else {
+                $this->info('No extra forex_accounts found to delete for retained users.');
+            }
+
+            // Step 5: Find user IDs to delete
             $userIdsToDelete = DB::table('users')
                 ->whereNotIn('id', $userIdsToRetain)
                 ->pluck('id');
@@ -86,7 +99,7 @@ class DeleteNonMatchingUsers extends Command
                 return;
             }
 
-            // Step 5: Delete from related tables
+            // Step 6: Delete from related tables
             $relatedTables = [
                 'transactions',
                 'forex_accounts',
@@ -113,7 +126,7 @@ class DeleteNonMatchingUsers extends Command
                 DB::table($table)->whereIn('user_id', $userIdsToDelete)->delete();
             }
 
-            // Step 6: Delete from users table
+            // Step 7: Delete from users table
             DB::table('users')->whereIn('id', $userIdsToDelete)->delete();
 
             // Output the total count of deleted users

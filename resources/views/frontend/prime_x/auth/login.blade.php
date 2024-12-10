@@ -53,7 +53,10 @@
                         <div class="fromGroup">
                             <label class="block capitalize form-label">{{ __('Password') }}</label>
                             <div class="relative ">
-                                <input type="password" name="password" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter your password') }}" required>
+                                <input type="password" name="password" id="password" class="form-control py-2 h-[48px]" placeholder="{{ __('Enter your password') }}" required>
+                                <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="#password">
+                                    <iconify-icon class="text-lg" icon="heroicons:eye-slash"></iconify-icon>
+                                </button>
                             </div>
                         </div>
                         @if($googleReCaptcha)
@@ -79,14 +82,10 @@
                         </button>
                     </form>
                     <!-- END: Login Form -->
-                    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
-                            {{ __("Don't have an account?") }}
-                        </div>
-                    </div>
-                    <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-6 uppercase text-sm text-center">
-                        <a href="{{route('register')}}" class="btn btn-base inline-flex items-center justify-center w-full">
-                            {{ __('Signup for free') }}
+                    <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm text-center">
+                        {{ __("Don’t have an account? ") }}
+                        <a href="{{route('register')}}" class="text-slate-900 dark:text-white font-medium uppercase hover:underline">
+                            {{ __('Sign up now.') }}
                         </a>
                     </div>
                 </div>

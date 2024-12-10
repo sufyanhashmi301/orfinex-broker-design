@@ -67,15 +67,30 @@
   });
 
   // Theme Change by Header Button
-  $("#themeMood").on("click", function () {
-    if (currentTheme === "light") {
-      currentTheme = "dark";
+  $(document).ready(function() {
+    var currentTheme = localStorage.theme || "light";
+
+    if (currentTheme === "dark") {
+        $("html").addClass("dark");
+        $("html").removeClass("light");
     } else {
-      currentTheme = "light";
+        $("html").addClass("light");
+        $("html").removeClass("dark");
     }
-    localStorage.theme = currentTheme;
-    location.reload();
+
+    // Toggle theme on click
+    $("#themeMood").on("click", function () {
+        if (currentTheme === "light") {
+            currentTheme = "dark";
+        } else {
+            currentTheme = "light";
+        }
+
+        localStorage.theme = currentTheme;
+        location.reload();
+    });
   });
+
   $("#grayScale").on("click", function () {
     if ($("html").hasClass("grayScale")) {
       $("html").removeClass("grayScale");
@@ -843,4 +858,30 @@
       next: '<iconify-icon icon="heroicons-outline:chevron-right"></iconify-icon>'
     }
   });
+
+
+  $('[data-toggle="fullscreen"]').on("click", function(e) {
+    e.preventDefault();
+
+    $('body').toggleClass('fullscreen-enable');
+
+    if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement) {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    } else {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    }
+  });
+
 })(jQuery);

@@ -523,9 +523,14 @@ if (!function_exists('getCountries')) {
 
     function getCountries()
     {
-        $countries = \App\Models\Country::where('status',1)->get();
+        $countries = json_decode(file_get_contents(resource_path() . '/json/CountryCodes.json'), true);
 
-        return $countries;
+        $excludedCountries = \App\Models\BlackListCountry::pluck('name')->toArray();
+
+        $filteredCountries = collect($countries)->reject(function ($country) use ($excludedCountries) {
+            return in_array($country["name"], $excludedCountries);
+        })->values();
+        return $filteredCountries;
     }
 }
 if (!function_exists('getCountryCode')) {
@@ -606,7 +611,7 @@ if (!function_exists('getLocation')) {
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
-            return $value['country_code'] == $location['countryCode'];
+            return $value['code'] == $location['countryCode'];
         });
 //dd($location,$currentCountry,getCountries());
         $location = [
@@ -1477,7 +1482,7 @@ if (!function_exists('hexToRgb')) {
         $g = hexdec(substr($hexColor, 2, 2));
         $b = hexdec(substr($hexColor, 4, 2));
 
-        return [$r, $g, $b];
+        return ['r' => $r, 'g' => $g, 'b' => $b];
     }
 }
 
@@ -1490,6 +1495,16 @@ if (!function_exists('getColorFromSettings')) {
     }
 }
 
+if (!function_exists('isDarkColor')) {
+    function isDarkColor($hex)
+    {
+        $rgb = hexToRgb($hex);
+        $luminance = 0.2126 * $rgb['r'] + 0.7152 * $rgb['g'] + 0.0722 * $rgb['b'];
+
+        return $luminance < 128;
+    }
+}
+
 if (!function_exists('document_link_by_slug')) {
     function document_link_by_slug($slug)
     {
@@ -1497,3 +1512,9 @@ if (!function_exists('document_link_by_slug')) {
     }
 }
 
+if (!function_exists('social_links')) {
+    function social_links()
+    {
+        return App\Models\SocialLink::where('status', 1)->get();
+    }
+}

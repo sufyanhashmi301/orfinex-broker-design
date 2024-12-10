@@ -7,7 +7,11 @@
   background-color: rgb(254 208 0 / var(--tw-border-opacity));
   border-left-color: #FED000;
 }
-
+.app-header, .logo-segment {
+    height: 48px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
 .sidebar-menu > li.active > a {
     color: #121212;
     background-color: rgba(254, 208, 0, 0.35);

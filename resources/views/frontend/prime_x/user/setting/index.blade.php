@@ -3,7 +3,7 @@
     {{ __('Settings') }}
 @endsection
 @section('content')
-    <div class="overflow-x-auto mb-5">
+    <div class="pageTitle overflow-x-auto mb-5">
         <div class="inline-block min-w-full align-middle">
             <div class="overflow-hidden">
                 <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">

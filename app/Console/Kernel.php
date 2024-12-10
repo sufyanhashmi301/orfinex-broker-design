@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
 use App\Console\Commands\IBProfitRecord;
 use App\Console\Commands\MultiIbBonus;
+use App\Console\Commands\MultiLevelRebateDistribution;
 use App\Console\Commands\ResetData;
 use App\Console\Commands\UpdateExchangeRates;
 
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
+        $schedule->command('rebate:distribution')->everyFiveMinutes();
 //        if(url('/') == 'http://brokerdemo.brokeret.com') {
 //            $schedule->command('reset:data')->daily();
 //        }
@@ -62,6 +64,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateExchangeRates::class,
         Commands\UpdateTokenRates::class,
         SyncForexAccountsViaEmailForBanex::class,
+        MultiLevelRebateDistribution::class,
 
     ];
 }

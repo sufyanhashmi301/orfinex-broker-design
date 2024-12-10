@@ -17,7 +17,7 @@
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
     @foreach($schemas as $schema)
     <div class="card relative border dark:border-slate-700">
-        <div class="card-body p-6">
+        <div class="card-body h-full flex flex-col p-6">
             <div class="">
                 <div class="flex items-center justify-between mb-1">
                     <h4>{{ $schema->title }}</h4>
@@ -32,9 +32,9 @@
                 </p>
                 <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
             </div>
-            <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
+            <div class="h-full space-y-3 bg-slate-50 dark:bg-dark rounded p-3 mb-5">
+                <div class="flex items-center">
+                    <span class="flex-1 text-sm font-medium text-slate-600 dark:text-slate-300">
                         {{ __('Initial Deposit') }}
                     </span>
                     <span class="flex-1 text-right">
@@ -42,25 +42,28 @@
                             {{ isset($schema->first_min_deposit) ? $currencySymbol . $schema->first_min_deposit : $currencySymbol . 0 }}
                         </span>
                     </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('Spread') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->spread ? $schema->spread : __('NA') }}
-                    </span>
-                </li>
-                <li class="flex items-center py-3">
-                    <span class="flex-1 text-sm text-slate-600 dark:text-slate-300">
-                        {{ __('Commission') }}
-                    </span>
-                    <span class="flex-1 text-sm text-right text-slate-600 dark:text-slate-300">
-                        {{ $schema->commission ? $schema->commission : __('NA') }}
-                    </span>
-                </li>
-            </ul>
-            <a href="{{ route('user.schema.preview', $schema->id) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-5">
+                </div>
+                <p class="text-sm font-medium text-slate-600 dark:text-slate-300">
+                    {{ __('Key Features') }}
+                </p>
+                <ul class="space-y-2">
+                    @if($schema->spread)
+                        @php
+                            $spreads = explode(',', $schema->spread);
+                        @endphp
+
+                        @foreach($spreads as $spread)
+                            <li class="text-sm text-slate-900 dark:text-slate-300 flex space-x-2 items-center rtl:space-x-reverse pl-2">
+                                <span class="h-[6px] w-[6px] bg-slate-900 dark:bg-slate-400 rounded-full inline-block"></span>
+                                <span>{{ trim($spread) }}</span>
+                            </li>
+                        @endforeach
+                    @else
+                        <span class="text-sm text-slate-900 dark:text-slate-300 pl-2">{{ __('NA') }}</span>
+                    @endif
+                </ul>
+            </div>
+            <a href="{{ route('user.schema.preview', $schema->id) }}" class="btn loaderBtn inline-flex justify-center btn-primary w-full mt-auto">
                 {{ __('Create Account') }}
             </a>
         </div>

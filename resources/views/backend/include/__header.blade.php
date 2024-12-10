@@ -140,6 +140,11 @@
                         <iconify-icon class="text-white text-xl dark:hidden block" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
                     </button>
                 </div>
+                <div>
+                    <button class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] hover:bg-slate-50 hover:bg-opacity-10 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-toggle="fullscreen">
+                        <iconify-icon class="text-white text-xl" icon="mdi:fullscreen"></iconify-icon>
+                    </button>
+                </div>
                 <!-- END: TOggle Theme -->
                 <div class="relative md:block hidden admin-notifications">
                     @php

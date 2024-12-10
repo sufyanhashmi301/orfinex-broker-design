@@ -1,13 +1,9 @@
 @extends('backend.setting.platform_api.index')
 @section('title')
-    <div>
-        <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
-            {{ __('X9 Web Terminal Setting') }}
-        </h4>
-        <p class="text-sm text-slate-500 dark:text-slate-300">
-            {{ __("Seamlessly configure web terminal for user access.") }}
-        </p>
-    </div>
+    {{ __('X9 Web Terminal Setting') }}
+@endsection
+@section('title-desc')
+    {{ __("Seamlessly configure web terminal for user access.") }}
 @endsection
 @section('platform-api-content')
     <?php

@@ -63,8 +63,32 @@
     </div>
 </div>
 
+<!-- Modal for Account details -->
+@include('backend.investment.modal.__account_details')
+
+<!-- Modal for Account leverage -->
+@include('backend.investment.modal.__change_leverage')
+
+<!-- Modal for Demo deposit -->
+@include('backend.investment.modal.__deposit_demo_account')
+
+<!-- Modal for Account rename -->
+@include('backend.investment.modal.__account_rename')
+
+<!-- Modal for Account password -->
+@include('backend.investment.modal.__change_account_password')
+
+<!-- Modal for Account invest password -->
+@include('backend.investment.modal.__change_investor_password')
+
+<!-- Modal for Account archive -->
+@include('backend.investment.modal.__archive_account')
+
+<!-- Modal for Account unarchive -->
+@include('backend.investment.modal.__unarchive_account')
 
 @push('single-script')
+    @include('backend.investment.fx-js')
     <script>
         (function ($) {
             "use strict";

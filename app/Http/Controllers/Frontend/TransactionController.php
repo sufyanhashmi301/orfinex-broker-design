@@ -8,6 +8,7 @@ use App\Models\ForexAccount;
 use App\Models\Transaction;
 use App\Exports\AllTransactionsExport;
 use App\Traits\ForexApiTrait;
+use App\Services\ForexApiService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,8 +19,19 @@ use Illuminate\Http\Request;
 class TransactionController extends Controller
 {
     use ForexApiTrait;
+    protected $forexApiService;
+
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
+
     public function transactions()
     {
+        $realForexAccounts = ForexAccount::realActiveAccount()->traderType()
+            ->orderBy('balance', 'desc')
+            ->get();
+
         $transactions = Transaction::search(request('query'))
             ->query(function ($query) {
                 $query->where('user_id', auth()->user()->id)
@@ -40,6 +52,9 @@ class TransactionController extends Controller
                     })
                     ->when(request('transaction_type'), function ($query) {
                         $query->where('type', request('transaction_type'));
+                    })
+                    ->when(request('forex_account'), function ($query) {
+                        $query->where('target_id', request('forex_account'));
                     });
             })
             ->orderBy('created_at', 'desc')
@@ -50,7 +65,7 @@ class TransactionController extends Controller
             return view('frontend::user.transaction.include.__transaction_row', compact('transactions'))->render();
         }
 
-        return view('frontend::user.transaction.index', compact('transactions'));
+        return view('frontend::user.transaction.index', compact('transactions', 'realForexAccounts'));
     }
 
     public function export(Request $request)
@@ -61,31 +76,48 @@ class TransactionController extends Controller
 
     public function forexTransactions()
     {
-//        dd(request('start_date'),request('end_date'));
+
+        $login = request('login');
+        $data['login'] = $login;
+
         $start = Carbon::now()->subDay(1)->startOfDay()->timestamp;
         $end = Carbon::now()->endOfDay()->timestamp;
-//        dd(request('start_date'),request('end_date'),request('receiver_account'));
+
         if (request('start_date')) {
-            $start = Carbon::parse(request('start_date'))->startOfDay()->timestamp;
+            $start = Carbon::parse(request('start_date'))->format('d/m/Y');
+            $data['FromDate'] = $start;
         }
         if (request('end_date')) {
-            $end = Carbon::parse(request('end_date'))->endOfDay()->timestamp;
+            $end = Carbon::parse(request('end_date'))->format('d/m/Y');
+            $data['ToDate'] = $end;
         }
-//            dd($startIbCalc);
-        $login = request('login');
-        $data = [];
+
+//        dd($start, $end);
+
+        $orders = [];
+        $transactions = [];
+
         if ($login) {
-            $response = $this->getOrderList($login, $start, $end);
-            if ($response) {
-                $data = $response->object();
+            if (request('type') == 'trades-report'){
+                $response = $this->forexApiService->getOrders($data);
+                if ($response) {
+                    $orders = collect($response['result']);
+                }
             }
+            elseif (request('type') == 'balance-report') {
+                $response = $this->forexApiService->getBalanceReport($data);
+                if ($response) {
+                    $transactions = collect($response['result']);
+//                    dd($transactions);
+                }
+            }
+
         }
-        $transactions = new Collection($data);
         $forexAccounts = ForexAccount::where('user_id', auth()->id())->traderType()
             ->where('account_type', 'real')
             ->where('status',ForexAccountStatus::Ongoing)
             ->get();
 
-        return view('frontend::user.transaction.forex-orders', compact('transactions','forexAccounts'));
+        return view('frontend::user.transaction.forex-orders', compact('forexAccounts', 'orders', 'transactions'));
     }
 }

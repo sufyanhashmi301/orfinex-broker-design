@@ -193,6 +193,11 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
+    Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
+        Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
+        Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
+    });
+
     //===============================  Profit Deduction Management ==================================
     Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
     Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');

@@ -1,6 +1,6 @@
 <!-- Include Bootstrap modal markup at the end of the file -->
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-    id="deleteConfirmationModal"
+    id="deleteConfirmationModall"
     tabindex="-1"
     aria-labelledby="deleteConfirmationModalLabel"
     aria-hidden="true"
@@ -17,25 +17,37 @@
                     </h4>
                 </div>
                 <p class="dark:text-slate-300">
-                    {{ __('Are you sure you want to delete this item?') }}
+                    {{ __('Are you sure you want to delete this user?') }}
                 </p>
 
+               
                 <div class="action-btns text-center">
-                    <form id="deleteForm" action="{{route('admin.user.destroy',$id)}}" method="POST" style="display: inline;">
+                    <form id="deleteForm" action="{{ route('admin.user.destroy', $id) }}" method="POST">
                         @method('DELETE')
                         @csrf
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Delete') }}
-                        </button>
-                        <button type="button" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                            {{ __('Cancel') }}
-                        </button>
+                        <div class="input-area">
+                            <input
+                                type="text"
+                                id="admin_key"
+                                name="admin_key"
+                                class="form-control mb-2"
+                                placeholder="{{ __('Enter Super-Admin Key') }}"
+                                required
+                            />
+                        </div>
+                        <div class="action-btns text-center">
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                {{ __('Delete') }}
+                            </button>
+                            <button type="button" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-

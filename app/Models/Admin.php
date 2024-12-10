@@ -39,6 +39,7 @@ class Admin extends Authenticatable
         'google2fa_secret',
         'two_fa',
         'session_expiry',
+        'key',
     ];
 
 

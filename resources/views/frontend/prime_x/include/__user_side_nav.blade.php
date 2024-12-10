@@ -136,21 +136,21 @@
                         {{ __('All History') }}
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('user.deposit.log') }}" class="loaderBtn {{ isActive('user.deposit.log') }}">
-                        {{ __('Deposits') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.withdraw.log') }}" class="loaderBtn {{ isActive('user.withdraw.log') }}">
-                        {{ __('Withdrawals') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.send-money.log') }}" class="loaderBtn {{ isActive('user.send-money.log') }}">
-                        {{ __('Transfer Log') }}
-                    </a>
-                </li>
+{{--                <li>--}}
+{{--                    <a href="{{ route('user.deposit.log') }}" class="loaderBtn {{ isActive('user.deposit.log') }}">--}}
+{{--                        {{ __('Deposits') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--                <li>--}}
+{{--                    <a href="{{ route('user.withdraw.log') }}" class="loaderBtn {{ isActive('user.withdraw.log') }}">--}}
+{{--                        {{ __('Withdrawals') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--                <li>--}}
+{{--                    <a href="{{ route('user.send-money.log') }}" class="loaderBtn {{ isActive('user.send-money.log') }}">--}}
+{{--                        {{ __('Transfer Log') }}--}}
+{{--                    </a>--}}
+{{--                </li>--}}
                 <li>
                     <a href="{{ route('user.forex.transactions') }}" class="loaderBtn {{ isActive('user.forex.transactions') }}">
                         {{ __('Accounts History') }}

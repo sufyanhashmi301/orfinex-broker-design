@@ -22,7 +22,8 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Title') }}</th>
-                                    <th scope="col" class="table-th">{{ __('URL') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Client-ID') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Seceret-ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -69,7 +70,8 @@
                 ajax: "{{ route('admin.links.social.index') }}",
                 columns: [
                     {data: 'title', name: 'title'},
-                    {data: 'link', name: 'link'},
+                    {data: 'client_id', name: 'client_id'},
+                    {data: 'client_secret', name: 'client_secret'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]

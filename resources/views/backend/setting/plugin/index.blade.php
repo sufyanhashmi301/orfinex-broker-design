@@ -24,10 +24,7 @@
                 <div class="card-header items-center noborder !p-4">
                     <img class="inline-block h-10" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
                     @canany(['plugins-action', 'notification-action', 'sms-action'])
-                    <button type="button" class="action-btn cursor-pointer editPlugin dark:text-slate-300" data-id="{{$plugin->id}}">
-
                     <button type="button" class="action-btn cursor-pointer {{ json_decode($plugin->data) ? 'editPlugin' : 'lockedFeature' }} dark:text-slate-300" data-id="{{$plugin->id}}">
-
                         <iconify-icon icon="lucide:settings-2"></iconify-icon>
                     </button>
                     @endcanany

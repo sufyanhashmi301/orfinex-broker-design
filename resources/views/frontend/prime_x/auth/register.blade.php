@@ -223,6 +223,14 @@
                             {{ __('Login now.') }}
                         </a>
                     </div>
+                        @php
+                            $socialLinks = App\Models\SocialLink::activePlatforms();
+                        @endphp
+                        @foreach ($socialLinks as $socialLink)
+                            <a href="{{ route('social.redirect', $socialLink->driver) }}" class="btn btn-{{ strtolower($socialLink->driver) }}">
+                                 {{ ucfirst($socialLink->title) }}
+                            </a>
+                        @endforeach
                 </div>
             </div>
         </div>

@@ -136,13 +136,13 @@ class ForexApiService
     public function getOrders($data)
     {
         $endpoint = 'order/list/user';
-        return $this->get($endpoint, $data);
+        return $this->getByBody($endpoint, $data);
     }
 
     public function getBalanceReport($data)
     {
         $endpoint = 'useraccount/getBalanceReport';
-        return $this->get($endpoint, $data);
+        return $this->getByBody($endpoint, $data);
     }
 
     public function getClientsByGroup($group)
@@ -272,7 +272,7 @@ class ForexApiService
     {
 //        try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
-//            dd($URL,$params,$this->getCommonHeadersReal());
+            dd($URL,$params,$this->getCommonHeadersReal());
             $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)
                 ->get($URL, $params);

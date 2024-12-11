@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\ForgetPasswordController;
@@ -43,6 +44,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.update');
+
+
+        Route::get('{provider}/redirect', [SocialiteController::class, 'redirect'])->name('social.redirect');
+            Route::get('{provider}/callback', [RegisteredUserController::class, 'store'])->name('social.callback');
+
 });
 
 Route::middleware('auth')->group(function () {

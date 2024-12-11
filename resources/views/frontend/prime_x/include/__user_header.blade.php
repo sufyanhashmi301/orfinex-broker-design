@@ -60,9 +60,9 @@
                     <div class="flex items-center text-left">
                         <p class="header-text-color">{{auth()->user()->full_name}}</p>
                         @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
-                            <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
+                            <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/verified.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
                         @else
-                            <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
+                            <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/unverified.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
                         @endif
                     </div>
                 </div>
@@ -79,10 +79,20 @@
 
             <div class="nav-tools flex items-center md:space-x-4 space-x-3 rtl:space-x-reverse leading-0 ml-auto">
                 <div>
-                    <a href="javascript:;" id="themeMood" class="lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
-                        <iconify-icon class="header-text-color text-xl dark:hidden block" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
-                        <iconify-icon class="header-text-color text-xl dark:block hidden" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
-                    </a>
+                    <form action="{{ route('user.setting.preference.theme') }}" method="POST">
+                        @csrf
+                        @if(auth()->user()->user_theme == 'light')
+                            <input type="hidden" name="user_theme" value="dark">
+                            <button type="submit" class="lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
+                                <iconify-icon class="header-text-color text-xl" id="moonIcon" icon="line-md:sunny-outline-to-moon-alt-loop-transition"></iconify-icon>
+                            </button>
+                        @elseif(auth()->user()->user_theme == 'dark')
+                            <input type="hidden" name="user_theme" value="light">
+                            <button type="submit" class="lg:h-[32px] lg:w-[32px] dark:text-slate-900 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
+                                <iconify-icon class="header-text-color text-xl" id="sunIcon" icon="line-md:moon-filled-to-sunny-filled-loop-transition"></iconify-icon>
+                            </button>
+                        @endif
+                    </form>
                 </div>
                 <div class="relative hidden md:block">
                     <button class="lg:h-[32px] lg:w-[32px] cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">

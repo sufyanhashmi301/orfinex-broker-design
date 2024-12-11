@@ -279,31 +279,37 @@ class UserController extends Controller
     }
 
     public function destroy(Request $request, $id)
-    {
-        // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
-        $superAdmin = Admin::where('name', 'Super Admin')->first();
-        
-        // Check if the Super-Admin key exists in the database and the input matches
-        if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
-            // If the key doesn't match, notify error
-            notify()->error('Invalid Super-Admin key. Deletion denied.');
-            return redirect()->back();  // Redirect back to the previous page
-        }
-        
-        // Proceed with deleting the user if the key matches
-        $user = User::find($id);
-        
-        // Ensure the user exists before attempting to delete
-        if ($user) {
-            $user->delete();
-            notify()->success('User deleted successfully');
-        } else {
-            notify()->error('User not found.');
-        }
-        
-        // Redirect to the user listing page after the operation
-        return redirect()->route('admin.user.index');
+{
+    // Fetch the currently logged-in admin
+    $currentAdmin = auth()->user(); // Assuming you are using Laravel's Auth system
+
+    // Ensure the admin has a role and a valid key
+    if (!$currentAdmin || !$currentAdmin->key) {
+        notify()->error('Unauthorized action. Only admins with a valid key can delete users.');
+        return redirect()->back();
     }
+
+    // Check if the input key matches the admin's key
+    if ($request->input('admin_key') !== $currentAdmin->key) {
+        notify()->error('Invalid key. Deletion denied.');
+        return redirect()->back();
+    }
+
+    // Proceed with deleting the user if the key matches
+    $user = User::find($id);
+
+    // Ensure the user exists before attempting to delete
+    if ($user) {
+        $user->delete();
+        notify()->success('User deleted successfully');
+    } else {
+        notify()->error('User not found.');
+    }
+
+    // Redirect to the user listing page after the operation
+    return redirect()->route('admin.user.index');
+}
+
     
 
     /**

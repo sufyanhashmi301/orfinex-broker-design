@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\SocialLink;
+use App\Models\Social;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ class SocialiteController extends Controller
 {
     public function redirect($provider)
     {
-        $socialConfig = SocialLink::getProviderConfig($provider);
+        $socialConfig = Social::getProviderConfig($provider);
 //        dd($provider,$socialConfig);
 
         if (!$socialConfig) {
@@ -32,7 +32,7 @@ class SocialiteController extends Controller
 
     public function callback($provider)
     {
-        $socialConfig = SocialLink::getProviderConfig($provider);
+        $socialConfig = Social::getProviderConfig($provider);
 
         if (!$socialConfig) {
             abort(404, 'Social provider not found or inactive.');

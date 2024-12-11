@@ -7,107 +7,128 @@ use App\Models\Social;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use DataTables;
 
 class SocialController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the resource.
      *
-     * @return RedirectResponse
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function index(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'icon_name' => 'required',
-            'class_name' => 'required',
-            'url' => 'required',
-        ]);
+        if ($request->ajax()) {
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+            $data = Social::latest()->get();
 
-            return redirect()->back();
+            return DataTables::of($data)
+                ->addIndexColumn()
+
+                ->addColumn('title', function ($row) {
+                    return '<span class="text-nowrap">' . $row->title . '</span>';
+                })
+                ->addColumn('client_id', function ($row) {
+                    return '<a href="' . $row->client_id . '" class="lowercase text-nowrap" target="_blank">' . $row->client_id . '</a>';
+                })
+                ->addColumn('client_secret', function ($row) {
+                    return '<a href="' . $row->client_secret . '" class="lowercase text-nowrap" target="_blank">' . $row->client_secret . '</a>';
+                })
+                ->addColumn('status', 'backend.links.include.__status')
+                ->addColumn('action', function ($row) {
+                    return '<button type="button" class="action-btn editBtn" data-id="' . $row->id . '">
+                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                            </button>';
+                })
+                ->rawColumns(['title', 'client_id','client_secret', 'status', 'action'])
+                ->make(true);
         }
 
-        $input = $request->all();
-
-        $social = new Social();
-
-        $data = [
-            'icon_name' => $input['icon_name'],
-            'class_name' => $input['class_name'],
-            'url' => $input['url'],
-            'position' => $social->count() + 1,
-        ];
-
-        $social->create($data);
-        notify()->success(__('Social Create Successfully'));
-
-        return redirect()->back();
+        return view('backend.setting.organization.social_login.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Show the form for creating a new resource.
      *
-     * @return RedirectResponse
+     * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request)
+    public function create()
     {
-        $id = $request->id;
-        Social::find($id)->delete();
-        notify()->success(__('Social Delete Successfully'));
-
-        return redirect()->back();
+        //
     }
 
-    public function positionUpdate(Request $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
-        $inputs = $request->except('_token');
-        $social = new Social();
-        $i = 0;
-        foreach ($inputs as $input) {
-            $social->find($input)->update([
-                'position' => $i,
-            ]);
-            $i++;
-        }
+        //
+    }
 
-        notify()->success(__('Social Draggable Successfully'));
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
 
-        return redirect()->back();
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $socialLogin = Social::find($id);
+        return view('backend.setting.organization.social_login.__social_login_form', compact('socialLogin'))->render();
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @return RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'icon_name' => 'required',
-            'class_name' => 'required',
-            'url' => 'required',
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'client_id' => 'required',
+            'client_secret' => 'required',
+            'redirect' => 'required',
+            'status' => 'required',
         ]);
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
-
             return redirect()->back();
         }
 
         $input = $request->all();
-
         $data = [
-            'icon_name' => $input['icon_name'],
-            'class_name' => $input['class_name'],
-            'url' => $input['url'],
+            'title' => $input['title'],
+            'client_id' => $input['client_id'],
+            'client_secret' => $input['client_secret'],
+            'redirect' => $input['redirect'],
+            'status' => $input['status'],
         ];
 
-        Social::find($input['id'])->update($data);
-        notify()->success(__('Social Update Successfully'));
+        $socialLink = Social::find($input['id']);
 
+        $socialLink->update($data);
+
+        notify()->success('Social login update successfully');
         return redirect()->back();
     }
 }

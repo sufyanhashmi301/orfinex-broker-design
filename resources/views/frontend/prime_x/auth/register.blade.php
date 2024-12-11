@@ -217,20 +217,33 @@
                         </button>
                     </form>
                     <!-- END: Login Form -->
+                    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+                        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                            {{ __('Or continue with') }}
+                        </div>
+                    </div>
+                    <div class="max-w-[242px] mx-auto mt-8 w-full">
+                        <!-- BEGIN: Social Log in Area -->
+                        <ul class="flex justify-center gap-2">
+                            @php
+                                $socialLinks = App\Models\Social::activePlatforms();
+                            @endphp
+                            @foreach ($socialLinks as $socialLink)
+                                <li>
+                                    <a href="{{ route('social.redirect', $socialLink->driver) }}" class="inline-flex h-10 w-10 flex-col items-center justify-center">
+                                        <img src="https://cdn.brokeret.com/crm-assets/admin/social/{{ strtolower($socialLink->title) }}.webp" class="w-full" alt="{{ ucfirst($socialLink->title) }}">
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <!-- END: Social Log In Area -->
+                    </div>
                     <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm text-center">
                         {{ __("Already have an account? ") }}
                         <a href="{{ route('login') }}" class="text-slate-900 dark:text-white font-medium uppercase hover:underline">
                             {{ __('Login now.') }}
                         </a>
                     </div>
-                        @php
-                            $socialLinks = App\Models\SocialLink::activePlatforms();
-                        @endphp
-                        @foreach ($socialLinks as $socialLink)
-                            <a href="{{ route('social.redirect', $socialLink->driver) }}" class="btn btn-{{ strtolower($socialLink->driver) }}">
-                                 {{ ucfirst($socialLink->title) }}
-                            </a>
-                        @endforeach
                 </div>
             </div>
         </div>

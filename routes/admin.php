@@ -315,10 +315,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
-        Route::post('store', 'store')->name('store');
-        Route::post('update', 'update')->name('update');
-        Route::post('delete', 'delete')->name('delete');
-        Route::post('position-update', 'positionUpdate')->name('position.update');
+        Route::get('/', 'index')->name('index');
+        Route::get('edit/{id}', 'edit')->name('edit');
+        Route::put('update', 'update')->name('update');
     });
 
     //===============================  site Settings ==================================

@@ -74,50 +74,50 @@ class TransactionController extends Controller
     }
 
 
-    public function forexTransactions()
-    {
+        public function forexTransactions()
+        {
 
-        $login = request('login');
-        $data['login'] = $login;
+            $login = request('login');
+            $data['login'] = $login;
 
-        $start = Carbon::now()->subDay(1)->startOfDay()->timestamp;
-        $end = Carbon::now()->endOfDay()->timestamp;
+            $start = Carbon::now()->subDay(1)->startOfDay()->timestamp;
+            $end = Carbon::now()->endOfDay()->timestamp;
 
-        if (request('start_date')) {
-            $start = Carbon::parse(request('start_date'))->format('d/m/Y');
-            $data['FromDate'] = $start;
-        }
-        if (request('end_date')) {
-            $end = Carbon::parse(request('end_date'))->format('d/m/Y');
-            $data['ToDate'] = $end;
-        }
-
-//        dd($start, $end);
-
-        $orders = [];
-        $transactions = [];
-
-        if ($login) {
-            if (request('type') == 'trades-report'){
-                $response = $this->forexApiService->getOrders($data);
-                if ($response) {
-                    $orders = collect($response['result']);
-                }
+            if (request('start_date')) {
+                $start = Carbon::parse(request('start_date'))->format('d/m/Y');
+                $data['FromDate'] = $start;
             }
-            elseif (request('type') == 'balance-report') {
-                $response = $this->forexApiService->getBalanceReport($data);
-                if ($response) {
-                    $transactions = collect($response['result']);
-//                    dd($transactions);
-                }
+            if (request('end_date')) {
+                $end = Carbon::parse(request('end_date'))->format('d/m/Y');
+                $data['ToDate'] = $end;
             }
 
-        }
-        $forexAccounts = ForexAccount::where('user_id', auth()->id())->traderType()
-            ->where('account_type', 'real')
-            ->where('status',ForexAccountStatus::Ongoing)
-            ->get();
+    //        dd($start, $end);
 
-        return view('frontend::user.transaction.forex-orders', compact('forexAccounts', 'orders', 'transactions'));
+            $orders = [];
+            $transactions = [];
+
+            if ($login) {
+                if (request('type') == 'trades-report'){
+                    $response = $this->forexApiService->getOrders($data);
+                    if ($response) {
+                        $orders = collect($response['result']);
+                    }
+                }
+                elseif (request('type') == 'balance-report') {
+                    $response = $this->forexApiService->getBalanceReport($data);
+                    if ($response) {
+                        $transactions = collect($response['result']);
+    //                    dd($transactions);
+                    }
+                }
+
+            }
+            $forexAccounts = ForexAccount::where('user_id', auth()->id())->traderType()
+                ->where('account_type', 'real')
+                ->where('status',ForexAccountStatus::Ongoing)
+                ->get();
+
+            return view('frontend::user.transaction.forex-orders', compact('forexAccounts', 'orders', 'transactions'));
+        }
     }
-}

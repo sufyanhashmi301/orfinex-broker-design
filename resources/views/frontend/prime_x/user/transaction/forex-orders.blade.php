@@ -63,7 +63,7 @@
                 </p>
             </div>
         @elseif(count($orders) > 0)
-            <div class="card desktop-screen-show md:block hidden">
+            <div class="card">
                 <div class="card-body p-6 pt-3">
                     <div class="overflow-x-auto -mx-6">
                         <div class="inline-block min-w-full align-middle">
@@ -110,7 +110,7 @@
                 </div>
             </div>
         @elseif(count($transactions) > 0)
-            <div class="card desktop-screen-show md:block hidden">
+            <div class="card">
                 <div class="card-body p-6 pt-3">
                     <div class="overflow-x-auto -mx-6">
                         <div class="inline-block min-w-full align-middle">
@@ -131,7 +131,11 @@
                                                 {{ $transaction['time'] }}
                                             </td>
                                             <td class="table-td">
-                                                {{ $transaction['action'] }}
+                                                @if($transaction['action'] == 'Deposit')
+                                                    <span class="badge badge-success">{{ $transaction['action'] }}</span>
+                                                @else
+                                                    <span class="badge badge-danger">{{ $transaction['action'] }}</span>
+                                                @endif
                                             </td>
                                             <td class="table-td">
                                                 {{ $transaction['deal'] }}

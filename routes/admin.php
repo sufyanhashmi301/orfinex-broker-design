@@ -65,6 +65,7 @@ use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\PayoutRequestController;
+use App\Http\Controllers\Backend\SocialLinkController;
 use App\Models\LeaderboardBadge;
 
 /*
@@ -412,6 +413,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
         Route::get('document-links', 'documentLinks')->name('document-links');
         Route::get('platform-links', 'platformLinks')->name('platform-links');
+
+        Route::get('social', [SocialLinkController::class, 'index'])->name('social.index');
+        Route::get('social/{id}', [SocialLinkController::class, 'edit'])->name('social.edit');
+        Route::put('social/update', [SocialLinkController::class, 'update'])->name('social.update');
     });
 
 //===============================  Others ==================================

@@ -1339,7 +1339,7 @@ if (!function_exists('hexToRgb')) {
         $g = hexdec(substr($hexColor, 2, 2));
         $b = hexdec(substr($hexColor, 4, 2));
 
-        return [$r, $g, $b];
+        return ['r' => $r, 'g' => $g, 'b' => $b];
     }
 }
 
@@ -1349,6 +1349,16 @@ if (!function_exists('getColorFromSettings')) {
         // Assuming you have a function `setting()` that retrieves settings from the database
         $hexColor = setting($key, 'global', $default);
         return hexToRgb($hexColor);
+    }
+}
+
+if (!function_exists('isDarkColor')) {
+    function isDarkColor($hex)
+    {
+        $rgb = hexToRgb($hex);
+        $luminance = 0.2126 * $rgb['r'] + 0.7152 * $rgb['g'] + 0.0722 * $rgb['b'];
+
+        return $luminance < 128;
     }
 }
 

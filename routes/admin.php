@@ -303,6 +303,10 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
     });
 
+    Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
+        Route::get('settings', 'pageSetting')->name('setting');
+        Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+    });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
         Route::post('store', 'store')->name('store');
@@ -360,7 +364,9 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     });
 
+    Route::get('grpd-compliance', [SettingController::class, 'grpdCompliance'])->name('grpdCompliance');
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
+    Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
 //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {

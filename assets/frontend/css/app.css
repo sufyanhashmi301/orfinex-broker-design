@@ -3958,6 +3958,9 @@ textarea.form-control.is-invalid{
 .-top-\[6px\]{
   top: -6px;
 }
+.\!top-\[10px\]{
+  top: 10px !important;
+}
 .\!top-\[23px\]{
   top: 23px !important;
 }
@@ -4607,6 +4610,9 @@ textarea.form-control.is-invalid{
 }
 .h-\[calc\(100\%-80px\)\]{
   height: calc(100% - 80px);
+}
+.h-\[calc\(100\%-96px\)\]{
+  height: calc(100% - 96px);
 }
 .h-\[calc\(100\%-115px\)\] {
     height: calc(100% - 115px);

@@ -212,7 +212,7 @@
                 <div class="card h-full">
                     <div class="card-body relative p-6 pb-0">
                         <div id="profitLossChart" style="opacity: 0.05"></div>
-                        <div class="flex flex-col items-center justify-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3">
+                        <div class="flex flex-col items-center justify-center text-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3 p-5">
                             <iconify-icon class="text-xl dark:text-white" icon="lucide:info"></iconify-icon>
                             <p class="text-sm dark:text-white">
                                 {{ __("We'll show your balance graph here once there is enough data") }}

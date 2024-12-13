@@ -178,6 +178,11 @@ class ForexApiService
         return BigDecimal::of(0);
     }
 
+    // Risk Rules API
+    public function riskRule($data, $endpoint="reports/fastdeals") {
+        return $this->post($endpoint, $data);
+    }
+    // Risk Rules API
 
     // Risk Score APIs
     public function getTotalRiskScore($data)

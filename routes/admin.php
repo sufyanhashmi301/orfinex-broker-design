@@ -307,6 +307,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
         Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
+
+        Route::get('popup', 'popup')->name('popup');
     });
 
     Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {

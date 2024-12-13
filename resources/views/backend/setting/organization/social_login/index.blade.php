@@ -8,31 +8,53 @@
             @yield('title')
         </h4>
     </div>
-    <div class="card">
-        <div class="card-body px-6 pt-3">
-            <div class="overflow-x-auto -mx-6 dashcode-data-table">
-                <span class=" col-span-8 hidden"></span>
-                <span class="  col-span-4 hidden"></span>
-                <div class="inline-block min-w-full align-middle">
-                    <div class="overflow-hidden ">
-                        <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="socialLogin-dataTable">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="table-th">{{ __('Title') }}</th>
-                                <th scope="col" class="table-th">{{ __('Client-ID') }}</th>
-                                <th scope="col" class="table-th">{{ __('Seceret-ID') }}</th>
-                                <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                <th scope="col" class="table-th">{{ __('Action') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-
-                            </tbody>
-                        </table>
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+        @foreach($socialLogins as $socialLogin)
+            <div class="card border hover:shadow-lg">
+                <div class="card-header items-center noborder !p-4">
+                    @switch($socialLogin->driver)
+                        @case('facebook')
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/fb-login.webp" alt=""/>
+                        @break
+                        @case('twitter')
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/x-login.webp" alt=""/>
+                        @break
+                        @case('instagram')
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/instagram-login.webp" alt=""/>
+                        @break
+                        @case('linkedin')
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/linkedin-login.webp" alt=""/>
+                        @break
+                        @case('google')
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/google-login.webp" alt=""/>
+                        @break
+                        @case('discord')
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/discord-login.webp" alt=""/>
+                        @break
+                        @default
+                            <img class="inline-block h-10" src="https://cdn.brokeret.com/crm-assets/admin/social/discord-login.webp" alt=""/>
+                    @endswitch
+                    <button type="button" class="action-btn cursor-pointer editBtn dark:text-slate-300" data-id="{{ $socialLogin->id }}">
+                        <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                    </button>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-base font-medium dark:text-white mr-1">{{ $socialLogin->title }}</h4>
+                        @if($socialLogin->status)
+                            <div class="badge badge-success capitalize">
+                                {{ __('Activated') }}
+                            </div>
+                        @else
+                            <div class="badge badge-danger capitalize">
+                                {{ __('DeActivated') }}
+                            </div>
+                        @endif
                     </div>
+                    <p class="text-sm dark:text-slate-300">{{ $socialLogin->description }}</p>
                 </div>
             </div>
-        </div>
+        @endforeach
     </div>
 
     {{--Modal for update social login--}}
@@ -43,38 +65,6 @@
 @endsection
 @section('organization-script')
     <script !src="">
-        (function ($) {
-            "use strict";
-            var table = $('#socialLogin-dataTable').DataTable();
-            table.destroy();
-            var table = $('#socialLogin-dataTable').DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-                    },
-                    search: "Search:"
-                },
-                processing: true,
-                serverSide: true,
-                autoWidth: false,
-                ajax: "{{ route('admin.social.index') }}",
-                columns: [
-                    {data: 'title', name: 'title'},
-                    {data: 'client_id', name: 'client_id'},
-                    {data: 'client_secret', name: 'client_secret'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action'},
-                ]
-            });
-        })(jQuery);
-
         $('body').on('click', '.editBtn', function (event){
             "use strict";
             event.preventDefault();

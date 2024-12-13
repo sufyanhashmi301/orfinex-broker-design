@@ -5,6 +5,7 @@
     {{ __('Accounts History') }}
 @endsection
 @section('content')
+    @include('frontend::user.transaction.include.__tabs_nav')
     <div class="space-y-5">
         <?php
             $login = request()->get('login');
@@ -13,7 +14,7 @@
             <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
                 @yield('title')
             </h4>
-            <form action="{{ route('user.forex.transactions') }}" method="get" class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <form action="{{ route('user.history.tradingAccounts') }}" method="get" class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                 <div class="input-area relative min-w-[170px]">
                     <select name="type" class="form-control">
                         <option>{{ __('Select Type') }}</option>

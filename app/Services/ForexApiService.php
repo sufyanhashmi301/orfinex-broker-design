@@ -272,7 +272,7 @@ class ForexApiService
     {
 //        try {
             $URL = $this->baseUrlReal . '/' . $endpoint;
-            dd($URL,$params,$this->getCommonHeadersReal());
+            //dd($URL,$params,$this->getCommonHeadersReal());
             $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)
                 ->get($URL, $params);

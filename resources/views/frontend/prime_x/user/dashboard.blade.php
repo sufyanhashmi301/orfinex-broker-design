@@ -230,6 +230,10 @@
         @include('frontend::user.mobile_screen_include.dashboard.__index')
     </div>
 
+    {{--offer modal--}}
+    @if(setting('popup_status', 'popup'))
+        @include('frontend::user.include.__popup')
+    @endif
 
 @endsection
 @section('script')
@@ -344,4 +348,13 @@
         chart.render();
 
     </script>
+
+    @if(setting('popup_status', 'popup'))
+        <script !src="">
+            $(document).ready(function() {
+                $('#offerModal').modal('show');
+            });
+        </script>
+    @endif
+
 @endsection

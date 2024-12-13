@@ -102,15 +102,19 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('ordersHistory', [PositionController::class, 'index'])->name('ordersHistory');
         Route::get('orders', [PositionController::class, 'getOrders'])->name('getOrders');
     });
+
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');
     Route::get('invest-logs', [InvestController::class, 'investLogs'])->name('invest-logs');
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
-    Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
-    Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
-    Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
 
+    //History
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
+        Route::get('trading-accounts', [TransactionController::class, 'forexTransactions'])->name('tradingAccounts');
+        Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
 
+    });
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {

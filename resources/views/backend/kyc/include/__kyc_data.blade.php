@@ -10,14 +10,16 @@
     </button>
 </div>
 <div class="p-6 pt-0">
-    <ul class="list-item space-y-3 h-full overflow-x-auto">
+    <ul class="grid md:grid-cold-2 grid-cols-2 gap-5">
         @foreach( $kycCredential as $key => $value)
-            <li class="flex items-center space-x-3 rtl:space-x-reverse dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
-                {{ $key }}:
-                @if(file_exists('assets/'.2q       22q qqaw22))
-                    <img src="{{ asset($value) }}" alt=""/>
-                @else
-                    <span class="font-semibold ml-1">{{ $value }}</span>
+            <li class="dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
+                <span class="block mb-2">{{ $key }}:</span>
+                @if(file_exists('assets/'.$value))
+                    <div class="h-[260px] bg-no-repeat bg-contain bg-center bg-slate-100 mb-2" style="background-image: url('{{ asset($value) }}')"></div>
+                    <div class="flex justify-end gap-3">
+                        <a href="{{ asset($value) }}" class="btn-link" download>{{ __('Download') }}</a>
+                        <a href="{{ asset($value) }}" class="btn-link" target="_blank">{{ __('View') }}</a>
+                    </div>
                 @endif
             </li>
         @endforeach
@@ -27,7 +29,7 @@
         <input type="hidden" name="id" value="{{ $id }}">
         <div class="input-area">
             <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
-            <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
+            <input type="text" name="message" class="form-control mb-0" placeholder="Details Message">
         </div>
 
         <div class="action-btns text-right">

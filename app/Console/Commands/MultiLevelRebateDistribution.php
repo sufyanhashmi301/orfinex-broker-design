@@ -35,7 +35,7 @@ class MultiLevelRebateDistribution extends Command
         try {
 //            $ReferralRelationships = ReferralRelationship::whereNotNull('multi_level_id')->with('referralLink')->get();
             $ReferralRelationships = ReferralRelationship::with('referralLink')
-//                ->where('user_id', 7193)
+                ->where('user_id', 7222)
                 ->get();
 //            dd($ReferralRelationships);
             foreach ($ReferralRelationships as $ReferralRelationship) {
@@ -54,24 +54,40 @@ class MultiLevelRebateDistribution extends Command
     protected function processReferralRelationship($ReferralRelationship)
     {
         $parentIbGroup = $ReferralRelationship->referralLink->user->ibGroup;
-//        dd($parentIbGroup);
         if (!$parentIbGroup) {
             return false;
         }
-//dd('s');
+//        dd($parentIbGroup);
+
         $childUserId = $ReferralRelationship->user_id;
-//        dd($childUserId);
+
+        // Fetch Forex Schemas attached to the rebate rules
+        $forexSchemas = $parentIbGroup->rebateRules()
+            ->with('forexSchemas')
+            ->get()
+            ->flatMap(fn($rebateRule) => $rebateRule->forexSchemas)
+            ->pluck('id')
+            ->unique();
+//dd($forexSchemas);
+        // Fetch active forex accounts that match the Forex Schemas
         $realForexAccounts = ForexAccount::realActiveAccount($childUserId)
+            ->whereIn('forex_schema_id', $forexSchemas) // Ensure forex_accounts exist in rebate forex schemas
             ->orderBy('balance', 'desc')
             ->get();
 //        dd($realForexAccounts);
-        $sysmbols = $this->getUserAssignedSymbols($ReferralRelationship);
+
+        // Process deals if there are valid Forex Accounts
+        if ($realForexAccounts->isEmpty()) {
+            Log::info("No matching forex accounts for user ID: $childUserId in the assigned rebate rules.");
+            return false;
+        }
+
+        $symbols = $this->getUserAssignedSymbols($ReferralRelationship);
+//        dd($symbols);
 
         foreach ($realForexAccounts as $realForexAccount) {
-//            dd($sysmbols);
             $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $sysmbols);
-//            dd($ReferralRelationship);
+            $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $symbols);
             $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship);
         }
     }

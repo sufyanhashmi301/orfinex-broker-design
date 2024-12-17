@@ -44,10 +44,26 @@
                         </div>
                         @if(json_decode($gateway->credentials))
                             @foreach(json_decode($gateway->credentials) as $key => $value)
+                                @php
+                                    $sensitive_keywords = ['secret', 'token', 'password', 'private'];
+                                    $is_sensitive = false;
+
+                                    foreach ($sensitive_keywords as $keyword) {
+                                        if (strpos($key, $keyword) !== false) {
+                                            $is_sensitive = true;
+                                            break;
+                                        }
+                                    }
+                                @endphp
+
                                 <div class="col-span-2">
                                     <div class="input-area mb-0">
                                         <label class="form-label" for="">{{ ucwords(str_replace( '_', ' ', $key)) }} :</label>
-                                        <input type="text" name="credentials[{{ $key }}] " class="form-control" value="{{ $value }}"/>
+                                        @if($is_sensitive)
+                                            <input type="password" name="credentials[{{ $key }}] " class="form-control" value="{{ $value }}"/>
+                                        @else
+                                            <input type="text" name="credentials[{{ $key }}] " class="form-control" value="{{ $value }}"/>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach

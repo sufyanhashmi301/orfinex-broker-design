@@ -41,12 +41,17 @@
                     required
                 />
             </div>
+        </div>
+        @if($cloudflareTurnstile)
+            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+            <div class="cf-turnstile mb-3" data-sitekey="{{ $siteKey }}" data-theme="light"></div>
+        @else
             @if($googleReCaptcha)
                 <div class="g-recaptcha mb-3" id="feedback-recaptcha"
                      data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}">
                 </div>
             @endif
-        </div>
+        @endif
         <div class="flex justify-between">
             <label class="flex items-center cursor-pointer">
                 <input class="hiddens mr-2" type="checkbox" name="remember" />

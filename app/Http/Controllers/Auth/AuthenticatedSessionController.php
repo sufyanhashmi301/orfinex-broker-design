@@ -23,8 +23,17 @@ class AuthenticatedSessionController extends Controller
 //        $data = json_decode($page->data, true);
 
         $googleReCaptcha = plugin_active('Google reCaptcha');
+        $cloudflareTurnstile = plugin_active('Cloudflare Turnstile');
 
-        return view('frontend::auth.login', compact('googleReCaptcha'));
+        $cloudflareTurnstileData = [];
+        if ($cloudflareTurnstile && is_string($cloudflareTurnstile->data)) {
+            $cloudflareTurnstileData = json_decode($cloudflareTurnstile->data, true) ?? [];
+        }
+
+        // Pass site_key separately for clean Blade usage
+        $siteKey = $cloudflareTurnstileData['site_key'] ?? null;
+
+        return view('frontend::auth.login', compact('googleReCaptcha', 'cloudflareTurnstile', 'cloudflareTurnstileData', 'siteKey'));
     }
 
     public function iframeLogin()

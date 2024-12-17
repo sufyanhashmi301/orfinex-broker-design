@@ -180,11 +180,16 @@
                                 </div>
                         </div>
                       <div class="formGroup">
-                        @if($googleReCaptcha)
-                            <div class="g-recaptcha" id="feedback-recaptcha"
-                                 data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}">
-                            </div>
-                        @endif
+                          @if($cloudflareTurnstile)
+                              <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+                              <div class="cf-turnstile" data-sitekey="{{ $siteKey }}" data-theme="light"></div>
+                          @else
+                              @if($googleReCaptcha)
+                                  <div class="g-recaptcha mb-3" id="feedback-recaptcha"
+                                       data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}">
+                                  </div>
+                              @endif
+                          @endif
                       </div>
                       <div class="flex justify-between">
                         <label class="flex items-center cursor-pointer">

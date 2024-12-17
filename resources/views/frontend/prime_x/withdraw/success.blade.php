@@ -41,13 +41,17 @@
                     <p class="text-sm mb-3 dark:text-white">{{ __('Success Notification Description') }}</p>
                     <p class="text-sm mb-3 dark:text-white">{{ __('Strong Notification Message') }}</p>
                     <a href="{{ $notify['action'] }}" class="btn inline-flex justify-center btn-light">
-                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2"
-                                      icon="heroicons:plus-small-20-solid"></iconify-icon>
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="heroicons:plus-small-20-solid"></iconify-icon>
                         <span>{{ $notify['a'] }}</span>
                     </a>
-                    @if(plugin_active('Trustpilot'))
-                        <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}"
-                           target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                    @php
+                        $trustpilot = plugin_active('Trustpilot');
+                    @endphp
+                    @if($trustpilot && $trustpilot->status)
+                        @php
+                            $trustpilotData = json_decode($trustpilot->data, true);
+                        @endphp
+                        <a href="{{ $trustpilotData['link'] }}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
                             <span>{{ __('Review us on Trustpilot') }}</span>
                         </a>

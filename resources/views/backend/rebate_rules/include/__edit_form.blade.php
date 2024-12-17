@@ -18,7 +18,7 @@
             </select>
         </div>
         <div class="input-area relative">
-            <label for="forex_schemas" class="form-label">{{ __('Select Forex Schemas') }}</label>
+            <label for="forex_schemas" class="form-label">{{ __('Select Account Types') }}</label>
             <select name="forex_schemas[]" class="select2 form-control w-full" multiple="multiple">
                 @foreach($allForexSchemas as $id => $title)
                     <option value="{{ $id }}" @selected(in_array($id, $rebateRule->forexSchemas->pluck('id')->toArray()))>

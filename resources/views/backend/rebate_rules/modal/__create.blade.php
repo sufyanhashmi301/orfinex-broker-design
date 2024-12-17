@@ -42,7 +42,7 @@
                                 <div class="invalid-feedback" id="symbol-groups-error" style="display: none;"></div>
                             </div>
                             <div class="input-area relative">
-                                <label for="forex_schemas" class="form-label">{{ __('Select Forex Schemas') }}</label>
+                                <label for="forex_schemas" class="form-label">{{ __('Select Account Types') }}</label>
                                 <select name="forex_schemas[]" class="select2 form-control w-full" multiple="multiple">
                                     @foreach($forexSchemas as $id => $title)
                                         <option value="{{ $id }}">{{ $title }}</option>

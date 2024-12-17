@@ -125,7 +125,7 @@ class RiskRuleController extends Controller
         //     "lastIP" => "134.119.219.58",
         //     "lastAccessTime" => "12/10/2024 01:00:05",
         //   ]
-        // ];
+        // ];   
 
         // Ip Addresses Array Resolve
         if($risk_rule_slug == 'ip_address') {

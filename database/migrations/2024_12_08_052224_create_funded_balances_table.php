@@ -23,6 +23,7 @@ return new class extends Migration
             // $table->integer('added_to_payout_request');
             $table->decimal('profit', 8, 2);
             $table->decimal('last_retrieved_profit', 8, 2);
+            $table->decimal('payout_pending', 8, 2);
 
             $table->timestamps();
         });

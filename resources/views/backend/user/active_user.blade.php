@@ -80,10 +80,10 @@
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Challenges') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Funded') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Direct Funded') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Trial') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Challenge Accounts') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Funded Accounts') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Direct Funded') }}</th> --}}
+                                    <th scope="col" class="table-th">{{ __('Trial Accounts') }}</th>
                                     <th scope="col" class="table-th">{{ __('Country') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Profit') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
@@ -154,10 +154,9 @@
                     {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
-                    {data: 'balance', name: 'balance'},
-                    {data: 'equity', name: 'equity'},
-                    {data: 'credit', name: 'credit'},
-                    {data: 'credit', name: 'credit'},
+                    {data: 'challenge_accounts', name: 'challenge_accounts'},
+                    {data: 'funded_accounts', name: 'funded_accounts'},
+                    {data: 'trial_accounts', name: 'trial_accounts'},
                     {data: 'country', name: 'country'},
                     // {data: 'total_profit', name: 'total_profit', orderable: false, searchable: false},
                     {data: 'kyc', name: 'kyc'},

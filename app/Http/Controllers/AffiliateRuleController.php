@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccountType;
-use App\Models\AffiliateRule;
-use App\Models\AffiliateRuleConfiguration;
-use App\Models\AffiliateRuleLevel;
 use Illuminate\Http\Request;
+use App\Models\AffiliateRule;
+use App\Models\AffiliateRuleLevel;
+use Illuminate\Support\Facades\Artisan;
+use App\Models\AffiliateRuleConfiguration;
 
 class AffiliateRuleController extends Controller
 {
@@ -20,6 +21,12 @@ class AffiliateRuleController extends Controller
         //
     }
 
+    public function runSeeder() {
+        Artisan::call('db:seed', [
+            '--class' => 'AffiliateRuleSeeder' 
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -29,6 +36,13 @@ class AffiliateRuleController extends Controller
     {
         $account_types = AccountType::all();
         $affiliate_rule = AffiliateRule::first();
+
+        if(empty($affiliate_rule)) {
+            $this->runSeeder();
+            $affiliate_rule = AffiliateRule::first();
+        }
+
+
         return view('backend.affiliates.create', compact('account_types', 'affiliate_rule'));
     }
 

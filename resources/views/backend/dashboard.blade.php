@@ -58,8 +58,8 @@
                             @can('deposit-action')
                                 @if($data['deposit_count'])
                                     <a href="{{ route('admin.deposit.manual.pending') }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
-                                        <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
-                                        {{ __('Deposit Requests') }}
+                                        {{-- <iconify-icon class="text-lg mr-2"  icon="lucide:loader"></iconify-icon> --}}
+                                        {{ __('Pending Payments') }}
                                         ({{ $data['deposit_count'] }})
                                     </a>
                                 @endif

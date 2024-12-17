@@ -155,42 +155,42 @@
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-challenge-tab"
+                                        id="challenge-accounts-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#pills-challenge"
+                                        data-bs-target="#challenge-accounts"
                                         type="button"
                                         role="tab"
-                                        aria-controls="pills-challenge"
+                                        aria-controls="challenge-accounts"
                                         aria-selected="true">
-                                        {{ __('Challenges') }}
+                                        {{ __('Challenge Accounts') }}
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-funded-tab"
+                                        id="funded-accounts-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#pills-funded"
+                                        data-bs-target="#funded-accounts"
                                         type="button"
                                         role="tab"
-                                        aria-controls="pills-funded"
+                                        aria-controls="funded-accounts"
                                         aria-selected="true">
-                                        {{ __('Funded') }}
+                                        {{ __('Funded Accounts') }}
                                     </a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-directFunded-tab"
+                                        id="trial-accounts-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#pills-directFunded"
+                                        data-bs-target="#trial-accounts"
                                         type="button"
                                         role="tab"
-                                        aria-controls="pills-directFunded"
+                                        aria-controls="trial-accounts"
                                         aria-selected="true">
-                                        {{ __('Direct Funded') }}
+                                        {{ __('Trial Accounts') }}
                                     </a>
                                 </li>
                             @endcan
@@ -322,9 +322,9 @@
 
                 <!-- investments -->
                 @can('investment-list')
-                    @include('backend.user.include.__challenge')
-                    @include('backend.user.include.__funded')
-                    @include('backend.user.include.__direct_funded')
+                    @include('backend.user.include.__challenge_accounts')
+                    @include('backend.user.include.__funded_accounts')
+                    @include('backend.user.include.__trial_accounts')
                 @endcan
 
                 <!-- Performance -->

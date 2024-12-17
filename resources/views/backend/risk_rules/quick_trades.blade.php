@@ -30,6 +30,12 @@
     <div class="innerMenu card p-5 mb-3">
       <form action="{{ route('admin.risk-rule.quick_trades') }}" method="GET" >
         <div class="flex items-center gap-3">
+
+            <?php
+              $today = \Carbon\Carbon::now();
+              $minDate = $today->copy()->subDays(9)->format('Y-m-d'); // 10 days ago (including today)
+              $maxDate = $today->format('Y-m-d'); // Today
+            ?>
             
             <div class="input-area relative flex items-center gap-5">
                 <label for="group" class="form-label !w-auto min-w-max" style="position: relative; top: 4px">{{ __('Data From') }}</label>
@@ -42,11 +48,11 @@
                     $data_to = explode(' ', $risk_rule->data_to)[0];
                   }
                 @endphp
-                <input type="date" class="form-control" name="dataFrom" value="{{ $data_from }}" min="2024-{{ \Carbon\Carbon::now()->format('m') }}-01" max="{{ \Carbon\Carbon::today()->toDateString() }}">
+                <input type="date" class="form-control" name="dataFrom" value="{{ $data_from }}" min="{{ $minDate }}" max="{{ $maxDate }}">
             </div>
             <div class="input-area relative flex items-center gap-5">
               <label for="group" class="form-label !w-auto min-w-max ml-5" style="position: relative; top: 4px">{{ __('Data To') }}</label>
-              <input type="date" class="form-control" name="dataTo" value="{{ $data_to }}" min="2024-{{ \Carbon\Carbon::now()->format('m') }}-01" max="{{ \Carbon\Carbon::today()->toDateString() }}">
+              <input type="date" class="form-control" name="dataTo" value="{{ $data_to }}" min="{{ $minDate }}" max="{{ $maxDate }}">
             </div>
 
             {{-- <div class="input-area relative flex items-center gap-5">

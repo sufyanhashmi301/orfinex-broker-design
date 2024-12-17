@@ -9,7 +9,7 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Registered User') }}
+                        {{ __('Registered Users') }}
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
                         {{ $data['register_user'] }}
@@ -42,15 +42,17 @@
             <div class="flex space-x-3 rtl:space-x-reverse">
                 <div class="flex-none">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger-500">
-                        <iconify-icon icon="lucide:user-cog"></iconify-icon>
+                        <iconify-icon icon="lucide:badge-check"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Site Staff') }}
+                        {{-- {{ __('Site Staff') }} --}}
+                        Total Active Accounts
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $data['total_staff'] }}
+                        {{-- {{ $data['total_staff'] }} --}}
+                        {{ $data['total_active_accounts'] }}
                     </div>
                 </div>
             </div>
@@ -61,15 +63,17 @@
             <div class="flex space-x-3 rtl:space-x-reverse">
                 <div class="flex-none">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger-500">
-                        <iconify-icon icon="lucide:wallet"></iconify-icon>
+                        <iconify-icon icon="lucide:badge-alert"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Total Deposits') }}
+                        {{-- {{ __('Total Payments') }} --}}
+                        Total Violated Accounts
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $currencySymbol }} <span class="count">{{ round($data['total_deposit'],2) }}</span>
+                        {{-- {{ $currencySymbol }} <span class="count">{{ round($data['total_deposit'],2) }}</span> --}}
+                        {{ $data['total_violated_accounts'] }}
                     </div>
                 </div>
             </div>
@@ -80,11 +84,11 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                {{ __('Total Withdraw') }}
+                {{ __('Total Payout') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
-                {{ $currencySymbol }}<span class="count">{{ round($data['total_withdraw'],2) }}</span>
-                <span class="text-sm text-success-500 ml-1">+452%</span>
+                {{ $currencySymbol }}<span class="count">{{ $data['total_payout'] }}</span>
+                {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
                 
@@ -97,8 +101,8 @@
                 {{ __('Total Referral') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
-                {{ $data['total_referral'] }}
-                <span class="text-sm text-success-500 ml-1">+452%</span>
+                {{ $currencySymbol }}{{ $data['total_referral'] }}
+                {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
                 
@@ -108,11 +112,12 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                {{ __('Total Send') }}
+                {{ __('Total Withdrawn Amount') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
-                {{ $currencySymbol }}<span class="count">{{ round($data['total_send'],2) }}</span>
-                <span class="text-sm text-success-500 ml-1">+452%</span>
+                {{-- {{ $currencySymbol }}<span class="count">{{ round($data['total_send'],2) }}</span> --}}
+                {{ $currencySymbol }}<span class="count">0.00</span>
+                {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
                 
@@ -126,15 +131,17 @@
             <div class="flex space-x-3 rtl:space-x-reverse">
                 <div class="flex-none">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger-500">
-                        <iconify-icon icon="lucide:droplet"></iconify-icon>
+                        <iconify-icon icon="lucide:sword"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Total Investment') }}
+                        {{-- {{ __('Total Investment') }} --}}
+                        Total Challenge Accounts
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $currencySymbol }}<span class="count">{{ round($data['total_investment'],2) }}</span>
+                        {{-- {{ $currencySymbol }}<span class="count">{{ round($data['total_investment'],2) }}</span> --}}
+                        {{ $data['total_challenge_accounts'] }}
                     </div>
                 </div>
             </div>
@@ -145,15 +152,16 @@
             <div class="flex space-x-3 rtl:space-x-reverse">
                 <div class="flex-none">
                     <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900 text-danger-500">
-                        <iconify-icon icon="lucide:package-plus"></iconify-icon>
+                        <iconify-icon icon="lucide:hand-coins"></iconify-icon>
                     </div>
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Live Accounts') }}
+                        {{-- {{ __('Live Accounts') }} --}}
+                        Total Funded Accounts
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
-                        16
+                        {{ $data['total_funded_accounts'] }}
                     </div>
                 </div>
             </div>
@@ -169,10 +177,11 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Demo Accounts') }}
+                        {{-- {{ __('Demo Accounts') }} --}}
+                        Total Trial Accounts
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
-                        12
+                        {{ $data['total_trial_accounts'] }}
                     </div>
                 </div>
             </div>

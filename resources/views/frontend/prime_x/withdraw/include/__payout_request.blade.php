@@ -36,16 +36,19 @@
                           $total_user_profit_share_amount = 0;
                         @endphp
                         @forelse ($funded_balances as $fb)
+                          @php
+                            $net_profit = $fb->profit - $fb->payout_pending;
+                          @endphp
                           <tr>
                             <td class="table-td">
                               <b>
                                 <a target="_blank" style="text-decoration: underline" href="{{ route('user.investment.trading-stats', ["investment_id" => $fb->accountTypeInvestment->id ]) }}">{{ $fb->accountTypeInvestment->login }}</a>
                               </b>
                             </td>
-                            <td class="table-td">{{ number_format($fb->profit, 2) }} {{$currency}}</td>
+                            <td class="table-td">{{ number_format($net_profit, 2) }} {{$currency}}</td>
                             <td class="table-td">{{ $fb->user_profit_share }}%</td>
                             @php
-                              $user_profit_share_amount = ( $fb->profit * $fb->user_profit_share ) / 100;
+                              $user_profit_share_amount = ( $net_profit * $fb->user_profit_share ) / 100;
                               $total_user_profit_share_amount += $user_profit_share_amount;
                             @endphp
                             <td class="table-td">{{ number_format($user_profit_share_amount, 2) }} {{$currency}}</td>

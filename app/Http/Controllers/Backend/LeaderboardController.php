@@ -2,17 +2,31 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\LeaderboardBadge;
 use App\Models\LeaderboardRanking;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 use App\Models\LeaderboardRankingsCategory;
-use Illuminate\Http\Request;
 
 class LeaderboardController extends Controller
 {
+    public function runSeeder() {
+        Artisan::call('db:seed', [
+            '--class' => 'LeaderboardBadgesSeeder' 
+        ]);
+    }
+
     public function index(Request $request)
     {
         $badges = LeaderboardBadge::all();
+
+        // Automatically run Seeder if table is empty
+        if(count($badges) == 0) {
+            $this->runSeeder();
+            $badges = LeaderboardBadge::all();
+        }
+
         $rankings_categories = LeaderboardRankingsCategory::all();
 
         if(!isset($request->category)) {
@@ -27,6 +41,13 @@ class LeaderboardController extends Controller
     public function userIndex(Request $request) {
 
         $badges = LeaderboardBadge::all();
+
+        // Automatically run Seeder if table is empty
+        if(count($badges) == 0) {
+            $this->runSeeder();
+            $badges = LeaderboardBadge::all();
+        }
+
         $rankings_categories = LeaderboardRankingsCategory::all();
 
         if(!isset($request->category)) {

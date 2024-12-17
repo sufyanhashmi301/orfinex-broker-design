@@ -11,6 +11,8 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\AccountType;
+use App\Enums\AccountType as AccountTypeEnums;
+use App\Models\AccountTypeInvestment;
 use App\Models\CustomerGroup;
 use App\Models\ForexAccount;
 use App\Models\ForexSchema;
@@ -70,8 +72,14 @@ class UserController extends Controller
           $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
             $data = User::applyFilters($filters);
 
+            
+
             return Datatables::of($data)
                 ->addIndexColumn()
+
+                ->editColumn('challenge_accounts', 'backend.user.include.__challenge_accounts_count')
+                ->editColumn('funded_accounts', 'backend.user.include.__funded_accounts_count')
+                ->editColumn('trial_accounts', 'backend.user.include.__trial_accounts_count')
 
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
@@ -115,6 +123,11 @@ class UserController extends Controller
             $data->applyFilters($filters);
             return Datatables::of($data)
                 ->addIndexColumn()
+
+                ->editColumn('challenge_accounts', 'backend.user.include.__challenge_accounts_count')
+                ->editColumn('funded_accounts', 'backend.user.include.__funded_accounts_count')
+                ->editColumn('trial_accounts', 'backend.user.include.__trial_accounts_count')
+
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->editColumn('username', 'backend.user.include.__user')
                 ->editColumn('email', 'backend.user.include.__email')
@@ -144,6 +157,11 @@ class UserController extends Controller
             $data->applyFilters( $filters);
             return Datatables::of($data)
                 ->addIndexColumn()
+
+                ->editColumn('challenge_accounts', 'backend.user.include.__challenge_accounts_count')
+                ->editColumn('funded_accounts', 'backend.user.include.__funded_accounts_count')
+                ->editColumn('trial_accounts', 'backend.user.include.__trial_accounts_count')
+
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
@@ -255,8 +273,20 @@ class UserController extends Controller
             })
             ->orderBy('priority', 'asc')
             ->get();
+        
+        // optimizations
+        $challenge_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+            $query->where('type', AccountTypeEnums::CHALLENGE);
+        })->get();
+        $funded_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+            $query->where('type', AccountTypeEnums::FUNDED);
+        })->get();
+        $trial_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+            $query->where('type', AccountTypeEnums::AUTO_EXPIRE);
+        })->get();
+        
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags','customerGroups', 'schemas'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags','customerGroups', 'schemas', 'challenge_accounts', 'funded_accounts', 'trial_accounts'));
 
     }
 

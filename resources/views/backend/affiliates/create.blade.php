@@ -3,7 +3,7 @@
     {{ __('Affiliates Management') }}
 @endsection
 @section('content')
-    <form action="{{ route('admin.affiliate-rules.store') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('admin.affiliate-rules.store') }}" method="post" id="affiliate-rule-form" enctype="multipart/form-data">
         @csrf
         <div class="space-y-5">
             <h4
@@ -18,15 +18,15 @@
                             <label class="form-label">
                                 {{ __('Name') }}
                             </label>
-                            <input type="text" name="name" value="{{ $affiliate_rule->name ?? '' }}" class="form-control" placeholder="">
+                            <input type="text" name="name" value="{{ $affiliate_rule->name ?? '' }}" required class="form-control" placeholder="">
                         </div>
 
                         <div class="input-area relative">
                             <label for="" class="form-label">
                                 {{ __('Refer Count Mode') }}
                             </label>
-                            <select name="count_mode" class="select2 form-control w-full">
-                                <option value="active_account" {{ $affiliate_rule->count_mode == 'active_account' ? 'selected' : '' }}>By Active Accounts</option>
+                            <select name="count_mode" required class="select2 form-control w-full">
+                                <option value="active_account"  {{ $affiliate_rule->count_mode == 'active_account' ? 'selected' : '' }}>By Active Accounts</option>
                                 <option value="customer" {{ $affiliate_rule->count_mode == 'customer' ? 'selected' : '' }}>By Customers</option>
                             </select>
                         </div>
@@ -35,7 +35,7 @@
                             <label class="form-label">
                                 Balance Retention Period (days)
                             </label>
-                            <input type="number" value="{{ $affiliate_rule->balance_retention_period ?? '' }}" name="balance_retention_period" class="form-control"
+                            <input type="number" required value="{{ $affiliate_rule->balance_retention_period ?? '' }}" name="balance_retention_period" class="form-control"
                                 placeholder="">
                         </div>
 
@@ -43,7 +43,7 @@
                             <label for="" class="form-label">
                                 Has multiple levels
                             </label>
-                            <select name="has_levels" class="select2 form-control w-full has-multiple-levels">
+                            <select name="has_levels" required class="select2 form-control w-full has-multiple-levels">
                                 <option value="1" {{ $affiliate_rule->has_levels == '1' ? 'selected' : '' }}>Yes</option>
                                 <option value="0" {{ $affiliate_rule->has_levels == '0' ? 'selected' : '' }}>No</option>
                             </select>
@@ -53,7 +53,7 @@
                             <label for="" class="form-label">
                                 Apply on Account Types
                             </label>
-                            <select name="for_account_type_ids[]" class="select2 form-control w-full" multiple>
+                            <select required name="for_account_type_ids[]" class="select2 form-control w-full" multiple>
                                 <option value="all" {{ in_array('all', json_decode($affiliate_rule->for_account_type_ids, true)) ? 'selected' : '' }}>All</option>
                                 @foreach ($account_types as $account_type)
                                     <option value="{{ $account_type->id }}" 
@@ -68,7 +68,7 @@
                             <label for="" class="form-label">
                                 Is Active
                             </label>
-                            <select name="is_active" class="select2 form-control w-full">
+                            <select required name="is_active" class="select2 form-control w-full">
                                 <option value="1" {{ $affiliate_rule->is_active == '1' ? 'selected' : '' }}>Yes</option>
                                 <option value="0" {{ $affiliate_rule->is_active == '0' ? 'selected' : '' }}>No</option>
                             </select>
@@ -109,9 +109,9 @@
                                 @if (isset($affiliate_rule))
                                     @foreach ($affiliate_rule->affiliateRuleConfiguration()->orderBy('id', 'ASC')->get() as $index => $config)
                                         <tr class="affiliate-rule-config">
-                                            <td class="table-td"><input type="text" value="{{ $config->count_start }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_start]" data-index="{{ $index }}" class="form-control" ></td>
-                                            <td class="table-td"><input type="text" value="{{ $config->count_end }}" {{ $loop->last ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_end]" data-index="{{ $index }}" class="form-control"></td>
-                                            <td class="table-td"><input type="text" value="{{ $config->commission_percentage }}" name="affiliate_configs[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
+                                            <td class="table-td"><input type="number" required value="{{ $config->count_start }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_start]" data-index="{{ $index }}" class="form-control" ></td>
+                                            <td class="table-td"><input type="number" required value="{{ $config->count_end }}" {{ $loop->last ? 'readonly' : '' }} name="affiliate_configs[{{ $index }}][count_end]" data-index="{{ $index }}" class="form-control"></td>
+                                            <td class="table-td"><input type="number" required value="{{ $config->commission_percentage }}" name="affiliate_configs[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
 
                                             @if ($loop->last && count($affiliate_rule->affiliateRuleConfiguration) != 1)
                                                 <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>
@@ -121,9 +121,9 @@
 
                                 @else
                                     <tr class="affiliate-rule-config">
-                                        <td class="table-td"><input type="text" value="1" readonly name="affiliate_configs[0][count_start]" data-index="0" class="form-control" ></td>
-                                        <td class="table-td"><input type="text" value="9999" readonly name="affiliate_configs[0][count_end]" data-index="0" class="form-control"></td>
-                                        <td class="table-td"><input type="text" name="affiliate_configs[0][commission_percentage]" data-index="0" class="form-control"></td>
+                                        <td class="table-td"><input type="number" required value="1" readonly name="affiliate_configs[0][count_start]" data-index="0" class="form-control" ></td>
+                                        <td class="table-td"><input type="number" required value="9999" readonly name="affiliate_configs[0][count_end]" data-index="0" class="form-control"></td>
+                                        <td class="table-td"><input type="number" required name="affiliate_configs[0][commission_percentage]" data-index="0" class="form-control"></td>
                                         
                                     </tr>
                                 @endif
@@ -132,6 +132,9 @@
                             </tbody>
 
                         </table>
+
+                        <div class="text-danger" id="config-error" style="color: #dc3545; font-size: 14px; padding-left: 15px; display: none"></div>
+
                     </div>
                 </div>
             </div>
@@ -160,8 +163,8 @@
                                 @if (isset($affiliate_rule))
                                     @foreach ($affiliate_rule->affiliateRuleLevel()->orderBy('id', 'ASC')->get() as $index => $level)
                                         <tr class="affiliate-level">
-                                            <td class="table-td"><input type="text" value="{{ $level->level }}" readonly name="affiliate_levels[{{ $index }}][level]" data-index="{{ $index }}" class="form-control" ></td>
-                                            <td class="table-td"><input type="text" value="{{ $level->commission_percentage }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_levels[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
+                                            <td class="table-td"><input type="number" required value="{{ $level->level }}" readonly name="affiliate_levels[{{ $index }}][level]" data-index="{{ $index }}" class="form-control" ></td>
+                                            <td class="table-td"><input type="number" required value="{{ $level->commission_percentage }}" {{ $loop->first ? 'readonly' : '' }} name="affiliate_levels[{{ $index }}][commission_percentage]" data-index="{{ $index }}" class="form-control"></td>
 
                                             @if ($loop->last && count($affiliate_rule->affiliateRuleLevel) != 1)
                                                 <td class="table-td delete-config delete-td"> <center><a href="javascript:void(0)" class="action-btn" ><iconify-icon icon="lucide:trash"></iconify-icon></a></center> </td>
@@ -172,8 +175,8 @@
 
                                 @else
                                     <tr class="affiliate-level">
-                                        <td class="table-td"><input type="text" value="1" readonly name="affiliate_levels[0][level]" data-index="0" class="form-control" ></td>
-                                        <td class="table-td"><input type="text" value="100" readonly ="" name="affiliate_levels[0][commission_percentage]" data-index="0" class="form-control"></td>
+                                        <td class="table-td"><input type="number" required value="1" readonly name="affiliate_levels[0][level]" data-index="0" class="form-control" ></td>
+                                        <td class="table-td"><input type="number" required value="100" readonly ="" name="affiliate_levels[0][commission_percentage]" data-index="0" class="form-control"></td>
                                     </tr>
                                 @endif
 
@@ -197,6 +200,53 @@
 @endsection
 
 @section('script')
+
+  <script>
+    $('#affiliate-rule-form').on('submit', function(){
+
+        let error_occured = false
+
+        // config validation
+        for(let i=0; i < $('.affiliate-rule-config').length; i++) {
+            let config = $('.affiliate-rule-config').eq(i)
+            let count_start = config.find('td').eq(0).find('input').val() 
+            let count_end = config.find('td').eq(1).find('input').val() 
+            let commission = config.find('td').eq(2).find('input').val() 
+
+            // exclude the first
+            if(i != 0){
+
+                let prev_config = $('.affiliate-rule-config').eq(i-1)
+                let prev_count_start = prev_config.find('td').eq(0).find('input').val() 
+                let prev_count_end = prev_config.find('td').eq(1).find('input').val() 
+                let prev_commission = prev_config.find('td').eq(2).find('input').val() 
+
+                // if the count_start compared to prev_count_end is any number rather than +1 of prev_count_end, give error 
+                if(count_start != (+prev_count_end + 1)){
+                    error_occured = true
+                    $('#config-error').show()
+                    $('#config-error').text('Invalid configuration: The "Count Start" value must be exactly +1 greater than the previous "Count End" value.')
+                    break;
+                }
+            }
+
+            // check if the count_end is less than or equal to count_start
+            if(count_end <= count_start) {
+                error_occured = true
+                $('#config-error').show()
+                $('#config-error').text('Invalid configuration: The "Count End" value must be greater than its respective "Count Start" value.')
+                break;
+            }
+            
+            // console.log(count_start, count_end, commission)
+        }
+
+        if(!error_occured) {
+            return false
+        }
+    })
+  </script>
+
   <script>
     $('.add-config').on('click', function() {
       let new_row = $('.affiliate-rule-config:last').clone()

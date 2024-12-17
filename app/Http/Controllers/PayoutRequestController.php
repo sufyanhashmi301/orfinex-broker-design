@@ -5,10 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Models\PayoutRequest;
+use App\Services\ForexApiService;
 use App\Enums\PayoutRequestStatus;
+use App\Models\AccountTypeInvestmentStat;
+use App\Models\FundedBalance;
 
 class PayoutRequestController extends Controller
 {
+    protected $forexApiService;
+
+    public function __construct(ForexApiService $forexApiService)
+    {
+        $this->forexApiService = $forexApiService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,12 +46,49 @@ class PayoutRequestController extends Controller
     public function action(Request $request, $payout_request_id) {
         // dd($request->operation, $payout_request_id);
 
-        // do security measures.... such as check if payout request is not pending etc...
+        
 
         $payout_request = PayoutRequest::find($payout_request_id);
+
+        // do security measures...
+        if($payout_request->status != PayoutRequestStatus::PENDING) {
+            notify()->error('False action on Payout Request', 'Error');
+            return redirect()->back();
+        }
+
         if($request->operation == 'approve') {
             $payout_request->status = PayoutRequestStatus::APPROVED;
 
+            // Deduct from API, Funded balances, and Stats
+            foreach($payout_request->detail as $single) {
+                $total_profit = $single['total_profit'];
+                
+                // Removal from API
+                $reset_balance_data = [
+                    'login' => $single['login'],
+                    'Amount' => $total_profit,
+                    'type' => 0, //deposit
+                    'TransactionComments' => 'Payout Successful'
+                ];
+            
+                $response = $this->forexApiService->balanceOperation($reset_balance_data);
+
+                // removal from Stats
+                $acocunt_stats = AccountTypeInvestmentStat::where('account_type_investment_id', $single['account_id'])->first();
+                $acocunt_stats->balance = $acocunt_stats->balance - $total_profit;
+                $acocunt_stats->current_equity = $acocunt_stats->current_equity - $total_profit;
+                $acocunt_stats->save();
+
+                // removal from funded balances
+                $funded_balance = FundedBalance::where('account_type_investment_id', $single['account_id'])->first();
+                $funded_balance->profit = $funded_balance->profit - $total_profit;
+                $funded_balance->last_retrieved_profit = $funded_balance->last_retrieved_profit - $total_profit;
+                $funded_balance->payout_pending = $funded_balance->payout_pending - $total_profit;
+                $funded_balance->save();
+
+            }
+
+            // Add to Wallet
             $wallet = Wallet::where('unique_id', $payout_request->wallet_unique_id)->first();
             $wallet->available_balance = $wallet->available_balance + $payout_request->user_profit_share_amount;
             $wallet->save();
@@ -50,6 +97,15 @@ class PayoutRequestController extends Controller
 
         } else {
             $payout_request->status = PayoutRequestStatus::DECLINE;
+
+            foreach($payout_request->detail as $single) {
+                $total_profit = $single['total_profit'];
+
+                $funded_balance = FundedBalance::where('account_type_investment_id', $single['account_id'])->first();
+                $funded_balance->payout_pending = $funded_balance->payout_pending - $total_profit;
+                $funded_balance->save();
+            }
+
             notify('Payout request declined!', 'Success');
         }
         $payout_request->save();

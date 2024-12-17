@@ -436,7 +436,7 @@ class WithdrawController extends Controller
         // $response = $this->forexApiService->balanceOperation($reset_balance_data);
         // dd('hi');
 
-        // if wallets dont exist then retuern false
+        // if wallets dont exist then return false
         $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);
         $affiliate_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::AFFILIATE);
 
@@ -446,18 +446,21 @@ class WithdrawController extends Controller
         }
 
         // All eligible funded balances record.
-        $funded_balances = FundedBalance::where('user_id', Auth::id())->where('profit', '!=', 0)->get();
+        $funded_balances = FundedBalance::where('user_id', Auth::id())->whereRaw('profit - payout_pending != 0')->get();
 
         $total_user_profit_share_amount = 0;
         $detail = [];
         $i = 0;
         foreach($funded_balances as $fb) {
-            $user_profit_share_amount = ( $fb->profit * $fb->user_profit_share ) / 100;
+
+            $net_profit = $fb->profit - $fb->payout_pending;
+
+            $user_profit_share_amount = ( $net_profit * $fb->user_profit_share ) / 100;
             $total_user_profit_share_amount += $user_profit_share_amount;
 
             $detail[$i]['account_id'] = $fb->accountTypeInvestment->id; 
             $detail[$i]['login'] = $fb->accountTypeInvestment->login; 
-            $detail[$i]['total_profit'] = $fb->profit; 
+            $detail[$i]['total_profit'] = $net_profit; 
             $detail[$i]['user_profit_percentage'] = $fb->user_profit_share; 
             $detail[$i]['user_profit_share_amount'] = $user_profit_share_amount; 
         }
@@ -468,28 +471,35 @@ class WithdrawController extends Controller
             return redirect()->back();
         }
 
-        // API call to reset the balance to allotted funds
+        // Reset the funded balances to 0 but not at the api level and also not the stats
+        // Add the amount to payout_pending of each funded balance 
         foreach($funded_balances as $fb) {
-            $reset_balance_data = [
-                'login' => $fb->accountTypeInvestment->login,
-                'Amount' => $fb->profit,
-                'type' => 0, //deposit
-                'TransactionComments' => 'Balance Reset'
-            ];
+            $net_profit = $fb->profit - $fb->payout_pending;
+
+            // Add to payout_pending
+            $fb->payout_pending = $fb->payout_pending + $net_profit;
+            $fb->save();
+
+            // $reset_balance_data = [
+            //     'login' => $fb->accountTypeInvestment->login,
+            //     'Amount' => $fb->profit,
+            //     'type' => 0, //deposit
+            //     'TransactionComments' => 'Balance Reset'
+            // ];
           
-            $response = $this->forexApiService->balanceOperation($reset_balance_data);
+            // $response = $this->forexApiService->balanceOperation($reset_balance_data);
             
             // 0 the funded balances of all accounts of Auth::id() user and Stats
             // stats
-            $fb->accountTypeInvestment->accountTypeInvestmentStat->balance = $fb->accountTypeInvestment->accountTypeInvestmentStat->balance - $fb->profit;
-            $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity = $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity - $fb->profit;
-            $fb->accountTypeInvestment->accountTypeInvestmentStat->save();
+            // $fb->accountTypeInvestment->accountTypeInvestmentStat->balance = $fb->accountTypeInvestment->accountTypeInvestmentStat->balance - $fb->profit;
+            // $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity = $fb->accountTypeInvestment->accountTypeInvestmentStat->current_equity - $fb->profit;
+            // $fb->accountTypeInvestment->accountTypeInvestmentStat->save();
             
             // funded balances
             // $funded_balance = FundedBalance::find($fb->id);
-            $fb->profit = 0.00;
-            $fb->last_retrieved_profit = 0.00;
-            $fb->save();
+            // $fb->profit = 0.00;
+            // $fb->last_retrieved_profit = 0.00;
+            // $fb->save();
         }
 
         // create new payout request
@@ -537,8 +547,8 @@ class WithdrawController extends Controller
         $affiliate_wallet->save();
 
         // All eligible funded balances record.
-        $funded_balances = FundedBalance::where('user_id', Auth::id())->where('profit', '!=', 0)->get();
-
+        $funded_balances = FundedBalance::where('user_id', Auth::id())->whereRaw('profit - payout_pending != 0')->get();
+        
         return view('frontend::withdraw.step1', compact('payout_wallet', 'affiliate_wallet', 'funded_balances'));
     }
 

@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\AccountType;
+use App\Enums\InvestmentStatus;
 use App\Enums\KYCStatus;
+use App\Enums\PayoutRequestStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
+use App\Models\AccountTypeInvestment;
 use App\Models\Admin;
 use App\Models\ForexAccount;
 use App\Models\Gateway;
 use App\Models\Invest;
 use App\Models\LoginActivities;
+use App\Models\PayoutRequest;
 use App\Models\ReferralRelationship;
 use App\Models\Ticket;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserAffiliate;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -34,7 +40,10 @@ class DashboardController extends Controller
             $query->where('type', TxnType::SendMoney);
         })->sum('amount');
 
-        $activeUser = $user->where('status', 1)->count();
+        // $activeUser = $user->where('status', 1)->count();
+        
+
+    
 
         $totalStaff = $admin->count();
 
@@ -112,23 +121,58 @@ class DashboardController extends Controller
 
         $symbol = setting('currency_symbol','global');
 
+        // --- Optimizations
+        $active_users = User::whereHas('accountTypeInvestment', function ($query) {
+            $query->whereIn('status', [InvestmentStatus::ACTIVE, InvestmentStatus::PASSED]);
+        })->count();
+        $total_active_accounts = AccountTypeInvestment::where('status', InvestmentStatus::ACTIVE)->count();
+        $total_violated_accounts = AccountTypeInvestment::where('status', InvestmentStatus::VIOLATED)->count();
+        $total_payout = PayoutRequest::where('status', PayoutRequestStatus::APPROVED)->sum('user_profit_share_amount'); // payout requests that have been approved
+        $total_referral = UserAffiliate::sum('total_commission');
+
+        $total_challenge_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+            $query->where('type', AccountType::CHALLENGE);
+        })->count();
+        $total_funded_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+            $query->where('type', AccountType::FUNDED);
+        })->count();
+        $total_trial_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+            $query->where('type', AccountType::AUTO_EXPIRE);
+        })->count();
+        
+        // dd($challenge_accounts);
+        // --- Optimizations
+
         $data = [
+            // optimizaitons
+            'active_user' => $active_users,
+            'total_active_accounts' => $total_active_accounts,
+            'total_violated_accounts' => $total_violated_accounts,
+            'total_payout' => $total_payout,
+            'total_referral' => $total_referral,
+            'total_challenge_accounts' => $total_challenge_accounts,
+            'total_funded_accounts' => $total_funded_accounts,
+            'total_trial_accounts' => $total_trial_accounts,
+            // optimizaitons
+
             'withdraw_count' => $withdrawCount,
             'kyc_count' => $kycCount,
             'deposit_count' => $depositCount,
 
             'register_user' => $user->count(),
-            'active_user' => $activeUser,
+            
             'latest_user' => $latestUser,
             'latest_invest' => $latestInvest,
 
             'total_staff' => $totalStaff,
 
+            
+
             'total_deposit' => $transaction->totalDeposit()->sum('amount'),
             'total_send' => $totalSend,
             'total_investment' => $transaction->totalInvestment()->sum('amount'),
             'total_withdraw' => $transaction->totalWithdraw()->sum('amount'),
-            'total_referral' => $totalReferral,
+            // 'total_referral' => $totalReferral,
 
             'date_label' => $dateArray,
             'deposit_statistics' => $depositStatistics,

@@ -17,6 +17,13 @@
                 @endforeach
             </select>
         </div>
+        <div class="input-area relative">
+            <label for="account_type_id" class="form-label">{{ __('Account Type:') }}</label>
+            <select name="account_type_id[]" class="select2 form-control w-full" multiple="multiple">
+                <option value="">--Select Account Type--</option>
+            </select>
+            <div class="invalid-feedback" id="rule-type-id-error" style="display: none;"></div>
+        </div>
 {{--        <div class="input-area relative">--}}
 {{--            <label for="ib_groups" class="form-label">{{ __('Select IB Groups') }}</label>--}}
 {{--            <select name="ib_groups[]" class="select2 form-control w-full" multiple="multiple">--}}

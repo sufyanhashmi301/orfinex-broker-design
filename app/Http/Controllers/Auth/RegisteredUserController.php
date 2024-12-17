@@ -210,11 +210,20 @@ class RegisteredUserController extends Controller
         $data = json_decode($page->data, true);
 
         $googleReCaptcha = plugin_active('Google reCaptcha');
-//        dd('s');
+        $cloudflareTurnstile = plugin_active('Cloudflare Turnstile');
+
+        $cloudflareTurnstileData = [];
+        if ($cloudflareTurnstile && is_string($cloudflareTurnstile->data)) {
+            $cloudflareTurnstileData = json_decode($cloudflareTurnstile->data, true) ?? [];
+        }
+
+        // Pass site_key separately for clean Blade usage
+        $siteKey = $cloudflareTurnstileData['site_key'] ?? null;
+
         $location = getLocation();
 //        dd($location);
 
-        return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data'));
+        return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'cloudflareTurnstile', 'cloudflareTurnstileData', 'siteKey', 'data'));
     }
 
     public function iframeRegister()

@@ -59,7 +59,7 @@
                 </a>
             </span>
             {{--@can('Delete User')--}}
-            <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+            <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModall">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                    data-tippy-theme="dark" data-tippy-content="Delete User">
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>

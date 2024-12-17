@@ -3,6 +3,7 @@
     {{ __('Transaction History') }}
 @endsection
 @section('content')
+    @include('frontend::user.transaction.include.__tabs_nav')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
             @yield('title')
@@ -34,11 +35,14 @@
                 </select>
             </div>
             <div class="input-area relative">
-                <select name="" class="form-control">
+                <select id="forex-account" class="form-control">
                     <option value="">{{ __('All accounts') }}</option>
+                    @foreach($realForexAccounts as $account)
+                        <option value="{{ $account->login }}">{{ $account->account_name }}</option>
+                    @endforeach
                 </select>
             </div>
-            <form method="POST" action="{{ route('user.transactions.export') }}">
+            <form method="POST" action="{{ route('user.history.transactions.export') }}">
                 @csrf
                 <input type="hidden" name="query" value="{{ request('query') }}">
                 <input type="hidden" name="date" value="{{ request('date') }}">
@@ -118,7 +122,7 @@
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
                 <div class="filter mb-3">
-                    <form action="{{ route('user.transactions') }}" method="get">
+                    <form action="{{ route('user.history.transactions') }}" method="get">
                         <div class="search flex items-center gap-2">
                             <input type="text" class="form-control" placeholder="{{ __('Search') }}" value="{{ request('query') }}" name="query"/>
                             <input type="date" class="form-control" name="date" value="{{ request()->get('date') }}"/>
@@ -127,7 +131,7 @@
                             </button>
                         </div>
                     </form>
-                    <form method="POST" action="{{ route('user.transactions.export') }}">
+                    <form method="POST" action="{{ route('user.history.transactions.export') }}">
                         @csrf
                         <input type="hidden" name="query" value="{{ request('query') }}">
                         <input type="hidden" name="date" value="{{ request('date') }}">
@@ -173,18 +177,20 @@
 @section('script')
     <script !src="">
 
-        $('#transaction-date, #transaction-status, #transaction-type').on('change', function() {
+        $('#transaction-date, #transaction-status, #transaction-type, #forex-account').on('change', function() {
             const status = $('#transaction-status').val();
             const type = $('#transaction-type').val();
             const date = $('#transaction-date').val();
+            const account = $('#forex-account').val();
 
             $.ajax({
-                url: '{{ route("user.transactions") }}',
+                url: '{{ route("user.history.transactions") }}',
                 type: 'GET',
                 data: {
                     transaction_status: status,
                     transaction_type: type,
                     transaction_date: date,
+                    forex_account: account,
                 },
                 success: function (response) {
                     $('#transaction-table-body').html(response); // Update the table body

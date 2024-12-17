@@ -193,6 +193,11 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
+    Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
+        Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
+        Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
+    });
+
     //===============================  Profit Deduction Management ==================================
     Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
     Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
@@ -302,6 +307,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
         Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
+
+        Route::get('popup', 'popup')->name('popup');
     });
 
     Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
@@ -310,10 +317,9 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
-        Route::post('store', 'store')->name('store');
-        Route::post('update', 'update')->name('update');
-        Route::post('delete', 'delete')->name('delete');
-        Route::post('position-update', 'positionUpdate')->name('position.update');
+        Route::get('/', 'index')->name('index');
+        Route::get('edit/{id}', 'edit')->name('edit');
+        Route::put('update', 'update')->name('update');
     });
 
     //===============================  site Settings ==================================

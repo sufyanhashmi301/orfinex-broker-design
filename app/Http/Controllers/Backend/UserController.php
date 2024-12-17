@@ -20,6 +20,7 @@ use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\KycLevel;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
@@ -277,11 +278,33 @@ class UserController extends Controller
         return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses', 'ibGroups'));
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        User::find($id)->delete();
-        return response()->json(['success' => 'Successfully deleted!']);
+        // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
+        $superAdmin = Admin::where('name', 'Super Admin')->first();
+        
+        // Check if the Super-Admin key exists in the database and the input matches
+        if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
+            // If the key doesn't match, notify error
+            notify()->error('Invalid Super-Admin key. Deletion denied.');
+            return redirect()->back();  // Redirect back to the previous page
+        }
+        
+        // Proceed with deleting the user if the key matches
+        $user = User::find($id);
+        
+        // Ensure the user exists before attempting to delete
+        if ($user) {
+            $user->delete();
+            notify()->success('User deleted successfully');
+        } else {
+            notify()->error('User not found.');
+        }
+        
+        // Redirect to the user listing page after the operation
+        return redirect()->route('admin.user.index');
     }
+    
 
     /**
      * @return RedirectResponse

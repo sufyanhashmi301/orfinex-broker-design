@@ -16,9 +16,6 @@
                             @case('receive_money')
                             <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
                             @break
-                            @case('send_money_internal')
-                            <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
-                            @break
                             @case('deposit')
                             <iconify-icon icon="octicon:download-16"></iconify-icon>
                             @break

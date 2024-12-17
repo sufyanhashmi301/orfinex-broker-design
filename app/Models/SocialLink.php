@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,30 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SocialLink extends Model
 {
-	protected $table = 'social_links';
-
-	protected $casts = [
-		'status' => 'int'
-	];
-
-
-	protected $fillable = [
-		'title',
-		'slug',
-		'driver',
-		'client_id',
-		'client_secret',
-		'redirect',
-		'status'
-	];
-    public static function activePlatforms()
-    {
-        return self::where('status', 1)->get();
-    }
-
-    public static function getProviderConfig($provider)
-    {
-        return self::where('driver', $provider)->where('status', 1)->first();
-    }
+    use HasFactory;
+    protected $fillable = ['title', 'link', 'slug', 'status'];
 
 }

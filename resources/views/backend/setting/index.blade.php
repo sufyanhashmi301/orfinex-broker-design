@@ -123,14 +123,6 @@
                             </li>
                         @endcanany
                     @endcanany
-                    <li class="">
-                        <a href="{{ route('admin.withdraw.schedule') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Payout Schedule') }}
-                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
-                                {{ __('New') }}
-                            </span>
-                        </a>
-                    </li>
                     <li>
                         <a href="{{ route('admin.settings.currency') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Currency') }}
@@ -161,6 +153,14 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.theme.global') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Branding')}}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.settings.site') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Site Settings') }}
                         </a>
@@ -171,8 +171,11 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.settings.gdpr') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('GDPR') }}
+                        <a href="{{ route('admin.grpdCompliance') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('GDPR Compliance') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
                         </a>
                     </li>
                     <li>
@@ -408,6 +411,14 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    <li>
+                        <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Payment Gateways') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('Updated') }}
+                            </span>
+                        </a>
+                    </li>
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Plugins') }}
@@ -416,12 +427,20 @@
                             </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Payment Gateways') }}
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','sms') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{__('SMS Settings') }}
                             <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('Updated') }}
                             </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.settings.plugin','notification') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{__('Notification Settings') }}
+                            <span class="badge-warning text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                            {{ __('Updated') }}
+                        </span>
                         </a>
                     </li>
                     <li>

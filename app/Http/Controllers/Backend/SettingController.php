@@ -257,6 +257,10 @@ class SettingController extends Controller
         return view('backend.setting.platform_api.x9-webterminal');
     }
 
+    public function  grpdCompliance(){
+        return view('backend.setting.site_setting.gdpr_compliance');
+    }
+
     public function testDatabaseConnection(Request $request)
     {
         $credentials = [
@@ -298,6 +302,11 @@ class SettingController extends Controller
         } else {
             return response()->json(['error' => 'Failed to fetch data from CDN'], 500);
         }
+    }
+
+    public function featureLocked()
+    {
+        return view('global.__feature_locked');
     }
 
 }

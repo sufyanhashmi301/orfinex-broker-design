@@ -16,49 +16,36 @@
             </div>
         @endif
     </div>
-    @include('backend.setting.plugin.include.__menu')
+{{--    @include('backend.setting.plugin.include.__menu')--}}
 
-    <div class="col-span-12">
-        <div class="card">
-            <div class="card-body p-6 space-y-4">
-                <p class="paragraph text-xs">
-                    <iconify-icon class="text-sm mr-2 text-warning-500" icon="lucide:info"></iconify-icon>{{ __('You can') }}
-                    <strong>{{ __('Enable or Disable') }}</strong> {{ __('any of the plugin') }}
-                </p>
-                @foreach($plugins as $plugin)
-                    <div class="single-gateway flex items-center justify-between border rounded py-3 px-4">
-                        <div class="gateway-name flex items-center gap-2">
-                            <div class="gateway-icon mr-4">
-                                <img class="h-7" src="{{ asset($plugin->icon) }}" alt=""/>
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+        @foreach($plugins as $plugin)
+            <div class="card border hover:shadow-lg">
+                <div class="card-header items-center noborder !p-4">
+                    <img class="inline-block h-10" src="{{ filter_var($plugin->icon, FILTER_VALIDATE_URL) ? $plugin->icon : asset($plugin->icon) }}" alt=""/>
+                    @canany(['plugins-action', 'notification-action', 'sms-action'])
+                        <button type="button" class="action-btn cursor-pointer {{ json_decode($plugin->data) ? 'editPlugin' : 'lockedFeature' }} dark:text-slate-300" data-id="{{$plugin->id}}">
+                            <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                        </button>
+                    @endcanany
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-base font-medium dark:text-white mr-1">{{ $plugin->name }}</h4>
+                        @if($plugin->status)
+                            <div class="badge badge-success capitalize">
+                                {{ __('Activated') }}
                             </div>
-                            <div class="gateway-title">
-                                <h4 class="text-sm">{{ $plugin->name }}</h4>
-                                <p class="text-xs">{{ $plugin->description }}</p>
+                        @else
+                            <div class="badge badge-danger capitalize">
+                                {{ __('DeActivated') }}
                             </div>
-                        </div>
-                        <div class="gateway-right flex items-center gap-2">
-                            <div class="gateway-status">
-                                @if($plugin->status)
-                                    <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                        {{ __('Activated') }}
-                                    </div>
-                                @else
-                                    <div class="badge bg-danger-500 text-danger-500 bg-opacity-30 capitalize">
-                                        {{ __('DeActivated') }}
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="gateway-edit">
-                                <a type="button" class="action-btn cursor-pointer editPlugin" data-id="{{$plugin->id}}">
-                                    <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                                </a>
-                            </div>
-                        </div>
+                        @endif
                     </div>
-                @endforeach
-
+                    <p class="text-sm dark:text-slate-300">{{ $plugin->description }}</p>
+                </div>
             </div>
-        </div>
+        @endforeach
     </div>
 
     <!-- Modal for Edit Plugin -->
@@ -74,6 +61,26 @@
         </div>
     </div>
     <!-- Modal for Edit Plugin-->
+
+    <!-- Modal for Locked Feature -->
+    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="lockedFeatureModal" tabindex="-1" aria-labelledby="lockedFeatureModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="modal-body popup-body">
+                    <div class="popup-body-text p-8">
+                        <div class="locked-feature-content"></div>
+                        <div class="action-btns text-center mt-5">
+                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                {{ __('Cancel') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal for Locked Feature-->
 @endsection
 @section('integrations-script')
 
@@ -90,7 +97,22 @@
                 $('#editPlugin').modal('show');
 
             })
+        });
+
+        $('.lockedFeature').on('click', function (e) {
+            "user strict"
+            $('.locked-feature-content').empty();
+
+            $.ajax({
+                url: '{{ route("admin.feature.locked") }}',
+                method: 'GET',
+                success: function (data) {
+                    $('.locked-feature-content').append(data)
+                    $('#lockedFeatureModal').modal('show');
+                }
+            })
         })
+        
     </script>
 
 @endsection

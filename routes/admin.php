@@ -65,6 +65,7 @@ use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\PayoutRequestController;
+use App\Http\Controllers\Backend\SocialLinkController;
 use App\Http\Controllers\RiskRuleController;
 use App\Models\LeaderboardBadge;
 
@@ -312,6 +313,10 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
     });
 
+    Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
+        Route::get('settings', 'pageSetting')->name('setting');
+        Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+    });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
         Route::post('store', 'store')->name('store');
@@ -369,7 +374,9 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     });
 
+    Route::get('grpd-compliance', [SettingController::class, 'grpdCompliance'])->name('grpdCompliance');
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
+    Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
 //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
@@ -415,6 +422,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
         Route::get('document-links', 'documentLinks')->name('document-links');
         Route::get('platform-links', 'platformLinks')->name('platform-links');
+
+        Route::get('social', [SocialLinkController::class, 'index'])->name('social.index');
+        Route::get('social/{id}', [SocialLinkController::class, 'edit'])->name('social.edit');
+        Route::put('social/update', [SocialLinkController::class, 'update'])->name('social.update');
     });
 
 //===============================  Others ==================================

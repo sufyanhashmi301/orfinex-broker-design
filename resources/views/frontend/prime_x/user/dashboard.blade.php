@@ -3,8 +3,52 @@
     {{ __(':full_name\'s Dashboard', ['full_name' => auth()->user()->full_name]) }}
 @endsection
 @section('content')
+    <div class="block md:hidden">
+        <div class="card user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg">
+            <div class="flex items-center">
+                <div class="flex-none">
+                    <div class="h-10 w-10 rounded-full flex-1 border-2" style="border-color: #0ebe3b;">
+                        <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
+                    </div>
+                </div>
+                <div class="flex-1 text-start ml-2">
+                    <h4 class="text-sm font-medium dark:text-white whitespace-nowrap">
+                        {{ $user->full_name }}
+                    </h4>
+                    <span class="flex items-center text-slate-400 text-xs font-normal">
+                        @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
+                            {{ __('Verified') }}
+                            <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                        @else
+                            {{ __('Unverified') }}
+                            <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                        @endif
+                    </span>
+                </div>
+            </div>
+            <div class="ltr:mr-[10px] rtl:ml-[10px]">
+                @auth
+                    @php
+                        $userId = auth()->id();
+                        $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
+                        $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
+                        $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
+                    @endphp
+                    @if($notifications->isNotEmpty())
+                        <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                            <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" icon="heroicons-outline:bell"></iconify-icon>
+                        </a>
+                    @else
+                        <a href="#" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" title="No notifications available">
+                            <iconify-icon class="text-slate-400 dark:text-slate-600 text-xl" icon="heroicons-outline:bell-slash"></iconify-icon>
+                        </a>
+                    @endif
+                @endauth
+            </div>
+        </div>
+    </div>
     @if($banners->count() > 0)
-        <div class="grid grid-cols-{{ $banners->count() }} gap-3 mb-3">
+        <div class="grid md:grid-cols-{{ $banners->count() }} grid-cols-1 gap-3 mb-3">
             @foreach($banners as $banner)
                 <div class="card flex flex-wrap items-center justify-between md:nowrap  px-4 py-5 gap-5">
                     <div class="">

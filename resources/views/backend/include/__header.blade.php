@@ -169,7 +169,7 @@
                             <img src="{{ asset('frontend/images/all-img/user.png') }}" alt="user" class="block w-full h-full object-cover rounded-full">
                         </div>
                     </button>
-                    <div class="dropdown-menu z-10 hidden bg-white divide-y divide-slate-100 shadow min-w-max dark:bg-slate-800 border dark:border-slate-700 !top-[23px] rounded-md overflow-hidden">
+                    <div class="dropdown-menu z-10 hidden bg-white divide-y divide-slate-100 shadow min-w-max dark:bg-slate-800 border dark:border-slate-700 !top-[10px] rounded-md overflow-hidden">
                         <ul class="py-1 text-sm text-slate-800 dark:text-slate-200">
                             <li>
                                 <a href="{{ route('admin.profile') }}" class="block px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white font-inter text-sm text-slate-600 dark:text-white font-normal">

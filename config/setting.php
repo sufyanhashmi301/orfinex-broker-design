@@ -10,6 +10,7 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_title', // unique name for field
                 'label' => 'Site Title', // you know what label it is
+                'description' => '',
                 'rules' => 'required|min:2|max:50', // validation rule of laravel
                 'value' => 'CRM', // default value if you want
             ],
@@ -17,7 +18,9 @@ return [
                 'type' => 'file', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_logo', // unique name for field
-                'label' => 'Site Logo (Dark) <iconify-icon class="ml-1" icon="lucide:info" title="Recommended Size 160 x 40"></iconify-icon>', // you know what label it is
+                'label' => 'Site Logo (Dark)', // you know what label it is
+                'description' => 'Recommended Size 160 x 40',
+                'example_logo' => 'example_logo_dark.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -26,6 +29,8 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_logo_light', // unique name for field
                 'label' => 'Site Logo (Light)', // you know what label it is
+                'description' => 'Recommended Size 160 x 40',
+                'example_logo' => 'example_logo_light.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'default/fav.png', // default value if you want
             ],
@@ -34,6 +39,8 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'site_favicon', // unique name for field
                 'label' => 'Site Favicon', // you know what label it is
+                'description' => 'Recommended Size 32 x 32',
+                'example_logo' => 'example_favicon.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
                 'value' => 'image/logo.png', // default value if you want
             ],
@@ -42,6 +49,8 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'login_bg', // unique name for field
                 'label' => 'Admin Login Cover', // you know what label it is
+                'description' => 'Recommended Size 935 x 920',
+                'example_logo' => 'example_',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],
@@ -50,6 +59,8 @@ return [
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'link_thumbnail', // unique name for field
                 'label' => 'Link Thumbnail Image ', // you know what label it is
+                'description' => 'Recommended Size 1600 x 627',
+                'example_logo' => 'example_thumbnail_crm.png',
                 'rules' => 'mimes:jpeg,jpg,png|max:2000', // validation rule of laravel
                 'value' => 'default/auth-bg.jpg', // default value if you want
             ],

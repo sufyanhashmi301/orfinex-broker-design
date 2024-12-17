@@ -35,7 +35,7 @@ class UpdateGatewayLogoSeeder extends Seeder
             ],
             [
                 'gateway_code' => 'coinbase',
-                'logo' => 'Coinbase: https://cdn.brokeret.com/crm-assets/admin/pg/coinbase.webp'
+                'logo' => 'https://cdn.brokeret.com/crm-assets/admin/pg/coinbase.webp'
             ],
             [
                 'gateway_code' => 'paystack',

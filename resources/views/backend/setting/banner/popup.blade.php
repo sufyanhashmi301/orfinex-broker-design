@@ -16,8 +16,8 @@
     </div>
 
     @include('backend.setting.banner.include.__tabs_nav')
-    <div class="grid grid-cols-3 gap-5">
-        <div class="lg:col-span-1 col-span-3">
+    <div class="grid grid-cols-2 gap-5">
+        <div class="lg:col-span-1 col-span-2">
             <div class="h-full rounded transition-all duration-100 shadow-none bg-slate-200 dark:bg-dark">
                 <form action="{{ route('admin.settings.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -39,12 +39,16 @@
                         <!-- BEGIN: Cards -->
                         <div class="card rounded-md bg-white dark:bg-slate-800 shadow-base custom-class card-body space-y-5 p-6">
                             <p class="card-text">
-                                {{ __('Lorem Ipsum is simply dummy text of the printing and typesetting industry.') }}
+                                {{ __('Engage your users effectively with a dashboard popup for updates, announcements, or promotions. Upload an image, customize the button text, and add a call-to-action link for further details. Ensure the image meets the recommended resolution for a clean and professional appearance.') }}
                             </p>
                             <div class="input-area">
                                 @php
                                     $popupImage = setting('popup_image', 'popup');
                                 @endphp
+                                <label for="" class="form-label flex items-center !w-auto">
+                                    {{ __('Image') }}
+                                    <iconify-icon class="toolTip onTop relative top-[2px]" icon="lucide:info" data-tippy-content="Tip: Use high-quality visuals to attract more attention!"></iconify-icon>
+                                </label>
                                 <div class="wrap-custom-file">
                                     <input
                                         type="file"
@@ -61,14 +65,15 @@
                                         <span>{{ __('Upload Image') }}</span>
                                     </label>
                                 </div>
+                                <span class="text-xs font-medium">{{ __('Recommended size: 700x700 px for best fit.') }}</span>
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Button Text') }}</label>
-                                <input type="text" name="popup_btn_text" class="form-control" value="{{ setting('popup_btn_text', 'popup') }}">
+                                <input type="text" name="popup_btn_text" class="form-control" value="{{ setting('popup_btn_text', 'popup') }}" placeholder="e.g., Read More, Learn More, Explore">
                             </div>
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Button Link') }}</label>
-                                <input type="text" name="popup_btn_link" class="form-control" value="{{ setting('popup_btn_link', 'popup') }}">
+                                <input type="text" name="popup_btn_link" class="form-control" value="{{ setting('popup_btn_link', 'popup') }}" placeholder="e.g., https://example.com">
                             </div>
                             <div class="input-area">
                                 <button type="submit" class="btn btn-dark block-btn">

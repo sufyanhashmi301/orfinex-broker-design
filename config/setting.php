@@ -739,7 +739,7 @@ return [
                 'name' => 'popup_btn_text', // unique name for field
                 'label' => 'Popup Button Text', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 'Read More', // default value if you want
+                'value' => null, // default value if you want
             ],
             [
                 'type' => 'url', // input fields type

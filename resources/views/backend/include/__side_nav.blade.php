@@ -217,7 +217,7 @@
         @endcanany
 
         <li>
-            <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
+            <a href="{{ route('admin.risk-rule.quick_trades') }}" class="navItem {{ isActive('admin.risk-rule.quick_trades') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
                     <span>{{ __('Risk Hub') }}</span>

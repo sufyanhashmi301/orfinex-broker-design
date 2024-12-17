@@ -3,10 +3,10 @@
     {{ __('Active Positions') }}
 @endsection
 @section('content')
-    @php
+    {{-- @php
         use App\Models\ForexSchemaPhase;
         $groups = ForexSchemaPhase::all();
-    @endphp
+    @endphp --}}
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
@@ -18,9 +18,9 @@
                 <label for="group" class="form-label !w-auto min-w-max">{{ __('Select Group:') }}</label>
                 <select id="group" class="form-control w-full">
                     <option value="" disabled selected>Select a group</option>
-                    @foreach ($groups as $group)
+                    {{-- @foreach ($groups as $group)
                         <option value="{{ $group->group }}">{{ $group->group }}</option>
-                    @endforeach
+                    @endforeach --}}
                 </select>
             </div>
             <button id="fetch-positions" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">

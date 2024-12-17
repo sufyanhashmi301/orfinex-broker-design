@@ -66,6 +66,7 @@ use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\Backend\SocialLinkController;
+use App\Http\Controllers\RiskRuleController;
 use App\Models\LeaderboardBadge;
 
 /*
@@ -188,6 +189,14 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Payout Requests
     Route::get('/payout-requests', [PayoutRequestController::class, 'index'])->name('payout_requests.index');
     Route::get('/payout-request/{payout_request_id}', [PayoutRequestController::class, 'action'])->name('payout_request.action');
+
+    // Risk Rules
+    Route::group(['prefix' => 'risk-rule', 'as' => 'risk-rule.', 'controller' => RiskRuleController::class], function () {
+        Route::get('/quick-trades', 'riskRule')->name('quick_trades');
+        Route::get('/scalper-detection', 'riskRule')->name('scalper_detection');
+        Route::get('/most-trades', 'riskRule')->name('most_trades');
+        Route::get('/ip-address-info', 'riskRule')->name('ip_address');
+    });
 
 // =============================== Optimization ===============================
 

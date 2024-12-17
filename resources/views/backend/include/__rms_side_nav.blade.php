@@ -20,7 +20,44 @@
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
 <div class="sidebar-menus py-2 px-4 h-[calc(100%-100px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu flex flex-column mt-3">
+
         <li>
+            <a href="{{ route('admin.risk-rule.quick_trades') }}" class="navItem {{ isActive('admin.risk-rule.quick_trades') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:fast-forward"></iconify-icon>
+                    <span>{{ __('Quick Trades Analysis') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('admin.risk-rule.scalper_detection') }}" class="navItem {{ isActive('admin.risk-rule.scalper_detection') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:chart-scatter"></iconify-icon>
+                    <span>{{ __('Scalper Detection') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('admin.risk-rule.most_trades') }}" class="navItem {{ isActive('admin.risk-rule.most_trades') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:circle-fading-arrow-up"></iconify-icon>
+                    <span>{{ __('Most Trades Analysis') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('admin.risk-rule.ip_address') }}" class="navItem {{ isActive('admin.risk-rule.ip_address') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:map-pinned"></iconify-icon>
+                    <span>{{ __('IP Address Analysis') }}</span>
+                </span>
+            </a>
+        </li>
+
+        {{-- <li>
             <a href="{{ route('admin.activePositions') }}" class="navItem {{ isActive('admin.activePositions') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="ic:baseline-candlestick-chart"></iconify-icon>
@@ -57,7 +94,7 @@
                     <span>{{ __('Older Positions - Days') }}</span>
                 </span>
             </a>
-        </li>
+        </li> --}}
     </ul>
 </div>
 <div class="stickySetting_menu sticky bottom-0 px-6 py-4">

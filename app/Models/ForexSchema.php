@@ -86,7 +86,14 @@ class ForexSchema extends Model
 		'live_server',
 	];
 
-	public function forexAccounts()
+    // App\Models\ForexSchema.php
+
+    public function rebateRules()
+    {
+        return $this->belongsToMany(RebateRule::class, 'forex_schema_rebate_rule', 'forex_schema_id', 'rebate_rule_id')->withTimestamps();
+    }
+
+    public function forexAccounts()
 	{
 		return $this->hasMany(ForexAccount::class);
 	}

@@ -60,33 +60,9 @@ class AuthController extends Controller
             'password' => ['required'],
 
             'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
-            'cf-turnstile-response' => Rule::requiredIf(plugin_active('Cloudflare Turnstile')),
 
         ]);
         $credentials = Arr::except($credentials, ['g-recaptcha-response']);
-        $turnstileResponse = $request->input('cf-turnstile-response');
-
-        // Verify Turnstile with Cloudflare
-        $cloudflareTurnstile = plugin_active('Cloudflare Turnstile');
-        $cloudflareTurnstileData = [];
-        if ($cloudflareTurnstile && is_string($cloudflareTurnstile->data)) {
-            $cloudflareTurnstileData = json_decode($cloudflareTurnstile->data, true) ?? [];
-        }
-
-        // Pass site_key separately for clean Blade usage
-        $secretKey = $cloudflareTurnstileData['secret_key'] ?? null;
-
-        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'secret' => $secretKey,
-            'response' => $turnstileResponse,
-        ]);
-
-        $responseData = $response->json();
-
-        if (!$responseData['success']) {
-            return back()->withErrors(['cf-turnstile' => 'Turnstile verification failed. Please try again.']);
-        }
-
 //dd($request->all());
 
         if ($this->guard()->attempt($credentials)) {

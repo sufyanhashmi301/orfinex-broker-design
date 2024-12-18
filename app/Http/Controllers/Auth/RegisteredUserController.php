@@ -59,7 +59,7 @@ class RegisteredUserController extends Controller
 
         $this->applyBonuses($user, $rank);
         $this->notifyUser($user, $input);
-        $this->handleReferral($request, $user, $schemaID);
+        $this->handleReferral($request, $user);
 
         Auth::login($user);
         LoginActivities::add();
@@ -67,7 +67,7 @@ class RegisteredUserController extends Controller
         return redirect(RouteServiceProvider::HOME);
     }
 
-    public function handleSocialRegistration($socialUser, $provider)
+    public function handleSocialRegistration($socialUser, $provider, $referralCode = null)
     {
         // Default rank
         $rank = Ranking::find(1);
@@ -89,25 +89,37 @@ class RegisteredUserController extends Controller
                 'avatar' => $socialUser->getAvatar(),
                 'country' => $country,
                 'phone' => $phone,
-                'password' =>  Hash::make(Str::random(12)),
+                'password' => Hash::make(Str::random(12)),
                 'ranking_id' => $rank->id,
                 'rankings' => json_encode([$rank->id]),
                 'email_verified_at' => now(),
             ]
         );
 
-        // Apply bonuses and notify
-        $this->applyBonuses($user, $rank);
-        $this->notifyUser($user, [
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-        ]);
+        // If the user is newly created, handle bonuses, notifications, and referral
+        if ($user->wasRecentlyCreated) {
+            // Apply bonuses and notify
+            $this->applyBonuses($user, $rank);
+            $this->notifyUser($user, [
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+            ]);
 
+            // Handle referral logic
+            if ($referralCode) {
+                $this->handleReferral($referralCode, $user);
+            }
+        }
+
+        // Log in the user
         Auth::login($user);
+
+        // Log the activity
         LoginActivities::add();
 
         return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in via ' . ucfirst($provider));
     }
+
 
     private function validateRegularRegistration(Request $request)
     {
@@ -169,7 +181,7 @@ class RegisteredUserController extends Controller
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
     }
-    private function handleReferral(Request $request, User $user, $schemaID)
+    private function handleReferral(Request $request, User $user, $schemaID=null)
     {
         event(new UserReferred($request->cookie('invite'), $user, $schemaID));
         \Cookie::forget('invite');

@@ -23,10 +23,6 @@
             <input type="text" name="client_secret" class="form-control" value="{{ $socialLogin->client_secret }}">
         </div>
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Redirect Link') }}</label>
-            <input type="url" name="redirect" class="form-control" value="{{ $socialLogin->redirect }}">
-        </div>
-        <div class="input-area">
             <div class="flex items-center space-x-7 flex-wrap">
                 <label class="form-label !w-auto pt-0">
                     {{ __('Status') }}

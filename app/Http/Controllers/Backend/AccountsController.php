@@ -13,8 +13,8 @@ use App\Models\ForexSchema;
 use App\Models\Invest;
 use App\Models\User;
 use App\Services\ForexApiService;
+use App\Rules\ForexLoginBelongsToUserGeneral;
 use App\Traits\NotifyTrait;
-use Brick\Math\BigDecimal;
 use DataTables;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -303,6 +303,16 @@ class   AccountsController extends Controller
         return redirect()->back();
     }
 
+    public function getLeverage(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+        ]);
+        $forexTrading = ForexAccount::find($request->id);
+
+        return view('backend.investment.modal.__change_leverage_render', compact('forexTrading'))->render();
+
+    }
 
     public function pendingLeverage(Request $request)
     {
@@ -314,151 +324,290 @@ class   AccountsController extends Controller
     }
 
     public function handlePendingLeverage(Request $request)
-{
-    // Validate the request
-    $request->validate([
-        'action' => 'required|string',
-        'id' => 'required|integer|exists:leverage_updates,id',
-    ]);
+    {
+        // Validate the request
+        $request->validate([
+            'action' => 'required|string',
+            'id' => 'required|integer|exists:leverage_updates,id',
+        ]);
 
-    $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
-    $user = $leverageUpdate->user;
+        $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
+        $user = $leverageUpdate->user;
 
-    $shortcodes = [
-        '[[full_name]]' => $user->full_name,
-        '[[login]]' => $leverageUpdate->forexAccount->login,
-        '[[leverage]]' => $leverageUpdate->updated_leverage,
-        '[[site_title]]' => config('app.name'),
-        '[[site_url]]' => route('home'),
-        '[[status]]' => $request->input('action') === 'approve' ? 'approved' : 'rejected',
-    ];
-
-    if ($request->input('action') === 'approve') {
-        $leverageUpdate->status = 1; // Approved
-        $leverageUpdate->approved_by = Auth::id();
-
-        // Prepare data for the API call
-        $data = [
-            'login' => $leverageUpdate->forexAccount->login,
-            'leverageAmount' => $leverageUpdate->updated_leverage,
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[login]]' => $leverageUpdate->forexAccount->login,
+            '[[leverage]]' => $leverageUpdate->updated_leverage,
+            '[[site_title]]' => config('app.name'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' => $request->input('action') === 'approve' ? 'approved' : 'rejected',
         ];
 
-        try {
-            // Call the API to update leverage
-            $this->forexApiService->setUserLeverage($data);
+        if ($request->input('action') === 'approve') {
+            $leverageUpdate->status = 1; // Approved
+            $leverageUpdate->approved_by = Auth::id();
 
-            // Update leverage in ForexAccount model
-            $forexAccount = $leverageUpdate->forexAccount;
-            $forexAccount->leverage = $leverageUpdate->updated_leverage;
-            $forexAccount->save();
+            // Prepare data for the API call
+            $data = [
+                'login' => $leverageUpdate->forexAccount->login,
+                'leverageAmount' => $leverageUpdate->updated_leverage,
+            ];
 
-            // Send email notification
-            $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
+            try {
+                // Call the API to update leverage
+                $this->forexApiService->setUserLeverage($data);
 
-            $message = 'Leverage Update Approved and Updated Successfully!';
-        } catch (\Exception $e) {
-            $message = 'Leverage Update Approved but API Update Failed. Please check the API service.';
-            \Log::error('Leverage API Update Failed: ' . $e->getMessage());
+                // Update leverage in ForexAccount model
+                $forexAccount = $leverageUpdate->forexAccount;
+                $forexAccount->leverage = $leverageUpdate->updated_leverage;
+                $forexAccount->save();
+
+                // Send email notification
+                $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
+
+                $message = 'Leverage Update Approved and Updated Successfully!';
+            } catch (\Exception $e) {
+                $message = 'Leverage Update Approved but API Update Failed. Please check the API service.';
+                \Log::error('Leverage API Update Failed: ' . $e->getMessage());
+            }
+        } elseif ($request->input('action') === 'reject') {
+            $leverageUpdate->status = 2; // Rejected
+            $leverageUpdate->approved_by = Auth::id();
+            $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
+            $message = 'Leverage Update Rejected Successfully!';
         }
-    } elseif ($request->input('action') === 'reject') {
-        $leverageUpdate->status = 2; // Rejected
-        $leverageUpdate->approved_by = Auth::id();
-        $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
-        $message = 'Leverage Update Rejected Successfully!';
+
+        // Save the LeverageUpdate status
+        $leverageUpdate->save();
+
+        // Return a JSON response with the message
+        return response()->json(['message' => $message]);
     }
 
-    // Save the LeverageUpdate status
-    $leverageUpdate->save();
-
-    // Return a JSON response with the message
-    return response()->json(['message' => $message]);
-}
-
-    public function resetCredit($login)
+    public function allLeverage(Request $request)
     {
-//        $login = 200023;
-        try {
-//            $forexAccount = ForexAccount::where('login',$login)->first();
-            $credit = $this->forexApiService->getCurrentCredit([
-                'login' => $login
-            ]);
-          if($credit->isGreaterThan(BigDecimal::of(0))){
-              $data = [
-                  'login' => $login,
-                  'Amount' => $credit,
-                  'type' => 2, //witdraw
-                  'TransactionComments' => 'reset credit by admin'
-              ];
-              $creditResponse = $this->forexApiService->creditOperation($data);
-//              dd($credit,$creditResponse);
-              if ($creditResponse['success']) {
-                  return response()->json(['success' => true, 'message' => 'User credit data reset successfully.']);
-              }
-          }
-            // Reset logic here, e.g., clearing specific data fields
-            return response()->json(['success' => true, 'message' => 'User credit data reset successfully.']);
-        } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to reset user credit data.'], 500);
-        }
-    }
+        // Fetch all leverage updates with their associated user and forexAccount relationships
+        $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')->get();
 
+        return view('backend.investment.leverage.all', compact('leverageUpdates'));
+    }
 
 
     public function handleAllLeverage(Request $request)
-{
-    $request->validate([
-        'action' => 'required|string',
-        'id' => 'required|integer|exists:leverage_updates,id',
-    ]);
+    {
+        $request->validate([
+            'action' => 'required|string',
+            'id' => 'required|integer|exists:leverage_updates,id',
+        ]);
 
-    $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
-    $user = $leverageUpdate->user;
-    $forexAccount = $leverageUpdate->forexAccount;
-    $action = $request->input('action');
+        $leverageUpdate = LeverageUpdate::findOrFail($request->input('id'));
+        $user = $leverageUpdate->user;
+        $forexAccount = $leverageUpdate->forexAccount;
+        $action = $request->input('action');
 
-    $shortcodes = [
-        '[[full_name]]' => $user->full_name,
-        '[[login]]' => $forexAccount->login,
-        '[[leverage]]' => $leverageUpdate->updated_leverage,
-        '[[site_title]]' => config('app.name'),
-        '[[site_url]]' => route('home'),
-        '[[status]]' => $action === 'approve' ? 'approved' : 'rejected',
-    ];
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[login]]' => $forexAccount->login,
+            '[[leverage]]' => $leverageUpdate->updated_leverage,
+            '[[site_title]]' => config('app.name'),
+            '[[site_url]]' => route('home'),
+            '[[status]]' => $action === 'approve' ? 'approved' : 'rejected',
+        ];
 
-    try {
-        if ($action === 'approve' && $leverageUpdate->status !== 1) {
-            $leverageUpdate->status = 1; // Approved
-            $leverageUpdate->approved_by = Auth::id();
-            $forexAccount->leverage = $leverageUpdate->updated_leverage;
-            $this->forexApiService->setUserLeverage([
-                'login' => $forexAccount->login,
-                'leverageAmount' => $leverageUpdate->updated_leverage,
-            ]);
-            $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
-            $message = 'Leverage Update Approved and Applied Successfully!';
-        } elseif ($action === 'reject' && $leverageUpdate->status !== 2) {
-            $leverageUpdate->status = 2; // Rejected
-            $leverageUpdate->approved_by = Auth::id();
-            $forexAccount->leverage = $leverageUpdate->last_leverage; // Restore last leverage
-            $this->forexApiService->setUserLeverage([
-                'login' => $forexAccount->login,
-                'leverageAmount' => $leverageUpdate->last_leverage,
-            ]);
-            $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
-            $message = 'Leverage Update Rejected and Restored Successfully!';
-        } else {
-            $message = 'No change in status was made.';
+        try {
+            if ($action === 'approve' && $leverageUpdate->status !== 1) {
+                $leverageUpdate->status = 1; // Approved
+                $leverageUpdate->approved_by = Auth::id();
+                $forexAccount->leverage = $leverageUpdate->updated_leverage;
+                $this->forexApiService->setUserLeverage([
+                    'login' => $forexAccount->login,
+                    'leverageAmount' => $leverageUpdate->updated_leverage,
+                ]);
+                $this->mailNotify($user->email, 'user_approved_leverage', $shortcodes);
+                $message = 'Leverage Update Approved and Applied Successfully!';
+            } elseif ($action === 'reject' && $leverageUpdate->status !== 2) {
+                $leverageUpdate->status = 2; // Rejected
+                $leverageUpdate->approved_by = Auth::id();
+                $forexAccount->leverage = $leverageUpdate->last_leverage; // Restore last leverage
+                $this->forexApiService->setUserLeverage([
+                    'login' => $forexAccount->login,
+                    'leverageAmount' => $leverageUpdate->last_leverage,
+                ]);
+                $this->mailNotify($user->email, 'user_rejected_leverage', $shortcodes);
+                $message = 'Leverage Update Rejected and Restored Successfully!';
+            } else {
+                $message = 'No change in status was made.';
+            }
+
+            $forexAccount->save();
+            $leverageUpdate->save();
+        } catch (\Exception $e) {
+            \Log::error('Leverage API Update Failed: ' . $e->getMessage());
+            $message = 'Action succeeded locally, but API Update Failed. Please check the API service.';
         }
 
-        $forexAccount->save();
-        $leverageUpdate->save();
-    } catch (\Exception $e) {
-        \Log::error('Leverage API Update Failed: ' . $e->getMessage());
-        $message = 'Action succeeded locally, but API Update Failed. Please check the API service.';
+        return response()->json(['message' => $message]);
     }
 
-    return response()->json(['message' => $message]);
-}
+    public function updateAccountInfo(Request $request)
+    {
+        $request->validate([
+            'login' => ['required', 'integer', new ForexLoginBelongsToUserGeneral],
+            'leverage' => 'sometimes|nullable|numeric|gt:0',
+            'main_password' => [
+                'sometimes',
+                'min:8',     // Minimum length requirement
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+            ],
+            'invest_password' => [
+                'sometimes',
+                'min:8',     // Minimum length requirement
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),?:{}|<>])[A-Za-z\d!@#$%^&*(),?:{}|<>]+$/',
+            ],
+        ]);
+        $updateUserUrl = config('forextrading.updateUserUrl');
 
+        $dataArray = [];
+        $dataArray['Login'] = $request->login;
+
+        if ($request->leverage) {
+            $forexAccount = ForexAccount::where('login',$request->login)->first();
+            if($forexAccount->leverage == $request->leverage){
+                return response()->json(['error' => __('Kindly provide a different leverage! The leverage :leverage has already been assigned.',['leverage'=>$request->leverage]), 'reload' => false]);
+
+            }
+            if(!$forexAccount) {
+                return response()->json(['error' => __('Kindly provide valid forex account and try again!'), 'reload' => false]);
+            }
+            $data = [
+                'last_leverage' => $forexAccount->leverage,
+                'updated_leverage' => $request->leverage,
+            ];
+            if(setting('leverage_approval','features')  == 'by_admin') {
+                LeverageUpdate::updateOrCreate(['user_id' => auth()->user()->id,
+                    'forex_account_id' => $forexAccount->id], $data);
+                $mailType   = 'user_pending_leverage';
+                $this->leverageMailNotify($request,$mailType);
+                return response()->json(['success' => __('Leverage update request successfully submitted. An admin will review and process it shortly.'), 'reload' => true]);
+            }else{
+                // Prepare data for the API call
+                $data = [
+                    'login' => $forexAccount->login,
+                    'leverageAmount' => $request->leverage,
+                ];
+
+                // Call the API to update leverage
+                $response = $this->forexApiService->setUserLeverage($data);
+
+                // Update leverage in ForexAccount model
+
+                $forexAccount->leverage = $request->leverage;
+                $forexAccount->save();
+
+                $mailType   = 'user_approved_leverage';
+                $this->leverageMailNotify($request,$mailType);
+
+                // Send email notification
+                return response()->json(['success' => __('Leverage Update Approved and Updated Successfully!.'), 'reload' => true]);
+
+                $message = 'Leverage Update Approved and Updated Successfully!';
+            }
+        }
+
+        if ($request->name) {
+            ForexAccount::where('login', $request->login)->update(['account_name' => $request->name]);
+            return response()->json(['success' => __('Successfully updated your account name.'), 'reload' => true]);
+
+        }
+        if ($request->main_password) {
+            $dataArray['MainPassword'] = $request->main_password;
+
+            $data = [
+                'login' => $request->login,
+                'password' => $request->main_password,
+            ];
+            $updateUserApiResponse = $this->forexApiService->resetMasterPassword($data);
+            if ($updateUserApiResponse['success']) {
+                $shortcodes = [
+                    '[[full_name]]' => auth()->user()->full_name,
+                    '[[login]]' => $request->login,
+                    '[[password]]' =>  $request->main_password,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $this->mailNotify(auth()->user()->email, 'user_update_master_password', $shortcodes);
+
+                return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
+            } else {
+                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
+            }
+        }
+        if ($request->invest_password) {
+            $data = [
+                'login' => $request->login,
+                'password' => $request->invest_password,
+            ];
+            $updateUserApiResponse = $this->forexApiService->resetInvestorPassword($data);
+            if ($updateUserApiResponse['success']) {
+                $shortcodes = [
+                    '[[full_name]]' => auth()->user()->full_name,
+                    '[[login]]' => $request->login,
+                    '[[password]]' =>  $request->invest_password,
+                    '[[site_title]]' => setting('site_title', 'global'),
+                    '[[site_url]]' => route('home'),
+                ];
+
+                $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
+
+                return response()->json(['success' => __('Successfully updated Password.'), 'reload' => false]);
+            } else {
+                return response()->json(['error' => __('Opps! We unable to process your request. Please reload the page and try again.'), 'reload' => false]);
+            }
+        }
+        if ($request->archive) {
+            ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Archive]);
+
+            $shortcodes = [
+                '[[full_name]]' => auth()->user()->full_name,
+                '[[login]]' => $request->login,
+                '[[password]]' =>  $request->invest_password,
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+
+            $this->mailNotify(auth()->user()->email, 'user_update_investor_password', $shortcodes);
+
+            return response()->json(['success' => __('Successfully archived your account.'), 'reload' => true]);
+        }
+        if ($request->reactive) {
+            ForexAccount::where('login', $request->login)->update(['status' => ForexAccountStatus::Ongoing]);
+            return response()->json(['success' => __('Successfully reactive your account.'), 'reload' => true]);
+        }
+
+    }
+
+    public function leverageMailNotify($request, $mailType)
+    {
+        dd($request->user_id);
+        $user = \App\Models\User::find($request->user_id);
+
+        if (!$user) {
+            // Handle the case where the user doesn't exist (optional)
+            return response()->json(['error' => 'User not found.'], 404);
+        }
+
+        // Define shortcodes using the fetched user data
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[login]]' => $request->login,
+            '[[leverage]]' => $request->leverage,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        // Send mail notification
+        $this->mailNotify($user->email, $mailType, $shortcodes);
+    }
 
 }

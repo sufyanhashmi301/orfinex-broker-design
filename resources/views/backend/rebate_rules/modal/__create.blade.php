@@ -41,7 +41,17 @@
                                 </select>
                                 <div class="invalid-feedback" id="symbol-groups-error" style="display: none;"></div>
                             </div>
-{{--                            <div class="input-area relative">--}}
+                            <div class="input-area relative">
+                                <label for="forex_schemas" class="form-label">{{ __('Select Account Types') }}</label>
+                                <select name="forex_schemas[]" class="select2 form-control w-full" multiple="multiple">
+                                    @foreach($forexSchemas as $id => $title)
+                                        <option value="{{ $id }}">{{ $title }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback" id="forex-schemas-error" style="display: none;"></div>
+                            </div>
+
+                            {{--                            <div class="input-area relative">--}}
 {{--                                <label for="ib_groups" class="form-label">{{ __('Select IB Groups') }}</label>--}}
 {{--                                <select name="ib_groups[]" class="select2 form-control w-full" multiple="multiple">--}}
 {{--                                    @foreach($ibGroups as $id => $name)--}}

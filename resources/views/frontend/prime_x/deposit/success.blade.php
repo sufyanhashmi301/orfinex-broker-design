@@ -30,8 +30,14 @@
                 <a href="{{ route('user.dashboard') }}" class="btn btn-primary inline-flex justify-center">
                     {{ __('Go to Dashboard') }}
                 </a>
-                @if(setting('trust_pilot_review_show','platform_links',false))
-                    <a href="{{ setting('trust_pilot_review_link','platform_links','javascript:void(0);') }}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
+                @php
+                    $trustpilot = plugin_active('Trustpilot');
+                @endphp
+                @if($trustpilot && $trustpilot->status)
+                    @php
+                        $trustpilotData = json_decode($trustpilot->data, true);
+                    @endphp
+                    <a href="{{ $trustpilotData['link'] }}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
                         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
                         <span>{{ __('Review us on Trustpilot') }}</span>
                     </a>

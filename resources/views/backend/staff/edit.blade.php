@@ -92,6 +92,21 @@
                                 placeholder="Employee ID"
                             />
                         </div>
+                        @if(auth()->user()->hasRole('Super-Admin'))
+                <div class="input-area">
+                    <label for="key" class="form-label">
+                        {{ __('Key:') }}
+                    </label>
+                    <input
+                        type="text"
+                        id="key"
+                        name="key"
+                        class="form-control mb-0"
+                        value="{{ $staff->key ?? '' }}"
+                        placeholder="Enter unique key"
+                    />
+                </div>
+                @endif
                     </div>
                 </div>
                 <div class="input-area">

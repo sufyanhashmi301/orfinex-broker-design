@@ -5501,6 +5501,9 @@ textarea.form-control.is-invalid{
 .items-stretch{
   align-items: stretch;
 }
+.items-baseline {
+  align-items: baseline;
+}
 .justify-start{
   justify-content: flex-start;
 }
@@ -7079,6 +7082,9 @@ textarea.form-control.is-invalid{
 }
 .text-right{
   text-align: right;
+}
+.text-justify {
+  text-align: justify;
 }
 .text-start{
   text-align: start;

@@ -124,7 +124,7 @@
                                                     class="form-control mb-0"
                                                     value="{{ $loggedInUser->first_name }}"
                                                     placeholder="First Name"
-                                                    required
+                                                    
                                                 />
                                             </div>
                                             <div class="input-area !mt-0">
@@ -138,7 +138,7 @@
                                                     class="form-control mb-0"
                                                     value="{{ $loggedInUser->last_name }}"
                                                     placeholder="Last Name"
-                                                    required
+                                                    
                                                 />
                                             </div>
                                             <div class="input-area !mt-0">
@@ -167,6 +167,22 @@
                                                     placeholder="Employee ID"
                                                 />
                                             </div>
+                                            @if(auth()->user()->hasRole('Super-Admin'))
+                                            <div class="input-area">
+                                                <label for="key" class="form-label">
+                                                    {{ __('Key:') }}
+                                                </label>
+                                                <input
+                                                type="text"
+                                                id="key"
+                                                name="key"
+                                                class="form-control mb-0"
+                                                value="{{ $superAdmin->key ?? '' }}" 
+                                                placeholder="Enter unique key"
+                                            />
+                                            </div>
+                                            @endif
+                                            
                                         </div>
                                     </div>
                                     <div class="input-area">

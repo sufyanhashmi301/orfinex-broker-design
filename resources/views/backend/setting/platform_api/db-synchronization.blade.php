@@ -9,7 +9,7 @@
     <div class="innerMenu card p-2 mb-5">
         <ul class="nav nav-pills grid md:grid-cols-2 grid-cols-1 gap-3 pl-0">
             <li class="nav-item w-full">
-                <a href="javascript:;" class="nav-link relative flex flex-col items-center justify-center font-medium font-Inter text-base text-center leading-tight capitalize rounded-md p-5 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300" data-route="mysql">
+                <a href="javascript:;" class="nav-link relative flex flex-col items-center justify-center font-medium font-Inter text-base text-center leading-tight capitalize rounded-md p-5 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active" data-route="mysql">
                     <img src="https://cdn.brokeret.com/crm-assets/admin/db/mysql.webp" class="h-20" alt="">
                     <div class="absolute top-3 right-3">
                         <span class="badge badge-primary capitalize">

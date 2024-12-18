@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRebateRuleRequest;
+use App\Models\ForexSchema;
 use App\Models\IbGroup;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
@@ -23,7 +24,7 @@ class RebateRuleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = RebateRule::with('symbolGroups')->get();
+            $data = RebateRule::with(['symbolGroups', 'forexSchemas'])->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -32,45 +33,40 @@ class RebateRuleController extends Controller
                         'symbolGroups' => $row->symbolGroups->pluck('title')
                     ])->render();
                 })
+                ->addColumn('forexSchemas', function($row) {
+                    return view('backend.rebate_rules.include.__forex_schemas', [
+                        'forexSchemas' => $row->forexSchemas->pluck('title')
+                    ])->render();
+                })
                 ->addColumn('ibGroups', function($row) {
                     return view('backend.rebate_rules.include.__ib_groups', [
                         'ibGroups' => $row->ibGroups->pluck('name')
                     ])->render();
                 })
-//                ->addColumn('ibGroups', function ($row) {
-//                    return $row->ibGroups->pluck('name')->join(', '); // Display IB Group names as a comma-separated list
-//                })
                 ->addColumn('status', 'backend.rebate_rules.include.__status')
                 ->addColumn('action', 'backend.rebate_rules.include.__action')
-                ->rawColumns(['symbolGroups','ibGroups','status','ibGroups','action'])
+                ->rawColumns(['symbolGroups', 'forexSchemas', 'ibGroups', 'status', 'action'])
                 ->make(true);
         }
         $ibGroups = IbGroup::pluck('name', 'id')->toArray(); // Fetch IB Groups
+        $forexSchemas = ForexSchema::pluck('title', 'id')->toArray(); // Fetch Forex Schemas
 
-        return view('backend.rebate_rules.all',[ 'ibGroups' => $ibGroups]);
+        return view('backend.rebate_rules.all',[ 'ibGroups' => $ibGroups,'forexSchemas' => $forexSchemas]);
     }
+
 
     public function create()
     {
         $symbolGroups = SymbolGroup::pluck('title', 'id')->toArray();
-        $ibGroups = IbGroup::pluck('name', 'id')->toArray(); // Fetch IB Groups
-
-        return response()->json(['symbolGroups' => $symbolGroups, 'ibGroups' => $ibGroups]);
+        $forexSchemas = ForexSchema::pluck('title', 'id')->toArray(); // Fetch Forex Schemas
+        return response()->json(['symbolGroups' => $symbolGroups, 'forexSchemas' => $forexSchemas]);
     }
+
     public function store(StoreRebateRuleRequest $request)
     {
         try {
             $rebateRule = $this->rebateRuleService->createRebateRule($request);
-
-            // Attach IB Groups to the Rebate Rule
-            $rebateRule->ibGroups()->attach($request->ib_groups);
-
-            // Manage UserIbRule for each attached IB Group
-//            foreach ($request->ib_groups as $ibGroupId) {
-//                $this->manageUserRebateRulesForIbGroup($ibGroupId, $rebateRule->id);
-//            }
-
-            notify()->success(__('Rebate Rule created successfully.'));
+            $rebateRule->forexSchemas()->attach($request->forex_schemas); // Attach Forex Schemas
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
@@ -80,12 +76,13 @@ class RebateRuleController extends Controller
 
     public function edit($id)
     {
-        $rebateRule = RebateRule::with('symbolGroups', 'ibGroups')->find($id);
+        $rebateRule = RebateRule::with('symbolGroups', 'forexSchemas')->find($id);
         $allSymbolGroups = SymbolGroup::all();
-        $allIbGroups = IbGroup::pluck('name', 'id')->toArray(); // Fetch IB Groups
+        $allForexSchemas = ForexSchema::pluck('title', 'id')->toArray();
 
-        return view('backend.rebate_rules.include.__edit_form', compact('rebateRule', 'allSymbolGroups', 'allIbGroups'));
+        return view('backend.rebate_rules.include.__edit_form', compact('rebateRule', 'allSymbolGroups', 'allForexSchemas'));
     }
+
     public function show(RebateRule $rebateRule)
     {
         return response()->json($rebateRule);
@@ -96,8 +93,9 @@ class RebateRuleController extends Controller
             $rebateRule = $this->rebateRuleService->updateRebateRule($id, $request);
 
             // Sync IB Groups with the Rebate Rule
-            $rebateRule->ibGroups()->sync($request->ib_groups);
+//            $rebateRule->ibGroups()->sync($request->ib_groups);
 //            dd($request->ib_groups);
+        $rebateRule->forexSchemas()->sync($request->forex_schemas); // Sync Forex Schemas
 
             // Manage UserIbRule for each synced IB Group
 //            foreach ($request->ib_groups as $ibGroupId) {

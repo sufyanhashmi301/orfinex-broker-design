@@ -122,41 +122,13 @@
                 </a>
             </li>
         @endif
-        <li class="">
-            <a href="javascript:void(0);" class="navItem">
-              <span class="flex items-center">
-                <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
-                <span>{{ __('History') }}</span>
-              </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+        <li>
+            <a href="{{ route('user.history.transactions') }}" class="navItem loaderBtn {{ isActive('user.history*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="material-symbols:history"></iconify-icon>
+                    <span>{{ __('History') }}</span>
+                </span>
             </a>
-            <ul class="sidebar-submenu">
-                <li>
-                    <a href="{{ route('user.transactions') }}" class="loaderBtn {{ isActive('user.transactions') }}">
-                        {{ __('All History') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.deposit.log') }}" class="loaderBtn {{ isActive('user.deposit.log') }}">
-                        {{ __('Deposits') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.withdraw.log') }}" class="loaderBtn {{ isActive('user.withdraw.log') }}">
-                        {{ __('Withdrawals') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.send-money.log') }}" class="loaderBtn {{ isActive('user.send-money.log') }}">
-                        {{ __('Transfer Log') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('user.forex.transactions') }}" class="loaderBtn {{ isActive('user.forex.transactions') }}">
-                        {{ __('Accounts History') }}
-                    </a>
-                </li>
-            </ul>
         </li>
 
 {{--        @if(setting('sign_up_referral', 'permission'))--}}

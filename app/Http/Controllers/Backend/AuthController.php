@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
@@ -35,7 +36,17 @@ class AuthController extends Controller
     public function loginView()
     {
         $googleReCaptcha = plugin_active('Google reCaptcha');
-        return view('backend.auth.login',compact('googleReCaptcha'));
+        $cloudflareTurnstile = plugin_active('Cloudflare Turnstile');
+
+        $cloudflareTurnstileData = [];
+        if ($cloudflareTurnstile && is_string($cloudflareTurnstile->data)) {
+            $cloudflareTurnstileData = json_decode($cloudflareTurnstile->data, true) ?? [];
+        }
+
+        // Pass site_key separately for clean Blade usage
+        $siteKey = $cloudflareTurnstileData['site_key'] ?? null;
+
+        return view('backend.auth.login',compact('googleReCaptcha', 'cloudflareTurnstile', 'siteKey'));
     }
 
     /**

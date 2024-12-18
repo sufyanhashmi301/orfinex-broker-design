@@ -144,13 +144,6 @@ class ForexAccountController extends GatewayController
                 // Start from start_range if no accounts exist
                 $login = $schema->start_range;
             }
-
-            // Check if the generated login exceeds the range
-//            if ($login >= $schema->end_range) {
-//                $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);
-//                notify()->error($message, __('Error'));
-//                return redirect()->back();
-//            }
         }
 
         $server = $this->getServe($request,$schema);
@@ -254,11 +247,6 @@ class ForexAccountController extends GatewayController
                 return redirect()->route('user.forex-account-logs');
             }
         }
-
-
-
-
-
         notify()->error(__('Some error occurred! please try again'), __('Error'));
         return redirect()->route('user.schema.preview', $schema->id);
 

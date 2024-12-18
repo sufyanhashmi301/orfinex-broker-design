@@ -36,22 +36,17 @@ class SocialiteController extends Controller
      */
     public function callback($provider)
     {
-        $socialConfig = Social::where('driver', $provider)->where('status', 1)->first();
-
-        if (!$socialConfig) {
-            return redirect()->route('login')->with('error', 'Social provider not available or inactive.');
-        }
-
-        // Dynamically configure the provider
-        $this->setSocialiteConfig($provider, $socialConfig);
-
         try {
             $socialUser = Socialite::driver($provider)->stateless()->user();
 
-            // Delegate user handling to the registration controller
-            return app(RegisteredUserController::class)->handleSocialRegistration($socialUser, $provider);
+            // Check for referral code in cookies or session
+            $referralCode = request()->cookie('invite');
+
+            // Pass referral code to handleSocialRegistration
+            return app(RegisteredUserController::class)
+                ->handleSocialRegistration($socialUser, $provider, $referralCode);
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Failed to authenticate with ' . ucfirst($provider));
+            return redirect()->route('login')->with('error', 'Social login failed.');
         }
     }
 

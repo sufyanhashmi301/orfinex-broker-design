@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -88,7 +89,7 @@ class RegisteredUserController extends Controller
                 'avatar' => $socialUser->getAvatar(),
                 'country' => $country,
                 'phone' => $phone,
-                'password' => bcrypt(str_random(16)),
+                'password' =>  Hash::make(Str::random(12)),
                 'ranking_id' => $rank->id,
                 'rankings' => json_encode([$rank->id]),
                 'email_verified_at' => now(),

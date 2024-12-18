@@ -41,9 +41,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         // Check if the request is from Socialite
-        if ($request->has('provider')) {
-            return $this->handleSocialRegistration($request);
-        }
+
 
         // Regular Registration Logic
         $this->validateRegularRegistration($request);
@@ -68,53 +66,48 @@ class RegisteredUserController extends Controller
         return redirect(RouteServiceProvider::HOME);
     }
 
-    private function handleSocialRegistration(Request $request)
+    public function handleSocialRegistration($socialUser, $provider)
     {
-        try {
-            $socialUser = Socialite::driver($request->provider)->stateless()->user();
+        // Default rank
+        $rank = Ranking::find(1);
 
-            // Default rank
-            $rank = Ranking::find(1);
+        // Determine location
+        $location = getLocation();
+        $phone = $location->dial_code . ' ';
+        $country = $location->name;
 
-            // Determine phone and country based on user's location
-            $location = getLocation();
-            $phone = $location->dial_code . ' ';
-            $country = $location->name;
+        // Find or create user
+        $user = User::firstOrCreate(
+            ['email' => $socialUser->getEmail()],
+            [
+                'first_name' => $socialUser->getName(),
+                'last_name' => $socialUser->getName(),
+                'username' => $socialUser->getNickname() ?? 'user_' . rand(1000, 9999),
+                'provider' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+                'country' => $country,
+                'phone' => $phone,
+                'password' => bcrypt(str_random(16)),
+                'ranking_id' => $rank->id,
+                'rankings' => json_encode([$rank->id]),
+                'email_verified_at' => now(),
+            ]
+        );
 
-            // Find or create the user
-            $user = User::updateOrCreate(
-                ['email' => $socialUser->getEmail()],
-                [
-                    'first_name' => $socialUser->getName(),
-                    'last_name' => $socialUser->getName(),
-                    'username' => $socialUser->getName() . rand(1000, 9999),
-                    'provider_id' => $socialUser->getId(),
-                    'provider_name' => $request->provider,
-                    'avatar' => $socialUser->getAvatar(),
-                    'ranking_id' => $rank->id,
-                    'rankings' => json_encode([$rank->id]),
-                    'email_verified_at' => Carbon::now(),
-                    'country' => $country,
-                    'phone' => $phone,
-                    'password' => Hash::make(str_random(12)), // Random password
-                ]
-            );
+        // Apply bonuses and notify
+        $this->applyBonuses($user, $rank);
+        $this->notifyUser($user, [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+        ]);
 
-            // Apply bonuses and notify user
-            $this->applyBonuses($user, $rank);
-            $this->notifyUser($user, [
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-            ]);
+        Auth::login($user);
+        LoginActivities::add();
 
-            Auth::login($user);
-            LoginActivities::add();
-
-            return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in successfully via ' . ucfirst($request->provider));
-        } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Unable to authenticate using ' . ucfirst($request->provider));
-        }
+        return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in via ' . ucfirst($provider));
     }
+
     private function validateRegularRegistration(Request $request)
     {
         $isUsername = (bool) getPageSetting('username_show');

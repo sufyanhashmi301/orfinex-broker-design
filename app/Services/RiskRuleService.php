@@ -16,8 +16,28 @@ class RiskRuleService
     $this->risk_api_call = $risk_api_call;
   }
 
-  public function getData($request, $risk_rule, $risk_rule_slug) {
+  private function doApiRequest($request, $risk_rule_slug, $risk_rule, $request_data) {
+    $data_from = date('d/m/Y', strtotime($request->dataFrom));
+    $data_to = date('d/m/Y', strtotime($request->dataTo));
 
+    $request_data = array_merge($request_data, [
+      "fromDateTime" => $data_from,
+      "toDateTime" => $data_to
+    ]);
+
+    if($risk_rule_slug == 'trade_age') {
+      $request_data = [
+        "Days" => $risk_rule->criteria['Days']['value']
+      ];
+    }
+
+    $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint);
+
+    return $api_response['result'];
+  }
+
+  public function getData($request, $risk_rule, $risk_rule_slug) {
+    
     $request_data = [];
 
     // Slug specifics
@@ -28,45 +48,51 @@ class RiskRuleService
     }
     if($risk_rule_slug == 'quick_trades' || $risk_rule_slug == 'scalper_detection') {
       $request_data = array_merge($request_data, [
-        "timeInSeconds" => 120
+        "timeInSeconds" => $risk_rule->criteria['timeInSeconds']['value']
       ]);
     }
 
     // if the latest data fecthed is Old and not contain the custom date in URL. If the data is empty then load it anyways
     if(
       $risk_rule->updated_at < Carbon::now()->subHour() && 
-      !isset($request->dataFrom)
+      !isset($request->dataFrom) &&
+      !isset($request['criteria_updated'])
     ) {
-        
-        $request_data = array_merge($request_data, [
-          "fromDateTime" => Carbon::today()->format('d/m/Y'), // "01/12/2024" Carbon::today()->format('d/m/Y')
-          "toDateTime" => Carbon::today()->format('d/m/Y')
-        ]);
-        $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint);
-
-        $risk_rule->data_from = Carbon::today();
-        $risk_rule->data_to = Carbon::today();
-        $risk_rule->data = $api_response['result'];
-        $risk_rule->save();
-        return $api_response['result'];
+      $request_data = array_merge($request_data, [
+        "fromDateTime" => Carbon::today()->format('d/m/Y'), // "01/12/2024" Carbon::today()->format('d/m/Y')
+        "toDateTime" => Carbon::today()->format('d/m/Y')
+      ]);
+  
+      if($risk_rule_slug == 'trade_age') {
+        $request_data = [
+          "Days" => $risk_rule->criteria['Days']['value']
+        ];
+      }
+  
+      $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint);
+  
+      $risk_rule->data_from = Carbon::today();
+      $risk_rule->data_to = Carbon::today();
+      $risk_rule->data = $api_response['result'];
+      $risk_rule->save();
+      return $api_response['result'];
     }
+
+    
 
     // if dateFrom and dateTo are set
     if( 
       isset($request->dataFrom) &&
-      isset($request->dataTo)
+      isset($request->dataTo) &&
+      !isset($request['criteria_updated'])
     ) {
       
-      $data_from = date('d/m/Y', strtotime($request->dataFrom));
-      $data_to = date('d/m/Y', strtotime($request->dataTo));
+      return $this->doApiRequest($request, $risk_rule_slug, $risk_rule, $request_data);
+    }
 
-      $request_data = array_merge($request_data, [
-        "fromDateTime" => $data_from,
-        "toDateTime" => $data_to
-      ]);
-      $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint);
-
-      return $api_response['result'];
+    // if paramters are updated, then do the api request anyways
+    if(isset($request['criteria_updated'])) {
+      return $this->doApiRequest($request, $risk_rule_slug, $risk_rule, $request_data);
     }
 
     return $risk_rule->data;

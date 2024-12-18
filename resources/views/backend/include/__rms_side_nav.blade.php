@@ -49,6 +49,15 @@
         </li>
 
         <li>
+            <a href="{{ route('admin.risk-rule.trade_age') }}" class="navItem {{ isActive('admin.risk-rule.trade_age') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:history"></iconify-icon>
+                    <span>{{ __('Trade Age Analysis') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
             <a href="{{ route('admin.risk-rule.ip_address') }}" class="navItem {{ isActive('admin.risk-rule.ip_address') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:map-pinned"></iconify-icon>

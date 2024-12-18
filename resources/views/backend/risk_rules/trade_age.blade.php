@@ -1,6 +1,6 @@
 @extends('backend.layouts.rms')
 @section('title')
-    {{ __('Quick Trades Analysis') }}
+    {{ __('Trade Age Analysis') }}
 @endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
@@ -33,51 +33,7 @@
         </li>
       </ul>
     </div>
-    <div class="innerMenu card p-5 mb-3">
-      <form action="{{ route('admin.risk-rule.quick_trades') }}" method="GET" >
-        <div class="flex items-center gap-3">
-
-            <?php
-              $today = \Carbon\Carbon::now();
-              $minDate = $today->copy()->subDays(9)->format('Y-m-d'); // 10 days ago (including today)
-              $maxDate = $today->format('Y-m-d'); // Today
-            ?>
-            
-            <div class="input-area relative flex items-center gap-5">
-                <label for="group" class="form-label !w-auto min-w-max" style="position: relative; top: 4px">{{ __('Data From') }}</label>
-                @php
-                  if( request()->has('dataFrom') ) {
-                    $data_from = request('dataFrom');
-                    $data_to = request('dataTo');
-                  } else {
-                    $data_from = explode(' ', $risk_rule->data_from)[0];
-                    $data_to = explode(' ', $risk_rule->data_to)[0];
-                  }
-                @endphp
-                <input type="date" class="form-control" name="dataFrom" value="{{ $data_from }}" min="{{ $minDate }}" max="{{ $maxDate }}">
-            </div>
-            <div class="input-area relative flex items-center gap-5">
-              <label for="group" class="form-label !w-auto min-w-max ml-5" style="position: relative; top: 4px">{{ __('Data To') }}</label>
-              <input type="date" class="form-control" name="dataTo" value="{{ $data_to }}" min="{{ $minDate }}" max="{{ $maxDate }}">
-            </div>
-
-            {{-- <div class="input-area relative flex items-center gap-5">
-              <label for="group" class="form-label !w-auto min-w-max ml-5" style="position: relative; top: 4px">{{ __('Profit or Loss') }}</label>
-              <select class="form-control" name="reportFlag" id="">
-                <option value="0" selected>All Trades</option>
-                <option value="1">Profit Trades Only</option>
-                <option value="2">Loss Trades Only</option>
-              </select>
-            </div> --}}
-
-
-            <button type="submit" id="fetch-positions" style="padding-top: 7px; padding-bottom: 7px " class="btn inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 ml-5 !font-normal dark:text-white">
-                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
-                {{ __('Fetch Data') }}
-            </button>
-          </div>
-        </form>
-    </div>
+   
     <div class="card">
         <div class="card-body relative px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -91,35 +47,34 @@
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Login ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Trade Time Difference') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Trade Started At') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Trade Closed At') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Profit/Loss') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Price') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Position') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Price Open') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Price Current') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Profit/Loss (+/- 1hr)') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Trade Created at') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                               @forelse ($data as $item)
                                 <tr class="item-row" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
                                   @php
-                                    $account = $accounts->where('login', $item['loginID'])->first();
+                                    $account = $accounts->where('login', $item['login'])->first();
                                     $user = $account ? $account->user : null;
                                   @endphp
                                   <td class="table-td">
                                       {{ $user ? ($user->first_name . ' ' . $user->last_name) : 'N/A' }}
                                   </td>
-                                  <td class="table-td">{{ $item['loginID'] }}</td>
+                                  <td class="table-td">{{ $item['login'] }}</td>
                                   <td class="table-td">{{ $item['symbol'] }}</td>
-                                  <td class="table-td">{{ $item['timeDifference'] }} seconds</td>
-                                  <td class="table-td">{{ \Carbon\Carbon::parse($item['positionOpenDateTime'])->format('g:i:s A, d M Y') }}
-                                  </td>
-                                  <td class="table-td">{{ \Carbon\Carbon::parse($item['positionCloseDateTime'])->format('g:i:s A, d M Y') }}</td>
+                                  <td class="table-td">{{ $item['position'] }}</td>
+                                  <td class="table-td">{{ $item['priceOpen'] }}</td>
+                                  <td class="table-td">{{ $item['priceCurrent'] }}</td>
                                   <td class="table-td"> <span class="badge badge-{{ $item['profit'] < 0 ? 'danger' : 'success' }}">{{ $item['profit'] < 0 ? $item['profit'] * -1 : $item['profit'] }} {{ $currency }}</span> </td>
-                                  <td class="table-td">{{ $item['price'] }} {{ $currency }}</td>
+                                  <td class="table-td">{{ \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $item['timeCreate'])->format('h:i:s A, d M Y') }}</td>
                                 </tr>
                               @empty
                                 <tr>
-                                  <td colspan="7" style="padding: 10px"> <center><small>No Data Available!</small></center> </td>
+                                  <td colspan="8" style="padding: 10px"> <center><small>No Data Available!</small></center> </td>
                                 </tr>
                               @endforelse
                               
@@ -136,6 +91,7 @@
 
     {{-- Configuration Modal --}}
     @include('backend.risk_rules.includes.configure-modal')
+
 
 @endsection
 @section('script')

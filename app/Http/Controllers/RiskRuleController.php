@@ -53,7 +53,7 @@ class RiskRuleController extends Controller
         $risk_rules = RiskRule::all();
 
         // Run the seeder if DB is not initialized
-        if(count($risk_rules) != 4) {
+        if(count($risk_rules) != 5) {
             $this->runSeeder();
             $risk_rules = RiskRule::all();
         }
@@ -132,9 +132,33 @@ class RiskRuleController extends Controller
             $data = $this->ipAddressArrayResolve($data);
         }
 
-        return view('backend.risk_rules.' . $risk_rule_slug, compact('risk_rule', 'data', 'accounts'));
+        return view('backend.risk_rules.' . $risk_rule_slug, compact('risk_rule', 'data', 'accounts', 'risk_rule_slug'));
     }
 
+    public function updateRiskCriteria(Request $request) {
+        
+        $criteria_data = $request->only('criteria')['criteria'];
+        
+        // Validation
+        foreach($criteria_data as $criteria) {
+            if( $criteria['value'] < 0 ) {
+                notify()->error('Value Cannot be less than 0!', 'Error');
+                return redirect()->back();
+            }
+        }   
+
+        $page_slug = $request->page_slug;
+
+        $risk_rule = RiskRule::where('slug', $page_slug)->first();
+        $risk_rule->criteria = $criteria_data;
+        $risk_rule->save();
+
+        notify('Risk Rule Criteria Updated Successfully!', 'Success');
+        return redirect()->route('admin.risk-rule.' . $page_slug, array_merge(
+            $request->query(),
+            ['criteria_updated' => true]
+        ));
+    }
 
     /**
      * IP Address Array Resolve

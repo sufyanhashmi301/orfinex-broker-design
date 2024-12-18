@@ -196,6 +196,9 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('/scalper-detection', 'riskRule')->name('scalper_detection');
         Route::get('/most-trades', 'riskRule')->name('most_trades');
         Route::get('/ip-address-info', 'riskRule')->name('ip_address');
+        Route::get('/trade-age', 'riskRule')->name('trade_age');
+
+        Route::post('/update-risk-criteria', 'updateRiskCriteria')->name('update.risk_criteria');
     });
 
 // =============================== Optimization ===============================

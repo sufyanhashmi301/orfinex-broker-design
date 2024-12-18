@@ -26,19 +26,20 @@ class RiskRuleSeeder extends Seeder
                 "slug" => 'quick_trades',
                 "api_endpoint" => 'reports/fastdeals',
                 "data" => '[]',
-                "criteria" => '[]',
+                "criteria" => '{"timeInSeconds": {"value": "120", "parameter_name": "Trade(s) Age (Seconds)"}}',
                 "data_from" => Carbon::today(),
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
                 "updated_at" => Carbon::now()->subHours(2),
             ],
+
             // Scalper Detection
             [
                 "title" => 'Scalper Detection',
                 "slug" => 'scalper_detection',
                 "api_endpoint" => 'reports/scalper',
                 "data" => '[]',
-                "criteria" => '[]',
+                "criteria" => '{"timeInSeconds": {"value": "120", "parameter_name": "Trade(s) Age (Seconds)"}}',
                 "data_from" => Carbon::today(),
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
@@ -52,6 +53,19 @@ class RiskRuleSeeder extends Seeder
                 "api_endpoint" => 'reports/total/trades',
                 "data" => '[]',
                 "criteria" => '[]',
+                "data_from" => Carbon::today(),
+                "data_to" => Carbon::today(),
+                "created_at" => Carbon::now()->subHours(2),
+                "updated_at" => Carbon::now()->subHours(2),
+            ],
+
+            // Trade Age
+            [
+                "title" => 'Trade Age Analysis',
+                "slug" => 'trade_age',
+                "api_endpoint" => 'Position/list/positionOldDays',
+                "data" => '[]',
+                "criteria" => '{"Days": {"value": "10", "parameter_name": "Trade(s) Age (Days)"}}',
                 "data_from" => Carbon::today(),
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),

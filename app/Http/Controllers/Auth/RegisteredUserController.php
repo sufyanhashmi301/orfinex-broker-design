@@ -59,7 +59,8 @@ class RegisteredUserController extends Controller
 
         $this->applyBonuses($user, $rank);
         $this->notifyUser($user, $input);
-        $this->handleReferral($request, $user);
+        $referralCode = $request->cookie('invite');
+        $this->handleReferral($referralCode, $user);
 
         Auth::login($user);
         LoginActivities::add();
@@ -181,9 +182,9 @@ class RegisteredUserController extends Controller
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
     }
-    private function handleReferral(Request $request, User $user, $schemaID=null)
+    private function handleReferral($referralCode, User $user, $schemaID=null)
     {
-        event(new UserReferred($request->cookie('invite'), $user, $schemaID));
+        event(new UserReferred($referralCode, $user, $schemaID));
         \Cookie::forget('invite');
     }
     private function formatPhone(array $input, $location)

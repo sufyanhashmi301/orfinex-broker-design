@@ -38,9 +38,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-
                             </tbody>
-
                         </table>
                     </div>
                 </div>

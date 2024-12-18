@@ -49,7 +49,7 @@ class SocialiteController extends Controller
 
             $socialUser = Socialite::driver($provider)->stateless()->user();
             $referralCode = request()->cookie('invite');
-            dd($referralCode);
+//            dd($referralCode);
             // Check for referral code in cookies or session
 //            $referralCode = request()->query('invite');
 //            dd($referralCode);
@@ -72,8 +72,10 @@ class SocialiteController extends Controller
      */
     private function setSocialiteConfig($provider, $socialConfig)
     {
+        $redirectUrl = config('app.url') . "/{$provider}/callback";
+
         Config::set("services.{$provider}.client_id", $socialConfig->client_id);
         Config::set("services.{$provider}.client_secret", $socialConfig->client_secret);
-        Config::set("services.{$provider}.redirect", $socialConfig->redirect);
+        Config::set("services.{$provider}.redirect", $redirectUrl);
     }
 }

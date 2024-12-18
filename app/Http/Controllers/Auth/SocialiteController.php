@@ -46,10 +46,14 @@ class SocialiteController extends Controller
         // Dynamically configure the provider
         $this->setSocialiteConfig($provider, $socialConfig);
         try {
-            $socialUser = Socialite::driver($provider)->stateless()->user();
 
-            // Check for referral code in cookies or session
+            $socialUser = Socialite::driver($provider)->stateless()->user();
             $referralCode = request()->cookie('invite');
+            dd($referralCode);
+            // Check for referral code in cookies or session
+//            $referralCode = request()->query('invite');
+//            dd($referralCode);
+
 
             // Pass referral code to handleSocialRegistration
             return app(RegisteredUserController::class)

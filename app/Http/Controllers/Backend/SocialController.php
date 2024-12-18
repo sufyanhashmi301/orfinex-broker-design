@@ -81,7 +81,6 @@ class SocialController extends Controller
         $validator = Validator::make($input, [
             'client_id' => 'required',
             'client_secret' => 'required',
-            'redirect' => 'required',
             'status' => 'required',
         ]);
 
@@ -94,7 +93,6 @@ class SocialController extends Controller
         $data = [
             'client_id' => $input['client_id'],
             'client_secret' => $input['client_secret'],
-            'redirect' => $input['redirect'],
             'status' => $input['status'],
         ];
 

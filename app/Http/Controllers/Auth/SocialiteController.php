@@ -36,6 +36,15 @@ class SocialiteController extends Controller
      */
     public function callback($provider)
     {
+
+        $socialConfig = Social::where('driver', $provider)->where('status', 1)->first();
+
+        if (!$socialConfig) {
+            return redirect()->route('login')->with('error', 'Social provider not available or inactive.');
+        }
+
+        // Dynamically configure the provider
+        $this->setSocialiteConfig($provider, $socialConfig);
         try {
             $socialUser = Socialite::driver($provider)->stateless()->user();
 

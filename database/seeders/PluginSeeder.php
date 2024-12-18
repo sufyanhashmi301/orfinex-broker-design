@@ -26,6 +26,7 @@ class PluginSeeder extends Seeder
         $infobipExists = Plugin::where('name', 'Infobip')->exists();
         $oneSignalExists = Plugin::where('name', 'OneSignal')->exists();
         $cleverTapExists = Plugin::where('name', 'CleverTap')->exists();
+        $cloudflareTurnstileExists = Plugin::where('name', 'Cloudflare Turnstile')->exists();
 
         $plugins = [];
 
@@ -191,6 +192,22 @@ class PluginSeeder extends Seeder
                 'description' => 'Deliver personalized push notifications to drive retention and enhance customer experiences.',
                 'data' => json_encode([
 
+                ]),
+                'status' => 0,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
+
+        if (!$cloudflareTurnstileExists) {
+            $plugins[] = [
+                'icon' => 'https://cdn.brokeret.com/crm-assets/admin/plugins/turnstile.webp',
+                'type' => 'system',
+                'name' => 'Cloudflare Turnstile',
+                'description' => 'Safeguard your website against bots and automated abuse without compromising visitor experience.',
+                'data' => json_encode([
+                    'site_key' => 'your-turnstile-site-key-here',
+                    'secret_key' => 'your-turnstile-secret-key-here'
                 ]),
                 'status' => 0,
                 'created_at' => Carbon::now(),

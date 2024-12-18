@@ -14,7 +14,23 @@
     @foreach(json_decode($plugin->data) as $key => $value)
         <div class="input-area">
             <label for="" class="form-label">{{ ucwords(str_replace('_',' ',$key)) }}</label>
-            <input type="text" name="data[{{ $key }}]" class="form-control mb-0" value="{{ $value }}" required=""/>
+            @php
+                $sensitive_keywords = ['secret', 'auth_token'];
+                $is_sensitive = false;
+
+                foreach ($sensitive_keywords as $keyword) {
+                    if (strpos($key, $keyword) !== false) {
+                        $is_sensitive = true;
+                        break;
+                    }
+                }
+            @endphp
+
+            @if($is_sensitive)
+                <input type="password" name="data[{{ $key }}]" class="form-control mb-0" value="{{ $value }}" required=""/>
+            @else
+                <input type="text" name="data[{{ $key }}]" class="form-control mb-0" value="{{ $value }}" required=""/>
+            @endif
         </div>
     @endforeach
 

@@ -1,14 +1,8 @@
 @extends('backend.links.index')
 @section('page-title')
     <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-        {{ __('Document Links') }}
+        {{ __('Social Links') }}
     </h4>
-    @can('document-link-create')
-    <a href="javascript:;" class="btn btn-sm btn-dark inline-flex items-center justify-center" data-bs-toggle="modal" data-bs-target="#newDocumentModal">
-        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
-        {{ __('Add New') }}
-    </a>
-    @endcan
 @endsection
 @section('links-content')
     <div class="card">
@@ -20,13 +14,12 @@
                     <div class="overflow-hidden ">
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="socialLink-dataTable">
                             <thead>
-                                <tr>
-                                    <th scope="col" class="table-th">{{ __('Title') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Client-ID') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Seceret-ID') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                </tr>
+                            <tr>
+                                <th scope="col" class="table-th">{{ __('Title') }}</th>
+                                <th scope="col" class="table-th">{{ __('URL') }}</th>
+                                <th scope="col" class="table-th">{{ __('Status') }}</th>
+                                <th scope="col" class="table-th">{{ __('Action') }}</th>
+                            </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
 
@@ -70,8 +63,7 @@
                 ajax: "{{ route('admin.links.social.index') }}",
                 columns: [
                     {data: 'title', name: 'title'},
-                    {data: 'client_id', name: 'client_id'},
-                    {data: 'client_secret', name: 'client_secret'},
+                    {data: 'link', name: 'link'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action'},
                 ]

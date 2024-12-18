@@ -73,7 +73,6 @@ class TransactionController extends Controller
         return Excel::download(new AllTransactionsExport($request), 'All-History.xlsx');
     }
 
-
     public function forexTransactions()
     {
 
@@ -92,7 +91,7 @@ class TransactionController extends Controller
             $data['ToDate'] = $end;
         }
 
-//        dd($start, $end);
+        //dd($data);
 
         $orders = [];
         $transactions = [];
@@ -106,9 +105,9 @@ class TransactionController extends Controller
             }
             elseif (request('type') == 'balance-report') {
                 $response = $this->forexApiService->getBalanceReport($data);
+                //dd($response);
                 if ($response) {
                     $transactions = collect($response['result']);
-//                    dd($transactions);
                 }
             }
 

@@ -7,6 +7,8 @@
         @yield('content')
 
         @include('frontend::include.__script')
+
+
         <script !src="">
             $(document).ready(function() {
                 $('.toggle-password').click(function () {

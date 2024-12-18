@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('social_links', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('link');
-            $table->string('slug', 191)->unique();
-            $table->integer('status')->default(0);
-            $table->timestamps();
+        Schema::table('socials', function (Blueprint $table) {
+            $table->text('description')->nullable()->after('title');
         });
     }
 
@@ -30,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('social_links');
+        Schema::table('socials', function (Blueprint $table) {
+            $table->dropColumn('description');
+        });
     }
 };

@@ -31,7 +31,8 @@ class RewardUser
      */
     public function handle(UserReferred $event)
     {
-        $referral = ReferralLink::find($event->referralId);
+        $referral = ReferralLink::where('code',$event->referralId)->first();
+//        dd($event->referralId,$referral);
         if (! is_null($referral)) {
             ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $event->user->id, 'forex_schema_id' => $event->schemaID]);
 

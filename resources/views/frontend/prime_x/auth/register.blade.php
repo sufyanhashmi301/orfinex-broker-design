@@ -4,7 +4,21 @@
     {{ __('Register') }}
 @endsection
 @section('content')
+    @php
+        // Manage the invite cookie
+        $invite = request()->query('invite'); // Get the invite from the query string
 
+        if ($invite) {
+            // Store the invite code in the cookie for 60 minutes
+            \Cookie::queue('invite', $invite, 60);
+        } elseif (\Cookie::has('invite')) {
+            // Remove the cookie if the invite is not present in the URL
+            \Cookie::queue(\Cookie::forget('invite'));
+        }
+
+        // Retrieve the invite from the cookie for use in the form
+        $inviteCode = \Cookie::get('invite');
+    @endphp
     <!-- Login Section -->
     <div class="h-screen md:flex">
         <div class="hidden w-1/2 overflow-hidden md:block p-3">
@@ -139,7 +153,7 @@
                                 type="text"
                                 placeholder="{{ __('Enter Your Referral Code') }}"
                                 name="invite"
-                                value="{{ request('invite') ?? old('invite') }}"
+                                value="{{ old('invite') ?? $inviteCode }}"
                             />
                           </div>
                         </div>

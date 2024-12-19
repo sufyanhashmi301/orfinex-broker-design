@@ -18,13 +18,17 @@
             </select>
         </div>
         <div class="input-area relative">
-            <label for="account_type_id" class="form-label">{{ __('Account Type:') }}</label>
-            <select name="account_type_id[]" class="select2 form-control w-full" multiple="multiple">
-                <option value="">--Select Account Type--</option>
+            <label for="forex_schemas" class="form-label">{{ __('Select Account Types') }}</label>
+            <select name="forex_schemas[]" class="select2 form-control w-full" multiple="multiple">
+                @foreach($allForexSchemas as $id => $title)
+                    <option value="{{ $id }}" @selected(in_array($id, $rebateRule->forexSchemas->pluck('id')->toArray()))>
+                        {{ $title }}
+                    </option>
+                @endforeach
             </select>
-            <div class="invalid-feedback" id="rule-type-id-error" style="display: none;"></div>
         </div>
-{{--        <div class="input-area relative">--}}
+
+        {{--        <div class="input-area relative">--}}
 {{--            <label for="ib_groups" class="form-label">{{ __('Select IB Groups') }}</label>--}}
 {{--            <select name="ib_groups[]" class="select2 form-control w-full" multiple="multiple">--}}
 {{--                @foreach($allIbGroups as $id => $name)--}}

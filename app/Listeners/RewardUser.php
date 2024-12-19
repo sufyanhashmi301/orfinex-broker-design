@@ -31,7 +31,8 @@ class RewardUser
      */
     public function handle(UserReferred $event)
     {
-        $referral = ReferralLink::find($event->referralId);
+        $referral = ReferralLink::where('code',$event->referralId)->first();
+//        dd($event->referralId,$referral);
         if (! is_null($referral)) {
             ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $event->user->id, 'forex_schema_id' => $event->schemaID]);
 
@@ -51,15 +52,15 @@ class RewardUser
             //send email to parent/referral user
             $this->mailNotify($referral->email, 'new_user_ib', $shortcodes);
             // Sign Up Referral Bonus
-            if (setting('sign_up_referral', 'permission') && null !== $event->user->email_verified_at) {
-
-                $referralBonus = (float) setting('referral_bonus', 'fee');
-                // User who was sharing link
-                $provider = $referral->user;
-                $provider->increment('profit_balance', $referralBonus);
-                Txn::new($referralBonus, 0, $referralBonus, 'system', 'Referral Bonus via '.$event->user->full_name, TxnType::Referral, TxnStatus::Success, null, null, $provider->id);
-
-            }
+//            if (setting('sign_up_referral', 'permission') && null !== $event->user->email_verified_at) {
+//
+//                $referralBonus = (float) setting('referral_bonus', 'fee');
+//                // User who was sharing link
+//                $provider = $referral->user;
+////                $provider->increment('profit_balance', $referralBonus);
+//                Txn::new($referralBonus, 0, $referralBonus, 'system', 'Referral Bonus via '.$event->user->full_name, TxnType::Referral, TxnStatus::Success, null, null, $provider->id);
+//
+//            }
 
         }
     }

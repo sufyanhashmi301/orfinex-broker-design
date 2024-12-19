@@ -5702,6 +5702,9 @@ textarea.form-control.is-invalid{
 .overflow-hidden{
   overflow: hidden;
 }
+.overflow-auto{
+  overflow: auto;
+}
 .overflow-visible{
   overflow: visible;
 }
@@ -7751,6 +7754,10 @@ textarea.form-control.is-invalid{
 .backdrop-blur-sm{
   --tw-backdrop-blur: blur(4px);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+.backdrop-blur{
+    --tw-backdrop-blur: blur(8px);
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .backdrop-blur-\[40px\]{
   --tw-backdrop-blur: blur(40px);
@@ -15917,6 +15924,10 @@ ul.custom-list ul li{
   .md\:my-0{
     margin-top: 0px;
     margin-bottom: 0px;
+  }
+  .md\:my-8{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
   .md\:mx-8{
     margin-left: 2rem;

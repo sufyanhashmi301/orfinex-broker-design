@@ -5,8 +5,8 @@
 @section('content')
 
     <!-- Login Section -->
-    <div class="h-screen md:flex">
-        <div class="hidden w-1/2 overflow-hidden md:block p-3">
+    <div class="h-screen lg:flex">
+        <div class="hidden w-1/2 overflow-hidden lg:block p-3">
             <div class="w-full h-full flex items-center justify-around bg-cover bg-no-repeat bg-center rounded-lg" style="background-image:url('https://cdn.brokeret.com/crm-assets/login-image/c19.png')">
                 <div class="mx-auto max-w-xs text-center">
                     <a href="{{ route('home')}}" class="">
@@ -15,8 +15,8 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-col justify-center py-10 px-10 md:w-1/2">
-            <div class="w-full max-w-lg">
+        <div class="flex flex-col justify-center py-10 px-10 lg:w-1/2">
+            <div class="w-full max-w-lg mx-auto lg:mx-0">
                 <div class="mobile-logo text-center mb-6 lg:hidden block">
                     <a href="{{ route('home')}}">
                         <img src="{{ asset(setting('site_logo','global')) }}" alt="{{ __('Logo') }}" class="h-[56px]">
@@ -78,14 +78,10 @@
                         </button>
                     </form>
                     <!-- END: Login Form -->
-                    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 dark:text-slate-400font-normal ">
-                            {{ __('Or continue with') }}
-                        </div>
-                    </div>
-                    <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-6 uppercase text-sm text-center">
-                        <a href="{{ route('login') }}" class="btn btn-base inline-flex items-center justify-center w-full">
-                            {{ __('Login') }}
+                    <div class="mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm text-center">
+                        {{ __("Or back to ") }}
+                        <a href="{{ route('login') }}" class="text-slate-900 dark:text-white font-medium uppercase hover:underline">
+                            {{ __('Login.') }}
                         </a>
                     </div>
                 </div>

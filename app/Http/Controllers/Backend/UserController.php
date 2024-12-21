@@ -275,13 +275,13 @@ class UserController extends Controller
             ->get();
         
         // optimizations
-        $challenge_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+        $challenge_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
             $query->where('type', AccountTypeEnums::CHALLENGE);
         })->get();
-        $funded_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+        $funded_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
             $query->where('type', AccountTypeEnums::FUNDED);
         })->get();
-        $trial_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+        $trial_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
             $query->where('type', AccountTypeEnums::AUTO_EXPIRE);
         })->get();
         

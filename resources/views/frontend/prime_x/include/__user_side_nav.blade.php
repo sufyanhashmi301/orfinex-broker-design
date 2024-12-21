@@ -115,7 +115,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.billing') }}" class="navItem {{ isActive('user.billing') }}">
+            <a href="{{ route('user.billing.index') }}" class="navItem {{ isActive('user.billing.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="uil:bill"></iconify-icon>
                     <span>{{ __('Billing') }}</span>

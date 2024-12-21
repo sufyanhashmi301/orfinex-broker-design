@@ -18,58 +18,72 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Challenge') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Dates') }}</th>
                                     <th scope="col" class="table-th">{{ __('Amount to pay') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Order') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Order') }}</th> --}}
+                                    <th scope="col" class="table-th">{{ __('Created At') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Invoice') }}</th>
-                                    <th scope="col" class="table-th"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="table-td">
-                                        <div class="text-start">
-                                            <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                {{ __('Beginner') }}
-                                            </h4>
-                                            <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                                {{ __('TID: TRXUF9CIVDJVN') }}
+                                @foreach ($billing_transactions as $txn)
+                                    @php
+                                        $account = $accounts->find($txn->target_id);
+                                        if(!empty($account)){
+                                            $account_type = $account->getAccountTypeSnapshotData();
+                                        } else {
+                                            $account_type['title'] = 'N/A';
+                                            continue;
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="table-td">
+                                            <div class="text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    {{ $account_type['title'] }}
+                                                </h4>
+                                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                    TID: {{ $txn->tnx }}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="table-td">
-                                        <div class="text-start">
-                                            <span class="block">{{ __('2024-06-24') }}</span>
-                                            <span class="block">{{ __('2024-06-24') }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="table-td">
-                                        <span class="font-semibold">
-                                            {{ __('$ 592.15') }}
-                                        </span>
-                                    </td>
-                                    <td class="table-td">
-                                        <span class="font-semibold">
-                                            {{ __('$ 592.15') }}
-                                        </span>
-                                    </td>
-                                    <td class="table-td">
-                                        <span class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">
-                                            {{ __('Paid') }}
-                                        </span>
-                                    </td>
-                                    <td class="table-td">
-                                        <a href="" class="action-btn">
-                                            <iconify-icon icon="heroicons-outline:download"></iconify-icon>
-                                        </a>
-                                    </td>
-                                    <td class="table-td">
-                                        <a href="" class="action-btn">
-                                            <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
-                                        </a>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td class="table-td">
+                                            <span class="font-semibold">
+                                                {{ number_format($txn->final_amount, 2) . ' ' . $currency }}
+                                            </span>
+                                        </td>
+                                        <td class="table-td">
+                                            <div class="text-start">
+                                                <span class="block">{{ $txn->created_at }}</span>
+                                            </div>
+                                        </td>
+
+                                        @php
+                                            $badge = '';
+                                            if($txn->status == \App\Enums\TxnStatus::Success){
+                                                $badge = 'success';
+                                            } elseif ($txn->status == \App\Enums\TxnStatus::Pending) {
+                                                $badge = 'warning';
+                                            } elseif ($txn->status == \App\Enums\TxnStatus::Failed) {
+                                                $badge = 'danger';
+                                            }
+                                        @endphp
+
+                                        <td class="table-td">
+                                            <span class="badge bg-{{ $badge }}-500 text-{{ $badge }}-500 bg-opacity-30 capitalize">
+                                                {{ $txn->status }}
+                                            </span>
+                                        </td>
+                                        <td class="table-td">
+                                            
+                                            <a href="{{ route('user.billing.generateInvoice', ["transaction_id" => $txn->id ]) }}" class="action-btn">
+                                                <iconify-icon icon="heroicons-outline:download"></iconify-icon>
+                                            </a>
+                                        
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                
                             </tbody>
                         </table>
                     </div>

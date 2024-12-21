@@ -31,6 +31,7 @@ use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\LeaderboardController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\ContractController;
@@ -97,6 +98,11 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     // Affiliate Module
     Route::get('affiliate-area', [UserAffiliateController::class, 'index'])->name('affiliate-area.index');
+
+    // Billing (User paid transactions)
+    Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
+    Route::get('/billing/invoice/{transaction_id}', [BillingController::class, 'generateInvoice'])->name('billing.generateInvoice');
+
 
     // ======== Optimizations ========
 
@@ -394,10 +400,6 @@ Route::get('user/leaderboard', [LeaderboardController::class, 'userIndex'])->nam
 Route::get('user/webterminal', function () {
     return view('frontend::webterminal.index');
 })->name('webterminal');
-
-Route::get('user/billing', function () {
-    return view('frontend::billing.index');
-})->name('user.billing');
 
 Route::get('signature', function () {
     return view('frontend::contracts.signature');

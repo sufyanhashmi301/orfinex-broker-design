@@ -15929,6 +15929,10 @@ ul.custom-list ul li{
     margin-top: 2rem;
     margin-bottom: 2rem;
   }
+  .md\:mx-0{
+    margin-left: 0px;
+    margin-right: 0px;
+  }
   .md\:mx-8{
     margin-left: 2rem;
     margin-right: 2rem;
@@ -16280,6 +16284,10 @@ ul.custom-list ul li{
   .lg\:bg-slate-100{
     --tw-bg-opacity: 1;
     background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+  }
+  .lg\:mx-0{
+    margin-left: 0px;
+    margin-right: 0px;
   }
   .lg\:pt-0{
     padding-top: 0px;

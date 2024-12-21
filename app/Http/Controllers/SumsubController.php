@@ -54,12 +54,12 @@ class SumsubController extends Controller
 
     public function UpdateKycStatus(Request $request)
     {
-        Log::info('Webhook received:');
-        \Log::info('Incoming request', [
-            'headers' => $request->headers->all(),
-            'method' => $request->method(),
-            'content' => $request->getContent(),
-        ]);
+//        Log::info('Webhook received:');
+//        \Log::info('Incoming request', [
+//            'headers' => $request->headers->all(),
+//            'method' => $request->method(),
+//            'content' => $request->getContent(),
+//        ]);
 
         $response = $request->getContent(); // Get raw JSON content from the request
 

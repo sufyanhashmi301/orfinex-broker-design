@@ -54,13 +54,7 @@ class SumsubController extends Controller
 
     public function UpdateKycStatus(Request $request)
     {
-//        Log::info('Webhook received:');
-//        \Log::info('Incoming request', [
-//            'headers' => $request->headers->all(),
-//            'method' => $request->method(),
-//            'content' => $request->getContent(),
-//        ]);
-
+        
         $response = $request->getContent(); // Get raw JSON content from the request
 
         // Decode the JSON into an associative array
@@ -70,9 +64,6 @@ class SumsubController extends Controller
         if (isset($responseData['externalUserId'])) {
             $externalUserId = $responseData['externalUserId'];
             $userId = Crypt::decrypt($externalUserId); // Decrypt the externalUserId to get the userId
-
-            // Log the userId correctly
-//            Log::info('User ID:', ['userId' => $userId]);
 
             try {
                 $user = User::findOrFail($userId); // Ensure the user exists

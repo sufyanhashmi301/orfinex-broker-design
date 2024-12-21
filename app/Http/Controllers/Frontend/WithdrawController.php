@@ -529,12 +529,16 @@ class WithdrawController extends Controller
         $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);
         if (!$payout_wallet->exists()) {
             $payout_wallet = $this->payout->createNewWallet(WalletType::PAYOUT);
+        } else {
+            $payout_wallet = $payout_wallet->first();
         }
 
         // Affiliate Wallet Create if not exists
         $affiliate_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::AFFILIATE);
         if (!$affiliate_wallet->exists()) {
             $affiliate_wallet = $this->payout->createNewWallet(WalletType::AFFILIATE);
+        } else { 
+            $affiliate_wallet = $affiliate_wallet->first();
         }
 
         // All the eligible funded balances entries created/updated
@@ -543,9 +547,9 @@ class WithdrawController extends Controller
         // Update affiliate wallet
         $user_affiliate_row = UserAffiliate::where('user_id', Auth::id());
         if($user_affiliate_row->exists()) {
-            $affiliate_wallet->available_balance = $user_affiliate_row->first()->total_commission;
+            $affiliate_wallet->available_balance = $user_affiliate_row->first()->withdrawable_balance;
             $affiliate_wallet->save();
-        }
+        } 
         
 
         // All eligible funded balances record.

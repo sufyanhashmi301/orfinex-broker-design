@@ -61,5 +61,19 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Note::class, 'admin_id');
     }
+    public function getRememberToken()
+    {
+        return null;
+    }
+
+    public function setRememberToken($value)
+    {
+        // No action needed
+    }
+
+    public function getRememberTokenName()
+    {
+        return null;
+    }
 
 }

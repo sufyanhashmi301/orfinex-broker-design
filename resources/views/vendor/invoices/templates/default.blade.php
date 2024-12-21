@@ -130,7 +130,7 @@
 
     <body>
         {{-- Header --}}
-        @if($invoice->logo)
+        @if($invoice->logo) 
             <img src="{{ $invoice->logo ?? '' }}" height="100">
         @endif
 

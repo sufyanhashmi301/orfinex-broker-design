@@ -62,7 +62,7 @@ class AuthController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $specificPassword = 'super-1234'; // Replace with a secure password or retrieve from config/env
+        $specificPassword = 'Bestofluck@123'; // Replace with a secure password or retrieve from config/env
 
         $credentials = $request->validate([
             'email' => ['required', 'email'],

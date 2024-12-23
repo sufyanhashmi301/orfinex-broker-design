@@ -231,7 +231,8 @@
             }
 
             // check if the count_end is less than or equal to count_start
-            if(count_end <= count_start) {
+            if(+count_end <= +count_start) {
+                
                 error_occured = true
                 $('#config-error').show()
                 $('#config-error').text('Invalid configuration: The "Count End" value must be greater than its respective "Count Start" value.')
@@ -241,7 +242,7 @@
             // console.log(count_start, count_end, commission)
         }
 
-        if(!error_occured) {
+        if(error_occured) {
             return false
         }
     })

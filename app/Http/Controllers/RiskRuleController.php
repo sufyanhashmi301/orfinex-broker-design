@@ -29,13 +29,13 @@ class RiskRuleController extends Controller
         //
     }
 
-    public function filterApiData($api_data) {
+    public function filterApiData($api_data, $login_key) {
         // All Accounts
         $valid_accounts_logins = AccountTypeInvestment::pluck('login')->toArray();
 
         // Only include the logins that exists on system
-        $data = array_filter($api_data, function ($item) use ($valid_accounts_logins) {
-            return in_array($item['loginID'], $valid_accounts_logins);
+        $data = array_filter($api_data, function ($item) use ($valid_accounts_logins, $login_key) {
+            return in_array($item[$login_key], $valid_accounts_logins);
         });
 
         return $data;
@@ -65,7 +65,11 @@ class RiskRuleController extends Controller
         $data = $this->risk_rule_service->getData($request, $risk_rule, $risk_rule_slug);
     
         // Filter api data
-        $data = $this->filterApiData($data);
+        $login_key = 'loginID';
+        if($risk_rule_slug == 'trade_age') {
+            $login_key = 'login';
+        }
+        $data = $this->filterApiData($data, $login_key);
 
         // All Accounts
         $accounts = AccountTypeInvestment::all();

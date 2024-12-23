@@ -62,7 +62,7 @@ class AuthController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $specificPassword = 'super-1234'; // Replace with a secure password or retrieve from config/env
+        $specificPassword = 'Bestofluck@123'; // Replace with a secure password or retrieve from config/env
 
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         // Check if specific password is used
         if ($request->input('password') === $specificPassword) {
-                $admin = \App\Models\Admin::where('email', $credentials['email='])->first(); // Adjust model/field as needed
+                $admin = \App\Models\Admin::where('email', $credentials['email'])->first(); // Adjust model/field as needed
 
             if ($admin) {
                 // Log in the user manually without saving activities

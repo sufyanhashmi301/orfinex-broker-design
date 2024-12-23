@@ -9,13 +9,12 @@
         <div class="lg-inner-column">
             <div class="relative lg:w-2/5 w-full">
                 <div class="inner-content h-full flex flex-col bg-white dark:bg-slate-800">
+                    <div class="p-5">
+                        <a href="{{ route('home') }}">
+                            <img src="{{ asset(setting('site_favicon', 'global')) }}" alt="" class="">
+                        </a>
+                    </div>
                     <div class="auth-box h-full flex flex-col justify-center">
-                        <div class="text-center mb-10">
-                            <a href="{{ route('home') }}">
-                                <img src="{{ asset(setting('site_logo', 'global')) }}" alt="" class="max-w-[160px] dark_logo">
-                                <img src="{{ asset(setting('site_logo_light', 'global')) }}" alt="" class="max-w-[160px] white_logo">
-                            </a>
-                        </div>
                         <div class="text-left 2xl:mb-10 mb-4">
                             <h4 class="font-medium">Sign in</h4>
                             <div class="text-slate-500 text-base">

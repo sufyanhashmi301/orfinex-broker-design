@@ -382,3 +382,5 @@ Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus
 
 Route::view('login-2', 'frontend::auth.login-2');
 Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
+Route::view('verify-email-2', 'frontend::auth.verify-email-2');
+Route::view('register-2', 'frontend::auth.register-2');

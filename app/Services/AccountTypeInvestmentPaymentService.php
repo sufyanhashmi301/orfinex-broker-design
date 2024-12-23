@@ -51,7 +51,7 @@ class AccountTypeInvestmentPaymentService
       "middleName" => "",
       "lastName" => $investment->user->last_name,
       "leverage" => (int)$this->accountTypeData['leverage'],
-      "rights" => "USER_RIGHT_ALL",
+      "rights" => "USER_RIGHT_ENABLED,USER_RIGHT_EXPERT,USER_RIGHT_PASSWORD", // "USER_RIGHT_ALL",
       "country" => $investment->user->country,
       "city" => $investment->user->city ?? '',
       "state" => "",
@@ -63,11 +63,13 @@ class AccountTypeInvestmentPaymentService
       "company" => setting('site_title', 'global'),
       "account" => "",
       "language" => 0,
-      "phonePassword" => 'SNNH@2024@bol',
+      "phonePassword" => 'string', // SNNH@2024@bol
       "status" => "RE",
       "masterPassword" => $password,
-      "investorPassword" => 'SNNH@2024@bol'
+      "investorPassword" => 'Abc12345$' // SNNH@2024@bol
     ];
+
+    // dd($user_data);
 
     $retryCount = 0;
     $maxRetries = 3;

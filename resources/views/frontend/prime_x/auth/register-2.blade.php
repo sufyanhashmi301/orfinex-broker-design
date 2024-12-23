@@ -1,0 +1,303 @@
+@extends('frontend::layouts.auth')
+
+@section('title')
+    {{ __('Login') }}
+@endsection
+@section('content')
+
+    <div class="relative h-screen w-full overflow-hidden">
+        <img class="h-full signup-content-mockup" src="{{ asset('frontend/images/brokeret-full-dashboard.png') }}" alt="">
+        <div class="absolute top-0 left-0 w-full h-full overflow-auto bg-slate-900 bg-opacity-30 backdrop-blur">
+            <div class="max-w-2xl mx-auto md:my-8">
+                <div class="card">
+                    <div class="card-body px-10 pt-10">
+                        <div class="flex flex-col justify-center">
+                            <div class="text-center mb-10">
+                                <a href="{{ route('home')}}" class="inline-flex">
+                                    <img src="{{ asset(setting('site_favicon','global')) }}" alt="{{ __('Logo') }}" class="h-12">
+                                </a>
+                            </div>
+                            <div class="text-center mb-6">
+                                <h2 class="text-2xl font-semibold text-gray-700 mb-2">
+                                    {{ __('Welcome to '). setting('site_title','global') }}
+                                </h2>
+                                <p class="text-slate-500 text-base">
+                                    {{ __('Already have an account? ') }}
+                                    <a href="" class="text-primary font-medium underline">
+                                        {{ __('Log in') }}
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="">
+                                @if ($errors->any())
+                                    <div class="alert alert-warning alert-dismissible fade show mt-2 text-sm" role="alert">
+                                        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                                            <p class="flex-1 font-Inter">
+                                                @foreach($errors->all() as $error)
+                                                    {{$error}}
+                                                @endforeach
+                                            </p>
+                                            <div class="flex-0 text-lg cursor-pointer">
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}">
+                                                    <iconify-icon icon="line-md:close"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                <!-- BEGIN: Login Form -->
+                                <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                                    @csrf
+                                    <input type="hidden" name="schema" value="{{ request('schema') ?? old('schema') }}" >
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div class="fromGroup">
+                                            <label class="block capitalize form-label">
+                                                {{ __('First Name*') }}
+                                            </label>
+                                            <div class="relative ">
+                                                <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Your First Name') }}"
+                                                       name="first_name"
+                                                       value="{{ old('first_name') }}"
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <div class="fromGroup">
+                                            <label class="block capitalize form-label">{{ __('Last Name*') }}</label>
+                                            <div class="relative ">
+                                                <input type="text" class="form-control py-2 h-[48px]" placeholder="{{ __('Your Last Name') }}"
+                                                       name="last_name"
+                                                       value="{{ old('last_name') }}"
+                                                       required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="fromGroup">
+                                        <label class="block capitalize form-label">{{ __('Email Address*') }}</label>
+                                        <div class="relative ">
+                                            <input type="email" class="form-control py-2 h-[48px]"
+                                                   name="email"
+                                                   value="{{ old('email') }}"
+                                                   placeholder="{{ __('Enter Your Email Address') }}"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    @if(getPageSetting('username_show'))
+                                        <div class="fromGroup">
+                                            <label class="block capitalize form-label">{{ __('User Name*') }}</label>
+                                            <div class="relative ">
+                                                <input
+                                                    class="form-control py-2 h-[48px]"
+                                                    type="text"
+                                                    placeholder="{{ __('Enter Your User Name') }}"
+                                                    name="username"
+                                                    value="{{ old('username') }}"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if(getPageSetting('country_show'))
+                                        <div class="formGroup">
+                                            <label class="block capitalize form-label">{{ __('Select Country*') }}</label>
+                                            <div class="relative">
+                                                <select name="country" id="countrySelect" class="select2 form-control py-2 h-[48px] w-full mt-2">
+                                                    @foreach( getCountries() as $country)
+                                                        <option value="{{ $country['name'].':'.$country['dial_code'] }}"
+                                                                class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">
+                                                            {{ $country['name']  }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if(getPageSetting('phone_show'))
+                                        <div class="formGroup phone-input-wrapper">
+                                            <label class="block capitalize form-label">{{ __('Phone Number*') }}</label>
+                                            <div class="relative">
+                                                <input type="text"
+                                                       class="form-control py-2 h-[48px]"
+                                                       placeholder="{{ __('Phone Number') }}"
+                                                       name="phone"
+                                                       id="phone"
+                                                       value="{{ old('phone') }}"
+                                                       aria-label="{{ __('Phone Number') }}"
+                                                       aria-describedby="basic-addon1"
+                                                >
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if(getPageSetting('referral_code_show'))
+                                        <div class="formGroup">
+                                            <div class="flex items-center justify-between">
+                                                <label class="block capitalize form-label">{{ __('Referral Code') }}</label>
+                                                <a href="javascript:;" class="btn-link referralToggle">{{ __('Show') }}</a>
+                                            </div>
+                                            <div class="relative hidden" id="referral-input">
+                                                <input
+                                                    class="form-control py-2 h-[48px]"
+                                                    type="text"
+                                                    placeholder="{{ __('Enter Your Referral Code') }}"
+                                                    name="invite"
+                                                    value="{{ request('invite') ?? old('invite') }}"
+                                                />
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div class="formGroup">
+                                            <label class="block capitalize form-label">{{ __('Password*') }}</label
+                                            >
+                                            <div class="relative">
+                                                <input
+                                                    class="form-control py-2 h-[48px]"
+                                                    type="password"
+                                                    id="password"
+                                                    name="password"
+                                                    placeholder="{{ __('Enter your password') }}"
+                                                    required
+                                                />
+                                                <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="#password">
+                                                    <iconify-icon class="text-lg" icon="heroicons:eye-slash"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="formGroup">
+                                            <label class="block capitalize form-label" for="password">{{ __('Confirm Password*') }}</label>
+                                            <div class="relative">
+                                                <input
+                                                    class="form-control py-2 h-[48px]"
+                                                    type="password"
+                                                    id="confirm-pass"
+                                                    name="password_confirmation"
+                                                    placeholder="{{ __('Enter your password') }}"
+                                                    required
+                                                />
+                                                <button type="button" class="toggle-password absolute right-0 top-1/2 -translate-y-1/2 w-9 h-full border-none flex items-center justify-center" data-toggle="#confirm-pass">
+                                                    <iconify-icon class="text-lg" icon="heroicons:eye-slash"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <label class="flex items-center cursor-pointer">
+                                            <input type="checkbox"
+                                                   name="i_agree"
+                                                   class="hiddens mr-2"
+                                                   value="yes"
+                                                   required
+                                            >
+                                            <span class="text-slate-500 dark:text-slate-400 text-xs leading-6 capitalize">
+                                                {{ __('I agree with') }}
+                                                @php
+                                                    $privacyPolicyLink = document_link_by_slug('privacy_policy');
+                                                @endphp
+                                                <a href="{{ $privacyPolicyLink ? $privacyPolicyLink->link : '#' }}" class="btn-link" target="_blank">
+                                                    {{ __('Privacy & Policy') }}
+                                                </a>
+                                                {{ __('and') }}
+                                                @php
+                                                    $clientAgreementLink = document_link_by_slug('client_agreement');
+                                                @endphp
+                                                <a href="{{ $clientAgreementLink ? $clientAgreementLink->link : '#' }}" class="btn-link" target="_blank">
+                                                    {{ __('Client Agreement') }}
+                                                </a>
+                                              </span>
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary block w-full text-center">
+                                        {{ __('Create Account') }}
+                                    </button>
+                                </form>
+                                <!-- END: Login Form -->
+
+                                @php
+                                    $socialLogins = App\Models\Social::activePlatforms();
+                                @endphp
+                                @if($socialLogins->isNotEmpty())
+                                    <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
+                                        <div class="absolute inline-block bg-body dark:bg-body dark:text-slate-400 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-slate-500 font-normal">
+                                            {{ __('Or continue with') }}
+                                        </div>
+                                    </div>
+                                    <div class="max-w-[242px] mx-auto mt-8 w-full">
+                                        <!-- BEGIN: Social Log in Area -->
+                                        <ul class="flex justify-center gap-2">
+                                            @foreach ($socialLogins as $socialLogin)
+                                                <li>
+                                                    <a href="{{ route('social.redirect', $socialLogin->driver) }}" class="inline-flex h-10 w-10 flex-col items-center justify-center">
+                                                        <img src="https://cdn.brokeret.com/crm-assets/admin/social/{{ strtolower($socialLogin->title) }}.webp" class="w-full" alt="{{ ucfirst($socialLogin->title) }}">
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                        <!-- END: Social Log In Area -->
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="auth-footer text-center mt-10">
+                            Copyright 2021, Dashcode All Rights Reserved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('style')
+    <style>
+        .signup-content-mockup {
+            margin: auto;
+            display: block;
+            aspect-ratio: 16 / 9;
+        }
+    </style>
+@endsection
+@section('script')
+    <script src="{{ asset('frontend/js/intlTelInput.min.js') }}"></script>
+
+    <script>
+
+        const input = document.querySelector("#phone");
+        window.intlTelInput(input, {
+            initialCountry: "auto",
+            geoIpLookup: function(callback) {
+                fetch("https://ipapi.co/json")
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log("GeoData: ", data);
+                        callback(data.country_code);
+                    })
+                    .catch(() => {
+                        console.log("Error fetching IP data, defaulting to 'US'.");
+                        callback("uae");
+                    });
+            },
+            utilsScript: "{{ asset('frontend/js/utils.js') }}",
+        });
+
+        $('#countrySelect').on('change', function (e) {
+            "use strict";
+            e.preventDefault();
+            var country = $(this).val();
+            $('#dial-code').html(country.split(":")[1])
+        });
+
+        $(document).ready(function() {
+            $('.referralToggle').on('click', function (){
+                $('#referral-input').toggleClass('hidden');
+
+                if ($('#referral-input').hasClass('hidden')) {
+                    $(this).text('Show');
+                } else {
+                    $(this).text('Hide');
+                }
+            })
+        });
+
+    </script>
+@endsection

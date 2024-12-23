@@ -121,7 +121,7 @@
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
                 <div class="filter mb-3">
-                    <form action="{{ route('user.transactions') }}" method="get">
+                    <form action="{{ route('user.history.transactions') }}" method="get">
                         <div class="search flex items-center gap-2">
                             <input type="text" class="form-control" placeholder="{{ __('Search') }}"
                                    value="{{ request('query') }}" name="query"/>

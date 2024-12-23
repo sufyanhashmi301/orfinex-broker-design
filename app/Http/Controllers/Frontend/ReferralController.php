@@ -11,6 +11,7 @@ use App\Models\LevelReferral;
 use App\Models\MultiLevel;
 use App\Models\ReferralRelationship;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Traits\ForexApiTrait;
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\File;
@@ -73,26 +74,21 @@ class ReferralController extends Controller
     public function referralMembers(Request $request)
     {
         $user = auth()->user();
-        $referralLink = $user->getReferral;
+//        dd($user);
+//        $referralLink = $user->getReferral;
 
         // Capture the selected level order from the request, defaulting to '0' for all levels
         $selectedLevel = $request->input('level_order', 0);
+//
+//        // Filter referrals based on selected level in the multi_levels table
+////        $referrals = ReferralRelationship::where('referral_link_id', $referralLink->id)
+////            ->get();
+//        $referrals = $user->referrals();
+        $referrals = User::where('ref_id', $user->id)->get();
+//        dd($referrals);
+        $maxLevelOrder = 0;
 
-        // Filter referrals based on selected level in the multi_levels table
-        $referrals = ReferralRelationship::where('referral_link_id', $referralLink->id)
-            ->when($selectedLevel != 0, function ($query) use ($selectedLevel) {
-                return $query->whereHas('multiLevel', function ($subQuery) use ($selectedLevel) {
-                    $subQuery->where('level_order', $selectedLevel);
-                });
-            })
-            ->with(['user', 'multiLevel.forexSchema']) // Eager load related models
-            ->get();
-
-        $maxLevelOrder = MultiLevel::where('status', 1)
-            ->select(\DB::raw('MAX(level_order) as max_level'))
-            ->first();
-
-        $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->max_level : 0;
+        $maxLevelOrderCount = $maxLevelOrder;
 
         return view('frontend::referral.index', compact('maxLevelOrderCount', 'referrals', 'selectedLevel'));
     }

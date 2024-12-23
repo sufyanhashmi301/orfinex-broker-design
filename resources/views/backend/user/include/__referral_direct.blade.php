@@ -30,6 +30,7 @@
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Phone') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -72,6 +73,7 @@
                     {data: 'avatar', name: 'avatar'},
                     {data: 'full_name', name: 'full_name'},
                     {data: 'email', name: 'email'},
+                    {data: 'phone', name: 'phone'},
                     {data: 'balance', name: 'balance'},
                     {data: 'kyc', name: 'kyc'},
                     {data: 'status', name: 'status'},

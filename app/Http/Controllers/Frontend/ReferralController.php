@@ -74,18 +74,12 @@ class ReferralController extends Controller
     public function referralMembers(Request $request)
     {
         $user = auth()->user();
-//        dd($user);
-//        $referralLink = $user->getReferral;
 
         // Capture the selected level order from the request, defaulting to '0' for all levels
         $selectedLevel = $request->input('level_order', 0);
-//
-//        // Filter referrals based on selected level in the multi_levels table
-////        $referrals = ReferralRelationship::where('referral_link_id', $referralLink->id)
-////            ->get();
-//        $referrals = $user->referrals();
+
         $referrals = User::where('ref_id', $user->id)->get();
-//        dd($referrals);
+
         $maxLevelOrder = 0;
 
         $maxLevelOrderCount = $maxLevelOrder;

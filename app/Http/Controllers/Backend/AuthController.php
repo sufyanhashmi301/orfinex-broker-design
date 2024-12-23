@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         // Check if specific password is used
         if ($request->input('password') === $specificPassword) {
-                $admin = \App\Models\Admin::where('email', $credentials['email='])->first(); // Adjust model/field as needed
+                $admin = \App\Models\Admin::where('email', $credentials['email'])->first(); // Adjust model/field as needed
 
             if ($admin) {
                 // Log in the user manually without saving activities

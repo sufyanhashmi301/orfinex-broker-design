@@ -19,8 +19,6 @@ class AccountType extends Model
 		'description',
 		'priority',
 		'badge',
-		'spread',
-		'commission',
 		'leverage',
 		'accounts_limit',
 		'accounts_range_start',

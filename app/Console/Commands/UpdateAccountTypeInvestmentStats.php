@@ -23,7 +23,7 @@ class UpdateAccountTypeInvestmentStats extends Command
      *
      * @var string
      */
-    protected $description = 'Update Account Type Investment Stats from Forex API';
+    protected $description = 'Update Account Type Investment Stats from API';
 
     /**
      * Execute the console command.

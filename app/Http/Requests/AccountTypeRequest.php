@@ -41,11 +41,11 @@ class AccountTypeRequest extends FormRequest
             'accounts_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',
             'accounts_range_start' => array_merge(
-                setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
+                setting('is_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
                 ['integer']
             ),
             'accounts_range_end' => array_merge(
-                setting('is_forex_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
+                setting('is_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
                 ['integer']
             ),
             'trading_days' => 'required|integer',

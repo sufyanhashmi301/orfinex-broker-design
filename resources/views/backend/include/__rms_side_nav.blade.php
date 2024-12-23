@@ -49,6 +49,15 @@
         </li>
 
         <li>
+            <a href="{{ route('admin.risk-rule.open_positions') }}" class="navItem {{ isActive('admin.risk-rule.open_positions') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:chart-candlestick"></iconify-icon>
+                    <span>{{ __('Open Trades Positions') }}</span>
+                </span>
+            </a>
+        </li>
+
+        <li>
             <a href="{{ route('admin.risk-rule.trade_age') }}" class="navItem {{ isActive('admin.risk-rule.trade_age') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:history"></iconify-icon>

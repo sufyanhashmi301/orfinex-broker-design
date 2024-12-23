@@ -18,7 +18,7 @@ class PageController extends Controller
      */
     public function pageSettingUpdate(Request $request)
     {
-
+        
         $input = $request->except('_token');
         foreach ($input as $key => $value) {
             if ($request->hasFile($key)) {

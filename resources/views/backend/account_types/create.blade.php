@@ -196,34 +196,38 @@
                             max="50"
                         />
                     </div>
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Range Start (Min 6 digits)') }}</label>
-                        <input
-                            type="number"
-                            name="accounts_range_start"
-                            oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);"
-                            class="form-control"
-                            placeholder="Start Range"
-                            value="{{ old('accounts_range_start') }}"
-                            required
-                            min="100000"
-                            max="999999"
-                        />
-                    </div>
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Range End (Min 6 digits)') }}</label>
-                        <input
-                            type="number"
-                            name="accounts_range_end"
-                            oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);"
-                            class="form-control"
-                            placeholder="End Range"
-                            value="{{ old('accounts_range_end') }}"
-                            min="100000"
-                            max="999999"
-                            required
-                        />
-                    </div>
+
+                    @if (setting('is_group_range'))
+                        <div class="input-area">
+                            <label class="form-label" for="">{{ __('Range Start (Min 6 digits)') }}</label>
+                            <input
+                                type="number"
+                                name="accounts_range_start"
+                                oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);"
+                                class="form-control"
+                                placeholder="Start Range"
+                                value="{{ old('accounts_range_start') }}"
+                                required
+                                min="100000"
+                                max="999999"
+                            />
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label" for="">{{ __('Range End (Min 6 digits)') }}</label>
+                            <input
+                                type="number"
+                                name="accounts_range_end"
+                                oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);"
+                                class="form-control"
+                                placeholder="End Range"
+                                value="{{ old('accounts_range_end') }}"
+                                min="100000"
+                                max="999999"
+                                required
+                            />
+                        </div>
+                    @endif
+                    
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
                         <input
@@ -260,7 +264,7 @@
                             required
                         />
                     </div>
-                    <div class="input-area">
+                    {{-- <div class="input-area">
                         <label class="form-label" for="">{{ __('Commission') }}</label>
                         <input
                             type="number"
@@ -281,7 +285,7 @@
                             value="{{ old('spread') }}"
                             required
                         />
-                    </div>
+                    </div> --}}
                     
                 </div>
             </div>

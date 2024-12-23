@@ -31,7 +31,11 @@ class RiskRuleService
       ];
     }
 
-    $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint);
+    if($risk_rule_slug == 'open_positions') {
+      $request_data = [];
+    }
+
+    $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint, $risk_rule->api_request_http_method);
 
     return $api_response['result'];
   }
@@ -69,7 +73,7 @@ class RiskRuleService
         ];
       }
   
-      $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint);
+      $api_response = $this->risk_api_call->riskRule($request_data, $risk_rule->api_endpoint, $risk_rule->api_request_http_method);
   
       $risk_rule->data_from = Carbon::today();
       $risk_rule->data_to = Carbon::today();

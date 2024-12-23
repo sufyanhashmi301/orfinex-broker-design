@@ -8,6 +8,7 @@ use App\Enums\TraderType;
 use Brick\Math\BigDecimal;
 use Illuminate\Http\Request;
 use App\Enums\InvestmentStatus;
+use App\Models\AccountOpenPosition;
 use App\Services\ForexApiService;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
@@ -114,6 +115,16 @@ class AccountTypeInvestmentController extends Controller
         }
 
         $investment_array = $this->investment->tradingStats($investment_id);
+        $account_open_positions = AccountOpenPosition::orderBy('id', 'DESC')->first();
+
+        // All open positions 
+        $investment_array["account_open_positions"] = $account_open_positions['data'];
+
+        // All Accounts
+        // $investment_array['accounts'] = AccountTypeInvestment::all();
+    
+        // dd($investment_array);
+
 
         return view("frontend::fund_board.active_plan")->with($investment_array);
 

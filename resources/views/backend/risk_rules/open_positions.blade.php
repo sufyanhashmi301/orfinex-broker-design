@@ -1,19 +1,20 @@
 @extends('backend.layouts.rms')
 @section('title')
-    {{ __('Trade Age Analysis') }}
+    {{ __('Open Trades Positions') }}
 @endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             @yield('title')
         </h4>
-
+        
         @if (count($risk_rule->criteria) != 0)
           <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
             <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
             Configure Parameters
           </a>
         @endif
+        
 
     </div>
     <div class="innerMenu card p-6 mb-5 active">
@@ -49,7 +50,7 @@
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Login ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Symbol') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Position') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Position') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('Price Open') }}</th>
                                     <th scope="col" class="table-th">{{ __('Price Current') }}</th>
                                     <th scope="col" class="table-th">{{ __('Profit/Loss (+/- 1hr)') }}</th>
@@ -68,11 +69,11 @@
                                   </td>
                                   <td class="table-td">{{ $item['login'] }}</td>
                                   <td class="table-td">{{ $item['symbol'] }}</td>
-                                  <td class="table-td">{{ $item['position'] }}</td>
+                                  {{-- <td class="table-td">{{ $item['position'] }}</td> --}}
                                   <td class="table-td">{{ $item['priceOpen'] }}</td>
                                   <td class="table-td">{{ $item['priceCurrent'] }}</td>
                                   <td class="table-td"> <span class="badge badge-{{ $item['profit'] < 0 ? 'danger' : 'success' }}">{{ $item['profit'] < 0 ? $item['profit'] * -1 : $item['profit'] }} {{ $currency }}</span> </td>
-                                  <td class="table-td">{{ \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $item['timeCreate'])->format('h:i:s A, d M Y') }}</td>
+                                  <td class="table-td">{{ \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $item['positionCreateTime'])->format('h:i:s A, d M Y') }}</td>
                                 </tr>
                               @empty
                                 <tr>
@@ -127,68 +128,5 @@
 
       })
     </script>
-    <script>
-        // $(document).ready(function() {
-        //     const positionsTable = $('#positions-table').DataTable({
-        //         dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-        //         processing: true,
-        //         searching: false,
-        //         lengthChange: false,
-        //         info: true,
-        //         autoWidth: false,
-        //         language: {
-        //             lengthMenu: "Show _MENU_ entries",
-        //             info: "Showing _START_ to _END_ of _TOTAL_ entries",
-        //             paginate: {
-        //                 previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-        //                 next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
-        //             },
-        //             search: "Search:",
-        //             processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
-        //         },
-        //         data: [], // Start with an empty data array
-        //         columns: [
-        //             { data: 'login', name: 'login' },
-        //             { data: 'symbol', name: 'symbol' },
-        //             { data: 'action', name: 'action' },
-        //             { data: 'position', name: 'position' },
-        //             { data: 'priceOpen', name: 'priceOpen' },
-        //             { data: 'priceCurrent', name: 'priceCurrent' },
-        //             { data: 'priceSL', name: 'priceSL' },
-        //             { data: 'priceTP', name: 'priceTP' },
-        //             { data: 'volume', name: 'volume' },
-        //             { data: 'profit', name: 'profit' },
-        //             { data: 'rateProfit', name: 'rateProfit' },
-        //             { data: 'rateMargin', name: 'rateMargin' },
-        //             { data: 'reason', name: 'reason' },
-        //             { data: 'timeCreate', name: 'timeCreate' },
-        //         ]
-        //     });
-
-        //     $('#fetch-positions').click(function() {
-        //         const group = $('#group').val();
-
-        //         $('#processingIndicator').removeClass('hidden');
-        //         positionsTable.clear();
-
-        //         $.ajax({
-        //             url: '{{ route('admin.positions.group') }}',
-        //             type: 'POST',
-        //             data: {
-        //                 group: group,
-        //                 _token: '{{ csrf_token() }}'
-        //             },
-        //             success: function(data) {
-        //                 positionsTable.rows.add(data.data).draw();
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 alert('An error occurred: ' + error);
-        //             },
-        //             complete: function() {
-        //                 $('#processingIndicator').addClass('hidden');
-        //             }
-        //         });
-        //     });
-        // });
-    </script>
+    
 @endsection

@@ -179,8 +179,12 @@ class ForexApiService
     }
 
     // Risk Rules API
-    public function riskRule($data, $endpoint="reports/fastdeals") {
-        return $this->post($endpoint, $data);
+    public function riskRule($data, $endpoint="reports/fastdeals", $request_method = "POST") {
+        if($request_method == 'POST') {
+            return $this->post($endpoint, $data);
+        } else {
+            return $this->get($endpoint, $data);
+        }
     }
     // Risk Rules API
 
@@ -289,6 +293,7 @@ class ForexApiService
             $URL = $this->baseUrlReal . '/' . $endpoint;
 //            dd($URL);
             $body = json_encode($params);
+            
             $response = Http::withHeaders($this->getCommonHeadersReal())
                 ->retry(3, 100)
                 ->withBody($body, 'application/json')

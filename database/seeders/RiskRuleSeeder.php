@@ -9,6 +9,9 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class RiskRuleSeeder extends Seeder
 {
+
+    public static $TOTAL_RULES = 6; // number of fields in the $data array
+
     /**
      * Run the database seeds.
      *
@@ -28,6 +31,7 @@ class RiskRuleSeeder extends Seeder
                 "data" => '[]',
                 "criteria" => '{"timeInSeconds": {"value": "120", "parameter_name": "Trade(s) Age (Seconds)"}}',
                 "data_from" => Carbon::today(),
+                "api_request_http_method" => 'POST',
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
                 "updated_at" => Carbon::now()->subHours(2),
@@ -41,6 +45,7 @@ class RiskRuleSeeder extends Seeder
                 "data" => '[]',
                 "criteria" => '{"timeInSeconds": {"value": "120", "parameter_name": "Trade(s) Age (Seconds)"}}',
                 "data_from" => Carbon::today(),
+                "api_request_http_method" => 'POST',
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
                 "updated_at" => Carbon::now()->subHours(2),
@@ -54,6 +59,21 @@ class RiskRuleSeeder extends Seeder
                 "data" => '[]',
                 "criteria" => '[]',
                 "data_from" => Carbon::today(),
+                "api_request_http_method" => 'POST',
+                "data_to" => Carbon::today(),
+                "created_at" => Carbon::now()->subHours(2),
+                "updated_at" => Carbon::now()->subHours(2),
+            ],
+
+            // Open trade positions
+            [
+                "title" => 'Open Trades Positions',
+                "slug" => 'open_positions',
+                "api_endpoint" => 'position/list/open',
+                "data" => '[]',
+                "criteria" => '[]',
+                "data_from" => Carbon::today(),
+                "api_request_http_method" => 'GET',
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
                 "updated_at" => Carbon::now()->subHours(2),
@@ -67,6 +87,7 @@ class RiskRuleSeeder extends Seeder
                 "data" => '[]',
                 "criteria" => '{"Days": {"value": "10", "parameter_name": "Trade(s) Age (Days)"}}',
                 "data_from" => Carbon::today(),
+                "api_request_http_method" => 'POST',
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
                 "updated_at" => Carbon::now()->subHours(2),
@@ -80,6 +101,7 @@ class RiskRuleSeeder extends Seeder
                 "data" => '[]',
                 "criteria" => '[]',
                 "data_from" => Carbon::today(),
+                "api_request_http_method" => 'POST',
                 "data_to" => Carbon::today(),
                 "created_at" => Carbon::now()->subHours(2),
                 "updated_at" => Carbon::now()->subHours(2),

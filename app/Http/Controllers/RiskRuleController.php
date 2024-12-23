@@ -7,6 +7,7 @@ use App\Models\RiskRule;
 use Illuminate\Http\Request;
 use App\Services\RiskRuleService;
 use App\Models\AccountTypeInvestment;
+use Database\Seeders\RiskRuleSeeder;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -51,9 +52,9 @@ class RiskRuleController extends Controller
         $risk_rule_slug = explode('.', Route::currentRouteName())[2];
 
         $risk_rules = RiskRule::all();
-
+        
         // Run the seeder if DB is not initialized
-        if(count($risk_rules) != 5) {
+        if(count($risk_rules) != RiskRuleSeeder::$TOTAL_RULES) {
             $this->runSeeder();
             $risk_rules = RiskRule::all();
         }
@@ -66,7 +67,7 @@ class RiskRuleController extends Controller
     
         // Filter api data
         $login_key = 'loginID';
-        if($risk_rule_slug == 'trade_age') {
+        if($risk_rule_slug == 'trade_age' || $risk_rule_slug == 'open_positions') {
             $login_key = 'login';
         }
         $data = $this->filterApiData($data, $login_key);

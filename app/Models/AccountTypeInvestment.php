@@ -41,11 +41,11 @@ class AccountTypeInvestment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function accountTypeInvestmentStat(){
+    public function accountTypeInvestmentStat() {
         return $this->hasOne(AccountTypeInvestmentStat::class);
     }
 
-    public function accountTypeInvestmentHourlyStatsRecord(){
+    public function accountTypeInvestmentHourlyStatsRecord() {
         return $this->hasMany(AccountTypeInvestmentHourlyStatsRecord::class);
     }
 

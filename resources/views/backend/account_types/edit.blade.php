@@ -157,14 +157,19 @@
                             class="form-control" placeholder="Account Limit"
                             value="{{ $account_type->accounts_limit }}" />
                     </div>
-                    <div class="input-area">
-                        <label class="form-label">{{ __('Range Start (Min 6 digits)') }}</label>
-                        <input type="text" name="accounts_range_start" class="form-control" placeholder="Start Range" oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);" min="100000" max="999999" value="{{ $account_type->accounts_range_start }}" />
-                    </div>
-                    <div class="input-area">
-                        <label class="form-label">{{ __('Range End (Min 6 digits)') }}</label>
-                        <input type="text" name="accounts_range_end" class="form-control" placeholder="End Range" oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);" min="100000" max="999999" value="{{ $account_type->accounts_range_end }}" />
-                    </div>
+
+                    @if (setting('is_group_range'))
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Range Start (Min 6 digits)') }}</label>
+                            <input type="text" name="accounts_range_start" class="form-control" placeholder="Start Range" oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);" min="100000" max="999999" value="{{ $account_type->accounts_range_start }}" />
+                        </div>
+                        <div class="input-area">
+                            <label class="form-label">{{ __('Range End (Min 6 digits)') }}</label>
+                            <input type="text" name="accounts_range_end" class="form-control" placeholder="End Range" oninput="this.value = this.value.slice(0, 6); validateDouble(this.value);" min="100000" max="999999" value="{{ $account_type->accounts_range_end }}" />
+                        </div>
+                    @endif
+
+
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
                         <input
@@ -194,7 +199,7 @@
                         <input type="number" name="leverage" class="form-control" placeholder="leverage e.g 100"
                             value="{{ $account_type->leverage }}" required />
                     </div>
-                    <div class="input-area">
+                    {{-- <div class="input-area">
                         <label class="form-label">{{ __('Spread') }}</label>
                         <input type="number" name="spread" class="form-control" placeholder="Account Type Spread"
                             value="{{ $account_type->spread }}" required />
@@ -203,7 +208,7 @@
                         <label class="form-label">{{ __('Commission') }}</label>
                         <input type="number" name="commission" class="form-control"
                             placeholder="Account Type Commission" value="{{ $account_type->commission }}" required />
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

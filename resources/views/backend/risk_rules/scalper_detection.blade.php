@@ -8,10 +8,12 @@
             @yield('title')
         </h4>
 
-        <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
-          <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
-          Configure Parameters
-        </a>
+        @if (count($risk_rule->criteria) != 0)
+          <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
+            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
+            Configure Parameters
+          </a>
+        @endif
 
     </div>
     <div class="innerMenu card p-6 mb-5 active">
@@ -121,8 +123,10 @@
         </div>
     </div>
 
-    {{-- Configuration Modal --}}
-    @include('backend.risk_rules.includes.configure-modal')
+    @if (count($risk_rule->criteria) != 0)
+      {{-- Configuration Modal --}}
+      @include('backend.risk_rules.includes.configure-modal')
+    @endif
 
 @endsection
 @section('script')

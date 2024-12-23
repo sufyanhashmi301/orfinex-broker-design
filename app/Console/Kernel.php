@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('update:investment-stats')->everyMinute();
         $schedule->command('update:investment-stats --save-record')->hourly();
-
+        $schedule->command('update:accounts-open-positions')->hourly();
     }
 
     /**

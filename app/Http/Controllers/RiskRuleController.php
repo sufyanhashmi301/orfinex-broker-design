@@ -65,7 +65,7 @@ class RiskRuleController extends Controller
         $data = $this->risk_rule_service->getData($request, $risk_rule, $risk_rule_slug);
     
         // Filter api data
-        // $data = $this->filterApiData($data);
+        $data = $this->filterApiData($data);
 
         // All Accounts
         $accounts = AccountTypeInvestment::all();

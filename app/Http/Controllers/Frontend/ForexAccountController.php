@@ -151,7 +151,7 @@ class ForexAccountController extends GatewayController
         $password = $request->main_password;
 //        dd($traderType,$group,$server);
 
-        if($traderType == TraderType::MT5) {
+        if ($traderType == TraderType::MT5) {
             $data = [
                 "login" => $login,
                 "group" => $group,
@@ -176,37 +176,49 @@ class ForexAccountController extends GatewayController
                 "masterPassword" => $password,
                 "investorPassword" => 'SNNH@2024@bol'
             ];
-//        dd($data,$accountType);
-            if ($accountType == 'real') {
-                $response = $this->forexApiService->createUser($data);
-            } else {
-                $response = $this->forexApiService->createUserDemo($data);
+
+            $retryCount = 0;
+            $maxRetries = 3;
+            $success = false;
+
+            while ($retryCount < $maxRetries) {
+                if ($accountType == 'real') {
+                    $response = $this->forexApiService->createUser($data);
+                } else {
+                    $response = $this->forexApiService->createUserDemo($data);
+                }
+
+                if ($response['success']) {
+                    $success = true;
+                    break;
+                }
+
+                // Increment login and retry
+                $login++;
+                $data['login'] = $login;
+                $retryCount++;
             }
-            if ($response['success']) {
+
+            if ($success) {
                 $resResult = $response['result'];
                 $mt5Login = $resResult['login'];
-//            dd($response,$response->data[0]->Login);
+
                 if ($mt5Login && $resResult['responseCode'] == 0) {
-                    $rightData =  [
+                    $rightData = [
                         "login" => $mt5Login,
                         "rights" => 'USER_RIGHT_ENABLED',
-
                     ];
                     $this->forexApiService->setUserRights($rightData);
 
-                    //save account in DB
-                $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
-
-                $this->sendNotification($user,$mt5Login,$schema);
+                    // Save account in DB
+                    $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
+                    $this->sendNotification($user, $mt5Login, $schema);
 
                     notify()->success(__('Successfully Created Account'), 'success');
                     return redirect()->route('user.forex-account-logs');
                 }
-
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-
             }
-        }elseif($traderType == TraderType::X9) {
+        } elseif($traderType == TraderType::X9) {
             $data = [
                 "preferred_login" => 'default',
                 "client_id" => null,

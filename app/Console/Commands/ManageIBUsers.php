@@ -95,6 +95,7 @@ class ManageIBUsers extends Command
                 $newUser->ib_group_id = $ibGroupId;
                 $newUser->ranking_id = $rank->id; // Assign default rank
                 $newUser->password = Hash::make('password123');
+                $newUser->email_verified_at = Carbon::now();
                 $newUser->created_at = Carbon::now();
                 $newUser->updated_at = Carbon::now();
 

@@ -79,12 +79,7 @@ class HandleReferrals extends Command
                 $nameParts = explode(' ', $childName);
                 $firstName = $nameParts[0] ?? 'Child';
                 $lastName = $nameParts[1] ?? 'User';
-                // Generate unique username
-                $usernameBase = strtolower(preg_replace('/\s+/', '', $firstName));
-                $username = $usernameBase . rand(1000, 9999);
-                while (User::where('username', $username)->exists()) {
-                    $username = $usernameBase . rand(1000, 9999);
-                }
+
 
                 // Create new user
                 $childUser = new User();

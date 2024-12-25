@@ -60,6 +60,7 @@ class ManageIBUsers extends Command
             $phone = $user['phone'] ?? '+971';
             $gender = $user['gender'] ?? 'other';
             $address = $user['address'] ?? null;
+            $countryName =  'United Arab Emirates';
 
             // Split name into first and last name
             $nameParts = explode(' ', $user['name'] ?? 'Default User');
@@ -88,6 +89,7 @@ class ManageIBUsers extends Command
                 $newUser->username = $username;
                 $newUser->phone = $phone;
                 $newUser->gender = $gender;
+                $newUser->country = $countryName;
                 $newUser->address = $address;
                 $newUser->ib_status = IBStatus::APPROVED;
                 $newUser->ib_group_id = $ibGroupId;
@@ -97,14 +99,17 @@ class ManageIBUsers extends Command
                 $newUser->updated_at = Carbon::now();
 
                 try {
-                    $user =  $newUser->save();
-                    $this->manageUserRebateRules($user, $ibGroupId);
-
+                    if (!$newUser->save()) {
+                        $this->error("Failed to save user: {$email}. Possible validation error.");
+                        continue;
+                    }
+                    $this->manageUserRebateRules($newUser, $ibGroupId);
                     $this->info("User created with email: {$email}");
                 } catch (\Exception $e) {
                     $this->error("Failed to create user: {$email}. Error: {$e->getMessage()}");
                     continue;
                 }
+
             } else {
                 $this->info("User found. Updating IB group ID and ranking: {$email}");
 

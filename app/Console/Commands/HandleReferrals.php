@@ -38,11 +38,12 @@ class HandleReferrals extends Command
 
         $parentUser = User::where('email', $parentEmail)->first();
 
+
         if (!$parentUser) {
             $this->error("Parent user with email {$parentEmail} does not exist.");
             return;
         }
-
+        $parentUser->getReferrals();
         $referral = ReferralLink::where('user_id', $parentUser->id)->first();
 
         if (is_null($referral)) {

@@ -117,6 +117,7 @@ class ManageIBUsers extends Command
                 try {
                     $existingUser->update([
                         'ib_status' => IBStatus::APPROVED,
+                        'email_verified_at' => Carbon::now(),
                         'ib_group_id' => $ibGroupId,
                     ]);
                     $this->manageUserRebateRules($existingUser, $ibGroupId);

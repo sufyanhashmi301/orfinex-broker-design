@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\UserIbRule;
 use Illuminate\Console\Command;
 
-class RemoveIBUsers extends Command
+class RemoveUnlistedIBUsers extends Command
 {
     /**
      * The name and signature of the console command.

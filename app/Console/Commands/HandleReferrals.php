@@ -80,7 +80,6 @@ class HandleReferrals extends Command
                 $firstName = $nameParts[0] ?? 'Child';
                 $lastName = $nameParts[1] ?? 'User';
 
-
                 // Create new user
                 $childUser = new User();
                 $childUser->ranking_id = $rank->id;

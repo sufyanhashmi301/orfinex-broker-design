@@ -19,7 +19,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['monthly_referrals'] }}
+                                {{ $dataCount['total_referrals'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">

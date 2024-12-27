@@ -264,6 +264,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return $this->hasMany(User::class, 'ref_id');
     }
 
+
+// Ensure this function is part of a class where `mt5_total_balance` is defined.
+
     public function totalDeposit($days = null)
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
@@ -287,15 +290,51 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         $sum = $sum->sum('amount');
         return round($sum, 2);
     }
+
     public function totalVolumeMeta($days = null)
     {
         $sum = $this->metaDeals();
         if (null != $days) {
             $sum->where('time', '>=', Carbon::now()->subDays((int) $days));
         }
-        $sum = $sum->sum('volume');
+        $sum = $sum->sum('volume')/10000;
         return round($sum, 2);
     }
+    public function totalReferralsDeposit($days = null)
+    {
+//        dd($this->referrals()->pluck('id'));
+        $query = Transaction::query()
+            ->where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('type', TxnType::Deposit)
+                    ->orWhere('type', TxnType::ManualDeposit);
+            })
+            ->whereIn('user_id', $this->referrals()->pluck('id'));
+
+        if ($days !== null) {
+            $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+
+        return round($query->sum('amount'), 2);
+    }
+    public function totalReferralsWithdraw($days = null)
+    {
+
+        $query = Transaction::query()
+            ->where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('type', TxnType::Withdraw)
+                    ->orWhere('type', TxnType::WithdrawAuto);
+            })
+            ->whereIn('user_id', $this->referrals()->pluck('id'));
+
+        if ($days !== null) {
+            $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+
+        return round($query->sum('amount'), 2);
+    }
+
 
 
     public function totalInvestment()

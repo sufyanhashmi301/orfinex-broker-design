@@ -1256,6 +1256,7 @@ if (!function_exists('mt5_total_balance')) {
 
     function mt5_total_balance($user_id)
     {
+
         // Define a cache key for the database connection status
         $cacheKey = 'mt5_db_connection_status';
 
@@ -1264,12 +1265,12 @@ if (!function_exists('mt5_total_balance')) {
             // Return 0 immediately without attempting to connect
             return 0;
         }
-
-        // Attempt to establish a database connection
+//        dd($user_id);
+//         Attempt to establish a database connection
         try {
             DB::connection('mt5_db')->getPdo();
         } catch (\PDOException $e) {
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+//            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
             Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
             return 0;
         }
@@ -1281,17 +1282,19 @@ if (!function_exists('mt5_total_balance')) {
                 ->where('account_type', 'real')
                 ->where('status', ForexAccountStatus::Ongoing)
                 ->pluck('login');
+//            dd($forexAccounts);
 
             // If no accounts found, return 0
             if ($forexAccounts->isEmpty()) {
                 return 0;
             }
-
-            // Calculate the total balance using the mt5_db connection
+//dd($forexAccounts);
+          //   Calculate the total balance using the mt5_db connection
             $totalBalance = DB::connection('mt5_db')
                 ->table('mt5_accounts')
                 ->whereIn('Login', $forexAccounts)
                 ->sum('Balance');
+//            dd($totalBalance);
 
             return $totalBalance;
         } catch (\Exception $e) {

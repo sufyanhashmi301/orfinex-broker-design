@@ -54,13 +54,13 @@ class   AccountsController extends Controller
     {
 //        dd($request->all(),$type,$id);
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
+//            $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
             if ($id) {
                 $data = ForexAccount::with('schema')->where('user_id', $id)->where('account_type', $type)->latest();
             } else {
                 $data = ForexAccount::query()->with('schema')->where('account_type', $type)->latest();
             }
-            $data->applyFilters($filters);
+//            $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()

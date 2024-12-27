@@ -50,7 +50,7 @@ class MultiLevelIBController extends Controller
             'monthly_referrals' => $user->getReferral->monthlyRelationships()->count(),
             'total_rebate' => $user->totalRebateMeta(30),
             'total_referrals_balance' =>  $this->getReferralsTotalBalance($user),
-            'total_volume' => $user->totalVolumeMeta(30),
+            'total_volume' => $this->getReferralsNetVolume($user,30),
             'total_referrals' => $user->getReferral->count(),
             'total_deposit' => $user->totalReferralsDeposit(),
             'total_withdraw' => $user->totalReferralsWithdraw(),
@@ -83,11 +83,16 @@ class MultiLevelIBController extends Controller
         $netRebate = MetaDeal::whereIn('user_id',$referrals)->sum('lot_share');
         return $netRebate;
     }
-    public function getReferralsNetVolume($user)
+    public function getReferralsNetVolume($user,$days=null)
     {
         // Get all referrals
         $referrals = $user->referrals()->pluck('id');
-        $netVolume = MetaDeal::whereIn('user_id',$referrals)->sum('volume');
+        $netVolume = MetaDeal::whereIn('user_id',$referrals);
+        if (null != $days) {
+            $netVolume->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $netVolume = $netVolume->sum('volume');
+
         return  round($netVolume/10000, 2);
     }
 

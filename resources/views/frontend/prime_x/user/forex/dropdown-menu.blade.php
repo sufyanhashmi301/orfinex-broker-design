@@ -7,7 +7,7 @@
     <ul class=" dropdown-menu w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
         <div class="dropdown-header flex justify-around border-b dark:border-slate-700 p-3">
             @if($account->account_type == 'demo' && $account->status == \App\Enums\ForexAccountStatus::Ongoing)
-                <a href="{{route('user.deposit.methods')}}" class="loaderBtn text-center dropdown-deposit-demo-account"
+                <a href="{{route('user.deposit.methods')}}" class="text-center dropdown-deposit-demo-account"
                    data-bs-toggle="modal"
                    data-bs-target="#depositDemo" data-login="{{$account->login}}">
                     <div class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center mx-auto">

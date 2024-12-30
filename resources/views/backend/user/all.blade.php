@@ -112,6 +112,7 @@
     <!-- Modal for Send Email-->
 
     @include('backend.user.include.__configure_modal')
+    @include('backend.user.include.__reset_password')
 @endsection
 
 @section('customers-script')
@@ -166,6 +167,31 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
+
+            // Function to generate a random password
+            function generateRandomPassword(length = 12) {
+                const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+                let password = "";
+                for (let i = 0; i < length; i++) {
+                    password += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return password;
+            }
+
+            // When the reset password button is clicked
+            $('body').on('click', '.reset-password-btn', function () {
+                const userId = $(this).data('id');
+                const userEmail = $(this).data('email');
+                const userName = $(this).data('name');
+                const newPassword = generateRandomPassword();
+
+                $('#resetUserId').val(userId);
+                $('#resetUserEmail').val(userEmail);
+                $('#generatedPassword').val(newPassword);
+
+                $('#resetPasswordModal').modal('show');
+            });
+
 
             $('#filter-form').on('submit', function (e) {
                 e.preventDefault(); // Prevent the default form submission

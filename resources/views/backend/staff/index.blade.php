@@ -23,8 +23,9 @@
                 <div class="h-full border-r dark:border-slate-700">
                     <div class="card-header pl-0" style="padding-bottom: 11px;">
                         <div class="input-area relative">
-                            <select name="" class="form-control">
-                                <option value="">{{ __('Active Staff (3)') }}</option>
+                            <select id="staffStatusFilter" class="form-control">
+                                <option value="active">{{ __('Active Staff') }} ({{ $activeStaffCount }})</option>
+                                <option value="inactive">{{ __('Inactive Staff') }} ({{ $inactiveStaffCount }})</option>
                             </select>
                         </div>
                         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
@@ -36,38 +37,8 @@
                             @endcan
                         </div>
                     </div>
-                    <div class="p-6 pr-0">
-                        <ul class="list-item space-y-3 h-full overflow-x-auto">
-                            @foreach($staffs as $staff)
-                                <li class="flex items-center space-x-3 rtl:space-x-reverse border-b border-slate-100 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
-                                    <a href="javascript:;" class="edit-staff flex items-center w-full" data-id="{{$staff->id}}" type="button">
-                                        <div class="flex-none">
-                                            <div class="w-10 h-10 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                <img src="{{ asset('frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
-                                            </div>
-                                        </div>
-                                        <div class="flex-1 text-start">
-                                            <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                {{$staff->first_name}} {{$staff->last_name}}
-                                                <span class="badge-primary text-xs capitalize rounded-lg px-2 py-0.5 ml-1">
-                                                    {{ $staff->getRoleNames()->first() }}
-                                                </span>
-                                            </h4>
-                                            <div class="text-xs font-normal text-slate-500 dark:text-slate-400">
-                                                @if(isset($staff->designation))
-                                                    {{ $staff->designation->name }}
-                                                @else
-                                                    <span>-</span>
-                                                @endif
-                                            </div>
-                                            <div class="text-xs font-normal text-slate-800 dark:text-slate-400">
-                                                {{ $staff->email }}
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
+                    <div id="staff-list" class="p-6 pr-0">
+                        @include('backend.staff.include.__staff_list', ['staff' => $staffs])
                     </div>
                 </div>
             </div>
@@ -124,7 +95,7 @@
                                                     class="form-control mb-0"
                                                     value="{{ $loggedInUser->first_name }}"
                                                     placeholder="First Name"
-                                                    
+
                                                 />
                                             </div>
                                             <div class="input-area !mt-0">
@@ -138,7 +109,7 @@
                                                     class="form-control mb-0"
                                                     value="{{ $loggedInUser->last_name }}"
                                                     placeholder="Last Name"
-                                                    
+
                                                 />
                                             </div>
                                             <div class="input-area !mt-0">
@@ -177,12 +148,12 @@
                                                 id="key"
                                                 name="key"
                                                 class="form-control mb-0"
-                                                value="{{ $superAdmin->key ?? '' }}" 
+                                                value="{{ $superAdmin->key ?? '' }}"
                                                 placeholder="Enter unique key"
                                             />
                                             </div>
                                             @endif
-                                            
+
                                         </div>
                                     </div>
                                     <div class="input-area">
@@ -261,7 +232,7 @@
                                         </label>
                                         <select name="role" class="select2 form-control w-100" required>
                                             @foreach($roles as $role)
-                                                <option @selected($role->name == $staff->roles[0]['name']) value="{{$role->name}}">
+                                                <option @selected($role->name == $loggedInUser->roles[0]['name']) value="{{$role->name}}">
                                                     {{ str_replace('-', ' ', $role->name) }}
                                                 </option>
                                             @endforeach
@@ -273,10 +244,10 @@
                                             {{ __('Employment Type:') }}
                                         </label>
                                         <select name="employment_type" class="select2 form-control w-100">
-                                            <option value="permanent" @selected($staff->employment_type === 'permanent')>{{ __('Permanent') }}</option>
-                                            <option value="on contract" @selected($staff->employment_type === 'on contract')>{{ __('On Contract') }}</option>
-                                            <option value="temporary" @selected($staff->employment_type === 'temporary')>{{ __('Temporary') }}</option>
-                                            <option value="trainee" @selected($staff->employment_type === 'trainee')>{{ __('Trainee') }}</option>
+                                            <option value="permanent" @selected($loggedInUser->employment_type === 'permanent')>{{ __('Permanent') }}</option>
+                                            <option value="on contract" @selected($loggedInUser->employment_type === 'on contract')>{{ __('On Contract') }}</option>
+                                            <option value="temporary" @selected($loggedInUser->employment_type === 'temporary')>{{ __('Temporary') }}</option>
+                                            <option value="trainee" @selected($loggedInUser->employment_type === 'trainee')>{{ __('Trainee') }}</option>
                                         </select>
                                     </div>
 
@@ -285,12 +256,12 @@
                                             {{ __('Employment Status:') }}
                                         </label>
                                         <select name="employment_status" class="select2 form-control w-100">
-                                            <option value="active" @selected($staff->employment_status === 'active')>{{ __('Active') }}</option>
-                                            <option value="terminated" @selected($staff->employment_status === 'terminated')>{{ __('Terminated') }}</option>
-                                            <option value="deceased" @selected($staff->employment_status === 'deceased')>{{ __('Deceased') }}</option>
-                                            <option value="resigned" @selected($staff->employment_status === 'resigned')>{{ __('Resigned') }}</option>
-                                            <option value="probation" @selected($staff->employment_status === 'probation')>{{ __('Probation') }}</option>
-                                            <option value="notice period" @selected($staff->employment_status === 'notice period')>{{ __('Notice Period') }}</option>
+                                            <option value="active" @selected($loggedInUser->employment_status === 'active')>{{ __('Active') }}</option>
+                                            <option value="terminated" @selected($loggedInUser->employment_status === 'terminated')>{{ __('Terminated') }}</option>
+                                            <option value="deceased" @selected($loggedInUser->employment_status === 'deceased')>{{ __('Deceased') }}</option>
+                                            <option value="resigned" @selected($loggedInUser->employment_status === 'resigned')>{{ __('Resigned') }}</option>
+                                            <option value="probation" @selected($loggedInUser->employment_status === 'probation')>{{ __('Probation') }}</option>
+                                            <option value="notice period" @selected($loggedInUser->employment_status === 'notice period')>{{ __('Notice Period') }}</option>
                                         </select>
                                     </div>
 
@@ -299,10 +270,10 @@
                                             {{ __('Source Of Hire:') }}
                                         </label>
                                         <select name="source_of_hire" class="select2 form-control w-100">
-                                            <option value="direct" @selected($staff->source_of_hire === 'direct')>{{ __('Direct') }}</option>
-                                            <option value="referral" @selected($staff->source_of_hire === 'referral')>{{ __('Referral') }}</option>
-                                            <option value="web" @selected($staff->source_of_hire === 'web')>{{ __('Web') }}</option>
-                                            <option value="newspaper" @selected($staff->source_of_hire === 'newspaper')>{{ __('Newspaper') }}</option>
+                                            <option value="direct" @selected($loggedInUser->source_of_hire === 'direct')>{{ __('Direct') }}</option>
+                                            <option value="referral" @selected($loggedInUser->source_of_hire === 'referral')>{{ __('Referral') }}</option>
+                                            <option value="web" @selected($loggedInUser->source_of_hire === 'web')>{{ __('Web') }}</option>
+                                            <option value="newspaper" @selected($loggedInUser->source_of_hire === 'newspaper')>{{ __('Newspaper') }}</option>
                                         </select>
                                     </div>
 
@@ -312,7 +283,7 @@
                                         </label>
                                         <select name="location" class="select2 form-control w-100">
                                             @foreach( getCountries() as $country)
-                                                <option @selected($country['name'] == $staff->location) value="{{$country['name']}}">
+                                                <option @selected($country['name'] == $loggedInUser->location) value="{{$country['name']}}">
                                                 {{ str_replace('-', ' ', $country['name']) }}
                                                 </option>
                                             @endforeach
@@ -351,9 +322,9 @@
                                     <div class="input-area">
                                         <label for="" class="form-label">{{ __('Gender:') }}</label>
                                         <select name="status" class="select2 form-control w-full">
-                                            <option value="male" @selected($staff->gender === 'male')>{{ __('Male') }}</option>
-                                            <option value="female" @selected($staff->gender === 'female')>{{ __('Female') }}</option>
-                                            <option value="other" @selected($staff->gender === 'other')>{{ __('Other') }}</option>
+                                            <option value="male" @selected($loggedInUser->gender === 'male')>{{ __('Male') }}</option>
+                                            <option value="female" @selected($loggedInUser->gender === 'female')>{{ __('Female') }}</option>
+                                            <option value="other" @selected($loggedInUser->gender === 'other')>{{ __('Other') }}</option>
                                         </select>
                                     </div>
                                     <div class="input-area">
@@ -503,6 +474,23 @@
             });
 
         })
+
+        $('#staffStatusFilter').change(function() {
+            var status = $(this).val();
+
+            $.ajax({
+                url: "{{ route('admin.staff.index') }}",
+                type: 'GET',
+                data: { status: status },
+                success: function(response) {
+                    // Update the staff list
+                    $('#staff-list').html(response.staffs);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching staff:', error);
+                }
+            });
+        });
 
         $('body').on('click', '.edit-staff', function (event) {
             "use strict";

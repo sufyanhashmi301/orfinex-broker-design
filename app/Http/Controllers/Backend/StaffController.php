@@ -40,7 +40,7 @@ class StaffController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
         $loggedInUser = Auth::user();
         $staffs = Admin::all();
@@ -49,7 +49,24 @@ class StaffController extends Controller
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
 
-        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'superAdmin', 'roles', 'departments', 'designations'));
+        // Count active and inactive staff
+        $activeStaffCount = Admin::where('status', true)->count();
+        $inactiveStaffCount = Admin::where('status', false)->count();
+
+        if ($request->ajax()) {
+            $status = $request->status; // active or inactive
+            if ($status == 'active') {
+                $staffs = Admin::where('status', true)->get();
+            } elseif ($status == 'inactive') {
+                $staffs = Admin::where('status', false)->get();
+            }
+
+            return response()->json([
+                'staffs' => view('backend.staff.include.__staff_list', ['staff' => $staffs])->render(),
+            ]);
+        }
+
+        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations'));
 
     }
 

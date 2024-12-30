@@ -99,7 +99,7 @@
                     <div class="flex-1 input-area relative">
                         <select name="status" class="form-control h-full" id="status">
                             <option value="">Status</option>
-                            <option value="active">active</option>
+                            <option value="ongoing">active</option>
                             <option value="archive">archive</option>
                         </select>
                     </div>

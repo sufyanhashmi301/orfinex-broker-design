@@ -54,13 +54,14 @@ class   AccountsController extends Controller
     {
 //        dd($request->all(),$type,$id);
         if ($request->ajax()) {
-//            $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
+            $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
             if ($id) {
                 $data = ForexAccount::with('schema')->where('user_id', $id)->where('account_type', $type)->latest();
             } else {
                 $data = ForexAccount::query()->with('schema')->where('account_type', $type)->latest();
             }
-//            $data->applyFilters($filters);
+//            dd($filters);
+            $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -82,7 +83,7 @@ class   AccountsController extends Controller
         $withoutBalance = 0.0;
         try {
             if($realForexAccounts) {
-                $withBalance = DB::connection('mt5_db')
+                $withBalance = DB::connection('mt5_db2')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
                     ->where('Balance', '>', 0)->count();
@@ -94,7 +95,7 @@ class   AccountsController extends Controller
 
         try {
             if($realForexAccounts) {
-                $withoutBalance = DB::connection('mt5_db')
+                $withoutBalance = DB::connection('mt5_db2')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
                     ->where('Balance', 0)->count();

@@ -98,6 +98,48 @@ class ForexAccount extends Model
     {
         return date('M d, Y H:i', strtotime($value));
     }
+    public function scopeApplyFilters(Builder $query, $filters)
+    {
+        if (!empty($filters['global_search'])) {
+            $search = $filters['global_search'];
+            $query->where(function($query) use ($search) {
+                $query->where('account_name', 'like', "%{$search}%")
+                    ->orWhere('login', 'like', "%{$search}%")
+                    ->orWhere('group', 'like', "%{$search}%")
+                    ->orWhere('trading_platform', 'like', "%{$search}%")
+                    ->orWhereHas('user', function($query) use ($search) {
+                        $query->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('username', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if (!empty($filters['login'])) {
+            $query->where('login', 'like', "%" . $filters['login'] . "%");
+        }
+
+        if (!empty($filters['country'])) {
+            $query->whereHas('user', function($query) use ($filters) {
+                $query->where('country', 'like', "%" . $filters['country'] . "%");
+            });
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['created_at'])) {
+            $query->whereDate('created_at', $filters['created_at']);
+        }
+
+//        if (!empty($filters['tag'])) {
+//            $query->where('meta', 'like', "%" . $filters['tag'] . "%");
+//        }
+
+        return $query;
+    }
     public function scopeRealActiveAccount($query,$userID=null)
     {
         if(!isset($userID))

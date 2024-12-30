@@ -86,7 +86,6 @@ class UserController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
@@ -282,17 +281,17 @@ class UserController extends Controller
     {
         // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
         $superAdmin = Admin::where('name', 'Super Admin')->first();
-        
+
         // Check if the Super-Admin key exists in the database and the input matches
         if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
             // If the key doesn't match, notify error
             notify()->error('Invalid Super-Admin key. Deletion denied.');
             return redirect()->back();  // Redirect back to the previous page
         }
-        
+
         // Proceed with deleting the user if the key matches
         $user = User::find($id);
-        
+
         // Ensure the user exists before attempting to delete
         if ($user) {
             $user->delete();
@@ -300,11 +299,11 @@ class UserController extends Controller
         } else {
             notify()->error('User not found.');
         }
-        
+
         // Redirect to the user listing page after the operation
         return redirect()->route('admin.user.index');
     }
-    
+
 
     /**
      * @return RedirectResponse
@@ -482,6 +481,31 @@ class UserController extends Controller
     /**
      * @return RedirectResponse
      */
+    public function resetPassword(Request $request)
+    {
+//        dd($request->all());
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Send an email notification
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[password]]' => $request->password,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+        $this->mailNotify($user->email, 'reset_user_password_by_admin', $shortcodes);
+
+        notify()->success('Password has been successfully reset and emailed to the user', 'success');
+        return redirect()->back();
+    }
     public function passwordUpdate($id, Request $request)
     {
         $input = $request->all();
@@ -497,10 +521,13 @@ class UserController extends Controller
         }
 
         $password = $validator->validated();
-
-        User::find($id)->update([
+        $user = User::find($id);
+        $user->update([
             'password' => Hash::make($password['new_password']),
         ]);
+//        dd($user);
+
+
         notify()->success('User Password Updated Successfully', 'success');
 
         return redirect()->back();

@@ -251,13 +251,13 @@ class UserController extends Controller
         $kycLevels = KycLevel::where('status', 1)->get();
         $ibGroups = IbGroup::where('status', 1)->get();
         $kycStatus = KYCStatus::cases();
-        //        $users = User::where('id', '<>', $id)
-        //            ->where(function ($query) use ($id, $user) {
-        //                $query->whereNull('ref_id')
-        //                    ->orWhere('ref_id', '<>', $id);
-        //            })
-        //            ->where('id', '<>', $user->ref_id)
-        //            ->get();
+        $users = User::where('id', '<>', $id)
+            ->where(function ($query) use ($id, $user) {
+                $query->whereNull('ref_id')
+                    ->orWhere('ref_id', '<>', $id);
+            })
+            ->where('id', '<>', $user->ref_id)
+            ->get();
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
@@ -274,7 +274,7 @@ class UserController extends Controller
             ->get();
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses', 'ibGroups'));
+        return view('backend.user.edit', compact('users', 'user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses', 'ibGroups'));
     }
 
     public function destroy(Request $request, $id)

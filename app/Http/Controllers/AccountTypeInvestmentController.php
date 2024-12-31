@@ -85,6 +85,7 @@ class AccountTypeInvestmentController extends Controller
      */
     public function store(Request $request)
     {   
+        // dd($request->all());
         // for affiliates testing ---
         // $buyer_user_id  = Auth::id();
         // $this->affiliate->applyCommission($request->rule_id, $buyer_user_id);

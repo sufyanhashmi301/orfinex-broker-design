@@ -53,7 +53,7 @@
                         id="payment-form" class="space-y-6">
                         @csrf
                         <input type="hidden" id="scheme_type" value="{{ the_hash($schema->forexSchemaPhase1->type) }}">
-                        {{-- <input type="hidden" id="discount-id" name="discount_id" > --}}
+                        <input type="hidden" id="discount-id" name="discount_id" >
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
                                 {{ __('Allocated Funds') }}

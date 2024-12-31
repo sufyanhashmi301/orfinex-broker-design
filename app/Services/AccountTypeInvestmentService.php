@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use App\Models\Discount;
 use App\Models\AccountType;
 use Illuminate\Support\Str;
+use App\Models\FundedBalance;
 use App\Enums\InvestmentStatus;
 use App\Enums\TradingObjective;
 use App\Models\AccountTypePhase;
@@ -16,7 +18,6 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\InvestmentPhaseApprovalService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
-use App\Models\FundedBalance;
 
 class AccountTypeInvestmentService
 {
@@ -81,10 +82,19 @@ class AccountTypeInvestmentService
    */
   public function createInvestment($data, $copy_snapshot_id = 0) {
 
+    
+
     // it means that creating the new investment for Phase 1
     if($copy_snapshot_id == 0){
       $currency = setting('site_currency', 'global');
       $rule = AccountTypePhaseRule::findOrFail($data->rule_id);
+
+      // Discount (Coupon Code) Management
+      $total_amount = $rule->amount;
+      if($data['discount_id']){
+        // if coupon code is applied by the buyer
+        $total_amount = $this->processCouponDiscount($data['discount_id'], $rule->amount);
+      }
 
       // data
       $data = [
@@ -95,7 +105,7 @@ class AccountTypeInvestmentService
           'account_type_phase_rule_id' => $rule->id,
           'trader_type' => $rule->accountTypePhase->accountType->trader_type,
           'platform_group' => $rule->accountTypePhase->accountType->platform_group,
-          'total' => $rule->amount - $rule->discount,
+          'total' => $total_amount - $rule->discount,
           'status' => InvestmentStatus::PENDING
       ];
     }
@@ -119,6 +129,38 @@ class AccountTypeInvestmentService
 
     return $new_investment;
   }
+
+  /**
+   * Process Coupon Code Discount
+   */
+  public function processCouponDiscount($discount_id, $amount) {
+    
+    // Find the discount using the discount ID
+    $discount = Discount::find(get_hash($discount_id));
+
+    // If the discount exists and is valid
+    if ($discount) {
+        // Check if the discount type is percentage
+        if ($discount->type == 'percentage') {
+            // Apply percentage discount
+            $discountAmount = ($amount * $discount->percentage) / 100;
+        } // Check if the discount type is fixed
+        else if ($discount->type == 'fixed') {
+            // Apply fixed discount
+            $discountAmount = $discount->fixed_amount;
+        }
+        $finalAmount = $amount - $discountAmount;
+        // Ensure the final amount doesn't go below zero
+        if ($finalAmount < 0) {
+            notify()->error('The selected amount is below then minimum amount! kindly contact to support', 'Error');
+            return redirect()->back();
+        }
+
+        return $finalAmount;
+    }
+  
+  }
+
 
   /**
    * Trading Objectives Evaluation

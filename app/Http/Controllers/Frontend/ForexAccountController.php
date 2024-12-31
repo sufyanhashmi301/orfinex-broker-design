@@ -27,7 +27,7 @@ class ForexAccountController extends GatewayController
 
     public function forexAccountCreateNow(Request $request)
     {
-        //        dd($request->all());
+            //    dd($request->all());
         $currency = setting('site_currency', 'global');
 
         $input = $request->validate(

@@ -389,4 +389,69 @@
             </div>
         </div>
     </div>
+    @if(auth()->user()->hasRole('Super-Admin'))
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">{{ __('Attached Users') }}</h4>
+        </div>
+        <div class="card-body p-6">
+{{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
+                <div class="input-area">
+                    <label class="form-label">{{ __('Attach Users:') }}</label>
+                    <select name="user_ids[]" class="select2 form-control w-full" multiple>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" @if($attachedUsers->contains($user->id)) selected @endif>
+                                {{ $user->full_name }}({{ $user->email }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+{{--            </div>--}}
+            <div class="action-btns text-right mt-10">
+                <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                    {{ __('Save Changes') }}
+                </button>
+            </div>
+        </div>
+    </div>
+        @endif
 </form>
+
+@if(auth()->user()->hasRole('Super-Admin'))
+
+<div class="card">
+    <div class="card-body px-6 pt-3">
+        <div class="overflow-x-auto -mx-6">
+            <div class="inline-block min-w-full align-middle">
+                <div class="overflow-hidden basicTable_wrapper">
+                    <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                        <thead>
+{{--                        <tr>--}}
+{{--                            <th scope="col" class="table-th">{{ __('Name') }}</th>--}}
+{{--                            <th scope="col" class="table-th">{{ __('Email') }}</th>--}}
+{{--                        </tr>--}}
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                        @forelse($attachedUsers as $user)
+                            <tr>
+                                <td class="table-td">
+                                    <strong>{{$user->full_name }}</strong>
+                                </td>
+                                <td class="table-td">
+                                    <strong>{{$user->email }}</strong>
+                                </td>
+                            </tr>
+                        @empty
+                        <tr>{{__('No User Attached!')}}</tr>
+                        @endforelse
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+@endif
+

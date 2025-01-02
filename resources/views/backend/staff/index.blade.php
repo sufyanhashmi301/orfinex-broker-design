@@ -110,6 +110,7 @@
             $.get('staff/' + id + '/edit', function (data) {
                 $('#edit-staff-body').append(data);
                 $('#loader_placeholder').addClass('hidden');
+                $('.select2').select2();
             });
         })
 

@@ -425,7 +425,7 @@
     <div class="card-body px-6 pt-3">
         <div class="overflow-x-auto -mx-6">
             <div class="inline-block min-w-full align-middle">
-                <div class="overflow-hidden basicTable_wrapper">
+                <div class="overflow-hidden">
                     <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                         <thead>
 {{--                        <tr>--}}
@@ -444,7 +444,11 @@
                                 </td>
                             </tr>
                         @empty
-                        <tr>{{__('No User Attached!')}}</tr>
+                        <tr>
+                            <td class="table-td text-center" colspan="2">
+                                {{__('No User Attached!')}}
+                            </td>
+                        </tr>
                         @endforelse
                 </tbody>
                 </table>

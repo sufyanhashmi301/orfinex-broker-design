@@ -383,14 +383,17 @@
             </div>
         </div>
     </div>
-    @if(auth()->user()->hasRole('Super-Admin'))
 
-    <div class="card">
+        <div class="card">
+
         <div class="card-header">
-            <h4 class="card-title">{{ __('Attached Users') }}</h4>
+            @if(auth()->user()->hasRole('Super-Admin'))
+                <h4 class="card-title">{{ __('Attached Users') }}</h4>
+            @endif
         </div>
         <div class="card-body p-6">
 {{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
+            @if(auth()->user()->hasRole('Super-Admin'))
                 <div class="input-area">
                     <label class="form-label">{{ __('Attach Users:') }}</label>
                     <select name="user_ids[]" class="select2 form-control w-full" multiple>
@@ -401,16 +404,19 @@
                         @endforeach
                     </select>
                 </div>
+            @endif
 {{--            </div>--}}
+
             <div class="action-btns text-right mt-10">
                 <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                     {{ __('Save Changes') }}
                 </button>
             </div>
+
         </div>
     </div>
-        @endif
+    
 </form>
 
 @if(auth()->user()->hasRole('Super-Admin'))

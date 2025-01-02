@@ -68,25 +68,27 @@
         </div>
         <ul class="space-y-5 mb-4">
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('Customer Group: ') }}</span>
-                @if($user->customerGroups->isNotEmpty())
-                    @foreach($user->customerGroups as $group)
-                        <span>{{ $group->name }}</span>
-                    @endforeach
-                @else
-                    <span>{{ 'N/A' }}</span>
-                @endif
-            </li>
-            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
+                <span>{{ __('KYC:') }}</span> <!-- Added colon here -->
                 <span class="flex items-center gap-2">
-                    @if($user->riskProfileTags->isEmpty())
-                        {{ __('N/A') }}
+                    @if($user->kyc >= kyc_required_completed_level())
+                        <span class="badge badge-success bg-opacity-30 text-success">{{ __('Verified') }}</span>
+
                     @else
-                        {{ $user->riskProfileTags->pluck('name')->implode(', ') }}
+                        <span class="badge badge-danger bg-opacity-30 text-danger">{{ __('Unverified') }}</span>
                     @endif
                 </span>
             </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('IB Member:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @if($user->ib_status == 'Unprocessed')
+                        {{ __('N/A') }}
+                    @else
+                        {{ ucfirst($user->ib_status)  }}
+                    @endif
+                </span>
+            </li>
+
 
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC Level:') }}</span>
@@ -130,12 +132,22 @@
                 </span>
             </li>
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('IB Member:') }}</span> <!-- Added colon here -->
+                <span>{{ __('Customer Group: ') }}</span>
+                @if($user->customerGroups->isNotEmpty())
+                    @foreach($user->customerGroups as $group)
+                        <span>{{ $group->name }}</span>
+                    @endforeach
+                @else
+                    <span>{{ 'N/A' }}</span>
+                @endif
+            </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
                 <span class="flex items-center gap-2">
-                    @if($user->ib_status == 'Unprocessed')
+                    @if($user->riskProfileTags->isEmpty())
                         {{ __('N/A') }}
                     @else
-                        {{ ucfirst($user->ib_status)  }}
+                        {{ $user->riskProfileTags->pluck('name')->implode(', ') }}
                     @endif
                 </span>
             </li>

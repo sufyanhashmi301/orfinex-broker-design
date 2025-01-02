@@ -381,12 +381,6 @@
                     </div>
                 </div>
             </div>
-            <div class="action-btns text-right mt-10">
-                <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                    {{ __('Save Changes') }}
-                </button>
-            </div>
         </div>
     </div>
     @if(auth()->user()->hasRole('Super-Admin'))

@@ -99,6 +99,12 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'two_fa' => 'boolean',
     ];
+
+    public function staff()
+    {
+        return $this->belongsToMany(Admin::class, 'staff_user', 'user_id', 'staff_id');
+    }
+
     public function riskProfileTags()
     {
         return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tag_user');

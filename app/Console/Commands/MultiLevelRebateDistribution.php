@@ -35,7 +35,7 @@ class MultiLevelRebateDistribution extends Command
         try {
 //            $ReferralRelationships = ReferralRelationship::whereNotNull('multi_level_id')->with('referralLink')->get();
             $ReferralRelationships = ReferralRelationship::with('referralLink')
-                ->where('user_id', 7222)
+//                ->where('user_id', 7222)
                 ->get();
 //            dd($ReferralRelationships);
             foreach ($ReferralRelationships as $ReferralRelationship) {

@@ -29,12 +29,36 @@ class TicketController extends Controller
 
     public function index(Request $request, $id = null)
     {
-        if ($request->ajax()) {
+        $loggedInUser = auth()->user();
 
-            if ($id) {
-                $data = Ticket::where('user_id', $id)->latest();
+        if ($request->ajax()) {
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                if ($id) {
+                    // Fetch tickets for a specific user (if ID is provided)
+                    $data = Ticket::where('user_id', $id)->latest();
+                } else {
+                    // Fetch all tickets
+                    $data = Ticket::query()->latest();
+                }
             } else {
-                $data = Ticket::query()->latest();
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    if ($id) {
+                        // Fetch tickets for the specified user and ensure they are attached
+                        $data = Ticket::where('user_id', $id)
+                            ->whereIn('user_id', $attachedUserIds)
+                            ->latest();
+                    } else {
+                        // Fetch tickets for attached users only
+                        $data = Ticket::whereIn('user_id', $attachedUserIds)->latest();
+                    }
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
             }
 
             return Datatables::of($data)
@@ -49,6 +73,7 @@ class TicketController extends Controller
 
         return view('backend.ticket.all');
     }
+
 
     public function show($uuid)
     {

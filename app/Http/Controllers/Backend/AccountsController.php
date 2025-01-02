@@ -52,15 +52,43 @@ class   AccountsController extends Controller
      */
     public function forexAccounts(Request $request, $type = 'real', $id = null)
     {
-//        dd($request->all(),$type,$id);
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
-            if ($id) {
-                $data = ForexAccount::with('schema')->where('user_id', $id)->where('account_type', $type)->latest();
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                if ($id) {
+                    $data = ForexAccount::with('schema')->where('user_id', $id)->where('account_type', $type)->latest();
+                } else {
+                    $data = ForexAccount::query()->with('schema')->where('account_type', $type)->latest();
+                }
             } else {
-                $data = ForexAccount::query()->with('schema')->where('account_type', $type)->latest();
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    if ($id) {
+                        $data = ForexAccount::with('schema')
+                            ->where('user_id', $id)
+                            ->whereIn('user_id', $attachedUserIds)
+                            ->where('account_type', $type)
+                            ->latest();
+                    } else {
+                        $data = ForexAccount::query()
+                            ->with('schema')
+                            ->whereIn('user_id', $attachedUserIds)
+                            ->where('account_type', $type)
+                            ->latest();
+                    }
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
             }
-//            dd($filters);
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
 
             return Datatables::of($data)
@@ -76,13 +104,14 @@ class   AccountsController extends Controller
                 ->rawColumns(['ib_number', 'schema', 'username', 'balance', 'equity', 'credit', 'status', 'action'])
                 ->make(true);
         }
+
         $realForexAccounts = ForexAccount::where('account_type', $type)
             ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
-//dd($realForexAccounts);
+
         $withBalance = 0.0;
         $withoutBalance = 0.0;
         try {
-            if($realForexAccounts) {
+            if ($realForexAccounts) {
                 $withBalance = DB::connection('mt5_db2')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
@@ -90,11 +119,10 @@ class   AccountsController extends Controller
             }
         } catch (\Exception $e) {
             \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-
         }
 
         try {
-            if($realForexAccounts) {
+            if ($realForexAccounts) {
                 $withoutBalance = DB::connection('mt5_db2')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
@@ -102,8 +130,8 @@ class   AccountsController extends Controller
             }
         } catch (\Exception $e) {
             \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
-
         }
+
         $unActiveAccounts = ForexAccount::where('account_type', $type)->where('status', '!=', ForexAccountStatus::Ongoing)->count();
 
         $data = [
@@ -112,8 +140,10 @@ class   AccountsController extends Controller
             'withoutBalance' => $withoutBalance,
             'unActiveAccounts' => $unActiveAccounts,
         ];
+
         return view('backend.investment.index', compact('data', 'type'));
     }
+
 
 
     public function export(Request $request, $type)
@@ -318,12 +348,32 @@ class   AccountsController extends Controller
 
     public function pendingLeverage(Request $request)
     {
-        $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
-            ->where('status', 0)
-            ->get();
+        $loggedInUser = auth()->user();
+
+        if ($loggedInUser->hasRole('Super-Admin')) {
+            // Super-Admin can view all leverage updates
+            $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+                ->where('status', 0)
+                ->get();
+        } else {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+
+            if ($attachedUserIds->isNotEmpty()) {
+                // Show leverage updates for attached users only
+                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+                    ->where('status', 0)
+                    ->whereIn('user_id', $attachedUserIds)
+                    ->get();
+            } else {
+                // If no users are attached, return an empty collection
+                $leverageUpdates = collect(); // Empty collection
+            }
+        }
 
         return view('backend.investment.leverage.pending', compact('leverageUpdates'));
     }
+
 
     public function handlePendingLeverage(Request $request)
     {
@@ -390,6 +440,24 @@ class   AccountsController extends Controller
     {
         // Fetch all leverage updates with their associated user and forexAccount relationships
         $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')->get();
+        $loggedInUser = auth()->user();
+        if ($loggedInUser->hasRole('Super-Admin')) {
+            // Super-Admin can view all leverage updates
+            $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+                ->get();
+        } else {
+            // Get attached user IDs for non-Super-Admin users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+            if ($attachedUserIds->isNotEmpty()) {
+                // Show leverage updates for attached users only
+                $leverageUpdates = LeverageUpdate::with('user', 'forexAccount')
+                    ->whereIn('user_id', $attachedUserIds)
+                    ->get();
+            } else {
+                // If no users are attached, return an empty collection
+                $leverageUpdates = collect(); // Empty collection
+            }
+        }
 
         return view('backend.investment.leverage.all', compact('leverageUpdates'));
     }
@@ -591,7 +659,7 @@ class   AccountsController extends Controller
 
     public function leverageMailNotify($request, $mailType)
     {
-        dd($request->user_id);
+//        dd($request->user_id);
         $user = \App\Models\User::find($request->user_id);
 
         if (!$user) {

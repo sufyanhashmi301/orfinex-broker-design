@@ -218,14 +218,35 @@ class DepositController extends Controller
 
     public function pending(Request $request)
     {
+        $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
-            $filters = $request->only(['email', 'status',  'created_at']);
+            $filters = $request->only(['email', 'status', 'created_at']);
 
-            $data = Transaction::where('status', 'pending')->where(function ($query) {
-                return $query->where('type', TxnType::ManualDeposit)
-                    ->orWhere('type', TxnType::Investment);
-            })->latest()->applyFilters($filters);
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = Transaction::where('status', 'pending')
+                    ->where(function ($query) {
+                        return $query->where('type', TxnType::ManualDeposit)
+                            ->orWhere('type', TxnType::Investment);
+                    })->latest()->applyFilters($filters);
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Show transactions for attached users only
+                    $data = Transaction::where('status', 'pending')
+                        ->whereIn('user_id', $attachedUserIds)
+                        ->where(function ($query) {
+                            return $query->where('type', TxnType::ManualDeposit)
+                                ->orWhere('type', TxnType::Investment);
+                        })->latest()->applyFilters($filters);
+                } else {
+                    // If no users are attached, show no transactions
+                    $data = collect(); // Empty collection
+                }
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -244,17 +265,39 @@ class DepositController extends Controller
         return view('backend.deposit.manual');
     }
 
+
     public function history(Request $request)
     {
-
-        $filters = $request->only(['email', 'status',  'created_at']);
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['email', 'status', 'created_at']);
 
         if ($request->ajax()) {
-            $data = Transaction::where(function ($query) {
-                $query->where('type', TxnType::ManualDeposit)
-                    ->orWhere('type', TxnType::Deposit);
-            })->latest();
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = Transaction::where(function ($query) {
+                    $query->where('type', TxnType::ManualDeposit)
+                        ->orWhere('type', TxnType::Deposit);
+                })->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Show transactions for attached users only
+                    $data = Transaction::whereIn('user_id', $attachedUserIds)
+                        ->where(function ($query) {
+                            $query->where('type', TxnType::ManualDeposit)
+                                ->orWhere('type', TxnType::Deposit);
+                        })->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
@@ -268,12 +311,13 @@ class DepositController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username','action'])
+                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username', 'action'])
                 ->make(true);
         }
 
         return view('backend.deposit.history');
     }
+
 
     public function depositAction($id)
     {

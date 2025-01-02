@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\User;
 use Arr;
 use DB;
 use Hash;
@@ -42,7 +43,7 @@ class StaffController extends Controller
      */
     public function index(Request $request)
     {
-        $loggedInUser = Auth::user();
+        $staff = Auth::user();
         $staffs = Admin::all();
         $superAdmin = Admin::find(1);
         $roles = Role::whereNot('name', 'Super-Admin')->get();
@@ -52,7 +53,8 @@ class StaffController extends Controller
         // Count active and inactive staff
         $activeStaffCount = Admin::where('status', true)->count();
         $inactiveStaffCount = Admin::where('status', false)->count();
-
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
         if ($request->ajax()) {
             $status = $request->status; // active or inactive
             if ($status == 'active') {
@@ -66,7 +68,7 @@ class StaffController extends Controller
             ]);
         }
 
-        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations'));
+        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers'));
 
     }
 
@@ -140,12 +142,16 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
+
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'attachedUsers'))->render();
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -194,6 +200,7 @@ class StaffController extends Controller
 
     // Get all request inputs
     $input = $request->all();
+//    dd($input);
 
     // Map 'department' to 'department_id' and handle nullable values
     $input['employee_id'] = $request->input('employee_id') ?: null;
@@ -219,7 +226,12 @@ class StaffController extends Controller
     // Update role and relationships
     DB::table('model_has_roles')->where('model_id', $id)->delete();
     $staff->assignRole($request->input('role'));
-
+        if(auth()->user()->hasRole('Super-Admin')) {
+            // Attach users to staff
+            if (isset($request->user_ids)) {
+                $staff->users()->sync($request->user_ids);
+            }
+        }
     notify()->success('Staff updated successfully');
     return redirect()->route('admin.staff.index');
 }

@@ -51,15 +51,18 @@
                                 <h4 class="card-title flex items-center">
                                     {{ $ticket->title.' - '.$ticket->uuid }}
                                     <span class="badge badge-primary capitalize rounded-3xl ml-2">
-                                        {{ __('Opened') }}
+                                        {{ $ticket->status}}
                                     </span>
                                 </h4>
                             </div>
-                            <div class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse">
-                                <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}" class="btn btn-dark btn-sm loaderBtn inline-flex items-center">
-                                    {{ __('Mark it close') }}
-                                </a>
-                            </div>
+                            @if( $ticket->status != 'closed')
+                                <div class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse">
+                                    <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}"
+                                       class="btn btn-dark btn-sm loaderBtn inline-flex items-center">
+                                        {{ __('Mark it close') }}
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </header>
                     <!-- header -->
@@ -70,7 +73,9 @@
                                     <div class="flex items-center">
                                         <div class="flex-none">
                                             <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                <img src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                <img
+                                                    src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}"
+                                                    alt="" class="w-full h-full rounded-[100%] object-cover">
                                             </div>
                                         </div>
                                         <div class="flex-1 text-start">
@@ -101,30 +106,35 @@
                                 </div>
                             </div>
                             @foreach($ticket->messages as $message )
-                                <div class="card ring-1 ring-slate-700 overflow-hidden w-11/12 md:w-2/3 mb-3 support-ticket-single-message @if($message->model == 'admin') admin @else float-right @endif ">
+                                <div
+                                    class="card ring-1 ring-slate-700 overflow-hidden w-11/12 md:w-2/3 mb-3 support-ticket-single-message @if($message->model == 'admin') admin @else float-right @endif ">
                                     <div class="bg-slate-100 dark:bg-slate-700 p-3">
                                         <div class="flex items-center">
                                             <div class="flex-none">
                                                 <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
                                                     @if( $message->model != 'admin')
-                                                    <img class="w-full h-full rounded-[100%] object-cover" src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}" alt="">
+                                                        <img class="w-full h-full rounded-[100%] object-cover"
+                                                             src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}"
+                                                             alt="">
                                                     @else
-                                                    <img class="w-full h-full rounded-[100%] object-cover" src="{{ asset($message->user->avatar ?? 'global/materials/user.png' )}}" alt="">
+                                                        <img class="w-full h-full rounded-[100%] object-cover"
+                                                             src="{{ asset($message->user->avatar ?? 'global/materials/user.png' )}}"
+                                                             alt="">
                                                     @endif
                                                 </div>
                                             </div>
                                             <div class="flex-1 text-start">
                                                 @if($message->model != 'admin')
-                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                    {{ $user->full_name }}
-                                                </h4>
-                                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                                    {{ $user->email }}
-                                                </div>
+                                                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                        {{ $user->full_name }}
+                                                    </h4>
+                                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                        {{ $user->email }}
+                                                    </div>
                                                 @else
-                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                    {{ $message->user->name }}
-                                                </h4>
+                                                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                        {{ $message->user->name }}
+                                                    </h4>
                                                 @endif
                                             </div>
                                         </div>
@@ -134,17 +144,18 @@
                                             {!! $message->message !!}
                                         </div>
                                         @if($message->attach)
-                                        <div class="message-attachments mt-4">
-                                            <h5 class="card-subtitle">{{ __('Attachments') }}</h5>
-                                            <div class="single-attachment">
-                                                <div class="attach">
-                                                    <a href="{{ asset($message->attach) }}" class="btn-link" target="_blank">
-                                                        <i class="anticon anticon-picture"></i>
-                                                        {{ substr($message->attach,14) }}
-                                                    </a>
+                                            <div class="message-attachments mt-4">
+                                                <h5 class="card-subtitle">{{ __('Attachments') }}</h5>
+                                                <div class="single-attachment">
+                                                    <div class="attach">
+                                                        <a href="{{ asset($message->attach) }}" class="btn-link"
+                                                           target="_blank">
+                                                            <i class="anticon anticon-picture"></i>
+                                                            {{ substr($message->attach,14) }}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         @endif
                                     </div>
                                 </div>
@@ -153,22 +164,29 @@
                     </div>
                     <!-- message -->
                     <footer class="md:px-6 px-4 border-t md:pt-6 pt-4 border-slate-100 dark:border-slate-700">
-                        <form action="{{ route('user.ticket.reply') }}" method="post" enctype="multipart/form-data" class="sm:flex md:space-x-4 sm:space-x-2 rtl:space-x-reverse">
+                        <form action="{{ route('user.ticket.reply') }}" method="post" enctype="multipart/form-data"
+                              class="sm:flex md:space-x-4 sm:space-x-2 rtl:space-x-reverse">
                             @csrf
                             <input type="hidden" name="uuid" value="{{ $ticket->uuid }}">
-                            <input type="file" name="attach" id="attach" class="hidden" accept=".gif, .jpg, .png" />
+                            <input type="file" name="attach" id="attach" class="hidden" accept=".gif, .jpg, .png"/>
                             <div class="flex-none sm:flex hidden md:space-x-3 space-x-1 rtl:space-x-reverse">
-                                <label class="h-8 w-8 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full" for="attach">
-                                    <iconify-icon icon="heroicons-outline:link"> </iconify-icon>
+                                <label
+                                    class="h-8 w-8 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full"
+                                    for="attach">
+                                    <iconify-icon icon="heroicons-outline:link"></iconify-icon>
                                 </label>
                             </div>
                             <div class="flex-1 relative flex space-x-3 rtl:space-x-reverse">
                                 <div class="flex-1">
-                                    <textarea placeholder="{{ __('Type your message...') }}" class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none" name="message"></textarea>
+                                    <textarea placeholder="{{ __('Type your message...') }}"
+                                              class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none"
+                                              name="message"></textarea>
                                 </div>
                                 <div class="flex-none md:pr-0 pr-3">
-                                    <button type="submit" class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full">
-                                        <iconify-icon icon="heroicons-outline:paper-airplane" class="transform rotate-[60deg]"></iconify-icon>
+                                    <button type="submit"
+                                            class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full">
+                                        <iconify-icon icon="heroicons-outline:paper-airplane"
+                                                      class="transform rotate-[60deg]"></iconify-icon>
                                     </button>
                                 </div>
                             </div>

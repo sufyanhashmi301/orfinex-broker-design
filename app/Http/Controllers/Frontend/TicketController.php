@@ -83,9 +83,9 @@ class TicketController extends Controller
 
         $ticket = Ticket::uuid($uuid)->close();
 
-        if ($ticket->isClosed()) {
-            $ticket->reopen();
-        }
+//        if ($ticket->isClosed()) {
+//            $ticket->reopen();
+//        }
 
         return view('frontend::ticket.show', compact('ticket'));
     }

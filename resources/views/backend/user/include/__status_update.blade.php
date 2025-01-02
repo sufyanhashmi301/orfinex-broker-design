@@ -68,6 +68,17 @@
         </div>
         <ul class="space-y-5 mb-4">
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('Status:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @if($user->status == 1)
+                        <span class="badge badge-success bg-opacity-30 text-success">{{ __('Active') }}</span>
+
+                    @else
+                        <span class="badge badge-danger bg-opacity-30 text-danger">{{ __('Inactive') }}</span>
+                    @endif
+                </span>
+            </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC:') }}</span> <!-- Added colon here -->
                 <span class="flex items-center gap-2">
                     @if($user->kyc >= kyc_required_completed_level())
@@ -78,18 +89,6 @@
                     @endif
                 </span>
             </li>
-            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('IB Member:') }}</span> <!-- Added colon here -->
-                <span class="flex items-center gap-2">
-                    @if($user->ib_status == 'Unprocessed')
-                        {{ __('N/A') }}
-                    @else
-                        {{ ucfirst($user->ib_status)  }}
-                    @endif
-                </span>
-            </li>
-
-
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC Level:') }}</span>
                 <span>
@@ -131,6 +130,17 @@
                     {{ $displayName }}
                 </span>
             </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('IB Member:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @if($user->ib_status == 'Unprocessed')
+                        {{ __('N/A') }}
+                    @else
+                        {{ ucfirst($user->ib_status)  }}
+                    @endif
+                </span>
+            </li>
+
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('Customer Group: ') }}</span>
                 @if($user->customerGroups->isNotEmpty())

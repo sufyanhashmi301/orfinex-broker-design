@@ -228,9 +228,12 @@ class StaffController extends Controller
     $staff->assignRole($request->input('role'));
         if(auth()->user()->hasRole('Super-Admin')) {
             // Attach users to staff
-            if (isset($request->user_ids)) {
-                $staff->users()->sync($request->user_ids);
+            $ids = $request->user_ids;
+//            dd($ids);
+            if (!isset($request->user_ids)) {
+                $ids = [];
             }
+            $staff->users()->sync($ids);
         }
     notify()->success('Staff updated successfully');
     return redirect()->route('admin.staff.index');

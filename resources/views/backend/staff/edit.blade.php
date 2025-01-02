@@ -388,7 +388,7 @@
 
         <div class="card-header">
             @if(auth()->user()->hasRole('Super-Admin'))
-                <h4 class="card-title">{{ __('Attached Users') }}</h4>
+                <h4 class="card-title">{{ __('Attach Users') }}</h4>
             @endif
         </div>
         <div class="card-body p-6">
@@ -416,7 +416,7 @@
 
         </div>
     </div>
-    
+
 </form>
 
 @if(auth()->user()->hasRole('Super-Admin'))

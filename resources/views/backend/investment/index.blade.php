@@ -91,7 +91,7 @@
             <div class="flex justify-between flex-wrap items-center">
                 <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                     <div class="flex-1 input-area relative">
-                        <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
+                        <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Email">
                     </div>
                     <div class="flex-1 input-area relative">
                         <input type="text" name="login" id="login" class="form-control h-full" placeholder="Account Number">
@@ -99,7 +99,7 @@
                     <div class="flex-1 input-area relative">
                         <select name="status" class="form-control h-full" id="status">
                             <option value="">Status</option>
-                            <option value="active">active</option>
+                            <option value="ongoing">active</option>
                             <option value="archive">archive</option>
                         </select>
                     </div>

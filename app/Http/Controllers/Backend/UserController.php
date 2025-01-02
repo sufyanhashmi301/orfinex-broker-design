@@ -78,15 +78,28 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
+        $loggedInUser = auth()->user();
         $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
 
         if ($request->ajax()) {
-            $data = User::applyFilters($filters);
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::applyFilters($filters);
+            } else {
+                // Get the attached users if the user is not a Super-Admin
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Show only attached users
+                    $data = User::whereIn('id', $attachedUserIds)->applyFilters($filters);
+                } else {
+                    // If no users are attached, show all users
+                    $data = User::applyFilters($filters);
+                }
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
-
                 ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
@@ -102,6 +115,7 @@ class UserController extends Controller
 
         return view('backend.user.all');
     }
+
 
     public function export(Request $request, $type)
     {
@@ -122,11 +136,33 @@ class UserController extends Controller
      */
     public function activeUser(Request $request)
     {
+        $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('status', 1)->latest();
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all active users
+                $data = User::where('status', 1)->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch active users for attached user IDs
+                    $data = User::where('status', 1)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -145,6 +181,7 @@ class UserController extends Controller
         return view('backend.user.active_user');
     }
 
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -152,10 +189,27 @@ class UserController extends Controller
      */
     public function disabled(Request $request)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('status', 0)->latest();
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::where('status', 0)->latest();
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::where('status', 0)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    $data = collect();
+                }
+            }
+
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -173,8 +227,11 @@ class UserController extends Controller
 
         return view('backend.user.disabled_user');
     }
+
     public function withBalance(Request $request)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
@@ -183,7 +240,21 @@ class UserController extends Controller
                 ->where('Balance', '>', 0)
                 ->pluck('Login');
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-            $data = User::whereIn('id', $userIds)->latest();
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::whereIn('id', $userIds)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    $data = collect();
+                }
+            }
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -201,8 +272,11 @@ class UserController extends Controller
 
         return view('backend.user.with_balance');
     }
+
     public function withOutBalance(Request $request)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
             $forexAccountIds = DB::connection('mt5_db')
@@ -210,9 +284,22 @@ class UserController extends Controller
                 ->whereIn('Login', $realForexAccounts)
                 ->where('Balance', '<=', 0)
                 ->pluck('Login');
-
             $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-            $data = User::whereIn('id', $userIds)->latest();
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = User::whereIn('id', $userIds)->latest();
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $data = User::whereIn('id', $userIds)
+                        ->whereIn('id', $attachedUserIds)
+                        ->latest();
+                } else {
+                    $data = collect();
+                }
+            }
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('avatar', 'backend.user.include.__avatar')
@@ -230,6 +317,7 @@ class UserController extends Controller
 
         return view('backend.user.without_balance');
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -238,27 +326,43 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $loggedInUser = auth()->user();
+
+        // Check if the logged-in user is a Super-Admin
+        if (!$loggedInUser->hasRole('Super-Admin')) {
+            // Validate if the `id` exists in attached users
+            $attachedUserIds = $loggedInUser->users->pluck('id');
+            if (!$attachedUserIds->contains($id)) {
+                // Redirect back with an error message if the user is not attached
+                return redirect()->back()->with('error', 'Unauthorized access to user details.');
+            }
+        }
 
         $user = User::find($id);
+
+        // If user not found, redirect back with an error message
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
         $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
         $realForexAccounts = ForexAccount::realActiveAccount($id)
             ->orderBy('balance', 'desc')
             ->get();
-        $tags = RiskProfileTag::where('status', true)
-            ->get();
+        $tags = RiskProfileTag::where('status', true)->get();
         $countries = getCountries();
         $customerGroups = CustomerGroup::where('status', 1)->get();
         $riskProfileTags = RiskProfileTag::all();
         $kycLevels = KycLevel::where('status', 1)->get();
         $ibGroups = IbGroup::where('status', 1)->get();
         $kycStatus = KYCStatus::cases();
-        //        $users = User::where('id', '<>', $id)
-        //            ->where(function ($query) use ($id, $user) {
-        //                $query->whereNull('ref_id')
-        //                    ->orWhere('ref_id', '<>', $id);
-        //            })
-        //            ->where('id', '<>', $user->ref_id)
-        //            ->get();
+        $users = User::where('id', '<>', $id)
+            ->where(function ($query) use ($id, $user) {
+                $query->whereNull('ref_id')
+                    ->orWhere('ref_id', '<>', $id);
+            })
+            ->where('id', '<>', $user->ref_id)
+            ->get();
 
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
         $schemas = ForexSchema::where('status', true)
@@ -275,24 +379,39 @@ class UserController extends Controller
             ->get();
         $bonuses = Bonus::where('status', '1')->where('last_date', '>=', today())->get();
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'riskProfileTags', 'countries', 'kycLevels', 'kycStatus', 'bonuses', 'ibGroups'));
+        return view('backend.user.edit', compact(
+            'users',
+            'user',
+            'level',
+            'realForexAccounts',
+            'tags',
+            'customerGroups',
+            'schemas',
+            'riskProfileTags',
+            'countries',
+            'kycLevels',
+            'kycStatus',
+            'bonuses',
+            'ibGroups'
+        ));
     }
+
 
     public function destroy(Request $request, $id)
     {
         // Fetch the Super-Admin's key from the database (assuming only one Super-Admin exists)
         $superAdmin = Admin::where('name', 'Super Admin')->first();
-        
+
         // Check if the Super-Admin key exists in the database and the input matches
         if (!$superAdmin || $request->input('admin_key') !== $superAdmin->key) {
             // If the key doesn't match, notify error
             notify()->error('Invalid Super-Admin key. Deletion denied.');
             return redirect()->back();  // Redirect back to the previous page
         }
-        
+
         // Proceed with deleting the user if the key matches
         $user = User::find($id);
-        
+
         // Ensure the user exists before attempting to delete
         if ($user) {
             $user->delete();
@@ -300,11 +419,11 @@ class UserController extends Controller
         } else {
             notify()->error('User not found.');
         }
-        
+
         // Redirect to the user listing page after the operation
         return redirect()->route('admin.user.index');
     }
-    
+
 
     /**
      * @return RedirectResponse
@@ -482,6 +601,31 @@ class UserController extends Controller
     /**
      * @return RedirectResponse
      */
+    public function resetPassword(Request $request)
+    {
+//        dd($request->all());
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Send an email notification
+        $shortcodes = [
+            '[[full_name]]' => $user->full_name,
+            '[[email]]' => $user->email,
+            '[[password]]' => $request->password,
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+        $this->mailNotify($user->email, 'reset_user_password_by_admin', $shortcodes);
+
+        notify()->success('Password has been successfully reset and emailed to the user', 'success');
+        return redirect()->back();
+    }
     public function passwordUpdate($id, Request $request)
     {
         $input = $request->all();
@@ -497,10 +641,13 @@ class UserController extends Controller
         }
 
         $password = $validator->validated();
-
-        User::find($id)->update([
+        $user = User::find($id);
+        $user->update([
             'password' => Hash::make($password['new_password']),
         ]);
+//        dd($user);
+
+
         notify()->success('User Password Updated Successfully', 'success');
 
         return redirect()->back();

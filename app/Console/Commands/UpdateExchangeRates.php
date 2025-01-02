@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Rate;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -44,7 +46,7 @@ class UpdateExchangeRates extends Command
 
                 // Loop through the countries and update exchange rates
                 foreach ($rates as $countryCode => $rate) {
-                    DB::table('rates')->where('currency_code', $countryCode)->update(['rate' => $rate]);
+                    Rate::where('currency_code', $countryCode)->update(['rate' => $rate]);
                 }
 
                 $this->info('Exchange rates updated successfully.');

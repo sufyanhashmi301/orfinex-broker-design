@@ -41,6 +41,10 @@ class Admin extends Authenticatable
         'session_expiry',
         'key',
     ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'staff_user', 'staff_id', 'user_id');
+    }
 
 
     public function getCreatedAtAttribute(): string

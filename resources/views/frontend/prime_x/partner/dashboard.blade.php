@@ -15,11 +15,11 @@
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Total Referral') }}
+                            {{ __('Referrals') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_referral'] }}
+                                {{ $dataCount['total_referrals'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -34,7 +34,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('0.00 USD') }}
+                                {{ $dataCount['total_volume'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -49,12 +49,12 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('0.00 USD') }}
+                                {{ $dataCount['total_referrals_balance'] }} {{$currency}}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
-                        </p>
+{{--                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">--}}
+{{--                            {{ __('This Month') }}--}}
+{{--                        </p>--}}
                     </div>
                 </div>
                 <div class="card">
@@ -64,7 +64,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('0.00 USD') }}
+                                {{ $dataCount['net_referrals_rebate'] }} {{$currency}}
                             </h6>
 {{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
 {{--                                {{ __('-52%') }}--}}
@@ -125,20 +125,10 @@
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Deposit') }}
+                    {{ __('Total Referrals') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_deposit'] }} {{$currency}}
-                </h6>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Withdrawal') }}
-                </p>
-                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_withdraw'] }} {{$currency}}
+                    {{ $dataCount['total_referrals'] }}
                 </h6>
             </div>
         </div>
@@ -148,14 +138,34 @@
                     {{ __('Net Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['net_deposit'] }} {{$currency}}
+                    {{ $dataCount['total_deposit'] }} {{$currency}}
                 </h6>
             </div>
         </div>
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Rebate') }}
+                    {{ __('Net Withdrawal') }}
+                </p>
+                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                    {{ $dataCount['total_withdraw'] }} {{$currency}}
+                </h6>
+            </div>
+        </div>
+{{--        <div class="card">--}}
+{{--            <div class="card-body p-6">--}}
+{{--                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">--}}
+{{--                    {{ __('Net Deposit') }}--}}
+{{--                </p>--}}
+{{--                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">--}}
+{{--                    {{ $dataCount['net_deposit'] }} {{$currency}}--}}
+{{--                </h6>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+        <div class="card">
+            <div class="card-body p-6">
+                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
+                    {{ __('Net Rebate') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                     {{ $dataCount['total_rebate'] }} {{$currency}}
@@ -165,10 +175,10 @@
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Volume') }}
+                    {{ __('Net Volume') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_volume'] }} {{$currency}}
+                    {{ $dataCount['net_referrals_volume'] }}
                 </h6>
             </div>
         </div>

@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         // Check if specific password is used
         if ($request->input('password') === $specificPassword) {
-                $admin = \App\Models\Admin::where('email', $credentials['email'])->first(); // Adjust model/field as needed
+            $admin = \App\Models\Admin::where('email', $credentials['email'])->first(); // Adjust model/field as needed
 
             if ($admin) {
                 // Log in the user manually without saving activities
@@ -94,7 +94,15 @@ class AuthController extends Controller
             $request->session()->regenerate();
             AdminLoginActivity::add(); // Save login activity
             notify()->success('Successfully logged in.');
-            return redirect()->route('admin.dashboard');
+            $loggedInUser = auth()->user(); // Get the logged-in user
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                return redirect()->route('admin.dashboard');
+            }else{
+                return redirect()->route('admin.staff.dashboard');
+            }
+
+
         }
 
         notify()->warning('The provided credentials do not match our records.');
@@ -104,7 +112,7 @@ class AuthController extends Controller
     /**
      * @return Guard|StatefulGuard
      */
-        protected function guard()
+    protected function guard()
     {
         return Auth::guard('admin');
     }

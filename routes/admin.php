@@ -83,6 +83,7 @@ use App\Http\Controllers\Backend\SocialLinkController;
 Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
     //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])->name('staff.dashboard');
 
 
     // Customer Management
@@ -210,6 +211,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-accounts/export/{type?}', [AccountsController::class, 'export'])->name('forex-accounts.export');
+    Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
+
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');

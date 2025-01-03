@@ -62,7 +62,7 @@
                                     {{ __('Account Size') }}
                                 </span>
                                 <span class="text-right text-slate-900">
-                                    {{ $investment->getRuleSnapshotData()['allotted_funds'] ?? 0.0 }} {{ base_currency() }}
+                                    {{ number_format($investment->getRuleSnapshotData()['allotted_funds'], 2) ?? 0.00 }} {{ base_currency() }}
                                 </span>
                             </div>
                         </li>
@@ -72,8 +72,8 @@
                                     {{ __('Plan Type') }}
                                 </span>
                                 <span class="text-right text-slate-900">
-                                    {{ isset($investment_snapshot->account_types_data['title']) ? ucfirst($investment_snapshot->account_types_data['title']) : '0.00' }}
-                                    | {{ $investment->getRuleSnapshotData()['amount'] ?? 0.0 }} {{ base_currency() }}
+                                    {{ isset($investment->getAccountTypeSnapshotData()['title']) ? ucfirst($investment->getAccountTypeSnapshotData()['title']) : 'N/A' }}
+                                    | {{ number_format($investment->getRuleSnapshotData()['amount'], 2) ?? 0.0 }} {{ base_currency() }}
                                 </span>
                             </div>
                         </li>
@@ -107,22 +107,7 @@
             <div class="card h-full">
                 <div class="card-body p-6">
                     <div class="grid md:grid-cols-2 col-span-1 gap-5">
-                        <div class="flex items-center mb-5">
-                            <div class="flex-none">
-                                <div
-                                    class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
-                                    <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
-                                </div>
-                            </div>
-                            <div class="flex-1 text-start">
-                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                    {{ __('N/A') }}
-                                </h4>
-                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                    {{ __('Account Growth') }}
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="flex items-center mb-5">
                             <div class="flex-none">
                                 <div
@@ -137,6 +122,24 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="flex items-center mb-5">
+                            <div class="flex-none">
+                                {{-- <div
+                                    class="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-900 rounded-md p-2 ltr:mr-3 rtl:ml-3">
+                                    <iconify-icon class="text-2xl" icon="solar:chart-linear"></iconify-icon>
+                                </div> --}}
+                            </div>
+                            <div class="flex-1 text-start">
+                                {{-- <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                    {{ __('N/A') }}
+                                </h4>
+                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                    {{ __('Account Growth') }}
+                                </div> --}}
+                            </div>
+                        </div>
+
                         <div class="input-area relative">
                             <input class="form-control !pr-9"
                                 value="{{ isset($investment->login) ? $investment->login : '0.00' }}" id="copyLogin"
@@ -215,7 +218,7 @@
                         {{ __('Equity') }}
                     </div>
                     <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">
-                        {{ number_format($investment->accountTypeInvestmentStat->current_equity) ?? '0.00' }}
+                        {{ number_format($investment->accountTypeInvestmentStat->current_equity, 2) ?? '0.00' }}
                         {{ base_currency() }}
                     </h4>
                 </div>
@@ -231,20 +234,20 @@
                 </div>
                 <div class="flex-1 text-start">
                     <div class="text-xs font-normal text-slate-600 dark:text-slate-400 mb-1">
-                        {{ __('Profit/Loss') }}
+                        {{ __('Total PnL') }}
                     </div>
                     @php
                         $profit =
                             $investment->accountTypeInvestmentStat->current_equity -
                             $investment->getRuleSnapshotData()['allotted_funds'];
-                        $profit = number_format($profit, 2);
+                        $profit = $profit;
 
                     @endphp
                     @if ($profit < 0)
-                        <h4 class="text-base font-medium text-danger-500 whitespace-nowrap">{{ $profit }}
+                        <h4 class="text-base font-medium badge badge-danger whitespace-nowrap" style="font-size: 16px">{{ number_format(abs($profit), 2) }}
                             {{ base_currency() }}</h4>
                     @else
-                        <h4 class="text-base font-medium text-slate-600 whitespace-nowrap">{{ $profit }}
+                        <h4 class="text-base font-medium badge badge-success whitespace-nowrap" style="font-size: 16px">{{ number_format(abs($profit), 2) }}
                             {{ base_currency() }}</h4>
                     @endif
                 </div>
@@ -315,23 +318,24 @@
                     </h5>
                 </div>
                 <ul class="space-y-3">
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    {{-- <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Max Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
                             {{ number_format($investment->getRuleSnapshotData()['daily_drawdown_limit'], 2) }}
                             {{ base_currency() }}
                         </span>
-                    </li>
+                    </li> --}}
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Today’s Loss') }}</span>
-                        <span class="text-slate-900 font-medium">
-                            {{ number_format($trading_objectives['daily_drawdown_loss'], 2) }} {{ base_currency() }}
+                        <span>{{ __('Today’s PnL') }}</span>
+                        <span class="text-slate-900 font-medium badge {{ $trading_objectives['daily_drawdown_pnl'] < 0 ? 'badge-danger' : 'badge-success' }}">
+                            {{ number_format( abs($trading_objectives['daily_drawdown_pnl']) , 2) }} {{ base_currency() }}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $trading_objectives['daily_drawdown_remaining_loss_limit'] }}
+                            {{ number_format($trading_objectives['daily_drawdown_remaining_loss_limit'], 2) }} {{ base_currency() }}
+                            
                         </span>
                     </li>
                 </ul>
@@ -352,24 +356,36 @@
                     </h5>
                 </div>
                 <ul class="space-y-3">
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    {{-- <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Total Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
                             {{ number_format($investment->getRuleSnapshotData()['max_drawdown_limit'], 2) ?? '0.00' }}
                             {{ base_currency() }}
                         </span>
-                    </li>
+                    </li> --}}
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Overall Loss') }}</span>
-                        <span class="text-slate-900 font-medium">
+                        
+                        {{-- @php
+                            $max_dd = $trading_objectives['max_drawdown_loss'];
+                            $max_dd_badge = 'badge-danger';
+                            if ($trading_objectives['current_profit_target'] >= 0){
+                                $max_dd = $trading_objectives['max_drawdown_loss'] + $trading_objectives['current_profit_target'];
+                                $max_dd_badge = 'badge-success';
+                            }
+                        @endphp --}}
+                        <span>{{ __('Overall PnL') }}</span>
+                        <span class="text-slate-900 font-medium badge {{ $trading_objectives['max_drawdown_pnl'] < 0 ? 'badge-danger' : 'badge-success' }}">
 
-                            {{ number_format($trading_objectives['max_drawdown_loss'], 2) }} {{ base_currency() }}
+                            {{ number_format( abs($trading_objectives['max_drawdown_pnl']) , 2) }} {{ base_currency() }}
                         </span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ $trading_objectives['max_drawdown_remaining_loss_limit'] }}
+                            {{-- {{ $trading_objectives['max_drawdown_remaining_loss_limit'] }} --}}
+
+                            {{ number_format($trading_objectives['max_drawdown_remaining_loss_limit'], 2) }} {{ base_currency() }}
+
                         </span>
                     </li>
                 </ul>
@@ -390,20 +406,17 @@
                     </h5>
                 </div>
                 <ul class="space-y-3">
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    {{-- <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Max Profit Target') }}</span>
                         <span class="text-slate-900 font-medium">
 
                             {{ number_format($trading_objectives['profit_target'], 2) ?? 0.0 }} {{ base_currency() }}
                         </span>
-                    </li>
+                    </li> --}}
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Achieved Profit') }}</span>
-                        <span class="text-slate-900 font-medium">
-                            @php
-
-                            @endphp
-                            {{ number_format($trading_objectives['current_profit_target'], 2) ?? '0.00' }}
+                        <span>{{ __('Achieved PnL') }}</span>
+                        <span class="text-slate-900 font-medium badge {{ $trading_objectives['current_profit_target'] < 0 ? 'badge-danger' : 'badge-success' }}">
+                            {{ number_format(abs($trading_objectives['current_profit_target']), 2) ?? '0.00' }}
                             {{ base_currency() }}
                         </span>
                     </li>
@@ -427,21 +440,21 @@
                             style="text-transform: capitalize">{{ $trading_objectives['minimum_trading_days_status'] }}</span>
                     </span>
                     <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                        {{ __('Minimum Trades') }}
+                        {{ __('Minimum Trading Days') }}
                     </h5>
                 </div>
                 <ul class="space-y-3">
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
-                        <span>{{ __('Current Trading Days:') }}</span>
+                        <span>{{ __('Current Trading Days') }}</span>
                         <span
                             class="text-slate-900 font-medium">{{ $investment->accountTypeInvestmentStat->trading_days }}
                         </span>
                     </li>
-                    <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
+                    {{-- <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Minimum Trading Days') }}</span>
 
                         <span class="text-slate-900 font-medium">{{ $trading_objectives['minimum_trading_days'] }}</span>
-                    </li>
+                    </li> --}}
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Trading Days') }}</span>
                         <span

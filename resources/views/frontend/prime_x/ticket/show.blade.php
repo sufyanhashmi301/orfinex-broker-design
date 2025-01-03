@@ -55,7 +55,7 @@
                             </div>
                             <div class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse">
                                 <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}" class="btn btn-dark btn-sm inline-flex items-center">
-                                    {{ __('Mark it close') }}
+                                    {{ __('Mark As Closed') }}
                                 </a>
                             </div>
                         </div>

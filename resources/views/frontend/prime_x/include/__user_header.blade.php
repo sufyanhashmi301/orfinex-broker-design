@@ -116,11 +116,11 @@
                 </div>
                 <!-- Profile DropDown Area -->
 
-                <div class="md:block hidden">
+                {{-- <div class="md:block hidden">
                     <a href="javascript:;" class="lg:h-[32px] lg:w-[32px] lg:bg-slate-100 lg:dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">
                         <iconify-icon class="text-slate-800 dark:text-white text-2xl" icon="mdi:dots-grid"></iconify-icon>
                     </a>
-                </div>
+                </div> --}}
 
                 <!-- END: Header -->
                 <button class="smallDeviceMenuController md:hidden block leading-0">

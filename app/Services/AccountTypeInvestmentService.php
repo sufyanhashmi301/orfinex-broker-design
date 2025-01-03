@@ -173,33 +173,27 @@ class AccountTypeInvestmentService
 
     // ---- Daily Drawdown Stats ----
     $trading_objectives['daily_drawdown_status'] = TradingObjective::PASSING;
-                
-    $trading_objectives['daily_drawdown_loss'] = ($investment->accountTypeInvestmentStat->current_equity - $first_record_after_midnight->current_equity) * -1;
-    if($trading_objectives['daily_drawdown_loss'] <= 0){
-        $trading_objectives['daily_drawdown_loss'] = 0;
-    }
+            
+    $trading_objectives['daily_drawdown_pnl'] = $investment->accountTypeInvestmentStat->current_equity - $first_record_after_midnight->current_equity;
+    
 
-    $trading_objectives['daily_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['daily_drawdown_limit'] - $trading_objectives['daily_drawdown_loss']);
+    $trading_objectives['daily_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['daily_drawdown_limit'] + $trading_objectives['daily_drawdown_pnl']);
     if($trading_objectives['daily_drawdown_remaining_loss_limit'] < 0){
-        $trading_objectives['daily_drawdown_remaining_loss_limit'] = 'Limit Over';
-        $trading_objectives['daily_drawdown_status'] = TradingObjective::VIOLATED;
-    }else{
-        $trading_objectives['daily_drawdown_remaining_loss_limit'] = number_format($trading_objectives['daily_drawdown_remaining_loss_limit'], 2) . ' ' . base_currency();
+      $trading_objectives['daily_drawdown_remaining_loss_limit'] = 'Limit Over';
+      $trading_objectives['daily_drawdown_status'] = TradingObjective::VIOLATED;
     }
 
     
     // ---- Max Drawdown stats ----
     $trading_objectives['max_drawdown_status'] = TradingObjective::PASSING;
-    $trading_objectives['max_drawdown_loss'] =  ($investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds']) * -1;
-    if($trading_objectives['max_drawdown_loss'] <= 0){
-        $trading_objectives['max_drawdown_loss'] = 0;
-    }
-    $trading_objectives['max_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['max_drawdown_limit'] - $trading_objectives['max_drawdown_loss']);
+    $trading_objectives['max_drawdown_pnl'] =  $investment->accountTypeInvestmentStat->current_equity - $investment->getRuleSnapshotData()['allotted_funds'];
+
+    $trading_objectives['max_drawdown_remaining_loss_limit'] = ($investment->getRuleSnapshotData()['max_drawdown_limit'] + $trading_objectives['max_drawdown_pnl']);
     if($trading_objectives['max_drawdown_remaining_loss_limit'] <= 0){
         $trading_objectives['max_drawdown_remaining_loss_limit'] = 'Limit Over';
         $trading_objectives['max_drawdown_status'] = TradingObjective::VIOLATED;
     }else{
-        $trading_objectives['max_drawdown_remaining_loss_limit'] = number_format($trading_objectives['max_drawdown_remaining_loss_limit'], 2) . ' ' . base_currency();
+        $trading_objectives['max_drawdown_remaining_loss_limit'] = $trading_objectives['max_drawdown_remaining_loss_limit'];
     }
 
     // ---- Profit target ----
@@ -208,9 +202,9 @@ class AccountTypeInvestmentService
 
     // Achievied Profit
     $trading_objectives['current_profit_target'] = $investment->accountTypeInvestmentStat->current_equity - ($investment->getRuleSnapshotData()['allotted_funds']);
-    if($trading_objectives['current_profit_target'] < 0) {
-        $trading_objectives['current_profit_target'] = 0;
-    }
+    // if($trading_objectives['current_profit_target'] < 0) {
+    //     $trading_objectives['current_profit_target'] = 0;
+    // }
 
     if($trading_objectives['current_profit_target'] >= $trading_objectives['profit_target']){
         $trading_objectives['profit_target_status'] = TradingObjective::PASSED;

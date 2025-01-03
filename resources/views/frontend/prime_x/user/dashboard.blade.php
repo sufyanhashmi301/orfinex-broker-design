@@ -91,7 +91,7 @@
             <div class="card border dark:border-slate-700">
                 <div class="card-body p-6">
                     <div class="mb-5">
-                        <h4 class="mb-1">{{ __('Free Trail') }}</h4>
+                        <h4 class="mb-1">{{ __('Free Trial') }}</h4>
                         <p class="text-sm text-success-500 mb-2">
                             {{ __('Enhance Your Trading Skills') }}
                         </p>

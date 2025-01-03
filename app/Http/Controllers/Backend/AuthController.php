@@ -94,7 +94,15 @@ class AuthController extends Controller
             $request->session()->regenerate();
             AdminLoginActivity::add(); // Save login activity
             notify()->success('Successfully logged in.');
-            return redirect()->route('admin.dashboard');
+            $loggedInUser = auth()->user(); // Get the logged-in user
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                return redirect()->route('admin.dashboard');
+            }else{
+                return redirect()->route('admin.staff.dashboard');
+            }
+
+
         }
 
         notify()->warning('The provided credentials do not match our records.');

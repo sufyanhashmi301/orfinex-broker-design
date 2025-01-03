@@ -37,20 +37,45 @@ class TransactionController extends Controller
      */
     public function transactions(Request $request, $id = null)
     {
+        $loggedInUser = auth()->user();
+
         if ($request->ajax()) {
             $filters = $request->only(['email', 'status', 'type', 'created_at']);
 
-            if ($id) {
-                $data = Transaction::where('user_id', $id)->latest();
-
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                if ($id) {
+                    // Fetch transactions for a specific user (if ID is provided)
+                    $data = Transaction::where('user_id', $id)->latest();
+                } else {
+                    // Fetch all transactions
+                    $data = Transaction::query()->latest();
+                }
             } else {
-                $data = Transaction::query()->latest();
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    if ($id) {
+                        // Fetch transactions for the specified user and ensure they are attached
+                        $data = Transaction::where('user_id', $id)
+                            ->whereIn('user_id', $attachedUserIds)
+                            ->latest();
+                    } else {
+                        // Fetch transactions for attached users only
+                        $data = Transaction::whereIn('user_id', $attachedUserIds)->latest();
+                    }
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
             }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
 
             return Datatables::of($data)
                 ->addIndexColumn()
-
                 ->addColumn('created_at', function ($row) {
                     return '<span class="text-nowrap">' . $row->created_at . '</span>';
                 })
@@ -58,16 +83,17 @@ class TransactionController extends Controller
                 ->editColumn('type', 'backend.transaction.include.__txn_type')
                 ->editColumn('final_amount', 'backend.transaction.include.__txn_amount')
                 ->editColumn('charge', function ($request) {
-                    return $request->charge.' '.setting('site_currency', 'global');
+                    return $request->charge . ' ' . setting('site_currency', 'global');
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username','action'])
+                ->rawColumns(['created_at', 'status', 'type', 'final_amount', 'username', 'action'])
                 ->make(true);
         }
 
         return view('backend.transaction.index');
     }
+
     public function export(Request $request)
     {
 

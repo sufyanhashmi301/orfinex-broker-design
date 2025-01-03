@@ -83,6 +83,7 @@ use App\Http\Controllers\Backend\SocialLinkController;
 Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
     //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])->name('staff.dashboard');
 
 
     // Customer Management
@@ -94,6 +95,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
         Route::get('login/{id}', 'userLogin')->name('login');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
+        Route::post('password-reset', 'resetPassword')->name('reset-password');
         Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
         Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
         Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
@@ -102,7 +104,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
-        // Route::post('note/create/{id}', 'createNote')->name('note.ssadd');
+        // Route::post('note/create/{id}', 'createNote')->name('note.ssadd');password-update
         // Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
         Route::post('kyc/{id}', 'kyc')->name('kyc');

@@ -81,7 +81,7 @@
                 $('#loader_placeholder').addClass('hidden');
             });
 
-        })
+        });
 
         $('#staffStatusFilter').change(function() {
             var status = $(this).val();
@@ -112,7 +112,38 @@
                 $('#loader_placeholder').addClass('hidden');
                 $('.select2').select2();
             });
-        })
+        });
+
+        $(document).on('submit', '#update-staff__form', function(event) {
+            event.preventDefault();
+
+            var form = $('#update-staff__form')[0];
+            var data = new FormData(form);
+
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var staffId = $('#staff-id').val();
+
+            var url = "{{ route('admin.staff.update', ':id') }}";
+            url = url.replace(':id', staffId);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-HTTP-METHOD-OVERRIDE': 'PUT'
+                },
+                success: function(response) {
+                    tNotify('success', response.message);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching staff:', error);
+                }
+            });
+        });
 
         $(document).ready(function () {
             let deleteSchemaId = null;

@@ -159,7 +159,7 @@
 
 @endsection
 @section('script')
-    @include('backend.include.__chartjs')
+{{--    @include('backend.include.__chartjs')--}}
     <script>
         (function ($) {
             'use strict'

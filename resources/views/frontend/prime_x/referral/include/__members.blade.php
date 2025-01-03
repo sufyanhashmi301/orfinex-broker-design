@@ -41,15 +41,11 @@
                                 <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-<<<<<<< HEAD
-{{--                                    <th scope="col" class="table-th">{{ __('Level') }}</th>--}}
-{{--                                    <th scope="col" class="table-th">{{ __('Type') }}</th>--}}
-=======
+
                                     <th scope="col" class="table-th">{{ __('Phone') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('Equity') }}</th>
                                     <th scope="col" class="table-th">{{ __('Credit') }}</th>
->>>>>>> naeem_new_design
 {{--                                    <th scope="col" class="table-th">{{ __('Schema') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('Join') }}</th>
                                     {{--                                        <th scope="col" class="table-th">{{ __('Fee') }}</th>--}}
@@ -71,17 +67,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-<<<<<<< HEAD
-{{--                                            <td class="table-td">--}}
-{{--                                                {{ $referral->multiLevel ? $referral->multiLevel->level_order : 'N/A' }}--}}
-{{--                                            </td>--}}
-{{--                                            <td class="table-td">--}}
-{{--                                                {{ $referral->multiLevel ? $referral->multiLevel->type : 'N/A' }}--}}
-{{--                                            </td>--}}
-{{--                                            <td class="table-td">--}}
-{{--                                                {{ $referral->multiLevel ? $referral->multiLevel->forexSchema->title : 'N/A' }}--}}
-{{--                                            </td>--}}
-=======
+
                                             <td class="table-td">
                                                 {{ $referral->phone ? $referral->phone : 'N/A' }}
                                             </td>
@@ -94,7 +80,6 @@
                                             <td class="table-td">
                                                 {{ mt5_total_credit($referral->id) }}
                                             </td>
->>>>>>> naeem_new_design
                                             <td class="table-td">
                                                 {{ $referral->created_at }}
                                             </td>

@@ -94,13 +94,14 @@ class AuthController extends Controller
             $request->session()->regenerate();
             AdminLoginActivity::add(); // Save login activity
             notify()->success('Successfully logged in.');
-            $loggedInUser = auth()->user(); // Get the logged-in user
+//            $loggedInUser = auth()->user(); // Get the logged-in user
+//            dd($loggedInUser);
 
-            if ($loggedInUser->hasRole('Super-Admin')) {
+//            if ($loggedInUser->hasRole('Super-Admin')) {
                 return redirect()->route('admin.dashboard');
-            }else{
-                return redirect()->route('admin.staff.dashboard');
-            }
+//            }else{
+//                return redirect()->route('admin.staff.dashboard');
+//            }
 
 
         }

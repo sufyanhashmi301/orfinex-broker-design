@@ -71,6 +71,11 @@ class PermissionSeeder extends Seeder
             ['category' => 'Accounts Management', 'name' => 'leverage-action'],
             ['category' => 'Accounts Management', 'name' => 'accounts-export'],
 
+            ['category' => 'Risk Hub Management', 'name' => 'active-positions'],
+            ['category' => 'Risk Hub Management', 'name' => 'net-positions-accounts'],
+            ['category' => 'Risk Hub Management', 'name' => 'net-positions-groups'],
+            ['category' => 'Risk Hub Management', 'name' => 'older-positions-days'],
+
             ['category' => 'Referral Management', 'name' => 'target-manage'],
             ['category' => 'Referral Management', 'name' => 'referral-create'],
             ['category' => 'Referral Management', 'name' => 'referral-list'],
@@ -89,7 +94,7 @@ class PermissionSeeder extends Seeder
 
             ['category' => 'Subscriber Management', 'name' => 'subscriber-list'],
             ['category' => 'Subscriber Management', 'name' => 'subscriber-mail-send'],
-        
+
             ['category' => 'Support Ticket Management', 'name' => 'support-ticket-list'],
             ['category' => 'Support Ticket Management', 'name' => 'support-ticket-action'],
 
@@ -138,7 +143,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Country Setting', 'name' => 'blacklist-countries-list'],
             ['category' => 'Country Setting', 'name' => 'add-blacklist-countries'],
             ['category' => 'Country Setting', 'name' => 'blacklist-countries-action'],
-            
+
             ['category' => 'Document Links Setting', 'name' => 'document-link-list'],
             ['category' => 'Document Links Setting', 'name' => 'document-link-create'],
             ['category' => 'Document Links Setting', 'name' => 'document-link-edit'],
@@ -162,7 +167,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'IB Groups Setting', 'name' => 'ib-group-create'],
             ['category' => 'IB Groups Setting', 'name' => 'ib-group-list'],
             ['category' => 'IB Groups Setting', 'name' => 'ib-group-edit'],
-            ['category' => 'IB Groups Setting', 'name' => 'ib-group-delete'], 
+            ['category' => 'IB Groups Setting', 'name' => 'ib-group-delete'],
 
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-create'],
             ['category' => 'Customer Groups Setting', 'name' => 'customer-group-list'],
@@ -197,7 +202,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Transfers Setting', 'name' => 'internal-transfer-display'],
             ['category' => 'Transfers Setting', 'name' => 'external-transfer-display'],
             ['category' => 'Transfers Setting', 'name' => 'transfers-action'],
-    
+
             ['category' => 'Website Setting', 'name' => 'theme-settings'],
             ['category' => 'Website Setting', 'name' => 'branding-settings'],
             ['category' => 'Website Setting', 'name' => 'site-settings'],
@@ -277,7 +282,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Security Setting', 'name' => 'single-session-settings'],
             ['category' => 'Security Setting', 'name' => 'blocklist-email-settings'],
             ['category' => 'Security Setting', 'name' => 'login-expiry-settings'],
-            
+
             ['category' => 'Language Setting', 'name' => 'language-list'],
             ['category' => 'Language Setting', 'name' => 'language-create'],
             ['category' => 'Language Setting', 'name' => 'language-action'],
@@ -287,10 +292,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-edit'],
             ['category' => 'Support Center Ticket Status Setting', 'name' => 'ticket-status-delete'],
 
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-list'],
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-create'],
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-edit'],
-            ['category' => 'Support Center Ticket Priority Setting', 'name' => 'ticket-priority-delete'],
+
 
         ];
 

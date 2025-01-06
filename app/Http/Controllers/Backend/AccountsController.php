@@ -112,7 +112,7 @@ class   AccountsController extends Controller
         $withoutBalance = 0.0;
         try {
             if ($realForexAccounts) {
-                $withBalance = DB::connection('mt5_db2')
+                $withBalance = DB::connection('mt5_db')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
                     ->where('Balance', '>', 0)->count();
@@ -123,7 +123,7 @@ class   AccountsController extends Controller
 
         try {
             if ($realForexAccounts) {
-                $withoutBalance = DB::connection('mt5_db2')
+                $withoutBalance = DB::connection('mt5_db')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
                     ->where('Balance', 0)->count();
@@ -214,7 +214,10 @@ class   AccountsController extends Controller
 //            return redirect()->back();
 //        }
         $login = 0;
-        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();zzzzzzzzz
+        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)
+            ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
+            ->first();
+
         if ($forexAccount) {
             if ($forexAccount->login >= $schema->end_range) {
                 $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);

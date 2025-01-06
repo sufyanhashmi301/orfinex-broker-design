@@ -214,7 +214,7 @@ class   AccountsController extends Controller
 //            return redirect()->back();
 //        }
         $login = 0;
-        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
+        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();zzzzzzzzz
         if ($forexAccount) {
             if ($forexAccount->login >= $schema->end_range) {
                 $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);

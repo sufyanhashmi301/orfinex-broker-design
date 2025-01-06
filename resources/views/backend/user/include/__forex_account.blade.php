@@ -25,7 +25,7 @@
                     <input type="hidden" name="account_type" id="account-type" value="real">
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Select Account Type:') }}</label>
-                        <select class="form-control py-2 h-[48px]" aria-label="Default select example" id="select-schema" name="schema_id" required>
+                        <select class="form-control py-2 h-[48px] select2" aria-label="Default select example" id="select-schema" name="schema_id" required>
                             <option value="">
                                 {{__('Select')}}
                             </option>

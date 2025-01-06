@@ -23,9 +23,9 @@
                     @csrf
                     <div class="row">
                         <div class="col-span-12">
-                            <div class="site-input-groups">
+                            <div class="site-input-groups relative">
                                 <label class="form-label" for="">{{ __('IB Group:') }}</label>
-                                <select name="ib_group_id" class="form-control">
+                                <select name="ib_group_id" id="ibGroupIDSelect" class="form-control h-full w-full">
                                     <option value="">{{__('Select IB Group')}}</option>
                                     @foreach($ibGroups as $ibGroup)
                                         <option value="{{$ibGroup->id}}"

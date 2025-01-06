@@ -96,5 +96,11 @@
                 ]
             });
         })(jQuery);
+
+
+        $('#ibGroupIDSelect').select2({
+            dropdownParent: $('#addIBModal')
+        });
+
     </script>
 @endpush

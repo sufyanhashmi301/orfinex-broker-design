@@ -82,8 +82,9 @@
             });
         })(jQuery);
 
-        $('.select2').select2({
+        $('#countrySelect').select2({
             dropdownParent: $('#addReferralModal')
         });
+
     </script>
 @endpush

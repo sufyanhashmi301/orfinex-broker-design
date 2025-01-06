@@ -29,6 +29,7 @@ use Auth;
 use Carbon\Carbon;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -128,8 +129,10 @@ class ForexAccountController extends GatewayController
         }
         //Start/End Range of create forex account on MT5
         if (setting('is_forex_group_range', 'global')) {
-            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBy('login', 'desc')->first();
-
+//            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBy('login', 'desc')->first();
+            $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)
+                ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
+                ->first();
             // Check if an account exists
             if ($forexAccount) {
                 // Validate if the login is within the range

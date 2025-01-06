@@ -1158,6 +1158,7 @@ if (!function_exists('update_total_balance')) {
                 $data = [
                     'login' => $forexAccount->login,
                     'agent' => 0,
+                    ];
 
                 $forexApiService->updateAgentAccount($data);
             }

@@ -148,11 +148,33 @@
                 <!-- END: TOggle Theme -->
                 <div class="relative md:block hidden admin-notifications">
                     @php
-                        $notifications = App\Models\Notification::where('for','admin')->latest()->take(4)->get();
-                        $totalUnread = App\Models\Notification::where('for','admin')->where('read', 0)->count();
-                        $totalCount = App\Models\Notification::where('for','admin')->get()->count();
+                        $loggedInAdmin = auth()->user(); // Get the logged-in admin
+
+                        if ($loggedInAdmin->hasRole('Super-Admin')) {
+                            // Super-Admin: No user filter
+                            $notifications = App\Models\Notification::where('for', 'admin')->latest()->take(4)->get();
+                            $totalUnread = App\Models\Notification::where('for', 'admin')->where('read', 0)->count();
+                            $totalCount = App\Models\Notification::where('for', 'admin')->count();
+                        } else {
+                            // Non Super-Admin: Apply attached user filter
+                            $attachedUserIds = $loggedInAdmin->users->pluck('id');
+                            $notifications = App\Models\Notification::where('for', 'admin')
+                                ->whereIn('user_id', $attachedUserIds) // Filter by attached users
+                                ->latest()
+                                ->take(4)
+                                ->get();
+                            $totalUnread = App\Models\Notification::where('for', 'admin')
+                                ->whereIn('user_id', $attachedUserIds)
+                                ->where('read', 0)
+                                ->count();
+                            $totalCount = App\Models\Notification::where('for', 'admin')
+                                ->whereIn('user_id', $attachedUserIds)
+                                ->count();
+                        }
                     @endphp
-                    @include('global.__notification_data',['notifications'=>$notifications,'totalUnread'=>$totalUnread,'totalCount'=>$totalCount])
+
+                    @include('global.__notification_data', ['notifications' => $notifications, 'totalUnread' => $totalUnread, 'totalCount' => $totalCount])
+
                 </div>
                 <div>
                     <a href="{{ route('admin.settings.index') }}" class="h-[28px] w-[28px] lg:h-[32px] lg:w-[32px] hover:bg-slate-50 hover:bg-opacity-10 text-white cursor-pointer rounded-lg text-[20px] flex flex-col items-center justify-center">

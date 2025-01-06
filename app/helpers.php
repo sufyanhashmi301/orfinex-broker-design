@@ -1153,13 +1153,14 @@ if (!function_exists('update_total_balance')) {
             ->where('account_type', 'real')
             ->get();
 //        dd($forexAccounts,$this->user);
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = new ForexApiService();
         foreach ($forexAccounts as $forexAccount) {
-            $forexApiTrait->updateAgent($forexAccount->login, 0);
-        }
+                $data = [
+                    'login' => $forexAccount->login,
+                    'agent' => 0,
 
+                $forexApiService->updateAgentAccount($data);
+            }
     }
 }
 if (!function_exists('get_mt5_account')) {

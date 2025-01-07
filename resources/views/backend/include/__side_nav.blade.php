@@ -326,6 +326,17 @@
             @endcan
         @endcanany
 
+        {{-- *************************************************************  Certificates *********************************************************--}}
+        <li class="">
+            <a href="{{route('admin.manage_certificates.index')}}" class="navItem {{ isActive('admin.manage_certificates.index') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:award"></iconify-icon>
+                    <span>{{ __('Manage Certificates') }}</span>
+                </span>
+            </a>
+        </li>
+
+
         {{-- *************************************************************  Essentials *********************************************************--}}
         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
         'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',

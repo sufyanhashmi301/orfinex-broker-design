@@ -247,7 +247,8 @@ class AccountTypeInvestmentPaymentService
     $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
 
     // Fetch and store latest stats and hourly stats 
-    TradingStatsRunCommandsJob::dispatch()->delay(now()->addMinute());
+    Artisan::call('update:investment-stats --both');
+    // Artisan::call('update:investment-stats --save-record');
 
     return $investment;
 

@@ -66,7 +66,9 @@ use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\Backend\SocialLinkController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\RiskRuleController;
+use App\Models\Certificate;
 use App\Models\LeaderboardBadge;
 
 /*
@@ -201,6 +203,9 @@ Route::middleware(['2fa_admin'])->group(function () {
 
         Route::post('/update-risk-criteria', 'updateRiskCriteria')->name('update.risk_criteria');
     });
+
+    // Certificates
+    Route::get('/manage-certificates', [CertificateController::class, 'index'])->name('manage_certificates.index');
 
 // =============================== Optimization ===============================
 

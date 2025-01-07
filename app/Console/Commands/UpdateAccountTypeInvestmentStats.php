@@ -16,7 +16,7 @@ class UpdateAccountTypeInvestmentStats extends Command
      *
      * @var string
      */
-    protected $signature = 'update:investment-stats {--save-record}';
+    protected $signature = 'update:investment-stats {--save-record} {--both}';
 
     /**
      * The console command description.
@@ -34,6 +34,9 @@ class UpdateAccountTypeInvestmentStats extends Command
     {
         // Use to store record in hourly records
         $hourly_shceduled = $this->option('save-record');
+
+        // update the stats and also store
+        $both = $this->option('both');
 
         // Step 1: Get unique platform groups
         $platformGroups = AccountType::pluck('platform_group')->unique();
@@ -82,13 +85,24 @@ class UpdateAccountTypeInvestmentStats extends Command
                     'trading_days' => $matchingResult['tradingDays'],
                     'max_balance' => $matchingResult['max_Balance'],
                 ];
-                if($hourly_shceduled) {
-                    $stat = $investment->accountTypeInvestmentHourlyStatsRecord()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
-                }else{
+
+                if($both) {
+                    $investment->accountTypeInvestmentHourlyStatsRecord()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
+
                     $stat = $investment->accountTypeInvestmentStat()->firstOrNew();
                     $stat->fill($data + ['updated_at' => CarbonImmutable::now()]);
                     $stat->save();
+                } else{
+                    if($hourly_shceduled) {
+                        $stat = $investment->accountTypeInvestmentHourlyStatsRecord()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
+                    }else{
+                        $stat = $investment->accountTypeInvestmentStat()->firstOrNew();
+                        $stat->fill($data + ['updated_at' => CarbonImmutable::now()]);
+                        $stat->save();
+                    }
                 }
+
+                
             }
         }
 

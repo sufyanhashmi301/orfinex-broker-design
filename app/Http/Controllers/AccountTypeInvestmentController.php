@@ -119,7 +119,7 @@ class AccountTypeInvestmentController extends Controller
         $account_open_positions = AccountOpenPosition::orderBy('id', 'DESC')->first();
 
         // All open positions 
-        $investment_array["account_open_positions"] = $account_open_positions['data'];
+        $investment_array["account_open_positions"] = $account_open_positions['data'] ?? [];
 
         // All Accounts
         // $investment_array['accounts'] = AccountTypeInvestment::all();

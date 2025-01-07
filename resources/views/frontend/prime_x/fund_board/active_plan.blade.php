@@ -503,15 +503,15 @@
                                 @endphp
                                 @foreach ($account_open_positions as $item)
                                     
-                                    @php
+                                    {{-- @php
                                         if($investment->login != $item['login']) {
                                             continue;
                                         } else {
                                             $i++;
                                         }
-                                    @endphp
+                                    @endphp --}}
 
-                                    <tr class="item-row open-trades-tbody" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
+                                    <tr class="item-row open-trades-row" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
                                         <td class="table-td">{{ $i }}</td>
                                         {{-- @php
                                             $account = $accounts->where('login', $item['login'])->first();
@@ -520,7 +520,7 @@
                                         {{-- <td class="table-td">
                                             {{ $user ? ($user->first_name . ' ' . $user->last_name) : 'N/A' }}
                                         </td> --}}
-                                        {{-- <td class="table-td">{{ $item['login'] }}</td> --}}
+                                        <td class="table-td">{{ $item['login'] }}</td>
                                         <td class="table-td">{{ $item['symbol'] }}</td>
                                         {{-- <td class="table-td">{{ $item['position'] }}</td> --}}
                                         <td class="table-td">{{ $item['priceOpen'] }}</td>

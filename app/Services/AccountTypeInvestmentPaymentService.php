@@ -57,7 +57,7 @@ class AccountTypeInvestmentPaymentService
       "state" => "",
       "zipCode" => $investment->user->zip_code ?? '',
       "address" => $investment->user->address ?? '',
-      "phone" => $investment->user->phone,
+      "phone" => '563463452', //$investment->user->phone,
       "email" => $investment->user->email,
       "agent" => 0,
       "company" => setting('site_title', 'global'),
@@ -75,31 +75,37 @@ class AccountTypeInvestmentPaymentService
     $maxRetries = 3;
     
     // Start a loop that will execute up to 3 times
-    do {
-        // Make the API call
-        $response = $this->createUserApiCall($user_data);
+    try {
 
-        // Check if the API response was not successful
-        if ($response['success'] == false && isset($response['messages'][0]) && $response['messages'][0] == 'Account already exists') {
-            // If "Account already exists", increment the retry counter
-            $retryCount++;
+      do {
+          // Make the API call
+          $response = $this->createUserApiCall($user_data);
 
-            // Sleep for 1 second before retrying
-            sleep(1);
-        } else {
-            // If the response is successful or the error is not "Account already exists", break the loop
-            break;
-        }
+          // Check if the API response was not successful
+          if ($response['statusCode'] == 400) {
+              // if 400 error then retry
+              $retryCount++;
 
-    // Continue the loop while the retry counter is less than the maximum retries
-    } while ($retryCount < $maxRetries);
+              // Sleep for 1 second before retrying
+              sleep(1);
+          } else {
+              // If the response is successful or the error is not "Account already exists", break the loop
+              break;
+          }
+
+      // Continue the loop while the retry counter is less than the maximum retries
+      } while ($retryCount < $maxRetries);
+
+    } catch (RequestException $e) {
+      abort($e->getCode());
+    }
 
     // if it still fails after $maxRetries tries
-    if ($response['success'] == false) {
+    if ($response['result'] == null) {
       abort(400);
     } 
 
-    // dd($response);
+    // dd($response['statusCode']);
     
 
     if ($response['success']) {
@@ -107,14 +113,15 @@ class AccountTypeInvestmentPaymentService
         $mt5_login = $resResult['login'];
 
         if ($mt5_login && $resResult['responseCode'] == 0) {
-            $user_rights_data =  [
-                "login" => $mt5_login,
-                "rights" => 'USER_RIGHT_ENABLED',
-            ];
-            $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
-            if($user_rights_response['success'] == false){
-              dd($response);
-            }
+            // No need to set rights individually
+            // $user_rights_data =  [
+            //     "login" => $mt5_login,
+            //     "rights" => 'USER_RIGHT_ENABLED',
+            // ];
+            // $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
+            // if($user_rights_response['success'] == false){
+            //   dd($response);
+            // }
             
             $investment->main_password = $password;
             $investment->save();

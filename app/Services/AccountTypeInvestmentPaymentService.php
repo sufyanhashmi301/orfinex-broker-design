@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
 use App\Enums\InvestmentPhaseApproval;
+use App\Jobs\TradingStatsRunCommandsJob;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Client\RequestException;
 
@@ -57,7 +58,7 @@ class AccountTypeInvestmentPaymentService
       "state" => "",
       "zipCode" => $investment->user->zip_code ?? '',
       "address" => $investment->user->address ?? '',
-      "phone" => '563463452', //$investment->user->phone,
+      "phone" => $investment->user->phone,
       "email" => $investment->user->email,
       "agent" => 0,
       "company" => setting('site_title', 'global'),
@@ -105,7 +106,7 @@ class AccountTypeInvestmentPaymentService
       abort(400);
     } 
 
-    // dd($response['statusCode']);
+    // dd($response);
     
 
     if ($response['success']) {
@@ -246,8 +247,7 @@ class AccountTypeInvestmentPaymentService
     $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
 
     // Fetch and store latest stats and hourly stats 
-    Artisan::call('update:investment-stats');
-    Artisan::call('update:investment-stats --save-record');
+    TradingStatsRunCommandsJob::dispatch()->delay(now()->addMinute());
 
     return $investment;
 

@@ -497,11 +497,11 @@
                                     <th scope="col" class="table-th">Trade Created at</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="open-trades-tbody">
                                 @php
                                     $i = 0;
                                 @endphp
-                                @forelse ($account_open_positions as $item)
+                                @foreach ($account_open_positions as $item)
                                     
                                     @php
                                         if($investment->login != $item['login']) {
@@ -511,7 +511,7 @@
                                         }
                                     @endphp
 
-                                    <tr class="item-row" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
+                                    <tr class="item-row open-trades-tbody" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
                                         <td class="table-td">{{ $i }}</td>
                                         {{-- @php
                                             $account = $accounts->where('login', $item['login'])->first();
@@ -528,11 +528,7 @@
                                         <td class="table-td"> <span class="badge badge-{{ $item['profit'] < 0 ? 'danger' : 'success' }}">{{ $item['profit'] < 0 ? $item['profit'] * -1 : $item['profit'] }} {{ $currency }}</span> </td>
                                         <td class="table-td">{{ \Carbon\Carbon::createFromFormat('m/d/Y H:i:s', $item['positionCreateTime'])->format('h:i:s A, d M Y') }}</td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" style="padding: 10px"> <center><small>No Data Available!</small></center> </td>
-                                    </tr>
-                              @endforelse
+                              @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -919,6 +915,10 @@
 @endsection
 @section('script')
     <script !src="">
+
+
+        
+
         function copyText() {
             $('.copy-button').on('click', function() {
                 const targetId = $(this).data('target');
@@ -952,6 +952,17 @@
         copyText();
 
         $(document).ready(function() {
+
+            if($('.open-trades-row').length == 0) {
+                $('#open-trades-tbody').append(
+                    `
+                    <tr>
+                        <td colspan="8" style="padding: 10px"> <center><small>No Data Available!</small></center> </td>
+                    </tr>
+                    `
+                )
+            }
+
             let countdownTime = 120; // 5 minutes in seconds
             const timerElement = $('#timer');
 

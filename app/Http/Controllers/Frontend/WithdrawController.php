@@ -73,7 +73,6 @@ class WithdrawController extends Controller
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), __('Error'));
-
             return redirect()->back();
         }
 
@@ -81,7 +80,6 @@ class WithdrawController extends Controller
 
         $credentials = $input['credentials'];
         foreach ($credentials as $key => $value) {
-
             if (is_file($value['value'])) {
                 $credentials[$key]['value'] = self::imageUploadTrait($value['value']);
             }
@@ -253,6 +251,10 @@ class WithdrawController extends Controller
             abort('403', __('Withdraw Disabled Now'));
         }
 
+        if(auth()->user()->kyc < kyc_required_completed_level()) {
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+            return redirect()->back();
+        }
         // Check if today is a withdraw off day
         $withdrawOffDays = WithdrawalSchedule::where('status', 0)->pluck('name')->toArray();
         $date = Carbon::now();

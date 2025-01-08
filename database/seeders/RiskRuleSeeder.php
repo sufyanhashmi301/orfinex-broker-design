@@ -21,7 +21,6 @@ class RiskRuleSeeder extends Seeder
     {
         DB::table('risk_rules')->truncate();
 
-        // Quick Trades Seeder
         $data= [ 
             // Quick Trades
             [

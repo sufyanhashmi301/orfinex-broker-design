@@ -503,13 +503,13 @@
                                 @endphp
                                 @foreach ($account_open_positions as $item)
                                     
-                                    {{-- @php
+                                    @php
                                         if($investment->login != $item['login']) {
                                             continue;
                                         } else {
                                             $i++;
                                         }
-                                    @endphp --}}
+                                    @endphp
 
                                     <tr class="item-row open-trades-row" data-trade-status="{{ $item['profit'] > 0 ? 'profit' : 'loss' }}">
                                         <td class="table-td">{{ $i }}</td>

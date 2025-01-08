@@ -124,7 +124,7 @@
         </li>
 
         <li>
-            <a href="{{ route('user.certificates') }}" class="navItem {{ isActive('user.certificates') }}">
+            <a href="{{ route('user.certificates.index') }}" class="navItem {{ isActive('user.certificates.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
                     <span>{{ __('Certificates') }}</span>

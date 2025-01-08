@@ -327,10 +327,10 @@
         @endcanany
 
         {{-- *************************************************************  Certificates *********************************************************--}}
-        <li class="" style="display: none"   >
+        <li class="" >
             <a href="{{route('admin.manage_certificates.index')}}" class="navItem {{ isActive('admin.manage_certificates.index') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:award"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
                     <span>{{ __('Manage Certificates') }}</span>
                 </span>
             </a>

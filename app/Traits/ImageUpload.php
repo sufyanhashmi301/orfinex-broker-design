@@ -31,6 +31,8 @@ trait ImageUpload
 
         return str_replace('assets/', '', $image_url); // Just return image
     }
+
+    
     public function depositImageUploadTrait($query, $old = null): string // Taking input image as parameter
     {
 

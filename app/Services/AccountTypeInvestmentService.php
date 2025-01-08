@@ -18,6 +18,7 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\InvestmentPhaseApprovalService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
+use App\Models\UserCertificate;
 
 class AccountTypeInvestmentService
 {
@@ -320,6 +321,7 @@ class AccountTypeInvestmentService
 
     // check if there are more phases to current account type (automatically filter funded phase out)
     if((count($all_phases_of_investment_account_type) - $passed_phase['phase_step']) != 0){
+
       // get the next phase and rule
       $next_phase = collect($snapshot->account_types_phases_data)->firstWhere('phase_step', $passed_phase['phase_step'] + 1);
       $next_phase_rule = collect($snapshot->account_types_phases_rules_data)

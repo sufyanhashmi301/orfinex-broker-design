@@ -1,10 +1,10 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('All Investments') }}
+    {{ __('Manage Certificates') }}
 @endsection
 @section('content')
     <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
-        <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
+        {{-- <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">
                 <a href="{{ route('admin.accounts-phases.log') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ url()->current() === route('admin.accounts-phases.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
             </li>
@@ -20,8 +20,8 @@
               </li>
             @endif
            
-        </ul>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        </ul> --}}
+        {{-- <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <div class="flex justify-between sm:space-x-4 space-x-2">
 
                 <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
@@ -33,13 +33,13 @@
                     </button>
                 </div>
             </div>
-            {{-- <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-primary btn-sm">
+            <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-primary btn-sm">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
                     <span>{{ __('Start Challenge') }}</span>
                 </span>
-            </a> --}}
-        </div>
+            </a>
+        </div> --}}
     </div>
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12">
@@ -50,6 +50,9 @@
             </div>
         </div>
     </div>
+    @foreach ($certificates as $certificate)
+        @include('backend.certificates.includes.__edit_certificate_modal', ['certificate' => $certificate])
+    @endforeach
 
 
 @endsection

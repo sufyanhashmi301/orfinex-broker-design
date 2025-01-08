@@ -29,10 +29,8 @@
                         <div class="input-area">
                             <div class="wrap-custom-file">
                                 <input type="file" name="icon" id="schema-icon" accept=".gif, .jpg, .png" />
-                                <label for="schema-icon" class="file-ok"
-                                    style="background-image: url({{ asset($account_type->icon) }})">
-                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}"
-                                        alt="" />
+                                <label for="schema-icon" class="file-ok" style="background-image: url({{ asset($account_type->icon) }})">
+                                    <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt="" />
                                     <span>{{ __('Update Avatar') }}</span>
                                 </label>
                             </div>

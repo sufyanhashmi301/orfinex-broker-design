@@ -45,6 +45,10 @@
                         <input type="text" class="form-control !text-lg" name="last_name" value="{{ $user->last_name }}" placeholder="Last Name" />
                     </div>
                     <div class="input-area relative">
+                        <label for="exampleFormControlInput1" class="form-label">{{ __('Nickname') }}</label>
+                        <input type="text" class="form-control !text-lg" name="nickname" value="{{ $user->nickname }}" placeholder="Nickname" />
+                    </div>
+                    <div class="input-area relative">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('Username') }}</label>
                         <input type="text" class="form-control !text-lg" name="username" value="{{ $user->username }}" placeholder="Username" />
                     </div>

@@ -32,10 +32,13 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
 use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\UserAffiliateController;
+use App\Http\Controllers\UserCertificateController;
+use App\Models\Certificate;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +105,10 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     // Billing (User paid transactions)
     Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
     Route::get('/billing/invoice/{transaction_id}', [BillingController::class, 'generateInvoice'])->name('billing.generateInvoice');
+
+    // Certificates
+    Route::get('/certificates', [UserCertificateController::class, 'index'])->name('certificates.index');
+
 
 
     // ======== Optimizations ========
@@ -387,9 +394,7 @@ Route::get('user/active-plans', function () {
     return view('frontend::fund_board.active_plan_design');
 })->name('user.activePlan');
 
-Route::get('user/certificates', function () {
-    return view('frontend::certificates.index');
-})->name('user.certificates');
+
 
 Route::get('user/utilities', function () {
     return view('frontend::utilities.index');

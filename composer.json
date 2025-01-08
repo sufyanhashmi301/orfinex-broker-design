@@ -13,6 +13,7 @@
         "ext-zip": "*",
         "bacon/bacon-qr-code": "^2.0",
         "barryvdh/laravel-dompdf": "^1.0",
+        "barryvdh/laravel-snappy": "^1.0",
         "charlesassets/laravel-perfectmoney": "^1.0",
         "coderflex/laravel-ticket": "^1.0",
         "coingate/coingate-php": "^4.1",

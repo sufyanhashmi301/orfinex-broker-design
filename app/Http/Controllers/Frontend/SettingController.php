@@ -52,6 +52,7 @@ class SettingController extends Controller
             'avatar' => $request->hasFile('avatar') ? self::imageUploadTrait($input['avatar'], $user->avatar) : $user->avatar,
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
+            'nickname' => $input['nickname'] ?? '',
             'username' => $input['username'],
             'gender' => $input['gender'],
             'date_of_birth' => $input['date_of_birth'] == '' ? null : $input['date_of_birth'],

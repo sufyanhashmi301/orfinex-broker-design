@@ -66,7 +66,7 @@ class GenerateCertificateService
 
     // Path to the certificate template
     $templatePath = public_path($certificate->image);
-    $templatePath = str_replace('public', 'assets', $templatePath);
+    $templatePath = str_replace('public', 'assets/', $templatePath);
 
     // Check the extension of the uploaded image
     $ext = strtolower(pathinfo($templatePath, PATHINFO_EXTENSION));
@@ -92,7 +92,7 @@ class GenerateCertificateService
     }
     
     // Set the font file (ensure this file exists in your public/fonts directory)
-    $fontPath = str_replace('public', 'assets', public_path('global/fonts/arial.ttf')); // Ensure the font exists in public/fonts
+    $fontPath = str_replace('public', 'assets/', public_path('global/fonts/arial.ttf')); // Ensure the font exists in public/fonts
     if (!file_exists($fontPath)) {
       dd('Font file not found.');
     }
@@ -122,7 +122,7 @@ class GenerateCertificateService
 
     if(isset($certificate->config['example_certificate'])) {
       $previous_example_path = public_path($certificate->config['example_certificate']);
-      $previous_example_path = str_replace('public', 'assets', $previous_example_path);
+      $previous_example_path = str_replace('public', 'assets/', $previous_example_path);
       if (File::exists($previous_example_path) && $example == true) {
         File::delete($previous_example_path);
       }

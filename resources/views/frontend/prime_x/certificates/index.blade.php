@@ -110,7 +110,7 @@
             </div>
 
         </div>
-    @else
+    {{-- @else
         <div class="card">
             <div class="max-w-xl text-center py-10 mx-auto space-y-5">
                 <div class="w-20 h-20 bg-danger-500 text-white rounded-full inline-flex items-center justify-center">
@@ -126,7 +126,7 @@
                     Start a new challenge
                 </a>
             </div>
-        </div>
+        </div> --}}
     @endif
 
     <style>

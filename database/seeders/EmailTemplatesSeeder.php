@@ -1200,7 +1200,9 @@ class EmailTemplatesSeeder extends Seeder
                 'title' => 'New Account Details',
                 'subject' => 'New Account Details',
                 'salutation' => 'Dear [[full_name]],',
-                'message_body' => 'Thank you for purchasing package. We’re happy to let you know that your order has been successfully processed, and you are now set to start trading with us.
+                'message_body' => 'Dear [[full_name]],
+                
+Thank you for purchasing package. We’re happy to let you know that your order has been successfully processed, and you are now set to start trading with us.
 
 Here are your MT5 account details for accessing the trading platform:
 
@@ -1208,14 +1210,14 @@ Here are your MT5 account details for accessing the trading platform:
 - Password: [[account_password]]
 - Server: [[server]]
 
-Best regards, [[site_title]] Support.',
+Best regards, Support.',
                 'button_level' => 'Let\'s Start!',
                 'button_link' => url('/').'/login',
                 'footer_status' => 0,
                 'footer_body' => '',
                 'bottom_status' => 1,
-                'bottom_title' => 'Learn More About [[site_title]]',
-                'bottom_body' => '[[site_url]]',
+                'bottom_title' => '',
+                'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]","[[account_login]]","[[account_password]]", "[[server]]"]',
                 'note' => '',
                 'support_link' => '',

@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Schema;
 use App\Models\AccountType;
 use App\Models\ForexSchema;
-use App\Models\Schema;
-use App\Models\User;
 use App\Traits\ForexApiTrait;
+use App\Http\Controllers\Controller;
 
 class ForexSchemaController extends Controller
 {
     use ForexApiTrait;
     public function index()
     {
+        $user = auth()->user();
+
 
 //        $this->sendApiPostRequest('url','data');
 //        $this->getUserApi(554944);
-        $user = auth()->user();
+        
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
         $schemas = AccountType::active()->traderType()  // Use the defined scope for active schemas

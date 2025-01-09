@@ -4,16 +4,19 @@ namespace App\Services;
 
 use App\Enums\TraderType;
 use App\Models\AccountType;
+use App\Traits\NotifyTrait;
 use Carbon\CarbonImmutable;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
 use App\Enums\InvestmentPhaseApproval;
-use App\Jobs\TradingStatsRunCommandsJob;
 use Illuminate\Support\Facades\Artisan;
+use App\Jobs\TradingStatsRunCommandsJob;
 use Illuminate\Http\Client\RequestException;
 
 class AccountTypeInvestmentPaymentService
 {
+
+  use NotifyTrait;
 
   protected $investment_phase_approve;
   protected $forexApiService;
@@ -232,6 +235,7 @@ class AccountTypeInvestmentPaymentService
 
     // If deposit is successful, update the Investment table and add the record to investment_phase_approvals_table
     if ($deposit) {
+
       $time_now = CarbonImmutable::now();
 
       $investment->account_name = $this->accountTypeData['title'] .'_'. $investment->id;
@@ -241,13 +245,24 @@ class AccountTypeInvestmentPaymentService
 
       $investment->save();
 
+      // apply commissions
+      $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
+
+      // send email to user
+      $shortcodes = [
+        '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
+        '[[account_login]]' => $investment->login,
+        '[[account_password]]' => $investment->main_password,
+        '[[server]]' => setting('live_server', 'platform_api'),
+      ];
+      $this->mailNotify($investment->user->email, 'new_account_details', $shortcodes);
+
     }
 
-    // apply commissions
-    $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
+    
 
     // Fetch and store latest stats and hourly stats 
-    Artisan::call('update:investment-stats --both');
+    // Artisan::call('update:investment-stats --both');
     // Artisan::call('update:investment-stats --save-record');
 
     return $investment;

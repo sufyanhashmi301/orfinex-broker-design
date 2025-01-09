@@ -45,7 +45,7 @@
                 <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Price') }}</th>
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Discount') }}</th>
-                <th scope="col" class="table-th">{{ __('New Orders') }}</th>
+                {{-- <th scope="col" class="table-th">{{ __('New Orders') }}</th> --}}
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Action') }}</th>
             </tr>
             </thead>
@@ -68,7 +68,7 @@
                     <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
                     <th scope="col" class="table-th" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">{{ __('Price') }}</th>
                     <th scope="col" class="table-th" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">{{ __('Discount') }}</th>
-                    <th scope="col" class="table-th">{{ __('New Orders') }}</th>
+                    {{-- <th scope="col" class="table-th">{{ __('New Orders') }}</th> --}}
                     @if ($phase->phase_step - 1 == 0)
                         <th scope="col" class="table-th">{{ __('Action') }}</th>
                     @endif
@@ -100,12 +100,6 @@
                             </td>
                             <td class="table-td" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">
                                 <input type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->discount }}" />
-                            </td>
-                            <td class="table-td">
-                                <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
-                                    <input type="checkbox" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][is_new_order]" data-value="{{ $rule->is_new_order }}" class="sr-only peer">
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
-                                </label>
                             </td>
                             @if ($phase->phase_step - 1 == 0)
                                 <td class="table-td">

@@ -131,8 +131,8 @@ trait Payment
         $symbol = setting('currency_symbol', 'global');
 
         $notify = [
-            'card-header' => "$status Your Deposit Process",
-            'title' => "$symbol $tnxInfo->amount Deposit $title",
+            'card-header' => "$status Your Payment Process",
+            'title' => "$symbol $tnxInfo->amount Payment $title",
             'p' => "The amount has been $title added into your account",
             'strong' => 'Transaction ID: '.$tnx,
             'action' => route('user.deposit.amount'),

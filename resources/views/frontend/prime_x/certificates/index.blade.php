@@ -66,7 +66,8 @@
                         </div>
 
                         <div class="flex flex-col items-center w-full z-10 space-y-5 cert-details">
-                            <a href="{{ asset($certificate->certificate_image) }}" target="__blank" class="btn btn-lg" style="color: #fff; background: rgb(80 199 147)">
+                            <iconify-icon class="text-lg mb-2" style="position: relative; top: 3px; color: #fff; font-size: 34px" icon="lucide:file-badge" ></iconify-icon>
+                            <a href="{{ asset($certificate->certificate_image) }}" target="__blank" class="btn btn-lg" style="color: #f5f5f5; background: rgb(80 199 147)">
                                 {{ $certificates->where('hook', $certificate->hook)->first()->title }}
                             </a>
                         </div>

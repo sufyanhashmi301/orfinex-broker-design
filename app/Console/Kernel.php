@@ -24,14 +24,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('investments:fetch-daily-score')->dailyAt('23:50');
+        // $schedule->command('investments:fetch-daily-score')->dailyAt('23:50');
 //        $schedule->command('trade:fetch-weekly-stats')->weeklyOn(1, '23:50');
 
-        $schedule->command('daily:drawdown')->everyFiveMinutes();
+        // $schedule->command('daily:drawdown')->everyFiveMinutes();
 
         $schedule->command('update:investment-stats')->everyMinute();
         $schedule->command('update:investment-stats --save-record')->hourly();
         $schedule->command('update:accounts-open-positions')->hourly();
+        $schedule->command('update:recent-approved-accounts-stats')->everyFiveMinutes();
+
     }
 
     /**

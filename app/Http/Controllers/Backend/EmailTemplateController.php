@@ -95,8 +95,8 @@ class EmailTemplateController extends Controller
             'bottom_title' => $input['bottom_title'] ?? null,
             'bottom_body' => nl2br($input['bottom_body']) ?? null,
             'status' => $input['status'] ?? 0,
-            'is_disclaimer' => $input['is_disclaimer'] ?? 0,
-            'is_risk_warning' => $input['is_risk_warning'] ?? 0,
+            // 'is_disclaimer' => $input['is_disclaimer'] ?? 0,
+            // 'is_risk_warning' => $input['is_risk_warning'] ?? 0,
         ];
 
         $template = EmailTemplate::find($input['id']);

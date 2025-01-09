@@ -130,7 +130,7 @@ class DepositController extends GatewayController
 
 //        $targetId = '1063794';
 //        $targetType = 'forex_deposit';
-        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Deposit With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+        $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Payment With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
         if ($gatewayInfo->type == 'manual') {
             $shortcodes = [
                 '[[full_name]]' => $txnInfo->user->full_name,
@@ -142,7 +142,7 @@ class DepositController extends GatewayController
                 '[[message]]' => $txnInfo->approval_cause,
                 '[[status]]' => 'Pending',
             ];
-//            $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
+        //    $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
 
         }
         return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);

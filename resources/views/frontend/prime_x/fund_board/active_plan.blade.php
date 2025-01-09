@@ -99,6 +99,19 @@
                                 </button>
                             </div>
                         </li>
+                        @if ($investment->status == \App\Enums\InvestmentStatus::VIOLATED)
+                            <li class="text-sm block py-[8px]">
+                                <div class="flex justify-between space-x-2 rtl:space-x-reverse">
+                                    <span class="text-left text-slate-700">
+                                        {{ __('Violation Reason') }}
+                                    </span>
+                                    <span class="text-right text-slate-900 " style="text-transform: capitalize">
+                                        {{ str_replace('_', ' ', $investment->violation_reason ?? 'N/A') }}
+                                    </span>
+                                </div>
+                            </li> 
+                        @endif
+                        
                     </ul>
                 </div>
             </div>
@@ -334,7 +347,11 @@
                     <li class="flex items-center justify-between text-sm text-slate-500 gap-2">
                         <span>{{ __('Remaining Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
-                            {{ number_format($trading_objectives['daily_drawdown_remaining_loss_limit'], 2) }} {{ base_currency() }}
+                            @if($trading_objectives['daily_drawdown_remaining_loss_limit'] == "Limit Over")
+                                Limit Over
+                            @else
+                                {{ number_format($trading_objectives['daily_drawdown_remaining_loss_limit'] ?? 0.00, 2) }} {{ base_currency() }}
+                            @endif
                             
                         </span>
                     </li>
@@ -383,8 +400,11 @@
                         <span>{{ __('Remaining Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
                             {{-- {{ $trading_objectives['max_drawdown_remaining_loss_limit'] }} --}}
-
-                            {{ number_format($trading_objectives['max_drawdown_remaining_loss_limit'], 2) }} {{ base_currency() }}
+                            @if($trading_objectives['daily_drawdown_remaining_loss_limit'] == "Limit Over")
+                                Limit Over
+                            @else
+                                {{ number_format($trading_objectives['max_drawdown_remaining_loss_limit'], 2) }} {{ base_currency() }}
+                            @endif
 
                         </span>
                     </li>

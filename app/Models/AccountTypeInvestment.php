@@ -24,6 +24,7 @@ class AccountTypeInvestment extends Model
         'phase_ended_at',
         'main_password',
         'status',
+        'violation_reason',
     ];
 
     /**

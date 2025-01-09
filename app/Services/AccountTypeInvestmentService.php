@@ -234,8 +234,12 @@ class AccountTypeInvestmentService
    */
   private function tradingObjectivesEvaluation($trading_objectives) {
 
-    if($trading_objectives['daily_drawdown_status'] == TradingObjective::VIOLATED || $trading_objectives['max_drawdown_status'] == TradingObjective::VIOLATED ) {
-      return TradingObjective::VIOLATED;
+    if($trading_objectives['daily_drawdown_status'] == TradingObjective::VIOLATED) {
+      return TradingObjective::DD_VIOLATED;
+    }
+
+    if($trading_objectives['max_drawdown_status'] == TradingObjective::VIOLATED) {
+      return TradingObjective::MD_VIOLATED;
     }
 
     if($trading_objectives['profit_target_status'] == TradingObjective::PASSED && $trading_objectives['minimum_trading_days_status'] == TradingObjective::PASSED){
@@ -276,11 +280,11 @@ class AccountTypeInvestmentService
 
     // Evaluate the trading objectives
     $trading_objectives_evaluation = $this->tradingObjectivesEvaluation($trading_objectives);
-    if( $trading_objectives_evaluation ==  TradingObjective::VIOLATED) {
+    if( $trading_objectives_evaluation == TradingObjective::DD_VIOLATED || $trading_objectives_evaluation == TradingObjective::MD_VIOLATED) {
       // $investment->status = InvestmentStatus::VIOLATED;
 
       // Initiate Violation process
-      $this->violatePhase($investment);
+      $this->violatePhase($investment, $trading_objectives_evaluation);
 
     }elseif($trading_objectives_evaluation ==  TradingObjective::PASSING) {
       $investment->status = InvestmentStatus::ACTIVE;
@@ -414,12 +418,13 @@ class AccountTypeInvestmentService
   /**
    * Violation Occured
    */
-  public function violatePhase($violate_investment) {
+  public function violatePhase($violate_investment, $reason) {
 
     // skip if the account is already violated
     if($violate_investment->status == InvestmentStatus::VIOLATED) {
       return true;
     }
+ 
 
     // Empty the balance from account
     $data = [
@@ -430,7 +435,13 @@ class AccountTypeInvestmentService
     ];
 
     $response = $this->forexApiService->balanceOperation($data);
-    $violate_investment->update(['status' => InvestmentStatus::VIOLATED]);
+
+    $violate_investment->update(
+      [
+        'status' => InvestmentStatus::VIOLATED,
+        'violation_reason' => $reason
+      ]
+    );
     $violate_investment->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
 
     // Change the rights (skipped for now)

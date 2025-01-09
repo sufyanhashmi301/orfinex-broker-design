@@ -33,23 +33,23 @@ class ForexSchemaController extends Controller
 
     public function schemaPreview($id)
     {
-        $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-        $schemas = AccountType::where('status', true)
-            ->where(function($query) use ($tagNames) {
-                $query->whereJsonContains('countries', auth()->user()->country)
-                    ->orWhereJsonContains('countries', 'All')
-                    ->orWhere(function($subQuery) use ($tagNames) {
-                        foreach ($tagNames as $tagName) {
-                            $subQuery->orWhereJsonContains('tags', $tagName);
-                        }
-                    });
-            })
-            ->orderBy('priority', 'asc')
-            ->get();
-//        $schemas = ForexSchema::where('status', true)->orderBy('priority','asc')->get();
-        $schema = AccountType::find($id);
+        // $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
+        // $schemas = AccountType::where('status', true)
+        //     ->where(function($query) use ($tagNames) {
+        //         $query->whereJsonContains('countries', auth()->user()->country)
+        //             ->orWhereJsonContains('countries', 'All')
+        //             ->orWhere(function($subQuery) use ($tagNames) {
+        //                 foreach ($tagNames as $tagName) {
+        //                     $subQuery->orWhereJsonContains('tags', $tagName);
+        //                 }
+        //             });
+        //     })
+        //     ->orderBy('priority', 'asc')
+        //     ->get();
+            
+        $account_type = AccountType::find($id);
 
-        return view('frontend::forex_schema.preview', compact('schema', 'schemas'));
+        return view('frontend::forex_schema.preview', compact('account_type'));
     }
 
     public function schemaSelect($id)

@@ -35,12 +35,11 @@
     <div class="card mb-5">
         <div class="card-header noborder">
             <div>
-                <h4 class="card-title mb-1">{{ __('Money well funded') }}</h4>
-                <p class="card-text">{{ __('Direct Funding') }}</p>
+                <h4 class="card-title mb-1">{{ $account_type->title }}</h4>
+                <p class="card-text" style="text-transform: capitalize">{{ $account_type->type }}</p>
             </div>
-            <button type="button" class="btn btn-secondary light inline-flex items-center justify-center">
-                {{-- {{ $schema->forexSchemaPhase1->funded_type ?? '' }} --}}
-                {{ $schema->forexSchemaPhase1->type ?? '' }}
+            <button type="button" class="btn btn-primary cursor-default inline-flex items-center justify-center">
+                Evaluation Step
             </button>
         </div>
     </div>
@@ -52,14 +51,14 @@
                     <form action="{{ route('user.investment.store') }}" method="post" enctype="multipart/form-data"
                         id="payment-form" class="space-y-6">
                         @csrf
-                        <input type="hidden" id="scheme_type" value="{{ the_hash($schema->forexSchemaPhase1->type) }}">
+                        <input type="hidden" id="scheme_type" value="{{ the_hash($account_type->forexSchemaPhase1->type) }}">
                         <input type="hidden" id="discount-id" name="discount_id" >
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
                                 {{ __('Allocated Funds') }}
                             </p>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                @foreach ($schema->forexSchemaPhase1->accountTypePhaseRules as $index => $rule)
+                                @foreach ($account_type->forexSchemaPhase1->accountTypePhaseRules as $index => $rule)
                                     <div class="success-radio">
                                         <label
                                             class="flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
@@ -496,8 +495,7 @@
                 // Calculate percentage addon prices from checked checkboxes
                 $('.addon-checkbox:checked').each(function() {
                     let addonPrice = parseFloat($(this).data('price')) || 0;
-                    addon += basePrice * (addonPrice /
-                    100); // Add percentage of the base price to the addon
+                    addon += basePrice * (addonPrice / 100); // Add percentage of the base price to the addon
                 });
 
                 total += addon;

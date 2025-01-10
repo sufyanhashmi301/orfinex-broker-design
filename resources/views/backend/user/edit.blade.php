@@ -68,20 +68,10 @@
                                 <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Deposit') }}
+                                            {{ __('current Forex Balance') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                        </h6>
-                                    </div>
-                                </div>
-                                <div class="bg-white dark:bg-secondary p-4">
-                                    <div class="text-center space-y-2">
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Withdraw') }}
-                                        </p>
-                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') . mt5_total_balance($user->id) }}
                                         </h6>
                                     </div>
                                 </div>
@@ -91,10 +81,21 @@
                                             {{ __('Net Deposits') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') . $user->totalDeposit() }}
                                         </h6>
                                     </div>
                                 </div>
+                                <div class="bg-white dark:bg-secondary p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Net Withdraw') }}
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalWithdraw() }}
+                                        </h6>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -113,7 +114,7 @@
                                             {{ __('Used Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') .mt5_total_used_margin($user->id) }}
                                         </div>
                                     </div>
                                 </div>
@@ -132,7 +133,7 @@
                                             {{ __('Free Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                                            {{ setting('currency_symbol','global') . mt5_total_free_margin($user->id) }}
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +152,8 @@
                                             {{ __('Wallet Balance') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            $0
+                                            {{ setting('currency_symbol','global') . $user->totalWalletBalance() }}
+
                                         </div>
                                     </div>
                                 </div>

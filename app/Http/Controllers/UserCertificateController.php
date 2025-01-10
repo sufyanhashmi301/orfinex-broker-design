@@ -66,7 +66,7 @@ class UserCertificateController extends Controller
             $user_certificate = UserCertificate::where('user_id', Auth::id())->where('hook', CertificateHookEnums::PHASE_TWO);
             $certificate = Certificate::where('hook', CertificateHookEnums::PHASE_TWO)->first();
 
-            if(!$user_certificate->exists()) {
+            if(!$user_certificate->exists() && $certificate->is_enabled == 1 && $certificate->image != '') {
                 $this->newCertificate($certificate, CertificateHookEnums::PHASE_TWO);
             }
         }

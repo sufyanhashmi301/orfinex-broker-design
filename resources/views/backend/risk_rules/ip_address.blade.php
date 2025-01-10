@@ -46,10 +46,10 @@
                                       {{ $user ? ($user->first_name . ' ' . $user->last_name) : 'N/A' }}
                                   </td>
                                   <td class="table-td">{{ $item['loginID'] }}</td>
-                                  <td class="table-td">{{ $item['ip_count'] }}</td>
+                                  <td class="table-td">{{ count($item['ip_addresses']) }}</td>
                                   <td class="table-td">
-                                    @forelse ($item['ip_addresses'] as $ip)
-                                      <span class="badge badge-primary mr-2">{{ $item['lastIP'] == '' ? 'N/A' : $ip }}</span>
+                                    @foreach ($item['ip_addresses'] as $ip)
+                                      <span class="badge badge-primary mr-2">{{ $ip }}</span>
                                     @endforeach
                                   </td>
                                   <td class="table-td">{{ $item['registrationTime'] }}</td>

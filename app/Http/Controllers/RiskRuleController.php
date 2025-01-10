@@ -70,7 +70,7 @@ class RiskRuleController extends Controller
         if($risk_rule_slug == 'trade_age' || $risk_rule_slug == 'open_positions') {
             $login_key = 'login';
         }
-        $data = $this->filterApiData($data, $login_key);
+        // $data = $this->filterApiData($data, $login_key);
 
         // All Accounts
         $accounts = AccountTypeInvestment::all();
@@ -92,50 +92,6 @@ class RiskRuleController extends Controller
 
         }
 
-        // ip address example data
-        // $data = [
-        //     [
-        //     "loginID" => 1000,
-        //     "registrationTime" => "06/26/2024 13:32:25",
-        //     "lastIP" => "104.28.226.98",
-        //     "lastAccessTime" => "12/05/2024 18:14:28",
-        //   ],
-        //   [
-        //     "loginID" => 1001,
-        //     "registrationTime" => "06/26/2024 14:08:21",
-        //     "lastIP" => "180.75.240.219",
-        //     "lastAccessTime" => "12/13/2024 03:24:59",
-        //   ],
-        //   [
-        //     "loginID" => 1009,
-        //     "registrationTime" => "06/26/2024 14:58:35",
-        //     "lastIP" => "175.139.185.201",
-        //     "lastAccessTime" => "12/13/2024 05:31:36",
-        //   ],
-        //   [
-        //     "loginID" => 1010,
-        //     "registrationTime" => "06/26/2024 16:09:48",
-        //     "lastIP" => "104.28.155.219",
-        //     "lastAccessTime" => "10/16/2024 12:14:39",
-        //   ],
-        //   [
-        //     "loginID" => 1000,
-        //     "registrationTime" => "06/26/2024 16:15:06",
-        //     "lastIP" => "104.28.234.125",
-        //     "lastAccessTime" => "06/27/2024 13:21:54",
-        //   ],
-        //   [
-        //     "loginID" => 1000,
-        //     "registrationTime" => "07/06/2024 15:34:53",
-        //     "lastIP" => "134.119.219.58",
-        //     "lastAccessTime" => "12/10/2024 01:00:05",
-        //   ]
-        // ];   
-
-        // Ip Addresses Array Resolve
-        if($risk_rule_slug == 'ip_address') {
-            $data = $this->ipAddressArrayResolve($data);
-        }
 
         return view('backend.risk_rules.' . $risk_rule_slug, compact('risk_rule', 'data', 'accounts', 'risk_rule_slug'));
     }
@@ -163,41 +119,6 @@ class RiskRuleController extends Controller
             $request->query(),
             ['criteria_updated' => true]
         ));
-    }
-
-    /**
-     * IP Address Array Resolve
-     */
-    public function ipAddressArrayResolve($data) {
-        $processedData = [];
-        $loginIdMap = [];
-
-        foreach ($data as $entry) {
-            $loginID = $entry['loginID'];
-
-            if (!isset($loginIdMap[$loginID])) {
-                // First occurrence of this loginID
-                $loginIdMap[$loginID] = [
-                    'entry' => $entry,
-                    'ip_addresses' => [$entry['lastIP']],
-                    'ip_count' => 1
-                ];
-            } else {
-                // Duplicate loginID found
-                $loginIdMap[$loginID]['ip_addresses'][] = $entry['lastIP'];
-                $loginIdMap[$loginID]['ip_count']++;
-            }
-        }
-
-        // Construct the processed data array
-        foreach ($loginIdMap as $loginID => $details) {
-            $details['entry']['ip_count'] = $details['ip_count'];
-            $details['entry']['ip_addresses'] = array_unique($details['ip_addresses']);
-            $processedData[] = $details['entry'];
-        }
-
-        // $processedData now contains the required structure
-        return $processedData;
     }
 
     /**

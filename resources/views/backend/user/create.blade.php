@@ -3,7 +3,8 @@
     {{ __('New Customer') }}
 @endsection
 @section('content')
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="{{ route('admin.user.store') }}" method="post" enctype="multipart/form-data">
+        @csrf
         <div class="space-y-5">
             <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
                 {{ __('Basic Info') }}
@@ -15,45 +16,49 @@
                             <label class="form-label">
                                 {{ __('First Name') }}
                             </label>
-                            <input type="text" name="" class="form-control" placeholder="">
+                            <input type="text" class="form-control" name="first_name" value="" required placeholder="First Name" />
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Last Name') }}
                             </label>
-                            <input type="text" name="" class="form-control" placeholder="">
+                            <input type="text" class="form-control" name="last_name" value="" required placeholder="Last Name" />
+                        </div>
+                        <div class="input-area relative">
+                            <label class="form-label">
+                                {{ __('Username') }}
+                            </label>
+                            <input type="text" name="username" class="form-control" required placeholder="Username">
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Country') }}
                             </label>
-                            <select name="" class="select2 form-control w-full" data-placeholder="Select Country">
+                            <select name="country" class="select2 form-control" required data-placeholder="Select Country">
                                 <option value="">{{ __('Select Country') }}</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->name }}" data-phone>{{ $country->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Phone') }}
                             </label>
-                            <input type="text" name="" class="form-control" placeholder="">
+                            <input type="text" name="phone" class="form-control" placeholder="Phone">
                         </div>
-                        <div class="input-area relative">
-                            <label class="form-label">
-                                {{ __('Username') }}
-                            </label>
-                            <input type="text" name="" class="form-control" placeholder="">
-                        </div>
+                        
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Email') }}
                             </label>
-                            <input type="email" name="" class="form-control" placeholder="">
+                            <input type="email" name="email" required class="form-control" placeholder="Email">
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Gender') }}
                             </label>
-                            <select name="" class="select2 form-control w-full" data-placeholder="Select Gender">
+                            <select name="gender" class="select2 form-control w-full" data-placeholder="Select Gender">
                                 <option value="">{{ __('Select Gender') }}</option>
                                 <option value="male">{{ __('Male') }}</option>
                                 <option value="female">{{ __('Female') }}</option>
@@ -63,39 +68,33 @@
                             <label class="form-label">
                                 {{ __('City') }}
                             </label>
-                            <input type="email" name="" class="form-control" placeholder="">
-                        </div>
-                        <div class="input-area relative">
-                            <label class="form-label">
-                                {{ __('City') }}
-                            </label>
-                            <input type="email" name="" class="form-control" placeholder="">
+                            <input type="text" name="city"  class="form-control" placeholder="City">
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Zip Code') }}
                             </label>
-                            <input type="email" name="" class="form-control" placeholder="">
+                            <input type="text" name="zip_code" class="form-control" placeholder="Zip Code">
                         </div>
                         <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Address') }}
                             </label>
-                            <input type="email" name="" class="form-control" placeholder="">
+                            <input type="text" name="address" class="form-control" placeholder="Address">
                         </div>
-                        <div class="input-area relative">
+                        {{-- <div class="input-area relative">
                             <label class="form-label">
                                 {{ __('Attach to Risk Profile') }}
                             </label>
                             <select name="" class="select2 form-control w-full">
                                 <option value="vip trader">{{ __('VIP Trader') }}</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="input-area relative lg:col-span-3">
                             <label class="form-label">
                                 {{ __('Comment') }}
                             </label>
-                            <textarea name="" class="form-control" rows="3"></textarea>
+                            <textarea name="comment" class="form-control" rows="3"></textarea>
                         </div>
 
                     </div>
@@ -113,10 +112,10 @@
                                 <label for="" class="form-label">
                                     {{ __('Password') }}
                                 </label>
-                                <input type="password" name="" class="form-control" placeholder="********">
+                                <input type="password" name="password" class="form-control" required placeholder="********">
                             </div>
                         </div>
-                        <div class="lg:col-span-8 col-span-12">
+                        {{-- <div class="lg:col-span-8 col-span-12">
                             <div class="grid md:grid-cols-3 col-span-1 gap-5">
                                 <div class="input-area">
                                     <label for="" class="form-label invisible">
@@ -200,12 +199,12 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-12 gap-5">
+            {{-- <div class="grid grid-cols-12 gap-5">
                 <div class="lg:col-span-4 col-span-12">
                     <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block mb-5">
                         {{ __('KYC Verification Status') }}
@@ -300,7 +299,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
         <div class="mt-10">
             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

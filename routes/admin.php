@@ -103,9 +103,10 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('transaction/{id}', 'transaction')->name('transaction');
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
-        Route::get('create', 'createCustomer')->name('create');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
-
+        
+        Route::get('create', 'createCustomer')->name('create');
+        Route::post('store', 'store')->name('store');
     });
 
     Route::resource('kyc-form', KycController::class);

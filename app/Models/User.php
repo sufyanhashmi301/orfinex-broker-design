@@ -459,7 +459,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             $query->where(function($query) use ($search) {
                 $query->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
-//                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
@@ -486,4 +486,5 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
+
 }

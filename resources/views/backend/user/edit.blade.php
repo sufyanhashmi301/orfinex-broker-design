@@ -68,7 +68,7 @@
                                 <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('current Forex Balance') }}
+                                            {{ __('Current Forex Balance') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
                                             {{ setting('currency_symbol','global') . mt5_total_balance($user->id) }}
@@ -111,7 +111,7 @@
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Used Margin') }}
+                                            {{ __('Current Used Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
                                             {{ setting('currency_symbol','global') .mt5_total_used_margin($user->id) }}
@@ -130,7 +130,7 @@
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Free Margin') }}
+                                            {{ __('Current Free Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
                                             {{ setting('currency_symbol','global') . mt5_total_free_margin($user->id) }}

@@ -3,12 +3,12 @@
 @endphp
 
 <a href="{{ route('admin.user.edit',$user->id) }}" class="flex">
-    
+
     <div>
         <span class="text-sm text-slate-900 dark:text-white block capitalize">
-            {{ safe($user->username) }}
+            {{ safe($user->full_name) }}
         </span>
-       
+
     </div>
 </a>
 

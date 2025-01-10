@@ -8,7 +8,7 @@
     </span>
     <div>
         <span class="text-sm text-slate-900 dark:text-white block capitalize">
-            {{ safe($user->username) }}
+            {{ safe($user->full_name) }}
         </span>
         <span class="text-xs lowercase text-slate-500 dark:text-slate-300">
             {{$user->email}}

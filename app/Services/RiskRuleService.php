@@ -58,12 +58,9 @@ class RiskRuleService
 
     // if the latest data fecthed is Old and not contain the custom date in URL. If the data is empty then load it anyways
     if(
-      // $risk_rule->updated_at < Carbon::now()->subHour() && 
-      // !isset($request->dataFrom) &&
-      // !isset($request['criteria_updated'])
-
-
-      1 == 1
+      $risk_rule->updated_at < Carbon::now()->subHour() && 
+      !isset($request->dataFrom) &&
+      !isset($request['criteria_updated'])
     ) {
       $request_data = array_merge($request_data, [
         "fromDateTime" => Carbon::today()->format('d/m/Y'), // "01/12/2024" Carbon::today()->format('d/m/Y')

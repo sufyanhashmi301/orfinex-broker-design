@@ -95,7 +95,7 @@ class GenerateCertificateService
     
     // Set the font file (ensure this file exists in your public/fonts directory)
     $fontPath = str_replace('public/', 'assets/', public_path('global/fonts/arial.ttf'));
-    $fontPath = str_replace('public\\', 'assets/', public_path('global/fonts/arial.ttf'));
+    $fontPath = str_replace('public\\', 'assets/', $fontPath);
     if (!file_exists($fontPath)) {
       dd('Font file not found.');
     }

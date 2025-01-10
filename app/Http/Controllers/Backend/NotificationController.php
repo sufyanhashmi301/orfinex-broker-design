@@ -142,9 +142,21 @@ class NotificationController extends Controller
 
     public function readNotification($id)
     {
-        if ($id == 0) {
-            Notification::where('for', 'admin')->update(['read' => 1]);
-            return redirect()->back();
+        $loggedInAdmin = auth()->user(); // Get the logged-in admin
+
+        if ($loggedInAdmin->hasRole('Super-Admin')) {
+            // Super-Admin: No user filter
+            if ($id == 0) {
+                Notification::where('for', 'admin')->update(['read' => 1]);
+                return redirect()->back();
+            }
+        } else {
+            $attachedUserIds = $loggedInAdmin->users->pluck('id');
+
+            if ($id == 0) {
+                Notification::where('for', 'admin')->whereIn('user_id', $attachedUserIds)->update(['read' => 1]);
+                return redirect()->back();
+            }
         }
         $notification = Notification::find($id);
         if ($notification->read == 0) {

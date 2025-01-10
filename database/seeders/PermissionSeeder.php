@@ -41,6 +41,9 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'customer-balance-add-or-subtract'],
             ['category' => 'Customer Management', 'name' => 'customer-change-password'],
             ['category' => 'Customer Management', 'name' => 'all-type-status'],
+            ['category' => 'Customer Management', 'name' => 'kyc-status-update'],
+            ['category' => 'Customer Management', 'name' => 'ib-partner-list'],
+            ['category' => 'Customer Management', 'name' => 'approve-ib-member'],
 
             ['category' => 'Deposit Management', 'name' => 'deposit-list'],
             ['category' => 'Deposit Management', 'name' => 'deposit-export'],

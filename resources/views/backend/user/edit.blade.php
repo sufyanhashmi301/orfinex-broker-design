@@ -197,7 +197,9 @@
                                     </a>
                                 </li>
                             @endcan
-                            <li class="nav-item" role="presentation">
+                                @can('kyc-status-update')
+
+                                <li class="nav-item" role="presentation">
                                 <a
                                     href=""
                                     class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
@@ -212,7 +214,9 @@
                                     {{ __('KYC') }}
                                 </a>
                             </li>
-                            @can('accounts-list')
+                                @endcan
+
+                            @can('ib-partner-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -345,14 +349,22 @@
                      @include('backend.user.include.__accounts')
                 @endcan
 
+                @can('kyc-status-update')
                 <!-- KYC Tab -->
                 @include('backend.user.include.__kycTab')
+                @endcan
 
                 <!-- IB -->
 {{--                @can('IB-List')--}}
+
+                @can('ib-partner-list')
                     @include('backend.user.include.__ib_info')
+                @endcan
+                @can('approve-ib-member')
                     @include('backend.user.include.__ib_approve')
-{{--                @endcan--}}
+                @endcan
+
+                {{--                @endcan--}}
 
                 <!-- earnings -->
                 @can('profit-list')

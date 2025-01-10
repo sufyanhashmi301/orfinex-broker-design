@@ -1,2 +1,2 @@
 <strong
-    class="{{$type !== 'subtract' && $type !== 'investment' && $type !== 'send_money' && $type !== 'withdraw' ? 'green-color': 'red-color'}}">{{ ($type !== 'subtract' && $type !== 'investment' && $type !== 'send_money' && $type !== 'withdraw' ? '+': '-' ).$amount.' '.$currency }}</strong>
+    class="{{$type !== 'subtract' && $type !== 'investment' && $type !== 'send_money' && $type !== 'withdraw' && $type !==  'bonus_refund' && $type !==  'bonus_subtract' ? 'green-color': 'red-color'}}">{{ ($type !== 'subtract' && $type !== 'investment' && $type !== 'send_money' && $type !== 'withdraw' && $type !==  'bonus_refund' && $type !==  'bonus_subtract' ? '+': '-' ).$amount.' '.$currency }}</strong>

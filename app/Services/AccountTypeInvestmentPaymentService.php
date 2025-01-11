@@ -109,9 +109,6 @@ class AccountTypeInvestmentPaymentService
       abort(400);
     } 
 
-    // dd($response);
-    
-
     if ($response['success']) {
         $resResult = $response['result'];
         $mt5_login = $resResult['login'];
@@ -155,9 +152,9 @@ class AccountTypeInvestmentPaymentService
     ];
   
     $response = $this->forexApiService->balanceOperation($data);
-    if($response['success'] == false){
-      dd($response);
-    }
+    // if($response['success'] == false){
+    //   dd($response);
+    // }
 
     if ($response['success'] && $response['result']['responseCode'] == 10009) {
         return true;
@@ -215,7 +212,9 @@ class AccountTypeInvestmentPaymentService
   /**
    * Main function
    */
-  public function investmentActive($account_type_investment_id){
+  public function investmentActive($account_type_investment_id, $data = []){
+
+    // abort(400);
 
     $investment = AccountTypeInvestment::findOrFail($account_type_investment_id);
 
@@ -248,24 +247,53 @@ class AccountTypeInvestmentPaymentService
       // apply commissions
       $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
 
+      // send mail if user promoted to next phase
+      $this->doEmail('phase_promotion_email', $investment, $data);
+
       // send email to user
-      $shortcodes = [
+      $this->doEmail('new_account_email', $investment);
+
+    }
+
+    // Fetch and store latest stats and hourly stats (Moved to command)
+  
+
+    return $investment;
+
+  }
+
+  /**
+   * Do necessary Emails related to account buy
+   */
+  private function doEmail($slug, $investment, $data = []) {
+    
+    // New account Email
+    if($slug == "new_account_email") {
+      $shortcodes2 = [
         '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
         '[[account_login]]' => $investment->login,
         '[[account_password]]' => $investment->main_password,
         '[[server]]' => setting('live_server', 'platform_api'),
       ];
-      $this->mailNotify($investment->user->email, 'new_account_details', $shortcodes);
-
+      $this->mailNotify($investment->user->email, 'new_account_details', $shortcodes2);
     }
-
     
+    //  Promotion Email
+    if($slug == "phase_promotion_email") {
+      if($data['phase_promotion'] ?? false) {
+        $shortcodes['[[full_name]]'] = $investment->user->first_name . ' ' . $investment->user->last_name;
+        $shortcodes['[[site_title]]'] = setting('site_title', 'global');
 
-    // Fetch and store latest stats and hourly stats 
-    // Artisan::call('update:investment-stats --both');
-    // Artisan::call('update:investment-stats --save-record');
-
-    return $investment;
+        if($data['passed_phase_step'] == 1) {
+          // evaluation
+          $shortcodes['[[phase_step]]'] = 'Evaluation';
+        } else {
+          // verification
+          $shortcodes['[[phase_step]]'] = 'Verification';
+        }
+        $this->mailNotify($investment->user->email, 'phase_promotion', $shortcodes);
+      }
+    }
 
   }
 

@@ -5,10 +5,12 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Models\Discount;
 use App\Models\AccountType;
+use App\Traits\NotifyTrait;
 use Illuminate\Support\Str;
 use App\Models\FundedBalance;
 use App\Enums\InvestmentStatus;
 use App\Enums\TradingObjective;
+use App\Models\UserCertificate;
 use App\Models\AccountTypePhase;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
@@ -18,10 +20,11 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\InvestmentPhaseApprovalService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
-use App\Models\UserCertificate;
 
 class AccountTypeInvestmentService
 {
+
+  use NotifyTrait;
 
   private $investment_phase_approve;
   private $investment_payment;
@@ -335,9 +338,9 @@ class AccountTypeInvestmentService
 
       // Check if the next phase investment is already created, then return
       $check_user_and_next_phase_exists = AccountTypeInvestment::where([
-                                                                    'account_type_phase_id' => $next_phase['id'], 
-                                                                    'unique_id' =>     $passed_investment->unique_id
-                                                                  ])->exists();
+                                            'account_type_phase_id' => $next_phase['id'], 
+                                            'unique_id' =>     $passed_investment->unique_id
+                                          ])->exists();
       if($check_user_and_next_phase_exists) {
         return true;
       }
@@ -385,7 +388,11 @@ class AccountTypeInvestmentService
 
       if($next_phase['phase_approval_method'] == 'auto_approval'){
         // Auto approve the next phase 
-        $this->investment_payment->investmentActive($new_investment->id);
+        $investment_active_data = [
+          'phase_promotion' => true,
+          'passed_phase_step' => $passed_phase['phase_step']
+        ] ;
+        $this->investment_payment->investmentActive($new_investment->id, $investment_active_data);
 
         // Investment phase approval table updation
         $phase_approval_data[0] = [
@@ -444,7 +451,21 @@ class AccountTypeInvestmentService
     );
     $violate_investment->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
 
-    // Change the rights (skipped for now)
+    // Send Email ---
+    $violate_investment_phase = $violate_investment->getPhaseSnapshotData();
+    $shortcodes['[[full_name]]'] = $violate_investment->user->first_name . ' ' . $violate_investment->user->last_name;
+    $shortcodes['[[site_title]]'] = setting('site_title', 'global');
+    $shortcodes['[[violation_reason]]'] = $reason == TradingObjective::DD_VIOLATED ? 'Daily Drawdown Limit Over' : 'Max. Drawdown Limit Over';
+
+    if($violate_investment_phase['phase_step'] == 1) {
+      // evaluation
+      $shortcodes['[[phase_step]]'] = 'Evaluation';
+    } else {
+      // verification
+      $shortcodes['[[phase_step]]'] = 'Verification';
+    }
+    $this->mailNotify($violate_investment->user->email, 'phase_violation', $shortcodes);
+    // Send Email ---
 
     // Add the record in investment phase approvals table
     $phase_approval_data[0] = [

@@ -96,8 +96,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     // Investments
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
-    Route::get('all-investments/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
-    Route::get('investment/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats
+    Route::get('all-accounts/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
+    Route::get('account/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats
 
     // Affiliate Module
     Route::get('affiliate-area', [UserAffiliateController::class, 'index'])->name('affiliate-area.index');
@@ -108,8 +108,6 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     // Certificates
     Route::get('/certificates', [UserCertificateController::class, 'index'])->name('certificates.index');
-
-
 
     // ======== Optimizations ========
 

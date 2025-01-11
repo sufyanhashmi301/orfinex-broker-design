@@ -131,20 +131,20 @@ class DepositController extends GatewayController
 //        $targetId = '1063794';
 //        $targetType = 'forex_deposit';
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Payment With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+
+        // send email if the payment is pending
         if ($gatewayInfo->type == 'manual') {
             $shortcodes = [
                 '[[full_name]]' => $txnInfo->user->full_name,
-                '[[txn]]' => $txnInfo->tnx,
-                '[[gateway_name]]' => $txnInfo->method,
-                '[[deposit_amount]]' => $txnInfo->amount,
+                '[[transaction_id]]' => $txnInfo->tnx,
+                '[[amount]]' => $txnInfo->amount . $gatewayInfo->currency,
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
-                '[[message]]' => $txnInfo->approval_cause,
-                '[[status]]' => 'Pending',
             ];
-        //    $this->mailNotify($txnInfo->user->email, 'user_manual_deposit_request', $shortcodes);
+           $this->mailNotify($txnInfo->user->email, 'payment_pending', $shortcodes);
 
         }
+
         return self::depositAutoGateway($gatewayInfo->gateway_code, $txnInfo);
 
     }

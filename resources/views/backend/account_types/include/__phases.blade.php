@@ -59,7 +59,7 @@
           </select>
         </div>
 
-        <div class="input-area">
+        <div class="input-area" style="display: none">
           <label class="form-label" for="">{{ __('Validity Period') }}</label>
           <select name="phases[0][validity_period]" class="cursor-pointer validity-period form-control w-full">
             @for ($i = 1; $i <= 12; $i++)
@@ -69,6 +69,8 @@
               @endfor
           </select>
         </div>
+
+
         <div class="input-area">
           <label class="form-label" for="">{{ __('Server') }}</label>
           <select name="phases[0][server]" class="cursor-pointer phase-server form-control w-full">
@@ -186,7 +188,7 @@
             </select>
           </div>
 
-          <div class="input-area">
+          <div class="input-area" style="display: none">
             <label class="form-label" for="">{{ __('Validity Period') }}</label>
             <select name="phases[{{ $phase->phase_step - 1 }}][validity_period]" class="cursor-pointer validity-period form-control w-full">
               @for ($i = 1; $i <= 12; $i++)
@@ -360,8 +362,12 @@
           <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
           <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
           <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+
+          <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][trading_days]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+
           <td class="table-td" style="display: ${ phase_index == 0 ? '' : 'none' }" ><input type="${ phase_index == 0 ? 'text' : 'hidden' }" ${ phase_index == 0 ? '' : 'data-value="0"' } name="phases[${phase_index}][rules][${rule_index}][price]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
           <td class="table-td" style="display: ${ phase_index == 0 ? '' : 'none' }" ><input type="${ phase_index == 0 ? 'text' : 'hidden' }" ${ phase_index == 0 ? '' : 'data-value="0"' } name="phases[${phase_index}][rules][${rule_index}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+          
           ${ phase_index == 0 ? delete_rule_html : '' }
       </tr>`;
 

@@ -228,17 +228,17 @@
                         </div>
                     @endif
                     
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
+                    {{-- <div class="input-area">
+                        <label class="form-label" for="">{{ __('Minimum Trading Days') }} <b>(Leave Empty for step wise trading days)</b></label>
                         <input
                             type="number"
                             name="trading_days"
                             class="form-control"
                             placeholder="Minimum Trading Days"
                             value="{{ old('trading_days') }}"
-                            required
                         />
-                    </div>
+                    </div> --}}
+                    
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Company Profit Share (%)') }}</label>
                         <input

@@ -299,7 +299,7 @@
     </div>
     <div class="card p-6 mb-6">
         @if (
-            $trading_objectives['daily_drawdown_status'] != 'violated' &&
+                $trading_objectives['daily_drawdown_status'] != 'violated' &&
                 $trading_objectives['max_drawdown_status'] != 'violated' &&
                 $trading_objectives['profit_target_status'] == 'passed' &&
                 $trading_objectives['minimum_trading_days_status'] == 'passed')
@@ -307,9 +307,13 @@
                 @if ($investment->getPhaseSnapshotData()['type'] == 'funded_phase')
                     {{-- <b><span class="text-sm"> <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> Close all active trades to update the balance in payout wallet!</span></b> --}}
                 @else
-                    <b><span class="text-sm"> <iconify-icon icon="lucide:info"
-                                style="position: relative; top:1px"></iconify-icon> Close all active trades to get promoted
-                            to next phase!</span></b>
+                    @if($investment->status == \App\Enums\InvestmentStatus::ACTIVE) 
+                        <b><span class="text-sm"> 
+                            <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> 
+                            Close all active trades to get promoted to next phase!
+                        </span></b>
+                    @endif
+                    
                 @endif
 
             </div>

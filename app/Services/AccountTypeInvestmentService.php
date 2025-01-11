@@ -222,7 +222,13 @@ class AccountTypeInvestmentService
 
     // ---- Trading Days ----
     $trading_objectives['minimum_trading_days_status'] = TradingObjective::PASSING;
-    $trading_objectives['minimum_trading_days'] = $investment->getAccountTypeSnapshotData()['trading_days'];
+    $trading_objectives['minimum_trading_days'] = $investment->getAccountTypeSnapshotData()['trading_days'] ?? null;
+
+    // if the trading days are set at rules level
+    if($trading_objectives['minimum_trading_days'] == null) {
+      $trading_objectives['minimum_trading_days'] = $investment->getRuleSnapshotData()['trading_days'];
+    }
+
     $trading_objectives['remaining_trading_days'] = $trading_objectives['minimum_trading_days'] - $investment->accountTypeInvestmentStat->trading_days;
 
     if($investment->accountTypeInvestmentStat->trading_days >= $trading_objectives['minimum_trading_days']){

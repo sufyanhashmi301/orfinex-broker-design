@@ -43,10 +43,12 @@
                 <th scope="col" class="table-th">{{ __('Daily DD') }}</th>
                 <th scope="col" class="table-th">{{ __('Max DD') }}</th>
                 <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                <th scope="col" class="table-th">{{ __('Min. Trading Days') }}</th>
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Price') }}</th>
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Discount') }}</th>
                 {{-- <th scope="col" class="table-th">{{ __('New Orders') }}</th> --}}
                 <th scope="col" class="table-th multiple-phase-hidden">{{ __('Action') }}</th>
+
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
@@ -66,8 +68,11 @@
                     <th scope="col" class="table-th">{{ __('Daily DD') }}</th>
                     <th scope="col" class="table-th">{{ __('Max DD') }}</th>
                     <th scope="col" class="table-th">{{ __('Profit Target') }}</th>
+                    <th scope="col" class="table-th ">{{ __('Min. Trading Days') }}</th>
                     <th scope="col" class="table-th" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">{{ __('Price') }}</th>
                     <th scope="col" class="table-th" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">{{ __('Discount') }}</th>
+
+                    
                     {{-- <th scope="col" class="table-th">{{ __('New Orders') }}</th> --}}
                     @if ($phase->phase_step - 1 == 0)
                         <th scope="col" class="table-th">{{ __('Action') }}</th>
@@ -94,6 +99,9 @@
                             </td>
                             <td class="table-td">
                                 <input type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->profit_target }}" />
+                            </td>
+                            <td class="table-td">
+                                <input type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][trading_days]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->trading_days }}" />
                             </td>
                             <td class="table-td" style="display: {{ (($phase->phase_step - 1) != 0 ? 'none' : '') }}">
                                 <input type="text" name="phases[{{ $phase->phase_step - 1 }}][rules][{{ $index }}][price]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" data-value="{{ $rule->amount }}" />

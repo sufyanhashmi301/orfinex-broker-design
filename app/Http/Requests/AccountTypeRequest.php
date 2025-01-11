@@ -48,7 +48,7 @@ class AccountTypeRequest extends FormRequest
                 setting('is_group_range', 'global') ? ['required', new MinDigits(6)] : ['nullable', new MinDigits(6)],
                 ['integer']
             ),
-            'trading_days' => 'required|integer',
+            // 'trading_days' => 'required|integer', // 
             'profit_share' => 'required|min:1|max:100|integer',
             'platform_group' => 'required',
             'type' => 'required',

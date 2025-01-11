@@ -21,6 +21,7 @@ class AccountTypePhaseRule extends Model
 			'daily_drawdown_limit',
 			'max_drawdown_limit',
 			'profit_target',
+			'trading_days',
 			'profit_share_user',
 			'profit_share_admin',
 			'is_new_order'

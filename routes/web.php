@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     // ======== Optimizations ========
 
-    // Investments
+    // Accounts
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
     Route::get('all-accounts/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
     Route::get('account/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats

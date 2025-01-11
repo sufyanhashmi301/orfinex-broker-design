@@ -168,17 +168,20 @@
                     @endif
 
 
-                    <div class="input-area">
-                        <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
-                        <input
-                            type="number"
-                            name="trading_days"
-                            class="form-control"
-                            placeholder="Minimum Trading Days"
-                            value="{{ $account_type->trading_days }}"
-                            required
-                        />
-                    </div>
+                    {{-- @if (!empty($account_type->trading_days))
+                        <div class="input-area">
+                            <label class="form-label" for="">{{ __('Minimum Trading Days') }}</label>
+                            <input
+                                type="number"
+                                name="trading_days"
+                                class="form-control"
+                                placeholder="Minimum Trading Days"
+                                value="{{ $account_type->trading_days }}"
+                            />
+                        </div>
+                    @endif --}}
+                    
+                    
                     <div class="input-area">
                         <label class="form-label" for="">{{ __('Company Profit Share (%)') }}</label>
                         <input

@@ -28,7 +28,7 @@
                         <p class="text-sm text-success-500 mb-2">
                             {{ __('Available in countries: ') }} {{ implode(', ', json_decode($schema->countries,true)) }}
                         </p>
-                        <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->desc }}</p>
+                        <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">{{ $schema->description }}</p>
                     </div>
                     <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                         <li class="flex items-center py-3">

@@ -6,6 +6,7 @@ use App\Enums\TraderType;
 use App\Models\AccountType;
 use App\Traits\NotifyTrait;
 use Carbon\CarbonImmutable;
+use App\Models\AffiliateRule;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
 use App\Enums\InvestmentPhaseApproval;
@@ -246,8 +247,8 @@ class AccountTypeInvestmentPaymentService
 
       // apply commissions
       // $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
-      
-      // $this->affiliate->applyCommission($investment);
+
+      $this->affiliate->applyCommission($investment);
 
       // send mail if user promoted to next phase
       $this->doEmail('phase_promotion_email', $investment, $data);

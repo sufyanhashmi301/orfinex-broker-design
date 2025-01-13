@@ -48,7 +48,7 @@ class UserAffiliateService
     // check if the affiliate rule applys to account type
     $buyer_user_id = $investment->user_id;
     $rule = $investment->getRuleSnapshotData();
-    $account_type_id = $investment->getAccountTypeSnapshotData()['id'];
+    $account_type_id = (string) $investment->getAccountTypeSnapshotData()['id'];
 
     // getting the latest rule affiliate assigned to accountType if not set to all
     if( !AffiliateRule::whereJsonContains('for_account_type_ids', 'all')->orderBy('id', 'DESC')->exists() ){

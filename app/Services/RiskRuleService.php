@@ -7,9 +7,9 @@ use App\Services\ForexApiService;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Exception\RequestException;
 
-
 class RiskRuleService
 {
+
   protected $risk_api_call;
 
   public function __construct(ForexApiService $risk_api_call) {
@@ -17,6 +17,8 @@ class RiskRuleService
   }
 
   private function doApiRequest($request, $risk_rule_slug, $risk_rule, $request_data) {
+    
+
     $data_from = date('d/m/Y', strtotime($request->dataFrom));
     $data_to = date('d/m/Y', strtotime($request->dataTo));
 

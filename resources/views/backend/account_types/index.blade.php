@@ -105,11 +105,11 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
-                                        @can('schema-edit')
+                                        {{-- @can('schema-edit')
                                                 <a href="{{route('admin.multi-level.view',$account_type->id)}}" class="action-btn">
                                                     <iconify-icon icon="lucide:eye"></iconify-icon>
                                                 </a>
-                                            @endcan
+                                            @endcan --}}
                                             @can('schema-edit')
                                                 <a href="{{route('admin.account-type.edit',$account_type->id)}}" class="action-btn">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>

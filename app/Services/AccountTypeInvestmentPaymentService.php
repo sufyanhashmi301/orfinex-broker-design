@@ -114,12 +114,12 @@ class AccountTypeInvestmentPaymentService
         $mt5_login = $resResult['login'];
 
         if ($mt5_login && $resResult['responseCode'] == 0) {
-            // No need to set rights individually
-            // $user_rights_data =  [
-            //     "login" => $mt5_login,
-            //     "rights" => 'USER_RIGHT_ENABLED',
-            // ];
-            // $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
+ 
+            $user_rights_data =  [
+                "login" => $mt5_login,
+                "rights" => 'USER_RIGHT_ENABLED',
+            ];
+            $user_rights_response = $this->forexApiService->setUserRights($user_rights_data);
             // if($user_rights_response['success'] == false){
             //   dd($response);
             // }
@@ -171,11 +171,11 @@ class AccountTypeInvestmentPaymentService
   private function createTradingAccount($investment) {
     $password = generate_dummy_password();
     
-    $phase_ids = AccountType::find($this->accountTypeData['id'])->accountTypePhases->pluck('id');
+    // $phase_ids = AccountType::find($this->accountTypeData['id'])->accountTypePhases->pluck('id');
   
-    $latest_investments = AccountTypeInvestment::whereHas('accountTypePhaseRule', function($query) use ($phase_ids) {
-        $query->whereIn('account_type_phase_id', $phase_ids);
-      })->whereIn('status', [InvestmentStatus::ACTIVE, InvestmentStatus::VIOLATED, InvestmentStatus::PASSED])->latest('login')->first();
+    // $latest_investments = AccountTypeInvestment::whereHas('accountTypePhaseRule', function($query) use ($phase_ids) {
+    //     $query->whereIn('account_type_phase_id', $phase_ids);
+    //   })->whereIn('status', [InvestmentStatus::ACTIVE, InvestmentStatus::VIOLATED, InvestmentStatus::PASSED])->latest('login')->first();
 
     // Suggesting the login ID of investment w.r.t account range
     // if($latest_investments) {
@@ -245,7 +245,8 @@ class AccountTypeInvestmentPaymentService
       $investment->save();
 
       // apply commissions
-      $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
+      // $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
+      $this->affiliate->applyCommission($investment);
 
       // send mail if user promoted to next phase
       $this->doEmail('phase_promotion_email', $investment, $data);

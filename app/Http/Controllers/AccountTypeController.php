@@ -120,6 +120,23 @@ class AccountTypeController extends Controller
      */
     public function destroy(AccountType $accountType)
     {
-        //
+        // Step 1: Retrieve all AccountTypePhases associated with the AccountType
+        $accountTypePhases = $accountType->accountTypePhases;
+
+        // Step 2: Loop through each AccountTypePhase and delete its rules
+        foreach ($accountTypePhases as $phase) {
+            $phase->accountTypePhaseRules()->delete(); // Delete all rules associated with this phase
+        }
+
+        // Step 3: Delete all AccountTypePhases
+        $accountType->accountTypePhases()->delete();
+
+        // Step 4: Delete the AccountType
+        $accountType->delete();
+
+        notify()->success('Account Type deleted Successfully!');
+        return redirect()->back();
     }
+
+
 }

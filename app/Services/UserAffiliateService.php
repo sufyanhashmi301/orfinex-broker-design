@@ -41,13 +41,14 @@ class UserAffiliateService
   }
 
   // Apply commission to direct referrer + levels
-  public function applyCommission($account_type_rule_id, $buyer_user_id) {  
+  public function applyCommission($investment) {  
 
     
 
     // check if the affiliate rule applys to account type
-    $rule = AccountTypePhaseRule::findOrFail($account_type_rule_id);
-    $account_type_id = (string) $rule->accountTypePhase->accountType->id;
+    $buyer_user_id = $investment->user_id;
+    $rule = $investment->getRuleSnapshotData();
+    $account_type_id = $investment->getAccountTypeSnapshotData()['id'];
 
     // getting the latest rule affiliate assigned to accountType if not set to all
     if( !AffiliateRule::whereJsonContains('for_account_type_ids', 'all')->orderBy('id', 'DESC')->exists() ){
@@ -81,7 +82,7 @@ class UserAffiliateService
     $direct_refferer_commission_percentage = $affiliate_rule_configuration->where('count_start', '<=', $refer_count)->where('count_end', '>=', $refer_count)->first()->commission_percentage;
 
     // calculate the total amount and commission 
-    $total_amount = $rule->amount - $rule->discount;
+    $total_amount = $rule['amount'] - $rule['discount'];
     $total_commission_amount = $this->calculatePartAmount($total_amount, $direct_refferer_commission_percentage);
     $direct_referral_commission_amount = $total_commission_amount;
 

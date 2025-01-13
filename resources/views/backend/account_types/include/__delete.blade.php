@@ -6,7 +6,7 @@
                     <iconify-icon icon="heroicons:question-mark-circle-16-solid" class="display-1 mb-3"></iconify-icon>
                     <h3 class="mb-0">{{ __('Are you sure?') }}</h3>
                     <p class="lead my-3">
-                        {{ __('Please type "delete" to confirm.') }}
+                        {{ __('Please type "delete" to confirm. Active accounts will remain operational and continue as usual. Payments for this account type can still be approved.') }}
                     </p>
                     <div class="input-area">
                         <input type="text" id="deleteConfirmationInput" class="form-control" placeholder="delete">

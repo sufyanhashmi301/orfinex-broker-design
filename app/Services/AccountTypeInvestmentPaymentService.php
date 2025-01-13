@@ -246,7 +246,8 @@ class AccountTypeInvestmentPaymentService
 
       // apply commissions
       // $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
-      $this->affiliate->applyCommission($investment);
+      
+      // $this->affiliate->applyCommission($investment);
 
       // send mail if user promoted to next phase
       $this->doEmail('phase_promotion_email', $investment, $data);

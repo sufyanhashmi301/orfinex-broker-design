@@ -45,7 +45,8 @@ class UpdateExchangeRates extends Command
 
                 // Update rates in the Rate model
                 foreach ($rates as $countryCode => $rate) {
-                    Rate::where('currency_code', $countryCode)->update(['rate' => $rate]);
+                    $formattedRate = number_format($rate, 2, '.', ''); // Format rate to 2 decimals
+                    Rate::where('currency_code', $countryCode)->update(['rate' => $formattedRate]);
                 }
 
                 // Fetch unique currencies from DepositMethod and WithdrawMethod
@@ -58,16 +59,18 @@ class UpdateExchangeRates extends Command
 
                 // Update rates in the DepositMethod table
                 foreach ($filteredRates as $currencyCode => $rate) {
+                    $formattedRate = number_format($rate, 2, '.', ''); // Format rate to 2 decimals
                     DB::table('deposit_methods')
                         ->where('currency', $currencyCode)
-                        ->update(['rate' => $rate]);
+                        ->update(['rate' => $formattedRate]);
                 }
 
                 // Update rates in the WithdrawMethod table
                 foreach ($filteredRates as $currencyCode => $rate) {
+                    $formattedRate = number_format($rate, 2, '.', ''); // Format rate to 2 decimals
                     DB::table('withdraw_methods')
                         ->where('currency', $currencyCode)
-                        ->update(['rate' => $rate]);
+                        ->update(['rate' => $formattedRate]);
                 }
 
                 $this->info('Exchange rates updated successfully for all models.');
@@ -78,4 +81,5 @@ class UpdateExchangeRates extends Command
             $this->error('Error: ' . $e->getMessage());
         }
     }
+
 }

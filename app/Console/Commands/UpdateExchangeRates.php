@@ -45,7 +45,7 @@ class UpdateExchangeRates extends Command
 
                 // Update rates in the Rate model
                 foreach ($rates as $countryCode => $rate) {
-                    $formattedRate = number_format($rate, 2, '.', ''); // Format rate to 2 decimals
+                    $formattedRate = $this->truncateToTwoDecimals($rate); // Truncate rate
                     Rate::where('currency_code', $countryCode)->update(['rate' => $formattedRate]);
                 }
 
@@ -59,7 +59,7 @@ class UpdateExchangeRates extends Command
 
                 // Update rates in the DepositMethod table
                 foreach ($filteredRates as $currencyCode => $rate) {
-                    $formattedRate = number_format($rate, 2, '.', ''); // Format rate to 2 decimals
+                    $formattedRate = $this->truncateToTwoDecimals($rate); // Truncate rate
                     DB::table('deposit_methods')
                         ->where('currency', $currencyCode)
                         ->update(['rate' => $formattedRate]);
@@ -67,7 +67,7 @@ class UpdateExchangeRates extends Command
 
                 // Update rates in the WithdrawMethod table
                 foreach ($filteredRates as $currencyCode => $rate) {
-                    $formattedRate = number_format($rate, 2, '.', ''); // Format rate to 2 decimals
+                    $formattedRate = $this->truncateToTwoDecimals($rate); // Truncate rate
                     DB::table('withdraw_methods')
                         ->where('currency', $currencyCode)
                         ->update(['rate' => $formattedRate]);
@@ -80,6 +80,17 @@ class UpdateExchangeRates extends Command
         } catch (\Exception $e) {
             $this->error('Error: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Truncate a number to 2 decimal places without rounding.
+     *
+     * @param float $number
+     * @return float
+     */
+    private function truncateToTwoDecimals($number)
+    {
+        return floor($number * 100) / 100;
     }
 
 }

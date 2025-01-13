@@ -367,7 +367,7 @@
 
     <!-- Modal for Send Email -->
     @can('customer-mail-send')
-        @include('backend.user.include.__mail_send',['name' => $user->first_name.' '.$user->last_name, 'id' => $user->id])
+        @include('backend.user.include.__mail_send', ['name' => $user->first_name.' '.$user->last_name, 'id' => $user->id])
     @endcan
 
     {{-- Modal for add Forex Account --}}

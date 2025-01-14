@@ -11,6 +11,7 @@ interface InvestmentStatus
     const ACTIVE = 'active';
     const PASSED = 'passed';
     const VIOLATED = 'violated';
+    const EXPIRED = 'expired';
 
     const PROMOTION_REQUEST = 'promotion_request';
 }

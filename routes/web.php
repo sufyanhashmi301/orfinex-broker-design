@@ -109,6 +109,12 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     // Certificates
     Route::get('/certificates', [UserCertificateController::class, 'index'])->name('certificates.index');
 
+    // Contracts
+    Route::get('contracts', [ContractController::class, 'index'])->name('contracts');
+    Route::get('contract/{id}', [ContractController::class, 'show'])->name('contract.show');
+    Route::post('contract/store', [ContractController::class, 'storeContract'])->name('contract.store');
+
+
     // ======== Optimizations ========
 
     Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
@@ -307,9 +313,6 @@ Route::get('user/transfer', [TransferController::class, 'index'])->name('user.tr
 
 Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers');
 
-Route::get('user/contracts', [ContractController::class, 'index'])->name('user.contracts');
-Route::get('user/contract/{id}', [ContractController::class, 'show'])->name('contract.show');
-Route::post('/contract/store', [ContractController::class, 'storeContract'])->name('user.contract.store');
 
 
 Route::get('user/agreements', function () {

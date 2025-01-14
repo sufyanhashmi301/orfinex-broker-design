@@ -7,11 +7,13 @@ use App\Models\AccountType;
 use App\Traits\NotifyTrait;
 use Carbon\CarbonImmutable;
 use App\Models\AffiliateRule;
+use App\Enums\AccountTypePhase as AccountTypePhaseEnum;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
 use App\Enums\InvestmentPhaseApproval;
 use Illuminate\Support\Facades\Artisan;
 use App\Jobs\TradingStatsRunCommandsJob;
+use App\Models\Contract;
 use Illuminate\Http\Client\RequestException;
 
 class AccountTypeInvestmentPaymentService
@@ -25,12 +27,14 @@ class AccountTypeInvestmentPaymentService
   protected $phaseData;
   protected $ruleData;
   public $affiliate;
+  protected $contract;
 
-  public function __construct(ForexApiService $forexApiService, InvestmentPhaseApprovalService $investment_phase_approve, UserAffiliateService $userAffiliate)
+  public function __construct(ForexApiService $forexApiService, InvestmentPhaseApprovalService $investment_phase_approve, UserAffiliateService $userAffiliate, ContractService $contract)
   {
     $this->investment_phase_approve = $investment_phase_approve;
     $this->forexApiService = $forexApiService;
     $this->affiliate = $userAffiliate;
+    $this->contract = $contract;
   }
 
   private function createUserApiCall($user_data) {
@@ -230,31 +234,46 @@ class AccountTypeInvestmentPaymentService
     
     // deposit balance to trading account
     if($investment->trader_type == TraderType::MT5) {
-      $deposit = $this->tradingAccountDeposit($trading_account_login_id, $investment);
+        $deposit = $this->tradingAccountDeposit($trading_account_login_id, $investment);
     }
 
     // If deposit is successful, update the Investment table and add the record to investment_phase_approvals_table
     if ($deposit) {
+
+       // Funded Phase - Contract Creation
+      if($this->phaseData['type'] == AccountTypePhaseEnum::FUNDED) {
+        if(!Contract::where('account_type_investment_id', $investment->id)->exists()){
+          $this->contract->createContract($investment);
+        }
+      }
 
       $time_now = CarbonImmutable::now();
 
       $investment->account_name = $this->accountTypeData['title'] .'_'. $investment->id;
       $investment->login = $trading_account_login_id;
       $investment->status = InvestmentStatus::ACTIVE;
-      $investment->phase_started_at = $time_now;
+      $investment->phase_started_at = $time_now; 
+
+      // if it is phase promotion then add the mail sent to queue
+      $is_phase_promotion = false;
+      if($data['phase_promotion'] ?? false) {
+        $investment->mail_sent = 0;
+        $is_phase_promotion = true;
+      }
 
       $investment->save();
 
       // apply commissions
-      // $this->affiliate->applyCommission($this->ruleData['id'], $investment->user_id);
-
       $this->affiliate->applyCommission($investment);
 
-      // send mail if user promoted to next phase
-      $this->doEmail('phase_promotion_email', $investment, $data);
+      // send mail if user promoted to next phase -> Moved to commands
+      // $this->doEmail('phase_promotion_email', $investment, $data);
 
-      // send email to user
-      $this->doEmail('new_account_email', $investment);
+      // send email to user only if approved by admin and not phase promotion
+      if(!$is_phase_promotion) {
+        $this->doEmail('new_account_email', $investment);
+      }
+      
 
     }
 
@@ -282,21 +301,21 @@ class AccountTypeInvestmentPaymentService
     }
     
     //  Promotion Email
-    if($slug == "phase_promotion_email") {
-      if($data['phase_promotion'] ?? false) {
-        $shortcodes['[[full_name]]'] = $investment->user->first_name . ' ' . $investment->user->last_name;
-        $shortcodes['[[site_title]]'] = setting('site_title', 'global');
+    // if($slug == "phase_promotion_email") {
+    //   if($data['phase_promotion'] ?? false) {
+    //     $shortcodes['[[full_name]]'] = $investment->user->first_name . ' ' . $investment->user->last_name;
+    //     $shortcodes['[[site_title]]'] = setting('site_title', 'global');
 
-        if($data['passed_phase_step'] == 1) {
-          // evaluation
-          $shortcodes['[[phase_step]]'] = 'Evaluation';
-        } else {
-          // verification
-          $shortcodes['[[phase_step]]'] = 'Verification';
-        }
-        $this->mailNotify($investment->user->email, 'phase_promotion', $shortcodes);
-      }
-    }
+    //     if($data['passed_phase_step'] == 1) {
+    //       // evaluation
+    //       $shortcodes['[[phase_step]]'] = 'Evaluation';
+    //     } else {
+    //       // verification
+    //       $shortcodes['[[phase_step]]'] = 'Verification';
+    //     }
+    //     $this->mailNotify($investment->user->email, 'phase_promotion', $shortcodes);
+    //   }
+    // }
 
   }
 

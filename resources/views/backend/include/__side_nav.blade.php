@@ -336,6 +336,16 @@
             </a>
         </li>
 
+        {{-- *************************************************************  Contracts *********************************************************--}}
+        <li class="" >
+            <a href="{{route('admin.manage-contracts.index')}}" class="navItem {{ isActive('admin.manage-contracts.index') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:file-text"></iconify-icon>
+                    <span>{{ __('Manage Contracts') }}</span>
+                </span>
+            </a>
+        </li>
+
 
         {{-- *************************************************************  Essentials *********************************************************--}}
         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',

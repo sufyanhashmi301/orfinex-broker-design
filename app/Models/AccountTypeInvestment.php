@@ -25,6 +25,7 @@ class AccountTypeInvestment extends Model
         'main_password',
         'status',
         'violation_reason',
+        'mail_sent',
     ];
 
     /**
@@ -60,6 +61,10 @@ class AccountTypeInvestment extends Model
 
     public function fundedBalance() {
         return $this->hasOne(FundedBalance::class);
+    }
+
+    public function contract() {
+        return $this->hasOne(Contract::class);
     }
 
 

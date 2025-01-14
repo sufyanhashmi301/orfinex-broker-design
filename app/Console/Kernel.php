@@ -34,6 +34,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:accounts-open-positions')->hourly();
         $schedule->command('update:recent-approved-accounts-stats')->everyFiveMinutes();
 
+        $schedule->command('accounts:promote-or-violate')->everyThreeMinutes();
+
     }
 
     /**

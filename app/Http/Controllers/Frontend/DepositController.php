@@ -137,7 +137,7 @@ class DepositController extends GatewayController
             $shortcodes = [
                 '[[full_name]]' => $txnInfo->user->full_name,
                 '[[transaction_id]]' => $txnInfo->tnx,
-                '[[amount]]' => $txnInfo->amount . $gatewayInfo->currency,
+                '[[amount]]' => $txnInfo->pay_amount . $txnInfo->pay_currency,
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
             ];

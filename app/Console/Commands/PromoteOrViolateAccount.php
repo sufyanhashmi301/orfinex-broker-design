@@ -6,6 +6,7 @@ use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
 use App\Services\AccountTypeInvestmentService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class PromoteOrViolateAccount extends Command
 {
@@ -28,7 +29,7 @@ class PromoteOrViolateAccount extends Command
      *
      * @var string
      */
-    protected $description = 'Will run every minute after stats updation to check exiting users for promotion or violation.';
+    protected $description = 'Will run every hours after stats hourly records to check existing users for promotion or violation.';
 
     /**
      * Execute the console command.
@@ -57,6 +58,9 @@ class PromoteOrViolateAccount extends Command
         }
 
         $this->info('Request Completed!');
+
+        // send emails to promoted and violated accounts accordingly
+        Artisan::call('send:promote-violate-accounts-mails');
 
 
     }

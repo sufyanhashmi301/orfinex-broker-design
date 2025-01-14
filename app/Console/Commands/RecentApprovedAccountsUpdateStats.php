@@ -32,7 +32,7 @@ class RecentApprovedAccountsUpdateStats extends Command
     public function handle()
     {
         $recent_active_investments = AccountTypeInvestment::where('status', InvestmentStatus::ACTIVE)
-                                        ->where('created_at', '>=', Carbon::now()->subMinutes(5))
+                                        ->where('phase_started_at', '>=', Carbon::now()->subMinutes(5))
                                         ->get();
 
         if(count($recent_active_investments) > 0) {

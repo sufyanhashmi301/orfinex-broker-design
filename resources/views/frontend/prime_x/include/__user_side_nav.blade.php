@@ -135,7 +135,7 @@
         <li>
             <a href="{{ route('user.contracts') }}" class="navItem {{ isActive('user.contracts') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="fluent-mdl2:edit-note"></iconify-icon>
+                    <iconify-icon class="nav-icon" icon="lucide:file-text"></iconify-icon>
                     <span>{{ __('Contracts') }}</span>
                 </span>
             </a>

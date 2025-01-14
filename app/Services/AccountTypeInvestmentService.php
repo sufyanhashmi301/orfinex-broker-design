@@ -335,12 +335,14 @@ class AccountTypeInvestmentService
     // check if there are more phases to current account type (automatically filter funded phase out)
     if((count($all_phases_of_investment_account_type) - $passed_phase['phase_step']) != 0){
 
+
       // get the next phase and rule
       $next_phase = collect($snapshot->account_types_phases_data)->firstWhere('phase_step', $passed_phase['phase_step'] + 1);
       $next_phase_rule = collect($snapshot->account_types_phases_rules_data)
                         ->where('account_type_phase_id', $next_phase['id'])
                         ->where('unique_id', $passed_phase_rules['unique_id'])
                         ->first();
+      
 
       // Check if the next phase investment is already created, then return
       $check_user_and_next_phase_exists = AccountTypeInvestment::where([
@@ -353,6 +355,7 @@ class AccountTypeInvestmentService
 
       // Update the phase_ended_at of passed phase
       $passed_investment->phase_ended_at = Carbon::now();
+      $passed_investment->mail_sent = 0;
 
       // --- Create the investment along with the snapshot ---
       $currency = setting('site_currency', 'global');
@@ -397,7 +400,7 @@ class AccountTypeInvestmentService
         $investment_active_data = [
           'phase_promotion' => true,
           'passed_phase_step' => $passed_phase['phase_step']
-        ] ;
+        ];
         $this->investment_payment->investmentActive($new_investment->id, $investment_active_data);
 
         // Investment phase approval table updation
@@ -449,29 +452,18 @@ class AccountTypeInvestmentService
 
     $response = $this->forexApiService->balanceOperation($data);
 
+    // Update account
     $violate_investment->update(
       [
         'status' => InvestmentStatus::VIOLATED,
-        'violation_reason' => $reason
+        'violation_reason' => $reason,
+        'mail_sent' => 0
       ]
     );
+
+    // Update account stats
     $violate_investment->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
 
-    // Send Email ---
-    $violate_investment_phase = $violate_investment->getPhaseSnapshotData();
-    $shortcodes['[[full_name]]'] = $violate_investment->user->first_name . ' ' . $violate_investment->user->last_name;
-    $shortcodes['[[site_title]]'] = setting('site_title', 'global');
-    $shortcodes['[[violation_reason]]'] = $reason == TradingObjective::DD_VIOLATED ? 'Daily Drawdown Limit Over' : 'Max. Drawdown Limit Over';
-
-    if($violate_investment_phase['phase_step'] == 1) {
-      // evaluation
-      $shortcodes['[[phase_step]]'] = 'Evaluation';
-    } else {
-      // verification
-      $shortcodes['[[phase_step]]'] = 'Verification';
-    }
-    $this->mailNotify($violate_investment->user->email, 'phase_violation', $shortcodes);
-    // Send Email ---
 
     // Add the record in investment phase approvals table
     $phase_approval_data[0] = [

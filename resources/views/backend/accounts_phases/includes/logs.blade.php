@@ -25,10 +25,16 @@
                             <tbody>
                                 @foreach($investment_phase_records as $record)
                                     @php
+                                        if(!isset($record->accountTypeInvestment)) {
+                                            continue;
+                                        }
+
                                         $accountTypeData = $record->accountTypeInvestment->getAccountTypeSnapshotData();
                                         $phaseData = $record->accountTypeInvestment->getPhaseSnapshotData();
                                         
                                         $ruleData = $record->accountTypeInvestment->getRuleSnapshotData();
+
+                                        
                                     @endphp
                                     <tr>
                                         <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$record->accountTypeInvestment->unique_id}}">{{ $record->accountTypeInvestment->unique_id }}</a> </b></td>

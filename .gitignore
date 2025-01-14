@@ -2,6 +2,7 @@
 /assets/hot
 /assets/storage
 /assets/global/images/*
+/assets/frontend/user_contracts/
 /storage/*.key
 /storage
 /vendor

@@ -2,27 +2,73 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Enums\ContractStatusEnums;
+use App\Models\Contract;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\UserContract;
+use App\Http\Controllers\Controller;
+use App\Services\ContractService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class ContractController extends Controller
 {
-    public function index()
-    {
-        return view('frontend::contracts.index');
+
+    protected $contract;
+
+    public function __construct(ContractService $contract) {
+        $this->contract = $contract;
     }
 
-    public function show()
+    private function assetsPath($path) {
+        $public_path = public_path($path);
+        $path = str_replace('public/', 'assets/', $public_path);
+        $path = str_replace('public\\', 'assets/', $path);
+
+        return $path;
+    }
+
+    public function adminIndex() {
+
+        $contracts = Contract::all();
+
+        return view('backend.contracts.index', compact('contracts'));
+    }
+
+    public function index()
+    {
+        $this->contract->checkExpired();
+
+        $contracts = Contract::where('user_id', Auth::id())->get();
+
+        return view('frontend::contracts.index', compact('contracts'));
+    }
+
+    public function adminShow() {
+        
+    }
+
+    public function show($id)
     {
         $user = auth()->user();
+
+        $contract = Contract::where('user_id', Auth::id())->where('id', $id)->first();
+
+        // if contract don't exist or doesn't belong to a logged in user
+        if(!$contract) {
+            abort(403);
+        }
+
+        // if contract is not pending
+        if($contract->status != ContractStatusEnums::PENDING) {
+            return redirect()->route('user.contracts');
+        }
+
         $signature = '';
         $shouldHideElement = true;
 
-        return view('frontend::contracts.show', compact('user', 'signature', 'shouldHideElement'));
+        return view('frontend::contracts.show', compact('user', 'signature', 'shouldHideElement', 'contract'));
     }
 
     public function storeContract(Request $request)
@@ -30,13 +76,26 @@ class ContractController extends Controller
 
         $validator = Validator::make($request->all(), [
             'signature' => 'required|string',
-            'contract_id' => 'required',
+            'contract_id' => 'required|string'
         ]);
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
 
             return redirect()->back();
+        }
+
+        // get contract
+        $contract = Contract::where('user_id', Auth::id())->where('id', $request->input('contract_id'))->first();
+
+        // if contract don't exist or doesn't belong to a logged in user
+        if(!$contract) {
+            abort(403);
+        }
+
+        // if contract is not pending
+        if($contract->status != ContractStatusEnums::PENDING) {
+            return redirect()->route('user.contracts');
         }
 
         $user = auth()->user();
@@ -46,30 +105,36 @@ class ContractController extends Controller
             'user' => $user,
             'signature' => $signature,
             'shouldHideElement' => false,
+            'contract' => $contract
         ];
 
         $pdf = Pdf::loadView('frontend::contracts.include.__contract_template', $contractData);
         $fileName = 'contract_' . $user->id . '_' . time() . '.pdf';
-        $directory = storage_path('app/public/user_contracts');
+        
+        $directory = $this->assetsPath('frontend/user_contracts');
 
         if (!File::exists($directory)) {
             File::makeDirectory($directory, 0775, true);
         }
 
         try {
-            $pdfPath = $pdf->save($directory . '/' . $fileName);
+            $pdf_path = $pdf->save($directory . '/' . $fileName);
         } catch (\Exception $e) {
             notify()->error('There was an error generating the contract: ' . $e->getMessage(), 'Error');
             return redirect()->back();
         }
 
-        UserContract::create([
-            'user_id' => $user->id,
-            'contract_id' => $request->input('contract_id'),
-            'file_name' => $fileName,
-        ]);
+        // Update the contract
+        $signed_contract = $this->contract->signed($contract, 'frontend/user_contracts/' . $fileName);
 
-        notify()->success('Contract Submit Successfully');
-        return redirect()->back();
+        if($signed_contract) {
+            notify()->success('Contract Submitted Successfully!');
+            return redirect()->route('user.contracts');
+        } else {
+            notify()->success('Unknown Error Occured!');
+            return redirect()->route('user.contracts');
+        }
+
+        
     }
 }

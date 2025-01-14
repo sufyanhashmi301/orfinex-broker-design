@@ -67,8 +67,10 @@ use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\Backend\SocialLinkController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\RiskRuleController;
 use App\Models\Certificate;
+use App\Models\Contract;
 use App\Models\LeaderboardBadge;
 
 /*
@@ -210,6 +212,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/update-certificate/{id}', [CertificateController::class, 'update'])->name('certificate.update');
     Route::get('/view-certificate/{id}', [CertificateController::class, 'viewCertificate'])->name('view_certificate');
     Route::post('/certificate-config/update', [CertificateController::class, 'updateConfig'])->name('certificate_config.update');
+
+    // Contracts
+    Route::get('/manage-contracts', [ContractController::class, 'adminIndex'])->name('manage-contracts.index');
+    Route::get('/contract/show/{id}', [ContractController::class, 'adminShow'])->name('contract.show');
 
 // =============================== Optimization ===============================
 

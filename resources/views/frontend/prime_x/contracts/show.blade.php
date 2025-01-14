@@ -9,7 +9,7 @@
                 @include('frontend::contracts.include.__contract_template')
                 <form action="{{ route('user.contract.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="contract_id" value="12">
+                    <input type="hidden" id="contract_id" name="contract_id" value="{{ $contract->id }}">
                     <input type="hidden" id="signature64" name="signature">
                     <div class="text-right mt-10">
                         <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

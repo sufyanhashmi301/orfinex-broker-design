@@ -108,7 +108,7 @@ class UpdateAccountTypeInvestmentStats extends Command
 
         if($hourly_shceduled) {
             $this->info('Investment stats stored successfully!');
-            Artisan::call('accounts:promote-or-violate');
+            // Artisan::call('accounts:promote-or-violate');
         }else{
             $this->info('Investment stats updated successfully!');
         }

@@ -27,6 +27,30 @@
                                         $stats = $investment->accountTypeInvestmentStat;
                                         $hourly_stats = $investment->accountTypeInvestmentHourlyStatsRecord;
                                         
+                                        
+                                        
+                                        
+                                    @endphp
+
+                                    {{-- Contracts Function --}}
+                                    @php
+                                        // Phase started
+                                        if($phaseData['type'] == \App\Enums\AccountTypePhase::FUNDED && isset($investment->contract['status']) && $investment->contract['status'] != \App\Enums\ContractStatusEnums::SIGNED) {
+                                            $phase_started_at = 'N/A';
+                                        } else {
+                                            $phase_started_at = $investment->phase_started_at ?? 'N/A';
+                                        }
+
+                                        $contract_expired = false;
+                                        $contract_pending = false;
+                                        if(isset($investment->contract['status'])) {
+                                            if($investment->contract['status'] == \App\Enums\ContractStatusEnums::PENDING) {
+                                                $contract_pending = true;
+                                            } elseif ($investment->contract['status'] == \App\Enums\ContractStatusEnums::EXPIRED) {
+                                                $contract_expired = true;
+                                            }
+                                        }
+                                        
                                     @endphp
                                     <tr>
                                         <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
@@ -34,15 +58,24 @@
                                         <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ str_replace('_', ' ', $phaseData['type']) }}</span></td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase {{ $phaseData['phase_step'] }}</span></td>
-                                        <td class="table-td">{{ $investment->phase_started_at ?? 'N/A'}}</td>
-                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ $investment->status }}</span></td>
+                                        <td class="table-td">{{ $phase_started_at }}</td>
+                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ $contract_pending == true ? 'Pending' : $investment->status  }}</span></td>
                                         <td class="table-td">
-                                            @if ($investment->status == \App\Enums\InvestmentStatus::ACTIVE || 
+                                            @if (
+                                                ($investment->status == \App\Enums\InvestmentStatus::ACTIVE || 
                                                  $investment->status == \App\Enums\InvestmentStatus::PASSED ||
-                                                 $investment->status == \App\Enums\InvestmentStatus::VIOLATED 
+                                                 $investment->status == \App\Enums\InvestmentStatus::VIOLATED) &&
+                                                 $contract_expired == false
                                                 )
                                                 {{-- check if the stats exists --}}
-                                                @if (isset($stats) && count($hourly_stats) != 0 )
+                                                @if($contract_pending == true)
+                                                    <a href="{{ route('user.contract.show', ['id' => $investment->contract['id']]) }}" class="inline-flex justify-center">
+                                                        <span class="flex items-center">
+                                                            <span>{{ __('Submit Contract')}}</span>
+                                                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                        </span>
+                                                    </a>
+                                                @elseif (isset($stats) && count($hourly_stats) != 0 )
                                                     <a href="{{ route('user.investment.trading-stats', ['investment_id' => $investment->id ]) }}" class="inline-flex justify-center">
                                                         <span class="flex items-center">
                                                             <span>{{ __('Trading Stats')}}</span>

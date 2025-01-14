@@ -49,7 +49,7 @@
                 {{ __('- Funding Amount: The Firm shall provide a funded trading account with an initial capital as agreed between the Firm and the Client.') }}
             </p>
             <p>
-                {{ __('- Profit Sharing: Profits generated within the funded account shall be split as follows: ___% to the Client and ___% to the Firm. Payouts shall be processed as per the terms communicated by the Firm.') }}
+                Profit Sharing: Profits generated within the funded account shall be split as follows: {{ $contract->user_profit_share }}% to the Client and {{ 100 - $contract->user_profit_share }}% to the Firm. Payouts shall be processed as per the terms communicated by the Firm.
             </p>
             <p>
                 {{ __('- Profit Withdrawals: Withdrawals of profits may be made only upon request and as per the Firm’s specified payout schedule, subject to any minimum profit or other conditions as set by the Firm.') }}
@@ -65,7 +65,7 @@
                 {{ __('- Account Protection: The Client agrees to trade within the predefined risk parameters, which include but are not limited to drawdown limits, maximum loss thresholds, and trade volume restrictions.') }}
             </p>
             <p>
-                {{ __('- Inactivity Clause: If the Client does not initiate any trading activities within a period of ___ days, the Firm reserves the right to review and possibly terminate the funded account access.') }}
+                {{ __('- Inactivity Clause: If the Client does not initiate any trading activities within a period of 90 days, the Firm reserves the right to review and possibly terminate the funded account access.') }}
             </p>
             <p>
                 {{ __('- Prohibited Activities: The Client shall not engage in any trading practices deemed as high-risk, such as martingale, hedging, or other unapproved strategies, unless expressly allowed by the Firm.') }}
@@ -78,7 +78,7 @@
         </h2>
         <div class="text-sm dark:text-slate-300 space-y-2">
             <p>
-                {{ __('- Expiry of Contract: This Agreement will expire on _(Contract Expiry)_ unless renewed or terminated earlier as per the terms herein.') }}
+                Expiry of Contract: This Agreement will expire on {{ date('F d, Y', strtotime($contract->expiry_at)) }} unless renewed or terminated earlier as per the terms herein.
             </p>
             <p>
                 {{ __('- Termination for Breach: The Firm reserves the right to terminate this Agreement if the Client breaches any terms of this Agreement, fails to comply with trading guidelines, or engages in any activities detrimental to the Firm’s interests.') }}
@@ -118,7 +118,7 @@
         </h2>
         <p class="text-sm dark:text-slate-300">
             <span class="font-medium mr-2">
-                {{ __('For: ') }}
+                {{ __('For:') }}
             </span>
             {{ setting('site_title', 'global') }}
         </p>
@@ -126,7 +126,7 @@
         <div class="space-y-2 text-sm dark:text-slate-300">
             <div>
                 <span class="font-medium mr-2">
-                    {{ __('Client Name: ') }}
+                    {{ __('Client Name:') }}
                 </span>
                 <span class="capitalize">
                     {{ $user->first_name . ' ' . $user->last_name }}
@@ -149,15 +149,15 @@
             </div>
             <div>
                 <span class="font-medium mr-2">
-                    {{ __('Date of Contract: ') }}
+                    {{ __('Date of Contract:') }}
                 </span>
-                {{ __('2024-11-10') }}
+                {{ date('F d, Y', strtotime($contract->created_at)) }}
             </div>
             <div>
                 <span class="font-medium mr-2">
-                    {{ __('Contract Expiry: ') }}
+                    {{ __('Contract Expiry:') }}
                 </span>
-                {{ __('2024-12-01') }}
+                {{ date('F d, Y', strtotime($contract->expiry_at)) }}
             </div>
         </div>
     </div>

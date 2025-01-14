@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContractStatusEnums;
 use App\Enums\InvestmentPhaseApproval;
 use Carbon\Carbon;
 use App\Enums\TraderType;
@@ -106,6 +107,16 @@ class AccountTypeInvestmentController extends Controller
         $investment = AccountTypeInvestment::find($investment_id);
         if($investment->login == null) {
             abort(403);
+        }
+
+        // if the contract exists and is in pending state
+        if(isset($investment->contract) && $investment->contract->status == ContractStatusEnums::PENDING) {
+            notify()->error('Submit Contract to view Trading Stats.', 'Contract Pending');
+            return redirect()->back();
+        }
+        if(isset($investment->contract) && $investment->contract->status == ContractStatusEnums::EXPIRED) {
+            notify()->error('Your contract has been expired.', 'Contract Expired');
+            return redirect()->back();
         }
 
         // if account exists but not the stats or hourly stats

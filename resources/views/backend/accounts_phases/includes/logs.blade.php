@@ -29,6 +29,10 @@
                                             continue;
                                         }
 
+                                        if(!isset($record->accountTypeInvestment->user)) {
+                                            continue;
+                                        }
+
                                         $accountTypeData = $record->accountTypeInvestment->getAccountTypeSnapshotData();
                                         $phaseData = $record->accountTypeInvestment->getPhaseSnapshotData();
                                         
@@ -38,7 +42,7 @@
                                     @endphp
                                     <tr>
                                         <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$record->accountTypeInvestment->unique_id}}">{{ $record->accountTypeInvestment->unique_id }}</a> </b></td>
-                                        <td class="table-td"> {{ $record->accountTypeInvestment->user->first_name ?? '' . ' ' . $record->accountTypeInvestment->user->last_name ?? '' }} </td>
+                                        <td class="table-td"> {{ $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name  }} </td>
                                         <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
                                         <td class="table-td">{{ $record->accountTypeInvestment->login ?? 'N/A'}}</td>
                                         {{-- <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td> --}}

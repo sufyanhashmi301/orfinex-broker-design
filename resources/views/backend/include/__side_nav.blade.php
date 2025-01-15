@@ -387,6 +387,15 @@
             </ul>
         </li>
 
+        {{-- *************************************************************  Addons *********************************************************--}}
+        <li class="" >
+            <a href="{{route('admin.addons.index')}}" class="navItem {{ isActive('admin.addons.index') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="lucide:package-plus"></iconify-icon>
+                    <span>{{ __('Manage Addons') }}</span>
+                </span>
+            </a>
+        </li>
 
         {{-- *************************************************************  Essentials *********************************************************--}}
         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',

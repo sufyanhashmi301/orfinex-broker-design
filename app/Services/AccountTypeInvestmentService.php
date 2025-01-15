@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use App\Models\Addon;
 use App\Models\Discount;
 use App\Models\AccountType;
 use App\Traits\NotifyTrait;
@@ -100,6 +101,14 @@ class AccountTypeInvestmentService
         $total_amount = $this->processCouponDiscount($data['discount_id'], $rule->amount);
       }
 
+      if($data['addons']){
+        // if one or more addons have ben applied
+        $addons = explode(',', $data['addons']);
+        for($i=0; $i < count($addons); $i++) {
+          $total_amount += $this->processAddons($addons[$i], $rule->amount);
+        }
+      }
+
       // data
       $data = [
           'unique_id' => $this->generateUniqueString(),
@@ -161,6 +170,26 @@ class AccountTypeInvestmentService
         }
 
         return $finalAmount;
+    }
+  
+  }
+
+  /**
+   * Process Addons
+   */
+  public function processAddons($id, $amount) {
+ 
+    $addon = Addon::find($id);
+
+    if ($addon) {
+        if ($addon->amount_type == 'percentage') {
+            $addonAmount = ($amount * $addon->amount) / 100;
+        } 
+        else if ($addon->amount_type == 'fixed') {
+            $addonAmount = $addon->amount;
+        }
+
+        return $addonAmount;
     }
   
   }

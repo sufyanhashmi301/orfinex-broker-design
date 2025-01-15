@@ -8,6 +8,7 @@ use App\Models\AccountType;
 use App\Models\ForexSchema;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\Controller;
+use App\Models\Addon;
 
 class ForexSchemaController extends Controller
 {
@@ -47,9 +48,11 @@ class ForexSchemaController extends Controller
         //     ->orderBy('priority', 'asc')
         //     ->get();
             
+        
         $account_type = AccountType::find($id);
+        $addons = Addon::where('status', 1)->get();
 
-        return view('frontend::forex_schema.preview', compact('account_type'));
+        return view('frontend::forex_schema.preview', compact('account_type', 'addons'));
     }
 
     public function schemaSelect($id)

@@ -60,6 +60,7 @@ use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
+use App\Http\Controllers\AddonController;
 use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\LeaderboardBadgeController;
@@ -218,6 +219,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/contract/show/{id}', [ContractController::class, 'adminShow'])->name('contract.show');
     Route::post('/contract/config', [ContractController::class, 'config'])->name('contract.config');
     Route::post('/contract/mark-as', [ContractController::class, 'markContractAs'])->name('contract.mark_as');
+
+    // Addons
+    Route::get('/addons', [AddonController::class, 'index'])->name('addons.index');
+    Route::post('/addon', [AddonController::class, 'update'])->name('addon.update');
 
 // =============================== Optimization ===============================
 

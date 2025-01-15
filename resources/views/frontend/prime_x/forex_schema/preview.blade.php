@@ -53,6 +53,7 @@
                         @csrf
                         <input type="hidden" id="scheme_type" value="{{ the_hash($account_type->forexSchemaPhase1->type) }}">
                         <input type="hidden" id="discount-id" name="discount_id" >
+                        <input type="hidden" id="addon-ids" name="addons" value="">
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
                                 {{ __('Allocated Funds') }}
@@ -171,7 +172,7 @@
                                     {{ __('Tailor your account to suit your trading style and preference.') }}</p>
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                <div class="checkbox-area success-checkbox">
+                                {{-- <div class="checkbox-area success-checkbox">
                                     <label
                                         class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                         <input type="checkbox" class="hidden addon-checkbox" name="" id="no-addons"
@@ -192,37 +193,26 @@
                                                 class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
                                         </span>
                                     </label>
-                                </div>
-                                {{--                                <div class="checkbox-area success-checkbox"> --}}
-                                {{--                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700"> --}}
-                                {{--                                        <input type="checkbox" class="hidden addon-checkbox" name="weekly_payout" id="biWeeklyPayouts" data-price="5" value="{{the_hash(5)}}" checked="checked"> --}}
-                                {{--                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900"> --}}
-                                {{--                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0"> --}}
-                                {{--                                        </span> --}}
-                                {{--                                        <span class="flex-1 inline-flex justify-between items-center"> --}}
-                                {{--                                            <span class="leading-none"> --}}
-                                {{--                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Bi-Weekly Payouts') }}</span> --}}
-                                {{--                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Instead of Monthly') }}</small> --}}
-                                {{--                                            </span> --}}
-                                {{--                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+5%') }}</span> --}}
-                                {{--                                        </span> --}}
-                                {{--                                    </label> --}}
-                                {{--                                </div> --}}
-                                {{--                                <div class="checkbox-area success-checkbox"> --}}
-                                {{--                                    <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700"> --}}
-                                {{--                                        <input type="checkbox" class="hidden addon-checkbox" name="swap_free" id="swap_free" data-price="10" value="{{the_hash(10)}}"> --}}
-                                {{--                                        <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900"> --}}
-                                {{--                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0"> --}}
-                                {{--                                        </span> --}}
-                                {{--                                        <span class="flex-1 inline-flex justify-between items-center"> --}}
-                                {{--                                            <span class="leading-none"> --}}
-                                {{--                                                <span class="leading-none dark:text-white text-sm block mb-1">{{ __('Swap Free (Islamic)') }}</span> --}}
-                                {{--                                                <small class="leading-none dark:text-slate-100 text-xs">{{ __('Efficient Group') }}</small> --}}
-                                {{--                                            </span> --}}
-                                {{--                                            <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('+10%') }}</span> --}}
-                                {{--                                        </span> --}}
-                                {{--                                    </label> --}}
-                                {{--                                </div> --}}
+                                </div> --}}
+                                @foreach ($addons as $addon)
+                                    <div class="checkbox-area success-checkbox">
+                                        <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
+                                            <input type="checkbox" class="hidden addon-checkbox" data-id="{{ $addon->id }}" data-amount="{{ $addon->amount }}" data-amount-type="{{ $addon->amount_type }}"  >
+                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                            </span>
+                                            <span class="flex-1 inline-flex justify-between items-center">
+                                                <span class="leading-none">
+                                                    <span class="leading-none dark:text-white text-sm block mb-1">{{ $addon->name }}</span>
+                                                    <small class="leading-none dark:text-slate-100 text-xs">{{ $addon->description }}</small>
+                                                </span>
+                                                <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">+{{ $addon->amount }}{{ $addon->amount_type == 'fixed' ? ' ' . $currency : '%' }}</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                                
+                                                              
                             </div>
                         </div>
 
@@ -493,10 +483,20 @@
                 let profitTarget = checkedInput.data('profit-target') || '';
 
                 // Calculate percentage addon prices from checked checkboxes
+                let addon_ids = ''
                 $('.addon-checkbox:checked').each(function() {
-                    let addonPrice = parseFloat($(this).data('price')) || 0;
-                    addon += basePrice * (addonPrice / 100); // Add percentage of the base price to the addon
+                    let addonPrice = parseFloat($(this).data('amount')) || 0;
+                    let addonType = $(this).data('amount-type');
+
+                    if (addonType === 'percentage') {
+                        addon += basePrice * (addonPrice / 100); 
+                    } else if (addonType === 'fixed') {
+                        addon += addonPrice; 
+                    }
+
+                    addon_ids += $(this).data('id') + ','
                 });
+                $('#addon-ids').val(addon_ids.slice(0, -1))
 
                 total += addon;
 

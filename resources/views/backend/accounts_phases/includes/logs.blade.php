@@ -1,6 +1,6 @@
 @if( count($investment_phase_records) != 0 )
     <div class="card">
-        <div class="card-body p-6 pt-0">
+        <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden basicTable_wrapper">
@@ -35,10 +35,10 @@
 
                                         $accountTypeData = $record->accountTypeInvestment->getAccountTypeSnapshotData();
                                         $phaseData = $record->accountTypeInvestment->getPhaseSnapshotData();
-                                        
+
                                         $ruleData = $record->accountTypeInvestment->getRuleSnapshotData();
 
-                                        
+
                                     @endphp
                                     <tr>
                                         <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$record->accountTypeInvestment->unique_id}}">{{ $record->accountTypeInvestment->unique_id }}</a> </b></td>
@@ -57,14 +57,14 @@
 
                                         <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ $phase_action }}</span></td>
                                         {{-- <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ $record->accountTypeInvestment->status }}</span></td> --}}
-        
+
                                         <td class="table-td" style="width: 300px">
                                             @if ($record->status == \App\Enums\InvestmentPhaseApproval::ADMIN_APPROVE && $record->action == 0)
                                                 <div class="btn-group">
                                                   <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
                                                   <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
                                                 </div>
-                                                
+
                                             @else
                                                 {{-- {{ route('user.investment.trading-stats', ['investment_id' => $record->accountTypeInvestment->id ]) }} --}}
                                                 <a href="#" class="inline-flex justify-center">
@@ -74,7 +74,7 @@
                                                   </span>
                                               </a>
                                             @endif
-                                            
+
                                         </td>
 
                                         <td class="table-td">{{ $record->updated_at }}</td>
@@ -82,6 +82,19 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
+                            <div>
+                                @php
+                                    $from = $investment_phase_records->firstItem();
+                                    $to = $investment_phase_records->lastItem();
+                                    $total = $investment_phase_records->total();
+                                @endphp
+                                <p class="text-sm text-gray-700 py-3">
+                                    Showing <span class="font-medium">{{ $from }}</span> to <span class="font-medium">{{ $to }}</span> of <span class="font-medium">{{ $total }}</span> results
+                                </p>
+                            </div>
+                            {{ $investment_phase_records->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

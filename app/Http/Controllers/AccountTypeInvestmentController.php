@@ -48,7 +48,7 @@ class AccountTypeInvestmentController extends Controller
             $investments = AccountTypeInvestment::traderType()->where('user_id', $user->id)->where('status', $request->status)->orderBy('id', 'desc')->get();
         }
 
-        return view('frontend::user.forex.log', compact('investments'));    
+        return view('frontend::user.forex.log', compact('investments'));
     }
 
     public function adminAccountsPhasesLog(Request $request) {
@@ -56,13 +56,13 @@ class AccountTypeInvestmentController extends Controller
             $uniqueId = $request->unique_id;
             $investment_phase_records = AccountTypeInvestmentPhaseApproval::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
                                             $query->where('unique_id', $uniqueId);
-                                        })->orderBy('updated_at', 'DESC')->get();
+                                        })->orderBy('updated_at', 'DESC')->paginate(15);
         } elseif (isset($request->{'pending-approvals'})) {
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->orderBy('updated_at', 'DESC')->get();
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->orderBy('updated_at', 'DESC')->paginate(15);
         } elseif (isset($request->{'violated-acounts'})) {
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::VIOLATED])->orderBy('updated_at', 'DESC')->get();
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::VIOLATED])->orderBy('updated_at', 'DESC')->paginate(15);
         } else{
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::orderBy('updated_at', 'DESC')->get();
+            $investment_phase_records = AccountTypeInvestmentPhaseApproval::orderBy('updated_at', 'DESC')->paginate(15);
         }
 
         return view('backend.accounts_phases.index', compact('investment_phase_records'));
@@ -85,7 +85,7 @@ class AccountTypeInvestmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         // dd($request->all());
         // for affiliates testing ---
         // $buyer_user_id  = Auth::id();
@@ -129,12 +129,12 @@ class AccountTypeInvestmentController extends Controller
         $investment_array = $this->investment->tradingStats($investment_id);
         $account_open_positions = AccountOpenPosition::orderBy('id', 'DESC')->first();
 
-        // All open positions 
+        // All open positions
         $investment_array["account_open_positions"] = $account_open_positions['data'] ?? [];
 
         // All Accounts
         // $investment_array['accounts'] = AccountTypeInvestment::all();
-    
+
         // dd($investment_array);
 
 

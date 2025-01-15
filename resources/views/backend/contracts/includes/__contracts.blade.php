@@ -64,13 +64,13 @@
                                             @endif
 
                                             @if ($contract->status == \App\Enums\ContractStatusEnums::PENDING)
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1">Mark as Signed</a>
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1">Mark as Expired</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-signed" data-contract-status="pending" data-id="{{ $contract->id }}" data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Signed</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1" data-contract-status="pending">Mark as Expired</a>
                                             @endif
 
                                             @if ($contract->status == \App\Enums\ContractStatusEnums::EXPIRED)
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1">Mark as Signed</a>
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1">Mark as Pending</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-signed" data-contract-status="expired" data-id="{{ $contract->id }} data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Signed</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1" data-contract-status="expired">Mark as Pending</a>
                                             @endif
 
                                           </div>
@@ -87,6 +87,7 @@
             </div>
         </div>
     </div>
+
     
 @else
     <div class="card basicTable_wrapper items-center justify-center py-10 px-10">
@@ -102,7 +103,7 @@
 @push('single-script')
   <script>
     
-
+   
 
   </script>
 @endpush

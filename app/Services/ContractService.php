@@ -21,7 +21,7 @@ class ContractService
     $new_contract->user_id = $account->user_id;
     $new_contract->account_type_investment_id = $account->id;
     $new_contract->user_profit_share = 100 - $account_type['profit_share'];
-    $new_contract->expiry_at = Carbon::now()->addDays(10)->toDateTimeString();
+    $new_contract->expiry_at = Carbon::now()->addDays(setting('contract_expiry'))->toDateTimeString();
     $new_contract->status = ContractStatusEnums::PENDING;
     $new_contract->save();
 

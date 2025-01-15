@@ -8,6 +8,12 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Manage Contracts') }}
         </h4>
+
+        <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
+        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
+        Configure Parameters
+        </a>
+
     </div>
 
     <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
@@ -58,6 +64,9 @@
         </div>
     </div>
 
+    {{-- Modals --}}
+    @include('backend.contracts.includes.__config_modal')
+    @include('backend.contracts.includes.__sign_contract_modal')
 
 @endsection
 
@@ -77,5 +86,14 @@
             $(this).addClass('active');
             $('.list-view-btn').removeClass('active');
         });
+
+        // Event listener for delete buttons
+        $('.mark-as-signed').on('click', function (e) {
+            e.preventDefault();
+            $('#signContractModal').find('.account-login').text($(this).data('login'))
+            $('#signContractModal').find('.contract_id').val($(this).data('id'))
+            $('#signContractModal').modal('show');
+        });
+
     </script>
 @endsection

@@ -7,6 +7,7 @@ use App\Models\Contract;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Services\ContractService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -33,7 +34,48 @@ class ContractController extends Controller
 
         $contracts = Contract::all();
 
-        return view('backend.contracts.index', compact('contracts'));
+        $contract_expiry = Setting::where('name', 'contract_expiry')->first();
+
+        if(!$contract_expiry) {
+            $setting = new Setting();
+            $setting->name = 'contract_expiry';
+            $setting->val = 90;
+            $setting->type = 'string';
+            $setting->save();
+
+            $contract_expiry = 90;
+        } else {
+            $contract_expiry = $contract_expiry->val;
+        }
+
+        return view('backend.contracts.index', compact('contracts', 'contract_expiry'));
+    }
+
+    public function markContractAs(Request $request) {
+        
+        if($request->action == 'sign') {
+            // generate pdf with details without sign
+            // change status
+            // call signed in contract service
+            // change account status
+        }
+
+        if($request->action == 'pending') {
+            
+        }
+
+        if($request->action == 'expire') {
+            
+        }
+    }
+
+    public function config(Request $request) {
+        $contract_expiry_setting = Setting::where('name', 'contract_expiry')->first();
+        $contract_expiry_setting->val = $request->expiry;
+        $contract_expiry_setting->save();
+
+        notify()->success('Configured Successfully!');
+        return redirect()->back();
     }
 
     public function index()

@@ -178,12 +178,30 @@
                 </ul>
             </li> --}}
             <li class="">
-                <a href="{{route('admin.accounts-phases.log')}}" class="navItem {{ isActive('admin.accounts-phases.log') }}">
+                <a href="" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:cast"></iconify-icon>
                         <span>{{ __('Accounts Activities') }}</span>
                     </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{route('admin.accounts-phases.log' )}}?pending-approvals" class="{{ request()->has('pending-approvals') ? 'active' : '' }}">
+                            {{ __('Pending Approvals') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.accounts-phases.log') }}?violated-acounts" class="{{ request()->has('violated-acounts') ? 'active' : '' }}">
+                            {{ __('Violated Accounts') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.accounts-phases.log') }}" class="{{ url()->current() === route('admin.accounts-phases.log') && empty(request()->query()) ? 'active' : '' }}">
+                            {{ __('All Accounts Logs') }}
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             @can('investment-list')
@@ -338,12 +356,35 @@
 
         {{-- *************************************************************  Contracts *********************************************************--}}
         <li class="" >
-            <a href="{{route('admin.manage-contracts.index')}}" class="navItem {{ isActive('admin.manage-contracts.index') }}">
+            <a href="javascript:void(0);" class="navItem {{ isActive('admin.manage-contracts.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:file-text"></iconify-icon>
                     <span>{{ __('Manage Contracts') }}</span>
                 </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
+            <ul class="sidebar-submenu">
+                <li class="">
+                    <a href="{{route('admin.manage-contracts.index')}}" class="{{ isActive('admin.manage-contracts.index') }}">
+                        {{ __('All Contracts') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="javascript:void(0);" class="">
+                        {{ __('Signed Contracts') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="javascript:void(0);" class="">
+                        {{ __('Pending Contracts') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="javascript:void(0);" class="">
+                        {{ __('Expired Contracts') }}
+                    </a>
+                </li>
+            </ul>
         </li>
 
 

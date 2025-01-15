@@ -216,6 +216,8 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Contracts
     Route::get('/manage-contracts', [ContractController::class, 'adminIndex'])->name('manage-contracts.index');
     Route::get('/contract/show/{id}', [ContractController::class, 'adminShow'])->name('contract.show');
+    Route::post('/contract/config', [ContractController::class, 'config'])->name('contract.config');
+    Route::post('/contract/mark-as', [ContractController::class, 'markContractAs'])->name('contract.mark_as');
 
 // =============================== Optimization ===============================
 

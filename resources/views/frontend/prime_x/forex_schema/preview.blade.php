@@ -172,29 +172,8 @@
                                     {{ __('Tailor your account to suit your trading style and preference.') }}</p>
                             </div>
                             <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                {{-- <div class="checkbox-area success-checkbox">
-                                    <label
-                                        class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                        <input type="checkbox" class="hidden addon-checkbox" name="" id="no-addons"
-                                            data-price="0" checked="checked">
-                                        <span
-                                            class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                            <img src="{{ asset('images/icon/ck-white.svg') }}" alt=""
-                                                class="h-[10px] w-[10px] block m-auto opacity-0">
-                                        </span>
-                                        <span class="flex-1 inline-flex justify-between items-center">
-                                            <span class="leading-none">
-                                                <span
-                                                    class="leading-none dark:text-white text-sm block mb-1">{{ __('No addons') }}</span>
-                                                <small
-                                                    class="leading-none dark:text-slate-100 text-xs">{{ __('No available') }}</small>
-                                            </span>
-                                            <span
-                                                class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
-                                        </span>
-                                    </label>
-                                </div> --}}
-                                @foreach ($addons as $addon)
+                                
+                                @forelse ($addons as $addon)
                                     <div class="checkbox-area success-checkbox">
                                         <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
                                             <input type="checkbox" class="hidden addon-checkbox" data-id="{{ $addon->id }}" data-amount="{{ $addon->amount }}" data-amount-type="{{ $addon->amount_type }}"  >
@@ -210,7 +189,30 @@
                                             </span>
                                         </label>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <div class="checkbox-area success-checkbox">
+                                        <label
+                                            class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
+                                            <input type="checkbox" class="hidden addon-checkbox" id="no-addons"
+                                                data-amount="0" checked="checked">
+                                            <span
+                                                class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                <img src="{{ asset('images/icon/ck-white.svg') }}" alt=""
+                                                    class="h-[10px] w-[10px] block m-auto opacity-0">
+                                            </span>
+                                            <span class="flex-1 inline-flex justify-between items-center">
+                                                <span class="leading-none">
+                                                    <span
+                                                        class="leading-none dark:text-white text-sm block mb-1">{{ __('No addons') }}</span>
+                                                    <small
+                                                        class="leading-none dark:text-slate-100 text-xs">{{ __('No available') }}</small>
+                                                </span>
+                                                <span
+                                                    class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                @endforelse
                                 
                                                               
                             </div>

@@ -31,8 +31,9 @@
                         <div class="transition-all duration-150 container-fluid" id="page_layout">
                             <div id="content_layout">
                                 <div>
+                                    <div class="mobile-close-overlay w-full h-full" id="close-settings-overlay"></div>
                                     @include('backend.include.__submenu')
-                                    <div class="transition-all duration-150 xl:ml-[200px] p-6">
+                                    <div class="transition-all duration-150 medium:ml-[200px] p-6">
                                         @yield('content')
                                     </div>
                                 </div>
@@ -61,7 +62,13 @@
     <!--/Full Layout-->
 
     @include('backend.include.__script')
-
+    <script !src="">
+        $('.submenu-toggle-btn').click(function(){
+            $('.submenu-sidebar, .mobile-close-overlay').toggleClass('in');
+            $('.submenu-toggle-btn .menu-icon').toggle();
+            $('.submenu-toggle-btn .close-icon').toggle();
+        })
+    </script>
 
 </body>
 </html>

@@ -15874,6 +15874,9 @@ ul.custom-list ul li{
   .sm\:flex-row{
     flex-direction: row;
   }
+  .sm\:flex-nowrap{
+    flex-wrap: nowrap;
+  }
   .sm\:gap-3{
     gap: 0.75rem;
   }
@@ -16146,6 +16149,9 @@ ul.custom-list ul li{
     --tw-space-x-reverse: 0;
     margin-right: calc(2.5rem * var(--tw-space-x-reverse));
     margin-left: calc(2.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+  .md\:p-5{
+    padding: 1.25rem;
   }
   .md\:px-6{
     padding-left: 1.5rem;
@@ -17424,4 +17430,16 @@ ul.custom-list ul li{
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 991.98px) {
+    .submenu-sidebar {
+        height: 100vh;
+        max-width: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        transition: .3s;
+        z-index: 99;
+    }
 }

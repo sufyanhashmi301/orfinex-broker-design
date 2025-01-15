@@ -4,7 +4,7 @@
 @endsection
 @section('title-btns')
 @can('risk-profile-create')
-  <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
+  <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#riskProfileTagModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>

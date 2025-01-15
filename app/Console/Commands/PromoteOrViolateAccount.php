@@ -60,7 +60,7 @@ class PromoteOrViolateAccount extends Command
         $this->info('Request Completed!');
 
         // send emails to promoted and violated accounts accordingly
-        Artisan::call('send:promote-violate-accounts-mails');
+        // Artisan::call('send:promote-violate-accounts-mails');
 
 
     }

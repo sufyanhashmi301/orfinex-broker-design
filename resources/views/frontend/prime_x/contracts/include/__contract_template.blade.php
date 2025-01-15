@@ -8,8 +8,8 @@
                 'company_name' => setting('site_title', 'global'),
                 'company_website' => setting('company_website', 'global'),
                 'company_address' => setting('registered_address', 'global'),
-                'client_name' => $user->first_name . ' ' . $user->last_name,
-                'client_email' => $user->email
+                'client_name' => $contract->user->first_name . ' ' . $contract->user->last_name,
+                'client_email' => $contract->user->email
             ]) }}
         </p>
     </div>
@@ -129,7 +129,7 @@
                     {{ __('Client Name:') }}
                 </span>
                 <span class="capitalize">
-                    {{ $user->first_name . ' ' . $user->last_name }}
+                    {{ $contract->user->first_name . ' ' . $contract->user->last_name }}
                 </span>
             </div>
             <div>

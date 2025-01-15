@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Manage Certificates') }}
+    {{ __('Manage Contracts') }}
 @endsection
 @section('content')
 
@@ -67,11 +67,26 @@
     {{-- Modals --}}
     @include('backend.contracts.includes.__config_modal')
     @include('backend.contracts.includes.__sign_contract_modal')
+    @include('backend.contracts.includes.__expire_contract_modal')
+    @include('backend.contracts.includes.__pending_contract_modal')
 
 @endsection
 
 @section('script')
     <script>
+
+        function calculateDaysDifference(expiry) {
+            
+            var expiryDateStr = expiry;
+            var expiryDate = new Date(expiryDateStr);
+            var currentDate = new Date();
+            var timeDiff = expiryDate.getTime() - currentDate.getTime();
+            var daysDiff = timeDiff / (1000 * 3600 * 24);
+            daysDiff = Math.floor(daysDiff);
+            return daysDiff
+            
+        }
+
         // grid or list view
         $('.list-view-btn').click(function () {
             const targetId = $(this).data('target');
@@ -94,6 +109,19 @@
             $('#signContractModal').find('.contract_id').val($(this).data('id'))
             $('#signContractModal').modal('show');
         });
+        $('.mark-as-expired').on('click', function(e) {
+            e.preventDefault();
+            $('#expireContractModal').find('.contract_id').val($(this).data('id'))
+            $('#expireContractModal').find('.account-login').text($(this).data('login'))
+            $('#expireContractModal').find('.rem-days').text(calculateDaysDifference($(this).data('expiry')))
+            $('#expireContractModal').modal('show');
+        })
+        $('.mark-as-pending').on('click', function(e) {
+            e.preventDefault();
+            $('#pendingContractModal').find('.contract_id').val($(this).data('id'))
+            $('#pendingContractModal').find('.account-login').text($(this).data('login'))
+            $('#pendingContractModal').modal('show');
+        })
 
     </script>
 @endsection

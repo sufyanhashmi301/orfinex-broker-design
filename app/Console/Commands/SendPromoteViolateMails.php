@@ -66,12 +66,19 @@ class SendPromoteViolateMails extends Command
                     '[[account_login]]' => $account->login,
                     '[[account_password]]' => $account->main_password,
                     '[[server]]' => setting('live_server', 'platform_api'),
+                    '[[phase_step]]' => $account_phase['type'] == AccountTypePhaseEnum::EVALUATION ? 'Evaluation' : 'Verification',
+                    '[[site_title]]' => setting('site_title', 'global'),
                 ];
 
-                if($account_phase['type'] != AccountTypePhaseEnum::FUNDED) {
-                    $mail = $this->mailNotify($account->user->email, 'new_account_details', $shortcodes2);
-                } else {
+                if($account->login == null) {
+                    // in case if the login is not created
                     $mail = false;
+
+                } elseif($account_phase['type'] != AccountTypePhaseEnum::FUNDED) {
+                    $mail = $this->mailNotify($account->user->email, 'new_account_details', $shortcodes2);
+                    
+                } else {
+                    $mail = $this->mailNotify($account->user->email, 'contract_pending', $shortcodes2);
                 }
                 
             }

@@ -56,6 +56,12 @@ class UserAffiliateService
     }else{
       $affiliate_rule = AffiliateRule::whereJsonContains('for_account_type_ids', 'all')->orderBy('id', 'DESC')->first();
     }
+
+    // if affiliate is not set for partciluar account type
+    if(!$affiliate_rule) {
+      return false;
+    }
+
     $affiliate_rule_configuration = $affiliate_rule->affiliateRuleConfiguration;
     $affiliate_rule_levels = $affiliate_rule->affiliateRuleLevel;
 

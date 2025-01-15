@@ -64,13 +64,13 @@
                                             @endif
 
                                             @if ($contract->status == \App\Enums\ContractStatusEnums::PENDING)
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-signed" data-contract-status="pending" data-id="{{ $contract->id }}" data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Signed</a>
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1" data-contract-status="pending">Mark as Expired</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-signed" data-status="pending" data-id="{{ $contract->id }}" data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Signed</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-expired" data-status="pending" data-id="{{ $contract->id }}" data-expiry="{{ $contract->expiry_at }}" data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Expired</a>
                                             @endif
 
                                             @if ($contract->status == \App\Enums\ContractStatusEnums::EXPIRED)
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-signed" data-contract-status="expired" data-id="{{ $contract->id }} data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Signed</a>
-                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1" data-contract-status="expired">Mark as Pending</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-signed" data-status="expired" data-id="{{ $contract->id }}" data-login="{{ $contract->accountTypeInvestment->login }}">Mark as Signed</a>
+                                              <a href="#" target="__blank" class="btn btn-sm btn-primary mr-1 mark-as-pending" data-id="{{ $contract->id }}" data-login="{{ $contract->accountTypeInvestment->login }}" data-status="expired">Mark as Pending</a>
                                             @endif
 
                                           </div>

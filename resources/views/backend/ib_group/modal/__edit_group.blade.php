@@ -18,8 +18,10 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="popup-body-text p-6 pt-0" id="edit-group-body">
-                    <!-- The edit form will be loaded here via AJAX -->
+                <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+                    <div class="popup-body-text p-6 pt-0" id="edit-group-body">
+                        <!-- The edit form will be loaded here via AJAX -->
+                    </div>
                 </div>
             </div>
         </div>

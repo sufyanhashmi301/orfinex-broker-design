@@ -15871,6 +15871,12 @@ ul.custom-list ul li{
   .sm\:flex{
     display: flex;
   }
+  .sm\:flex-row{
+    flex-direction: row;
+  }
+  .sm\:gap-3{
+    gap: 0.75rem;
+  }
   .sm\:max-w-\[604px\]{
     max-width: 604px;
   }
@@ -15882,6 +15888,9 @@ ul.custom-list ul li{
   }
   .sm\:justify-end{
     justify-content: flex-end;
+  }
+  .sm\:items-center {
+    align-items: center;
   }
   .sm\:space-x-4 > :not([hidden]) ~ :not([hidden]){
     --tw-space-x-reverse: 0;

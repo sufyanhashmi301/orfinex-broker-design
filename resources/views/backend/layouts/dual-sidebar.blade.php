@@ -32,7 +32,7 @@
                             <div id="content_layout">
                                 <div>
                                     @include('backend.include.__submenu')
-                                    <div class="transition-all duration-150 ltr:ml-[200px] rtl:mr-[200px] p-6">
+                                    <div class="transition-all duration-150 xl:ml-[200px] p-6">
                                         @yield('content')
                                     </div>
                                 </div>
@@ -44,7 +44,7 @@
             </div>
             <footer class="md:block sticky bottom-0" id="footer">
                 <div class="site-footer px-6 text-slate-500 dark:text-slate-300 py-2" style="height: 48px; margin-left: 448px;">
-                    <div class="grid md:grid-cols-2 grid-cols-1 md:gap-5">
+                    <div class="flex items-center justify-between gap-5">
                         <a href="https://brokeret.com/" target="_blank" class="text-primary font-semibold ml-1">
                             <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-6 inline-flex" alt="">
                         </a>

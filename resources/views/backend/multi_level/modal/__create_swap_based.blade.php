@@ -20,6 +20,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
+                <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
                 <div class="p-6">
                     <form action="{{route('admin.swap-multi-level.store')}}" method="post">
                         @csrf
@@ -110,6 +111,7 @@
                             </a>
                         </div>
                     </form>
+                </div>
                 </div>
             </div>
         </div>

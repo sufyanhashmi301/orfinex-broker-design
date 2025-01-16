@@ -11044,6 +11044,7 @@ ul.custom-list ul li{
   text-transform: uppercase;
   --tw-text-opacity: 1;
   color: rgb(71 85 105 / var(--tw-text-opacity));
+    text-wrap: nowrap;
 }
 
 [dir="ltr"] .table-th{

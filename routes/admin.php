@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\RiskHubController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\AppController;
@@ -83,6 +84,7 @@ use App\Http\Controllers\Backend\SocialLinkController;
 Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
     //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])->name('staff.dashboard');
 
 
     // Customer Management
@@ -210,6 +212,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-accounts/export/{type?}', [AccountsController::class, 'export'])->name('forex-accounts.export');
+    Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
+
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
@@ -537,21 +541,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
 
-    Route::get('active-positions', function () {
-        return view('backend.control_center.active_positions');
-    })->name('activePositions');
-
-    Route::get('net-positions-accounts', function () {
-        return view('backend.control_center.net_positions_accounts');
-    })->name('netPositionsAccounts');
-
-    Route::get('net-positions-groups', function () {
-        return view('backend.control_center.net_positions_groups');
-    })->name('netPositionsGroups');
-
-    Route::get('older-positions-days', function () {
-        return view('backend.control_center.older_positions_days');
-    })->name('olderPositionsDays');
+    Route::controller(RiskHubController::class)->group(function () {
+        Route::get('active-positions', 'activePositions')->name('activePositions');
+        Route::get('net-positions-accounts', 'netPositionsAccounts')->name('netPositionsAccounts');
+        Route::get('net-positions-groups', 'netPositionsGroups')->name('netPositionsGroups');
+        Route::get('older-positions-days', 'olderPositionsDays')->name('olderPositionsDays');
+    });
 
     Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
     Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');

@@ -84,7 +84,7 @@
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
                 {{ $currencySymbol }}<span class="count">{{ round($data['total_withdraw'],2) }}</span>
-                <span class="text-sm text-success ml-1">+452%</span>
+                <span class="text-sm text-success ml-1">+0%</span>
             </div>
             <div class="">
 
@@ -98,7 +98,7 @@
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
                 {{ $data['total_referral'] }}
-                <span class="text-sm text-success ml-1">+452%</span>
+                <span class="text-sm text-success ml-1">+0%</span>
             </div>
             <div class="">
 
@@ -112,7 +112,7 @@
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
                 {{ $currencySymbol }}<span class="count">{{ round($data['total_send'],2) }}</span>
-                <span class="text-sm text-success ml-1">+452%</span>
+                <span class="text-sm text-success ml-1">+0%</span>
             </div>
             <div class="">
 
@@ -131,10 +131,10 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Total Investment') }}
+                        {{ __('Total IB Bonus') }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $currencySymbol }}<span class="count">{{ round($data['total_investment'],2) }}</span>
+                        {{ $currencySymbol }}<span class="count">{{ round($data['total_ib_bonus'],2) }}</span>
                     </div>
                 </div>
             </div>

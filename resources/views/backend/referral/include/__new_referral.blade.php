@@ -20,63 +20,65 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <form method="post" action="{{ route('admin.referral.store') }}">
-                    @csrf
-                    <div class="popup-body-text p-6 pt-0 space-y-5">
-                        <input type="hidden" name="type" class="referral-type">
-                        <div class="input-area">
-                            <label for="" class="form-label">{{ __('Choose One:') }}</label>
-                            <select name="referral_target_id" class="form-control w-100 mb-0" id="" required>
-                                <option value="">--{{ __('Select One') }}--</option>
-                                @foreach( $targets as $target)
-                                    <option value="{{ $target->id }}">{{ $target->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="input-area">
-                            <label for="" class="form-label">{{ __('Target Amount:') }}</label>
-                            <div class="joint-input relative">
-                                <input type="text" class="form-control !pr-12" name="target_amount" oninput="this.value = validateDouble(this.value)">
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 min-w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1 text-sm">
-                                    {{ setting('site_currency','global') }}
-                                </span>
+                <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+                    <form method="post" action="{{ route('admin.referral.store') }}">
+                        @csrf
+                        <div class="popup-body-text p-6 pt-0 space-y-5">
+                            <input type="hidden" name="type" class="referral-type">
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Choose One:') }}</label>
+                                <select name="referral_target_id" class="form-control w-100 mb-0" id="" required>
+                                    <option value="">--{{ __('Select One') }}--</option>
+                                    @foreach( $targets as $target)
+                                        <option value="{{ $target->id }}">{{ $target->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                        </div>
 
-                        <div class="input-area">
-                            <label for="" class="form-label">{{ __('Bounty:') }}</label>
-                            <div class="joint-input relative">
-                                <input type="text" class="form-control !pr-12" name="bounty" oninput="this.value = validateDouble(this.value)">
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 min-w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
-                                    %
-                                </span>
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Target Amount:') }}</label>
+                                <div class="joint-input relative">
+                                    <input type="text" class="form-control !pr-12" name="target_amount" oninput="this.value = validateDouble(this.value)">
+                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 min-w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 dark:text-slate-300 flex items-center justify-center px-1 text-sm">
+                                        {{ setting('site_currency','global') }}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="input-area mb-0">
-                            <label for="" class="form-label">{{ __('Description:') }}</label>
-                            <textarea name="description" class="form-control basicTinymce" rows="6" placeholder="Description"></textarea>
-                        </div>
+                            <div class="input-area">
+                                <label for="" class="form-label">{{ __('Bounty:') }}</label>
+                                <div class="joint-input relative">
+                                    <input type="text" class="form-control !pr-12" name="bounty" oninput="this.value = validateDouble(this.value)">
+                                    <span class="absolute right-0 top-1/2 -translate-y-1/2 min-w-9 h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-1">
+                                        %
+                                    </span>
+                                </div>
+                            </div>
 
-                        <div class="action-btns text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                {{ __('Add New') }}
-                            </button>
-                            <a
-                                href="#"
-                                class="btn btn-danger inline-flex items-center justify-center"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            >
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                                {{ __('Close') }}
-                            </a>
-                        </div>
+                            <div class="input-area mb-0">
+                                <label for="" class="form-label">{{ __('Description:') }}</label>
+                                <textarea name="description" class="form-control basicTinymce" rows="6" placeholder="Description"></textarea>
+                            </div>
 
-                    </div>
-                </form>
+                            <div class="action-btns text-right">
+                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Add New') }}
+                                </button>
+                                <a
+                                    href="#"
+                                    class="btn btn-danger inline-flex items-center justify-center"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                >
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Close') }}
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

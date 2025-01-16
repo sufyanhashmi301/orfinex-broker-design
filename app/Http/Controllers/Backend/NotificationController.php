@@ -14,9 +14,21 @@ class NotificationController extends Controller
 {
     public function latestNotification()
     {
-        $notifications = Notification::where('for', 'admin')->latest()->take(10)->get();
-        $totalUnread = Notification::where('for', 'admin')->where('read', 0)->count();
-        $totalCount = Notification::where('for', 'admin')->get()->count();
+        $loggedInAdmin = auth()->user(); // Get the logged-in admin
+
+        if ($loggedInAdmin->hasRole('Super-Admin')) {
+            // Super-Admin: No user filter
+            $notifications = Notification::where('for', 'admin')->latest()->take(10)->get();
+            $totalUnread = Notification::where('for', 'admin')->where('read', 0)->count();
+            $totalCount = Notification::where('for', 'admin')->get()->count();
+        } else {
+            $attachedUserIds = $loggedInAdmin->users->pluck('id');
+            $notifications = Notification::where('for', 'admin')->whereIn('user_id', $attachedUserIds) // Filter by attached users
+            ->latest()->take(10)->get();
+            $totalUnread = Notification::where('for', 'admin')->whereIn('user_id', $attachedUserIds)->where('read', 0)->count();
+            $totalCount = Notification::where('for', 'admin')->whereIn('user_id', $attachedUserIds)->get()->count();
+        }
+
         $lucideCall = true;
 
         return view('global.__notification_data', compact('notifications', 'totalUnread', 'totalCount', 'lucideCall'))->render();
@@ -33,7 +45,19 @@ class NotificationController extends Controller
 
     public function all()
     {
-        $notifications = Notification::where('for', 'admin')->latest()->paginate(10);
+        $loggedInAdmin = auth()->user(); // Get the logged-in admin
+
+        if ($loggedInAdmin->hasRole('Super-Admin')) {
+            // Super-Admin: No user filter
+            $notifications = Notification::where('for', 'admin')->latest()->paginate(10);
+        } else {
+            // Non Super-Admin: Apply attached user filter
+            $attachedUserIds = $loggedInAdmin->users->pluck('id');
+            $notifications = Notification::where('for', 'admin')
+                ->whereIn('user_id', $attachedUserIds) // Filter by attached users
+                ->latest()->paginate(10);
+        }
+
 
         return view('backend.notification.index', compact('notifications'));
     }
@@ -118,9 +142,21 @@ class NotificationController extends Controller
 
     public function readNotification($id)
     {
-        if ($id == 0) {
-            Notification::where('for', 'admin')->update(['read' => 1]);
-            return redirect()->back();
+        $loggedInAdmin = auth()->user(); // Get the logged-in admin
+
+        if ($loggedInAdmin->hasRole('Super-Admin')) {
+            // Super-Admin: No user filter
+            if ($id == 0) {
+                Notification::where('for', 'admin')->update(['read' => 1]);
+                return redirect()->back();
+            }
+        } else {
+            $attachedUserIds = $loggedInAdmin->users->pluck('id');
+
+            if ($id == 0) {
+                Notification::where('for', 'admin')->whereIn('user_id', $attachedUserIds)->update(['read' => 1]);
+                return redirect()->back();
+            }
         }
         $notification = Notification::find($id);
         if ($notification->read == 0) {

@@ -1153,13 +1153,15 @@ if (!function_exists('update_total_balance')) {
             ->where('account_type', 'real')
             ->get();
 //        dd($forexAccounts,$this->user);
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = new ForexApiService();
         foreach ($forexAccounts as $forexAccount) {
-            $forexApiTrait->updateAgent($forexAccount->login, 0);
-        }
+                $data = [
+                    'login' => $forexAccount->login,
+                    'agent' => 0,
+                    ];
 
+                $forexApiService->updateAgentAccount($data);
+            }
     }
 }
 if (!function_exists('get_mt5_account')) {
@@ -1393,6 +1395,88 @@ if (!function_exists('mt5_total_credit')) {
                 ->sum('Credit');
 
             return $totalCredit;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
+    }
+}
+if (!function_exists('mt5_total_used_margin')) {
+    /**
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_used_margin($user_id)
+    {
+
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total credit using the mt5_db connection
+            $totalMargin = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Margin');
+
+            return $totalMargin;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
+    }
+}
+if (!function_exists('mt5_total_free_margin')) {
+    /**
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_free_margin($user_id)
+    {
+
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total credit using the mt5_db connection
+            $totalMargin = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('MarginFree');
+
+            return $totalMargin;
 
         } catch (\Exception $e) {
             // Log the error message for debugging

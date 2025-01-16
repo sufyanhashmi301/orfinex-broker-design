@@ -52,45 +52,37 @@ class   AccountsController extends Controller
      */
     public function forexAccounts(Request $request, $type = 'real', $id = null)
     {
-        $loggedInUser = auth()->user();
+        $loggedInUser = auth()->user(); // Get the logged-in admin or user
 
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
+        // Get attached user IDs for non-Super-Admin users
+        $attachedUserIds = $loggedInUser->hasRole('Super-Admin')
+            ? null
+            : $loggedInUser->users->pluck('id');
 
-            // Check if the logged-in user is a Super-Admin
-            if ($loggedInUser->hasRole('Super-Admin')) {
-                if ($id) {
-                    $data = ForexAccount::with('schema')->where('user_id', $id)->where('account_type', $type)->latest();
-                } else {
-                    $data = ForexAccount::query()->with('schema')->where('account_type', $type)->latest();
-                }
+        // Query for Forex Accounts
+        $data = ForexAccount::query()
+            ->with('schema')
+            ->where('account_type', $type);
+
+        if (!$loggedInUser->hasRole('Super-Admin')) {
+            // Apply attached user filter for non-Super-Admin
+            if ($attachedUserIds->isNotEmpty()) {
+                $data->whereIn('user_id', $attachedUserIds);
             } else {
-                // Get attached user IDs for non-Super-Admin users
-                $attachedUserIds = $loggedInUser->users->pluck('id');
-
-                if ($attachedUserIds->isNotEmpty()) {
-                    if ($id) {
-                        $data = ForexAccount::with('schema')
-                            ->where('user_id', $id)
-                            ->whereIn('user_id', $attachedUserIds)
-                            ->where('account_type', $type)
-                            ->latest();
-                    } else {
-                        $data = ForexAccount::query()
-                            ->with('schema')
-                            ->whereIn('user_id', $attachedUserIds)
-                            ->where('account_type', $type)
-                            ->latest();
-                    }
-                } else {
-                    // If no users are attached, return an empty collection
-                    $data = collect(); // Empty collection
-                }
+                $data = collect(); // Empty collection if no attached users
             }
+        }
 
-            // Apply additional filters if any
-            $data->applyFilters($filters);
+        if ($id) {
+            $data->where('user_id', $id);
+        }
 
+        // Apply additional filters
+        $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
+        $data->applyFilters($filters);
+
+        // If request is Ajax, return data in Datatables format
+        if ($request->ajax()) {
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('ib_number', 'backend.user.include.__ib_number')
@@ -105,37 +97,50 @@ class   AccountsController extends Controller
                 ->make(true);
         }
 
-        $realForexAccounts = ForexAccount::where('account_type', $type)
-            ->where('status', ForexAccountStatus::Ongoing)->pluck('login');
+        // Calculate balance-related statistics
+        $realForexAccounts = $data->pluck('login');
 
         $withBalance = 0.0;
         $withoutBalance = 0.0;
+
         try {
-            if ($realForexAccounts) {
-                $withBalance = DB::connection('mt5_db2')
+            if ($realForexAccounts->isNotEmpty()) {
+                $withBalance = DB::connection('mt5_db')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
-                    ->where('Balance', '>', 0)->count();
+                    ->where('Balance', '>', 0)
+                    ->count();
             }
         } catch (\Exception $e) {
             \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
         }
 
         try {
-            if ($realForexAccounts) {
-                $withoutBalance = DB::connection('mt5_db2')
+            if ($realForexAccounts->isNotEmpty()) {
+                $withoutBalance = DB::connection('mt5_db')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
-                    ->where('Balance', 0)->count();
+                    ->where('Balance', 0)
+                    ->count();
             }
         } catch (\Exception $e) {
             \Log::error('MT5 DB connection failed when retrieving account: ' . $e->getMessage());
         }
 
-        $unActiveAccounts = ForexAccount::where('account_type', $type)->where('status', '!=', ForexAccountStatus::Ongoing)->count();
+        // Count inactive accounts
+        $unActiveAccounts = ForexAccount::where('account_type', $type)
+            ->where('status', '!=', ForexAccountStatus::Ongoing);
 
+        if (!$loggedInUser->hasRole('Super-Admin')) {
+            // Apply attached user filter for non-Super-Admin
+            $unActiveAccounts->whereIn('user_id', $attachedUserIds);
+        }
+
+        $unActiveAccounts = $unActiveAccounts->count();
+
+        // Prepare final data to pass to the view
         $data = [
-            'TotalAccounts' => ForexAccount::where('account_type', $type)->count(),
+            'TotalAccounts' => $data->count(),
             'withBalance' => $withBalance,
             'withoutBalance' => $withoutBalance,
             'unActiveAccounts' => $unActiveAccounts,
@@ -143,6 +148,7 @@ class   AccountsController extends Controller
 
         return view('backend.investment.index', compact('data', 'type'));
     }
+
 
 
 
@@ -214,7 +220,10 @@ class   AccountsController extends Controller
 //            return redirect()->back();
 //        }
         $login = 0;
-        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)->orderBY('login', 'desc')->first();
+        $forexAccount = ForexAccount::where('forex_schema_id', $schema->id)
+            ->orderBy(DB::raw('CAST(login AS UNSIGNED)'), 'desc')
+            ->first();
+
         if ($forexAccount) {
             if ($forexAccount->login >= $schema->end_range) {
                 $message = __('Sorry, The account creation range is completed of :title type. Please choose different type or contact support to increase the account range.', ['title' => $schema->title]);

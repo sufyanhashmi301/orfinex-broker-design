@@ -41,9 +41,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        // Check if the request is from Socialite
-
-
         // Regular Registration Logic
         $this->validateRegularRegistration($request);
         $input = $request->all();

@@ -124,6 +124,10 @@
             $.get(url, function (data) {
                 $('#edit-group-body').append(data);
                 $('#editIbGroupModal').modal('show'); // Correct modal ID
+                tinymce.init({
+                    selector: 'textarea.basicTinymce',
+                });
+                $('#rebate_rule_id_edit').select2();
             }).fail(function () {
                 alert('Error loading the edit form.');
             });

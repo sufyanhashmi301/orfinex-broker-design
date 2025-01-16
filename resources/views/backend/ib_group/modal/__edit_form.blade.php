@@ -12,7 +12,7 @@
     </div>
     <div class="input-area">
         <label for="rebate_rule_id_edit" class="form-label">{{ __('Attach Rebate Rule(s) (Optional)') }}</label>
-        <select name="rebate_rule_id[]" id="rebate_rule_id_edit" class="select2 form-control w-full h-9" multiple>
+        <select name="rebate_rule_id[]" id="rebate_rule_id_edit" class="form-control w-full h-9" multiple>
             @foreach($rebateRules as $rule)
                 <option value="{{ $rule->id }}"
                         @if($ibGroup->rebateRules->contains('id', $rule->id)) selected @endif>
@@ -21,8 +21,6 @@
             @endforeach
         </select>
     </div>
-
-
 
     <div class="input-area">
         <div class="flex items-center space-x-7 flex-wrap">

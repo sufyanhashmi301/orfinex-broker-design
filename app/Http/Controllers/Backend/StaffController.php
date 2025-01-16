@@ -160,14 +160,37 @@ class StaffController extends Controller
      * @return RedirectResponse
      */
     public function update(Request $request, $id)
-{
-    $staff = Admin::find($id);
+    {
+        $staff = Admin::find($id);
 
-    // Validate based on role
-    if ($staff->getRoleNames()->first() === 'Super-Admin') {
-        // Validation for Super-Admin: Only the `key` field is allowed
+        // Validate based on role
+        if ($staff->getRoleNames()->first() === 'Super-Admin') {
+            // Validation for Super-Admin: Only the `key` field is allowed
+            $validator = Validator::make($request->all(), [
+                'key' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                notify()->error($validator->errors()->first(), 'Error');
+                return redirect()->back();
+            }
+
+            // Update only the `key` field for Super-Admin
+            $staff->update(['key' => $request->input('key')]);
+
+            notify()->success('Key updated successfully');
+            return redirect()->back();
+        }
+
+        // Validation for other admins
         $validator = Validator::make($request->all(), [
-            'key' => 'required|string',
+            'name'        => 'required',
+            'email'       => 'required|email|unique:admins,email,' . $id,
+            'password'    => 'same:confirm-password',
+            'role'        => ['required', Rule::notIn('Super-Admin')],
+            'status'      => 'boolean',
+            'department'  => 'nullable|exists:departments,id',
+            'designation' => 'nullable|exists:designations,id',
         ]);
 
         if ($validator->fails()) {
@@ -175,57 +198,34 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        // Update only the `key` field for Super-Admin
-        $staff->update(['key' => $request->input('key')]);
+        // Get all request inputs
+        $input = $request->all();
+    //    dd($input);
 
-        notify()->success('Key updated successfully');
-        return redirect()->back();
-    }
+        // Map 'department' to 'department_id' and handle nullable values
+        $input['employee_id'] = $request->input('employee_id') ?: null;
+        $input['department_id'] = $request->input('department_id') ?: null;
+        $input['designation_id'] = $request->input('designation_id') ?: null;
 
-    // Validation for other admins
-    $validator = Validator::make($request->all(), [
-        'name'        => 'required',
-        'email'       => 'required|email|unique:admins,email,' . $id,
-        'password'    => 'same:confirm-password',
-        'role'        => ['required', Rule::notIn('Super-Admin')],
-        'status'      => 'boolean',
-        'department'  => 'nullable|exists:departments,id',
-        'designation' => 'nullable|exists:designations,id',
-    ]);
+        // Remove 'department' and 'designation' from input to prevent mass assignment issues
+        unset($input['department'], $input['designation']);
 
-    if ($validator->fails()) {
-        notify()->error($validator->errors()->first(), 'Error');
-        return redirect()->back();
-    }
+        // Handle password update
+        if (!empty($input['password'])) {
+            $input['password'] = Hash::make($input['password']);
+        } else {
+            $input = Arr::except($input, ['password']);
+        }
 
-    // Get all request inputs
-    $input = $request->all();
-//    dd($input);
+        // Invalidate the user's session
+        $this->invalidateUserSession($staff);
 
-    // Map 'department' to 'department_id' and handle nullable values
-    $input['employee_id'] = $request->input('employee_id') ?: null;
-    $input['department_id'] = $request->input('department_id') ?: null;
-    $input['designation_id'] = $request->input('designation_id') ?: null;
+        // Update the admin record with correctly mapped input
+        $staff->update($input);
 
-    // Remove 'department' and 'designation' from input to prevent mass assignment issues
-    unset($input['department'], $input['designation']);
-
-    // Handle password update
-    if (!empty($input['password'])) {
-        $input['password'] = Hash::make($input['password']);
-    } else {
-        $input = Arr::except($input, ['password']);
-    }
-
-    // Invalidate the user's session
-    $this->invalidateUserSession($staff);
-
-    // Update the admin record with correctly mapped input
-    $staff->update($input);
-
-    // Update role and relationships
-    DB::table('model_has_roles')->where('model_id', $id)->delete();
-    $staff->assignRole($request->input('role'));
+        // Update role and relationships
+        DB::table('model_has_roles')->where('model_id', $id)->delete();
+        $staff->assignRole($request->input('role'));
         if(auth()->user()->hasRole('Super-Admin')) {
             // Attach users to staff
             $ids = $request->user_ids;
@@ -235,12 +235,9 @@ class StaffController extends Controller
             }
             $staff->users()->sync($ids);
         }
-    notify()->success('Staff updated successfully');
-    return redirect()->route('admin.staff.index');
-}
 
-
-
+        return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
+    }
 
     protected function invalidateUserSession($user)
     {

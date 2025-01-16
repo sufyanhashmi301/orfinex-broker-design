@@ -224,6 +224,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return round($sum, 2);
     }
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class, 'user_id');
+    }
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'user_id');
@@ -249,6 +253,12 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
             $query->where('type', TxnType::Interest);
         })->sum('amount');
+
+        return round($sum, 2);
+    }
+    public function totalWalletBalance()
+    {
+        $sum = $this->accounts()->sum('amount');
 
         return round($sum, 2);
     }
@@ -459,7 +469,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             $query->where(function($query) use ($search) {
                 $query->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
-//                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
@@ -486,4 +496,5 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
+
 }

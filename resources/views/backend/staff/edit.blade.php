@@ -1,6 +1,7 @@
-<form action="{{ route('admin.staff.update',$staff->id) }}" method="post" enctype="multipart/form-data" class="space-y-5">
+<form id="update-staff__form" class="space-y-5">
     @csrf
     @method('PUT')
+    <input type="hidden" id="staff-id" value="{{ $staff->id }}">
     <div class="card">
         <div class="card-header noborder">
             <div class="flex-none">
@@ -408,7 +409,7 @@
 {{--            </div>--}}
 
             <div class="action-btns text-right mt-10">
-                <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="update-staff__btn">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
                     {{ __('Save Changes') }}
                 </button>

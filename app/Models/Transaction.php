@@ -128,6 +128,12 @@ class Transaction extends Model
             $query->where('type', TxnType::Investment);
         });
     }
+    public function totalIbBonus()
+    {
+        return $this->where('status', TxnStatus::Success)->where(function ($query) {
+            $query->where('type', TxnType::IbBonus);
+        });
+    }
 
     public function totalProfit()
     {

@@ -331,7 +331,7 @@
                             style="text-transform: capitalize">{{ $trading_objectives['daily_drawdown_status'] }}</span>
                     </span>
                     <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                        {{ __('Daily Draw Down') }}
+                        {{ __('Daily Drawdown') }}
                     </h5>
                 </div>
                 <ul class="space-y-3">
@@ -373,7 +373,7 @@
                             style="text-transform: capitalize">{{ $trading_objectives['max_drawdown_status'] }}</span>
                     </span>
                     <h5 class="text-slate-900 dark:text-slate-300 text-base">
-                        {{ __('Maximum Draw Down') }}
+                        {{ __('Maximum Drawdown') }}
                     </h5>
                 </div>
                 <ul class="space-y-3">

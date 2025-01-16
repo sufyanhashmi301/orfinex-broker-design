@@ -42,7 +42,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.links.document-links') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.links.legal-links') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Doc & Links') }}
                         </a>
                     </li>

@@ -16,7 +16,7 @@
             </a>
         </li>
         <li>
-            <a href="{{route('admin.links.document-links')}}" class="navItem {{ isActive('admin.links*') }}">
+            <a href="{{route('admin.links.legal-links')}}" class="navItem {{ isActive('admin.links*') }}">
                 {{ __('Doc & Links')}}
             </a>
         </li>

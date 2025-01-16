@@ -127,7 +127,7 @@
                     <div class="mb-5">
                         <h4 class="mb-1">{{ setting('site_title', 'global') }} {{ __('Challenge') }}</h4>
                         <p class="text-sm text-success-500 mb-2">
-                            {{ __('Trade with up to $100,000 in Funding') }}
+                            {{ __('Trade with up to $150,000 in Funding') }}
                         </p>
                         <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">
                             {{ __('Showcase your trading proficiency by completing the evaluation and qualify for a funded account.') }}
@@ -136,7 +136,7 @@
                     <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
                         <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
                             <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Receive funding up to $100,000') }}
+                            {{ __('Receive funding up to $150,000') }}
                         </li>
                         <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
                             <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>

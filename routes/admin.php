@@ -446,7 +446,7 @@ Route::middleware(['2fa_admin'])->group(function () {
 
 //===============================  Links Settings ==================================
     Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
-        Route::get('document-links', 'documentLinks')->name('document-links');
+        Route::get('legal-links', 'legalLinks')->name('legal-links');
         Route::get('platform-links', 'platformLinks')->name('platform-links');
 
         Route::get('social', [SocialLinkController::class, 'index'])->name('social.index');

@@ -269,19 +269,49 @@
                         {{ __('Please review the following policies before proceeding:') }}
                     </p>
                     <ul class="space-y-3 mb-5">
-                        @if (setting('aml_policy_show', 'document_links', false))
+
+                        @foreach ($legal_links as $link)
+
+                            @php
+                                $is_enabled = false;
+                                $settings_name = '';
+                                if(str_contains($link->name, '_purchase') ) {
+                                    if(setting($link->name) == 1) {
+                                        $is_enabled = true;
+                                        $settings_name = str_replace('_on_purchase', '', $link->name);
+                                        $label = str_replace( '_', ' ', str_replace( 'legal_', '', $settings_name) );
+                                    }
+                                    // dd($settings_name);
+                                }
+                            @endphp
+                            @if ($is_enabled)
+                                <li>
+                                    <a href="{{ setting($settings_name . '_link', 'legal_links', 'javascript:void(0);') }}"
+                                        class="inline-flex items-center justify-between text-sm w-full">
+                                        <div class="flex items-center">
+                                            <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
+                                            <span class="underline" style="text-transform: capitalize">{{ $label }}</span>
+                                        </div>
+                                        <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
+                                    </a>
+                                </li> 
+                            @endif
+                            
+                        @endforeach
+
+                        {{-- @if (setting('terms_and_conditions_show', 'document_links', false))
                             <li>
-                                <a href="{{ setting('aml_policy_link', 'document_links', 'javascript:void(0);') }}"
+                                <a href="{{ setting('terms_and_conditions_link', 'document_links', 'javascript:void(0);') }}"
                                     class="inline-flex items-center justify-between text-sm w-full">
                                     <div class="flex items-center">
                                         <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('AML Policy') }}</span>
+                                        <span class="underline">Terms and Conditions</span>
                                     </div>
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
-                        @endif
-                        @if (setting('privacy_policy_show', 'document_links', false))
+                        @endif --}}
+                        {{-- @if (setting('privacy_policy_show', 'document_links', false))
                             <li>
                                 <a href="{{ setting('privacy_policy_link', 'document_links', 'javascript:void(0);') }}"
                                     class="inline-flex items-center justify-between text-sm w-full">
@@ -376,7 +406,7 @@
                                     <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
                                 </a>
                             </li>
-                        @endif
+                        @endif --}}
                     </ul>
                     <div class="form-group text-start">
                         <div class="flex w-full items-start">

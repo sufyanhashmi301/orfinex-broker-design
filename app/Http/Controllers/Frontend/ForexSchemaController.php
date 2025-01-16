@@ -9,6 +9,7 @@ use App\Models\ForexSchema;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\Controller;
 use App\Models\Addon;
+use App\Models\Setting;
 
 class ForexSchemaController extends Controller
 {
@@ -51,8 +52,9 @@ class ForexSchemaController extends Controller
         
         $account_type = AccountType::find($id);
         $addons = Addon::where('status', 1)->get();
+        $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_purchase%')->get();
 
-        return view('frontend::forex_schema.preview', compact('account_type', 'addons'));
+        return view('frontend::forex_schema.preview', compact('account_type', 'addons', 'legal_links'));
     }
 
     public function schemaSelect($id)

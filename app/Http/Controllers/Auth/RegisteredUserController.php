@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Events\UserReferred;
-use App\Http\Controllers\Controller;
-use App\Models\LoginActivities;
-use App\Models\MultiLevel;
+use Txn;
+use Session;
 use App\Models\Page;
-use App\Models\Ranking;
 use App\Models\User;
-use App\Models\UserAffiliate;
-use App\Providers\RouteServiceProvider;
+use App\Enums\TxnType;
+use App\Models\Ranking;
+use App\Models\Setting;
+use App\Enums\TxnStatus;
 use App\Rules\Recaptcha;
+use Illuminate\View\View;
+use App\Models\MultiLevel;
 use App\Traits\NotifyTrait;
-use Illuminate\Http\RedirectResponse;
+use App\Events\UserReferred;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Models\UserAffiliate;
+use App\Models\LoginActivities;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Validation\ValidationException;
-use Illuminate\View\View;
-use Session;
-use Txn;
 
 class RegisteredUserController extends Controller
 {
@@ -145,7 +146,8 @@ class RegisteredUserController extends Controller
         $googleReCaptcha = plugin_active('Google reCaptcha');
 //        dd('s');
         $location = getLocation();
+        $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_signup%')->get();
 
-        return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data'));
+        return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data', 'legal_links'));
     }
 }

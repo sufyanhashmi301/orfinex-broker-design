@@ -119,7 +119,7 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-        // dd($request->all());
+
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
 //        dd($request->all(),$rules, $section);
@@ -138,7 +138,7 @@ class SettingController extends Controller
 //                 dd($data, $key, $val, $validSettings);
 
                 if (in_array($key, $validSettings)) {
-
+ 
                     if ($request->hasFile($key)) {
                         $oldImage = Setting::get($key, $section);
 
@@ -289,7 +289,7 @@ class SettingController extends Controller
 
     public function changelog()
     {
-        $url = 'https://cdn.brokeret.com/crm-assets/json/changelog.json';
+        $url = 'https://cdn.brokeret.com/crm-assets/json/prop-changelog.json';
 
         //$response = Http::get($url);
         $response = Http::withoutVerifying()->get($url);

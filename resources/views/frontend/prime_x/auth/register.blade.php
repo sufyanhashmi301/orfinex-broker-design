@@ -126,8 +126,34 @@
                     <input type="checkbox" name="i_agree" class="hiddens mr-2" value="yes" required>
                     <span class="text-slate-500 dark:text-slate-400 text-xs leading-6 capitalize">
                         {{ __('I agree with') }}
-                        <a href="{{ setting('privacy_policy_link', 'global') }}" class="btn-link" target="_blank">{{ __('Privacy & Policy') }}</a> {{ __('and') }}
-                        <a href="{{ setting('client_agreement_link', 'global') }}" class="btn-link" target="_blank">{{ __('Client Agreement') }}</a>
+
+                        @foreach ($legal_links as $link)
+
+                            @php
+                                $is_enabled = false;
+                                $settings_name = '';
+                                if(str_contains($link->name, '_signup') ) {
+                                    if(setting($link->name) == 1) {
+                                        $is_enabled = true;
+                                        $settings_name = str_replace('_on_signup', '', $link->name);
+                                        $label = str_replace( '_', ' ', str_replace( 'legal_', '', $settings_name) );
+                                    }
+                                    // dd($settings_name);
+                                }
+                            @endphp
+                            @if ($is_enabled)
+                                <a href="{{ setting($settings_name . '_link', 'global') }}" class="btn-link" target="_blank">{{ $label }}</a>
+                                @if ($loop->remaining == 2)
+                                    and
+                                @elseif ($loop->remaining > 2)
+                                    ,
+                                @endif
+                            @endif
+                            
+                        @endforeach
+
+                        
+                        {{-- <a href="{{ setting('client_agreement_link', 'global') }}" class="btn-link" target="_blank">{{ __('Client Agreement') }}</a> --}}
                     </span>
                 </label>
             </div>

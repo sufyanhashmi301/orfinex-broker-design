@@ -38,6 +38,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('accounts:promote-or-violate')->everyThreeMinutes();
         $schedule->command('send:promote-violate-accounts-mails')->everyThreeMinutes()->delay(1);
 
+        // Detect IP Adresses
+        
     }
 
     /**

@@ -12,18 +12,57 @@
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-                @if(setting('aml_policy_show','document_links',false))
+
+                @foreach ($legal_links as $link)
+                    @php
+                        $is_enabled = false;
+                        $settings_name = '';
+                        if(str_contains($link->name, '_show') ) {
+                            if(setting($link->name) == 1) {
+                                $is_enabled = true;
+                                $settings_name = str_replace('_show', '', $link->name);
+                                $label = str_replace( '_', ' ', str_replace( 'legal_', '', $settings_name) );
+
+                                $link = setting($settings_name . '_link', 'legal_links', 'javascript:void(0);');
+                            }
+                            // dd($settings_name);
+                        }
+                    @endphp
+                    @if ($is_enabled)
+
+                        <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
+                            {{-- <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
+                                <iconify-icon class="dark:text-white" icon="solar:shield-minimalistic-linear"></iconify-icon>
+                            </div> --}}
+                            <span class="block text-base text-slate-600 font-medium dark:text-white mb-1" style="text-transform: capitalize">
+                                {{ $label }}
+                                <br>
+                                <span class="text-slate-400 text-sm font-normal">{{ str_contains($link, '.pdf') ? 'PDF' : 'LINK' }}</span>
+                            </span>
+                            <div class="mt-5">
+                                <a href="{{ $link }}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                                    <span class="mr-1">Read Now</span>
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+
+                    @endif
+                    
+                @endforeach
+
+                {{-- @if(setting('terms_and_conditions_show','document_links',false))
                     <div class="border border-slate-100 dark:border-slate-700 rounded p-4">
                         <div class="h-12 w-12 flex flex-col items-center justify-center rounded bg-slate-50 dark:bg-body text-3xl mb-4">
                             <iconify-icon class="dark:text-white" icon="solar:shield-minimalistic-linear"></iconify-icon>
                         </div>
                         <span class="block text-base text-slate-600 font-medium dark:text-white mb-1">
-                            {{ __('AML Policy') }}
+                            Terms and Conditions
                             <br>
                             <span class="text-slate-400 text-sm font-normal">PDF</span>
                         </span>
                         <div class="mt-5">
-                            <a href="{{setting('aml_policy_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
+                            <a href="{{setting('terms_and_conditions_link','document_links','javascript:void(0);')}}" class="inline-flex items-center text-sm dark:text-slate-300" target="_blank">
                                 <span class="mr-1">Read Now</span>
                                 <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                             </a>
@@ -166,7 +205,7 @@
                             </a>
                         </div>
                     </div>
-                @endif
+                @endif --}}
             </div>
 
         </div>

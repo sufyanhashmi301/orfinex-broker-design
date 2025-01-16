@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
 {
-    public static function documentLinks()
+    
+    public static function legalLinks()
     {
-        return view('backend.links.document');
+        $settings = Setting::all();
+        return view('backend.links.legal', compact('settings'));
     }
 
     public static function platformLinks()

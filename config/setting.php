@@ -674,30 +674,48 @@ return [
         ],
     ],
 
-    'document_links' => [
-        'title' => 'Document Links',
+    'legal_links' => [
+        'title' => 'Legal Links',
         'elements' => [
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'aml_policy_link', // unique name for field
-                'label' => 'AML Policy Link', // you know what label it is
+                'name' => 'legal_terms_and_conditions_link', // unique name for field
+                'label' => 'Terms and Conditions Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
+                
             ],
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'aml_policy_show', // unique name for field
-                'label' => 'AML Policy', // you know what label it is
+                'name' => 'legal_terms_and_conditions_show', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0, // default value if you want
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_terms_and_conditions_on_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_terms_and_conditions_on_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+
 
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'client_agreement_link', // unique name for field
+                'name' => 'legal_client_agreement_link', // unique name for field
                 'label' => 'Client Agreement Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
@@ -705,16 +723,33 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'client_agreement_show', // unique name for field
+                'name' => 'legal_client_agreement_show', // unique name for field
                 'label' => 'Client Agreement', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_client_agreement_on_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_client_agreement_on_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            
 
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'complaints_handling_policy_link', // unique name for field
+                'name' => 'legal_complaints_handling_policy_link', // unique name for field
                 'label' => 'Complaints Handling Policy Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
@@ -722,16 +757,33 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'complaints_handling_policy_show', // unique name for field
+                'name' => 'legal_complaints_handling_policy_show', // unique name for field
                 'label' => 'Complaints Handling Policy', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_complaints_handling_policy_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_complaints_handling_policy_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+
 
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'cookies_policy_link', // unique name for field
+                'name' => 'legal_cookies_policy_link', // unique name for field
                 'label' => 'Cookies Policy Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
@@ -739,50 +791,68 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'cookies_policy_show', // unique name for field
+                'name' => 'legal_cookies_policy_show', // unique name for field
                 'label' => 'Cookies Policy', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-
-            [
-                'type' => 'url', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'IB_partner_agreement_link', // unique name for field
-                'label' => 'IB Partner Agreement Link', // you know what label it is
-                'rules' => '', // validation rule of laravel
-                'value' => null, // default value if you want
+                'value' => 0
             ],
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'IB_partner_agreement_show', // unique name for field
-                'label' => 'IB Partner Agreement', // you know what label it is
+                'name' => 'legal_cookies_policy_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
-            ],
-
-            [
-                'type' => 'url', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'order_execution_policy_link', // unique name for field
-                'label' => 'Order Execution Policy Link', // you know what label it is
-                'rules' => '', // validation rule of laravel
-                'value' => null, // default value if you want
+                'value' => 0, // default value if you want
             ],
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'order_execution_policy_show', // unique name for field
-                'label' => 'Order Execution Policy', // you know what label it is
+                'name' => 'legal_cookies_policy_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0, // default value if you want
             ],
+
+
+
+            // [
+            //     'type' => 'url', // input fields type
+            //     'data' => 'string', // data type, string, int, boolean
+            //     'name' => 'IB_partner_agreement_link', // unique name for field
+            //     'label' => 'IB Partner Agreement Link', // you know what label it is
+            //     'rules' => '', // validation rule of laravel
+            //     'value' => null, // default value if you want
+            // ],
+            // [
+            //     'type' => 'checkbox', // input fields type
+            //     'data' => 'boolean', // data type, string, int, boolean
+            //     'name' => 'IB_partner_agreement_show', // unique name for field
+            //     'label' => 'IB Partner Agreement', // you know what label it is
+            //     'rules' => 'required', // validation rule of laravel
+            //     'value' => 0, // default value if you want
+            // ],
+
+            // [
+            //     'type' => 'url', // input fields type
+            //     'data' => 'string', // data type, string, int, boolean
+            //     'name' => 'order_execution_policy_link', // unique name for field
+            //     'label' => 'Order Execution Policy Link', // you know what label it is
+            //     'rules' => '', // validation rule of laravel
+            //     'value' => null, // default value if you want
+            // ],
+            // [
+            //     'type' => 'checkbox', // input fields type
+            //     'data' => 'boolean', // data type, string, int, boolean
+            //     'name' => 'order_execution_policy_show', // unique name for field
+            //     'label' => 'Order Execution Policy', // you know what label it is
+            //     'rules' => 'required', // validation rule of laravel
+            //     'value' => 0, // default value if you want
+            // ],
 
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'privacy_policy_link', // unique name for field
+                'name' => 'legal_privacy_policy_link', // unique name for field
                 'label' => 'Privacy Policy Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
@@ -790,16 +860,33 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'privacy_policy_show', // unique name for field
+                'name' => 'legal_privacy_policy_show', // unique name for field
                 'label' => 'Privacy Policy', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_privacy_policy_on_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_privacy_policy_on_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            
 
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'risk_disclosure_link', // unique name for field
+                'name' => 'legal_risk_disclosure_link', // unique name for field
                 'label' => 'Risk Disclosure Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
@@ -807,16 +894,33 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'risk_disclosure_show', // unique name for field
+                'name' => 'legal_risk_disclosure_show', // unique name for field
                 'label' => 'Risk Disclosure', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0
             ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_risk_disclosure_on_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_risk_disclosure_on_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+
 
             [
                 'type' => 'url', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'US_clients_policy_link', // unique name for field
+                'name' => 'legal_US_clients_policy_link', // unique name for field
                 'label' => 'US Clients Policy Link', // you know what label it is
                 'rules' => '', // validation rule of laravel
                 'value' => null, // default value if you want
@@ -824,12 +928,28 @@ return [
             [
                 'type' => 'checkbox', // input fields type
                 'data' => 'boolean', // data type, string, int, boolean
-                'name' => 'US_clients_policy_show', // unique name for field
+                'name' => 'legal_US_clients_policy_show', // unique name for field
                 'label' => 'US Clients Policy', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
-                'value' => 1, // default value if you want
+                'value' => 0
             ],
-
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_US_clients_policy_on_purchase', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'legal_US_clients_policy_on_signup', // unique name for field
+                'label' => 'Terms and Conditions', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+           
 
         ],
 

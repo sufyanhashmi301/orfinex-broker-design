@@ -1,44 +1,45 @@
 <?php
 
+use App\Models\Setting;
+use App\Models\Certificate;
 use App\Traits\ForexApiTrait;
 use App\Models\AccountTypeInvestment;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\SumsubController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Frontend\IBController;
 use App\Http\Controllers\Frontend\IpnController;
 use App\Http\Controllers\Frontend\KycController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\UserController;
+use App\Http\Controllers\UserAffiliateController;
 use App\Http\Controllers\Frontend\InvestController;
 use App\Http\Controllers\Frontend\OffersController;
 use App\Http\Controllers\Frontend\StatusController;
 use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\Frontend\WalletController;
+use App\Http\Controllers\UserCertificateController;
 use App\Http\Controllers\Frontend\DepositController;
 use App\Http\Controllers\Frontend\GatewayController;
 use App\Http\Controllers\Frontend\SettingController;
+use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\Frontend\ReferralController;
 use App\Http\Controllers\Frontend\TransferController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\SendMoneyController;
+use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Frontend\ForexSchemaController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
-use App\Http\Controllers\Backend\LeaderboardController;
-use App\Http\Controllers\BillingController;
-use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
-use App\Http\Controllers\Frontend\ContractController;
-use App\Http\Controllers\UserAffiliateController;
-use App\Http\Controllers\UserCertificateController;
-use App\Models\Certificate;
 
 /*
 |--------------------------------------------------------------------------
@@ -316,7 +317,9 @@ Route::get('user/offers', [OffersController::class, 'index'])->name('user.offers
 
 
 Route::get('user/agreements', function () {
-    return view('frontend::user.setting.agreements.index');
+    $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_show%')->get();
+
+    return view('frontend::user.setting.agreements.index')->with('legal_links', $legal_links);
 })->name('user.agreements');
 
 Route::get('user/margin-account', function () {

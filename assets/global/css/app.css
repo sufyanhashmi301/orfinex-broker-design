@@ -13197,7 +13197,7 @@ ul.custom-list ul li{
 .submenu-sidebar{
   position: fixed;
   /* top: 0px; */
-  z-index: 999;
+  z-index: 998;
   height: calc(100% - 48px);
   width: 200px;
   --tw-bg-opacity: 1;

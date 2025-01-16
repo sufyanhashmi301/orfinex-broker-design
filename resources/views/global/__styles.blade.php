@@ -8,10 +8,10 @@
     .light body, body, .bg-body {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color')) }} / var(--tw-bg-opacity));
     }
-    .kyc-alert .sidebar-wrapper, .submenu-sidebar, .site-footer, .card {
+    .kyc-alert .sidebar-wrapper, .submenu-sidebar, .site-footer, .card, #staff-list__container {
         background-color: rgba({{ implode(' ', getColorFromSettings('base_color')) }} / var(--tw-bg-opacity));
     }
-    .dark body, .dark .dark\:bg-body, .dark .kyc-alert, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
+    .dark body, .dark .dark\:bg-body, .dark .kyc-alert, .dark .sidebar-wrapper, .dark .submenu-sidebar, .dark #staff-list__container, .dark .dropdown-menu, .dark .form-control, .dark .select2-selection, .dark .note-dropdown-menu, .dark .site-footer {
         background-color: rgba({{ implode(' ', getColorFromSettings('body_bg_color_dark')) }} / var(--tw-bg-opacity));
     }
     .app-header, .logo-segment {

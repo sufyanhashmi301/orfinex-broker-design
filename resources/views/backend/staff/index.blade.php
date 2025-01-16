@@ -16,12 +16,19 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Manage Staffs') }}
         </h4>
+        <a href="javascript:;" class="staffList-open-btn items-center justify-center dark:text-white p-1">
+            <iconify-icon class="text-lg font-medium" icon="mdi:dots-vertical"></iconify-icon>
+        </a>
     </div>
     <div class="card border dark:border-slate-700">
         <div class="grid grid-cols-12">
-            <div class="lg:col-span-4 col-span-12">
-                <div class="h-full border-r dark:border-slate-700">
-                    <div class="card-header pl-0" style="padding-bottom: 11px;">
+            <div class="medium:col-span-4 col-span-12">
+                <div class="mobile-close-overlay w-full h-full" id="close-settings-overlay"></div>
+                <div class="h-full border-r dark:border-slate-700" id="staff-list__container">
+                    <a href="javascript:;" class="staffList-close-btn btn-primary absolute items-center justify-center p-2">
+                        <iconify-icon class="text-lg font-medium" icon="material-symbols:close-rounded"></iconify-icon>
+                    </a>
+                    <div class="card-header gap-2 pl-0" style="padding-bottom: 11px;">
                         <div class="input-area relative">
                             <select id="staffStatusFilter" class="form-control">
                                 <option value="active">{{ __('Active Staff') }} ({{ $activeStaffCount }})</option>
@@ -32,7 +39,7 @@
                             @can('staff-create')
                                 <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" id="create-staff">
                                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                                    {{ __('Add New Staff') }}
+                                    <span class="text-nowrap">{{ __('Add New Staff') }}</span>
                                 </a>
                             @endcan
                         </div>
@@ -42,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-8 col-span-12">
+            <div class="medium:col-span-8 col-span-12">
                 <div id="edit-staff-body">
                     @include('backend.staff.edit')
                 </div>
@@ -68,6 +75,13 @@
 
 @section('script')
     <script>
+        $('.staffList-open-btn').click(function(){
+            $('#staff-list__container, .mobile-close-overlay').addClass('in');
+        });
+
+        $('.staffList-close-btn').click(function(){
+            $('#staff-list__container, .mobile-close-overlay').removeClass('in');
+        })
 
         $('body').on('click', '#create-staff', function (event) {
             "use strict";

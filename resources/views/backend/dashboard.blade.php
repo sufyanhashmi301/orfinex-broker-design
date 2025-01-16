@@ -18,9 +18,9 @@
 @section('content')
 
     <div class="dashboardTitle card shadow-sm dark:shadow-slate-700 p-6 pb-0 mb-6 -mx-6">
-        <div class="flex justify-between flex-wrap items-center mb-5">
+        <div class="flex justify-between flex-wrap items-center gap-3 mb-5">
             <div>
-                <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
+                <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 flex space-x-3 rtl:space-x-reverse">
                     {{ __('Hello, ') }}{{ Auth::user()->name }}
                 </h4>
                 <p class="flex items-center text-slate-600 dark:text-slate-300 text-sm">
@@ -30,11 +30,11 @@
             </div>
             @canany(['deposit-action','withdraw-action','kyc-action',])
                 @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
-                    <div class="text-right">
+                    <div class="md:text-right">
                         <p class="text-base dark:text-white font-medium mb-2">
                             {{ __("Explore what's important to review first") }}
                         </p>
-                        <div class="flex justify-end gap-3">
+                        <div class="flex md:justify-end flex-wrap gap-3">
                             @can('withdraw-action')
                                 @if($data['withdraw_count'])
                                     <a href="{{ route('admin.withdraw.pending') }}" class="btn btn-sm btn-danger inline-flex items-center justify-center">
@@ -69,7 +69,7 @@
                 @endif
             @endcanany
         </div>
-        <ul class="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none" id="tabs-tab" role="tablist">
+        <ul class="nav nav-tabs flex flex-wrap list-none" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link w-full block font-medium text-sm font-Inter leading-tight capitalize border-x-0 border-t-0 border-b border-transparent px-2 pb-2 hover:border-transparent focus:border-transparent active dark:text-slate-300" id="tabs-dashboard-tab" data-bs-toggle="tab" href="#tabs-dashboard" role="tab" aria-controls="tabs-dashboard" aria-selected="false">
                     {{ __('Dashboard') }}

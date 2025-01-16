@@ -88,8 +88,8 @@
     <div class="card p-4 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.forex-accounts.export',['type' => ($type === 'real' ? 'real' : 'all')]) }}">
             @csrf
-            <div class="flex justify-between flex-wrap items-center">
-                <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+            <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area relative">
                         <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Email">
                     </div>
@@ -107,7 +107,7 @@
                         <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
                     </div>
                 </div>
-                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
                     <div class="input-area relative">
                         <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>

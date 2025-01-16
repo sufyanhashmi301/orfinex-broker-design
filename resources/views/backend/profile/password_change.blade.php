@@ -14,7 +14,7 @@
                 <form method="post" action="{{ route('admin.password-update') }}">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="col-span-2">
+                        <div class="md:col-span-2">
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Old Password:') }}</label>
                                 <input type="password" name="current_password" class="form-control"
@@ -30,14 +30,14 @@
                             <input type="password" name="new_confirm_password" class="form-control"
                                 required="">
                         </div>
-                        <div class="col-span-2 text-right">
+                        <div class="md:col-span-2 text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
                                 {{ __('Change Password') }}
                             </button>
                         </div>
                     </div>
                 </form>
-    
+
             </div>
         </div>
     </div>

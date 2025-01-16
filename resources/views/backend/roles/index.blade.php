@@ -35,26 +35,28 @@
                                     <td class="table-td">{{ ++$loop->index }}</td>
                                     <td class="table-td"><strong>{{ str_replace('-',' ',$role->name) }}</strong></td>
                                     <td class="table-td">
-                                        @if($role->name == 'Super-Admin')
-                                            <button class="btn btn-danger btn-sm inline-flex items-center justify-center">
-                                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:alert-triangle"></iconify-icon>
-                                                {{ __('Not Editable') }}
-                                            </button>
-                                        @else
-                                            @can('role-edit')
-                                                <a href="{{route('admin.roles.edit',$role->id)}}"
-                                                class="btn btn-dark btn-sm inline-flex items-center justify-center">
-                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:edit-3"></iconify-icon>
-                                                    {{ __('Edit Permission') }}
-                                                </a>
-                                            @endcan
-                                            @can('role-delete')
-                                                <button type="button" class="btn btn-dark btn-sm inline-flex items-center justify-center delete-schema-btn table-btn" data-id="{{ $role->id }}">
-                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:trash"></iconify-icon>
-                                                    {{ __('Delete Role') }}
+                                        <div class="flex space-x-3 rtl:space-x-reverse">
+                                            @if($role->name == 'Super-Admin')
+                                                <button class="btn btn-danger btn-sm inline-flex items-center justify-center">
+                                                    <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:alert-triangle"></iconify-icon>
+                                                    {{ __('Not Editable') }}
                                                 </button>
-                                            @endcan
-                                        @endif
+                                            @else
+                                                @can('role-edit')
+                                                    <a href="{{route('admin.roles.edit',$role->id)}}"
+                                                    class="btn btn-dark btn-sm inline-flex items-center justify-center">
+                                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:edit-3"></iconify-icon>
+                                                        <span class="text-nowrap">{{ __('Edit Permission') }}</span>
+                                                    </a>
+                                                @endcan
+                                                @can('role-delete')
+                                                    <button type="button" class="btn btn-dark btn-sm inline-flex items-center justify-center delete-schema-btn table-btn" data-id="{{ $role->id }}">
+                                                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2" icon="lucide:trash"></iconify-icon>
+                                                        <span class="text-nowrap">{{ __('Delete Role') }}</span>
+                                                    </button>
+                                                @endcan
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

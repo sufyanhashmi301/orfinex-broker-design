@@ -17446,6 +17446,7 @@ ul.custom-list ul li{
     display: none;
     top: 3.5rem;
     left: -2.1rem;
+    box-shadow: none !important;
 }
 @media (min-width: 991.98px) {
     .medium\:ml-\[200px\] {

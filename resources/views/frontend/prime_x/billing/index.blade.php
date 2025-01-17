@@ -76,7 +76,7 @@
                                         </td>
                                         <td class="table-td">
                                             
-                                            <a href="{{ route('user.billing.generateInvoice', ["transaction_id" => $txn->id ]) }}" class="action-btn">
+                                            <a href="{{ route('user.billing.generateInvoice', ["transaction_id" => $txn->id ]) }}" target="__blank" class="action-btn">
                                                 <iconify-icon icon="heroicons-outline:download"></iconify-icon>
                                             </a>
                                         

@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\Enums\TxnStatus;
 use App\Models\Transaction;
+use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 
-
-use Illuminate\Support\Facades\Auth;
-use App\Models\AccountTypeInvestment;
-use App\Services\InvoiceService;
-use LaravelDaily\Invoices\Classes\Buyer;
-use LaravelDaily\Invoices\Classes\InvoiceItem;
-
-class BillingController extends Controller
+class InvoiceController extends Controller
 {
 
     protected $invoice;
@@ -31,28 +22,7 @@ class BillingController extends Controller
      */
     public function index()
     {
-        $billing_transactions = Transaction::where('user_id', Auth::id())->orderBy('id', 'DESC')->get();
-        $accounts = AccountTypeInvestment::where('user_id', Auth::id())->get();
-
-        return view('frontend::billing.index', compact('billing_transactions', 'accounts'));
-    }
-
-
-    public function generateInvoice($transaction_id){
-
-        $user = User::find(Auth::id());
-        $transaction = Transaction::find($transaction_id);
-        
-
-        if($transaction->user_id != $user->id) {
-            abort(403);
-        }
-
-        $invoice = $this->invoice->invoicePDF($transaction_id);
-
-        
-
-        return $invoice->stream();  
+        //
     }
 
     /**
@@ -84,7 +54,11 @@ class BillingController extends Controller
      */
     public function show($id)
     {
-        //
+        $transaction = Transaction::findOrFail($id);
+
+        $invoice = $this->invoice->invoicePDF($transaction->id);
+
+        return $invoice->stream();  
     }
 
     /**

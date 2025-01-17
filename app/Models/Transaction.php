@@ -54,6 +54,10 @@ class Transaction extends Model
         return Carbon::parse($this->attributes['created_at'])->format('M d, Y h:i');
     }
 
+    public function invoice() {
+        return $this->hasOne(Invoice::class);
+    }
+
     public function getDayAttribute(): string
     {
         return Carbon::parse($this->attributes['created_at'])->format('d M');

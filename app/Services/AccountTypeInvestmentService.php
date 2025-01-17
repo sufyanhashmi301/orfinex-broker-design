@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Addon;
+use App\Models\Invoice;
 use App\Models\Discount;
 use App\Models\AccountType;
 use App\Traits\NotifyTrait;
@@ -13,6 +14,7 @@ use App\Enums\InvestmentStatus;
 use App\Enums\TradingObjective;
 use App\Models\UserCertificate;
 use App\Models\AccountTypePhase;
+use App\Services\InvoiceService;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
@@ -31,12 +33,14 @@ class AccountTypeInvestmentService
   private $investment_payment;
   protected $forexApiService;
   protected $payout;
+  protected $invoice;
 
-  public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout) {
+  public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice) {
       $this->investment_phase_approve = $investment_phase_approve;
       $this->investment_payment = $investment_payment;
       $this->forexApiService = $forexApiService;
       $this->payout = $payout;
+      $this->invoice = $invoice;
   }
 
   /**
@@ -98,19 +102,19 @@ class AccountTypeInvestmentService
       $total_amount = $rule->amount;
       if($data['discount_id']){
         // if coupon code is applied by the buyer
-        $total_amount = $this->processCouponDiscount($data['discount_id'], $rule->amount);
+        $total_amount = $this->invoice->processCouponDiscount($data['discount_id'], $rule->amount)['final_amount'];
       }
 
       if($data['addons']){
         // if one or more addons have ben applied
         $addons = explode(',', $data['addons']);
         for($i=0; $i < count($addons); $i++) {
-          $total_amount += $this->processAddons($addons[$i], $rule->amount);
+          $total_amount += $this->invoice->processAddons($addons[$i], $rule->amount);
         }
       }
 
       // data
-      $data = [
+      $account_data = [
           'unique_id' => $this->generateUniqueString(),
           'user_id' => Auth::id(),
           'currency' => $currency,
@@ -124,7 +128,10 @@ class AccountTypeInvestmentService
     }
 
     // Creating Investment and its snapshot
-    $new_investment = AccountTypeInvestment::create($data);
+    $new_investment = AccountTypeInvestment::create($account_data);
+
+    // Create Invoice 
+    $invoice = $this->invoice->createInvoice($data, $rule, $new_investment, $total_amount);
 
     // Investment phase log
     if($copy_snapshot_id == 0) {
@@ -143,56 +150,7 @@ class AccountTypeInvestmentService
     return $new_investment;
   }
 
-  /**
-   * Process Coupon Code Discount
-   */
-  public function processCouponDiscount($discount_id, $amount) {
-    
-    // Find the discount using the discount ID
-    $discount = Discount::find(get_hash($discount_id));
-
-    // If the discount exists and is valid
-    if ($discount) {
-        // Check if the discount type is percentage
-        if ($discount->type == 'percentage') {
-            // Apply percentage discount
-            $discountAmount = ($amount * $discount->percentage) / 100;
-        } // Check if the discount type is fixed
-        else if ($discount->type == 'fixed') {
-            // Apply fixed discount
-            $discountAmount = $discount->fixed_amount;
-        }
-        $finalAmount = $amount - $discountAmount;
-        // Ensure the final amount doesn't go below zero
-        if ($finalAmount < 0) {
-            notify()->error('The selected amount is below then minimum amount! kindly contact to support', 'Error');
-            return redirect()->back();
-        }
-
-        return $finalAmount;
-    }
   
-  }
-
-  /**
-   * Process Addons
-   */
-  public function processAddons($id, $amount) {
- 
-    $addon = Addon::find($id);
-
-    if ($addon) {
-        if ($addon->amount_type == 'percentage') {
-            $addonAmount = ($amount * $addon->amount) / 100;
-        } 
-        else if ($addon->amount_type == 'fixed') {
-            $addonAmount = $addon->amount;
-        }
-
-        return $addonAmount;
-    }
-  
-  }
 
 
   /**

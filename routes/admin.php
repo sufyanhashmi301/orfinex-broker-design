@@ -1,19 +1,28 @@
 <?php
 
+use App\Models\Contract;
+use App\Models\Certificate;
+use App\Models\LeaderboardBadge;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AddonController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\RiskRuleController;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\AccountTypeController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\SmsController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\LinkController;
 use App\Http\Controllers\Backend\PageController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\ThemeController;
+use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\ImportController;
 use App\Http\Controllers\Backend\PluginController;
@@ -36,15 +45,20 @@ use App\Http\Controllers\Backend\ReferralController;
 use App\Http\Controllers\Backend\ScheduleController;
 use App\Http\Controllers\Backend\SecurityController;
 use App\Http\Controllers\Backend\WithdrawController;
+use App\Http\Controllers\LeaderboardBadgeController;
 use App\Http\Controllers\Backend\CustomCssController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\KYCLevelsController;
+use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\MultiLevelController;
 use App\Http\Controllers\Backend\NavigationController;
 use App\Http\Controllers\Backend\RebateRuleController;
+use App\Http\Controllers\Backend\SocialLinkController;
+use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\Backend\DesignationController;
 use App\Http\Controllers\Backend\ForexSchemaController;
+use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\NotificationController;
@@ -60,19 +74,6 @@ use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
-use App\Http\Controllers\AddonController;
-use App\Http\Controllers\AffiliateRuleController;
-use App\Http\Controllers\Backend\LeaderboardController;
-use App\Http\Controllers\LeaderboardBadgeController;
-use App\Http\Controllers\LeaderboardRankingController;
-use App\Http\Controllers\PayoutRequestController;
-use App\Http\Controllers\Backend\SocialLinkController;
-use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\Frontend\ContractController;
-use App\Http\Controllers\RiskRuleController;
-use App\Models\Certificate;
-use App\Models\Contract;
-use App\Models\LeaderboardBadge;
 
 /*
 |--------------------------------------------------------------------------
@@ -223,6 +224,9 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Addons
     Route::get('/addons', [AddonController::class, 'index'])->name('addons.index');
     Route::post('/addon', [AddonController::class, 'update'])->name('addon.update');
+
+    // Invoice
+    Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
 // =============================== Optimization ===============================
 

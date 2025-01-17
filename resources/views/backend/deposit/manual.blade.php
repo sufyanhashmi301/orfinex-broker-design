@@ -23,7 +23,7 @@
                                     <th scope="col" class="table-th">{{ __('Date') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Transaction ID') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Account') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Account') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                     <th scope="col" class="table-th">{{ __('Charge') }}</th>
                                     <th scope="col" class="table-th">{{ __('Gateway') }}</th>
@@ -93,7 +93,7 @@
                     {data: 'created_at', name: 'created_at'},
                     {data: 'username', name: 'username'},
                     {data: 'tnx', name: 'tnx'},
-                    {data: 'target_id', name: 'target_id'},
+                    // {data: 'target_id', name: 'target_id'},
                     {data: 'amount', name: 'amount'},
                     {data: 'charge', name: 'charge'},
                     {data: 'method', name: 'method'},

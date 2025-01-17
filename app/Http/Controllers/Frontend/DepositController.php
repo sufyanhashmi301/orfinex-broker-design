@@ -10,6 +10,7 @@ use App\Models\AccountTypeInvestment;
 use App\Models\DepositMethod;
 use App\Models\ForexAccount;
 use App\Models\ForexSchemaPhaseRule;
+use App\Models\Invoice;
 use App\Models\Transaction;
 use App\Rules\ForexLoginBelongsToUser;
 use App\Rules\ForexLoginBelongsToUserForDemo;
@@ -131,6 +132,12 @@ class DepositController extends GatewayController
 //        $targetId = '1063794';
 //        $targetType = 'forex_deposit';
         $txnInfo = Txn::new($input['amount'], $charge, $finalAmount, $gatewayInfo->gateway_code, 'Payment With ' . $gatewayInfo->name, $depositType, TxnStatus::Pending, $gatewayInfo->currency, $payAmount, auth()->id(), null, 'User', $manualData ?? [], 'none', $targetId, $targetType);
+
+        // Update Invoice
+        $invoice = Invoice::where('account_type_investment_id', $targetId)->first();
+        $invoice->transaction_id = $txnInfo->id;
+        $invoice->transaction_id_string = $txnInfo->tnx;
+        $invoice->save();
 
         // send email if the payment is pending
         if ($gatewayInfo->type == 'manual') {

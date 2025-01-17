@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
 
         // Promotion and Violation
         $schedule->command('accounts:promote-or-violate')->everyThreeMinutes();
-        $schedule->command('send:promote-violate-accounts-mails')->everyThreeMinutes()->delay(1);
+        $schedule->command('send:promote-violate-accounts-mails')->everyFourMinutes();
         
     }
 
@@ -55,7 +55,6 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
 
-        FetchWeeklyTradeStats::class,
         FetchWeeklyTradeStats::class,
         FetchInvestmentDailyScore::class,
         PromoteOrViolateAccount::class,

@@ -4,24 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Enums\InvestmentStatus;
+use App\Models\AccountActivity;
 use Illuminate\Validation\Rule;
 use App\Models\AccountTypeInvestment;
-use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
+use App\Services\AccountActivityService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\InvestmentPhaseApprovalService;
-use App\Models\AccountTypeInvestmentPhaseApproval;
 use App\Services\AccountTypeInvestmentPaymentService;
+use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
 
-class AccountTypeInvestmentPhaseApprovalController extends Controller
+class AccountActivityController extends Controller
 {
 
-
     private $investment_payment;
-    private $investment_phase_approve;
 
-    public function __construct(AccountTypeInvestmentPaymentService $investment_payment, InvestmentPhaseApprovalService $investment_phase_approve) {
+    public function __construct(AccountTypeInvestmentPaymentService $investment_payment, ) {
         $this->investment_payment = $investment_payment;
-        $this->investment_phase_approve = $investment_phase_approve;
     }
 
     /**
@@ -35,11 +33,15 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
     }
 
     /**
-     * 
-     * Investment Phase Approval Request
-     * @param Request $request
-     * @param AccountTY
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
      */
+    public function create()
+    {
+        //
+    }
+
     public function phaseApprovalRequest(Request $request, $investment_id) {
         // Validate the request data
         $validator = Validator::make($request->all(), [
@@ -69,22 +71,11 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
             // Approve Logic
             $active_investment = $this->investment_payment->investmentActive($investment_id);
 
-            // Approvals History
-            // --- Create the Phase Approval Record ---
-            // Phase Approval Passed Investment data
-            $phase_approval_data[0] = [
-                'account_type_investment_id' => $active_investment->id,
-                'account_type_phase_id' => $active_investment->getPhaseSnapshotData()['id'],
-                'phase_type' => $active_investment->getPhaseSnapshotData()['type'],
-                'status' => InvestmentPhaseApprovalEnum::ACTIVE,
-                'action' => 1
-            ];
-      
-            // Save the entry in investment phase approvals tablep
-            $this->investment_phase_approve->createRecord($phase_approval_data[0]);
+            // Account activity log
+            AccountActivityService::log($active_investment, InvestmentPhaseApprovalEnum::ACTIVE);
             
             // Update the action of the current one to 1 
-            AccountTypeInvestmentPhaseApproval::where([
+            AccountActivity::where([
                 'account_type_investment_id' => $investment->id,
                 'account_type_phase_id' => $investment->getPhaseSnapshotData()['id'],
                 'status' => InvestmentPhaseApprovalEnum::ADMIN_APPROVE,
@@ -107,16 +98,6 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -130,10 +111,10 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\AccountTypeInvestmentPhaseApproval  $accountTypeInvestmentPhaseApproval
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(AccountTypeInvestmentPhaseApproval $accountTypeInvestmentPhaseApproval)
+    public function show($id)
     {
         //
     }
@@ -141,10 +122,10 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\AccountTypeInvestmentPhaseApproval  $accountTypeInvestmentPhaseApproval
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(AccountTypeInvestmentPhaseApproval $accountTypeInvestmentPhaseApproval)
+    public function edit($id)
     {
         //
     }
@@ -153,10 +134,10 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\AccountTypeInvestmentPhaseApproval  $accountTypeInvestmentPhaseApproval
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AccountTypeInvestmentPhaseApproval $accountTypeInvestmentPhaseApproval)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -164,10 +145,10 @@ class AccountTypeInvestmentPhaseApprovalController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\AccountTypeInvestmentPhaseApproval  $accountTypeInvestmentPhaseApproval
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AccountTypeInvestmentPhaseApproval $accountTypeInvestmentPhaseApproval)
+    public function destroy($id)
     {
         //
     }

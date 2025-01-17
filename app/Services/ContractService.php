@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Enums\ContractStatusEnums;
-use App\Enums\InvestmentStatus;
-use App\Models\AccountTypeInvestment;
 use Carbon\Carbon;
 use App\Models\Contract;
 use App\Traits\NotifyTrait;
+use App\Enums\InvestmentStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Enums\ContractStatusEnums;
 use Illuminate\Support\Facades\File;
+use App\Models\AccountTypeInvestment;
 
 class ContractService
 {
@@ -88,6 +88,10 @@ class ContractService
     $account = AccountTypeInvestment::find($contract->account_type_investment_id);
     $account->status = InvestmentStatus::EXPIRED;
     $account->save();
+
+    // Activity log
+    AccountActivityService::log($account, InvestmentStatus::EXPIRED);
+
 
     $shortcodes = [
       '[[site_title]]' => setting('site_title', 'global'),

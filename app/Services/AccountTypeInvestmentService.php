@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Services\InvestmentPhaseApproval;
 use App\Models\AccountTypeInvestmentSnapshot;
-use App\Services\InvestmentPhaseApprovalService;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
 
@@ -29,14 +28,12 @@ class AccountTypeInvestmentService
 
   use NotifyTrait;
 
-  private $investment_phase_approve;
   private $investment_payment;
   protected $forexApiService;
   protected $payout;
   protected $invoice;
 
-  public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice) {
-      $this->investment_phase_approve = $investment_phase_approve;
+  public function __construct( AccountTypeInvestmentPaymentService $investment_payment, ForexApiService $forexApiService, PayoutService $payout, InvoiceService $invoice) {
       $this->investment_payment = $investment_payment;
       $this->forexApiService = $forexApiService;
       $this->payout = $payout;
@@ -143,14 +140,7 @@ class AccountTypeInvestmentService
 
     // Investment phase log
     if($copy_snapshot_id == 0) {
-      $phase_approval_data[0] = [
-        'account_type_investment_id' => $new_investment->id,
-        'account_type_phase_id' => $rule->accountTypePhase->id,
-        'phase_type' => $rule->accountTypePhase->type,
-        'status' => InvestmentPhaseApprovalEnum::PAYMENT_APPROVE,
-        'action' => 0
-      ];
-      $this->investment_phase_approve->createRecord($phase_approval_data[0]);
+      AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::PAYMENT_APPROVE);
     }
     $investment_snapshot = $this->saveInvestmentAttributesSnapshot($new_investment, $copy_snapshot_id);
      
@@ -369,26 +359,16 @@ class AccountTypeInvestmentService
 
       // --- Create the Phase Approval Record ---
       // Phase Approval Passed Investment data
-      $phase_approval_data[0] = [
-        'account_type_investment_id' => $passed_investment->id,
-        'account_type_phase_id' => $passed_phase['id'],
-        'phase_type' => $passed_phase['type'],
-        'status' => InvestmentPhaseApprovalEnum::PASSED,
-        'action' => 1
-      ];
+      AccountActivityService::log($passed_investment, InvestmentPhaseApprovalEnum::PASSED);
 
       // Phase Approval Next Phase Investment data
-      $phase_approval_data[1] = [
-        'account_type_investment_id' => $new_investment->id,
-        'account_type_phase_id' => $next_phase['id'],
-        'phase_type' => $next_phase['type'],
-        'status' => $next_phase['phase_approval_method'] == 'admin_approval' ? InvestmentPhaseApprovalEnum::ADMIN_APPROVE : InvestmentPhaseApprovalEnum::AUTO_APPROVE,
-        'action' => $next_phase['phase_approval_method'] == 'admin_approval' ? 0 : 1
-      ];
+      AccountActivityService::log(
+        $new_investment, 
+        $next_phase['phase_approval_method'] == 'admin_approval' ? InvestmentPhaseApprovalEnum::ADMIN_APPROVE : InvestmentPhaseApprovalEnum::AUTO_APPROVE,
+        $next_phase['phase_approval_method'] == 'admin_approval' ? 0 : 1
+      );
       
-      // Save the entry in investment phase approvals table
-      $this->investment_phase_approve->createRecord($phase_approval_data[0]);
-      $this->investment_phase_approve->createRecord($phase_approval_data[1]);
+
 
       if($next_phase['phase_approval_method'] == 'auto_approval'){
         // Auto approve the next phase 
@@ -399,14 +379,8 @@ class AccountTypeInvestmentService
         $this->investment_payment->investmentActive($new_investment->id, $investment_active_data);
 
         // Investment phase approval table updation
-        $phase_approval_data[0] = [
-          'account_type_investment_id' => $new_investment->id,
-          'account_type_phase_id' => $new_investment->getPhaseSnapshotData()['id'],
-          'phase_type' => $new_investment->getPhaseSnapshotData()['type'],
-          'status' => InvestmentPhaseApprovalEnum::ACTIVE,
-          'action' => 1
-        ];
-        $this->investment_phase_approve->createRecord($phase_approval_data[0]);
+        AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::ACTIVE);
+
 
       }
 
@@ -461,14 +435,8 @@ class AccountTypeInvestmentService
 
 
     // Add the record in investment phase approvals table
-    $phase_approval_data[0] = [
-      'account_type_investment_id' => $violate_investment->id,
-      'account_type_phase_id' => $violate_investment->getPhaseSnapshotData()['id'],
-      'phase_type' => $violate_investment->getPhaseSnapshotData()['type'],
-      'status' => InvestmentPhaseApprovalEnum::VIOLATED,
-      'action' => 1
-    ];
-    $this->investment_phase_approve->createRecord($phase_approval_data[0]);
+    AccountActivityService::log($violate_investment, InvestmentPhaseApprovalEnum::VIOLATED);
+
 
   }
 

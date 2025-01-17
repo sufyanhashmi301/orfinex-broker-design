@@ -10,7 +10,6 @@ use App\Models\AffiliateRule;
 use App\Enums\AccountTypePhase as AccountTypePhaseEnum;
 use App\Enums\InvestmentStatus;
 use App\Models\AccountTypeInvestment;
-use App\Enums\InvestmentPhaseApproval;
 use Illuminate\Support\Facades\Artisan;
 use App\Jobs\TradingStatsRunCommandsJob;
 use App\Models\Contract;
@@ -21,7 +20,6 @@ class AccountTypeInvestmentPaymentService
 
   use NotifyTrait;
 
-  protected $investment_phase_approve;
   protected $forexApiService;
   protected $accountTypeData;
   protected $phaseData;
@@ -29,9 +27,8 @@ class AccountTypeInvestmentPaymentService
   public $affiliate;
   protected $contract;
 
-  public function __construct(ForexApiService $forexApiService, InvestmentPhaseApprovalService $investment_phase_approve, UserAffiliateService $userAffiliate, ContractService $contract)
+  public function __construct(ForexApiService $forexApiService, UserAffiliateService $userAffiliate, ContractService $contract)
   {
-    $this->investment_phase_approve = $investment_phase_approve;
     $this->forexApiService = $forexApiService;
     $this->affiliate = $userAffiliate;
     $this->contract = $contract;
@@ -240,12 +237,7 @@ class AccountTypeInvestmentPaymentService
     // If deposit is successful, update the Investment table and add the record to investment_phase_approvals_table
     if ($deposit) {
 
-       // Funded Phase - Contract Creation
-      if($this->phaseData['type'] == AccountTypePhaseEnum::FUNDED) {
-        if(!Contract::where('account_type_investment_id', $investment->id)->exists()){
-          $this->contract->createContract($investment);
-        }
-      }
+      
 
       $time_now = CarbonImmutable::now();
 
@@ -269,11 +261,22 @@ class AccountTypeInvestmentPaymentService
       // send mail if user promoted to next phase -> Moved to commands
       // $this->doEmail('phase_promotion_email', $investment, $data);
 
-      // send email to user only if approved by admin and not phase promotion
-      if(!$is_phase_promotion) {
+      // Funded Phase - Contract Creation
+      if($this->phaseData['type'] == AccountTypePhaseEnum::FUNDED) {
+        if(!Contract::where('account_type_investment_id', $investment->id)->exists()){
+          $this->contract->createContract($investment);
+          $email_data = [
+            'passed_phase_step' => $this->phaseData['phase_step'] == 2 ? AccountTypePhaseEnum::EVALUATION :  AccountTypePhaseEnum::VERIFICATION
+          ];
+          $this->doEmail('pending_contract_email', $investment, $email_data);
+        }
+      }
+
+      // send email to user only if approved by admin and not phase promotion, 
+      if(!$is_phase_promotion && $this->phaseData['type'] != AccountTypePhaseEnum::FUNDED) {
         $this->doEmail('new_account_email', $investment);
       }
-      
+    
 
     }
 
@@ -299,7 +302,20 @@ class AccountTypeInvestmentPaymentService
       ];
       $this->mailNotify($investment->user->email, 'new_account_details', $shortcodes2);
     }
-    
+
+    // Pending Contract Email
+    if($slug == 'pending_contract_email') {
+      $shortcodes2 = [
+        '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
+        '[[account_login]]' => $investment->login,
+        '[[account_password]]' => $investment->main_password,
+        '[[server]]' => setting('live_server', 'platform_api'),
+        '[[phase_step]]' => $data['passed_phase_step'] == AccountTypePhaseEnum::EVALUATION ? 'Evaluation' : 'Verification',
+        '[[site_title]]' => setting('site_title', 'global'),
+      ];
+      $mail = $this->mailNotify($investment->user->email, 'contract_pending', $shortcodes2);
+    }
+
     //  Promotion Email
     // if($slug == "phase_promotion_email") {
     //   if($data['phase_promotion'] ?? false) {

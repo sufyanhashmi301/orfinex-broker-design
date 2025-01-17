@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountActivityController;
 use App\Models\Contract;
 use App\Models\Certificate;
 use App\Models\LeaderboardBadge;
@@ -73,7 +74,6 @@ use App\Http\Controllers\Backend\ProfitDeductionController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
-use App\Http\Controllers\AccountTypeInvestmentPhaseApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -176,10 +176,10 @@ Route::middleware(['2fa_admin'])->group(function () {
 // =============================== Optimization ===============================
     // Account Types
     Route::resource('account-type', AccountTypeController::class);
-    Route::get('accounts-phases-log', [AccountTypeInvestmentController::class, 'adminAccountsPhasesLog'])->name('accounts-phases.log');
+    Route::get('accounts-activity-log', [AccountTypeInvestmentController::class, 'adminAccountsActivityLog'])->name('accounts_activity.log');
 
     // Investment Phase Approvals
-    Route::get('phase-approval-request/{investment_id}', [AccountTypeInvestmentPhaseApprovalController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
+    Route::get('phase-approval-request/{investment_id}', [AccountActivityController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
 
     // leaderboards
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');

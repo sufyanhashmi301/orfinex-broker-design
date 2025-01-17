@@ -168,7 +168,7 @@
                 <ul class="sidebar-submenu">
                     @can('schema-edit')
                         <li>
-                            <a href="{{ route('admin.accounts-phases.log') }}"
+                            <a href="{{ route('admin.accounts-activity.log') }}"
                             class="{{ isActive('admin.accounts-phases*') }}">
                                 {{ __('Logs') }}
                             </a>
@@ -187,17 +187,17 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{{route('admin.accounts-phases.log' )}}?pending-approvals" class="{{ request()->has('pending-approvals') ? 'active' : '' }}">
+                        <a href="{{route('admin.accounts_activity.log' )}}?pending-approvals" class="{{ request()->has('pending-approvals') ? 'active' : '' }}">
                             {{ __('Pending Approvals') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.accounts-phases.log') }}?violated-acounts" class="{{ request()->has('violated-acounts') ? 'active' : '' }}">
+                        <a href="{{ route('admin.accounts_activity.log') }}?violated-acounts" class="{{ request()->has('violated-acounts') ? 'active' : '' }}">
                             {{ __('Violated Accounts') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.accounts-phases.log') }}" class="{{ url()->current() === route('admin.accounts-phases.log') && empty(request()->query()) ? 'active' : '' }}">
+                        <a href="{{ route('admin.accounts_activity.log') }}" class="{{ url()->current() === route('admin.accounts_activity.log') && empty(request()->query()) ? 'active' : '' }}">
                             {{ __('All Accounts Logs') }}
                         </a>
                     </li>

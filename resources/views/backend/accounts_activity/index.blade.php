@@ -19,7 +19,7 @@
     <div class="innerMenu card p-6 mb-5">
         <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open w-full">
             <li class="nav-item" role="presentation">
-                <a href="{{ route('admin.accounts-phases.log') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ url()->current() === route('admin.accounts-phases.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
+                <a href="{{ route('admin.accounts_activity.log') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ url()->current() === route('admin.accounts_activity.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a href="?pending-approvals" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('pending-approvals') ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
@@ -87,7 +87,7 @@
         <div class="col-span-12">
             <div class="tab-content" id="">
                 <div class="tab-pane fade show active" id="" role="tabpanel" aria-labelledby="">
-                    @include('backend.accounts_phases.includes.logs')
+                    @include('backend.accounts_activity.includes.logs')
                 </div>
             </div>
         </div>

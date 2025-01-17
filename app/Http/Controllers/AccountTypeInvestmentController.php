@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
-use App\Models\AccountTypeInvestmentPhaseApproval;
+use App\Models\AccountActivity;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Services\UserAffiliateService;
 
@@ -51,21 +51,34 @@ class AccountTypeInvestmentController extends Controller
         return view('frontend::user.forex.log', compact('investments'));
     }
 
-    public function adminAccountsPhasesLog(Request $request) {
+    public function adminAccountsActivityLog(Request $request) {
+
         if(isset($request->unique_id)){
             $uniqueId = $request->unique_id;
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
+            $account_activities = AccountActivity::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
                                             $query->where('unique_id', $uniqueId);
-                                        })->orderBy('updated_at', 'DESC')->paginate(15);
+                                        })->orderBy('id', 'DESC')->paginate(15);
         } elseif (isset($request->{'pending-approvals'})) {
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->orderBy('updated_at', 'DESC')->paginate(15);
+            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->with([
+                'accountTypeInvestment.user' 
+            ])->whereHas('accountTypeInvestment', function($query) {
+                $query->whereHas('user'); 
+            })->orderBy('id', 'DESC')->paginate(15);
         } elseif (isset($request->{'violated-acounts'})) {
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::where(['status' => InvestmentPhaseApproval::VIOLATED])->orderBy('updated_at', 'DESC')->paginate(15);
+            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::VIOLATED])->with([
+                'accountTypeInvestment.user' 
+            ])->whereHas('accountTypeInvestment', function($query) {
+                $query->whereHas('user'); 
+            })->orderBy('id', 'DESC')->paginate(15);
         } else{
-            $investment_phase_records = AccountTypeInvestmentPhaseApproval::orderBy('updated_at', 'DESC')->paginate(15);
+            $account_activities = AccountActivity::with([
+                'accountTypeInvestment.user' 
+            ])->whereHas('accountTypeInvestment', function($query) {
+                $query->whereHas('user'); 
+            })->orderBy('id', 'DESC')->paginate(15);
         }
 
-        return view('backend.accounts_phases.index', compact('investment_phase_records'));
+        return view('backend.accounts_activity.index', compact('account_activities'));
     }
 
     /**

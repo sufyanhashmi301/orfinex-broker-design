@@ -27,6 +27,7 @@ use App\Models\ForexSchemaPhaseRule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\ForexSchemaInvestment;
 use App\Enums\InvestmentPhaseApproval;
+use App\Services\AccountActivityService;
 use App\Services\UserAffiliateService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ForexSchemaInvestormService;
@@ -45,14 +46,12 @@ class DepositController extends Controller
      * @return void
      */
     private $investment_payment;
-    private $investment_phase_approve;
     public $affiliate;
 
 
-    public function __construct(InvestmentPhaseApprovalService $investment_phase_approve, AccountTypeInvestmentPaymentService $investment_payment, UserAffiliateService $userAffiliate)
+    public function __construct(AccountTypeInvestmentPaymentService $investment_payment, UserAffiliateService $userAffiliate)
     {
         $this->investment_payment = $investment_payment;
-        $this->investment_phase_approve = $investment_phase_approve;
         $this->affiliate = $userAffiliate;
         $this->middleware('permission:deposit-list|deposit-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
@@ -339,17 +338,8 @@ class DepositController extends Controller
                 $transaction = $transaction->fresh();
                 
                 $new_investment = $this->investment_payment->investmentActive($transaction->target_id);
-
-                // Investment phase approval table updation
-                $phase_approval_data[0] = [
-                    'account_type_investment_id' => $new_investment->id,
-                    'account_type_phase_id' => $new_investment->getPhaseSnapshotData()['id'],
-                    'phase_type' => $new_investment->getPhaseSnapshotData()['type'],
-                    'status' => InvestmentPhaseApproval::ACTIVE,
-                    'action' => 1
-                ];
-                $this->investment_phase_approve->createRecord($phase_approval_data[0]);
-                // update the payment_approve row
+                
+                AccountActivityService::log($new_investment, InvestmentPhaseApproval::ACTIVE);
 
 
             }

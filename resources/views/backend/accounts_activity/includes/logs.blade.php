@@ -1,4 +1,4 @@
-@if( count($investment_phase_records) != 0 )
+@if( count($account_activities) != 0 )
     <div class="card">
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6">
@@ -23,50 +23,43 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($investment_phase_records as $record)
+                                @foreach($account_activities as $activity)
                                     @php
-                                        if(!isset($record->accountTypeInvestment)) {
-                                            continue;
-                                        }
 
-                                        if(!isset($record->accountTypeInvestment->user)) {
-                                            continue;
-                                        }
+                                        $accountTypeData = $activity->accountTypeInvestment->getAccountTypeSnapshotData();
+                                        $phaseData = $activity->accountTypeInvestment->getPhaseSnapshotData();
 
-                                        $accountTypeData = $record->accountTypeInvestment->getAccountTypeSnapshotData();
-                                        $phaseData = $record->accountTypeInvestment->getPhaseSnapshotData();
-
-                                        $ruleData = $record->accountTypeInvestment->getRuleSnapshotData();
+                                        $ruleData = $activity->accountTypeInvestment->getRuleSnapshotData();
 
 
                                     @endphp
                                     <tr>
-                                        <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$record->accountTypeInvestment->unique_id}}">{{ $record->accountTypeInvestment->unique_id }}</a> </b></td>
-                                        <td class="table-td"> {{ $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name  }} </td>
+                                        <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$activity->accountTypeInvestment->unique_id}}">{{ $activity->accountTypeInvestment->unique_id }}</a> </b></td>
+                                        <td class="table-td"> {{ $activity->accountTypeInvestment->user->first_name . ' ' . $activity->accountTypeInvestment->user->last_name  }} <span style="text-transform: lowercase">({{ $activity->accountTypeInvestment->user->email }})</span></td>
                                         <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
-                                        <td class="table-td">{{ $record->accountTypeInvestment->login ?? 'N/A'}}</td>
+                                        <td class="table-td">{{ $activity->accountTypeInvestment->login ?? 'N/A'}}</td>
                                         {{-- <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td> --}}
                                         <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ str_replace('_', ' ', $phaseData['type']) }}</span></td>
                                         <td class="table-td"><span class="badge" style="color: #fff; background: #333">Phase {{ $phaseData['phase_step'] }}</span></td>
-                                        {{-- <td class="table-td">{{ $record->accountTypeInvestment->phase_started_at ?? 'N/A'}}</td> --}}
+                                        {{-- <td class="table-td">{{ $activity->accountTypeInvestment->phase_started_at ?? 'N/A'}}</td> --}}
 
                                         @php
-                                          $phase_approval = $record->accountTypeInvestment->accountTypeInvestmentPhaseApproval->where('account_type_phase_id', $phaseData['id'])->first();
-                                          $phase_action = str_replace('_', ' ', $record->status);
+                                          $phase_approval = $activity->accountTypeInvestment->accountActivities->where('account_type_phase_id', $phaseData['id'])->first();
+                                          $phase_action = str_replace('_', ' ', $activity->status);
                                         @endphp
 
                                         <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ $phase_action }}</span></td>
-                                        {{-- <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ $record->accountTypeInvestment->status }}</span></td> --}}
+                                        {{-- <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ $activity->accountTypeInvestment->status }}</span></td> --}}
 
                                         <td class="table-td" style="width: 300px">
-                                            @if ($record->status == \App\Enums\InvestmentPhaseApproval::ADMIN_APPROVE && $record->action == 0)
+                                            @if ($activity->status == \App\Enums\InvestmentPhaseApproval::ADMIN_APPROVE && $activity->action == 0)
                                                 <div class="btn-group">
-                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
-                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $record->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
+                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
+                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
                                                 </div>
 
                                             @else
-                                                {{-- {{ route('user.investment.trading-stats', ['investment_id' => $record->accountTypeInvestment->id ]) }} --}}
+                                                {{-- {{ route('user.investment.trading-stats', ['investment_id' => $activity->accountTypeInvestment->id ]) }} --}}
                                                 <a href="#" class="inline-flex justify-center">
                                                   <span class="flex items-center">
                                                       <span>{{ __('No Action Needed') }}</span>
@@ -77,7 +70,7 @@
 
                                         </td>
 
-                                        <td class="table-td">{{ $record->updated_at }}</td>
+                                        <td class="table-td">{{ $activity->updated_at }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -85,15 +78,15 @@
                         <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
                             <div>
                                 @php
-                                    $from = $investment_phase_records->firstItem();
-                                    $to = $investment_phase_records->lastItem();
-                                    $total = $investment_phase_records->total();
+                                    $from = $account_activities->firstItem();
+                                    $to = $account_activities->lastItem();
+                                    $total = $account_activities->total();
                                 @endphp
                                 <p class="text-sm text-gray-700 py-3">
                                     Showing <span class="font-medium">{{ $from }}</span> to <span class="font-medium">{{ $to }}</span> of <span class="font-medium">{{ $total }}</span> results
                                 </p>
                             </div>
-                            {{ $investment_phase_records->links() }}
+                            {{ $account_activities->links() }}
                         </div>
                     </div>
                 </div>

@@ -55,8 +55,8 @@ class AccountTypeInvestment extends Model
         return $this->hasOne(AccountTypeInvestmentSnapshot::class);
     }
 
-    public function accountTypeInvestmentPhaseApproval() {
-        return $this->hasMany(AccountTypeInvestmentPhaseApproval::class);
+    public function accountActivities() {
+        return $this->hasMany(AccountActivity::class);
     }
 
     public function fundedBalance() {

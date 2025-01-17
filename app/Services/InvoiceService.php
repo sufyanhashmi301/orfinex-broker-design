@@ -76,11 +76,11 @@ class InvoiceService
             ->series('')
             ->delimiter('')
             ->setCustomData([
-                'has_addons' => count($addon_data['items']) > 0 ? true : false,
+                'has_addons' => count($addon_data) != 0 && count($addon_data['items']) > 0 ? true : false,
                 'has_coupon_code_discount' => count($coupon_code_data) == 0 ? false : true,
                 
                 'package_discount' => $transaction->invoice->package_discount,
-                'addons' => $addon_data['items'],
+                'addons' => count($addon_data) != 0 ? $addon_data['items'] : '',
                 'coupon_code' => $coupon_code_data,
 
                 'subtotal' => $transaction->invoice->package_price

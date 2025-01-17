@@ -113,8 +113,14 @@ class AccountTypeInvestmentService
         }
       }
 
+      // Invoice crucial data
+      $invoice_data = [
+        'addons' => $data['addons'],
+        'discount_id' => $data['discount_id']
+      ];
+
       // data
-      $account_data = [
+      $data = [
           'unique_id' => $this->generateUniqueString(),
           'user_id' => Auth::id(),
           'currency' => $currency,
@@ -128,10 +134,12 @@ class AccountTypeInvestmentService
     }
 
     // Creating Investment and its snapshot
-    $new_investment = AccountTypeInvestment::create($account_data);
+    $new_investment = AccountTypeInvestment::create($data);
 
-    // Create Invoice 
-    $invoice = $this->invoice->createInvoice($data, $rule, $new_investment, $total_amount);
+    // Create Invoice only for phase 1
+    if($copy_snapshot_id == 0){
+      $invoice = $this->invoice->createInvoice($invoice_data, $rule, $new_investment, $total_amount);
+    }
 
     // Investment phase log
     if($copy_snapshot_id == 0) {

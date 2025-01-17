@@ -235,7 +235,7 @@
                                 <div class="card-body p-4 py-6">
                                     <div class="flex items-center justify-between gap-5 mb-10">
                                         <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Challenge Accounts:') }}</h5>
-                                        <a href="{{ route('user.forex-account-logs') }}"
+                                        <a href="{{ route('user.investments.index') }}"
                                            class="btn-link inline-flex items-center">
                                             {{ __('See All') }}
                                             <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1"
@@ -255,7 +255,7 @@
                                 <div class="card-body p-4 py-6">
                                     <div class="flex items-center justify-between gap-5 mb-10">
                                         <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Funded Accounts:') }}</h5>
-                                        <a href="{{ route('user.forex-account-logs') }}"
+                                        <a href="{{ route('user.investments.index') }}"
                                            class="btn-link inline-flex items-center">
                                             {{ __('See All') }}
                                             <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1"

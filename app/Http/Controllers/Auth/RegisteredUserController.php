@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -40,11 +41,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        // Check if the request is from Socialite
-        if ($request->has('provider')) {
-            return $this->handleSocialRegistration($request);
-        }
-
         // Regular Registration Logic
         $this->validateRegularRegistration($request);
         $input = $request->all();
@@ -60,7 +56,8 @@ class RegisteredUserController extends Controller
 
         $this->applyBonuses($user, $rank);
         $this->notifyUser($user, $input);
-        $this->handleReferral($request, $user, $schemaID);
+        $referralCode = $request->cookie('invite');
+        $this->handleReferral($referralCode, $user);
 
         Auth::login($user);
         LoginActivities::add();
@@ -68,53 +65,60 @@ class RegisteredUserController extends Controller
         return redirect(RouteServiceProvider::HOME);
     }
 
-    private function handleSocialRegistration(Request $request)
+    public function handleSocialRegistration($socialUser, $provider, $referralCode = null)
     {
-        try {
-            $socialUser = Socialite::driver($request->provider)->stateless()->user();
+        // Default rank
+        $rank = Ranking::find(1);
 
-            // Default rank
-            $rank = Ranking::find(1);
+        // Determine location
+        $location = getLocation();
+        $phone = $location->dial_code . ' ';
+        $country = $location->name;
 
-            // Determine phone and country based on user's location
-            $location = getLocation();
-            $phone = $location->dial_code . ' ';
-            $country = $location->name;
+        // Find or create user
+        $user = User::firstOrCreate(
+            ['email' => $socialUser->getEmail()],
+            [
+                'first_name' => $socialUser->getName(),
+                'last_name' => $socialUser->getName(),
+                'username' => $socialUser->getNickname() ?? 'user_' . rand(1000, 9999),
+                'provider' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+                'country' => $country,
+                'phone' => $phone,
+                'password' => Hash::make(Str::random(12)),
+                'ranking_id' => $rank->id,
+                'rankings' => json_encode([$rank->id]),
+                'email_verified_at' => now(),
+            ]
+        );
 
-            // Find or create the user
-            $user = User::updateOrCreate(
-                ['email' => $socialUser->getEmail()],
-                [
-                    'first_name' => $socialUser->getName(),
-                    'last_name' => $socialUser->getName(),
-                    'username' => $socialUser->getName() . rand(1000, 9999),
-                    'provider_id' => $socialUser->getId(),
-                    'provider_name' => $request->provider,
-                    'avatar' => $socialUser->getAvatar(),
-                    'ranking_id' => $rank->id,
-                    'rankings' => json_encode([$rank->id]),
-                    'email_verified_at' => Carbon::now(),
-                    'country' => $country,
-                    'phone' => $phone,
-                    'password' => Hash::make(str_random(12)), // Random password
-                ]
-            );
-
-            // Apply bonuses and notify user
+        // If the user is newly created, handle bonuses, notifications, and referral
+        if ($user->wasRecentlyCreated) {
+            // Apply bonuses and notify
             $this->applyBonuses($user, $rank);
             $this->notifyUser($user, [
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
             ]);
 
-            Auth::login($user);
-            LoginActivities::add();
-
-            return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in successfully via ' . ucfirst($request->provider));
-        } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Unable to authenticate using ' . ucfirst($request->provider));
+            // Handle referral logic
+            if ($referralCode) {
+                $this->handleReferral($referralCode, $user);
+            }
         }
+
+        // Log in the user
+        Auth::login($user);
+
+        // Log the activity
+        LoginActivities::add();
+
+        return redirect(RouteServiceProvider::HOME)->with('success', 'Logged in via ' . ucfirst($provider));
     }
+
+
     private function validateRegularRegistration(Request $request)
     {
         $isUsername = (bool) getPageSetting('username_show');
@@ -175,9 +179,9 @@ class RegisteredUserController extends Controller
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
     }
-    private function handleReferral(Request $request, User $user, $schemaID)
+    private function handleReferral($referralCode, User $user, $schemaID=null)
     {
-        event(new UserReferred($request->cookie('invite'), $user, $schemaID));
+        event(new UserReferred($referralCode, $user, $schemaID));
         \Cookie::forget('invite');
     }
     private function formatPhone(array $input, $location)
@@ -210,11 +214,20 @@ class RegisteredUserController extends Controller
         $data = json_decode($page->data, true);
 
         $googleReCaptcha = plugin_active('Google reCaptcha');
-//        dd('s');
+        $cloudflareTurnstile = plugin_active('Cloudflare Turnstile');
+
+        $cloudflareTurnstileData = [];
+        if ($cloudflareTurnstile && is_string($cloudflareTurnstile->data)) {
+            $cloudflareTurnstileData = json_decode($cloudflareTurnstile->data, true) ?? [];
+        }
+
+        // Pass site_key separately for clean Blade usage
+        $siteKey = $cloudflareTurnstileData['site_key'] ?? null;
+
         $location = getLocation();
 //        dd($location);
 
-        return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'data'));
+        return view('frontend::auth.register', compact('location', 'googleReCaptcha', 'cloudflareTurnstile', 'cloudflareTurnstileData', 'siteKey', 'data'));
     }
 
     public function iframeRegister()

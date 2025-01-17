@@ -12,7 +12,6 @@
         </div>
     </div>
 
-
     @yield('symbol-groups-content')
 
     <!-- Modal for Add New Group -->

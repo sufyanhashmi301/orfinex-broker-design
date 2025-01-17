@@ -15,8 +15,10 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 pt-3" id="edit_rebate_rule">
+                <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+                    <div class="p-6 pt-3" id="edit_rebate_rule">
 
+                    </div>
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@
     {{ __('Accounts History') }}
 @endsection
 @section('content')
+    @include('frontend::user.transaction.include.__tabs_nav')
     <div class="space-y-5">
         <?php
             $login = request()->get('login');
@@ -13,7 +14,7 @@
             <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
                 @yield('title')
             </h4>
-            <form action="{{ route('user.forex.transactions') }}" method="get" class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <form action="{{ route('user.history.tradingAccounts') }}" method="get" class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                 <div class="input-area relative min-w-[170px]">
                     <select name="type" class="form-control">
                         <option>{{ __('Select Type') }}</option>
@@ -63,7 +64,7 @@
                 </p>
             </div>
         @elseif(count($orders) > 0)
-            <div class="card desktop-screen-show md:block hidden">
+            <div class="card">
                 <div class="card-body p-6 pt-3">
                     <div class="overflow-x-auto -mx-6">
                         <div class="inline-block min-w-full align-middle">
@@ -110,7 +111,7 @@
                 </div>
             </div>
         @elseif(count($transactions) > 0)
-            <div class="card desktop-screen-show md:block hidden">
+            <div class="card">
                 <div class="card-body p-6 pt-3">
                     <div class="overflow-x-auto -mx-6">
                         <div class="inline-block min-w-full align-middle">
@@ -131,7 +132,11 @@
                                                 {{ $transaction['time'] }}
                                             </td>
                                             <td class="table-td">
-                                                {{ $transaction['action'] }}
+                                                @if($transaction['action'] == 'Deposit')
+                                                    <span class="badge badge-success">{{ $transaction['action'] }}</span>
+                                                @else
+                                                    <span class="badge badge-danger">{{ $transaction['action'] }}</span>
+                                                @endif
                                             </td>
                                             <td class="table-td">
                                                 {{ $transaction['deal'] }}

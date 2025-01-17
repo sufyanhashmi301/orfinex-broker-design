@@ -31,36 +31,52 @@ class RewardUser
      */
     public function handle(UserReferred $event)
     {
-        $referral = ReferralLink::find($event->referralId);
-        if (! is_null($referral)) {
-            ReferralRelationship::create(['referral_link_id' => $referral->id, 'user_id' => $event->user->id, 'forex_schema_id' => $event->schemaID]);
+        $referral = ReferralLink::where('code', $event->referralId)->first();
 
+        if (!is_null($referral)) {
+            // Create a referral relationship
+            ReferralRelationship::create([
+                'referral_link_id' => $referral->id,
+                'user_id' => $event->user->id,
+                'forex_schema_id' => $event->schemaID,
+            ]);
+
+            // Update the referred user's `ref_id`
             User::find($event->user->id)->update([
                 'ref_id' => $referral->user->id,
             ]);
 
-            $referral = User::find($referral->user_id);
+            // Check if the referral is attached to any staff
+            $staff = $referral->user->staff()->first(); // Assuming `user` has a `staff` relationship
+
+            if ($staff) {
+                // Attach the child user under the same staff
+                $staff->users()->attach($event->user->id);
+            }
+
+            // Fetch the referring user
+            $referralUser = User::find($referral->user_id);
+
+            // Prepare shortcodes for the email
             $shortcodes = [
-                '[[full_name]]' => $referral->first_name.' '.$referral->last_name,
-                '[[child_full_name]]' => $event->user->first_name.' '.$event->user->last_name,
+                '[[full_name]]' => $referralUser->first_name . ' ' . $referralUser->last_name,
+                '[[child_full_name]]' => $event->user->first_name . ' ' . $event->user->last_name,
                 '[[child_email]]' => $event->user->email,
-                '[[message]]' => '.New User added under your IB.',
+                '[[message]]' => 'New User added under your IB.',
                 '[[site_title]]' => setting('site_title', 'global'),
                 '[[site_url]]' => route('home'),
             ];
-            //send email to parent/referral user
-            $this->mailNotify($referral->email, 'new_user_ib', $shortcodes);
-            // Sign Up Referral Bonus
-            if (setting('sign_up_referral', 'permission') && null !== $event->user->email_verified_at) {
 
-                $referralBonus = (float) setting('referral_bonus', 'fee');
-                // User who was sharing link
-                $provider = $referral->user;
-                $provider->increment('profit_balance', $referralBonus);
-                Txn::new($referralBonus, 0, $referralBonus, 'system', 'Referral Bonus via '.$event->user->full_name, TxnType::Referral, TxnStatus::Success, null, null, $provider->id);
+            // Send email to the referring user
+            $this->mailNotify($referralUser->email, 'new_user_ib', $shortcodes);
 
-            }
-
+            // Sign-Up Referral Bonus logic (if needed)
+            // Uncomment and modify as required
+            // if (setting('sign_up_referral', 'permission') && null !== $event->user->email_verified_at) {
+            //     $referralBonus = (float) setting('referral_bonus', 'fee');
+            //     Txn::new($referralBonus, 0, $referralBonus, 'system', 'Referral Bonus via ' . $event->user->full_name, TxnType::Referral, TxnStatus::Success, null, null, $referralUser->id);
+            // }
         }
     }
+
 }

@@ -2,30 +2,30 @@
 @section('content')
     @yield('page-title')
     <div class="innerMenu card p-4 mb-5">
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+        <ul class="nav nav-pills flex items-center overflow-x-auto list-none pb-1 md:pb-0 gap-4 menu-open">
             @can('withdraw-list')
                 <li class="nav-item">
-                    <a href="{{ route('admin.withdraw.pending') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.pending') }}">
+                    <a href="{{ route('admin.withdraw.pending') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.pending') }}">
                         {{ __('Pending Withdraws') }}
                     </a>
                 </li>
             @endcan
             @can('withdraw-schedule')
                 <li class="nav-item">
-                    <a href="{{ route('admin.withdraw.schedule') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.schedule') }}">
+                    <a href="{{ route('admin.withdraw.schedule') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.schedule') }}">
                         {{ __('Withdraw Schedule') }}
                     </a>
                 </li>
             @endcan
             @can('withdraw-list')
                 <li class="nav-item">
-                    <a href="{{ route('admin.withdraw.history') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.history') }}">
+                    <a href="{{ route('admin.withdraw.history') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.history') }}">
                         {{ __('Withdraw History') }}
                     </a>
                 </li>
             @endcan
             <li class="nav-item !ml-auto">
-                <a href="{{ route('admin.withdraw.add') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
+                <a href="{{ route('admin.withdraw.add') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300">
                 <span class="flex items-center">
                     <iconify-icon icon="lucide:plus" class="text-base ltr:mr-2 rtl:ml-2 font-light"></iconify-icon>
                     <span>{{ __('Add Withdraw') }}</span>
@@ -33,7 +33,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                 <span class="flex items-center">
                     <span>{{ __('More') }}</span>
                     <iconify-icon icon="lucide:chevron-down" class="text-base ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>

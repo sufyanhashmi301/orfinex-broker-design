@@ -9,7 +9,7 @@
         </h4>
     </div>
     <div class="innerMenu card p-5 mb-3">
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
             <div class="max-w-xl w-full input-area relative flex items-center gap-5">
                 <label for="days" class="form-label !w-auto min-w-max">{{ __('Select Days:') }}</label>
                 <select id="days" class="form-control w-full">
@@ -19,7 +19,7 @@
                     <option value="30">{{ __('30 days') }}</option>
                 </select>
             </div>
-            <button id="fetch-positions" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+            <button id="fetch-positions" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ml-auto">
                 <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                 {{ __('Fetch Positions') }}
             </button>

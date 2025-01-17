@@ -58,7 +58,7 @@ class RebateRuleService
                 'status' => $request->status,
             ]);
             $rebateRule->symbolGroups()->sync($symbolGroups);
-            $rebateRule->ibGroups()->sync($ibGroups); // Sync IB Groups
+//            $rebateRule->ibGroups()->sync($ibGroups); // Sync IB Groups
 
             return $rebateRule;
         } catch (Exception $e) {

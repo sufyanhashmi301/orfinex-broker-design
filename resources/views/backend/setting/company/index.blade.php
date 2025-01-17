@@ -13,17 +13,17 @@
     </div>
 
     <div class="innerMenu card p-4 mb-5">
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open">
+        <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0  pb-1 md:pb-0 gap-4 menu-open w-full">
             @can('company-setting')
             <li class="nav-item">
-                <a href="{{ route('admin.settings.company') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.company') }}">
+                <a href="{{ route('admin.settings.company') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.company') }}">
                     {{ __('Company') }}
                 </a>
             </li>
             @endcan
             @can('departments-list')
             <li class="nav-item">
-                <a href="{{ route('admin.departments.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.departments*') }}">
+                <a href="{{ route('admin.departments.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.departments*') }}">
                     {{ __('Departments') }}
                 </a>
             </li>
@@ -31,7 +31,7 @@
 
             @can('designations-list')
             <li class="nav-item">
-                <a href="{{ route('admin.designations.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.designations*') }}">
+                <a href="{{ route('admin.designations.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.designations*') }}">
                     {{ __('Designations') }}
                 </a>
             </li>
@@ -39,7 +39,7 @@
 
             @can('misc-setting')
             <li class="nav-item">
-                <a href="{{ route('admin.settings.misc') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.misc') }}">
+                <a href="{{ route('admin.settings.misc') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.misc') }}">
                     {{ __('Misc') }}
                 </a>
             </li>
@@ -47,7 +47,7 @@
 
             @can('company-permissions-setting')
             <li class="nav-item">
-                <a href="{{ route('admin.settings.company.permissions') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.company.permissions') }}">
+                <a href="{{ route('admin.settings.company.permissions') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.settings.company.permissions') }}">
                     {{ __('Permission') }}
                 </a>
             </li>

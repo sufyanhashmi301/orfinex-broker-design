@@ -8,32 +8,32 @@
     <div class="space-y-5">
         <div class="card desktop-screen-show md:block hidden">
             <div class="card-body p-6 pb-0">
-                <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">
-                    <div class="filter">
-                        <form action="{{ route('user.referral.members') }}" method="get">
-                            <div class="flex justify-between flex-wrap items-center mb-5">
-                                <div class="search flex gap-3 items-center">
-                                    <div class="py-6">
-                                        <div class="input-area relative min-w-[184px]">
-                                            <select name="level_order" class="select2 form-control w-full">
-                                                @for ($i = 0; $i <= $maxLevelOrderCount; $i++)
-                                                    <option
-                                                        value="{{ $i }}" {{ $i == $selectedLevel ? 'selected' : '' }}>
-                                                        {{ __('Level ' . $i) }}
-                                                    </option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-dark btn-sm">
-                                        <i icon-name="search"></i>
-                                        {{ __('Search') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+{{--                <div class="innerMenu grid xl:grid-cols-2 grid-cols-1 gap-5 mb-6">--}}
+{{--                    <div class="filter">--}}
+{{--                        <form action="{{ route('user.referral.members') }}" method="get">--}}
+{{--                            <div class="flex justify-between flex-wrap items-center mb-5">--}}
+{{--                                <div class="search flex gap-3 items-center">--}}
+{{--                                    <div class="py-6">--}}
+{{--                                        <div class="input-area relative min-w-[184px]">--}}
+{{--                                            <select name="level_order" class="select2 form-control w-full">--}}
+{{--                                                @for ($i = 0; $i <= $maxLevelOrderCount; $i++)--}}
+{{--                                                    <option--}}
+{{--                                                        value="{{ $i }}" {{ $i == $selectedLevel ? 'selected' : '' }}>--}}
+{{--                                                        {{ __('Level ' . $i) }}--}}
+{{--                                                    </option>--}}
+{{--                                                @endfor--}}
+{{--                                            </select>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <button type="submit" class="btn btn-dark btn-sm">--}}
+{{--                                        <i icon-name="search"></i>--}}
+{{--                                        {{ __('Search') }}--}}
+{{--                                    </button>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </form>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
                 <div class="overflow-x-auto -mx-6">
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden basicTable_wrapper">
@@ -41,9 +41,12 @@
                                 <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Level') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Type') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Schema') }}</th>
+
+                                    <th scope="col" class="table-th">{{ __('Phone') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Balance') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Equity') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Credit') }}</th>
+{{--                                    <th scope="col" class="table-th">{{ __('Schema') }}</th>--}}
                                     <th scope="col" class="table-th">{{ __('Join') }}</th>
                                     {{--                                        <th scope="col" class="table-th">{{ __('Fee') }}</th>--}}
                                     {{--                                        <th scope="col" class="table-th">{{ __('Status') }}</th>--}}
@@ -56,22 +59,26 @@
                                                 <div class="flex items-center">
                                                     <div class="flex-1 text-start">
                                                         <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                            {{ $referral->user->full_name }}
+                                                            {{ $referral->full_name }}
                                                         </h4>
                                                         <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
-                                                            {{ $referral->user->email }}
+                                                            {{ $referral->email }}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
+
                                             <td class="table-td">
-                                                {{ $referral->multiLevel ? $referral->multiLevel->level_order : 'N/A' }}
+                                                {{ $referral->phone ? $referral->phone : 'N/A' }}
                                             </td>
                                             <td class="table-td">
-                                                {{ $referral->multiLevel ? $referral->multiLevel->type : 'N/A' }}
+                                                {{ mt5_total_balance($referral->id) }}
                                             </td>
                                             <td class="table-td">
-                                                {{ $referral->multiLevel ? $referral->multiLevel->forexSchema->title : 'N/A' }}
+                                                {{ mt5_total_equity($referral->id) }}
+                                            </td>
+                                            <td class="table-td">
+                                                {{ mt5_total_credit($referral->id) }}
                                             </td>
                                             <td class="table-td">
                                                 {{ $referral->created_at }}
@@ -121,7 +128,7 @@
             </div>
             <div class="card-body p-3 mobile-transaction-filter">
                 <div class="filter mb-3">
-                    <form action="{{ route('user.transactions') }}" method="get">
+                    <form action="{{ route('user.history.transactions') }}" method="get">
                         <div class="search flex items-center gap-2">
                             <input type="text" class="form-control" placeholder="{{ __('Search') }}"
                                    value="{{ request('query') }}" name="query"/>

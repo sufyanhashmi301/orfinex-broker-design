@@ -29,11 +29,8 @@ class SocialLinkController extends Controller
                 ->addColumn('title', function ($row) {
                     return '<span class="text-nowrap">' . $row->title . '</span>';
                 })
-                ->addColumn('client_id', function ($row) {
-                    return '<a href="' . $row->client_id . '" class="lowercase text-nowrap" target="_blank">' . $row->client_id . '</a>';
-                })
-                ->addColumn('client_secret', function ($row) {
-                    return '<a href="' . $row->client_secret . '" class="lowercase text-nowrap" target="_blank">' . $row->client_secret . '</a>';
+                ->addColumn('link', function ($row) {
+                    return '<a href="' . $row->link . '" class="lowercase text-nowrap" target="_blank">' . $row->link . '</a>';
                 })
                 ->addColumn('status', 'backend.links.include.__status')
                 ->addColumn('action', function ($row) {
@@ -41,7 +38,7 @@ class SocialLinkController extends Controller
                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                             </button>';
                 })
-                ->rawColumns(['title', 'client_id','client_secret', 'status', 'action'])
+                ->rawColumns(['title', 'link', 'status', 'action'])
                 ->make(true);
         }
 

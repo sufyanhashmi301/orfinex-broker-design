@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\User;
 use Arr;
 use DB;
 use Hash;
@@ -40,16 +41,34 @@ class StaffController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $loggedInUser = Auth::user();
+        $staff = Auth::user();
         $staffs = Admin::all();
         $superAdmin = Admin::find(1);
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
 
-        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'superAdmin', 'roles', 'departments', 'designations'));
+        // Count active and inactive staff
+        $activeStaffCount = Admin::where('status', true)->count();
+        $inactiveStaffCount = Admin::where('status', false)->count();
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
+        if ($request->ajax()) {
+            $status = $request->status; // active or inactive
+            if ($status == 'active') {
+                $staffs = Admin::where('status', true)->get();
+            } elseif ($status == 'inactive') {
+                $staffs = Admin::where('status', false)->get();
+            }
+
+            return response()->json([
+                'staffs' => view('backend.staff.include.__staff_list', ['staff' => $staffs])->render(),
+            ]);
+        }
+
+        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers'));
 
     }
 
@@ -123,12 +142,16 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
+
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'attachedUsers'))->render();
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -137,14 +160,37 @@ class StaffController extends Controller
      * @return RedirectResponse
      */
     public function update(Request $request, $id)
-{
-    $staff = Admin::find($id);
+    {
+        $staff = Admin::find($id);
 
-    // Validate based on role
-    if ($staff->getRoleNames()->first() === 'Super-Admin') {
-        // Validation for Super-Admin: Only the `key` field is allowed
+        // Validate based on role
+        if ($staff->getRoleNames()->first() === 'Super-Admin') {
+            // Validation for Super-Admin: Only the `key` field is allowed
+            $validator = Validator::make($request->all(), [
+                'key' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                notify()->error($validator->errors()->first(), 'Error');
+                return redirect()->back();
+            }
+
+            // Update only the `key` field for Super-Admin
+            $staff->update(['key' => $request->input('key')]);
+
+            notify()->success('Key updated successfully');
+            return redirect()->back();
+        }
+
+        // Validation for other admins
         $validator = Validator::make($request->all(), [
-            'key' => 'required|string',
+            'name'        => 'required',
+            'email'       => 'required|email|unique:admins,email,' . $id,
+            'password'    => 'same:confirm-password',
+            'role'        => ['required', Rule::notIn('Super-Admin')],
+            'status'      => 'boolean',
+            'department'  => 'nullable|exists:departments,id',
+            'designation' => 'nullable|exists:designations,id',
         ]);
 
         if ($validator->fails()) {
@@ -152,63 +198,46 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        // Update only the `key` field for Super-Admin
-        $staff->update(['key' => $request->input('key')]);
+        // Get all request inputs
+        $input = $request->all();
+    //    dd($input);
 
-        notify()->success('Key updated successfully');
-        return redirect()->back();
+        // Map 'department' to 'department_id' and handle nullable values
+        $input['employee_id'] = $request->input('employee_id') ?: null;
+        $input['department_id'] = $request->input('department_id') ?: null;
+        $input['designation_id'] = $request->input('designation_id') ?: null;
+
+        // Remove 'department' and 'designation' from input to prevent mass assignment issues
+        unset($input['department'], $input['designation']);
+
+        // Handle password update
+        if (!empty($input['password'])) {
+            $input['password'] = Hash::make($input['password']);
+        } else {
+            $input = Arr::except($input, ['password']);
+        }
+
+        // Invalidate the user's session
+        $this->invalidateUserSession($staff);
+
+        // Update the admin record with correctly mapped input
+        $staff->update($input);
+
+        // Update role and relationships
+        DB::table('model_has_roles')->where('model_id', $id)->delete();
+        $staff->assignRole($request->input('role'));
+        if(auth()->user()->hasRole('Super-Admin')) {
+            // Attach users to staff
+            $ids = $request->user_ids;
+//            dd($ids);
+            if (!isset($request->user_ids)) {
+                $ids = [];
+            }
+            $staff->users()->sync($ids);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
     }
-
-    // Validation for other admins
-    $validator = Validator::make($request->all(), [
-        'name'        => 'required',
-        'email'       => 'required|email|unique:admins,email,' . $id,
-        'password'    => 'same:confirm-password',
-        'role'        => ['required', Rule::notIn('Super-Admin')],
-        'status'      => 'boolean',
-        'department'  => 'nullable|exists:departments,id',
-        'designation' => 'nullable|exists:designations,id',
-    ]);
-
-    if ($validator->fails()) {
-        notify()->error($validator->errors()->first(), 'Error');
-        return redirect()->back();
-    }
-
-    // Get all request inputs
-    $input = $request->all();
-
-    // Map 'department' to 'department_id' and handle nullable values
-    $input['employee_id'] = $request->input('employee_id') ?: null;
-    $input['department_id'] = $request->input('department_id') ?: null;
-    $input['designation_id'] = $request->input('designation_id') ?: null;
-
-    // Remove 'department' and 'designation' from input to prevent mass assignment issues
-    unset($input['department'], $input['designation']);
-
-    // Handle password update
-    if (!empty($input['password'])) {
-        $input['password'] = Hash::make($input['password']);
-    } else {
-        $input = Arr::except($input, ['password']);
-    }
-
-    // Invalidate the user's session
-    $this->invalidateUserSession($staff);
-
-    // Update the admin record with correctly mapped input
-    $staff->update($input);
-
-    // Update role and relationships
-    DB::table('model_has_roles')->where('model_id', $id)->delete();
-    $staff->assignRole($request->input('role'));
-
-    notify()->success('Staff updated successfully');
-    return redirect()->route('admin.staff.index');
-}
-
-
-
 
     protected function invalidateUserSession($user)
     {

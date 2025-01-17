@@ -17,7 +17,18 @@
                 @endforeach
             </select>
         </div>
-{{--        <div class="input-area relative">--}}
+        <div class="input-area relative">
+            <label for="forex_schemas" class="form-label">{{ __('Select Account Types') }}</label>
+            <select name="forex_schemas[]" class="select2 form-control w-full" multiple="multiple">
+                @foreach($allForexSchemas as $id => $title)
+                    <option value="{{ $id }}" @selected(in_array($id, $rebateRule->forexSchemas->pluck('id')->toArray()))>
+                        {{ $title }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        {{--        <div class="input-area relative">--}}
 {{--            <label for="ib_groups" class="form-label">{{ __('Select IB Groups') }}</label>--}}
 {{--            <select name="ib_groups[]" class="select2 form-control w-full" multiple="multiple">--}}
 {{--                @foreach($allIbGroups as $id => $name)--}}

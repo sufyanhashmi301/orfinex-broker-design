@@ -211,12 +211,34 @@ class KycController extends Controller
      */
     public function KycPending(Request $request)
     {
+        $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'status',  'created_at']);
-            $data = User::where('kyc', KYCStatus::Pending->value)
-            ->latest('updated_at');
+            $filters = $request->only(['global_search', 'status', 'created_at']);
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all users with pending KYC
+                $data = User::where('kyc', KYCStatus::Pending->value)
+                ->latest('updated_at');
+        } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch KYC pending users for attached user IDs only
+                    $data = User::where('kyc', KYCStatus::Pending->value)
+                    ->whereIn('id', $attachedUserIds)
+                        ->latest('updated_at');
+            } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect();
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', 'backend.kyc.include.__time')
@@ -230,24 +252,46 @@ class KycController extends Controller
 
         return view('backend.kyc.pending');
     }
-    public function KycLevel3Pending (Request $request)
+
+    public function KycLevel3Pending(Request $request)
     {
+        $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'status',  'created_at']);
-            $data = User::where('kyc_level3_credential','!=',NULL)
-            ->where('kyc', KYCStatus::PendingLevel3->value)
-            ->latest('updated_at');
+            $filters = $request->only(['global_search', 'status', 'created_at']);
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all Level 3 KYC pending users
+                $data = User::where('kyc_level3_credential', '!=', null)
+                    ->where('kyc', KYCStatus::PendingLevel3->value)
+                ->latest('updated_at');
+        } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch Level 3 KYC pending users for attached user IDs only
+                    $data = User::where('kyc_level3_credential', '!=', null)
+                        ->where('kyc', KYCStatus::PendingLevel3->value)
+                    ->whereIn('id', $attachedUserIds)
+                        ->latest('updated_at');
+            } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect();
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
-            //->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('time', function($row) {
+                ->addColumn('time', function ($row) {
                     return $row->kyc_time_level3;
                 })
                 ->addColumn('user', 'backend.kyc.include.__user')
-                ->addColumn('type', function($row) {
+                ->addColumn('type', function ($row) {
                     return $row->kyc_type_level3;
                 })
                 ->addColumn('status', 'backend.kyc.include.__statuslevel3')
@@ -259,6 +303,7 @@ class KycController extends Controller
         return view('backend.kyc.level3.pending');
     }
 
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -266,11 +311,33 @@ class KycController extends Controller
      */
     public function KycRejected(Request $request)
     {
+        $loggedInUser = auth()->user();
 
         if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'status',  'created_at']);
-            $data = User::where('kyc', KYCStatus::Rejected->value)->latest();
-            // $data->applyFilters($filters);
+            $filters = $request->only(['global_search', 'status', 'created_at']);
+
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                // Fetch all users with rejected KYC
+                $data = User::where('kyc', KYCStatus::Rejected->value)->latest();
+        } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Fetch rejected KYC users for attached user IDs only
+                    $data = User::where('kyc', KYCStatus::Rejected->value)
+                    ->whereIn('id', $attachedUserIds)
+                        ->latest();
+            } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect();
+                }
+            }
+
+            // Apply additional filters if any
+            $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('time', 'backend.kyc.include.__time')

@@ -207,6 +207,7 @@
             $('#editReferral').modal('show');
 
         })
+
         $('.delete-referral').on('click',function (e) {
             "use strict";
             e.preventDefault();

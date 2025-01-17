@@ -7,7 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Social extends Model
 {
-    use HasFactory;
+    protected $table = 'socials';
 
-    protected $guarded = ['id'];
+    protected $casts = [
+        'status' => 'int'
+    ];
+
+
+    protected $fillable = [
+        'title',
+        'driver',
+        'client_id',
+        'client_secret',
+        'redirect',
+        'status'
+    ];
+    public static function activePlatforms()
+    {
+        return self::where('status', 1)->get();
+    }
+
+    public static function getProviderConfig($provider)
+    {
+        return self::where('driver', $provider)->where('status', 1)->first();
+    }
 }

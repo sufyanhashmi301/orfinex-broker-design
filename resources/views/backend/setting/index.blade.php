@@ -3,7 +3,7 @@
     {{ __('setting') }}
 @endsection
 @section('content')
-    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
+    <div class="pageTitle flex justify-between flex-wrap items-center gap-3 mb-6">
         <div class="input-area relative">
             <div class="relative">
                 <input type="text" class="form-control !pr-9" placeholder="Search">
@@ -53,10 +53,10 @@
                     </li>
                     @endcanany
                     <li>
-                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.social.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Social Logins') }}
-                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
-                                {{ __('Coming Soon') }}
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>
@@ -64,7 +64,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">

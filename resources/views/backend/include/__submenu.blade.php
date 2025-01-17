@@ -1,5 +1,5 @@
 <div class="submenu-sidebar dark:shadow-slate-700">
-    <a href="javascript:;" class="submenu-toggle-btn bg-primary absolute items-center justify-center p-2">
+    <a href="javascript:;" class="submenu-toggle-btn btn-primary absolute items-center justify-center p-2">
         <iconify-icon class="text-lg font-medium menu-icon" icon="material-symbols:list-rounded"></iconify-icon>
         <iconify-icon class="text-lg font-medium close-icon" icon="material-symbols:close-rounded" style="display: none;"></iconify-icon>
     </a>

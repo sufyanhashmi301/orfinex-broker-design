@@ -38,6 +38,7 @@
                                                 type="{{$field['type']}}"
                                                 name="{{$field['name']}}"
                                                 id="{{$field['name']}}"
+                                                class="w-full"
                                                 value="{{ oldSetting($field['name'],$section) }}"
                                                 accept=".jpeg, .jpg, .png"
                                                 data-preview="{{$field['name']}}_preview_img "

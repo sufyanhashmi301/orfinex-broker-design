@@ -95,6 +95,8 @@ class AccountTypeInvestmentService
       $currency = setting('site_currency', 'global');
       $rule = AccountTypePhaseRule::findOrFail($data->rule_id);
 
+      // dd($rule->accountTypePhase);
+
       // Discount (Coupon Code) Management
       $total_amount = $rule->amount;
       if($data['discount_id']){
@@ -102,6 +104,7 @@ class AccountTypeInvestmentService
         $total_amount = $this->invoice->processCouponDiscount($data['discount_id'], $rule->amount)['final_amount'];
       }
 
+      // Addons Management
       if($data['addons']){
         // if one or more addons have ben applied
         $addons = explode(',', $data['addons']);
@@ -133,16 +136,18 @@ class AccountTypeInvestmentService
     // Creating Investment and its snapshot
     $new_investment = AccountTypeInvestment::create($data);
 
+    
     // Create Invoice only for phase 1
     if($copy_snapshot_id == 0){
       $invoice = $this->invoice->createInvoice($invoice_data, $rule, $new_investment, $total_amount);
     }
-
+    
+    
+    $investment_snapshot = $this->saveInvestmentAttributesSnapshot($new_investment, $copy_snapshot_id);
     // Investment phase log
     if($copy_snapshot_id == 0) {
       AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::PAYMENT_APPROVE);
     }
-    $investment_snapshot = $this->saveInvestmentAttributesSnapshot($new_investment, $copy_snapshot_id);
      
 
     return $new_investment;

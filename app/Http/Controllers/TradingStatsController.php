@@ -29,10 +29,10 @@ class TradingStatsController extends Controller
                                                 $query->where('login', 'LIKE', '%' . $request->search . '%');
                                             })
                                             ->orderBy('id', 'desc')
-                                            ->paginate(15);
+                                            ->paginate(48);
             $title = 'Trading Stats History for #' . $request->search;
         } else {
-            $accounts_stats = AccountTypeInvestmentHourlyStatsRecord::orderBy('id', 'DESC')->paginate(15);
+            $accounts_stats = AccountTypeInvestmentHourlyStatsRecord::orderBy('id', 'DESC')->paginate(48);
             $title = "All Trading Stats History";
         }
 

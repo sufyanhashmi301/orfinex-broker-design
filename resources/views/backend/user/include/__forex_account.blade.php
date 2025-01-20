@@ -19,7 +19,7 @@
                 </button>
             </div>
             <div class="modal-body p-6 pt-0">
-                <form class="space-y-5" action="{{route('admin.forex-account-create')}}" method="post" enctype="multipart/form-data">
+                {{-- <form class="space-y-5" action="{{route('admin.forex-account-create')}}" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="user_id" value="{{$user->id}}">
                     @csrf
                     <input type="hidden" name="account_type" id="account-type" value="real">
@@ -89,7 +89,7 @@
                             {{ __('Cancel') }}
                         </button>
                     </div>
-                </form>
+                </form> --}}
 
 
             </div>

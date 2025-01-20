@@ -7,6 +7,7 @@ use App\Enums\ContractStatusEnums;
 use App\Models\AccountOpenPosition;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Services\AccountTypeInvestmentService;
 
 class TradingStatsController extends Controller
@@ -15,6 +16,29 @@ class TradingStatsController extends Controller
 
     public function __construct(AccountTypeInvestmentService $account) {
         $this->account = $account;
+    }
+
+    /**
+     * Admin Account Trading Stats History
+     */
+    public function accountTradingStatsHistory(Request $request) {
+
+        // If search
+        if(isset($request->search)) {
+            $accounts_stats = AccountTypeInvestmentHourlyStatsRecord::whereHas('accountTypeInvestment', function ($query) use ($request) {
+                                                $query->where('login', 'LIKE', '%' . $request->search . '%');
+                                            })
+                                            ->orderBy('id', 'desc')
+                                            ->paginate(15);
+            $title = 'Trading Stats History for #' . $request->search;
+        } else {
+            $accounts_stats = AccountTypeInvestmentHourlyStatsRecord::orderBy('id', 'DESC')->paginate(15);
+            $title = "All Trading Stats History";
+        }
+
+
+
+        return view('backend.accounts_history.index', compact('accounts_stats', 'title'));
     }
 
     /**

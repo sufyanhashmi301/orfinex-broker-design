@@ -35,9 +35,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:recent-approved-accounts-stats')->everyThreeMinutes();
 
         // Promotion and Violation
-        
         $schedule->command('accounts:promote-or-violate')->everyThreeMinutes();
         $schedule->command('send:promote-violate-accounts-mails')->everyFourMinutes();
+
+        // Contracts Expiry Scheduler
         
     }
 

@@ -2,15 +2,19 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use App\Models\AccountType;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use App\Services\ForexApiService;
 use App\Models\AccountTypeInvestment;
 use Illuminate\Support\Facades\Artisan;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class UpdateAccountTypeInvestmentStats extends Command
 {
+    private $DELETE_OLD_RECORDS_BY_X_HOURS = 48;
+
     /**
      * The name and signature of the console command.
      *
@@ -24,6 +28,25 @@ class UpdateAccountTypeInvestmentStats extends Command
      * @var string
      */
     protected $description = 'Update Account Type Investment Stats from API';
+
+    /**
+     * Delete older than 48 hours records
+     */
+    private function deleteOldRecords() {
+        // Get the cutoff time (X hours ago)
+        $cutoffTime = Carbon::now()->subHours($this->DELETE_OLD_RECORDS_BY_X_HOURS);
+
+        // Get all distinct account_type_investment_id values
+        $investmentIds = AccountTypeInvestmentHourlyStatsRecord::distinct()
+            ->pluck('account_type_investment_id');
+
+        // Loop through each account_type_investment_id and delete records older than 48 hours
+        foreach ($investmentIds as $id) {
+            AccountTypeInvestmentHourlyStatsRecord::where('account_type_investment_id', $id)
+                ->where('created_at', '<', $cutoffTime)
+                ->delete();
+        }
+    }
 
     /**
      * Execute the console command.
@@ -94,7 +117,11 @@ class UpdateAccountTypeInvestmentStats extends Command
                     $stat->save();
                 } else{
                     if($hourly_shceduled) {
+                        
                         $stat = $investment->accountTypeInvestmentHourlyStatsRecord()->create($data + [ 'created_at' => CarbonImmutable::now() ]);
+                        
+                        // Delete records older than 48 hours
+                        $this->deleteOldRecords();
                     }else{
                         $stat = $investment->accountTypeInvestmentStat()->firstOrNew();
                         $stat->fill($data + ['updated_at' => CarbonImmutable::now()]);
@@ -107,10 +134,10 @@ class UpdateAccountTypeInvestmentStats extends Command
         }
 
         if($hourly_shceduled) {
-            $this->info('Investment stats stored successfully!');
+            $this->info('Account stats stored successfully!');
             // Artisan::call('accounts:promote-or-violate');
         }else{
-            $this->info('Investment stats updated successfully!');
+            $this->info('Account stats updated successfully!');
         }
         
     }

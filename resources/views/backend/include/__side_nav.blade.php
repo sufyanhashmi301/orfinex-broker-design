@@ -206,40 +206,26 @@
 
             @can('investment-list')
                 <li class="">
-                    <a href="{{route('admin.accounts.index')}}" class="navItem {{ isActive('admin.accounts.index') }}">
+                    <a href="javascript:void(0)" class="navItem">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
                             <span>{{ __('Accounts') }}</span>
                         </span>
-                        {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
+                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
-                    {{-- <ul class="sidebar-submenu">
+                    <ul class="sidebar-submenu">
                         <li>
-                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
-                                All Accounts
+                            <a href="{{route('admin.accounts.index', ['status' => 'all'])}}" class="{{ isActive('admin.accounts.index') }}">
+                                Manage Accounts
                             </a>
                         </li>
                         <li>
-                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
-                                Active Accounts
+                            <a href="{{route('admin.account.trading_stats.history')}}" class="{{ isActive('admin.account.trading_stats.history') }}">
+                                Accounts Trading History
                             </a>
                         </li>
-                        <li>
-                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
-                                Pending Accounts
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
-                                Violated Accounts
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
-                                Expired Accounts
-                            </a>
-                        </li>
-                    </ul> --}}
+                        
+                    </ul>
 
                 </li>
             @endcan

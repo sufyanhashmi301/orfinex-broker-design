@@ -180,6 +180,7 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     // Accounts (aka Investments)
     Route::get('/accounts', [AccountTypeInvestmentController::class, 'adminIndex'])->name('accounts.index');
+    Route::get('account/trading-stats/history', [TradingStatsController::class, 'accountTradingStatsHistory'])->name('account.trading_stats.history');
     Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'adminTradingStats'])->name('account.trading_stats');
 
     // Investment Phase Approvals

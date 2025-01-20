@@ -39,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('send:promote-violate-accounts-mails')->everyFourMinutes();
 
         // Contracts Expiry Scheduler
+        $schedule->command('check:contract-expiry')->daily();
         
     }
 

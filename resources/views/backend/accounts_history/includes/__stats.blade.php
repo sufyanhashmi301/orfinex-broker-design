@@ -23,9 +23,15 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                 @foreach($accounts_stats as $record)
+                                    @php
+                                      $user_exists = true;
+                                      if(isset($record->accountTypeInvestment->user)) {
+                                        $user_exists = false;
+                                      }
+                                    @endphp
                                     <tr>
                                       <td class="table-td">{{ $record->account_name }}</td>  
-                                      <td class="table-td">{{ $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name . ' (' . $record->accountTypeInvestment->user->email . ')' }}</td>  
+                                      <td class="table-td">{{ $user_exists == true ? $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name . ' (' . $record->accountTypeInvestment->user->email . ')' : 'N/A' }}</td>  
                                       <td class="table-td" style="text-decoration: underline;">
                                         <a href="{{ route('admin.account.trading_stats.history', ['search' => $record->accountTypeInvestment->login ]) }}">
                                           <b>{{ $record->accountTypeInvestment->login }}</b>

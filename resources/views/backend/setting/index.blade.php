@@ -3,7 +3,7 @@
     {{ __('setting') }}
 @endsection
 @section('content')
-    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
+    <div class="pageTitle flex justify-between flex-wrap items-center gap-3 mb-6">
         <div class="input-area relative">
             <div class="relative">
                 <input type="text" class="form-control !pr-9" placeholder="Search">

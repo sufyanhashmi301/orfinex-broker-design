@@ -1,4 +1,4 @@
-<div class="grid md:grid-cols-4 grid-cols-1 gap-5">
+<div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5">
     <div class="card">
         <div class="card-body p-5">
             <div class="flex space-x-3 rtl:space-x-reverse">
@@ -91,7 +91,7 @@
                 {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
-                
+
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@
                 {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
-                
+
             </div>
         </div>
     </div>
@@ -120,12 +120,12 @@
                 {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
-                
+
             </div>
         </div>
     </div>
 </div>
-<div class="grid md:grid-cols-5 grid-cols-1 gap-5">
+<div class="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-5">
     <div class="card">
         <div class="card-body p-5">
             <div class="flex space-x-3 rtl:space-x-reverse">

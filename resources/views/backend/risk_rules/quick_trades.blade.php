@@ -17,19 +17,19 @@
 
     </div>
     <div class="innerMenu card p-6 mb-5 active">
-      <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open w-full">
+      <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0 pb-1 sm:pb-0 gap-4 menu-open w-full">
           <li class="nav-item">
-              <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active trades-status-filter" id="all-trades-filter">
+              <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 active trades-status-filter" id="all-trades-filter">
                   All Trades
               </a>
           </li>
           <li class="nav-item">
-              <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 trades-status-filter" id="profit-trades-filter">
+              <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 trades-status-filter" id="profit-trades-filter">
                   Profit Trades Only
               </a>
           </li>
           <li class="nav-item">
-            <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 trades-status-filter" id="loss-trades-filter">
+            <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 trades-status-filter" id="loss-trades-filter">
                 Loss Trades Only
             </a>
         </li>
@@ -44,7 +44,7 @@
               $minDate = $today->copy()->subDays(9)->format('Y-m-d'); // 10 days ago (including today)
               $maxDate = $today->format('Y-m-d'); // Today
             ?>
-            
+
             <div class="input-area relative flex items-center gap-5">
                 <label for="group" class="form-label !w-auto min-w-max" style="position: relative; top: 4px">{{ __('Data From') }}</label>
                 @php
@@ -124,7 +124,7 @@
                                   <td colspan="7" style="padding: 10px"> <center><small>No Data Available!</small></center> </td>
                                 </tr>
                               @endforelse
-                              
+
                             </tbody>
                         </table>
                     </div>

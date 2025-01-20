@@ -26,8 +26,9 @@
                         <div class="transition-all duration-150 container-fluid" id="page_layout">
                             <div id="content_layout">
                                 <div>
+                                    <div class="mobile-close-overlay w-full h-full" id="close-settings-overlay"></div>
                                     @include('backend.include.__submenu')
-                                    <div class="transition-all duration-150 ltr:ml-[200px] rtl:mr-[200px] p-6">
+                                    <div class="transition-all duration-150 medium:ml-[200px] p-6">
                                         @yield('content')
                                     </div>
                                 </div>
@@ -39,7 +40,7 @@
             </div>
             <footer class="md:block sticky bottom-0" id="footer">
                 <div class="site-footer px-6 text-slate-500 dark:text-slate-300 py-2" style="height: 48px; margin-left: 448px;">
-                    <div class="grid md:grid-cols-2 grid-cols-1 md:gap-5">
+                    <div class="flex items-center justify-between gap-5">
                         <a href="https://brokeret.com/" target="_blank" class="text-primary font-semibold ml-1">
                             <img src="{{ asset('backend/images/brokeret_logo.png') }}" class="h-6 inline-flex" alt="">
                         </a>
@@ -56,7 +57,13 @@
     <!--/Full Layout-->
 
     @include('backend.include.__script')
-
+    <script !src="">
+        $('.submenu-toggle-btn').click(function(){
+            $('.submenu-sidebar, .mobile-close-overlay').toggleClass('in');
+            $('.submenu-toggle-btn .menu-icon').toggle();
+            $('.submenu-toggle-btn .close-icon').toggle();
+        })
+    </script>
 
 </body>
 </html>

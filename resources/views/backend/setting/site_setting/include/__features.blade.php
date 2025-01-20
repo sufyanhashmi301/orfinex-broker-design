@@ -14,7 +14,7 @@
                         @if($field['name'] == 'withdraw_deduction')
                         <div class="input-area">
                             <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
-                            <div class="flex items-center space-x-7 flex-wrap">
+                            <div class="flex items-center flex-wrap gap-3 md:gap-7">
                                 <div class="success-radio">
                                     <label class="flex items-center cursor-pointer">
                                         <input
@@ -52,7 +52,7 @@
                         @elseif($field['name'] == 'copy_trading')
                         <div class="input-area">
                             <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
-                            <div class="flex items-center space-x-7 flex-wrap">
+                            <div class="flex items-center flex-wrap gap-3 md:gap-7">
                                 <div class="success-radio">
                                     <label class="flex items-center cursor-pointer">
                                         <input
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         @elseif ($field['type'] === 'radio')
-                            <div class="flex items-center space-x-7 flex-wrap">
+                            <div class="flex items-center flex-wrap gap-3 md:gap-7">
                                 @foreach ($field['options'] as $value => $label)
                                     <div class="success-radio">
                                         <label class="flex items-center cursor-pointer">
@@ -109,7 +109,7 @@
                         @else
                         <div class="input-area">
                             <input class="form-check-input" type="hidden" value="0" name="{{$field['name']}}"/>
-                            <div class="flex items-center space-x-7 flex-wrap">
+                            <div class="flex items-center flex-wrap gap-3 md:gap-7">
                                 <div class="success-radio">
                                     <label class="flex items-center cursor-pointer">
                                         <input

@@ -115,7 +115,7 @@
         </li> --}}
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-4">
+<div class="stickySetting_menu sticky z-50 bottom-0 px-6 py-4">
     <a href="{{route('admin.dashboard')}}" class="navItem {{ isActive('admin.dashboard') }}">
         <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="lucide:arrow-left"></iconify-icon>

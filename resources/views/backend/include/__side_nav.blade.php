@@ -14,7 +14,7 @@
     </a>
     <!-- Sidebar Type Button -->
     <button class="sidebarCloseIcon text-2xl">
-        <iconify-icon class="text-slate-900 dark:text-slate-200" icon="clarity:window-close-line"></iconify-icon>
+        <iconify-icon class="text-slate-200" icon="clarity:window-close-line"></iconify-icon>
     </button>
 </div>
 <div id="nav_shadow" class="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none opacity-0"></div>
@@ -556,7 +556,7 @@
 
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-4">
+<div class="stickySetting_menu sticky z-50 bottom-0 px-6 py-4">
     {{-- ************************************************************* Site  Settings *********************************************************--}}
     @canany(['site-setting','email-setting','plugin-setting','page-manage'])
         @canany(['site-setting','email-setting','plugin-setting'])

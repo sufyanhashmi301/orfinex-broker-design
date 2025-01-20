@@ -20,96 +20,98 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6">
-                    <form action="{{route('admin.swap-multi-level.store')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="type" value="{{the_hash(\App\Enums\MultiLevelType::SWAP_FREE)}}" >
+                <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+                    <div class="p-6">
+                        <form action="{{route('admin.swap-multi-level.store')}}" method="post">
+                            @csrf
+                            <input type="hidden" name="type" value="{{the_hash(\App\Enums\MultiLevelType::SWAP_FREE)}}" >
 
-                        <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
-                            <div class="input-area">
-                                <label for="" class="form-label">{{ __('Title') }}</label>
-                                <input
-                                    type="text"
-                                    name="title"
-                                    class="form-control mb-0"
-                                    placeholder="Title"
-                                    required
-                                />
-                            </div>
-                            <input type="hidden" name="forex_scheme_id" value="{{$schema->id}}">
-                            <div class="input-area">
-                                <label for="" class="form-label">{{ __('Level Order') }}</label>
-                                <input
-                                    type="text"
-                                    name="level_order"
-                                    class="form-control mb-0"
-                                    placeholder="2"
-                                    required
-                                />
-                            </div>
-                            <div class="lg:col-span-2 input-area">
-                                <label for="" class="form-label">{{ __('Group Tag') }}</label>
-                                <input
-                                    type="text"
-                                    name="group_tag"
-                                    class="form-control mb-0"
-                                    placeholder="real\Promo\nb50s"
-                                    required
-                                />
-                            </div>
-                            <div class="lg:col-span-2 input-area">
-                                <label for="" class="form-label">
-                                    {{ __('Select Rebate Rules') }}
-                                </label>
-                                <select name="rebate_rules[]" class="select2 form-control w-full" multiple="multiple">
-                                    @foreach($rebateRules as $rebateRule)
-                                        <option  value="{{ $rebateRule->id }}">
-                                            {{ $rebateRule->title  }}
-                                        </option>
-                                    @endforeach
+                            <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Title') }}</label>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        class="form-control mb-0"
+                                        placeholder="Title"
+                                        required
+                                    />
+                                </div>
+                                <input type="hidden" name="forex_scheme_id" value="{{$schema->id}}">
+                                <div class="input-area">
+                                    <label for="" class="form-label">{{ __('Level Order') }}</label>
+                                    <input
+                                        type="text"
+                                        name="level_order"
+                                        class="form-control mb-0"
+                                        placeholder="2"
+                                        required
+                                    />
+                                </div>
+                                <div class="lg:col-span-2 input-area">
+                                    <label for="" class="form-label">{{ __('Group Tag') }}</label>
+                                    <input
+                                        type="text"
+                                        name="group_tag"
+                                        class="form-control mb-0"
+                                        placeholder="real\Promo\nb50s"
+                                        required
+                                    />
+                                </div>
+                                <div class="lg:col-span-2 input-area">
+                                    <label for="" class="form-label">
+                                        {{ __('Select Rebate Rules') }}
+                                    </label>
+                                    <select name="rebate_rules[]" class="select2 form-control w-full" multiple="multiple">
+                                        @foreach($rebateRules as $rebateRule)
+                                            <option  value="{{ $rebateRule->id }}">
+                                                {{ $rebateRule->title  }}
+                                            </option>
+                                        @endforeach
 
-                                </select>
-                                <div class="invalid-feedback" id="rebate-rules" style="display: none;"></div>
+                                    </select>
+                                    <div class="invalid-feedback" id="rebate-rules" style="display: none;"></div>
+                                </div>
+                                <div class="lg:col-span-2 input-area">
+                                    <label for="" class="form-label">{{ __('Select IB Groups') }}</label>
+                                    <select name="ib_group_id[]" class="select2 form-control w-full" multiple="multiple">
+                                        @foreach($ibGroups as $ibGroup)
+                                            <option value="{{ $ibGroup->id }}">
+                                                {{ $ibGroup->name }} <!-- Adjust the property to display the name of the IB group -->
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback" id="ib-groups" style="display: none;"></div>
+                                </div>
+                                <div class="lg:col-span-2 input-area">
+                                    <label for="" class="form-label">{{ __('Short Description') }}</label>
+                                    <textarea
+                                        name="description"
+                                        class="form-control mb-0"
+                                        placeholder="Short Description"
+                                        required
+                                    ></textarea>
+                                </div>
+                                <div class="lg:col-span-2 input-area">
+                                    <label for="status" class="form-label">{{ __('Status') }}</label>
+                                    <select name="status" class="form-control w-full">
+                                        <option value="1">{{ __('Enable') }}</option>
+                                        <option value="0">{{ __('Disable') }}</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="lg:col-span-2 input-area">
-                                <label for="" class="form-label">{{ __('Select IB Groups') }}</label>
-                                <select name="ib_group_id[]" class="select2 form-control w-full" multiple="multiple">
-                                    @foreach($ibGroups as $ibGroup)
-                                        <option value="{{ $ibGroup->id }}">
-                                            {{ $ibGroup->name }} <!-- Adjust the property to display the name of the IB group -->
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback" id="ib-groups" style="display: none;"></div>
+                            <div class="action-btns text-right mt-10">
+                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
+                                    {{ __('Save') }}
+                                </button>
+                                <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                    {{ __('Close') }}
+                                </a>
                             </div>
-                            <div class="lg:col-span-2 input-area">
-                                <label for="" class="form-label">{{ __('Short Description') }}</label>
-                                <textarea
-                                    name="description"
-                                    class="form-control mb-0"
-                                    placeholder="Short Description"
-                                    required
-                                ></textarea>
-                            </div>
-                            <div class="lg:col-span-2 input-area">
-                                <label for="status" class="form-label">{{ __('Status') }}</label>
-                                <select name="status" class="form-control w-full">
-                                    <option value="1">{{ __('Enable') }}</option>
-                                    <option value="0">{{ __('Disable') }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="action-btns text-right mt-10">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:check"></iconify-icon>
-                                {{ __('Save') }}
-                            </button>
-                            <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
-                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
-                                {{ __('Close') }}
-                            </a>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

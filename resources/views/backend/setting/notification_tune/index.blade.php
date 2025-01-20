@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-body p-6 space-y-4">
                 @foreach($set_tunes as $set_tune)
-                <div class="single-gateway flex items-center justify-between border rounded dark:border-slate-700 py-3 px-4">
+                <div class="single-gateway flex flex-wrap items-center justify-between border rounded dark:border-slate-700 gap-3 py-3 px-4">
                     <div class="gateway-name flex items-center gap-2">
                         <div class="gateway-icon mr-4">
                             <img class="h-7" src="{{ asset($set_tune->icon) }}" alt=""/>

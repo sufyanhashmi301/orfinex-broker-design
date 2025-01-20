@@ -6,7 +6,7 @@
 
 @section('title-btns')
 @can('system-tag-create')
-    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#systemTagModal">
+    <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#systemTagModal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
         {{ __('Add New') }}
     </a>
@@ -42,7 +42,7 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
-                                            @can('system-tag-edit')                
+                                            @can('system-tag-edit')
                                             <button type="button" class="action-btn edit-system-tag" data-id="{{ $systemTag->id }}">
                                                 <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                             </button>
@@ -53,7 +53,7 @@
                                                 <iconify-icon icon="lucide:trash-2"></iconify-icon>
                                             </button>
                                             @endcan
-                            
+
                                         </div>
                                     </td>
                                 </tr>

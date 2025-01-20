@@ -3,7 +3,7 @@
     @method('PUT')
     <input type="hidden" id="staff-id" value="{{ $staff->id }}">
     <div class="card">
-        <div class="card-header noborder">
+        <div class="card-header noborder flex-col sm:flex-row">
             <div class="flex-none">
                 <div class="w-20 h-20 rounded-[100%] ltr:mr-3 rtl:ml-3">
                     <img src="{{ asset('frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
@@ -23,7 +23,7 @@
                         <span>-</span>
                     @endif
                 </div>
-                <div class="flex items-center gap-5">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-5">
                     <div class="inline-flex items-center text-sm font-normal text-slate-800 dark:text-slate-400">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2 font-light" icon="heroicons-outline:mail"></iconify-icon>
                         {{ $staff->email }}

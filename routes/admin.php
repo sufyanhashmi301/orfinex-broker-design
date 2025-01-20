@@ -37,7 +37,6 @@ use App\Http\Controllers\Backend\GatewayController;
 use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\RankingController;
 use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\AccountsController;
 use App\Http\Controllers\Backend\DiscountController;
 use App\Http\Controllers\Backend\IBSchemaController;
 use App\Http\Controllers\Backend\LanguageController;
@@ -74,6 +73,7 @@ use App\Http\Controllers\Backend\ProfitDeductionController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
+use App\Http\Controllers\TradingStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -178,6 +178,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::resource('account-type', AccountTypeController::class);
     Route::get('accounts-activity-log', [AccountTypeInvestmentController::class, 'adminAccountsActivityLog'])->name('accounts_activity.log');
 
+    // Accounts (aka Investments)
+    Route::get('/accounts', [AccountTypeInvestmentController::class, 'adminIndex'])->name('accounts.index');
+    Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'adminTradingStats'])->name('account.trading_stats');
+
     // Investment Phase Approvals
     Route::get('phase-approval-request/{investment_id}', [AccountActivityController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
 
@@ -250,10 +254,10 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
-    Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
-    Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
-    Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
-    Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
+    // Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
+    // Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
+    // Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
+    // Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
 
     Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
@@ -275,7 +279,7 @@ Route::middleware(['2fa_admin'])->group(function () {
         });
         //=============================== end deposit Method ================================
 
-        Route::get('manual-pending', 'pending')->name('manual.pending');
+        Route::get('pending-payments', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');
         Route::post('export',  'export')->name('export');
         Route::get('action/{id}', 'depositAction')->name('action');
@@ -579,21 +583,21 @@ Route::middleware(['2fa_admin'])->group(function () {
         return view('backend.control_center.older_positions_days');
     })->name('olderPositionsDays');
 
-    Route::get('challenge-accounts', function () {
-        return view('backend.accounts.challenge_accounts');
-    })->name('accounts.challengeAccounts');
+    // Route::get('challenge-accounts', function () {
+    //     return view('backend.accounts.challenge_accounts');
+    // })->name('accounts.challengeAccounts');
 
-    Route::get('funded-accounts', function () {
-        return view('backend.accounts.funded_accounts');
-    })->name('accounts.fundedAccounts');
+    // Route::get('funded-accounts', function () {
+    //     return view('backend.accounts.funded_accounts');
+    // })->name('accounts.fundedAccounts');
 
-    Route::get('direct-funded-accounts', function () {
-        return view('backend.accounts.direct_funded_accounts');
-    })->name('accounts.directFundedAccounts');
+    // Route::get('direct-funded-accounts', function () {
+    //     return view('backend.accounts.direct_funded_accounts');
+    // })->name('accounts.directFundedAccounts');
 
-    Route::get('trial-accounts', function () {
-        return view('backend.accounts.trial_accounts');
-    })->name('accounts.trialAccounts');
+    // Route::get('trial-accounts', function () {
+    //     return view('backend.accounts.trial_accounts');
+    // })->name('accounts.trialAccounts');
 
     Route::get('discount-codes', function () {
         return view('backend.discount.index');

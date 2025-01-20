@@ -32,6 +32,50 @@ class AccountTypeInvestmentController extends Controller
     }
 
     /**
+     * Admin Index (Show Accounts)
+     */
+    public function adminIndex(Request $request) {
+
+        $accounts_filter = false;
+        if(isset($request->status)){
+            // Filter accounts wrt status when status exists
+
+            if (in_array($request->status, (new \ReflectionClass(InvestmentStatus::class))->getConstants())) {
+                // Handle the logic here if the status is valid
+                $accounts = AccountTypeInvestment::where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
+                $title = ucfirst($request->status) . ' Accounts';
+                $accounts_filter = true;
+            }
+
+        }
+
+        // If search
+        if(isset($request->search)) {
+            $accounts = AccountTypeInvestment::where('login', 'LIKE', '%' . $request->search . '%')
+                                            ->orWhereHas('user', function ($query) use ($request) {
+                                                $query->where('first_name', 'LIKE', '%' . $request->search . '%')
+                                                    ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
+                                                    ->orWhere('email', 'LIKE', '%' . $request->search . '%');
+                                            })
+                                            ->orderBy('id', 'desc')
+                                            ->paginate(15);
+            $accounts_filter = true;
+            $title = 'Search results for: ' . $request->search;
+        }
+
+        // if status is unknown then show all accounts
+        if(!$accounts_filter) {
+            $accounts = AccountTypeInvestment::orderBy('id', 'desc')->paginate(15);
+            $title = 'All Accounts';
+            if($request->status != 'all') {
+                return redirect()->route('admin.accounts.index', ['status' => 'all']);
+            }
+        }
+
+        return view('backend.accounts.index', compact('accounts', 'title'));
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -110,49 +154,6 @@ class AccountTypeInvestmentController extends Controller
 
         // to Deposit Page
         return redirect()->route('user.deposit.amount', ['investment' => $investment->id]);
-
-    }
-
-    /**
-     * Investment Tradings Statistics
-     */
-    public function tradingStats($investment_id){
-        $investment = AccountTypeInvestment::find($investment_id);
-        if($investment->login == null) {
-            abort(403);
-        }
-
-        // if the contract exists and is in pending state
-        if(isset($investment->contract) && $investment->contract->status == ContractStatusEnums::PENDING) {
-            notify()->error('Submit Contract to view Trading Stats.', 'Contract Pending');
-            return redirect()->back();
-        }
-        if(isset($investment->contract) && $investment->contract->status == ContractStatusEnums::EXPIRED) {
-            notify()->error('Your contract has been expired.', 'Contract Expired');
-            return redirect()->back();
-        }
-
-        // if account exists but not the stats or hourly stats
-        $hourly_stats = $investment->accountTypeInvestmentHourlyStatsRecord;
-        if( $investment->exists() && (!isset( $investment->accountTypeInvestmentStat) || count($hourly_stats) == 0 ) ){
-            notify()->error('Account Stats are Loading. Please check back later.', 'Error');
-            return redirect()->route('user.investments.index');
-        }
-
-        $investment_array = $this->investment->tradingStats($investment_id);
-        $account_open_positions = AccountOpenPosition::orderBy('id', 'DESC')->first();
-
-        // All open positions
-        $investment_array["account_open_positions"] = $account_open_positions['data'] ?? [];
-
-        // All Accounts
-        // $investment_array['accounts'] = AccountTypeInvestment::all();
-
-        // dd($investment_array);
-
-
-        return view("frontend::fund_board.active_plan")->with($investment_array);
-
 
     }
 

@@ -206,35 +206,40 @@
 
             @can('investment-list')
                 <li class="">
-                    <a href="javascript:void(0);" class="navItem">
+                    <a href="{{route('admin.accounts.index')}}" class="navItem {{ isActive('admin.accounts.index') }}">
                         <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:contact-2"></iconify-icon>
+                            <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
                             <span>{{ __('Accounts') }}</span>
                         </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
                     </a>
-                    <ul class="sidebar-submenu">
+                    {{-- <ul class="sidebar-submenu">
                         <li>
-                            <a href="{{route('admin.accounts.challengeAccounts')}}" class="{{ isActive('admin.accounts.challengeAccounts') }}">
-                                {{ __('Challenge') }}
+                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
+                                All Accounts
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.accounts.fundedAccounts') }}" class="{{ isActive('admin.accounts.fundedAccounts') }}">
-                                {{ __('Funded') }}
+                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
+                                Active Accounts
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.accounts.directFundedAccounts') }}" class="{{ isActive('admin.accounts.directFundedAccounts') }}">
-                                {{ __('Direct Funded') }}
+                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
+                                Pending Accounts
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.accounts.trialAccounts') }}" class="{{ isActive('admin.accounts.trialAccounts') }}">
-                                {{ __('Trial') }}
+                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
+                                Violated Accounts
                             </a>
                         </li>
-                    </ul>
+                        <li>
+                            <a href="{{route('admin.accounts.index')}}" class="{{ isActive('admin.accounts.index') }}">
+                                Expired Accounts
+                            </a>
+                        </li>
+                    </ul> --}}
 
                 </li>
             @endcan
@@ -331,7 +336,7 @@
         @endcanany
 
         {{-- *************************************************************  Transactions *********************************************************--}}
-        @canany(['transaction-list','investment-list','profit-list'])
+        {{-- @canany(['transaction-list','investment-list','profit-list'])
             @can('transaction-list')
                 <li class="">
                     <a href="{{route('admin.transactions')}}" class="navItem {{ isActive('admin.transactions') }}">
@@ -342,7 +347,7 @@
                     </a>
                 </li>
             @endcan
-        @endcanany
+        @endcanany --}}
 
         {{-- *************************************************************  Certificates *********************************************************--}}
         <li class="" >

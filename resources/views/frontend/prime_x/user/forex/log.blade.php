@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('Schema Logs') }}
+    {{ __('My Accounts') }}
 @endsection
 @section('content')
     <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">

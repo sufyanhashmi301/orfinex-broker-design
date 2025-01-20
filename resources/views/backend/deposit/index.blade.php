@@ -6,7 +6,7 @@
             @canany(['deposit-list','deposit-action'])
                 <li class="nav-item">
                     <a href="{{ route('admin.deposit.manual.pending') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.manual.pending') }}">
-                        {{ __('Manual Payments') }}
+                        {{ __('Pending Payments') }}
                     </a>
                 </li>
                 <li class="nav-item">

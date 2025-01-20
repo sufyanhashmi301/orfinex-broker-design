@@ -26,10 +26,6 @@
 
                                         $stats = $investment->accountTypeInvestmentStat;
                                         $hourly_stats = $investment->accountTypeInvestmentHourlyStatsRecord;
-                                        
-                                        
-                                        
-                                        
                                     @endphp
 
                                     {{-- Contracts Function --}}
@@ -76,7 +72,7 @@
                                                         </span>
                                                     </a>
                                                 @elseif (isset($stats) && count($hourly_stats) != 0 )
-                                                    <a href="{{ route('user.investment.trading-stats', ['investment_id' => $investment->id ]) }}" class="inline-flex justify-center">
+                                                    <a href="{{ route('user.investment.trading-stats', ['account_id' => $investment->id ]) }}" class="inline-flex justify-center">
                                                         <span class="flex items-center">
                                                             <span>{{ __('Trading Stats')}}</span>
                                                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>

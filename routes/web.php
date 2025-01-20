@@ -40,6 +40,7 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Frontend\ForexAccountController;
 use App\Http\Controllers\Frontend\MultiLevelIBController;
+use App\Http\Controllers\TradingStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,7 +99,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     // Accounts
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Investments Create
     Route::get('all-accounts/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Investments Shown
-    Route::get('account/trading-stats/{investment_id}', [AccountTypeInvestmentController::class, 'tradingStats'])->name('investment.trading-stats'); // Trading Stats
+    Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'userTradingStats'])->name('investment.trading-stats'); // Trading Stats
 
     // Affiliate Module
     Route::get('affiliate-area', [UserAffiliateController::class, 'index'])->name('affiliate-area.index');

@@ -337,12 +337,25 @@
 
         {{-- *************************************************************  Certificates *********************************************************--}}
         <li class="" >
-            <a href="{{route('admin.manage_certificates.index')}}" class="navItem {{ isActive('admin.manage_certificates.index') }}">
+            <a href="javascript:void(0)" class="navItem">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
-                    <span>{{ __('Manage Certificates') }}</span>
+                    <span>{{ __('Certificates') }}</span>
                 </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
+            <ul class="sidebar-submenu">
+                <li class="">
+                    <a href="{{ route('admin.certificates.manage') }}" class="{{ isActive('admin.certificates.manage') }}">
+                        {{ __('Manage Certificates') }}
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ route('admin.certificates.index') }}" class="{{ isActive('admin.certificates.index') }}">
+                        {{ __('Certificates Awarded') }}
+                    </a>
+                </li>
+            </ul>
         </li>
 
         {{-- *************************************************************  Contracts *********************************************************--}}

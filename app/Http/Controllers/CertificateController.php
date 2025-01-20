@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CertificateHookEnums;
 use App\Models\Certificate;
+use App\Models\User;
+use App\Models\UserCertificate;
 use App\Services\GenerateCertificateService;
 use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
@@ -32,7 +35,7 @@ class CertificateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function manage()
     {
 
         $certificates = Certificate::all();
@@ -44,8 +47,47 @@ class CertificateController extends Controller
         }
 
         
-        return view('backend.certificates.index', compact('certificates'));
+        return view('backend.certificates.config', compact('certificates'));
     }
+
+    /**
+     * All certificates awarded to users
+     */
+    public function index(Request $request) {
+        $certificates_filtered = false;
+
+        if(isset($request->hook)) {
+            if (in_array($request->hook, (new \ReflectionClass(CertificateHookEnums::class))->getConstants())) {
+                // Handle the logic here if the status is valid
+                $user_certificates = UserCertificate::where('hook', $request->hook)->paginate(15);
+                $title = 'Certificates Awarded (' . str_replace('_', ' ', $request->hook) . ')';
+                $certificates_filtered = true;
+            }
+        } 
+
+        if(isset($request->user)) {
+            $user = User::find($request->user);
+
+            if(!$user) {
+                return redirect()->route('admin.certificates.index');
+            }
+
+            $user_certificates = UserCertificate::where('user_id', $request->user)->paginate(15);
+            $title = 'Certificates Awarded to ' . $user->first_name . ' ' . $user->last_name;
+            $certificates_filtered = true;
+        }
+        
+        if(!$certificates_filtered) {
+            $user_certificates = UserCertificate::paginate(15);
+            $title = 'All Certificates Awarded';
+        }
+
+        $certificates = Certificate::all();
+        
+
+        return view('backend.certificates.index', compact('user_certificates', 'certificates', 'title'));
+    }
+
 
     public function viewCertificate($id) {
         $certificate = Certificate::find($id);

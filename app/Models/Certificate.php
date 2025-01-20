@@ -12,4 +12,6 @@ class Certificate extends Model
     protected $casts = [
         'config' => 'array'
     ];
+
+   
 }

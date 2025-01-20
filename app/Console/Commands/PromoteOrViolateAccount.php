@@ -54,6 +54,9 @@ class PromoteOrViolateAccount extends Command
 
         // check the stats of all accounts
         foreach( $all_accounts as $account ) {
+            if( count($account->accountTypeInvestmentHourlyStatsRecord) == 0  ) {
+                continue;
+            }
             $this->investment_service->tradingStats($account->id);
         }
 

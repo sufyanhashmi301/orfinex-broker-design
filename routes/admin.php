@@ -215,7 +215,8 @@ Route::middleware(['2fa_admin'])->group(function () {
     });
 
     // Certificates
-    Route::get('/certificates', [CertificateController::class, 'index'])->name('manage_certificates.index');
+    Route::get('/certificates/manage', [CertificateController::class, 'manage'])->name('certificates.manage');
+    Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
     Route::post('/update-certificate/{id}', [CertificateController::class, 'update'])->name('certificate.update');
     Route::get('/view-certificate/{id}', [CertificateController::class, 'viewCertificate'])->name('view_certificate');
     Route::post('/certificate-config/update', [CertificateController::class, 'updateConfig'])->name('certificate_config.update');

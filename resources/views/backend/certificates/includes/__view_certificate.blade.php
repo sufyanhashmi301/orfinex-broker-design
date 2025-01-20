@@ -1,11 +1,11 @@
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="view-example-certificate-image-modal{{$certificate->id}}" tabindex="-1"  aria-modal="true"
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="view-certificate-image-modal{{$certificate->id}}" tabindex="-1"  aria-modal="true"
   role="dialog">
   <div class="modal-dialog top-1/2 !-translate-y-1/2 relative modal-lg w-auto pointer-events-none">
       <div
           class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
           <div class="flex items-center justify-between p-5">
-              <h3 class="text-xl font-medium dark:text-white capitalize" id="view-example-certificate-image-modalLabel{{$certificate->id}}">
-                  View Certificate Template
+              <h3 class="text-xl font-medium dark:text-white capitalize" id="view-certificate-image-modalLabel{{$certificate->id}}">
+                  View Certificate
               </h3>
               <button type="button"
                   class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center
@@ -21,7 +21,7 @@
               </button>
           </div>
           <div class="modal-body p-6 pt-0">
-            <img src="{{  asset($certificate->config['example_certificate']) }}"  width="1080" height="1080" alt="">
+            <img src="{{  asset($certificate->certificate_image) }}"  width="1080" height="1080" alt="">
 
                   
             <div class="action-btns text-right mt-3">

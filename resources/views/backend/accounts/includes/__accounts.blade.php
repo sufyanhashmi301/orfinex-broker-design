@@ -35,7 +35,7 @@
 
                                     @php
                                         $user_exists = true;
-                                        if (!isset($record->accountTypeInvestment->user)) {
+                                        if (!isset($account->user->first_name)) {
                                             $user_exists = false;
                                         }
                                     @endphp

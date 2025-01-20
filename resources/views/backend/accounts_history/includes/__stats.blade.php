@@ -24,8 +24,9 @@
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                 @foreach($accounts_stats as $record)
                                     @php
+                                      
                                       $user_exists = true;
-                                      if(isset($record->accountTypeInvestment->user)) {
+                                      if(!isset($record->accountTypeInvestment->user)) {
                                         $user_exists = false;
                                       }
                                     @endphp

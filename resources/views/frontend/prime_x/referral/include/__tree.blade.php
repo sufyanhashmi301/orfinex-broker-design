@@ -14,6 +14,7 @@
 {{--                        @if(setting('deposit_level'))--}}
                             {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
 {{--                        @endif--}}
+{{--                        {{dd($levelUser->id)}}--}}
 {{--                        @if(setting('profit_level'))--}}
                             {{ __('Accounts Balance') }} {{ mt5_total_balance($levelUser->id) }}
 {{--                        @endif--}}

@@ -44,10 +44,10 @@ class Match2payTxn extends BaseTxn
 //        dd();
         // Generate timestamp in seconds
         $timestamp = Carbon::now()->timestamp;
-
+// $formattedAmount = floor($this->amount * 100) / 100;
         // Prepare the payload according to Match2Pay staging deposit request
         $payload = [
-            'amount' => $this->amount,                 // Amount to deposit
+            'amount' => number_format((float)$this->amount, 2, '.', ''),                 // Amount to deposit
 //            'currency' => 'USD',                       // Final currency (USD)
             'currency' => base_currency(),                       // Final currency (USD)
             'paymentGatewayName' => $this->gatewayName, // Payment gateway used for crypto deposits
@@ -57,14 +57,16 @@ class Match2payTxn extends BaseTxn
             'timestamp' => $timestamp,                 // Current timestamp
             'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
         ];
-//dd($payload);
+// dd($payload);
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
+//        dd(json_encode($payload));
 
         // Send the deposit request to Match2Pay API
         $response = $this->client->request('POST', $this->baseUrl . '/api/v2/deposit/crypto_agent', [
             'body' => json_encode($payload),
         ]);
+//        dd($payload,$response->getBody());
 
         // Parse the response
         $data = json_decode($response->getBody()->getContents(), true);
@@ -96,6 +98,10 @@ class Match2payTxn extends BaseTxn
         // Concatenate payload values according to sorted keys, excluding 'signature'
         $payloadString = '';
         foreach ($payload as $key => $value) {
+            if ($key === 'amount') {
+                // Force amount to always have two decimal places
+                $value = number_format((float)$value, 2, '.', '');
+            }
             if ($key !== 'signature') { // Exclude the signature field from the string
                 $payloadString .= $value;
             }
@@ -107,6 +113,8 @@ class Match2payTxn extends BaseTxn
         // Generate the SHA-384 hash of the concatenated string
         return hash('sha384', $payloadString);
     }
+
+
 
     /**
      * Map the pay_currency to the corresponding payment gateway name

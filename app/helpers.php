@@ -833,6 +833,7 @@ if (!function_exists('first_min_deposit')) {
         $forexAccount->update(['first_min_deposit_paid' => 1]);
     }
 }
+
 if (!function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {
@@ -852,6 +853,8 @@ if (!function_exists('txn_type')) {
             case TxnType::Investment->value:
             case TxnType::Withdraw->value:
             case TxnType::Subtract->value:
+            case TxnType::BonusSubtract->value:
+            case TxnType::BonusRefund->value:
                 $result = ['red-color', '-'];
                 break;
         }

@@ -20,7 +20,7 @@
                                 </h4>
                             </div>
                             <div class="flex-none">
-                                <a href="{{route('user.schema')}}" class="btn btn-light btn-white">Open new account</a>
+                                <a href="{{route('user.account.buy')}}" class="btn btn-light btn-white">Open new account</a>
                             </div>
                         </div>
                        @else
@@ -43,7 +43,7 @@
                                     </ul>
                                 </div>
                                 <div class="sm:space-x-4 space-x-2 rtl:space-x-reverse">
-                                    <a href="{{route('user.schema')}}" class="btn btn-dark">Open New Account</a>
+                                    <a href="{{route('user.account.buy')}}" class="btn btn-dark">Open New Account</a>
                                 </div>
                             </div>
                             <div class="card-body px-6 pb-6">

@@ -76,7 +76,7 @@
                         <span class="star">*</span>
                         {{ __('Available in countries:  ') }}  {{implode(', ', json_decode($schema->country,true)) }}
                     </p>
-                    <a href="{{route('user.schema.preview',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-3">
+                    <a href="{{route('user.account.show',$schema->id)}}" class="btn inline-flex justify-center btn-dark w-full mt-3">
                         {{ __('Create Account') }}
                     </a>
                 </div>

@@ -1,5 +1,5 @@
 <div class="mb-3">
-    <a href="{{ route('user.schema') }}" class="btn inline-flex justify-center btn-primary w-full">
+    <a href="{{ route('user.account.buy') }}" class="btn inline-flex justify-center btn-primary w-full">
         {{ __('Start Challenge') }}
     </a>
 </div>

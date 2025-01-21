@@ -2,59 +2,31 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\TxnStatus;
 use App\Models\User;
 use App\Models\Schema;
 use App\Models\AccountType;
 use App\Models\ForexSchema;
 use App\Traits\ForexApiTrait;
 use App\Http\Controllers\Controller;
+use App\Models\AccountTypeInvestment;
 use App\Models\Addon;
 use App\Models\Setting;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 
 class ForexSchemaController extends Controller
 {
     use ForexApiTrait;
     public function index()
     {
-        $user = auth()->user();
-
-
-//        $this->sendApiPostRequest('url','data');
-//        $this->getUserApi(554944);
         
-        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-
-        $schemas = AccountType::active()->traderType()  // Use the defined scope for active schemas
-        ->relevantForUser($user->country, $tagNames)  // Use the integrated scope for filtering by country and tags
-        ->orderBy('priority', 'asc')
-            ->get();
-//        dd($schemas);
-
-        return view('frontend::forex_schema.index', compact('schemas'));
     }
 
     public function schemaPreview($id)
     {
-        // $tagNames = auth()->user()->riskProfileTags()->pluck('name')->toArray();
-        // $schemas = AccountType::where('status', true)
-        //     ->where(function($query) use ($tagNames) {
-        //         $query->whereJsonContains('countries', auth()->user()->country)
-        //             ->orWhereJsonContains('countries', 'All')
-        //             ->orWhere(function($subQuery) use ($tagNames) {
-        //                 foreach ($tagNames as $tagName) {
-        //                     $subQuery->orWhereJsonContains('tags', $tagName);
-        //                 }
-        //             });
-        //     })
-        //     ->orderBy('priority', 'asc')
-        //     ->get();
-            
         
-        $account_type = AccountType::find($id);
-        $addons = Addon::where('status', 1)->get();
-        $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_purchase%')->get();
-
-        return view('frontend::forex_schema.preview', compact('account_type', 'addons', 'legal_links'));
+        
     }
 
     public function schemaSelect($id)

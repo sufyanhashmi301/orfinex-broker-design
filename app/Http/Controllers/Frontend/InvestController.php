@@ -56,18 +56,18 @@ class InvestController extends GatewayController
         if ($input['wallet'] == 'main' && $user->balance < $investAmount) {
             notify()->error('Insufficient Balance Your Main Wallet', 'Error');
 
-            return redirect()->route('user.schema.preview', $schema->id);
+            return redirect()->route('user.account.show', $schema->id);
         } elseif ($input['wallet'] == 'profit' && $user->profit_balance < $investAmount) {
             notify()->error('Insufficient Balance Your Profit Wallet', 'Error');
 
-            return redirect()->route('user.schema.preview', $schema->id);
+            return redirect()->route('user.account.show', $schema->id);
         }
 
         //invalid Amount
         if (($schema->type == 'range' && ($schema->min_amount > $investAmount || $schema->max_amount < $investAmount)) || ($schema->type == 'fixed' && $schema->fixed_amount != $investAmount)) {
             notify()->error('Invest Amount Out Of Range', 'Error');
 
-            return redirect()->route('user.schema.preview', $schema->id);
+            return redirect()->route('user.account.show', $schema->id);
         }
 
         $periodHours = $schema->schedule->time;

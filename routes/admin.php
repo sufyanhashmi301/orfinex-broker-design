@@ -57,7 +57,7 @@ use App\Http\Controllers\Backend\RebateRuleController;
 use App\Http\Controllers\Backend\SocialLinkController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\Backend\DesignationController;
-use App\Http\Controllers\Backend\ForexSchemaController;
+// use App\Http\Controllers\Backend\ForexSchemaController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\TransactionController;
@@ -237,7 +237,7 @@ Route::middleware(['2fa_admin'])->group(function () {
 // =============================== Optimization ===============================
 
 
-    Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
+    // Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
     Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');

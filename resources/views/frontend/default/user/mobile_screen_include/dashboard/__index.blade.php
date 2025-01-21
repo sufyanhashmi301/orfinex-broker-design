@@ -54,7 +54,7 @@
         </div>
         <span class="text-sm">{{ __('Deposit') }}</span>
     </a>
-    <a href="{{ route('user.schema') }}" class=" bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
+    <a href="{{ route('user.account.buy') }}" class=" bg-warning-500 rounded-md p-4 bg-opacity-[0.15] dark:bg-opacity-50 text-center">
         <div class="mx-auto text-2xl">
             <iconify-icon icon="lucide:box"></iconify-icon>
         </div>

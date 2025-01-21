@@ -4,7 +4,7 @@
 <a href="{{ route('user.deposit.amount') }}" class="{{ isActive('user.deposit*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:download"></iconify-icon>
 </a>
-<a href="{{ route('user.schema') }}" class="{{ isActive('user.schema*') }}">
+<a href="{{ route('user.account.buy') }}" class="{{ isActive('user.schema*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:box"></iconify-icon>
 </a>
 <a href="{{ route('user.referral') }}" class="{{ isActive('user.referral*') }}">

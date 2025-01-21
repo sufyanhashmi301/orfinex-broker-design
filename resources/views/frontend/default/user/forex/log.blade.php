@@ -27,7 +27,7 @@
                     <h4 class="card-title">{{ __('My Accounts') }}</h4>
                     <div>
                         <!-- BEGIN: Card Dropdown -->
-                        <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-dark btn-sm">
+                        <a href="{{route('user.account.buy')}}" class="btn inline-flex justify-center btn-dark btn-sm">
                             <span class="flex items-center">
                                 <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
                                 <span>{{ __('Open New Account') }}</span>

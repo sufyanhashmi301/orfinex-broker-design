@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountBuyController;
 use App\Models\Setting;
 use App\Models\Certificate;
 use App\Traits\ForexApiTrait;
@@ -34,7 +35,7 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\SendMoneyController;
 use App\Http\Controllers\Backend\LeaderboardController;
-use App\Http\Controllers\Frontend\ForexSchemaController;
+// use App\Http\Controllers\Frontend\ForexSchemaController;
 use App\Http\Controllers\Frontend\TransactionController;
 use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\CustomerGroupController;
@@ -116,11 +117,14 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::get('contract/{id}', [ContractController::class, 'show'])->name('contract.show');
     Route::post('contract/store', [ContractController::class, 'storeContract'])->name('contract.store');
 
+    // Account Buy
+    Route::get('account/buy', [AccountBuyController::class, 'index'])->name('account.buy');
+    Route::get('account/buy/{id}', [AccountBuyController::class, 'show'])->name('account.show');
+
 
     // ======== Optimizations ========
 
-    Route::get('accountTypes', [ForexSchemaController::class, 'index'])->name('schema');
-    Route::get('accountType-preview/{id}', [ForexSchemaController::class, 'schemaPreview'])->name('schema.preview');
+    
 
     //Forex accounts
     Route::post('forex-account-create-now', [ForexAccountController::class, 'forexAccountCreateNow'])->name('forex-account-create-now');
@@ -288,7 +292,7 @@ Route::group(['prefix' => 'ipn', 'as' => 'ipn.', 'controller' => IpnController::
 Route::get('theme-mode', [HomeController::class, 'themeMode'])->name('mode-theme');
 
 //without auth
-Route::get('accountType-select/{id}', [ForexSchemaController::class, 'schemaSelect'])->name('user.schema.select');
+// Route::get('accountType-select/{id}', [ForexSchemaController::class, 'schemaSelect'])->name('user.schema.select');
 Route::get('notification-tune', [AppController::class, 'notificationTune'])->name('notification-tune');
 
 //site cron job

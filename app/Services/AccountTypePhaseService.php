@@ -172,9 +172,14 @@ class AccountTypePhaseService
         }
 
         // Delete any rules in the database that weren’t in the submitted data
-        $submittedRuleIds = collect($rules)->pluck('id')->filter()->toArray(); // Keep only non-null IDs
-        $rulesToDelete = array_diff(array_keys($existingRules), $submittedRuleIds);
-        AccountTypePhaseRule::destroy($rulesToDelete);
+        $rules_wrt_uniqueid = AccountTypePhaseRule::where('unique_id', 'R-14003')->get();
+
+        foreach($rules_wrt_uniqueid as $rule) {
+            if(!$rule->accountTypePhase) {
+                $rule->delete();
+            } 
+        }
+
     }
 
 

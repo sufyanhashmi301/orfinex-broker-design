@@ -151,7 +151,7 @@
                             {{ __('Access to premium apps and tools') }}
                         </li>
                     </ul>
-                    <a href="{{ route('user.schema') }}" class="btn inline-flex justify-center btn-primary w-full mt-5">
+                    <a href="{{ route('user.account.buy') }}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                         {{ __('Start Challenge') }}
                     </a>
                 </div>
@@ -244,7 +244,7 @@
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
                                         <h5 class="text-xl text-slate-900 dark:text-white font-medium">0</h5>
-                                        <a href="{{route('user.schema')}}"
+                                        <a href="{{route('user.account.buy')}}"
                                            class="btn btn-primary btn-sm inline-flex items-center justify-center">
                                             {{ __('Start Challenge') }}
                                         </a>
@@ -264,7 +264,7 @@
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
                                         <h5 class="text-xl text-slate-900 dark:text-white font-medium">0</h5>
-                                        <a href="{{route('user.schema')}}"
+                                        <a href="{{route('user.account.buy')}}"
                                            class="btn btn-primary btn-sm inline-flex items-center justify-center">
                                             {{ __('Challenge Accounts') }}
                                         </a>

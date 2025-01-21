@@ -122,7 +122,7 @@
                 <p class="text-slate-600 dark:text-slate-100">
                     {{ __('But no worries, you can have one by passing our challenge. Are you ready?') }}
                 </p>
-                <a href="{{ route('user.schema') }}" class="btn btn-dark inline-flex items-center justify-center">
+                <a href="{{ route('user.account.buy') }}" class="btn btn-dark inline-flex items-center justify-center">
                     Start a new challenge
                 </a>
             </div>

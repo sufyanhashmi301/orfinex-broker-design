@@ -8,7 +8,7 @@
             @yield('title')
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{route('user.schema')}}" class="btn btn-primary inline-flex items-center justify-center">
+            <a href="{{route('user.account.buy')}}" class="btn btn-primary inline-flex items-center justify-center">
                 <span class="flex items-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
                     <span>{{ __('Start Challenge') }}</span>

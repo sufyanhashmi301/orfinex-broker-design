@@ -3,7 +3,7 @@
   {{-- On Creation --}}
   @if ( !isset( $account_type ) )
     {{-- Phase 1 --}}
-    <div class="card account-type-phases latest-phase">
+    <div class="card account-type-phases latest-phase" >
       <div class="card-header noborder">
         <h4 class="card-title">{{ __('Phase 1') }}</h4>
         <input type="hidden" name="phases[0][phase_step]" class="phase-step" value="1">
@@ -59,6 +59,7 @@
           </select>
         </div>
 
+        {{-- Temporarily Removed --}}
         <div class="input-area" style="display: none">
           <label class="form-label" for="">{{ __('Validity Period') }}</label>
           <select name="phases[0][validity_period]" class="cursor-pointer validity-period form-control w-full">
@@ -70,7 +71,7 @@
           </select>
         </div>
 
-
+        {{-- Server Info --}}
         <div class="input-area">
           <label class="form-label" for="">{{ __('Server') }}</label>
           <select name="phases[0][server]" class="cursor-pointer phase-server form-control w-full">
@@ -83,40 +84,19 @@
         
 
         <div class="flex items-center gap-3">
-          <button type="button" class="btn btn-secondary control-room-btn light inline-flex items-center justify-center w-full"
-            data-bs-toggle="modal" data-bs-target="#controlRoomModal" data-phase="1">
-            {{ __('Control Room') }}
+          <button type="button" class="btn btn-outline-dark control-room-btn inline-flex items-center justify-center w-full"
+            data-bs-toggle="modal" data-bs-target="#controlRoomModal" data-phase="1" style="border-width: 2px">
+            {{ __('Edit Trading Objectives') }}
           </button>
-          <button type="button"
-            class="btn btn-secondary light inline-flex items-center justify-center w-full">
-            {{ __('Statistics') }}
-          </button>
+          
+          <button type="button" class="btn btn-outline-danger inline-flex items-center justify-center w-full delete-phase hidden" style="border-width: 2px">Delete</button>
+
         </div>
+
       </div>
     </div>
 
-    {{-- Add Another Phase --}}
-    <div class="card add-phase-container border border-gray-300 cursor-pointer" style="display: none">
-      <div class="card-body h-full p-6">
-        <div class="flex w-full h-full divide-x divide-gray-300">
     
-          <div class="flex-1 add-phase flex items-center justify-center p-4 mr-5" style="border: 2px solid #eee; border-radius: 4px" data-type="verification">
-            <span class="flex flex-col items-center justify-center">
-              <iconify-icon class="text-3xl font-light mb-1" icon="tabler:layout-grid-add"></iconify-icon>
-              {{ __('Add Verification Phase') }}
-            </span>
-          </div>
-    
-          <div class="flex-1 add-phase flex items-center justify-center p-4" style="border: 2px solid #eee; border-radius: 4px" data-type="funded">
-            <span class="flex flex-col items-center justify-center">
-              <iconify-icon class="text-3xl font-light mb-1" icon="tabler:layout-grid-add"></iconify-icon>
-              {{ __('Add Funded Phase') }}
-            </span>
-          </div>
-    
-        </div>
-      </div>
-    </div>
 
   @elseif (isset( $account_type ))
 
@@ -210,14 +190,15 @@
           </div>
   
           <div class="flex items-center gap-3">
-            <button type="button" class="btn btn-secondary control-room-btn light inline-flex items-center justify-center w-full"
-              data-bs-toggle="modal" data-bs-target="#controlRoomModal" data-phase="{{ $phase->phase_step }}">
+            <button type="button" class="btn btn-outline-dark control-room-btn  inline-flex items-center justify-center w-full"
+              data-bs-toggle="modal" data-bs-target="#controlRoomModal" data-phase="{{ $phase->phase_step }}" style="border-width: 2px">
               {{ __('Control Room') }}
             </button>
-            {{-- <button type="button"
-              class="btn btn-secondary light inline-flex items-center justify-center w-full">
-              {{ __('Statistics') }}
-            </button> --}}
+            
+     
+            {{-- <button type="button" class="btn btn-outline-danger inline-flex items-center justify-center w-full delete-phase {{ $phase->phase_step == 1 ? 'hidden' : '' }}" style="border-width: 2px">Delete</button> --}}
+           
+
           </div>
         </div>
       </div>
@@ -225,6 +206,29 @@
     @endforeach
 
   @endif
+
+  {{-- Add Another Phase --}}
+  <div class="card add-phase-container border border-gray-300 cursor-pointer" style="display: none">
+    <div class="card-body h-full p-6">
+      <div class="flex w-full h-full divide-x divide-gray-300">
+  
+        <div class="flex-1 add-phase flex items-center justify-center p-4 mr-5" style="border: 2px solid #eee; border-radius: 4px" data-type="verification">
+          <span class="flex flex-col items-center justify-center">
+            <iconify-icon class="text-3xl font-light mb-1" icon="tabler:layout-grid-add"></iconify-icon>
+            {{ __('Add Verification Phase') }}
+          </span>
+        </div>
+  
+        <div class="flex-1 add-phase flex items-center justify-center p-4" style="border: 2px solid #eee; border-radius: 4px" data-type="funded">
+          <span class="flex flex-col items-center justify-center">
+            <iconify-icon class="text-3xl font-light mb-1" icon="tabler:layout-grid-add"></iconify-icon>
+            {{ __('Add Funded Phase') }}
+          </span>
+        </div>
+  
+      </div>
+    </div>
+  </div>
   
 
   
@@ -264,12 +268,12 @@
       no_of_phases++
 
       // --- Newly created Phase Modifications ---
-      // title
-      new_phase.find('.card-title').text('Phase ' + no_of_phases)
+      
 
       // change phase step
       new_phase.find('.phase-step').val(no_of_phases)
       new_phase.find('.phase-step').attr('name', `phases[${no_of_phases - 1}][phase_step]`)
+      
 
       // type
       new_phase.find('.phase-options').html('')
@@ -302,13 +306,49 @@
       // Control Room Button 
       new_phase.find('.control-room-btn').attr('data-phase', no_of_phases)
 
+      // Show delete option in the next phase
+      new_phase.find('.delete-phase').removeClass('hidden')
+
       // Add the phase after the latest created phase
       $(new_phase).insertAfter('.account-type-phases:last')
+
+      // title
+      // new_phase.find('.card-title').text('Phase ' + no_of_phases)
+      for(let i=0; i < $('.account-type-phases').length; i++) {
+        $('.account-type-phases').eq(i).find('.card-title').text('Phase ' + (i + 1))
+      }
+
+
 
       // Add new Rules Table
       newPhaseRuleData((no_of_phases - 1))
     })
 
+    // delete phase
+    $(document).on('click', '.delete-phase', function() {
+      let phase = $(this).parents('.account-type-phases')
+      if(phase.index() == 0) {
+        alert('Not allowed to remove Phase 1')
+      } else {
+        // delete the phase and its rules
+        let deleted_phase_step = phase.find('.phase-step').val()
+        $('#phases-data').find('.rulesTable[data-phase="' + deleted_phase_step + '"]').remove()
+        
+        // Show the controls to add more phases if the funded phase is  removed
+        if(phase.find('.funded-phase').length > 0){
+          $('.add-phase-container').css('display', 'block')
+        } 
+
+        // then delete the phase
+        phase.remove()
+
+        // rearrange the title of phases
+        for(let i=0; i < $('.account-type-phases').length; i++) {
+          $('.account-type-phases').eq(i).find('.card-title').text('Phase ' + (i + 1))
+        }
+
+      }
+    })
 
     verification_phase_option_html = $('.account-type-phases').find('.verification-phase').removeAttr('style').prop('outerHTML')
     funded_phase_option_html = $('.account-type-phases').find('.funded-phase').removeAttr('style').prop('outerHTML')
@@ -572,6 +612,7 @@
             return false
         }
 
+        
         // prepare the phases data
         $('#phases-data input').each(function() {
             // Check if the input has a data-value attribute
@@ -589,6 +630,12 @@
             }
 
         });
+
+        // Rearrange phase steps
+        for(let i=0; i < $('.account-type-phases').length; i++) {
+          let phase = $('.account-type-phases').eq(i)
+          phase.find('.phase-step').val(i+1)
+        }
       
     });
 

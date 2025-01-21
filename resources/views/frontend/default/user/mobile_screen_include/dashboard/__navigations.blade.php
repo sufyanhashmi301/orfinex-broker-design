@@ -7,7 +7,7 @@
     <div class="card-body p-3">
         <div class="grid grid-cols-3 gap-2 gap-y-5 contents">
             <div class="single text-center py-2">
-                <a href="{{ route('user.schema') }}">
+                <a href="{{ route('user.account.buy') }}">
                     <img src="{{ asset('frontend/materials/schema.png') }}" class="h-7 mx-auto" alt="">
                     <div class="text-sm dark:text-white">{{ __('New Account') }}</div>
                 </a>

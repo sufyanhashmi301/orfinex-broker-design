@@ -41,7 +41,7 @@
                             <li>{{ __('Cancel') }}  <span> @if($schema->schema_cancel) {{ __('Within').' '. $schema->expiry_minute .' '. 'Minute' }} @else   {{ __('No') }}@endif</span></li>
                         </ul>
                         <div class="holidays"><span class="star">*</span>@if( null != $schema->off_days) {{ implode(', ', json_decode($schema->off_days,true))  .' '.__('are')}}  @else {{ __('No Profit') }} @endif {{ __('Holidays') }}</div>
-                        <a href="{{route('user.schema.preview',$schema->id)}}" class="site-btn grad-btn w-100 centered"><i
+                        <a href="{{route('user.account.show',$schema->id)}}" class="site-btn grad-btn w-100 centered"><i
                                 class="anticon anticon-check"></i>{{ __('Invest Now') }}</a>
                     </div>
                 </div>

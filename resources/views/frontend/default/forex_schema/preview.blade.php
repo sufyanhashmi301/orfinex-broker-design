@@ -97,7 +97,7 @@
                     <button type="submit" class="btn inline-flex justify-center btn-dark me-3" id="create-forex-account" disabled>
                         {{ __('Create Account') }}
                     </button>
-                    <a href="{{route('user.schema')}}" class="btn inline-flex justify-center btn-outline-dark">
+                    <a href="{{route('user.account.buy')}}" class="btn inline-flex justify-center btn-outline-dark">
                         {{ __('Cancel') }}
                     </a>
                 </div>

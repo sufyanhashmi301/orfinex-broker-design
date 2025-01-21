@@ -38,11 +38,13 @@
                                           <b>{{ $record->accountTypeInvestment->login }}</b>
                                         </a>  
                                       </td>  
-                                      <td class="table-td">{{ $record->balance }}</td>  
-                                      <td class="table-td">{{ $record->current_equity }}</td>  
-                                      <td class="table-td">{{ $record->prev_day_balance }}</td>  
-                                      <td class="table-td">{{ $record->prev_day_equity }}</td>  
-                                      <td class="table-td">{{ $record->total_pnl }}</td>  
+                                      <td class="table-td">{{ number_format($record->balance, 2) }}</td>  
+                                      <td class="table-td">{{ number_format($record->current_equity, 2) }}</td>  
+                                      <td class="table-td">{{ number_format($record->prev_day_balance, 2) }}</td>  
+                                      <td class="table-td">{{ number_format($record->prev_day_equity, 2) }}</td>  
+                                      <td class="table-td">
+                                        <span class="badge {{ $record->total_pnl < 0 ? 'badge-danger' : 'badge-success' }}">{{ number_format($record->total_pnl, 2) }}</span>
+                                      </td>  
                                       <td class="table-td">{{ $record->trading_days }}</td>  
                                       <td class="table-td">{{ $record->created_at }}</td>  
                                       

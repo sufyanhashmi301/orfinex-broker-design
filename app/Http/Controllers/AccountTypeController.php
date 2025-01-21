@@ -86,7 +86,7 @@ class AccountTypeController extends Controller
      */
     public function edit(AccountType $account_type)
     {
-        
+
         return view('backend.account_types.edit')->with('account_type', $account_type);
     }
 

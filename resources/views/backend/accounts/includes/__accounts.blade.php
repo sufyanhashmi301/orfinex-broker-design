@@ -93,7 +93,7 @@
                                                     $contract_expired == false)
                                                 {{-- check if the stats exists --}}
                                                 @if ($contract_pending == true)
-                                                    <a href="{{ route('admin.manage-contracts.index') }}"
+                                                    <a href="{{ route('admin.contracts.index') }}"
                                                         class="inline-flex justify-center">
                                                         <span class="flex items-center">
                                                             <span>{{ __('Pending Contracts') }}</span>

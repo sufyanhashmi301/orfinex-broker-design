@@ -15,7 +15,7 @@
                     </a>
                 </li>
             @endcanany
-            <li class="nav-item !ml-auto">
+            <li class="nav-item !ml-auto more-li">
                 <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                 <span class="flex items-center">
                     <span>{{ __('More') }}</span>

@@ -1,68 +1,79 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('Manage Contracts') }}
+    {{ __('Contracts') }}
 @endsection
 @section('content')
 
     <div class="pageTitle flex justify-between flex-wrap items-center">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            {{ __('Manage Contracts') }}
+            {{ $title }}
         </h4>
 
         <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
-        Configure Parameters
+            Configure Parameters
         </a>
 
     </div>
 
-    <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
-        {{-- <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a href="{{ route('admin.accounts-phases.log') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ url()->current() === route('admin.accounts-phases.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
+    <div class="innerMenu card p-6 mb-5 mt-3">
+        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open w-full">
+            <li class="nav-item">
+                <a href="{{ route('admin.contracts.index', ['status' => 'all']) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == 'all' ? 'active' : '' }} ">
+                    All
+                </a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a href="?pending-approvals" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request()->has('pending-approvals') ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
+            <li class="nav-item">
+                <a href="{{ route('admin.contracts.index', ['status' => \App\Enums\ContractStatusEnums::PENDING ]) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == \App\Enums\ContractStatusEnums::PENDING ? 'active' : '' }} ">
+                    Pending
+                </a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a href="?violated-acounts" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request()->has('violated-acounts') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated Accounts') }}</a>
+            <li class="nav-item">
+                <a href="{{ route('admin.contracts.index', ['status' => \App\Enums\ContractStatusEnums::SIGNED ]) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == \App\Enums\ContractStatusEnums::SIGNED ? 'active' : '' }}">
+                    Signed
+                </a>
             </li>
-            @if (request()->has('unique_id'))
-              <li class="nav-item" role="presentation">
-                <a href="?violated-acounts" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request()->has('unique_id') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __( request('unique_id') . ' Logs') }}</a>
-              </li>
-            @endif
-           
-        </ul> --}}
-        {{-- <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <div class="flex justify-between sm:space-x-4 space-x-2">
+            <li class="nav-item">
+                <a href="{{ route('admin.contracts.index', ['status' => \App\Enums\ContractStatusEnums::EXPIRED ]) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == \App\Enums\ContractStatusEnums::EXPIRED ? 'active' : '' }}">
+                    Expired
+                </a>
+            </li>
+            <li class="nav-item !ml-auto">
+                <a href="javascript:void(0);" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+                    <span class="flex items-center">
+                        <span>{{ __('More') }}</span>
+                        <iconify-icon icon="lucide:chevron-down" class="text-xl ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
+                    </span>
+                </a>
+            </li>
+        </ul>
 
-                <div class="flex items-center space-x-2 sm:rtl:space-x-reverse md:flex hidden">
-                    <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center grid-view-btn active" data-target="trading-accounts">
-                        <iconify-icon class="text-lg" icon="heroicons:view-columns"></iconify-icon>
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm inline-flex items-center justify-center list-view-btn" data-target="trading-accounts">
-                        <iconify-icon class="text-lg" icon="heroicons:list-bullet"></iconify-icon>
-                    </button>
+        <div class="hidden mt-5" id="filters_div">
+            <form id="filter-form" method="GET" action="{{ route('admin.contracts.index') }}">
+                <div class="flex justify-between flex-wrap items-center">
+                    <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0" style="max-width: 400px">
+                        <div class="flex-1 input-area relative">
+                            <input type="text" name="search" id="search" class="form-control h-full" placeholder="Search by Login, Name, or Email">
+                        </div>
+                        <div class="input-area relative">
+                            <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
+                                {{ __('Filter') }}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                        
+                        
+                    </div>
                 </div>
-            </div>
-            <a href="{{route('user.account.buy')}}" class="btn inline-flex justify-center btn-primary btn-sm">
-                <span class="flex items-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
-                    <span>{{ __('Start Challenge') }}</span>
-                </span>
-            </a>
-        </div> --}}
-    </div>
-    <div class="grid grid-cols-12 gap-6">
-        <div class="col-span-12">
-            <div class="tab-content" id="trading-accounts">
-                <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
-                    @include('backend.contracts.includes.__contracts')
-                </div>
-            </div>
+            </form>
         </div>
     </div>
+    
+   
+    @include('backend.contracts.includes.__contracts')
+                
 
     {{-- Modals --}}
     @include('backend.contracts.includes.__config_modal')

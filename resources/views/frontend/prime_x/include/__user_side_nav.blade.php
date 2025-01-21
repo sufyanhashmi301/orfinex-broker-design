@@ -76,7 +76,7 @@
         @endif
 
         <li>
-            <a href="{{route('user.account.buy')}}" class="navItem {{ isActive('user.schema*') }}">
+            <a href="{{route('user.account.buy')}}" class="navItem {{ isActive('user.account*') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:document-add"></iconify-icon>
                     <span>{{ __('New Account') }}</span>

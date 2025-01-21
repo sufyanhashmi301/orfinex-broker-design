@@ -22,12 +22,10 @@ class ContractController extends Controller
 
     
 
-    public function adminIndex() {
+    public function adminIndex(Request $request) {
 
-        $contracts = Contract::all();
-
+        // Contract Patamater
         $contract_expiry = Setting::where('name', 'contract_expiry')->first();
-
         if(!$contract_expiry) {
             $setting = new Setting();
             $setting->name = 'contract_expiry';
@@ -40,7 +38,29 @@ class ContractController extends Controller
             $contract_expiry = $contract_expiry->val;
         }
 
-        return view('backend.contracts.index', compact('contracts', 'contract_expiry'));
+        $contracts_filter = false;
+        // Filter accounts wrt status when status exists
+        if(isset($request->status)){
+
+            if (in_array($request->status, (new \ReflectionClass(ContractStatusEnums::class))->getConstants())) {
+                // Handle the logic here if the status is valid
+                $contracts = Contract::where('status', $request->status)->orderBy('id', 'desc')->paginate(15);
+                $title = ucfirst( str_replace('contract_', '', $request->status) ) . ' Contracts';
+                $contracts_filter = true;
+            }
+
+        }
+
+        // if status is unknown then show all accounts
+        if(!$contracts_filter) {
+            $contracts = Contract::orderBy('id', 'desc')->paginate(15);
+            $title = 'All Contracts';
+            if($request->status != 'all') {
+                return redirect()->route('admin.contracts.index', ['status' => 'all']);
+            }
+        }
+
+        return view('backend.contracts.index', compact('contracts', 'contract_expiry', 'title'));
     }
 
     public function markContractAs(Request $request) {

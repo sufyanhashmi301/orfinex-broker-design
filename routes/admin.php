@@ -64,6 +64,7 @@ use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\AccountTypeInvestmentController;
+use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\LevelReferralController;
@@ -195,6 +196,7 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     // Affiliates
     Route::get('/affiliate-rules', [AffiliateRuleController::class, 'index'])->name('affiliate-rules.index');
+    Route::get('/affiliates', [AffiliateController::class, 'index'])->name('affiliates.index');
     Route::get('/affiliate-rules/create', [AffiliateRuleController::class, 'create'])->name('affiliate-rules.create');
     Route::post('/affiliate-rules/store', [AffiliateRuleController::class, 'store'])->name('affiliate-rules.store');
 
@@ -222,7 +224,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::post('/certificate-config/update', [CertificateController::class, 'updateConfig'])->name('certificate_config.update');
 
     // Contracts
-    Route::get('/manage-contracts', [ContractController::class, 'adminIndex'])->name('manage-contracts.index');
+    Route::get('/contracts', [ContractController::class, 'adminIndex'])->name('contracts.index');
     Route::get('/contract/show/{id}', [ContractController::class, 'adminShow'])->name('contract.show');
     Route::post('/contract/config', [ContractController::class, 'config'])->name('contract.config');
     Route::post('/contract/mark-as', [ContractController::class, 'markContractAs'])->name('contract.mark_as');

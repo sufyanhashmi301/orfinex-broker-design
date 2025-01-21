@@ -16,15 +16,9 @@
 
     </div>
 
-    <div class="grid grid-cols-12 gap-6">
-        <div class="col-span-12">
-            <div class="tab-content" id="trading-accounts">
-                <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
-                    @include('backend.addons.includes.__addons')
-                </div>
-            </div>
-        </div>
-    </div>
+
+    @include('backend.addons.includes.__addons')
+                
     
 
 @endsection

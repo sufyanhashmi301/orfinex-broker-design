@@ -60,6 +60,13 @@
     @endcan
 
     <!-- Modal for Pending Deposit Approval -->
+
+    <style>
+        .more-li {
+            display: none
+        }
+    </style>
+
 @endsection
 @section('script')
     <script>

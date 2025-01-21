@@ -506,27 +506,26 @@
                 updateIslamicCheckboxState(accountType, isRealIslamic, isDemoIslamic);
             });
 
-            $("#select-schema").on('change', function (e) {
-                "use strict";
-                e.preventDefault();
-                var id = $(this).val();
-                var url = '{{ route("user.schema.select", ":id") }}';
-                url = url.replace(':id', id);
+            // $("#select-schema").on('change', function (e) {
+            //     "use strict";
+            //     e.preventDefault();
+            //     var id = $(this).val();
+            //     url = url.replace(':id', id);
 
-                $.ajax({
-                    url: url,
-                    success: function (result) {
-                        $('#first-min-amount').text(result.first_min_deposit);
-                        updateLeverageAndDeposit(result);
+            //     $.ajax({
+            //         url: url,
+            //         success: function (result) {
+            //             $('#first-min-amount').text(result.first_min_deposit);
+            //             updateLeverageAndDeposit(result);
 
-                        $('#select-schema').data('is-real-islamic', result.is_real_islamic);
-                        $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
+            //             $('#select-schema').data('is-real-islamic', result.is_real_islamic);
+            //             $('#select-schema').data('is-demo-islamic', result.is_demo_islamic);
 
-                        $('#islamic-checkbox').prop('checked', false);
-                        updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
-                    }
-                });
-            });
+            //             $('#islamic-checkbox').prop('checked', false);
+            //             updateIslamicCheckboxState($('#account-type').val(), result.is_real_islamic, result.is_demo_islamic);
+            //         }
+            //     });
+            // });
 
             var initialAccountType = $('#account-type').val();
             var initialIsRealIslamic = $('#select-schema').find('option:selected').data('is-real-islamic');

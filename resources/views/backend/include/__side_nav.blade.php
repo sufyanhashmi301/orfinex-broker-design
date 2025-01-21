@@ -360,19 +360,15 @@
 
         {{-- *************************************************************  Contracts *********************************************************--}}
         <li class="" >
-            <a href="javascript:void(0);" class="navItem {{ isActive('admin.manage-contracts.index') }}">
+            <a href="{{ route('admin.contracts.index', ['status' => 'all']) }}" class="navItem {{ isActive('admin.contracts.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:file-text"></iconify-icon>
-                    <span>{{ __('Manage Contracts') }}</span>
+                    <span>{{ __('Contracts') }}</span>
                 </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
             </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{route('admin.manage-contracts.index')}}" class="{{ isActive('admin.manage-contracts.index') }}">
-                        {{ __('All Contracts') }}
-                    </a>
-                </li>
+            {{-- <ul class="sidebar-submenu">
+                
                 <li class="">
                     <a href="javascript:void(0);" class="">
                         {{ __('Signed Contracts') }}
@@ -388,7 +384,7 @@
                         {{ __('Expired Contracts') }}
                     </a>
                 </li>
-            </ul>
+            </ul> --}}
         </li>
 
         {{-- *************************************************************  Addons *********************************************************--}}
@@ -396,7 +392,7 @@
             <a href="{{route('admin.addons.index')}}" class="navItem {{ isActive('admin.addons.index') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="lucide:package-plus"></iconify-icon>
-                    <span>{{ __('Manage Addons') }}</span>
+                    <span>{{ __('Addons') }}</span>
                 </span>
             </a>
         </li>
@@ -471,12 +467,26 @@
         @endcanany
 
         <li class="">
-            <a href="{{ route('admin.affiliate-rules.create') }}" class="navItem {{ isActive('admin.affiliate-rules.create') }}">
+            <a href="javascript:void(0)" class="navItem ">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
-                    <span>{{ __('Affiliates Management') }}</span>
+                    <span>{{ __('Affiliates') }}</span>
                 </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
             </a>
+            <ul class="sidebar-submenu">
+                <li class="">
+                    <a href="{{ route('admin.affiliate-rules.create') }}" class="{{ isActive('admin.affiliate-rules.create') }}">
+                        {{ __('Configure Affiliate Rules') }}
+                    </a>
+                </li>
+            
+                <li class="">
+                    <a href="{{ route('admin.affiliates.index') }}" class="{{ isActive('admin.affiliates.index') }}">
+                        {{ __('Manage Affiliates') }}
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="">

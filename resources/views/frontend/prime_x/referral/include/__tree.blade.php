@@ -13,7 +13,7 @@
                     <b>{{ $levelUser->full_name }} <br>
 {{--                        @if(setting('deposit_level'))--}}
                             {{ __('Deposit') }} {{ $currencySymbol.$levelUser->totalDeposit() }},
-{{--                        @endif--}}
+{{--                        @endif--}          h}
 {{--                        {{dd($levelUser->id)}}--}}
 {{--                        @if(setting('profit_level'))--}}
                             {{ __('Accounts Balance') }} {{ mt5_total_balance($levelUser->id) }}

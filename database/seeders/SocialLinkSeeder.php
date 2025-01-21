@@ -15,7 +15,7 @@ class SocialLinkSeeder extends Seeder
     public function run()
     {
         // Truncate the table before inserting new data
-        DB::table('social_links')->truncate();
+            DB::table('social_links')->truncate();
 
         // Insert social links
         DB::table('social_links')->insert([

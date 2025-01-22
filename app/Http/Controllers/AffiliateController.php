@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserAffiliate;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\UserAffiliate;
 
 class AffiliateController extends Controller
 {
@@ -12,11 +13,17 @@ class AffiliateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        if($request->status == 'affiliates_exists') {
+            $users = User::whereHas('userAffiliate')->paginate(15);
+            $title = 'Users with Affiliate Accounts';
+        } else {
+            $users = User::paginate(15);
+            $title = 'All Affiliates';
+        }
         
-        $users = User::all();
-        $title = 'All Affiliates';
 
         return view('backend.affiliates.index', compact('title', 'users'));
     }

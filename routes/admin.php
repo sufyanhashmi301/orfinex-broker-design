@@ -183,6 +183,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/accounts', [AccountTypeInvestmentController::class, 'adminIndex'])->name('accounts.index');
     Route::get('account/trading-stats/history', [TradingStatsController::class, 'accountTradingStatsHistory'])->name('account.trading_stats.history');
     Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'adminTradingStats'])->name('account.trading_stats');
+    
 
     // Investment Phase Approvals
     Route::get('phase-approval-request/{investment_id}', [AccountActivityController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');

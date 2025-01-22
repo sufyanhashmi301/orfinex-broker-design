@@ -62,6 +62,7 @@
 <!--/Full Layout-->
 
 @include('frontend::include.__script')
+@stack('single-script')
 
 
 </body>

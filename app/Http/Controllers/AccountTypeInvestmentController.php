@@ -126,6 +126,26 @@ class AccountTypeInvestmentController extends Controller
     }
 
     /**
+     * AJAX: return account stats wrt login
+     */
+    public function ajaxAccountStats(Request $request) {
+
+        $account = AccountTypeInvestment::where('user_id', Auth::id())->whereHas('accountTypeInvestmentStat')->where('login', $request->login)->first();
+
+        if($account) {
+            return [
+                'balance' => number_format($account->accountTypeInvestmentStat->balance, 2),
+                'current_equity' => number_format($account->accountTypeInvestmentStat->current_equity, 2),
+                'total_pnl' => number_format($account->accountTypeInvestmentStat->total_pnl, 2),
+                'floating' => number_format($account->accountTypeInvestmentStat->current_equity - $account->accountTypeInvestmentStat->balance, 2),
+                'login' => $account->login
+            ];
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

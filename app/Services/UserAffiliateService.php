@@ -132,8 +132,6 @@ class UserAffiliateService
       if( $affiliate_rule->count_mode == 'customer' && $check_users_ids_used_exists ) {
         break;
       }
-
-
       
       $user_affiliate_info = User::find( $referral_chain[$i]['user_id'] )->userAffiliate;
       

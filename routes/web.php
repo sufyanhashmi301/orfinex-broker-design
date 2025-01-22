@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     Route::post('investment/', [AccountTypeInvestmentController::class, 'store'])->name('investment.store'); // Account Create
     Route::get('accounts/', [AccountTypeInvestmentController::class, 'index'])->name('investments.index'); // Account Shown
     Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'userTradingStats'])->name('investment.trading-stats'); // Trading Stats
+    Route::get('/account-stats', [AccountTypeInvestmentController::class, 'ajaxAccountStats'])->name('account_stats.login');
 
     // Affiliate Module
     Route::get('affiliate-area', [UserAffiliateController::class, 'index'])->name('affiliate-area.index');

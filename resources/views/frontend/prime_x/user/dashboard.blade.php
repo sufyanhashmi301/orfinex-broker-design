@@ -107,71 +107,21 @@
     @endif
 
     <div class="md:block hidden desktop-screen-show">
-        <div class="grid grid-cols-12 gap-3 mb-3">
-            <div class="lg:col-span-7 col-span-12">
-                <div class="card">
-                    <div class="card-header noborder">
-                        <h4 class="card-title">{{ __('Trading Objective') }}</h4>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+            <div class="" >
+                <div class="card" style="height: 515px">
+                    <div class="card-header noborder" style="padding-bottom: 0px;">
+                        <h4 class="card-title">Accounts Summary <span class="d-login">{{ isset($valid_accounts[0]) ? '#' . $valid_accounts[0]->login : '' }}</span></h4>
                     </div>
                     <div class="card-body p-6 pt-0">
-                        @include('frontend::user.include.__trading_objective')
-                        <div class="overflow-x-auto -mx-6">
-                            <div class="inline-block min-w-full align-middle">
-                                <div class="overflow-hidden">
-                                    <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                        <thead class="bg-slate-200 dark:bg-slate-700">
-                                            <tr>
-                                                <th scope="col" class="table-th">{{ __('Title') }}</th>
-                                                <th scope="col" class="table-th">{{ __('Login') }}</th>
-                                                <th scope="col" class="table-th">{{ __('Allotted Funds') }}</th>
-                                                <th scope="col" class="table-th">{{ __('Phase Type') }}</th>
-                                                <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="table-td font-semibold">2 Step challenge</td>
-                                                <td class="table-td">N/A</td>
-                                                <td class="table-td">5000</td>
-                                                <td class="table-td">
-                                                    <span class="badge bg-primary" style="color: #fff">evaluation phase</span>
-                                                </td>
-                                                <td class="table-td">
-                                                    <span class="badge bg-primary" style="color: #fff">pending</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="table-td font-semibold">2 Step challenge</td>
-                                                <td class="table-td">N/A</td>
-                                                <td class="table-td">5000</td>
-                                                <td class="table-td">
-                                                    <span class="badge bg-primary" style="color: #fff">evaluation phase</span>
-                                                </td>
-                                                <td class="table-td">
-                                                    <span class="badge bg-primary" style="color: #fff">pending</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="table-td font-semibold">2 Step challenge</td>
-                                                <td class="table-td">N/A</td>
-                                                <td class="table-td">5000</td>
-                                                <td class="table-td">
-                                                    <span class="badge bg-primary" style="color: #fff">evaluation phase</span>
-                                                </td>
-                                                <td class="table-td">
-                                                    <span class="badge bg-primary" style="color: #fff">pending</span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                        @include('frontend::user.include.__accounts_info')
+                        
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-5 col-span-12">
-                <div class="card h-2/5 mb-3">
+            
+            <div class="">
+                {{-- <div class="card h-2/5 mb-3">
                     <div class="card-body h-full flex flex-col p-6">
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-10">
                             <p class="text-slate-900 dark:text-white text-sm font-medium">
@@ -198,13 +148,20 @@
                             {{ __('Withdraw') }}
                         </a>
                     </div>
+                </div> --}}
+                <div class="card" style="height: 515px; overflow: auto">
+                    <div class="card-header noborder" style="padding-bottom: 0px">
+                        
+                    </div>
+                    <div class="card-body p-6 pt-0">
+                        <div class="slider carousel-interval owl-carousel">
+                            <img class="w-full" src="{{ asset('frontend/images/user_dashboard/orfinex1.webp') }}" alt="image">
+                            <img class="w-full" src="{{ asset('frontend/images/user_dashboard/orfinex2.webp') }}" alt="image">
+                            <img class="w-full" src="{{ asset('frontend/images/user_dashboard/orfinex3.webp') }}" alt="image">
+                        </div>
+                    </div>
                 </div>
-                <div class="slider carousel-interval owl-carousel">
-                    <img class="w-full" src="{{ asset('frontend/images/all-img/c1.png') }}" alt="image">
-                    <img class="w-full" src="{{ asset('frontend/images/all-img/c2.png') }}" alt="image">
-                    <img class="w-full" src="{{ asset('frontend/images/all-img/c3.png') }}" alt="image">
-                    <img class="w-full" src="{{ asset('frontend/images/all-img/c4.png') }}" alt="image">
-                </div>
+                
             </div>
         </div>
 

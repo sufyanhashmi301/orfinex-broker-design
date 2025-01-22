@@ -4671,6 +4671,9 @@ textarea.form-control.is-invalid{
 .h-\[15px\]{
   height: 15px;
 }
+.h-1\/2{
+  height: 50%;
+}
 .h-1\.5{
   height: 0.375rem;
 }
@@ -17222,4 +17225,20 @@ ul.custom-list ul li{
     border-radius: 0.375rem;
     padding-left: 8px;
     padding-right: 10px;
+}
+.badge-secondary{
+    background-color: rgba(205, 205, 205, 0.29);
+    color: #828289;
+}
+.badge-success{
+    background-color: rgba(0, 236, 66, 0.29);
+    color: #008133;
+}
+.badge-warning{
+    background-color: rgba(254, 208, 0, 0.52);
+    color: #5F4D00;
+}
+.badge-danger{
+    background-color: rgba(193, 65, 65, 0.29);
+    color: #C14141;
 }

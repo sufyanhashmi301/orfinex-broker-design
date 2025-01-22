@@ -166,13 +166,13 @@
                         </div>
 
                     @if($type == 'manual')
-                            <div class="col-span-2">
+                            <div class="md:col-span-2">
                                 <a href="javascript:void(0)" id="generate" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                                 {{ __('Add Field option') }}
                             </a>
                             </div>
 
-                            <div class="addOptions col-span-2">
+                            <div class="addOptions md:col-span-2">
                                 @foreach(json_decode($method->field_options,true) as $key => $value)
                                 <div class="option-remove-row grid grid-cols-12 items-center gap-5 mb-3">
                                     <div class="xl:col-span-4 md:col-span-6 col-span-12">

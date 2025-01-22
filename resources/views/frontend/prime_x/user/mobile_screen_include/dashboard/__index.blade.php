@@ -23,7 +23,7 @@
         </div>
         <span class="text-sm">{{ __('Leaderboard') }}</span>
     </a>
-    <a href="{{ route('user.forex-account-logs') }}" class="card rounded-md p-4 px-2 text-center">
+    <a href="{{ route('user.investments.index') }}" class="card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
             <iconify-icon icon="uil:chart-line"></iconify-icon>
         </div>

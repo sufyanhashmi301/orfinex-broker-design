@@ -228,7 +228,7 @@
                                 </li>
                             @endcan
 
-                            @if(setting('site_referral','global') == 'level')
+                            {{-- @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
@@ -261,7 +261,7 @@
                                         {{ __('Network') }}
                                     </a>
                                 </li>
-                            @endif
+                            @endif --}}
 
 
                             @canany(['support-ticket-list','support-ticket-action'])
@@ -340,7 +340,7 @@
                     @include('backend.user.include.__transactions')
                 @endcan
 
-                <!-- Referral Tree -->
+                {{-- <!-- Referral Tree -->
                 @if(setting('site_referral','global') == 'level')
                     @include('backend.user.include.__referral_direct')
                     @include('backend.user.include.__referral_add')
@@ -349,7 +349,7 @@
                 <!-- Referral Tree -->
                 @if(setting('site_referral','global') == 'level')
                     @include('backend.user.include.__referral_tree')
-                @endif
+                @endif --}}
 
                 <!-- ticket -->
                 @canany(['support-ticket-list','support-ticket-action'])

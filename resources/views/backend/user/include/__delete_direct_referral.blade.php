@@ -21,7 +21,8 @@
                     <strong><span id="referralName"></span></strong>?
                 </p>
                 <div class="action-btns">
-                    <form id="deleteDirectReferral" action="{{route('admin.referral.direct.delete')}}" method="POST" style="display: inline;">
+                    {{-- {{route('admin.referral.direct.delete')}} --}}
+                    <form id="deleteDirectReferral" action="" method="POST" style="display: inline;">
                         <input type="hidden" name="id"  id="referralId">
 
                         @method('DELETE')

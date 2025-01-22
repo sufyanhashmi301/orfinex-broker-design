@@ -100,7 +100,7 @@ class TradingStatsController extends Controller
 
         $account_array = $this->tradingStats($account, $account_id);
 
-        return view("frontend::fund_board.active_plan")->with($account_array);
+        return view("frontend::account.trading_stats")->with($account_array);
     }
 
     /**
@@ -111,6 +111,6 @@ class TradingStatsController extends Controller
 
         $account_array = $this->tradingStats($account, $account_id);
 
-        return view("frontend::fund_board.active_plan")->with($account_array);
+        return view("frontend::account.trading_stats")->with($account_array);
     }
 }

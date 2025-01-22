@@ -32,7 +32,7 @@ class AccountBuyController extends Controller
         
         $failed_transactions = Transaction::where('user_id', Auth::id())->where('status', TxnStatus::Failed)->get();
 
-        return view('frontend::forex_schema.index', compact('account_types', 'failed_transactions'));
+        return view('frontend::account_buy.index', compact('account_types', 'failed_transactions'));
     }
 
     /**
@@ -81,7 +81,7 @@ class AccountBuyController extends Controller
         $addons = Addon::where('status', 1)->get();
         $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_purchase%')->get();
 
-        return view('frontend::forex_schema.preview', compact('account_type', 'addons', 'legal_links'));
+        return view('frontend::account_buy.show', compact('account_type', 'addons', 'legal_links'));
     }
 
     /**

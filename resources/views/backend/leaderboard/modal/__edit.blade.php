@@ -16,7 +16,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 pt-3">
+                <div class="max-h-[calc(100vh-200px)] overflow-y-auto p-6 pt-3">
                     <form action="{{ route('admin.leaderboard-rankings.store') }}" method="post">
                         @csrf
                         <div class="space-y-5">
@@ -28,7 +28,7 @@
                                 <label for="" class="form-label">{{ __('Name') }}</label>
                                 <input type="text" name="user_name" id="user_name-input" class="form-control">
                             </div>
-                            
+
                             <div class="input-area">
                                 <label for="" class="form-label">{{ __('Profit') }}</label>
                                 <input type="text" name="profit" id="profit-input" class="form-control">
@@ -54,12 +54,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                            
+
                             <input type="hidden" value="" name="id" id="ranking_id-input">
-      
 
 
-                            
+
+
                         </div>
                         <div class="action-btns text-right mt-10">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center mr-2">

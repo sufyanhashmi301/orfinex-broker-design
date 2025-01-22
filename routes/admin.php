@@ -143,21 +143,21 @@ Route::middleware(['2fa_admin'])->group(function () {
         //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
     });
-    Route::resource('ib-form', IBController::class);
-    Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
-        Route::get('pending', 'IbPendingList')->name('pending.list');
-        Route::get('approved', 'IbApprovedList')->name('approved.list');
-        Route::get('rejected', 'IbRejectedList')->name('rejected.list');
-        Route::get('all', 'ibAllList')->name('all.list');
-        Route::get('answer/view/{user}', 'answerView')->name('answer.view');
-        Route::post('approve', 'approveIbMember')->name('approve');
-        Route::post('update', 'updateIbMember')->name('update');
-        Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
-        Route::post('multi/update', 'updateMIbMember')->name('multi.update');
-        Route::post('reject', 'rejectIbMember')->name('reject');
-        Route::post('save/form', 'saveForm')->name('save.form');
+    // Route::resource('ib-form', IBController::class);
+    // Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
+    //     Route::get('pending', 'IbPendingList')->name('pending.list');
+    //     Route::get('approved', 'IbApprovedList')->name('approved.list');
+    //     Route::get('rejected', 'IbRejectedList')->name('rejected.list');
+    //     Route::get('all', 'ibAllList')->name('all.list');
+    //     Route::get('answer/view/{user}', 'answerView')->name('answer.view');
+    //     Route::post('approve', 'approveIbMember')->name('approve');
+    //     Route::post('update', 'updateIbMember')->name('update');
+    //     Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
+    //     Route::post('multi/update', 'updateMIbMember')->name('multi.update');
+    //     Route::post('reject', 'rejectIbMember')->name('reject');
+    //     Route::post('save/form', 'saveForm')->name('save.form');
 
-    });
+    // });
 
 //===============================  Role Management ==================================
     Route::resource('roles', RoleController::class)->except('show', 'destroy');
@@ -311,23 +311,23 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('action-now', 'actionNow')->name('action.now');
 
     });
-    Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
-        Route::get('index', 'index')->name('index');
-        Route::post('store', 'store')->name('store');
-        Route::post('update', 'update')->name('update');
-        Route::post('delete', 'delete')->name('delete');
+    // Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
+    //     Route::get('index', 'index')->name('index');
+    //     Route::post('store', 'store')->name('store');
+    //     Route::post('update', 'update')->name('update');
+    //     Route::post('delete', 'delete')->name('delete');
 
-        Route::get('direct/list/{id}', 'directList')->name('direct.list');
-        Route::post('direct/add', 'addDirectReferral')->name('direct.add');
-        Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
-        Route::get('target', 'target')->name('target');
-        Route::post('target-store', 'targetStore')->name('target-store');
-        Route::post('target-update', 'targetUpdate')->name('target-update');
+    //     Route::get('direct/list/{id}', 'directList')->name('direct.list');
+    //     Route::post('direct/add', 'addDirectReferral')->name('direct.add');
+    //     Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
+    //     Route::get('target', 'target')->name('target');
+    //     Route::post('target-store', 'targetStore')->name('target-store');
+    //     Route::post('target-update', 'targetUpdate')->name('target-update');
 
-        //level referral
-        Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
-        Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
-    });
+    //     //level referral
+    //     Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
+    //     Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
+    // });
 //===============================  Advertisement Material ==================================
     Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
 

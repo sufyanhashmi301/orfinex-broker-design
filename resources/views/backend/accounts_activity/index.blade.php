@@ -17,23 +17,23 @@
         </div>
     </div>
     <div class="innerMenu card p-6 mb-5">
-        <ul class="nav nav-pills flex items-center flex-wrap list-none pl-0 space-x-4 menu-open w-full">
+        <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0 pb-1 sm:pb-0 gap-4 menu-open w-full">
             <li class="nav-item" role="presentation">
                 <a href="{{ route('admin.accounts_activity.log') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ url()->current() === route('admin.accounts_activity.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="?pending-approvals" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('pending-approvals') ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
+                <a href="?pending-approvals" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('pending-approvals') ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="?violated-acounts" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('violated-acounts') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated Accounts') }}</a>
+                <a href="?violated-acounts" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('violated-acounts') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated Accounts') }}</a>
             </li>
             @if (request()->has('unique_id'))
               <li class="nav-item" role="presentation">
-                <a href="?violated-acounts" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('unique_id') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __( request('unique_id') . ' Logs') }}</a>
+                <a href="?violated-acounts" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('unique_id') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __( request('unique_id') . ' Logs') }}</a>
               </li>
             @endif
             <li class="nav-item !ml-auto">
-                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
+                <a href="javascript:;" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                     <span class="flex items-center">
                         <span>{{ __('More') }}</span>
                         <iconify-icon icon="lucide:chevron-down" class="text-xl ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
@@ -44,8 +44,8 @@
         <div class="hidden mt-5" id="filters_div">
             <form id="filter-form" method="POST" action="">
                 @csrf
-                <div class="flex justify-between flex-wrap items-center">
-                    <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+                <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                    <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                         <div class="flex-1 input-area relative">
                             <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Login or User">
                         </div>

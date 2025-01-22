@@ -22,9 +22,10 @@
                                         <td scope="col" class="table-td " >
                                             <span class="badge badge-primary" style="text-transform: lowercase">{{ $certificate->hook }}</span>
                                           </td>
-                                        <td scope="col" class="table-td">{{ $certificate->title }}</td>
-                                        
-                                        <td scope="col" class="table-td"> 
+                                        <td scope="col" class="table-td">
+                                            <span class="text-nowrap">{{ $certificate->title }}</span>
+                                        </td>
+                                        <td scope="col" class="table-td">
                                           @if ($certificate->image != '')
                                                 <span class="text-success-500" data-bs-toggle="tooltip"
                                                     data-bs-title="Active">
@@ -71,7 +72,7 @@
                                             @endif
                                         </td>
                                         {{-- <td scope="col" class="table-td">{{ str_replace('_', ' ', $certificate->date_info) }}</td> --}}
-                                        
+
                                         <td scope="col" class="table-td">
                                             @if ($certificate->is_enabled == 1)
                                                 <span class="text-success-500" data-bs-toggle="tooltip"
@@ -98,19 +99,23 @@
 
                                         <td scope="col" class="table-td">
                                           <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-success mr-1" data-bs-toggle="modal" data-bs-target="#certificate-modal{{$certificate->id}}">Edit Certificate</button>
+                                            <button type="button" class="btn btn-sm btn-success mr-1" data-bs-toggle="modal" data-bs-target="#certificate-modal{{$certificate->id}}">
+                                                <span class="text-nowrap">Edit Certificate</span>
+                                            </button>
 
                                             {{-- <button type="button" class="btn btn-sm btn-success mr-1" {{ $certificate->image == '' ? 'disabled' : '' }} data-bs-toggle="modal" data-bs-target="#view-certificate-image-modal{{$certificate->id}}">View Certificate Template</button> --}}
 
                                             @if ($certificate->image != '')
-                                                <a href="{{ route('admin.view_certificate', ['id' => $certificate->id]) }}"  target="__blank" class="btn btn-sm btn-success mr-1">Configure Certificate Template</a>
+                                                <a href="{{ route('admin.view_certificate', ['id' => $certificate->id]) }}"  target="__blank" class="btn btn-sm btn-success mr-1">
+                                                    <span class="text-nowrap"> Configure Certificate Template</span>
+                                                </a>
                                             @endif
                                           </div>
                                         </td>
 
                                     </tr>
 
-                                    
+
                                 @endforeach
                             </tbody>
                         </table>
@@ -119,7 +124,7 @@
             </div>
         </div>
     </div>
-    
+
 @else
     <div class="card basicTable_wrapper items-center justify-center py-10 px-10">
         <div class="flex items-center justify-center flex-col gap-3">
@@ -133,7 +138,7 @@
 
 @push('single-script')
   <script>
-    
+
 
 
   </script>

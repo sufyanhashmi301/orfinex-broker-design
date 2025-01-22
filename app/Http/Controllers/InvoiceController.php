@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
 use App\Models\Transaction;
-use App\Services\InvoiceService;
 use Illuminate\Http\Request;
+use App\Services\InvoiceService;
 
 class InvoiceController extends Controller
 {
@@ -13,6 +14,46 @@ class InvoiceController extends Controller
 
     public function __construct(InvoiceService $invoice) {
         $this->invoice = $invoice;
+    }
+
+    // Ajax function to Verify Coupon Code
+    public function verifyCoupon(Request $request) {
+        $schemeType = get_hash($request->input('scheme_type')); // Retrieve the scheme type from the request
+        $userId = auth()->user()->id; // Get the current user's ID
+
+        $discountQuery = Discount::where('code', $request->input('code'))
+            ->where('status', true) // Check if the discount is active
+            ->where(function ($query) {
+                $query->where('expire_at', '>=', now()) // Check if the discount is not expired
+                    ->orWhereNull('expire_at');      // Or no expiration date
+            });
+
+        $discount = $discountQuery->first();
+
+        if ($discount) {
+            // Check if the discount has reached its usage limit
+            if ($discount->used_count >= $discount->usage_limit) {
+                return response()->json(['valid' => false, 'message' => __('This discount code has reached its usage limit.')]);
+            }
+
+            // Determine the type of discount (percentage or fixed)
+            $discountAmount = 0;
+            if ($discount->type === 'percentage') {
+                $discountAmount = $discount->percentage;  // Percentage discount
+            } elseif ($discount->type === 'fixed') {
+                $discountAmount = $discount->fixed_amount;  // Fixed discount amount
+            }
+
+            return response()->json([
+                'valid' => true,
+                'discount_id' => the_hash($discount->id),
+                'discount_type' => $discount->type,
+                'discount_amount' => $discountAmount,
+                'message' => __('Discount applied successfully.')
+            ]);
+        }
+
+        return response()->json(['valid' => false, 'message' => __('Invalid or expired discount code.')]);
     }
 
     /**

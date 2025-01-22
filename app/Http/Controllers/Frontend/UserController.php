@@ -59,90 +59,90 @@ class UserController extends Controller
         return view('frontend::ranking.index', compact('rankings', 'alreadyRank'));
     }
 
-    public function walletExchange()
-    {
-        $isStepOne = 'current';
-        $isStepTwo = '';
+    // public function walletExchange()
+    // {
+    //     $isStepOne = 'current';
+    //     $isStepTwo = '';
 
-        return view('frontend::wallet.now', compact('isStepOne', 'isStepTwo'));
-    }
+    //     return view('frontend::wallet.now', compact('isStepOne', 'isStepTwo'));
+    // }
 
-    public function walletExchangeNow(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'from_wallet' => ['required', 'different:to_wallet'],
-            'to_wallet' => ['required', 'different:from_wallet'],
-            'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
-        ]);
+    // public function walletExchangeNow(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'from_wallet' => ['required', 'different:to_wallet'],
+    //         'to_wallet' => ['required', 'different:from_wallet'],
+    //         'amount' => ['required', 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/'],
+    //     ]);
 
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
+    //     if ($validator->fails()) {
+    //         notify()->error($validator->errors()->first(), 'Error');
 
-            return redirect()->back();
-        }
+    //         return redirect()->back();
+    //     }
 
-        $input = $request->all();
+    //     $input = $request->all();
 
-        $amount = (float) $input['amount'];
-        $chargeType = Setting('wallet_exchange_charge_type', 'fee');
-        $charge = (float) Setting('wallet_exchange_charge', 'fee');
+    //     $amount = (float) $input['amount'];
+    //     $chargeType = Setting('wallet_exchange_charge_type', 'fee');
+    //     $charge = (float) Setting('wallet_exchange_charge', 'fee');
 
-        //daily limit
-        $todayTransaction = Transaction::where('type', TxnType::Exchange)->whereDate('created_at', Carbon::today())->count();
-        $exchangeDayLimit = (float) Setting('wallet_exchange_day_limit', 'fee');
-        if ($todayTransaction >= $exchangeDayLimit) {
-            notify()->error(__('Today Exchange limit has been reached'), 'Error');
+    //     //daily limit
+    //     $todayTransaction = Transaction::where('type', TxnType::Exchange)->whereDate('created_at', Carbon::today())->count();
+    //     $exchangeDayLimit = (float) Setting('wallet_exchange_day_limit', 'fee');
+    //     if ($todayTransaction >= $exchangeDayLimit) {
+    //         notify()->error(__('Today Exchange limit has been reached'), 'Error');
 
-            return redirect()->back();
-        }
+    //         return redirect()->back();
+    //     }
 
-        if ($chargeType == 'percentage') {
-            $charge = $amount * ($charge / 100);
-        }
+    //     if ($chargeType == 'percentage') {
+    //         $charge = $amount * ($charge / 100);
+    //     }
 
-        $totalAmount = $amount + $charge;
+    //     $totalAmount = $amount + $charge;
 
-        $user = \Auth::user();
+    //     $user = \Auth::user();
 
-        if (1 == $input['from_wallet'] && $user->balance < $totalAmount || 2 == $input['from_wallet'] && $user->profit_balance < $totalAmount) {
-            $walletName = 1 == $input['from_wallet'] ? 'Main Wallet' : 'Profit Wallet';
+    //     if (1 == $input['from_wallet'] && $user->balance < $totalAmount || 2 == $input['from_wallet'] && $user->profit_balance < $totalAmount) {
+    //         $walletName = 1 == $input['from_wallet'] ? 'Main Wallet' : 'Profit Wallet';
 
-            notify()->error(__('Insufficient Balance Your ').$walletName, 'Error');
+    //         notify()->error(__('Insufficient Balance Your ').$walletName, 'Error');
 
-            return redirect()->back();
-        }
+    //         return redirect()->back();
+    //     }
 
-        if (1 == $input['from_wallet']) {
-            $user->decrement('balance', $totalAmount);
-            $user->increment('profit_balance', $amount);
+    //     if (1 == $input['from_wallet']) {
+    //         $user->decrement('balance', $totalAmount);
+    //         $user->increment('profit_balance', $amount);
 
-            $sendDescription = 'Main to Profit Wallet Exchanged';
-            $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
-                TxnType::Exchange, TxnStatus::Success, null, null, $user->id);
-        } else {
-            $user->decrement('profit_balance', $totalAmount);
-            $user->increment('balance', $amount);
+    //         $sendDescription = 'Main to Profit Wallet Exchanged';
+    //         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
+    //             TxnType::Exchange, TxnStatus::Success, null, null, $user->id);
+    //     } else {
+    //         $user->decrement('profit_balance', $totalAmount);
+    //         $user->increment('balance', $amount);
 
-            $sendDescription = 'Profit to Main Wallet Exchanged';
-            $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
-                TxnType::Exchange, TxnStatus::Success, null, null, $user->id);
-        }
+    //         $sendDescription = 'Profit to Main Wallet Exchanged';
+    //         $txnInfo = Txn::new($amount, $charge, $totalAmount, 'system', $sendDescription,
+    //             TxnType::Exchange, TxnStatus::Success, null, null, $user->id);
+    //     }
 
-        $symbol = setting('currency_symbol', 'global');
+    //     $symbol = setting('currency_symbol', 'global');
 
-        $notify = [
-            'card-header' => 'Success Your Exchange Money Process',
-            'title' => $symbol.$txnInfo->amount.' Exchange Wallet Money Successfully',
-            'p' => $sendDescription,
-            'strong' => 'Transaction ID: '.$txnInfo->tnx,
-            'action' => route('user.wallet-exchange'),
-            'a' => 'Exchange Wallet Money again',
-            'view_name' => 'wallet',
-        ];
-        Session::put('user_notify', $notify);
+    //     $notify = [
+    //         'card-header' => 'Success Your Exchange Money Process',
+    //         'title' => $symbol.$txnInfo->amount.' Exchange Wallet Money Successfully',
+    //         'p' => $sendDescription,
+    //         'strong' => 'Transaction ID: '.$txnInfo->tnx,
+    //         'action' => route('user.wallet-exchange'),
+    //         'a' => 'Exchange Wallet Money again',
+    //         'view_name' => 'wallet',
+    //     ];
+    //     Session::put('user_notify', $notify);
 
-        return redirect()->route('user.notify');
-    }
+    //     return redirect()->route('user.notify');
+    // }
 
     public function notifyUser()
     {

@@ -16,7 +16,7 @@
                     <div class="hv-container">
                         <div class="hv-wrapper">
                             <!-- tree component -->
-                            @include('frontend::referral.include.__tree',['levelUser' => $user,'level' => $level,'depth' => 1, 'me' => true])
+                            {{-- @include('frontend::referral.include.__tree',['levelUser' => $user,'level' => $level,'depth' => 1, 'me' => true]) --}}
                         </div>
                     </div>
                 </section>

@@ -3,7 +3,7 @@
     <div class="card-body p-3">
         <div class="all-feature-mobile mobile-transactions mb-3 mobile-screen-show">
             <div class="contents space-y-3">
-                @foreach($recentTransactions as $transaction )
+                @foreach($transactions as $transaction )
                     <div class="single-transaction flex justify-between text-xs bg-slate-100 dark:bg-slate-900 rounded-md p-2 py-3">
                         <div class="transaction-left w-3/4">
                             <div class="transaction-des">

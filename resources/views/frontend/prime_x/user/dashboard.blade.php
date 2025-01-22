@@ -8,7 +8,8 @@
             <div class="flex items-center">
                 <div class="flex-none">
                     <div class="h-10 w-10 rounded-full flex-1 border-2" style="border-color: #0ebe3b;">
-                        <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
+                        <img src="@if (auth()->user()->avatar && file_exists('assets/' . auth()->user()->avatar)) {{ asset($user->avatar) }} @else {{ asset('frontend/images/all-img/user.png') }} @endif"
+                            alt="user" class="block w-full h-full object-cover rounded-full">
                     </div>
                 </div>
                 <div class="flex-1 text-start ml-2">
@@ -16,12 +17,14 @@
                         {{ $user->full_name }}
                     </h4>
                     <span class="flex items-center text-slate-400 text-xs font-normal">
-                        @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
+                        @if ($user->kyc != \App\Enums\KYCStatus::Pending->value)
                             {{ __('Verified') }}
-                            <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                            <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt=""
+                                style="height: 14px;">
                         @else
                             {{ __('Unverified') }}
-                            <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                            <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt=""
+                                style="height: 14px;">
                         @endif
                     </span>
                 </div>
@@ -30,26 +33,43 @@
                 @auth
                     @php
                         $userId = auth()->id();
-                        $notifications = App\Models\Notification::where('for','user')->where('user_id', $userId)->latest()->take(4)->get();
-                        $totalUnread = App\Models\Notification::where('for','user')->where('user_id', $userId)->where('read', 0)->count();
-                        $totalCount = App\Models\Notification::where('for','user')->where('user_id', $userId)->get()->count();
+                        $notifications = App\Models\Notification::where('for', 'user')
+                            ->where('user_id', $userId)
+                            ->latest()
+                            ->take(4)
+                            ->get();
+                        $totalUnread = App\Models\Notification::where('for', 'user')
+                            ->where('user_id', $userId)
+                            ->where('read', 0)
+                            ->count();
+                        $totalCount = App\Models\Notification::where('for', 'user')
+                            ->where('user_id', $userId)
+                            ->get()
+                            ->count();
                     @endphp
-                    @if($notifications->isNotEmpty())
-                        <a href="{{ route($notifications->first()->for.'.notification.all') }}" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
-                            <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl" icon="heroicons-outline:bell"></iconify-icon>
+                    @if ($notifications->isNotEmpty())
+                        <a href="{{ route($notifications->first()->for . '.notification.all') }}"
+                            class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center">
+                            <iconify-icon class="animate-tada text-slate-800 dark:text-white text-xl"
+                                icon="heroicons-outline:bell"></iconify-icon>
                         </a>
                     @else
-                        <a href="#" class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center" title="No notifications available">
-                            <iconify-icon class="text-slate-400 dark:text-slate-600 text-xl" icon="heroicons-outline:bell-slash"></iconify-icon>
+                        <a href="#"
+                            class="h-[32px] w-[32px] bg-slate-100 dark:bg-slate-900 dark:text-white text-slate-900 cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center"
+                            title="No notifications available">
+                            <iconify-icon class="text-slate-400 dark:text-slate-600 text-xl"
+                                icon="heroicons-outline:bell-slash"></iconify-icon>
                         </a>
                     @endif
                 @endauth
             </div>
         </div>
     </div>
-    @if($banners->count() > 0)
+
+    {{-- Dynamic Banners --}}
+    @if ($banners->count() > 0)
         <div class="grid md:grid-cols-{{ $banners->count() }} grid-cols-1 gap-3 mb-3">
-            @foreach($banners as $banner)
+            @foreach ($banners as $banner)
                 <div class="card flex flex-wrap items-center justify-between md:nowrap  px-4 py-5 gap-5">
                     <div class="">
                         <p class="text-base text-slate-900 dark:text-white text-opacity-80 mb-2">
@@ -59,22 +79,24 @@
                             {{ $banner->title }}
                         </h4>
                     </div>
-                    @if($banners->count() <= 2)
+                    @if ($banners->count() <= 2)
                         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                             <a href="{{ $banner->button_link }}"
-                               class="btn btn-dark inline-flex items-center justify-center">
+                                class="btn btn-dark inline-flex items-center justify-center">
                                 {{ $banner->button_text }}
                             </a>
-                            <a href="{{ $banner->primary_link }}" class="btn inline-flex items-center justify-center dark:text-white">
+                            <a href="{{ $banner->primary_link }}"
+                                class="btn inline-flex items-center justify-center dark:text-white">
                                 <span class="flex items-center">
                                     <span>{{ __('Learn More') }}</span>
-                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
+                                        icon="lucide:chevron-right"></iconify-icon>
                                 </span>
                             </a>
                         </div>
                     @else
                         <a href="{{ $banner->primary_link }}"
-                           class="btn inline-flex items-center justify-center dark:text-white">
+                            class="btn inline-flex items-center justify-center dark:text-white">
                             <span>{{ __('Learn More') }}</span>
                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
                         </a>
@@ -117,7 +139,8 @@
                             {{ __('Limited app usage') }}
                         </li>
                     </ul>
-                    <a href="javascript:;" class="btn inline-flex justify-center btn-dark dark:bg-body w-full mt-5" type="button" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
+                    <a href="javascript:;" class="btn inline-flex justify-center btn-dark dark:bg-body w-full mt-5"
+                        type="button" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
                         {{ __('Start Free Trial') }}
                     </a>
                 </div>
@@ -151,28 +174,20 @@
                             {{ __('Access to premium apps and tools') }}
                         </li>
                     </ul>
-                    <a href="{{ route('user.account.buy') }}" class="btn inline-flex justify-center btn-primary w-full mt-5">
+                    <a href="{{ route('user.account.buy') }}"
+                        class="btn inline-flex justify-center btn-primary w-full mt-5">
                         {{ __('Start Challenge') }}
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
-            <a href="javascript:;" class="card">
+        {{-- Optimized --}}
+        <div class="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-3 mb-3">
+            <a href="{{ route('user.withdraw.step1') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
                     <div
                         class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
-                        <iconify-icon icon="heroicons-outline:download"></iconify-icon>
-                    </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ __('Payment') }}
-                    </div>
-                </div>
-            </a>
-            <a href="{{ route('user.withdraw.step1') }}" class="card">
-                <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="heroicons-outline:upload"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -182,7 +197,8 @@
             </a>
             <a href="{{ route('user.leaderboard') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div
+                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="lucide:trophy"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -192,7 +208,8 @@
             </a>
             <a href="{{ route('user.investments.index') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div
+                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="uil:chart-line"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -202,7 +219,8 @@
             </a>
             <a href="{{ route('user.kyc') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
-                    <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
+                    <div
+                        class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">
                         <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
                     </div>
                     <div class="text-lg text-slate-900 dark:text-white font-medium">
@@ -223,30 +241,31 @@
             </a>
         </div>
 
+        {{-- Optimized --}}
         <div class="grid grid-cols-12 gap-3 mb-3">
             <div class="lg:col-span-7 col-span-12">
                 <div class="card h-full flex flex-col">
                     <header class="card-header noborder">
-                        <h4 class="card-title">{{ __('Accounts') }}</h4>
+                        <h4 class="card-title">{{ __('Wallets') }}</h4>
                     </header>
                     <div class="card-body p-6 pt-0 mt-auto">
                         <div class="grid lg:grid-cols-2 grid-cols-1 gap-3">
                             <div class="bg-slate-100 dark:bg-body">
                                 <div class="card-body p-4 py-6">
                                     <div class="flex items-center justify-between gap-5 mb-10">
-                                        <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Challenge Accounts:') }}</h5>
-                                        <a href="{{ route('user.investments.index') }}"
-                                           class="btn-link inline-flex items-center">
+                                        <h5 class="text-lg text-slate-900 dark:text-white font-medium">Payout Wallet</h5>
+                                        {{-- <a href="{{ route('user.investments.index') }}"
+                                            class="btn-link inline-flex items-center">
                                             {{ __('See All') }}
                                             <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1"
-                                                          icon="lucide:chevron-right"></iconify-icon>
-                                        </a>
+                                                icon="lucide:chevron-right"></iconify-icon>
+                                        </a> --}}
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
-                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">0</h5>
-                                        <a href="{{route('user.account.buy')}}"
-                                           class="btn btn-primary btn-sm inline-flex items-center justify-center">
-                                            {{ __('Start Challenge') }}
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">0 {{ $currency }}</h5>
+                                        <a href="{{ route('user.withdraw.step1') }}"
+                                            class="btn btn-primary btn-sm inline-flex items-center justify-center">
+                                            {{ __('Create Payout Request') }}
                                         </a>
                                     </div>
                                 </div>
@@ -254,19 +273,20 @@
                             <div class="bg-slate-100 dark:bg-body">
                                 <div class="card-body p-4 py-6">
                                     <div class="flex items-center justify-between gap-5 mb-10">
-                                        <h5 class="text-lg text-slate-900 dark:text-white font-medium">{{ __('Funded Accounts:') }}</h5>
-                                        <a href="{{ route('user.investments.index') }}"
-                                           class="btn-link inline-flex items-center">
+                                        <h5 class="text-lg text-slate-900 dark:text-white font-medium">Affiliate Wallet
+                                        </h5>
+                                        {{-- <a href="{{ route('user.investments.index') }}"
+                                            class="btn-link inline-flex items-center">
                                             {{ __('See All') }}
                                             <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1"
-                                                          icon="lucide:chevron-right"></iconify-icon>
-                                        </a>
+                                                icon="lucide:chevron-right"></iconify-icon>
+                                        </a> --}}
                                     </div>
                                     <div class="flex items-center justify-between gap-5">
-                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">0</h5>
-                                        <a href="{{route('user.account.buy')}}"
-                                           class="btn btn-primary btn-sm inline-flex items-center justify-center">
-                                            {{ __('Challenge Accounts') }}
+                                        <h5 class="text-xl text-slate-900 dark:text-white font-medium">0 {{ $currency }}</h5>
+                                        <a href="{{ route('user.affiliate-area.index') }}"
+                                            class="btn btn-primary btn-sm inline-flex items-center justify-center">
+                                            {{ __('See Affiliate Area') }}
                                         </a>
                                     </div>
                                 </div>
@@ -277,19 +297,29 @@
             </div>
             <div class="lg:col-span-5 col-span-12">
                 <div class="card h-full">
-                    <div class="card-body p-6 pb-0">
-                        <div id="profitLossChart"></div>
+                    <div class="card-body relative p-6 pb-0">
+                        <div id="profitLossChart" style="opacity: 0.05"></div>
+                        <div
+                            class="flex flex-col items-center justify-center text-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3 p-5">
+                            <iconify-icon class="text-xl dark:text-white" icon="lucide:info"></iconify-icon>
+                            <p class="text-sm dark:text-white">
+                                {{ __("We'll show your balance graph here once there is enough data") }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- Optimized --}}
         @include('frontend::user.include.__recent_transaction')
-        @include('frontend::user.include.__pending_challenge')
+        
+        {{-- @include('frontend::user.include.__pending_challenge')
         @include('frontend::user.include.__active_challenge')
-        @include('frontend::user.include.__violated_challenge')
+        @include('frontend::user.include.__violated_challenge') --}}
     </div>
 
-    {{--for mobile--}}
+    {{-- for mobile --}}
     <div class="md:hidden block mobile-screen-show">
         @include('frontend::user.mobile_screen_include.dashboard.__index')
     </div>
@@ -322,7 +352,7 @@
         }
 
         // Load More
-        $('.moreless-button').click(function () {
+        $('.moreless-button').click(function() {
             $('.moretext').slideToggle();
             if ($('.moreless-button').text() == "Load more") {
                 $(this).text("Load less")
@@ -331,7 +361,7 @@
             }
         });
 
-        $('.moreless-button-2').click(function () {
+        $('.moreless-button-2').click(function() {
             $('.moretext-2').slideToggle();
             if ($('.moreless-button-2').text() == "Load more") {
                 $(this).text("Load less")
@@ -399,7 +429,7 @@
             },
             tooltip: {
                 y: {
-                    formatter: function (val) {
+                    formatter: function(val) {
                         return "$ " + val + " thousands"
                     }
                 }
@@ -408,6 +438,5 @@
 
         var chart = new ApexCharts(document.querySelector("#profitLossChart"), options);
         chart.render();
-
     </script>
 @endsection

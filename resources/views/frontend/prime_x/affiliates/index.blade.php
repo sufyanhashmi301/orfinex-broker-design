@@ -452,7 +452,7 @@
                     var selectedLevel = $(this).val();
 
                     $.ajax({
-                        url: "{{ route('user.multi-level.ib.get.schemes') }}",
+                        url: "",
                         type: "POST",
                         data: {
                             level_order: selectedLevel,

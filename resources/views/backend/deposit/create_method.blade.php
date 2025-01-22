@@ -15,9 +15,9 @@
             <div class="card-body p-6">
                 <form action="{{ route('admin.deposit.method.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="type" value="{{ $type }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
-                        <input type="hidden" name="type" value="{{ $type }}">
-                        <div class="col-span-2">
+                        <div class="md:col-span-2">
                             <div class="input-area relative max-w-xs">
                                 <label class="form-label" for="">{{ __('Add Method Logo:') }}</label>
                                 <div class="wrap-custom-file">

@@ -1,4 +1,8 @@
-<div class="submenu-sidebar hidden xl:block">
+<div class="submenu-sidebar">
+    <a href="javascript:;" class="submenu-toggle-btn btn-primary absolute items-center justify-center p-2">
+        <iconify-icon class="text-lg font-medium menu-icon" icon="material-symbols:list-rounded"></iconify-icon>
+        <iconify-icon class="text-lg font-medium close-icon" icon="material-symbols:close-rounded" style="display: none;"></iconify-icon>
+    </a>
     <div class="border-b border-slate-100 dark:border-slate-700 py-3 px-2">
         <div class="input-area">
             <div class="relative group">

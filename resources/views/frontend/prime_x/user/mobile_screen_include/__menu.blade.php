@@ -4,7 +4,7 @@
 <a href="{{ route('user.account.buy') }}" class="{{ isActive('user.schema*') }}">
     <iconify-icon class="text-xl dark:text-white" icon="solar:pen-new-square-broken"></iconify-icon>
 </a>
-<a href="{{ route('user.forex-account-logs') }}" class="{{ isActive('user.forex-account-logs') }}">
+<a href="{{ route('user.investments.index') }}" class="{{ isActive('user.investments.index') }}">
     <iconify-icon class="text-xl dark:text-white" icon="lucide:layout-list"></iconify-icon>
 </a>
 <a href="{{ route('user.setting.profile') }}" class="{{ isActive('user.setting*') }}">

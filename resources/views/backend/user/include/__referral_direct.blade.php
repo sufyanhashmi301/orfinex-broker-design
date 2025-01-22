@@ -67,7 +67,7 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.referral.direct.list',$user->id) }}",
+                
                 columns: [
                     {data: 'avatar', name: 'avatar'},
                     {data: 'full_name', name: 'full_name'},

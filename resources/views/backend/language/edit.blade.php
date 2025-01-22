@@ -37,51 +37,36 @@
                 <div class="input-area grid grid-cols-12 gap-5">
                     <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Default Language:') }}</label>
                     <div class="md:col-span-9 col-span-12">
-                        <div class="site-input-groups max-w-xs">
-                            <div class="switch-field flex overflow-hidden mb-0">
+                        <div class="form-switch ps-0">
+                            <input class="form-check-input" type="hidden" value="0" name="is_default"/>
+                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
                                 <input
-                                    type="radio"
-                                    id="language-default"
+                                    type="checkbox"
                                     name="is_default"
                                     value="1"
                                     @if($language->is_default) checked @endif
-                                />
-                                <label for="language-default">{{ __('Yes') }}</label>
-                                <input
-                                    type="radio"
-                                    id="language-default-no"
-                                    name="is_default"
-                                    value="0"
-                                    @if(!$language->is_default) checked @endif
-                                />
-                                <label for="language-default-no">{{ __('No') }}</label>
-                            </div>
+                                    class="sr-only peer"
+                                >
+                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
                 <div class="input-area grid grid-cols-12 gap-5">
                     <label for="" class="md:col-span-3 col-span-12 form-label">{{ __('Language Status:') }}</label>
                     <div class="md:col-span-9 col-span-12">
-                        <div class="site-input-groups max-w-xs">
-                            <div class="switch-field flex overflow-hidden mb-0">
+                        <div class="form-switch ps-0">
+                            <input class="form-check-input" type="hidden" value="0" name="status"/>
+                            <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
                                 <input
-                                    type="radio"
-                                    id="language-status"
+                                    type="checkbox"
                                     name="status"
                                     value="1"
                                     @if($language->status) checked @endif
-                                />
-                                <label for="language-status">{{ __('Active') }}</label>
-                                <input
-                                    type="radio"
-                                    id="language-status-no"
-                                    name="status"
-                                    value="0"
-                                    @if(!$language->status) checked @endif
-
-                                />
-                                <label for="language-status-no">{{ __('DeActive') }}</label>
-                            </div>
+                                    class="sr-only peer"
+                                >
+                                <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                            </label>
                         </div>
                     </div>
                 </div>

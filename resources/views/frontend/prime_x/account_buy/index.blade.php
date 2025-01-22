@@ -80,7 +80,7 @@
                         </li>
                     </ul>
                     <a href="{{route('user.account.show',$account_type->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
-                        {{ __('Start Now') }}
+                        {{ __('Buy Now') }}
                     </a>
                 </div>
             </div>

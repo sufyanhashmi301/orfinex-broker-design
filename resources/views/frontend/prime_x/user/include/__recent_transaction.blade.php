@@ -1,16 +1,16 @@
-<div class="card mb-3">
+<div class="card">
     <header class="card-header noborder">
-        <h4 class="card-title">{{ __('Recent Transactions') }}</h4>
+        <h4 class="card-title">{{ __('Recent Payments') }}</h4>
         <div>
-            <a href="{{ route('user.transactions') }}" class="btn-link inline-flex items-center">
-                {{ __('See All Transactions') }}
+            <a href="{{ route('user.billing.index') }}" class="btn-link inline-flex items-center">
+                {{ __('See All Payments') }}
                 <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
             </a>
         </div>
     </header>
     <div class="card-body p-6 pt-0">
         <!-- BEGIN: Company Table -->
-        @if(count($recentTransactions) == 0)
+        @if(count($transactions) == 0)
             <div class="flex items-center justify-center flex-col gap-3">
                 <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
                 <p class="text-lg text-slate-600 dark:text-slate-100 mb-3">
@@ -24,62 +24,73 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Action') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Account') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Wallet') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Challenge') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Amount to pay') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('Order') }}</th> --}}
+                                    <th scope="col" class="table-th">{{ __('Created At') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Fee') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Amount') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Invoice') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @dd($recentTransactions) --}}
-                                @foreach($recentTransactions as $transaction )
-                                <tr>
-                                    <td class="table-td">
-                                        {{ ucfirst(str_replace('_',' ',$transaction->type->value )) }}
-                                    </td>
-                                    <td class="table-td">{{ $transaction->target_id }}</td>
-                                    <td class="table-td">
-                                        {{$transaction->method}}
-                                        {{--<div class="flex items-center">
-                                            <div class="flex-none">
-                                                <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                    <img src="{{ asset('frontend/images/logo/BinancePay.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                @foreach ($transactions as $txn)    
+                                    @php
+                                        $account = $accounts->find($txn->target_id);
+                                        if(!empty($account)){
+                                            $account_type = $account->getAccountTypeSnapshotData();
+                                        } else {
+                                            $account_type['title'] = 'N/A';
+                                            continue;
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="table-td">
+                                            <div class="text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    {{ $account_type['title'] }}
+                                                </h4>
+                                                <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                                    TID: {{ $txn->tnx }}
                                                 </div>
                                             </div>
-                                            <div class="flex-1 text-start">
-                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
-                                                    {{$transaction->method}}
-                                                </h4>
+                                        </td>
+                                        <td class="table-td">
+                                            <span class="font-semibold">
+                                                {{ number_format($txn->final_amount, 2) . ' ' . $currency }}
+                                            </span>
+                                        </td>
+                                        <td class="table-td">
+                                            <div class="text-start">
+                                                <span class="block">{{ $txn->created_at }}</span>
                                             </div>
-                                        </div>--}}
-                                    </td>
-                                    <td class="table-td">
-                                        @if($transaction->status->value == \App\Enums\TxnStatus::Pending->value)
-                                            <span class="badge bg-slate-100 text-slate-900 capitalize pill">{{ __('Pending') }}</span>
-                                        @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Success->value)
-                                            <span class="badge badge-primary capitalize pill">{{ __('Success') }}</span>
-                                        @elseif($transaction->status->value ==  \App\Enums\TxnStatus::Failed->value)
-                                            <span class="badge bg-danger-500 text-slate-900 capitalize pill">{{ __('canceled') }}</span>
-                                        @endif
-                                    </td>
-                                    <td class="table-td">
-                                        {{$transaction->charge}}
-                                    </td>
-                                    <td class="table-td">
-                                        <span class="{{ txn_type($transaction->type->value,['green-color','red-color']) }}">
-                                            {{ txn_type($transaction->type->value,['+','-']) .$transaction->amount.' '.$currency }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                @endforeach
+                                        </td>
 
-                                @if($recentTransactions->isEmpty())
-                                    <tr class="centered">
-                                        <td colspan="5" class="table-td">{{ __('No Data Found') }}</td>
+                                        @php
+                                            $badge = '';
+                                            if($txn->status == \App\Enums\TxnStatus::Success){
+                                                $badge = 'success';
+                                            } elseif ($txn->status == \App\Enums\TxnStatus::Pending) {
+                                                $badge = 'warning';
+                                            } elseif ($txn->status == \App\Enums\TxnStatus::Failed) {
+                                                $badge = 'danger';
+                                            }
+                                        @endphp
+
+                                        <td class="table-td">
+                                            <span class="badge bg-{{ $badge }}-500 text-{{ $badge }}-500 bg-opacity-30 capitalize">
+                                                {{ $txn->status }}
+                                            </span>
+                                        </td>
+                                        <td class="table-td">
+                                            
+                                            <a href="{{ route('user.billing.generateInvoice', ["transaction_id" => $txn->id ]) }}" target="__blank" class="action-btn">
+                                                <iconify-icon icon="heroicons-outline:download"></iconify-icon>
+                                            </a>
+                                        
+                                        </td>
                                     </tr>
-                                @endif
+                                @endforeach
+                                
                             </tbody>
                         </table>
                     </div>

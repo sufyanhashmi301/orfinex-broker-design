@@ -14,7 +14,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <div class="modal-body p-6 pt-0">
+            <div class="modal-body">
                 <!-- Action will be set dynamically -->
             </div>
         </div>

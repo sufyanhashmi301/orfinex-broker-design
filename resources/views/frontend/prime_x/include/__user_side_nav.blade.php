@@ -64,7 +64,7 @@
             </a>
         </li>
 
-        @if(setting('is_webterminal','global'))
+        {{-- @if(setting('is_webterminal','global'))
             <li>
                 <a href="{{ route('webterminal') }}" class="navItem {{ isActive('webterminal') }}">
                 <span class="flex items-center">
@@ -73,7 +73,7 @@
                 </span>
                 </a>
             </li>
-        @endif
+        @endif --}}
 
         <li>
             <a href="{{route('user.account.buy')}}" class="navItem {{ isActive('user.account*') }}">
@@ -150,14 +150,14 @@
             </a>
         </li>
 
-        <li>
+        {{-- <li>
             <a href="{{ route('user.utilities') }}" class="navItem {{ isActive('user.utilities') }}">
                 <span class="flex items-center">
                     <iconify-icon class="nav-icon" icon="solar:share-circle-linear"></iconify-icon>
                     <span>{{ __('Utilities') }}</span>
                 </span>
             </a>
-        </li>
+        </li> --}}
 
 {{--        <li class="">--}}
 {{--            <a href="javascript:void(0);" class="navItem">--}}

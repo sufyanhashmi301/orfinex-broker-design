@@ -12,7 +12,7 @@
     <form id="badges-form" action="{{ route('admin.leaderboard-badge.store') }}" method="POST">
         @csrf
     </form>
-    
+
     <div class="grid md:grid-cols-3 grid-cols-1 gap-5 mb-5">
         {{-- Named Badges --}}
         <div class="card badge-container" data-slug="highest_payout">
@@ -26,7 +26,7 @@
                             <img src="{{ asset('frontend/images/highest-payout__badge.png') }}" alt="">
                         </div>
                         <div class="flex-1">
-                            <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium"> 
+                            <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ $badge_1->title }}
                             </div>
                             <div class="text-slate-900 dark:text-white text-lg font-medium field" data-field="user_name" contenteditable="true">
@@ -182,33 +182,19 @@
                 </ul>
             </div>
         </div>
-
-        
+        <div class="md:col-span-3 text-right">
+            <button class="btn mb-3 save-badges-changes btn-primary cursor-not-allowed light" disabled>Save Badges Changes</button>
+        </div>
     </div>
     {{-- Button to save changes --}}
-    <button class="btn mb-3 save-badges-changes btn-primary float-right" disabled>Save Badges Changes</button>
 
-    <style>
-        button:disabled {
-            opacity: 0.6
-        }
-    </style>
-
-    <br style="clear: both">
-    
     <div class="flex flex-wrap items-center justify-between mb-3">
-        <h4 class="text-lg text-slate-600 dark:text-white font-semibold">
-            {{ __('Best account in profit') }}
-        </h4>
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0">
-
             <li class="nav-item">
-                <a href="{{ route('admin.leaderboard.index') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ empty(request('category')) ? 'active' : '' }}
-">
+                <a href="{{ route('admin.leaderboard.index') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ empty(request('category')) ? 'active' : '' }}">
                     All
                 </a>
             </li>
-
             @foreach ($rankings_categories as $category)
                 <li class="nav-item">
                     <a href="{{ route('admin.leaderboard.index', ['category' => $category->id ]) }}"  class="btn btn-sm inline-flex justify-center btn-outline-primary {{ request('category') == $category->id ? 'active' : '' }}">
@@ -216,15 +202,16 @@
                     </a>
                 </li>
             @endforeach
-            
         </ul>
     </div>
-
-    {{-- Button to save changes --}}
-    <a href="{{ route('admin.leaderboard-rankings.create') }}" class="btn mb-3 save-badges-changes btn-primary float-right">Add Row</a>
-    <br style="clear: both">
     <div class="card mb-6">
-        <div class="card-body p-6 pt-3">
+        <div class="card-header flex-wrap noborder">
+            <h4 class="card-title">
+                {{ __('Best account in profit') }}
+            </h4>
+            <a href="{{ route('admin.leaderboard-rankings.create') }}" class="btn mb-3 save-badges-changes btn-primary">Add Row</a>
+        </div>
+        <div class="card-body p-6 pt-0">
             <!-- BEGIN: Company Table -->
             <div class="overflow-x-auto -mx-6">
                 <div class="inline-block min-w-full align-middle">
@@ -272,8 +259,8 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                
-                              
+
+
                             </tbody>
                         </table>
                         @else
@@ -294,12 +281,12 @@
     <script>
         $('.field').on('keyup', function(){
             $('.save-badges-changes').removeAttr('disabled')
-
+            $('.save-badges-changes').removeClass('cursor-not-allowed light');
         })
-        
+
         $('.save-badges-changes').on('click', function() {
             let badges_data = [];
-            
+
             // Collect the badges data
             for(let i = 0; i < $('.badge-container').length; i++) {
                 let badge = $('.badge-container').eq(i);

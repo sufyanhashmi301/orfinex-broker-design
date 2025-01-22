@@ -932,9 +932,9 @@
     {{--        </div> --}}
     {{--    </div> --}}
 
-    @include('frontend::fund_board.modal.__login_credentials')
+    @include('frontend::account.includes.__login_credentials')
 
-    @include('frontend::fund_board.modal.__trading_platform')
+    @include('frontend::account.includes.__trading_platform')
 
 @endsection
 @section('script')

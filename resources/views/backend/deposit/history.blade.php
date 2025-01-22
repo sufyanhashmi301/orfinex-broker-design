@@ -12,8 +12,8 @@
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.deposit.export') }}">
         @csrf
-        <div class="flex justify-between flex-wrap items-center">
-            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
                 </div>

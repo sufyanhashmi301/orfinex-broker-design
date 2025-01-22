@@ -7,14 +7,14 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Language Settings') }}
         </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+        <div class="flex flex-wrap sm:gap-4 gap-2 sm:justify-end items-center rtl:space-x-reverse">
             <a href="{{ route('admin.language-sync-missing') }}" class="btn btn-white inline-flex items-center justify-center mr-2">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:refresh-ccw"></iconify-icon>
-                {{ __('Sync Missing Translation Keys') }}
+                <span class="text-nowrap">{{ __('Sync Missing Translation Keys') }}</span>
             </a>
             <a href="{{ route('admin.language.create') }}" class="btn btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                {{ __('Add New') }}
+                <span class="text-nowrap">{{ __('Add New') }}</span>
             </a>
         </div>
     </div>

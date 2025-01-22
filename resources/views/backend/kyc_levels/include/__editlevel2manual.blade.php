@@ -12,38 +12,40 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="popup-body-text p-6 pt-3 ">
-                    <form id="editKycForm" class="space-y-4">
-                        <!-- Method and CSRF token will be dynamically added via JS -->
-                        <div class="input-area">
-                            <label class="form-label" for="name">{{ __('Name:') }}</label>
-                            <input type="text" name="name" id="kycName" class="form-control" placeholder="KYC Type Name" required/>
-                        </div>
-                        <div class="">
-                            <a href="javascript:void(0)" id="generate" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center mb-3">
-                                {{ __('Add Field option') }}
-                            </a>
-                        </div>
-                        <div class="addOptions"></div>
-
-                        <div class="max-w-xs">
+                <div class="popup-body-text">
+                    <div class="max-h-[calc(100vh-200px)] overflow-y-auto p-6 pt-3"
+                        <form id="editKycForm" class="space-y-4">
+                            <!-- Method and CSRF token will be dynamically added via JS -->
                             <div class="input-area">
-                                <label class="form-label" for="status">{{ __('Status:') }}</label>
-                                <div class="switch-field flex mb-3 overflow-hidden">
-                                    <input type="radio" id="active-status-1" name="status" value="1"/>
-                                    <label for="active-status-1">{{ __('Active') }}</label>
-                                    <input type="radio" id="deactivate-status-1" name="status" value="0"/>
-                                    <label for="deactivate-status-1">{{ __('Deactivate') }}</label>
+                                <label class="form-label" for="name">{{ __('Name:') }}</label>
+                                <input type="text" name="name" id="kycName" class="form-control" placeholder="KYC Type Name" required/>
+                            </div>
+                            <div class="">
+                                <a href="javascript:void(0)" id="generate" class="btn btn-outline-dark btn-sm inline-flex items-center justify-center mb-3">
+                                    {{ __('Add Field option') }}
+                                </a>
+                            </div>
+                            <div class="addOptions"></div>
+
+                            <div class="max-w-xs">
+                                <div class="input-area">
+                                    <label class="form-label" for="status">{{ __('Status:') }}</label>
+                                    <div class="switch-field flex mb-3 overflow-hidden">
+                                        <input type="radio" id="active-status-1" name="status" value="1"/>
+                                        <label for="active-status-1">{{ __('Active') }}</label>
+                                        <input type="radio" id="deactivate-status-1" name="status" value="0"/>
+                                        <label for="deactivate-status-1">{{ __('Deactivate') }}</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="input-area text-right">
-                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="submitBtn">
-                            <span class="btn-text"> {{ __('Save Changes') }}</span>
-                                <span class="btn-loader" style="display: none;">Loading...</span>
-                            </button>
-                        </div>
-                    </form>
+                            <div class="input-area text-right">
+                                <button type="submit" class="btn btn-dark inline-flex items-center justify-center" id="submitBtn">
+                                <span class="btn-text"> {{ __('Save Changes') }}</span>
+                                    <span class="btn-loader" style="display: none;">Loading...</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

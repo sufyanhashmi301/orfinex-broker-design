@@ -468,7 +468,7 @@
                 }
                 // AJAX call to verify the discount code
                 $.ajax({
-                    url: "{{ route('user.verify-discount') }}", // Ensure this route exists
+                    url: "{{ route('user.verify_coupon') }}", // Ensure this route exists
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',

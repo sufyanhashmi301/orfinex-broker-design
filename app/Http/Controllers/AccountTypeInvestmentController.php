@@ -92,7 +92,7 @@ class AccountTypeInvestmentController extends Controller
             $investments = AccountTypeInvestment::traderType()->where('user_id', $user->id)->where('status', $request->status)->orderBy('id', 'desc')->get();
         }
 
-        return view('frontend::user.forex.log', compact('investments'));
+        return view('frontend::account.index', compact('investments'));
     }
 
     public function adminAccountsActivityLog(Request $request) {

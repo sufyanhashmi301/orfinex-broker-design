@@ -40,7 +40,7 @@
 
     <div class="input-area">
         <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
-        <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
+        <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message">{{$data->approval_cause }}</textarea>
     </div>
 
     <div class="action-btns text-right">

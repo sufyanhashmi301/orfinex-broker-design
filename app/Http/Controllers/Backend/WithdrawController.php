@@ -374,7 +374,7 @@ class WithdrawController extends Controller
             '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
+            '[[message]]' => $approvalCause,
             '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
         ];
 

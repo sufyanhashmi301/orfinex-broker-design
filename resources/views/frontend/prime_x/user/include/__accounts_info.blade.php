@@ -27,7 +27,7 @@
                 Total PnL
             </p>
             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                <span class="badge badge-success" style="font-size: 24px; background: none; padding: 0">
+                <span class="badge {{ isset($valid_accounts[0]) ? ($valid_accounts[0]->accountTypeInvestmentStat->total_pnl < 0 ? 'badge-danger' : 'badge-success') : '' }} badge-success" style="font-size: 24px; background: none; padding: 0">
                     <span class="d-total-pnl d-stats">{{ isset($valid_accounts[0]) ? number_format($valid_accounts[0]->accountTypeInvestmentStat->total_pnl, 2) : '--.--' }}</span>&nbsp;{{ $currency }}
                 <span>
             </h6>

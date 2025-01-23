@@ -112,7 +112,7 @@ class DepositController extends GatewayController
         // Check deposit amount against the gateway's limits
         if ($amount < $gatewayInfo->minimum_deposit || $amount > $gatewayInfo->maximum_deposit) {
             $currencySymbol = setting('currency_symbol', 'global');
-            $message = __('Please deposit the amount within the range') . $currencySymbol . $gatewayInfo->minimum_deposit . __('to')  . $currencySymbol . $gatewayInfo->maximum_deposit;
+            $message = __('Please deposit the amount within the range ') . $currencySymbol . $gatewayInfo->minimum_deposit . __(' to ')  . $currencySymbol . $gatewayInfo->maximum_deposit;
             notify()->error($message,  __('Error'));
             return redirect()->back();
         }
@@ -130,7 +130,7 @@ class DepositController extends GatewayController
         if (isset($forexAccount->schema->first_min_deposit) && $forexAccount->schema->first_min_deposit > 0) {
             if (!$forexAccount->first_min_deposit_paid && $amount < $forexAccount->schema->first_min_deposit) {
                 $currencySymbol = setting('currency_symbol', 'global');
-                $message =  __('Please deposit the first minimum amount of') . $currencySymbol . $forexAccount->schema->first_min_deposit;
+                $message =  __('Please deposit the first minimum amount of ') . $currencySymbol . $forexAccount->schema->first_min_deposit;
                 notify()->error($message, __('Error'));
                 return redirect()->back();
             }

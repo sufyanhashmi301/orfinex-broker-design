@@ -12,6 +12,9 @@
 </div>
 <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
     <li class="list-group-item dark:text-slate-300 block py-2 px-3">
+        {{ __('Account:') }} <strong>{{ $data->target_id}}</strong>
+    </li>
+    <li class="list-group-item dark:text-slate-300 block py-2 px-3">
         {{ __('Withdraw Amount') }}: <strong>{{ $data->amount .' '. $currency }}</strong>
     </li>
     <li class="list-group-item dark:text-slate-300 block py-2 px-3">

@@ -190,7 +190,7 @@ class StaffController extends Controller
                 'name'        => 'required',
                 'email'       => 'required|email|unique:admins,email,' . $id,
                 'password'    => 'nullable|same:confirm-password',
-                'role'        => ['required', Rule::notIn('Super-Admin')],
+                'role'        => ['nullable', Rule::notIn('Super-Admin')],
                 'status'      => 'boolean',
                 'department'  => 'nullable|exists:departments,id',
                 'designation' => 'nullable|exists:designations,id',

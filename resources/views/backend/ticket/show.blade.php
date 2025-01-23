@@ -20,7 +20,7 @@
                                                     <div class="flex-none">
                                                         @if( null != $ticket->user->avatar)
                                                             <div class="h-10 w-10 rounded-full">
-                                                                <img class="block w-full h-full object-cover rounded-full" src="{{ asset($ticket->user->avatar)}}" alt="">
+                                                                <img class="block w-full h-full object-cover rounded-full" src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}" alt="">
                                                             </div>
                                                         @else
                                                             <div class="h-10 w-10 rounded-full flex flex-col items-center justify-center text-sm bg-[#EAE6FF] dark:bg-slate-900 text-[#5743BE]">
@@ -76,10 +76,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                         @if( $message->model == 'admin')
+{{--                                                                {{dd($ticket->user)}}--}}
                                                             <div class="flex-none">
                                                                 <div class="h-10 w-10 rounded-full">
-                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}" alt="">
+                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ asset($message->user->avatar ?? 'global/materials/user.png')}}" alt="">
                                                                 </div>
                                                             </div>
                                                         @endif

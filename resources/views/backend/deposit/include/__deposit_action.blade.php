@@ -62,7 +62,7 @@
 
         <div class="input-area">
             <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
-            <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{ $data->approval_cause ?? __('Enter Message') }}"></textarea>
+            <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}">{{$data->approval_cause }}</textarea>
         </div>
 
     @if($data->status->value=='pending')

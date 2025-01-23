@@ -30,6 +30,7 @@
 
         </ul>
     </div>
+    @if (count($banners) > 0)
     <div class="grid grid-cols-3 gap-5">
         @foreach($banners as $banner)
             <div class="lg:col-span-1 col-span-3">
@@ -95,6 +96,16 @@
             </div>
         @endforeach
     </div>
+    @else
+        <div class="card basicTable_wrapper items-center justify-center py-10 px-10">
+            <div class="flex items-center justify-center flex-col gap-3">
+                <img src="{{ asset('frontend/images/icon/danger.png') }}" alt="">
+                <p class="text-lg text-center text-slate-600 dark:text-slate-100 mb-3">
+                    {{ __("Nothing to see here.") }}
+                </p>
+            </div>
+        </div>
+    @endif
 
     @include('backend.setting.promotion.banner.includes.__new_banner_modal')
 @endsection

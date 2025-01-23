@@ -108,63 +108,15 @@
 
     <div class="md:block hidden desktop-screen-show">
         <div class="grid grid-cols-2 gap-3 mb-3">
-            <div class="" >
-                <div class="card" style="height: 515px">
-                    <div class="card-header noborder" style="padding-bottom: 0px;">
-                        <h4 class="card-title">Accounts Summary <span class="d-login">{{ isset($valid_accounts[0]) ? '#' . $valid_accounts[0]->login : '' }}</span></h4>
-                    </div>
-                    <div class="card-body p-6 pt-0">
-                        @include('frontend::user.include.__accounts_info')
-                        
-                    </div>
-                </div>
-            </div>
+
+            {{-- Top Left Block --}}
+            @include('frontend::dashboard.includes.__accounts_info')
             
-            <div class="">
-                {{-- <div class="card h-2/5 mb-3">
-                    <div class="card-body h-full flex flex-col p-6">
-                        <div class="flex flex-wrap items-center justify-between gap-3 mb-10">
-                            <p class="text-slate-900 dark:text-white text-sm font-medium">
-                                {{ __('Referral ID:') }} {{ __('UG729124') }}
-                            </p>
-                            <div>
-                                <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center" onclick="copyToClipboard('UG729124')">
-                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:copy" ></iconify-icon>
-                                    {{ __('Copy ID') }}
-                                </button>
-                                <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center" onclick="copyToClipboard('http://orfinex-broker/register?referral=UG729124')">
-                                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:copy"></iconify-icon>
-                                    {{ __('Copy Link') }}
-                                </button>
-                            </div>
-                        </div>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-2">
-                            {{ __('Withdrawable Balance') }}
-                        </p>
-                        <h6 class="block mb- text-3xl text-slate-900 dark:text-white font-medium leading-none mb-6">
-                            {{ __('40.00 USD') }}
-                        </h6>
-                        <a href="{{route('user.withdraw.step1')}}" class="btn btn-dark block-btn inline-flex items-center justify-center mt-auto">
-                            {{ __('Withdraw') }}
-                        </a>
-                    </div>
-                </div> --}}
-                <div class="card" style="height: 515px; overflow: auto">
-                    <div class="card-header noborder" style="padding-bottom: 0px">
-                        
-                    </div>
-                    <div class="card-body p-6 pt-0">
-                        <div class="slider carousel-interval owl-carousel">
-                            <img class="w-full" src="{{ asset('frontend/images/user_dashboard/orfinex1.webp') }}" alt="image">
-                            <img class="w-full" src="{{ asset('frontend/images/user_dashboard/orfinex2.webp') }}" alt="image">
-                            <img class="w-full" src="{{ asset('frontend/images/user_dashboard/orfinex3.webp') }}" alt="image">
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
+            {{-- Top Right Block --}}
+            @include('frontend::dashboard.includes.__promotional_slider')
         </div>
 
+        {{-- Banners --}}
         <div class="grid md:grid-cols-2 grid-cols-1 gap-3 mb-3">
             <div class="card border dark:border-slate-700">
                 <div class="card-body p-6">
@@ -368,19 +320,15 @@
         </div>
 
         {{-- Optimized --}}
-        @include('frontend::user.include.__recent_transaction')
-
-        {{-- @include('frontend::user.include.__pending_challenge')
-        @include('frontend::user.include.__active_challenge')
-        @include('frontend::user.include.__violated_challenge') --}}
+        @include('frontend::dashboard.includes.__recent_transaction')
     </div>
 
     {{-- for mobile --}}
     <div class="md:hidden block mobile-screen-show">
-        @include('frontend::user.mobile_screen_include.dashboard.__index')
+        @include('frontend::dashboard.mobile_screen_include.dashboard.__index')
     </div>
 
-    @include('frontend::user.include.__coming_soon')
+    @include('frontend::dashboard.includes.__coming_soon')
 
 @endsection
 @section('script')

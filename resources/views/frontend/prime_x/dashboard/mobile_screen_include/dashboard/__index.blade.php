@@ -51,5 +51,5 @@
     {{-- @include('frontend::user.mobile_screen_include.dashboard.__statistic') --}}
 
     <!-- Recent Transactions -->
-    @include('frontend::user.mobile_screen_include.dashboard.__transactions')
+    @include('frontend::dashboard.mobile_screen_include.dashboard.__transactions')
 </div>

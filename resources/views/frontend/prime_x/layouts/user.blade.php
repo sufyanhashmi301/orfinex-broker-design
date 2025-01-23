@@ -46,7 +46,7 @@
         <!-- Show in 575px in Mobile Screen -->
         <div class="mobile-screen-show md:hidden">
             <div class="bg-white bg-no-repeat custom-dropshadow footer-bg dark:bg-slate-700 flex justify-around items-center backdrop-filter backdrop-blur-[40px] fixed left-0 bottom-0 w-full z-[9999] bothrefm-0 py-[12px] px-4">
-                @include('frontend::user.mobile_screen_include.__menu')
+                @include('frontend::dashboard.mobile_screen_include.__menu')
             </div>
         </div>
         <!-- Show in 575px in Mobile Screen End -->

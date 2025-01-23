@@ -28,6 +28,6 @@ class DashboardController extends Controller
         $accounts = AccountTypeInvestment::where('user_id', Auth::id())->get();
         $valid_accounts = AccountTypeInvestment::where('user_id', Auth::id())->where('login', '!=', null)->whereHas('accountTypeInvestmentStat')->orderBy('id', 'DESC')->get();
 
-        return view('frontend::user.dashboard', compact('transactions', 'banners', 'accounts', 'valid_accounts'));
+        return view('frontend::dashboard.index', compact('transactions', 'banners', 'accounts', 'valid_accounts'));
     }
 }

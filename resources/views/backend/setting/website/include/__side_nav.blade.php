@@ -16,11 +16,6 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.banners') }}" class="navItem {{ isActive('admin.banners') }}">
-                {{ __('Banner') }}
-            </a>
-        </li>
-        <li>
             <a href="{{ route('admin.grpdCompliance') }}" class="navItem {{ isActive('admin.grpdCompliance') }}">
                 {{ __('GDPR Compliance')}}
             </a>

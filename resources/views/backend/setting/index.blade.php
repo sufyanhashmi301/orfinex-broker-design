@@ -165,11 +165,7 @@
                             {{ __('Site Settings') }}
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.banners') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Banner') }}
-                        </a>
-                    </li>
+                    
                     <li>
                         <a href="{{ route('admin.grpdCompliance') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('GDPR Compliance') }}
@@ -186,6 +182,38 @@
                 </ul>
             </div>
         </div>
+
+        <div class="card">
+            <div class="border-b border-slate-100 dark:border-slate-700 p-3">
+                <h4 class="text-base dark:text-white">
+                    <span class="flex items-center">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="heroicons:building-storefront"></iconify-icon>
+                        {{ __('Promotion') }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-3">
+                <ul class="space-y-3">
+                    <li>
+                        <a href="{{ route('admin.banner.user_dashboard') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Banners') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.slider.user_dashboard') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Sliders') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('New') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">

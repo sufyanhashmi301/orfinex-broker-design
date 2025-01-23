@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccountType;
+use App\Enums\AccountType as AccountTypeEnum;
 use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 use App\Enums\InterestPeriod;
@@ -33,6 +34,11 @@ class AccountTypeController extends Controller
     public function index(Request $request)
     {
         $account_types = AccountType::where('type', $request->type ?? 'challenge')->orderBy('priority', 'asc')->paginate(10);
+
+        if(isset($request->type) && !in_array($request->type, [AccountTypeEnum::CHALLENGE, AccountTypeEnum::FUNDED, AccountTypeEnum::AUTO_EXPIRE])) {
+            return redirect()->route('admin.account-type.index', ['type' => AccountTypeEnum::CHALLENGE]);
+        }
+
         return view('backend.account_types.index', compact('account_types'));
     }
 

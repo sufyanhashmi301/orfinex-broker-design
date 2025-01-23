@@ -66,128 +66,21 @@
         </div>
     </div>
 
-    {{-- Dynamic Banners --}}
-    @if ($banners->count() > 0)
-        <div class="grid md:grid-cols-{{ $banners->count() }} grid-cols-1 gap-3 mb-3">
-            @foreach ($banners as $banner)
-                <div class="card flex flex-wrap items-center justify-between md:nowrap  px-4 py-5 gap-5">
-                    <div class="">
-                        <p class="text-base text-slate-900 dark:text-white text-opacity-80 mb-2">
-                            {{ $banner->subtitle }}
-                        </p>
-                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
-                            {{ $banner->title }}
-                        </h4>
-                    </div>
-                    @if ($banners->count() <= 2)
-                        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                            <a href="{{ $banner->button_link }}"
-                                class="btn btn-dark inline-flex items-center justify-center">
-                                {{ $banner->button_text }}
-                            </a>
-                            <a href="{{ $banner->primary_link }}"
-                                class="btn inline-flex items-center justify-center dark:text-white">
-                                <span class="flex items-center">
-                                    <span>{{ __('Learn More') }}</span>
-                                    <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
-                                        icon="lucide:chevron-right"></iconify-icon>
-                                </span>
-                            </a>
-                        </div>
-                    @else
-                        <a href="{{ $banner->primary_link }}"
-                            class="btn inline-flex items-center justify-center dark:text-white">
-                            <span>{{ __('Learn More') }}</span>
-                            <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
-                        </a>
-                    @endif
-                </div>
-            @endforeach
-        </div>
-    @endif
-
     <div class="md:block hidden desktop-screen-show">
-        <div class="grid grid-cols-2 gap-3 mb-3">
+        <div class="grid grid-cols-{{ !empty($slider) ? '2' : '1'  }} gap-3 mb-3">
 
             {{-- Top Left Block --}}
             @include('frontend::dashboard.includes.__accounts_info')
             
             {{-- Top Right Block --}}
-            @include('frontend::dashboard.includes.__promotional_slider')
+            @if ($slider)
+                @include('frontend::dashboard.includes.__promotional_slider')
+            @endif
         </div>
 
         {{-- Banners --}}
         <div class="grid md:grid-cols-2 grid-cols-1 gap-3 mb-3">
-            <div class="card border dark:border-slate-700">
-                <div class="card-body p-6">
-                    <div class="mb-5">
-                        <h4 class="mb-1">{{ __('Free Trial') }}</h4>
-                        <p class="text-sm text-success-500 mb-2">
-                            {{ __('Enhance Your Trading Skills') }}
-                        </p>
-                        <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">
-                            {{ __('Experience risk-free trading and hone your skills without any financial commitment.') }}
-                        </p>
-                    </div>
-                    <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Not eligible for a live trading account') }}
-                        </li>
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('14-day trial period') }}
-                        </li>
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Access to basic account analysis tools') }}
-                        </li>
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Limited app usage') }}
-                        </li>
-                    </ul>
-                    <a href="javascript:;" class="btn inline-flex justify-center btn-dark dark:bg-body w-full mt-5"
-                        type="button" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
-                        {{ __('Start Free Trial') }}
-                    </a>
-                </div>
-            </div>
-            <div class="card border dark:border-slate-700">
-                <div class="card-body p-6">
-                    <div class="mb-5">
-                        <h4 class="mb-1">{{ setting('site_title', 'global') }} {{ __('Challenge') }}</h4>
-                        <p class="text-sm text-success-500 mb-2">
-                            {{ __('Trade with up to $150,000 in Funding') }}
-                        </p>
-                        <p class="text-slate-900 dark:text-white text-sm min-h-[3.75rem]">
-                            {{ __('Showcase your trading proficiency by completing the evaluation and qualify for a funded account.') }}
-                        </p>
-                    </div>
-                    <ul class="bg-slate-50 dark:bg-dark divide-y divide-slate-100 dark:divide-slate-700 px-3 rounded">
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Receive funding up to $150,000') }}
-                        </li>
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Prove your trading expertise') }}
-                        </li>
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Full account performance analysis') }}
-                        </li>
-                        <li class="flex items-center text-sm text-slate-600 dark:text-slate-300 py-3">
-                            <iconify-icon class="text-lg text-primary mr-2" icon="lucide:check"></iconify-icon>
-                            {{ __('Access to premium apps and tools') }}
-                        </li>
-                    </ul>
-                    <a href="{{ route('user.account.buy') }}"
-                        class="btn inline-flex justify-center btn-primary w-full mt-5">
-                        {{ __('Start Challenge') }}
-                    </a>
-                </div>
-            </div>
+            @include('frontend.prime_x.dashboard.includes.__banners')
         </div>
 
         {{-- Optimized --}}

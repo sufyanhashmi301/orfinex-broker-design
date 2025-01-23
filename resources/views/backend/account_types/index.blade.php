@@ -64,7 +64,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                @foreach($account_types as $account_type)
+                                @forelse($account_types as $account_type)
                                 <tr>
                                     <td class="table-td">
                                         <img
@@ -123,7 +123,13 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td class="pt-4" colspan="9">
+                                            <small><center>No {{ str_replace('_', ' ', $type) }} account types available</center></small>
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                         <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">

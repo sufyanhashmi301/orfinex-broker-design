@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Banner extends Model
+class Slider extends Model
 {
     use HasFactory;
 
-    // The attributes that should be cast to native types.
-    protected $casts = [
-        'list' => 'array',
+    protected $fillable = [
+        'status'
     ];
 
+    protected $casts = [
+        'slides' => 'array'
+    ];
 }

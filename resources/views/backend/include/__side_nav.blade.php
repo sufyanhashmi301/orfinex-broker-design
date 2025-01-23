@@ -139,18 +139,18 @@
                                 {{ __('Funded') }}
                             </a>
                         </li>
-                        {{-- <li>
+                        <li>
                             <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::AUTO_EXPIRE]) }}"
                             class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::AUTO_EXPIRE ? 'active' : '' }}">
                                 {{ __('Auto Expire') }}
                             </a>
-                        </li> --}}
-                        <li>
+                        </li>
+                        {{-- <li>
                             <a href="#"
                             class="" onclick="alert('Auto Expire Account Type not available yet!')">
                                 {{ __('Auto Expire') }}
                             </a>
-                        </li>
+                        </li> --}}
                     @endcan
 
                 </ul>

@@ -24,7 +24,7 @@ use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\ThemeController;
 use App\Http\Controllers\PayoutRequestController;
-use App\Http\Controllers\Backend\BannerController;
+// use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\ImportController;
 use App\Http\Controllers\Backend\PluginController;
 use App\Http\Controllers\Backend\ProfitController;
@@ -74,6 +74,8 @@ use App\Http\Controllers\Backend\ProfitDeductionController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\Backend\IslamicMultiLevelController;
 use App\Http\Controllers\Backend\AdvertisementMaterialController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\SliderController;
 use App\Http\Controllers\TradingStatsController;
 
 /*
@@ -183,7 +185,17 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/accounts', [AccountTypeInvestmentController::class, 'adminIndex'])->name('accounts.index');
     Route::get('account/trading-stats/history', [TradingStatsController::class, 'accountTradingStatsHistory'])->name('account.trading_stats.history');
     Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'adminTradingStats'])->name('account.trading_stats');
-    
+
+    // Banner Settings 
+    Route::get('banner/user-dashboard/', [BannerController::class, 'userDashboard'])->name('banner.user_dashboard');
+    Route::post('banner/store', [BannerController::class, 'store'])->name('banner.store');
+    Route::post('banner/update/{id}', [BannerController::class, 'update'])->name('banner.update');
+
+    // Slider Settings
+    Route::get('slider/user-dashboard/', [SliderController::class, 'userDashboard'])->name('slider.user_dashboard');
+    Route::post('slider/store', [SliderController::class, 'store'])->name('slider.store');
+    Route::get('slider/update/{id}', [SliderController::class, 'update'])->name('slider.update');
+    Route::delete('slider/delete/{id}', [SliderController::class, 'destroy'])->name('slider.destroy');
 
     // Investment Phase Approvals
     Route::get('phase-approval-request/{investment_id}', [AccountActivityController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
@@ -562,8 +574,8 @@ Route::middleware(['2fa_admin'])->group(function () {
 
 
     Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
-    Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
-    Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
+    // Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
+    // Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
     Route::post('/positions/active', [PositionController::class, 'getGroupPosition'])->name('positions.group');
     Route::post('/positions/days', [PositionController::class, 'positionByDays'])->name('positions.days');

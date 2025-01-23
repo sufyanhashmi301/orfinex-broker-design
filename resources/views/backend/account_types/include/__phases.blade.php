@@ -373,7 +373,7 @@
     phaseOneSettings()
   
     // new row
-    let new_rule_row = (data = {}, isData = false) => {
+    let new_rule_row = (data = {}, isData = false, sampleData= false) => {
       let phase_index
       let rule_index
       if(!isData){
@@ -398,15 +398,15 @@
 
       const newRow = `<tr>
           ${ updating ? updating_phases_html : '' }
-          <td class="table-td"><input type="text" ${ phase_index != 0 ? 'readonly' : '' } name="phases[${phase_index}][rules][${rule_index}][allotted_funds]" class="form-control validate-number allotted-funds-field" data-value="${ phase_index == 0 ? '' : data['allotted_funds'] }" oninput="this.value = validateDouble(this.value)" /></td>
-          <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-          <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-          <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+          <td class="table-td"><input type="text" ${ phase_index != 0 ? 'readonly' : '' } name="phases[${phase_index}][rules][${rule_index}][allotted_funds]" class="form-control validate-number allotted-funds-field" data-value="${ phase_index == 0 ? '' : data['allotted_funds'] }"  oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.alloted_funds : ''}" /></td>
 
-          <td class="table-td"><input type="text" name="phases[${phase_index}][rules][${rule_index}][trading_days]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+          <td class="table-td daily_dd"><input type="text" name="phases[${phase_index}][rules][${rule_index}][daily_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.daily_dd : ''}" /></td>
+          <td class="table-td max_dd"><input type="text" name="phases[${phase_index}][rules][${rule_index}][max_drawdown_limit]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.max_dd : ''}" /></td>
+          <td class="table-td profit_target"><input type="text" name="phases[${phase_index}][rules][${rule_index}][profit_target]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.profit_target : ''}" /></td>
+          <td class="table-td trading_days"><input type="text" name="phases[${phase_index}][rules][${rule_index}][trading_days]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.trading_days : ''}" /></td>
 
-          <td class="table-td" style="display: ${ phase_index == 0 ? '' : 'none' }" ><input type="${ phase_index == 0 ? 'text' : 'hidden' }" ${ phase_index == 0 ? '' : 'data-value="0"' } name="phases[${phase_index}][rules][${rule_index}][price]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
-          <td class="table-td" style="display: ${ phase_index == 0 ? '' : 'none' }" ><input type="${ phase_index == 0 ? 'text' : 'hidden' }" ${ phase_index == 0 ? '' : 'data-value="0"' } name="phases[${phase_index}][rules][${rule_index}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" /></td>
+          <td class="table-td" style="display: ${ phase_index == 0 ? '' : 'none' }" ><input type="${ phase_index == 0 ? 'text' : 'hidden' }" ${ phase_index == 0 ? '' : 'data-value="0"' } name="phases[${phase_index}][rules][${rule_index}][price]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.price : ''}" /></td>
+          <td class="table-td" style="display: ${ phase_index == 0 ? '' : 'none' }" ><input type="${ phase_index == 0 ? 'text' : 'hidden' }" ${ phase_index == 0 ? '' : 'data-value="0"' } name="phases[${phase_index}][rules][${rule_index}][discount]" class="form-control validate-number" oninput="this.value = validateDouble(this.value)" value="${sampleData ? data.discount : ''}" /></td>
           
           ${ phase_index == 0 ? delete_rule_html : '' }
       </tr>`;

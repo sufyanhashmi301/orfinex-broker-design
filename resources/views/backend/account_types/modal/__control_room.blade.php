@@ -5,10 +5,21 @@
                 <h3 class="text-xl font-medium dark:text-white capitalize mb-1">
                     {{ __('Control Room') }}
                 </h3>
-                <button type="button" class="btn btn-primary inline-flex items-center justify-center" id="newRule">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
-                    {{ __(' New Rule') }}
-                </button>
+
+                <div>
+                    <button type="button" class="btn btn-primary inline-flex items-center" id="newRule">
+                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="lucide:plus"></iconify-icon>
+                        {{ __(' New Rule') }}
+                    </button>
+    
+                    @if (!isset( $account_type ))
+                        <button type="button" class="btn btn-primary inline-flex items-center sample-data">
+                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light " icon="lucide:database"></iconify-icon>
+                            {{ __(' Sample Data') }}
+                        </button>
+                    @endif
+                </div>
+                
             </div>
             <div class="modal-body px-6 pb-6">
                 <div class="overflow-x-auto -mx-6">
@@ -193,6 +204,83 @@
                 }
             });
         });
+
+        // Fill sample data
+        $('.sample-data').on('click', function() {
+            let sampleData = [ 
+                {
+                    'alloted_funds': 10000,
+                    'daily_dd': 500,
+                    'max_dd': 1000,
+                    'profit_target': 1000,
+                    'trading_days': 4,
+                    'price': 129,
+                    'discount': 10,
+                },
+                {
+                    'alloted_funds': 25000,
+                    'daily_dd': 1250,
+                    'max_dd': 2500,
+                    'profit_target': 2500,
+                    'trading_days': 4,
+                    'price': 219,
+                    'discount': 20,
+                },
+                {
+                    'alloted_funds': 50000,
+                    'daily_dd': 2500,
+                    'max_dd': 5000,
+                    'profit_target': 5000,
+                    'trading_days': 4,
+                    'price': 449,
+                    'discount': 50,
+                },
+                {
+                    'alloted_funds': 100000,
+                    'daily_dd': 5000,
+                    'max_dd': 10000,
+                    'profit_target': 10000,
+                    'trading_days': 4,
+                    'price': 649,
+                    'discount': 100,
+                },
+                {
+                    'alloted_funds': 200000,
+                    'daily_dd': 10000,
+                    'max_dd': 20000,
+                    'profit_target': 20000,
+                    'trading_days': 4,
+                    'price': 899,
+                    'discount': 100,
+                },
+            ]
+
+            let phase_step = $(this).parents('#controlRoomModal').find('.rulesTable').attr('data-phase')
+            
+            if(phase_step == 1) {
+                $('.rulesTable').find('tbody tr').remove()
+                    sampleData.forEach(package => {                
+                    new_rule_row(package, false, true)
+                });
+            } else {
+
+                let rules_rows = $(this).parents('#controlRoomModal').find('.rulesTable').find('tbody tr');
+
+                for(let i=0; i < rules_rows.length; i++) {
+                    let rule_row = $(this).parents('#controlRoomModal').find('.rulesTable').find('tbody tr').eq(i)
+
+                    if(i < sampleData.length) {
+                        rule_row.find('.daily_dd input').val(sampleData[i]['daily_dd'])
+                        rule_row.find('.max_dd input').val(sampleData[i]['max_dd'])
+                        rule_row.find('.profit_target input').val(sampleData[i]['profit_target'])
+                        rule_row.find('.trading_days input').val(sampleData[i]['trading_days'])
+                    }
+                }
+               
+            }
+
+            
+        })
     </script>
 @endpush
 

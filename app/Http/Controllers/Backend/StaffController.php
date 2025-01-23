@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\User;
+use App\Traits\ImageUpload;
 use Arr;
 use DB;
 use Hash;
@@ -24,6 +25,7 @@ use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
 {
+    use ImageUpload;
     /**
      * Display a listing of the resource.
      *
@@ -113,6 +115,8 @@ class StaffController extends Controller
         // Get the validated input
         $input = $request->all();
 
+//        dd($input);
+
         // Convert empty fields to null if necessary
         $input['password'] = Hash::make($input['password']);
         $input['employee_id'] = $input['employee_id'] ?: null;
@@ -163,80 +167,70 @@ class StaffController extends Controller
     {
         $staff = Admin::find($id);
 
-        // Validate based on role
-        if ($staff->getRoleNames()->first() === 'Super-Admin') {
-            // Validation for Super-Admin: Only the `key` field is allowed
+        if (!$staff) {
+            return response()->json(['success' => false, 'message' => 'Staff not found.'], 404);
+        }
+
+        try {
+//            if (auth()->user()->hasRole('Super-Admin')) {
+//                $validator = Validator::make($request->all(), [
+//                    'key' => 'required|string',
+//                ]);
+//
+//                if ($validator->fails()) {
+//                    return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+//                }
+//
+//                $staff->update(['key' => $request->input('key')]);
+//
+//                return response()->json(['success' => true, 'message' => 'Key updated successfully.']);
+//            }
+
             $validator = Validator::make($request->all(), [
-                'key' => 'required|string',
+                'name'        => 'required',
+                'email'       => 'required|email|unique:admins,email,' . $id,
+                'password'    => 'nullable|same:confirm-password',
+                'role'        => ['required', Rule::notIn('Super-Admin')],
+                'status'      => 'boolean',
+                'department'  => 'nullable|exists:departments,id',
+                'designation' => 'nullable|exists:designations,id',
             ]);
 
             if ($validator->fails()) {
-                notify()->error($validator->errors()->first(), 'Error');
-                return redirect()->back();
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
             }
 
-            // Update only the `key` field for Super-Admin
-            $staff->update(['key' => $request->input('key')]);
+            $input = $request->all();
+            $input['department_id'] = $request->input('department_id') ?: null;
+            $input['designation_id'] = $request->input('designation_id') ?: null;
+            unset($input['department'], $input['designation']);
 
-            notify()->success('Key updated successfully');
-            return redirect()->back();
-        }
-
-        // Validation for other admins
-        $validator = Validator::make($request->all(), [
-            'name'        => 'required',
-            'email'       => 'required|email|unique:admins,email,' . $id,
-            'password'    => 'same:confirm-password',
-            'role'        => ['required', Rule::notIn('Super-Admin')],
-            'status'      => 'boolean',
-            'department'  => 'nullable|exists:departments,id',
-            'designation' => 'nullable|exists:designations,id',
-        ]);
-
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-            return redirect()->back();
-        }
-
-        // Get all request inputs
-        $input = $request->all();
-    //    dd($input);
-
-        // Map 'department' to 'department_id' and handle nullable values
-        $input['employee_id'] = $request->input('employee_id') ?: null;
-        $input['department_id'] = $request->input('department_id') ?: null;
-        $input['designation_id'] = $request->input('designation_id') ?: null;
-
-        // Remove 'department' and 'designation' from input to prevent mass assignment issues
-        unset($input['department'], $input['designation']);
-
-        // Handle password update
-        if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            $input = Arr::except($input, ['password']);
-        }
-
-        // Invalidate the user's session
-        $this->invalidateUserSession($staff);
-
-        // Update the admin record with correctly mapped input
-        $staff->update($input);
-
-        // Update role and relationships
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
-        $staff->assignRole($request->input('role'));
-        if(auth()->user()->hasRole('Super-Admin')) {
-            // Attach users to staff
-            $ids = $request->user_ids;
-//            dd($ids);
-            if (!isset($request->user_ids)) {
-                $ids = [];
+            if (!empty($input['password'])) {
+                $input['password'] = Hash::make($input['password']);
+            } else {
+                $input = Arr::except($input, ['password']);
             }
-            $staff->users()->sync($ids);
-        }
 
-        return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
+            if ($request->hasFile('avatar')) {
+                $logo = self::imageUploadTrait($request->file('avatar'), $staff->avatar);
+                $input['avatar'] = $logo;
+            }
+
+            $staff->update($input);
+
+            if ($request->filled('role')) {
+                DB::table('model_has_roles')->where('model_id', $id)->delete();
+                $staff->assignRole($request->input('role'));
+            }
+
+            if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
+                $staff->users()->sync($request->input('user_ids', []));
+            }
+
+            return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 
     protected function invalidateUserSession($user)

@@ -1,12 +1,13 @@
 <form id="update-staff__form" class="space-y-5">
     @csrf
     @method('PUT')
+{{--    {{dd($staff->avatar)}}--}}
     <input type="hidden" id="staff-id" value="{{ $staff->id }}">
     <div class="card">
         <div class="card-header noborder flex-col sm:flex-row">
             <div class="flex-none">
                 <div class="w-20 h-20 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                    <img src="{{ asset('frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ asset($staff->avatar) }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">
@@ -124,7 +125,7 @@
                         <label for="profile-avatar">
                             <img
                                 class="upload-icon"
-                                src="{{asset('global/materials/upload.svg')}}"
+                                src="{{asset($staff->avatar)}}"
                                 alt=""
                             />
                             <span>{{ __('Upload Avatar') }}</span>
@@ -134,7 +135,7 @@
             </div>
         </div>
     </div>
-
+    @if(!$staff->hasRole('Super-Admin'))
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">{{ __('Work Information') }}</h4>
@@ -179,7 +180,7 @@
                     </select>
                 </div>
 
-                <div class="input-area">
+                    <div class="input-area">
                     <label class="form-label" for="">
                         {{ __('Select Role:') }}
                         <span class="text-xs text-danger">*</span>
@@ -256,6 +257,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     <div class="card">
         <div class="card-header">
@@ -388,13 +390,13 @@
         <div class="card">
 
         <div class="card-header">
-            @if(auth()->user()->hasRole('Super-Admin'))
+            @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
                 <h4 class="card-title">{{ __('Attach Users') }}</h4>
             @endif
         </div>
         <div class="card-body p-6">
 {{--            <div class="grid lg:grid-cols-12 grid-cols-12 gap-5">--}}
-            @if(auth()->user()->hasRole('Super-Admin'))
+            @if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
                 <div class="input-area">
                     <label class="form-label">{{ __('Attach Users:') }}</label>
                     <select name="user_ids[]" class="select2 form-control w-full" multiple>
@@ -420,7 +422,7 @@
 
 </form>
 
-@if(auth()->user()->hasRole('Super-Admin'))
+@if(auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin'))
 
 <div class="card">
     <div class="card-body px-6 pt-3">

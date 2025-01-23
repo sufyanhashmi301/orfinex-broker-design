@@ -368,7 +368,7 @@ class WithdrawController extends Controller
         $user = User::find($transaction->user_id);
 //dd($input);
         $shortcodes = [
-            '[[full_name]]' => $user->full_name,
+            '[[full_name]]' => $transaction->user->full_name,
             '[[txn]]' => $transaction->tnx,
             '[[method_name]]' => $transaction->method,
             '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),

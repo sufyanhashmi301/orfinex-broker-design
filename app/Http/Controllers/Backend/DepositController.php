@@ -359,12 +359,12 @@ class DepositController extends Controller
             '[[deposit_amount]]' => $transaction->amount,
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
+            '[[message]]' => $approvalCause,
             '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
         ];
 
         if (isset($input['approve'])) {
-
+ 
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
                 $transaction->pay_amount = $input['final_amount'];
@@ -390,7 +390,8 @@ class DepositController extends Controller
             $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
             notify()->success('Reject successfully');
         }
-
+        $transaction->approval_cause = $approvalCause;
+        $transaction->save();
         $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.deposit.log'), $transaction->user->id);
         $this->smsNotify('user_manual_deposit_request', $shortcodes, $transaction->user->phone);
 

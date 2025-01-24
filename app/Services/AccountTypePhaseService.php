@@ -108,16 +108,25 @@ class AccountTypePhaseService
 
         // Get existing phase IDs
         $existingPhaseIds = $account_type->accountTypePhases->pluck('id')->toArray();
+        
+        // Deleting previous rules
+        foreach($existingPhaseIds as $phase_id) {
+            $rules = AccountTypePhaseRule::where('account_type_phase_id', $phase_id)->get();
+            foreach ($rules as $rule) {
+                $rule->delete();
+            }
+        }
 
         // Determine phases to delete
         $phasesToDelete = array_diff($existingPhaseIds, $submittedPhaseIds);
         AccountTypePhase::destroy($phasesToDelete);
 
+        
+
         // Loop through submitted phases to update or create them
         foreach ($phases as $phaseIndex => $phase) {
             // Update or create the phase
-            $phaseInstance = $account_type->accountTypePhases()->updateOrCreate(
-                ['id' => $phase['id'] ?? null],
+            $phaseInstance = $account_type->accountTypePhases()->create(
                 [
                     'type' => $phase['type'],
                     'phase_approval_method' => $phase['phase_approval_method'],
@@ -145,7 +154,7 @@ class AccountTypePhaseService
         $phase = AccountTypePhase::findOrFail($phase_id);
 
         // Get current rules and map their unique IDs by rule ID
-        $existingRules = $phase->accountTypePhaseRules->pluck('unique_id', 'id')->toArray();
+        // $existingRules = $phase->accountTypePhaseRules->pluck('unique_id', 'id')->toArray();
 
         // Loop through each rule and update or create it with the correct unique ID
         foreach ($rules as $index => $ruleData) {
@@ -153,8 +162,7 @@ class AccountTypePhaseService
             $unique_id = $uniqueIds[$index] ?? ('R-' . $this->generateUniqueId());
 
             // Update or create the rule with the determined unique ID
-            $phase->accountTypePhaseRules()->updateOrCreate(
-                ['id' => $ruleData['id'] ?? null],
+            $phase->accountTypePhaseRules()->create(
                 [
                     'unique_id' => $unique_id,
                     'allotted_funds' => $ruleData['allotted_funds'],
@@ -171,14 +179,7 @@ class AccountTypePhaseService
             );
         }
 
-        // Delete any rules in the database that weren’t in the submitted data
-        $rules_wrt_uniqueid = AccountTypePhaseRule::where('unique_id', 'R-14003')->get();
-
-        foreach($rules_wrt_uniqueid as $rule) {
-            if(!$rule->accountTypePhase) {
-                $rule->delete();
-            } 
-        }
+        
 
     }
 

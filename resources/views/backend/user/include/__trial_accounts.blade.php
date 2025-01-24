@@ -48,7 +48,7 @@
                                                   $investment->status == \App\Enums\InvestmentStatus::VIOLATED)
                                               {{-- check if the stats exists --}}
                                               @if (isset($stats) && count($hourly_stats) != 0)
-                                                  <a href="{{ route('user.investment.trading-stats', ['investment_id' => $investment->id]) }}"
+                                                  <a href="{{ route('user.investment.trading-stats', ['account_id' => $investment->id]) }}"
                                                       class="inline-flex justify-center">
                                                       <span class="flex items-center">
                                                           <span>{{ __('Trading Stats') }}</span>

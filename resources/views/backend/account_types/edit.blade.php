@@ -272,6 +272,7 @@
                 </div>
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
+                        <label for="" class="form-label">{{ __('Status') }}</label>
                         <div class="input-area">
                             <select name="status" class="form-control w-full" data-placeholder="Status">
                                 <option value="1" {{ $account_type->status == 1 ? 'selected' : '' }}>
@@ -281,9 +282,23 @@
                             </select>
                         </div>
                     </div>
-                    <div class="2xl:col-span-9 lg:col-span-8 col-span-12">
+                    <div class="2xl:col-span-9 lg:col-span-8 col-span-12" style="position: relative; top: 14px">
                         <div class="grid md:grid-cols-3 col-span-1 gap-5">
+
                             <div class="input-area">
+                                <div class="flex items-center space-x-3 flex-wrap">
+                                    <div class="form-switch ps-0" style="line-height:0;">
+                                        <input type="hidden" name="is_trial" value="0">
+                                        <label class="relative inline-flex h-6 w-[46px] items-center rounded-full transition-all duration-150 cursor-pointer">
+                                            <input type="checkbox" name="is_trial" value="1" class="sr-only peer" {{ $account_type->is_trial ? 'checked' : '' }}>
+                                            <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-0 rounded-full peer dark:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black-500"></span>
+                                        </label>
+                                    </div>
+                                    <label class="form-label !w-auto pt-0 !mb-0">{{ __('Allow Trial (Auto Expire after 14 days)') }}</label>
+                                </div>
+                            </div>
+
+                            <div class="input-area" style="display: none">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0">
                                         <input type="hidden" name="is_weekend_holding" value="0">
@@ -299,7 +314,7 @@
                                     <label class="form-label !w-auto">{{ __('Weekend Holding') }}</label>
                                 </div>
                             </div>
-                            <div class="input-area">
+                            <div class="input-area" style="display: none">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0">
                                         <input type="hidden" name="is_scalable" value="0">
@@ -314,7 +329,7 @@
                                     <label class="form-label !w-auto">{{ __('Scalable') }}</label>
                                 </div>
                             </div>
-                            <div class="input-area">
+                            <div class="input-area" style="display: none">
                                 <div class="flex items-center space-x-7 flex-wrap">
                                     <div class="form-switch ps-0">
                                         <input type="hidden" name="is_refundable" value="0">

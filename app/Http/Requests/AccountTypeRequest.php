@@ -37,6 +37,7 @@ class AccountTypeRequest extends FormRequest
             'leverage' => 'required',
             'is_scalable' => 'required',
             'is_weekend_holding' => 'required',
+            'is_trial' => 'required',
             'is_refundable' => 'required',
             'accounts_limit' => 'required|integer|min:1|max:50',
             'priority' => 'required|integer',

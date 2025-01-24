@@ -23,24 +23,23 @@
 </ul>
 
 <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
-    @foreach( json_decode($data->manual_field_data,true) as $name => $data)
+    @foreach( json_decode($data->manual_field_data,true) as $name => $field_data)
         <li class="list-group-item dark:text-slate-300 block py-2 px-3">
-            {{ $name }}: @if( $data['type'] == 'file' )
-                <img src="{{ asset($data['value']) }}" alt=""/>
+            {{ $name }}: @if( $field_data['type'] == 'file' )
+                <img src="{{ asset($field_data['value']) }}" alt=""/>
             @else
-                <strong>{{ $data['value'] }}</strong>
+                <strong>{{ $field_data['value'] }}</strong>
             @endif
         </li>
     @endforeach
 </ul>
-
 <form action="{{ route('admin.withdraw.action.now') }}" method="post" class="space-y-5">
     @csrf
     <input type="hidden" name="id" value="{{ $id }}">
 
     <div class="input-area">
         <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
-        <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message">{{$data->approval_cause }}</textarea>
+        <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message">{{ $data->approval_cause }}</textarea>
     </div>
 
     <div class="action-btns text-right">

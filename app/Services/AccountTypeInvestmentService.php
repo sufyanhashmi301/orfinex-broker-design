@@ -146,7 +146,7 @@ class AccountTypeInvestmentService
     
     $investment_snapshot = $this->saveInvestmentAttributesSnapshot($new_investment, $copy_snapshot_id);
     // Investment phase log
-    if($copy_snapshot_id == 0) {
+    if($copy_snapshot_id == 0 && !$is_trial) {
       AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::PAYMENT_APPROVE);
     }
      

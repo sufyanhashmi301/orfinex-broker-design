@@ -189,7 +189,7 @@
                 $('#newRule').show()
             }
 
-            $('#controlRoomModal').find('h3').text('Control Room for Phase ' + phase_data.attr('data-phase'));
+            $('#controlRoomModal').find('h3').text('Control Room for ' + $(this).parents('.account-type-phases').find('.card-title').text());
 
             $('.rules-table-container').find('.rulesTable').find('input').each(function() {
                 let dataValue = $(this).attr('data-value');

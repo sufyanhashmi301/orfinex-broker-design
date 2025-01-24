@@ -26,6 +26,7 @@ class AccountTypeInvestment extends Model
         'status',
         'violation_reason',
         'mail_sent',
+        'is_trial'
     ];
 
     /**
@@ -65,6 +66,10 @@ class AccountTypeInvestment extends Model
 
     public function contract() {
         return $this->hasOne(Contract::class);
+    }
+
+    public function accountTrial() {
+        return $this->hasOne(AccountTrial::class);
     }
 
 

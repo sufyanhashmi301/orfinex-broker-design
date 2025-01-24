@@ -2,18 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Enums\TxnStatus;
+use Carbon\Carbon;
 use App\Models\User;
-use App\Models\AccountType;
-use App\Models\AccountTypeInvestment;
 use App\Models\Addon;
 use App\Models\Setting;
+use App\Enums\TxnStatus;
+use App\Models\AccountType;
 use App\Models\Transaction;
+use App\Models\AccountTrial;
+use Illuminate\Http\Request;
+use App\Enums\InvestmentStatus;
+use App\Services\AccountBuyService;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AccountTypeInvestment;
+use App\Services\AccountActivityService;
+use App\Services\AccountTypeInvestmentService;
+use App\Services\AccountTypeInvestmentPaymentService;
 
 class AccountBuyController extends Controller
 {
+
+    protected $account_buy;
+    protected $account;
+    protected $account_payment;
+
+    public function __construct(AccountBuyService $account_buy, AccountTypeInvestmentService $account, AccountTypeInvestmentPaymentService $account_payment) {
+        $this->account_buy = $account_buy;
+        $this->account = $account;
+        $this->account_payment = $account_payment;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +50,9 @@ class AccountBuyController extends Controller
         
         $failed_transactions = Transaction::where('user_id', Auth::id())->where('status', TxnStatus::Failed)->get();
 
-        return view('frontend::account_buy.index', compact('account_types', 'failed_transactions'));
+        $trial_used = AccountTrial::where('user_id', Auth::id())->where('trial_used', 1)->exists();
+
+        return view('frontend::account_buy.index', compact('account_types', 'failed_transactions', 'trial_used'));
     }
 
     /**
@@ -62,26 +82,70 @@ class AccountBuyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $account_type = AccountType::find($id);
 
         // Creation limit error
-        $no_of_accounts = AccountTypeInvestment::where('user_id', Auth::id())
-                                                ->whereHas('accountTypeInvestmentSnapshot', function ($query) use ($account_type) {
-                                                    $query->whereJsonContains('account_types_data->id', $account_type->id);
-                                                })->get();
-
-        $failed_transactions = Transaction::where('user_id', Auth::id())->where('status', TxnStatus::Failed)->get();
-        $exclude_limit = count(array_intersect($failed_transactions->pluck('target_id')->toArray(), $no_of_accounts->pluck('id')->toArray()));                                                            
-        if((count($no_of_accounts) - $exclude_limit) >= $account_type->accounts_limit) {
+        $account_creation_limit = $this->account_buy->checkAccountCreationLimit($id);
+        if(!$account_creation_limit) {
             abort(403);
         }
+
+        // Check Status
+        if($account_type->status == 0) {
+            abort(403);
+        }
+
+        // Check Free trial
+        $trial_used = AccountTrial::where('user_id', Auth::id())->where('trial_used', 1)->exists();
+        if($request->action == 'free_trial' && $trial_used) {
+            abort(403);
+        } 
 
         $addons = Addon::where('status', 1)->get();
         $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_purchase%')->get();
 
         return view('frontend::account_buy.show', compact('account_type', 'addons', 'legal_links'));
+    }
+
+    /**
+     * Granting free trial to user
+     */
+    public function freeTrial(Request $request, $id) {
+
+        $account_type = AccountType::findOrFail($id);
+        $trial_used = AccountTrial::where('user_id', Auth::id())->where('trial_used', 1)->exists();
+        
+        // Check that trial must not be used before and account type allows trial
+        if($trial_used || $account_type->is_trial == 0) {
+            abort(403);
+        } 
+
+        // Create Account
+        $account = $this->account->createInvestment($request, 0, true);
+
+        // Create Trial Entry
+        AccountTrial::create([
+            'user_id' => Auth::id(),
+            'account_type_investment_id' => $account->id,
+            'trial_expiry_at' => Carbon::now()->addDays(15),
+            'trial_used' => 1,
+        ]);
+
+        // Approve Account
+        $account_approved = $this->account_payment->investmentActive($account->id);
+
+        // Notify user
+        if($account_approved->status == InvestmentStatus::ACTIVE) {
+            AccountActivityService::log($account_approved, 'Trial Active');
+            notify()->success('Your 14 days free trial has been started', 'Congratulations');
+        } else {
+            notify()->error('Unknown Error Occured. Trial account will be active soon.', 'Error');
+        }
+
+        return redirect()->route('user.investments.index');
+
     }
 
     /**

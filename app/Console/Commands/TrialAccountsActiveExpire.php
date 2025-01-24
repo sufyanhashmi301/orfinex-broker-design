@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Carbon\Carbon;
+use App\Models\AccountTrial;
+use App\Enums\InvestmentStatus;
+use Illuminate\Console\Command;
+use App\Services\ForexApiService;
+use App\Models\AccountTypeInvestment;
+use App\Services\AccountActivityService;
+use App\Services\AccountTypeInvestmentPaymentService;
+
+class TrialAccountsActiveExpire extends Command
+{
+
+    protected $account_payment;
+    protected $forexApiService;
+
+    public function __construct(AccountTypeInvestmentPaymentService $account_payment, ForexApiService $forexApiService) {
+        parent::__construct();
+        $this->account_payment = $account_payment;
+        $this->forexApiService = $forexApiService;
+    }
+
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'trial-accounts:active-or-expire';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'This command will run every 2 minutes to active any pending trial accounts or expire trial accounts.';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
+    public function handle()
+    {
+        $trial_accounts = AccountTypeInvestment::where('is_trial', 1)->get();
+
+        foreach($trial_accounts as $account) {
+            // Active if pending and reset expiry date
+            if($account->status == InvestmentStatus::PENDING) {
+                $account_approved = $this->account_payment->investmentActive($account->id);
+                if($account_approved->status == InvestmentStatus::ACTIVE) {
+                    AccountActivityService::log($account_approved, 'Trial Active');
+                    AccountTrial::where('account_type_investment_id', $account->id)->first()->update(['trial_expiry_at' => Carbon::now()->addDays(15)]);
+                } 
+            }
+
+            // Expire if active and date is arrived
+            if($account->status == InvestmentStatus::ACTIVE) {
+                $expiry = Carbon::parse($account->accountTrial->trial_expiry_at);
+                if($expiry->lessThanOrEqualTo(Carbon::today())) {
+
+                    $data = [
+                    'login' => $account->login,
+                    'Amount' => $account->accountTypeInvestmentStat->balance,
+                    'type' => 0, //deposit
+                    'TransactionComments' => 'Account Violated'
+                    ];
+                
+                    $response = $this->forexApiService->balanceOperation($data);
+
+                    $account->update([
+                        'status' => InvestmentStatus::EXPIRED
+                    ]);
+
+                    $account->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
+                    AccountActivityService::log($account, 'Trial Expired');
+                }
+            }
+
+        }
+
+        return Command::SUCCESS;
+    }
+}

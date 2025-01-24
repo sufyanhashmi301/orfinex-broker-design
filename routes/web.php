@@ -95,6 +95,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     // Account Buy
     Route::get('account/buy', [AccountBuyController::class, 'index'])->name('account.buy');
     Route::get('account/buy/{id}', [AccountBuyController::class, 'show'])->name('account.show');
+    Route::post('account/trial/{id}', [AccountBuyController::class, 'freeTrial'])->name('account.free_trial');
 
     // Contract Agreement
     Route::get('agreements', function () {

@@ -95,10 +95,24 @@
                                     }
                                 @endphp
                                 <button class="text-right text-slate-900 btn btn-sm {{ $status_btn_style }}">
-                                    {{ $investment->status }}
+
+                                       {{ $investment->is_trial == 1 ? 'Trial ' : '' }} {{ $investment->status }}
+                                  
                                 </button>
                             </div>
                         </li>
+                        @if ($investment->is_trial == 1)
+                            <li class="text-sm block py-[8px]">
+                                <div class="flex justify-between space-x-2 rtl:space-x-reverse">
+                                    <span class="text-left text-slate-700">
+                                        Trial Expiry Date
+                                    </span>
+                                    <span class="text-right text-slate-900">
+                                        {{ date('jS F, Y', strtotime($investment->accountTrial->trial_expiry_at)) }}
+                                    </span>
+                                </div>
+                            </li>
+                        @endif
                         @if ($investment->status == \App\Enums\InvestmentStatus::VIOLATED)
                             <li class="text-sm block py-[8px]">
                                 <div class="flex justify-between space-x-2 rtl:space-x-reverse">

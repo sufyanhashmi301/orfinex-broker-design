@@ -220,6 +220,11 @@ class AccountTypeInvestmentPaymentService
 
     $investment = AccountTypeInvestment::findOrFail($account_type_investment_id);
 
+    $is_trial = false;
+    if($investment->is_trial == 1) {
+      $is_trial = true;
+    }
+
     // set the snapshot data of the investment
     $snapshot = $investment->accountTypeInvestmentSnapshot;
     $this->accountTypeData = $investment->getAccountTypeSnapshotData();
@@ -256,13 +261,15 @@ class AccountTypeInvestmentPaymentService
       $investment->save();
 
       // apply commissions
-      $this->affiliate->applyCommission($investment);
+      if(!$is_trial) {
+        $this->affiliate->applyCommission($investment);
+      }
 
       // send mail if user promoted to next phase -> Moved to commands
       // $this->doEmail('phase_promotion_email', $investment, $data);
 
       // Funded Phase - Contract Creation
-      if($this->phaseData['type'] == AccountTypePhaseEnum::FUNDED) {
+      if($this->phaseData['type'] == AccountTypePhaseEnum::FUNDED && !$is_trial) {
         if(!Contract::where('account_type_investment_id', $investment->id)->exists()){
           $this->contract->createContract($investment);
           $email_data = [
@@ -273,9 +280,14 @@ class AccountTypeInvestmentPaymentService
       }
 
       // send email to user only if approved by admin and not phase promotion, 
-      if(!$is_phase_promotion && $this->phaseData['type'] != AccountTypePhaseEnum::FUNDED) {
+      if(!$is_phase_promotion && $this->phaseData['type'] != AccountTypePhaseEnum::FUNDED && !$is_trial) {
         $this->doEmail('new_account_email', $investment);
       }
+
+      // send email to user if it is a trial account
+      // if($is_trial) {
+      //   $this->doEmail('new_account_trial_email', $investment);
+      // }
     
 
     }
@@ -292,20 +304,21 @@ class AccountTypeInvestmentPaymentService
    */
   private function doEmail($slug, $investment, $data = []) {
     
+    $new_account_shortcodes = [
+      '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
+      '[[account_login]]' => $investment->login,
+      '[[account_password]]' => $investment->main_password,
+      '[[server]]' => setting('live_server', 'platform_api'),
+    ];
+
     // New account Email
     if($slug == "new_account_email") {
-      $shortcodes2 = [
-        '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
-        '[[account_login]]' => $investment->login,
-        '[[account_password]]' => $investment->main_password,
-        '[[server]]' => setting('live_server', 'platform_api'),
-      ];
-      $this->mailNotify($investment->user->email, 'new_account_details', $shortcodes2);
+      $this->mailNotify($investment->user->email, 'new_account_details', $new_account_shortcodes);
     }
 
     // Pending Contract Email
     if($slug == 'pending_contract_email') {
-      $shortcodes2 = [
+      $shortcodes = [
         '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
         '[[account_login]]' => $investment->login,
         '[[account_password]]' => $investment->main_password,
@@ -313,7 +326,11 @@ class AccountTypeInvestmentPaymentService
         '[[phase_step]]' => $data['passed_phase_step'] == AccountTypePhaseEnum::EVALUATION ? 'Evaluation' : 'Verification',
         '[[site_title]]' => setting('site_title', 'global'),
       ];
-      $mail = $this->mailNotify($investment->user->email, 'contract_pending', $shortcodes2);
+      $mail = $this->mailNotify($investment->user->email, 'contract_pending', $shortcodes);
+    }
+
+    if($slug == 'new_account_trial_email') {
+      $this->mailNotify($investment->user->email, 'new_account_trial', $new_account_shortcodes);
     }
 
     //  Promotion Email

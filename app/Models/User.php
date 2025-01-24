@@ -95,6 +95,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function accountTypeInvestment() {
         return $this->hasMany(AccountTypeInvestment::class);
     }
+
+    public function accountTrial() {
+        return $this->hasOne(AccountTrial::class);
+    }
     // Optimization ----
 
     /**

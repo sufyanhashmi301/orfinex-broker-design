@@ -40,8 +40,8 @@ class PromoteOrViolateAccount extends Command
     {
         // check the stats of all the users to see if they require promotion or violation
 
-        // get all the accounts 
-        $all_accounts = AccountTypeInvestment::all();
+        // get all the accounts except the trial ones
+        $all_accounts = AccountTypeInvestment::where('is_trial', '!=', 1)->get();
 
         // delete all accounts that do not have login id assigned and the status is set as active
         foreach($all_accounts as $account) {

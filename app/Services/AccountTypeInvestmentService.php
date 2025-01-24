@@ -86,7 +86,7 @@ class AccountTypeInvestmentService
   /**
    * Create an investment
    */
-  public function createInvestment($data, $copy_snapshot_id = 0) {
+  public function createInvestment($data, $copy_snapshot_id = 0, $is_trial = false) {
 
     
 
@@ -129,7 +129,8 @@ class AccountTypeInvestmentService
           'trader_type' => $rule->accountTypePhase->accountType->trader_type,
           'platform_group' => $rule->accountTypePhase->accountType->platform_group,
           'total' => $total_amount - $rule->discount,
-          'status' => InvestmentStatus::PENDING
+          'status' => InvestmentStatus::PENDING,
+          'is_trial' => $is_trial ? 1 : 0
       ];
     }
 
@@ -296,6 +297,10 @@ class AccountTypeInvestmentService
           $investment->status = InvestmentStatus::PASSED;
         }
 
+        if($investment->is_trial == 1) {
+          $investment->status = InvestmentStatus::ACTIVE;
+        }
+
         // create a new investment with new account for next phase if the account_type type is "challenge"
         $account_type_type = $investment->getAccountTypeSnapshotData()['type'];
         if($account_type_type == "challenge"){
@@ -316,6 +321,11 @@ class AccountTypeInvestmentService
    * Promotion to next phase
    */
   public function promoteToNextPhase($passed_investment) {
+
+    // skip if trial
+    if($passed_investment->is_trial == 1) {
+      return true;
+    }
 
     $snapshot = AccountTypeInvestmentSnapshot::where('account_type_investment_id', $passed_investment->id)->first();
     $all_phases_of_investment_account_type = $snapshot->account_types_phases_data;
@@ -409,6 +419,11 @@ class AccountTypeInvestmentService
    * Violation Occured
    */
   public function violatePhase($violate_investment, $reason) {
+
+    // skip if trial
+    if($violate_investment->is_trial == 1) {
+      return true;
+    }
 
     // skip if the account is already violated
     if($violate_investment->status == InvestmentStatus::VIOLATED) {

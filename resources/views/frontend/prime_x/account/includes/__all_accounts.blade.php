@@ -49,13 +49,30 @@
                                         
                                     @endphp
                                     <tr>
-                                        <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
+                                        <td class="table-td">{{ $accountTypeData['title'] ?? '' }} 
+                                            @if ($investment->is_trial == 1 && $investment->status == \App\Enums\InvestmentStatus::EXPIRED)
+                                                <span class="badge badge-danger ml-2">Trial Expired</span>
+                                            @elseif ($investment->is_trial == 1)
+                                                <span class="badge badge-warning ml-2">Trial Account 
+                                                    @if ($investment->status == \App\Enums\InvestmentStatus::ACTIVE)
+                                                        - {{ \Carbon\Carbon::parse($investment->accountTrial->trial_expiry_at)->diffInDays(\Carbon\Carbon::now()) }} days left
+                                                    @endif
+                                                    
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="table-td">{{ $investment->login ?? 'N/A'}}</td>
                                         <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td>
-                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ str_replace('_', ' ', $phaseData['type']) }}</span></td>
+                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ $investment->is_trial == 1 ? 'Trial Phase' : str_replace('_', ' ', $phaseData['type']) }}</span></td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase {{ $phaseData['phase_step'] }}</span></td>
                                         <td class="table-td">{{ $phase_started_at }}</td>
-                                        <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ $contract_pending == true ? 'Pending' : $investment->status  }}</span></td>
+                                        <td class="table-td">
+                                            <span class="badge bg-primary" style="color: #fff">
+                                                
+                                                {{ $investment->is_trial == 1 ? 'Trial ' : '' }} {{ $contract_pending == true ? 'Pending' : $investment->status  }}
+                                                
+                                            </span>
+                                        </td>
                                         <td class="table-td">
                                             @if (
                                                 ($investment->status == \App\Enums\InvestmentStatus::ACTIVE || 
@@ -85,9 +102,15 @@
                                                 @endif
                                                
                                             @else
-                                                <span class="flex items-center">
-                                                    <span>{{ __('-') }}</span>
-                                                </span>
+
+                                                @if ($investment->status == \App\Enums\InvestmentStatus::PENDING && $investment->is_trial == 1)
+                                                    Available Soon
+                                                @else
+                                                    <span class="flex items-center">
+                                                        <span>{{ __('-') }}</span>
+                                                    </span>
+                                                @endif
+                                                
                                             @endif
                                             
                                         </td>

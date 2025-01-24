@@ -44,16 +44,20 @@
         </div>
     </div>
 
+    @php
+        $is_trial = (request()->query('action') === 'free_trial')
+    @endphp
     <div class="grid grid-cols-12 gap-5">
         <div class="lg:col-span-8 col-span-12">
             <div class="card">
                 <div class="card-body p-6">
-                    <form action="{{ route('user.investment.store') }}" method="post" enctype="multipart/form-data"
+                    <form action="{{ $is_trial ? route('user.account.free_trial', ['id' => $account_type->id]) : route('user.investment.store') }}" method="post" enctype="multipart/form-data"
                         id="payment-form" class="space-y-6">
                         @csrf
                         <input type="hidden" id="scheme_type" value="{{ the_hash($account_type->forexSchemaPhase1->type) }}">
                         <input type="hidden" id="discount-id" name="discount_id" >
                         <input type="hidden" id="addon-ids" name="addons" value="">
+                        <input type="hidden" name="free_trial" value="{{ $is_trial ? true : false }}" >
                         <div class="input-area relative">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-none mb-3">
                                 {{ __('Allocated Funds') }}
@@ -163,61 +167,62 @@
                             </div>
                         </div>
 
-                        {{-- Your Static Code for Addons --}}
-                        <div class="input-area relative">
-                            <div class="mb-3">
-                                <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
-                                    {{ __('Addons') }}</p>
-                                <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
-                                    {{ __('Tailor your account to suit your trading style and preference.') }}</p>
-                            </div>
-                            <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
-                                
-                                @forelse ($addons as $addon)
-                                    <div class="checkbox-area success-checkbox">
-                                        <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                            <input type="checkbox" class="hidden addon-checkbox" data-id="{{ $addon->id }}" data-amount="{{ $addon->amount }}" data-amount-type="{{ $addon->amount_type }}"  >
-                                            <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                                <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
-                                            </span>
-                                            <span class="flex-1 inline-flex justify-between items-center">
-                                                <span class="leading-none">
-                                                    <span class="leading-none dark:text-white text-sm block mb-1">{{ $addon->name }}</span>
-                                                    <small class="leading-none dark:text-slate-100 text-xs">{{ $addon->description }}</small>
+                        @if (!$is_trial)
+                            {{--  Addons --}}
+                            <div class="input-area relative">
+                                <div class="mb-3">
+                                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
+                                        {{ __('Addons') }}</p>
+                                    <p class="text-xs text-slate-600 dark:text-slate-100 leading-none">
+                                        {{ __('Tailor your account to suit your trading style and preference.') }}</p>
+                                </div>
+                                <div class="grid md:grid-cols-2 grid-cols-1 gap-5">
+                                    
+                                    @forelse ($addons as $addon)
+                                        <div class="checkbox-area success-checkbox">
+                                            <label class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
+                                                <input type="checkbox" class="hidden addon-checkbox" data-id="{{ $addon->id }}" data-amount="{{ $addon->amount }}" data-amount-type="{{ $addon->amount_type }}"  >
+                                                <span class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                    <img src="{{ asset('images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
                                                 </span>
-                                                <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">+{{ $addon->amount }}{{ $addon->amount_type == 'fixed' ? ' ' . $currency : '%' }}</span>
-                                            </span>
-                                        </label>
-                                    </div>
-                                @empty
-                                    <div class="checkbox-area success-checkbox">
-                                        <label
-                                            class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
-                                            <input type="checkbox" class="hidden addon-checkbox" id="no-addons"
-                                                data-amount="0" checked="checked">
-                                            <span
-                                                class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
-                                                <img src="{{ asset('images/icon/ck-white.svg') }}" alt=""
-                                                    class="h-[10px] w-[10px] block m-auto opacity-0">
-                                            </span>
-                                            <span class="flex-1 inline-flex justify-between items-center">
-                                                <span class="leading-none">
-                                                    <span
-                                                        class="leading-none dark:text-white text-sm block mb-1">{{ __('No addons') }}</span>
-                                                    <small
-                                                        class="leading-none dark:text-slate-100 text-xs">{{ __('No available') }}</small>
+                                                <span class="flex-1 inline-flex justify-between items-center">
+                                                    <span class="leading-none">
+                                                        <span class="leading-none dark:text-white text-sm block mb-1">{{ $addon->name }}</span>
+                                                        <small class="leading-none dark:text-slate-100 text-xs">{{ $addon->description }}</small>
+                                                    </span>
+                                                    <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">+{{ $addon->amount }}{{ $addon->amount_type == 'fixed' ? ' ' . $currency : '%' }}</span>
                                                 </span>
+                                            </label>
+                                        </div>
+                                    @empty
+                                        <div class="checkbox-area success-checkbox">
+                                            <label
+                                                class="w-full inline-flex items-center cursor-pointer p-3 rounded border dark:border-slate-700">
+                                                <input type="checkbox" class="hidden addon-checkbox" id="no-addons"
+                                                    data-amount="0" checked="checked">
                                                 <span
-                                                    class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
-                                            </span>
-                                        </label>
-                                    </div>
-                                @endforelse
-                                
-                                                              
+                                                    class="h-4 w-4 border flex-none border-slate-100 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                                    <img src="{{ asset('images/icon/ck-white.svg') }}" alt=""
+                                                        class="h-[10px] w-[10px] block m-auto opacity-0">
+                                                </span>
+                                                <span class="flex-1 inline-flex justify-between items-center">
+                                                    <span class="leading-none">
+                                                        <span
+                                                            class="leading-none dark:text-white text-sm block mb-1">{{ __('No addons') }}</span>
+                                                        <small
+                                                            class="leading-none dark:text-slate-100 text-xs">{{ __('No available') }}</small>
+                                                    </span>
+                                                    <span
+                                                        class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">{{ __('N/A') }}</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    @endforelse
+                                    
+                                                                
+                                </div>
                             </div>
-                        </div>
-
+                        @endif
                     </form>
                 </div>
             </div>
@@ -226,44 +231,45 @@
         {{-- Price, Discount, and Total Section --}}
         <div class="lg:col-span-4 col-span-12">
             <div class="card order-info p-6 rounded-lg">
-                <div class="input-area">
-                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
-                        {{ __('Discount Code') }}</p>
-                    <div class="input-group">
-                        <input type="text" id="discount-code" class="form-control"
-                            placeholder="{{ __('Enter discount code') }}">
-                        <button type="button" class="btn btn-primary" id="verify-discount">{{ __('Verify') }}</button>
+
+                @if (!$is_trial)
+                    <div class="input-area">
+                        <p class="text-slate-900 dark:text-white text-sm font-medium leading-none mb-1">
+                            {{ __('Discount Code') }}</p>
+                        <div class="input-group">
+                            <input type="text" id="discount-code" class="form-control"
+                                placeholder="{{ __('Enter discount code') }}">
+                            <button type="button" class="btn btn-primary" id="verify-discount">{{ __('Verify') }}</button>
+                        </div>
+                        <p class="text-sm mt-2" id="discount-message"></p>
                     </div>
-                    <p class="text-sm mt-2" id="discount-message"></p>
-                </div>
+                    <ul class="space-y-3 border-b dark:border-slate-700 pb-5">
+                        <li class="flex items-center justify-between text-base">
+                            <span>{{ __('Price') }}</span>
+                            <span class="price-display">{{ '' }}</span>
+                        </li>
+                        <li class="flex items-center justify-between text-base">
+                            <span>{{ __('Addons') }}</span>
+                            <span class="addons-display">{{ '' }}</span>
+                        </li>
+                        <li class="flex items-center justify-between text-base">
+                            <span>{{ __('Discount') }}</span>
+                            <span class="discount-display">{{ '' }}</span>
+                        </li>
+                        <li class="flex items-center justify-between text-base">
+                            <span>{{ __('Coupon Discount') }}</span>
+                            <span class="coupon-discount-display">{{ '' }}</span>
+                        </li>
 
-
-
-                <ul class="space-y-3 border-b dark:border-slate-700 pb-5">
-                    <li class="flex items-center justify-between text-base">
-                        <span>{{ __('Price') }}</span>
-                        <span class="price-display">{{ '' }}</span>
-                    </li>
-                    <li class="flex items-center justify-between text-base">
-                        <span>{{ __('Addons') }}</span>
-                        <span class="addons-display">{{ '' }}</span>
-                    </li>
-                    <li class="flex items-center justify-between text-base">
-                        <span>{{ __('Discount') }}</span>
-                        <span class="discount-display">{{ '' }}</span>
-                    </li>
-                    <li class="flex items-center justify-between text-base">
-                        <span>{{ __('Coupon Discount') }}</span>
-                        <span class="coupon-discount-display">{{ '' }}</span>
-                    </li>
-
-                </ul>
-                <div class="pricing-amount py-5 border-b dark:border-slate-700 mb-5">
-                    <div class="amount flex items-center justify-between text-slate-900 dark:text-white">
-                        <span>{{ __('Total Amount') }}</span>
-                        <span class="total-display order-info__total text-xl font-semibold">{{ '' }}</span>
+                    </ul>
+                    <div class="pricing-amount py-5 border-b dark:border-slate-700 mb-5">
+                        <div class="amount flex items-center justify-between text-slate-900 dark:text-white">
+                            <span>{{ __('Total Amount') }}</span>
+                            <span class="total-display order-info__total text-xl font-semibold">{{ '' }}</span>
+                        </div>
                     </div>
-                </div>
+                @endif
+
                 <div class="order__discount-code space-y-4 mb-10">
                     <p class="text-sm font-medium dark:text-slate-100 mb-1">
                         {{ __('Please review the following policies before proceeding:') }}
@@ -298,115 +304,6 @@
                             @endif
                             
                         @endforeach
-
-                        {{-- @if (setting('terms_and_conditions_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('terms_and_conditions_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">Terms and Conditions</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif --}}
-                        {{-- @if (setting('privacy_policy_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('privacy_policy_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('Privacy Policy') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('client_agreement_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('client_agreement_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('Client Agreement') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('complaints_handling_policy_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('complaints_handling_policy_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('Complaints Handling Policy') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('cookies_policy_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('cookies_policy_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('Cookies Policy') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('IB_partner_agreement_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('IB_partner_agreement_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('IB Partner Agreement') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('order_execution_policy_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('order_execution_policy_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('Order Execution Policy') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('risk_disclosure_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('risk_disclosure_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('Risk Disclosure') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif
-                        @if (setting('US_clients_policy_show', 'document_links', false))
-                            <li>
-                                <a href="{{ setting('US_clients_policy_link', 'document_links', 'javascript:void(0);') }}"
-                                    class="inline-flex items-center justify-between text-sm w-full">
-                                    <div class="flex items-center">
-                                        <iconify-icon class="text-base mr-1" icon="lucide:file-text"></iconify-icon>
-                                        <span class="underline">{{ __('US Clients Policy') }}</span>
-                                    </div>
-                                    <iconify-icon class="text-lg" icon="lucide:chevron-right"></iconify-icon>
-                                </a>
-                            </li>
-                        @endif --}}
                     </ul>
                     <div class="form-group text-start">
                         <div class="flex w-full items-start">
@@ -417,22 +314,47 @@
                             </label>
                         </div>
                         <span class="text-sm text-primary hidden" id="term-validation">
-                            {{ __('kindly accept the terms &amp; conditions for proceeding') }}
+                            {{ __('kindly accept the terms & conditions for proceeding') }}
                         </span>
                     </div>
                 </div>
-                <a href="javascript:;"
-                    class="btn btn-primary inline-flex items-center justify-center w-full proceed-payment">
-                    {{ __('Proceed With Payment') }}
-                </a>
+
+                @if (!$is_trial)
+                    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center w-full proceed-payment">
+                        {{ __('Proceed With Payment') }}
+                    </a>
+                @else
+                    <a href="javascript:;" class="btn btn-primary inline-flex items-center justify-center w-full free-trial">
+                        {{ __('Start Free Trial') }}
+                    </a>
+                @endif
 
             </div>
         </div>
     </div>
+
+    <style>
+        a.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    </style>
 @endsection
 
 @section('script')
     <script>
+
+        $('.free-trial').on('click', function() {
+            if (!$('#checkbox-terms').is(':checked')) {
+                // Checkbox is not checked, show error message in red
+                $('#term-validation').removeClass('hidden').css('color', 'red');
+                return false
+            }
+
+            $(this).addClass('disabled')    
+            $('#payment-form').submit();
+        })
+
         $(document).ready(function() {
             let discountAmount = 0;
             let discountType = null; // This will store the type of discount ('percentage' or 'fixed')

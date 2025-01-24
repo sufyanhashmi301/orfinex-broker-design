@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Enums\ContractStatusEnums;
+use App\Enums\InvestmentStatus;
 use App\Models\AccountOpenPosition;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
@@ -94,7 +95,7 @@ class TradingStatsController extends Controller
         $account = AccountTypeInvestment::find($account_id);
 
         // if the account does not belong to the auth user
-        if($account->user->id != Auth::id()) {
+        if($account->user->id != Auth::id() || $account->status == InvestmentStatus::EXPIRED) {
             abort(403);
         }
 

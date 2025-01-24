@@ -82,6 +82,11 @@
                     <a href="{{route('user.account.show',$account_type->id)}}" class="btn inline-flex justify-center btn-primary w-full mt-5">
                         {{ __('Buy Now') }}
                     </a>
+                    @if ($account_type->is_trial == 1 && !$trial_used)
+                        <a href="{{route('user.account.show',['id' => $account_type->id, 'action' => 'free_trial'])}}" class="btn inline-flex justify-center btn-primary w-full mt-2">
+                            {{ __('Start Free Trial') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         @endforeach

@@ -40,6 +40,9 @@ class Kernel extends ConsoleKernel
 
         // Contracts Expiry Scheduler
         $schedule->command('check:contract-expiry')->daily();
+
+        // Trial Active and Expiry
+        $schedule->command('trial-accounts:active-or-expire')->everyTwoMinutes();
         
     }
 

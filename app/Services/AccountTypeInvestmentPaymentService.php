@@ -285,9 +285,9 @@ class AccountTypeInvestmentPaymentService
       }
 
       // send email to user if it is a trial account
-      // if($is_trial) {
-      //   $this->doEmail('new_account_trial_email', $investment);
-      // }
+      if($is_trial) {
+        $this->doEmail('trial_activation_email', $investment);
+      }
     
 
     }
@@ -304,21 +304,22 @@ class AccountTypeInvestmentPaymentService
    */
   private function doEmail($slug, $investment, $data = []) {
     
-    $new_account_shortcodes = [
+    $shortcodes = [
       '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
       '[[account_login]]' => $investment->login,
       '[[account_password]]' => $investment->main_password,
       '[[server]]' => setting('live_server', 'platform_api'),
+      '[[site_title]]' => setting('site_title', 'global')
     ];
 
     // New account Email
     if($slug == "new_account_email") {
-      $this->mailNotify($investment->user->email, 'new_account_details', $new_account_shortcodes);
+      $this->mailNotify($investment->user->email, 'new_account_details', $shortcodes);
     }
 
     // Pending Contract Email
     if($slug == 'pending_contract_email') {
-      $shortcodes = [
+      $shortcodes2 = [
         '[[full_name]]' => $investment->user->first_name . ' ' . $investment->user->last_name,
         '[[account_login]]' => $investment->login,
         '[[account_password]]' => $investment->main_password,
@@ -326,11 +327,14 @@ class AccountTypeInvestmentPaymentService
         '[[phase_step]]' => $data['passed_phase_step'] == AccountTypePhaseEnum::EVALUATION ? 'Evaluation' : 'Verification',
         '[[site_title]]' => setting('site_title', 'global'),
       ];
-      $mail = $this->mailNotify($investment->user->email, 'contract_pending', $shortcodes);
+      $mail = $this->mailNotify($investment->user->email, 'contract_pending', $shortcodes2);
     }
 
-    if($slug == 'new_account_trial_email') {
-      $this->mailNotify($investment->user->email, 'new_account_trial', $new_account_shortcodes);
+    if($slug == 'trial_activation_email') {
+      $shortcodes['[[package_name]]'] = $investment->getAccountTypeSnapshotData()['title'];
+      $shortcodes['[[expiry_days]]'] = setting('auto_expire_expiry_days');
+      $shortcodes['[[expiry_date]]'] = date('jS F, Y', strtotime($investment->accountTrial->trial_expiry_at));
+      $this->mailNotify($investment->user->email, 'trial_activation', $shortcodes);
     }
 
     //  Promotion Email

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountBuyController;
+use App\Http\Controllers\AccountTrialController;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
@@ -95,7 +96,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     // Account Buy
     Route::get('account/buy', [AccountBuyController::class, 'index'])->name('account.buy');
     Route::get('account/buy/{id}', [AccountBuyController::class, 'show'])->name('account.show');
-    Route::post('account/trial/{id}', [AccountBuyController::class, 'freeTrial'])->name('account.free_trial');
+    Route::post('account/trial/{id}', [AccountTrialController::class, 'freeTrial'])->name('account.free_trial');
 
     // Contract Agreement
     Route::get('agreements', function () {

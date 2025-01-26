@@ -47,7 +47,7 @@ class PromoteOrViolateAccount extends Command
         foreach($all_accounts as $account) {
             if($account->login == null && $account->status == InvestmentStatus::ACTIVE) {
                 $account->accountTypeInvestmentSnapshot()->delete();
-                $account->accountTypeInvestmentPhaseApproval()->delete();
+                $account->accountActivities()->delete();
                 $account->delete();
             }
         }        

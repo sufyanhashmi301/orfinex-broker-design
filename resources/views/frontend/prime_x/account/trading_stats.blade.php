@@ -34,7 +34,7 @@
     </style>
 @endpush
 @section('content')
-
+    
     <div class="grid grid-cols-12 gap-5 mb-5">
         <div class="lg:col-span-5 col-span-12">
             <div class="card h-full">

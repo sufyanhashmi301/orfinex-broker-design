@@ -3,7 +3,7 @@
     {{ __('My Accounts') }}
 @endsection
 @section('content')
-    <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
+    {{-- <div class="innerMenu flex justify-between flex-wrap items-center gap-5 mb-5">
         <ul class="nav nav-tabs custom-tabs inline-flex items-center overflow-hidden rounded list-none border-0 pl-0" id="tabs-tab" role="tablist">
             <li class="nav-item" role="presentation">
                 <a href="#tabs-realAccounts"
@@ -49,17 +49,9 @@
                 </span>
             </a>
         </div>
-    </div>
-    <div class="grid grid-cols-12 gap-6">
-        <div class="col-span-12">
-            <div class="tab-content" id="trading-accounts">
-                <div class="tab-pane fade show active" id="tabs-realAccounts" role="tabpanel" aria-labelledby="tabs-realAccounts-tab">
-                    @include('frontend::account.includes.__all_accounts')
-                </div>
-            </div>
-        </div>
-    </div>
+    </div> --}}
 
+    @include('frontend::account.includes.__all_accounts')
 
 @endsection
 

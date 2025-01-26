@@ -2,6 +2,7 @@
 namespace Database\Seeders;
 
 use App\Models\EmailTemplate;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -563,7 +564,7 @@ Best regards, Support.',
                 'button_link' => url('/').'/login',
                 'footer_status' => 0,
                 'footer_body' => '',
-                'bottom_status' => 1,
+                'bottom_status' => 0,
                 'bottom_title' => '',
                 'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]","[[account_login]]","[[account_password]]", "[[server]]"]',
@@ -600,7 +601,7 @@ Trade smart,
                 'button_link' => url('/').'/login',
                 'footer_status' => 0,
                 'footer_body' => '',
-                'bottom_status' => 1,
+                'bottom_status' => 0,
                 'bottom_title' => '',
                 'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]", "[[phase_step]]" ]',
@@ -633,7 +634,7 @@ Trade smart,
                 'button_link' => url('/').'/login',
                 'footer_status' => 0,
                 'footer_body' => '',
-                'bottom_status' => 1,
+                'bottom_status' => 0,
                 'bottom_title' => '',
                 'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]", "[[phase_step]]", "[[violation_reason]]" ]',
@@ -665,7 +666,7 @@ Trade smart,
                 'button_link' => url('/').'/login',
                 'footer_status' => 0,
                 'footer_body' => '',
-                'bottom_status' => 1,
+                'bottom_status' => 0,
                 'bottom_title' => '',
                 'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]", "[[transaction_id]]", "[[amount]]" ]',
@@ -737,7 +738,7 @@ Trade smart,
                 'button_link' => route('user.investments.index'),
                 'footer_status' => 0,
                 'footer_body' => '',
-                'bottom_status' => 1,
+                'bottom_status' => 0,
                 'bottom_title' => '',
                 'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]", "[[account_login]]", "[[account_password]]", "[[server]]"]',
@@ -771,7 +772,7 @@ Trade smart,
                 'button_link' => route('user.investments.index'),
                 'footer_status' => 0,
                 'footer_body' => '',
-                'bottom_status' => 1,
+                'bottom_status' => 0,
                 'bottom_title' => '',
                 'bottom_body' => '',
                 'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]"]',
@@ -784,13 +785,85 @@ Trade smart,
                 'updated_at' => '2024-03-07 15:54:46',
             ],
 
+            [
+                'name' => 'Trial Activation',
+                'code' => 'trial_activation',
+                'for' => 'User',
+                'banner' => 'global/images/9Eg9j0b3aF4KhRRUL92Q.png',
+                'title' => 'Trial Account Activation',
+                'subject' => 'Trial Account Activation',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => 'Dear [[full_name]],
+
+The [[package_name]] trial account is active now. The trial account will be active for [[expiry_days]] days and will expire at [[expiry_date]].
+
+Here are your account details for accessing the trading platform:
+
+- MT5 Account ID: [[account_login]]
+- Password: [[account_password]]
+- Server: [[server]] 
+
+Trade smart,
+[[site_title]]
+',
+                'button_level' => 'My Accounts',
+                'button_link' => route('user.investments.index'),
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 0,
+                'bottom_title' => '',
+                'bottom_body' => '',
+                'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]", "[[package_name]]", "[[expiry_days]]", "[[expiry_date]]", "[[account_login]]", "[[account_password]]", "[[server]]"]',
+                'note' => '',
+                'support_link' => '',
+                'warning_content' => '',
+                'company_info' => '',
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+
+            [
+                'name' => 'Trial Expired',
+                'code' => 'trial_expired',
+                'for' => 'User',
+                'banner' => 'global/images/9Eg9j0b3aF4KhRRUL92Q.png',
+                'title' => 'Trial Account Expired',
+                'subject' => 'Trial Account Expired',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => 'Dear [[full_name]],
+
+Your [[package_name]] trial account has been expired.
+
+Trade smart,
+[[site_title]]
+',
+                'button_level' => 'My Accounts',
+                'button_link' => route('user.investments.index'),
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 0,
+                'bottom_title' => '',
+                'bottom_body' => '',
+                'short_codes' => '["[[site_url]]","[[site_title]]","[[full_name]]","[[email]]","[[message]]", "[[package_name]]"]',
+                'note' => '',
+                'support_link' => '',
+                'warning_content' => '',
+                'company_info' => '',
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+
 
         ];
 
         foreach ($templates as $template) {
             if(!EmailTemplate::where('code',$template['code'])->exists()) {
+                $template['message_body'] = nl2br($template['message_body']);
                 EmailTemplate::insert($template);
             }
         }
+
     }
 }

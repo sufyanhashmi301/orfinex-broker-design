@@ -69,21 +69,34 @@
 
                                     @endphp
                                     <tr>
-                                        <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
+                                        <td class="table-td">{{ $accountTypeData['title'] ?? '' }}
+                                            @if ($account->is_trial == 1 && $account->status == \App\Enums\InvestmentStatus::EXPIRED)
+                                                <span class="badge badge-danger ml-2">Trial Expired</span>
+                                            @elseif ($account->is_trial == 1)
+                                                <span class="badge badge-warning ml-2">Trial Account 
+                                                    @if ($account->status == \App\Enums\InvestmentStatus::ACTIVE)
+                                                        - {{ \Carbon\Carbon::parse($account->accountTrial->trial_expiry_at)->diffInDays(\Carbon\Carbon::now()) }} days left
+                                                    @endif
+                                                    
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="table-td">
                                             {{ $user_exists == true ? $account->user->first_name . ' ' . $account->user->last_name . ' (' . $account->user->email . ')' : 'N/A' }}
                                         </td>
                                         <td class="table-td">{{ $account->login ?? 'N/A' }}</td>
-                                        <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td>
+                                        <td class="table-td">{{ number_format($ruleData['allotted_funds'] ?? 0.00, 0) }} {{ $currency }}</td>
                                         <td class="table-td"><span class="badge bg-primary"
-                                                style="color: #fff">{{ str_replace('_', ' ', $phaseData['type']) }}</span>
+                                                style="color: #fff"><span class="badge bg-primary" style="color: #fff">{{ $account->is_trial == 1 ? 'Trial Phase' : str_replace('_', ' ', $phaseData['type']) }}</span>
                                         </td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase
                                                 {{ $phaseData['phase_step'] }}</span></td>
                                         <td class="table-td">{{ $phase_started_at }}</td>
                                         <td class="table-td">{{ $account->phase_ended_at ?? 'N/A' }}</td>
-                                        <td class="table-td"><span class="badge bg-primary"
-                                                style="color: #fff">{{ $contract_pending == true ? 'Pending' : $account->status }}</span>
+                                        <td class="table-td">
+                                            <span class="badge bg-primary" style="color: #fff">
+                                                {{ $account->is_trial == 1 ? 'Trial ' : '' }} {{ $contract_pending == true ? 'Pending' : $account->status  }}
+                                            </span>
                                         </td>
                                         <td class="table-td">
                                             @if (
@@ -116,7 +129,9 @@
                                                     </span>
                                                 @endif
                                             @else
-                                                @if ($account->status == \App\Enums\InvestmentStatus::PENDING)
+                                                @if ($account->status == \App\Enums\InvestmentStatus::PENDING && $account->is_trial == 1)
+                                                    Available Soon
+                                                @elseif ($account->status == \App\Enums\InvestmentStatus::PENDING)
                                                     <a href="{{ route('admin.deposit.manual.pending') }}"
                                                         class="inline-flex justify-center">
                                                         <span class="flex items-center">

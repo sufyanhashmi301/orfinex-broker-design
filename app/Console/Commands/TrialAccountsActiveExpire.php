@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Traits\NotifyTrait;
 use App\Models\AccountTrial;
 use App\Enums\InvestmentStatus;
 use Illuminate\Console\Command;
@@ -13,6 +14,7 @@ use App\Services\AccountTypeInvestmentPaymentService;
 
 class TrialAccountsActiveExpire extends Command
 {
+    use NotifyTrait;
 
     protected $account_payment;
     protected $forexApiService;
@@ -52,7 +54,7 @@ class TrialAccountsActiveExpire extends Command
                 $account_approved = $this->account_payment->investmentActive($account->id);
                 if($account_approved->status == InvestmentStatus::ACTIVE) {
                     AccountActivityService::log($account_approved, 'Trial Active');
-                    AccountTrial::where('account_type_investment_id', $account->id)->first()->update(['trial_expiry_at' => Carbon::now()->addDays(15)]);
+                    AccountTrial::where('account_type_investment_id', $account->id)->first()->update(['trial_expiry_at' => Carbon::now()->addDays(setting('auto_expire_expiry_days') + 1)]);
                 } 
             }
 
@@ -65,14 +67,23 @@ class TrialAccountsActiveExpire extends Command
                     'login' => $account->login,
                     'Amount' => $account->accountTypeInvestmentStat->balance,
                     'type' => 0, //deposit
-                    'TransactionComments' => 'Account Violated'
+                    'TransactionComments' => 'Trial Account Expired'
                     ];
                 
                     $response = $this->forexApiService->balanceOperation($data);
 
                     $account->update([
+                        'phase_ended_at' => Carbon::now(),
                         'status' => InvestmentStatus::EXPIRED
                     ]);
+
+                    // Do the email
+                    $shortcodes = [
+                        '[[full_name]]' => $account->user->first_name . ' ' . $account->user->last_name,
+                        '[[site_title]]' => setting('site_title', 'global'),
+                        '[[package_name]]' => $account->getAccountTypeSnapshotData()['title']
+                    ];
+                    $this->mailNotify($account->user->email, 'trial_expired', $shortcodes);
 
                     $account->accountTypeInvestmentStat->update(['balance' => 0, 'current_equity' => 0]);
                     AccountActivityService::log($account, 'Trial Expired');

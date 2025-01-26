@@ -24,7 +24,7 @@ class ContractController extends Controller
 
     public function adminIndex(Request $request) {
 
-        // Contract Patamater
+        // Contract Paramater
         $contract_expiry = Setting::where('name', 'contract_expiry')->first();
         if(!$contract_expiry) {
             $setting = new Setting();

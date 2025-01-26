@@ -62,7 +62,7 @@
                                             @endif
                                         </td>
                                         <td class="table-td">{{ $investment->login ?? 'N/A'}}</td>
-                                        <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td>
+                                        <td class="table-td">{{ number_format($ruleData['allotted_funds'] ?? 0.00, 0) }} {{ $currency }}</td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">{{ $investment->is_trial == 1 ? 'Trial Phase' : str_replace('_', ' ', $phaseData['type']) }}</span></td>
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase {{ $phaseData['phase_step'] }}</span></td>
                                         <td class="table-td">{{ $phase_started_at }}</td>

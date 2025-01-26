@@ -3,14 +3,14 @@
     {{ __('Buy New Account') }}
 @endsection
 @section('content')
-    <div class="flex justify-between flex-wrap items-center mb-5">
+    {{-- <div class="flex justify-between flex-wrap items-center mb-5">
         <h4 class="font-medium text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-4 sm:mb-0 flex space-x-3 rtl:space-x-reverse">
             {{ __('Start Challenge') }}
         </h4>
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <a href="{{ route('user.investments.index') }}" class="btn btn-primary inline-flex items-center justify-center">{{ __('My Accounts') }}</a>
         </div>
-    </div>
+    </div> --}}
 
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 mb-10">
         @foreach($account_types as $account_type)
@@ -28,6 +28,13 @@
             @endphp
 
             <div class="card relative border dark:border-slate-700">
+                @if ($account_type->icon != null)
+                    <div class="card-title">
+                        <div class="p-6">
+                            <center><img src="{{ asset($account_type->icon) }}" style="max-height: 100px" alt=""></center>
+                        </div>
+                    </div>
+                @endif
                 <div class="card-body p-6">
                     <div class="mb-5">
                         <div class="flex items-center justify-between mb-1">

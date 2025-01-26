@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Models\AccountType;
-use App\Enums\AccountType as AccountTypeEnum;
 use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 use App\Enums\InterestPeriod;
 use App\Models\AccountTypePhase;
+use App\Models\AccountTypePhaseRule;
 use App\Services\AccountTypeService;
 use App\Http\Requests\AccountTypeRequest;
-use App\Models\AccountTypePhaseRule;
 use App\Services\AccountTypePhaseService;
+use App\Enums\AccountType as AccountTypeEnum;
 
 class AccountTypeController extends Controller
 {
@@ -33,6 +34,21 @@ class AccountTypeController extends Controller
      */
     public function index(Request $request)
     {
+
+        // Expiry Paramater
+        $auto_expire_expiry_days = Setting::where('name', 'auto_expire_expiry_days')->first();
+        if(!$auto_expire_expiry_days) {
+            $setting = new Setting();
+            $setting->name = 'auto_expire_expiry_days';
+            $setting->val = 14;
+            $setting->type = 'string';
+            $setting->save();
+
+            $auto_expire_expiry_days = 14;
+        } else {
+            $auto_expire_expiry_days = $auto_expire_expiry_days->val;
+        }
+
         $account_types = AccountType::where('type', $request->type ?? 'challenge')->orderBy('priority', 'asc')->paginate(10);
 
         if(isset($request->type) && !in_array($request->type, [AccountTypeEnum::CHALLENGE, AccountTypeEnum::FUNDED, AccountTypeEnum::AUTO_EXPIRE])) {
@@ -71,6 +87,18 @@ class AccountTypeController extends Controller
 
         notify()->success('Account Type Created Successfully');
         return redirect()->route('admin.account-type.index', ['type' => $request->type]);
+    }
+
+    /**
+     * Configure parameters
+     */
+    public function config(Request $request) {
+        $auto_expire_expiry_days_setting = Setting::where('name', 'auto_expire_expiry_days')->first();
+        $auto_expire_expiry_days_setting->val = $request->expiry;
+        $auto_expire_expiry_days_setting->save();
+
+        notify()->success('Configured Successfully!');
+        return redirect()->back();
     }
 
     /**

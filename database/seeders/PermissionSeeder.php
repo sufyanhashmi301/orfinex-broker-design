@@ -71,6 +71,7 @@ class PermissionSeeder extends Seeder
             ['category' => 'Accounts Management', 'name' => 'accounts-list'],
             ['category' => 'Accounts Management', 'name' => 'leverage-list'],
             ['category' => 'Accounts Management', 'name' => 'accounts-action'],
+            ['category' => 'Accounts Management', 'name' => 'account-trades-view'],
             ['category' => 'Accounts Management', 'name' => 'leverage-action'],
             ['category' => 'Accounts Management', 'name' => 'accounts-export'],
 

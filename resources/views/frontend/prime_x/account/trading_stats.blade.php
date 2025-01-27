@@ -418,7 +418,7 @@
                         <span>{{ __('Remaining Loss Limit') }}</span>
                         <span class="text-slate-900 font-medium">
                             {{-- {{ $trading_objectives['max_drawdown_remaining_loss_limit'] }} --}}
-                            @if($trading_objectives['daily_drawdown_remaining_loss_limit'] == "Limit Over")
+                            @if($trading_objectives['max_drawdown_remaining_loss_limit'] == "Limit Over")
                                 Limit Over
                             @else
                                 {{ number_format($trading_objectives['max_drawdown_remaining_loss_limit'], 2) }} {{ base_currency() }}

@@ -1,8 +1,11 @@
-@can('accounts-action')
 <div class="flex space-x-3 rtl:space-x-reverse">
-    <a href="javascript:;" class="action-btn open-trades-modal" data-login="{{ $login }}">
+    @can('accounts-trades-view')
+        <a href="javascript:;" class="action-btn open-trades-modal" data-login="{{ $login }}">
         <iconify-icon icon="fluent:apps-list-24-filled"></iconify-icon>
     </a>
+    @endcan
+    @can('accounts-action')
+
     <a href="{{route('admin.user.edit',$user_id)}}" class="toolTip onTop action-btn" data-tippy-theme="dark" data-tippy-content="Edit User">
         <iconify-icon icon="lucide:edit-3"></iconify-icon>
     </a>
@@ -79,5 +82,6 @@
             </li>
         </ul>
     </div>
+    @endcan
 </div>
-@endcan
+

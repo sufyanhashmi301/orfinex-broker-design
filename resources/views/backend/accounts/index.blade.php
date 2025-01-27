@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    @include('backend.accounts.includes.__accounts')
+    @include('backend.accounts.includes.__accounts', ['view' => 'admin_accounts'])
 
 @endsection
 @section('script')

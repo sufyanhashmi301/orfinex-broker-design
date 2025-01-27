@@ -254,8 +254,8 @@ Route::middleware(['2fa_admin'])->group(function () {
 
 
     // Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
-    Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-    Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
+    // Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
+    // Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
 
@@ -343,7 +343,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     //     Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
     // });
 //===============================  Advertisement Material ==================================
-    Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
+    // Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
 
     Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
 

@@ -93,6 +93,11 @@ class UpdateAccountTypeInvestmentStats extends Command
                     continue;
                 }
 
+                // if the platform group has not been returned then continue
+                if($matchingResult['group'] == '') {
+                    continue;
+                }
+
                 $data = [
                     'account_type_investment_id' => $investment->id,
                     'account_name' => $matchingResult['name'],

@@ -438,7 +438,7 @@
                     </a>
                 </li>
 
-                <li class="{{ isActive(['admin.withdraw*']) }}">
+                {{-- <li class="{{ isActive(['admin.withdraw*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:landmark"></iconify-icon>
@@ -462,7 +462,7 @@
                             </li>
                         @endcan
                     </ul>
-                </li>
+                </li> --}}
             @endcanany
         @endcanany
 

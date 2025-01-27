@@ -11,13 +11,17 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">Title</th>
-                                    <th scope="col" class="table-th">User</th>
+                                    @if ($view != 'user_edit')
+                                        <th scope="col" class="table-th">User</th>
+                                    @endif
                                     <th scope="col" class="table-th">Login</th>
                                     <th scope="col" class="table-th">Allotted Funds</th>
                                     <th scope="col" class="table-th">Phase Type</th>
                                     <th scope="col" class="table-th">Phase Step</th>
                                     <th scope="col" class="table-th">Phase Started At</th>
-                                    <th scope="col" class="table-th">Phase Ended At</th>
+                                    @if ($view != 'user_edit')
+                                        <th scope="col" class="table-th">Phase Ended At</th>
+                                    @endif
                                     <th scope="col" class="table-th">Status</th>
                                     <th scope="col" class="table-th">Detail</th>
                                 </tr>
@@ -81,9 +85,11 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="table-td">
-                                            {{ $user_exists == true ? $account->user->first_name . ' ' . $account->user->last_name . ' (' . $account->user->email . ')' : 'N/A' }}
-                                        </td>
+                                        @if ($view != 'user_edit')
+                                            <td class="table-td">
+                                                {{ $user_exists == true ? $account->user->first_name . ' ' . $account->user->last_name . ' (' . $account->user->email . ')' : 'N/A' }}
+                                            </td>
+                                        @endif
                                         <td class="table-td">{{ $account->login ?? 'N/A' }}</td>
                                         <td class="table-td">{{ number_format($ruleData['allotted_funds'] ?? 0.00, 0) }} {{ $currency }}</td>
                                         <td class="table-td"><span class="badge bg-primary"
@@ -92,7 +98,9 @@
                                         <td class="table-td"><span class="badge bg-primary" style="color: #fff">Phase
                                                 {{ $phaseData['phase_step'] }}</span></td>
                                         <td class="table-td">{{ $phase_started_at }}</td>
-                                        <td class="table-td">{{ $account->phase_ended_at ?? 'N/A' }}</td>
+                                        @if ($view != 'user_edit')
+                                            <td class="table-td">{{ $account->phase_ended_at ?? 'N/A' }}</td>
+                                        @endif
                                         <td class="table-td">
                                             <span class="badge bg-primary" style="color: #fff">
                                                 {{ $account->is_trial == 1 ? 'Trial ' : '' }} {{ $contract_pending == true ? 'Pending' : $account->status  }}
@@ -152,8 +160,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div
-                            class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
+                        <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
                             <div>
                                 @php
                                     $from = $accounts->firstItem();

@@ -34,33 +34,34 @@
                                 <div class="bg-white dark:bg-slate-800 p-4">
                                     <div class="text-center space-y-2">
                                         <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Capital Allocated') }}
-                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="The total capital allocated to the trader for their funded account."></iconify-icon>
+                                            Allotted Funds
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Accumulative allotted funds of all the active accounts."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ number_format($all_accounts->pluck('accountTypePhaseRule')->flatten()->sum('allotted_funds'), 0) }} {{ $currency }}
+                                        </h6>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white dark:bg-slate-800 p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            Payout Wallets
+                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Funds available in payout and affiliate wallets."></iconify-icon>
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ number_format($wallets_balance, 2) }} {{ $currency }}
                                         </h6>
                                     </div>
                                 </div>
                                 <div class="bg-white dark:bg-slate-800 p-4">
                                     <div class="text-center space-y-2">
                                         <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Payouts') }}
-                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="The total profits paid out to the trader."></iconify-icon>
+                                           Total Withdraw
+                                           <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Total amount withdrawn by user."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                        </h6>
-                                    </div>
-                                </div>
-                                <div class="bg-white dark:bg-slate-800 p-4">
-                                    <div class="text-center space-y-2">
-                                        <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Net Capital') }}
-                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Net equity remaining after payouts and any trading gains or losses."></iconify-icon>
-                                        </p>
-                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            0.00 {{ $currency }}
                                         </h6>
                                     </div>
                                 </div>
@@ -74,16 +75,15 @@
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
                                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
-                                            <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                                            <iconify-icon icon="lucide:check"></iconify-icon>
                                         </div>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Allocated Risk') }}
-                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Capital currently used in open trades."></iconify-icon>
+                                            Active Accounts
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ $all_accounts->where('status', \App\Enums\InvestmentStatus::ACTIVE)->count() }}
                                         </div>
                                     </div>
                                 </div>
@@ -94,16 +94,15 @@
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
                                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
-                                            <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                                            <iconify-icon icon="lucide:x"></iconify-icon>
                                         </div>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Available Capital') }}
-                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Capital available to open new trades or manage existing positions."></iconify-icon>
+                                            Violated Accounts
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                                            {{ $all_accounts->where('status', \App\Enums\InvestmentStatus::VIOLATED)->count() }}
                                         </div>
                                     </div>
                                 </div>
@@ -114,16 +113,15 @@
                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                     <div class="flex-none">
                                         <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-slate-900">
-                                            <iconify-icon icon="mdi:currency-usd"></iconify-icon>
+                                            <iconify-icon icon="lucide:clock"></iconify-icon>
                                         </div>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Profit Wallet') }}
-                                            <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Accumulated profits available for withdrawal or reinvestment."></iconify-icon>
+                                            Pending Accounts
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            $0
+                                            {{ $all_accounts->where('status', \App\Enums\InvestmentStatus::PENDING)->count() }}
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +144,7 @@
                                         aria-controls="pills-informations"
                                         aria-selected="true"
                                     >
-                                        {{ __('Overview') }}
+                                        {{ __('Profile') }}
                                     </a>
                                 </li>
                             @endcanany
@@ -155,17 +153,17 @@
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="challenge-accounts-tab"
+                                        id="accounts-tab"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#challenge-accounts"
+                                        data-bs-target="#accounts"
                                         type="button"
                                         role="tab"
-                                        aria-controls="challenge-accounts"
+                                        aria-controls="accounts"
                                         aria-selected="true">
-                                        {{ __('Challenge Accounts') }}
+                                        {{ __('Accounts') }}
                                     </a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                {{-- <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
@@ -192,7 +190,7 @@
                                         aria-selected="true">
                                         {{ __('Trial Accounts') }}
                                     </a>
-                                </li>
+                                </li> --}}
                             @endcan
 
                             <li class="nav-item" role="presentation">
@@ -320,12 +318,12 @@
                     @include('backend.user.include.__basic_info')
                 @endcanany
 
-                <!-- investments -->
-                @can('investment-list')
-                    @include('backend.user.include.__challenge_accounts')
-                    @include('backend.user.include.__funded_accounts')
-                    @include('backend.user.include.__trial_accounts')
-                @endcan
+                <!-- accounts -->
+                
+                @include('backend.user.include.__accounts')
+                {{-- @include('backend.user.include.__funded_accounts')
+                @include('backend.user.include.__trial_accounts') --}}
+             
 
                 <!-- Performance -->
                 @include('backend.user.include.__performance')

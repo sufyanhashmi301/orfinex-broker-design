@@ -21,6 +21,7 @@ use App\Models\LevelReferral;
 use App\Models\RiskProfileTag;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
@@ -276,18 +277,22 @@ class UserController extends Controller
             ->get();
 
         // optimizations
-        $challenge_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-            $query->where('type', AccountTypeEnums::CHALLENGE);
-        })->get();
-        $funded_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-            $query->where('type', AccountTypeEnums::FUNDED);
-        })->get();
-        $trial_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-            $query->where('type', AccountTypeEnums::AUTO_EXPIRE);
-        })->get();
+        // $challenge_accounts = AccountTypeInvestment::where('user_id', $id)->where('is_trial', '!=', 1)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+        //     $query->where('type', AccountTypeEnums::CHALLENGE);
+        // })->orderBy('id', 'DESC')->get();
+        // $funded_accounts = AccountTypeInvestment::where('user_id', $id)->where('is_trial', '!=', 1)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+        //     $query->where('type', AccountTypeEnums::FUNDED);
+        // })->orderBy('id', 'DESC')->get();
+        // $trial_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
+        //     $query->where('type', AccountTypeEnums::AUTO_EXPIRE);
+        // })->orderBy('id', 'DESC')->get();
+
+        $accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->paginate(10);
+        $all_accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->get();
+        $wallets_balance = Wallet::where('user_id', $id)->sum('available_balance');
 
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'challenge_accounts', 'funded_accounts', 'trial_accounts'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'accounts', 'all_accounts', 'wallets_balance'));
     }
 
     public function destroy($id)

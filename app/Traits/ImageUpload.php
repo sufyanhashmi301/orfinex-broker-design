@@ -28,7 +28,9 @@ trait ImageUpload
         $upload_path = 'assets/global/images/';    //Creating Sub directory in Assets folder to put image
         $image_url = $upload_path.$image_full_name;
         $success = $query->move($upload_path, $image_full_name);
-
+        if (!$success) {
+            abort(406, 'Image upload failed.');
+        }
         return str_replace('assets/', '', $image_url); // Just return image
     }
     public function depositImageUploadTrait($query, $old = null): string // Taking input image as parameter
@@ -53,6 +55,11 @@ trait ImageUpload
         $upload_path = 'assets/global/images/deposit/';    //Creating Sub directory in Assets folder to put image
         $image_url = $upload_path.$image_full_name;
         $success = $query->move($upload_path, $image_full_name);
+        $success = $query->move($upload_path, $image_full_name);
+
+        if (!$success) {
+            abort(406, 'Image upload failed.');
+        }
 
         return str_replace('assets/', '', $image_url); // Just return image
     }
@@ -78,6 +85,11 @@ trait ImageUpload
         $upload_path = 'assets/global/images/kyc/';    //Creating Sub directory in Assets folder to put image
         $image_url = $upload_path.$image_full_name;
         $success = $query->move($upload_path, $image_full_name);
+        $success = $query->move($upload_path, $image_full_name);
+
+        if (!$success) {
+            abort(406, 'Image upload failed.');
+        }
 
         return str_replace('assets/', '', $image_url); // Just return image
     }

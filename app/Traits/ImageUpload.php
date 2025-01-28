@@ -55,7 +55,6 @@ trait ImageUpload
         $upload_path = 'assets/global/images/deposit/';    //Creating Sub directory in Assets folder to put image
         $image_url = $upload_path.$image_full_name;
         $success = $query->move($upload_path, $image_full_name);
-        $success = $query->move($upload_path, $image_full_name);
 
         if (!$success) {
             abort(406, 'Image upload failed.');
@@ -84,7 +83,6 @@ trait ImageUpload
         $image_full_name = $image_name.'.'.$ext;
         $upload_path = 'assets/global/images/kyc/';    //Creating Sub directory in Assets folder to put image
         $image_url = $upload_path.$image_full_name;
-        $success = $query->move($upload_path, $image_full_name);
         $success = $query->move($upload_path, $image_full_name);
 
         if (!$success) {

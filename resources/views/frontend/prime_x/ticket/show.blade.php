@@ -92,6 +92,7 @@
                                     <div class="card-text message-body">
                                         {!! $ticket->message !!}
                                     </div>
+                                    @if($ticket->attach)
                                     <div class="message-attachments mt-4">
                                         <h5 class="card-subtitle">{{ __('Attachments') }}</h5>
                                         <div class="single-attachment">
@@ -103,6 +104,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                             @foreach($ticket->messages as $message )

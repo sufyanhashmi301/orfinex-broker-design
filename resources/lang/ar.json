@@ -582,7 +582,7 @@
     "Total amount": "إجمالي المبلغ",
     "Deposited Amount:": "المبلغ المودع:",
     "Conversion Amount:": "مبلغ التحويل:",
-    "Details Message(Optional)": "رسالة التفاصيل (اختياري)",
+    "Detail Message": "رسالة التفاصيل (اختياري)",
     "Approve": "الموافقة",
     "Reject": "الرفض",
     "Manual Pending Deposit": "إيداع معلق يدوي",

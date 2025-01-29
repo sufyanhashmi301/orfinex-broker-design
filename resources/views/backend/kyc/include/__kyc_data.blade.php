@@ -28,7 +28,7 @@
         @csrf
         <input type="hidden" name="id" value="{{ $id }}">
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
+            <label for="" class="form-label">{{ __('Detail Message') }}</label>
             <input type="text" name="message" class="form-control mb-0" placeholder="Details Message">
         </div>
 

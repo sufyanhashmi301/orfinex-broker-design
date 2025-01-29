@@ -18,6 +18,7 @@ use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
 use App\Models\AccountActivity;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
+use App\Services\AccountTypeInvestmentPaymentService;
 use App\Services\UserAffiliateService;
 
 class AccountTypeInvestmentController extends Controller
@@ -25,10 +26,15 @@ class AccountTypeInvestmentController extends Controller
 
     public $investment;
     public $affiliate;
+    public $investment_payment;
 
-    public function __construct(AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate) {
+    public function __construct(AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate, AccountTypeInvestmentPaymentService $investment_payment) {
+
+        $this->middleware('permission:account-list', ['only' => ['adminIndex']]);
+
         $this->investment = $investment;
         $this->affiliate = $userAffiliate;
+        $this->investment_payment = $investment_payment;
     }
 
     /**
@@ -95,36 +101,6 @@ class AccountTypeInvestmentController extends Controller
         return view('frontend::account.index', compact('investments'));
     }
 
-    public function adminAccountsActivityLog(Request $request) {
-
-        if(isset($request->unique_id)){
-            $uniqueId = $request->unique_id;
-            $account_activities = AccountActivity::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
-                                            $query->where('unique_id', $uniqueId);
-                                        })->orderBy('id', 'DESC')->paginate(15);
-        } elseif (isset($request->{'pending-approvals'})) {
-            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->with([
-                'accountTypeInvestment.user' 
-            ])->whereHas('accountTypeInvestment', function($query) {
-                $query->whereHas('user'); 
-            })->orderBy('id', 'DESC')->paginate(15);
-        } elseif (isset($request->{'violated-acounts'})) {
-            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::VIOLATED])->with([
-                'accountTypeInvestment.user' 
-            ])->whereHas('accountTypeInvestment', function($query) {
-                $query->whereHas('user'); 
-            })->orderBy('id', 'DESC')->paginate(15);
-        } else{
-            $account_activities = AccountActivity::with([
-                'accountTypeInvestment.user' 
-            ])->whereHas('accountTypeInvestment', function($query) {
-                $query->whereHas('user'); 
-            })->orderBy('id', 'DESC')->paginate(15);
-        }
-
-        return view('backend.accounts_activity.index', compact('account_activities'));
-    }
-
     /**
      * AJAX: return account stats wrt login
      */
@@ -144,6 +120,29 @@ class AccountTypeInvestmentController extends Controller
             return false;
         }
     }
+
+    /**
+     * Assign Account Manually
+     */
+    public function addManually(Request $request) {
+        $rule_unique_id = AccountTypePhaseRule::where('id', $request->rule_id)->firstOrFail()->unique_id;
+        $rule = AccountTypePhaseRule::where('account_type_phase_id', $request->phase_id)->where('unique_id', $rule_unique_id)->first();
+        $request->merge(['rule_id' => $rule->id]);
+
+        $account = $this->investment->createInvestment($request, 0, false, true, $request->user_id);
+        $active_account = $this->investment_payment->investmentActive($account->id);
+
+        if($active_account->status == InvestmentStatus::ACTIVE) {
+            notify()->success('Account created successfully!');
+        } else {
+            notify()->error('Account not created!', 'Unknown Error Occured');
+            AccountTypeInvestmentSnapshot::where('account_type_investment_id', $account->id)->delete();
+            $account->delete();
+        }
+
+        return redirect()->back();
+    }
+
 
     /**
      * Show the form for creating a new resource.

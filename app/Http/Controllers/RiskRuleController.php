@@ -17,6 +17,9 @@ class RiskRuleController extends Controller
     protected $risk_rule_service;
 
     public function __construct(RiskRuleService $risk_rule_service) {
+
+        $this->middleware('permission:risk-hub-view', ['only' => ['riskRule']]);
+
         $this->risk_rule_service = $risk_rule_service;
     }
 

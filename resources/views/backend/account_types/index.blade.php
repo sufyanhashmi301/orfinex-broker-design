@@ -22,17 +22,20 @@
 
         <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
 
+            @can('account-type-edit')
+                <a href="javascript:void(0)" class="btn btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
+                    Configure Parameters
+                </a>
+            @endcan
             
-            <a href="javascript:void(0)" class="btn btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
-                Configure Parameters
-            </a>
+            @can('account-type-create')
+                <a href="{{route('admin.account-type.create', ['type' => $type  ])}}" class="btn btn-primary inline-flex items-center">
+                    <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                    {{ __('Add New') }}
+                </a>    
+            @endcan
             
-            
-            <a href="{{route('admin.account-type.create', ['type' => $type  ])}}" class="btn btn-primary inline-flex items-center">
-                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                {{ __('Add New') }}
-            </a>
         </div>
     </div>
     {{-- <div class="innerMenu card p-6 mb-5">
@@ -132,17 +135,12 @@
                                     </td>
                                     <td class="table-td">
                                         <div class="flex space-x-3 rtl:space-x-reverse">
-                                        {{-- @can('schema-edit')
-                                                <a href="{{route('admin.multi-level.view',$account_type->id)}}" class="action-btn">
-                                                    <iconify-icon icon="lucide:eye"></iconify-icon>
-                                                </a>
-                                            @endcan --}}
-                                            @can('schema-edit')
+                                            @can('account-type-edit')
                                                 <a href="{{route('admin.account-type.edit',$account_type->id)}}" class="action-btn">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </a>
                                             @endcan
-                                            @can('schema-delete')
+                                            @can('account-type-delete')
                                                 <a href="#" class="action-btn delete-schema-btn" data-id="{{ $account_type->id }}">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </a>

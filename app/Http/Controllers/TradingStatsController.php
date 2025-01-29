@@ -16,6 +16,8 @@ class TradingStatsController extends Controller
     public $account;
 
     public function __construct(AccountTypeInvestmentService $account) {
+        $this->middleware('permission:account-list', ['only' => ['adminTradingStats']]);
+        $this->middleware('permission:account-trading-history', ['only' => ['accountTradingStatsHistory']]);
         $this->account = $account;
     }
 

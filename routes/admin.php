@@ -178,11 +178,12 @@ Route::middleware(['2fa_admin'])->group(function () {
 
 // =============================== Optimization ===============================
     // Account Types
+    Route::get('account-type/info', [AccountTypeController::class, 'accountTypeInfo'])->name('account_type.info');
     Route::resource('account-type', AccountTypeController::class);
-    Route::get('accounts-activity-log', [AccountTypeInvestmentController::class, 'adminAccountsActivityLog'])->name('accounts_activity.log');
 
     // Accounts (aka Investments)
     Route::get('/accounts', [AccountTypeInvestmentController::class, 'adminIndex'])->name('accounts.index');
+    Route::post('account/manual', [AccountTypeInvestmentController::class, 'addManually'])->name('account.add_manually');
     Route::get('account/trading-stats/history', [TradingStatsController::class, 'accountTradingStatsHistory'])->name('account.trading_stats.history');
     Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'adminTradingStats'])->name('account.trading_stats');
     Route::post('account/config', [AccountTypeController::class, 'config'])->name('account_type.config');
@@ -198,7 +199,8 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('slider/update/{id}', [SliderController::class, 'update'])->name('slider.update');
     Route::delete('slider/delete/{id}', [SliderController::class, 'destroy'])->name('slider.destroy');
 
-    // Investment Phase Approvals
+    // Account Activity
+    Route::get('accounts-activity-log', [AccountActivityController::class, 'index'])->name('accounts_activity.log');
     Route::get('phase-approval-request/{investment_id}', [AccountActivityController::class, 'phaseApprovalRequest'])->name('account-phase.approval-request');
 
     // leaderboards

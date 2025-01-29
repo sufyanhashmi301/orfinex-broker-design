@@ -116,8 +116,8 @@
         @endcanany
 
         {{-- *************************************************************  Plan Management *********************************************************--}}
-        @canany(['schedule-manage','schema-list','schema-create','schema-edit'])
-            <li class="{{ isActive(['admin.schedule*','admin.account-type*','admin.ibAccountType*']) }}">
+        @can('account-type-list')
+            <li class="{{ isActive(['admin.account_type*']) }}">
                 <a href="javascript:void(0);" class="navItem">
                     <span class="flex items-center">
                         <iconify-icon class="nav-icon" icon="lucide:album"></iconify-icon>
@@ -126,7 +126,7 @@
                     <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
                 <ul class="sidebar-submenu">
-                    @can('schema-edit')
+                    
                         <li>
                             <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::CHALLENGE]) }}"
                             class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::CHALLENGE ? 'active' : '' }}">
@@ -139,44 +139,12 @@
                                 {{ __('Funded') }}
                             </a>
                         </li>
-                        {{-- <li>
-                            <a href="{{ route('admin.account-type.index', ['type' => \App\Enums\AccountType::AUTO_EXPIRE]) }}"
-                            class="{{ isActive('admin.account-type*') && request('type') === \App\Enums\AccountType::AUTO_EXPIRE ? 'active' : '' }}">
-                                {{ __('Auto Expire') }}
-                            </a>
-                        </li> --}}
-                        {{-- <li>
-                            <a href="#"
-                            class="" onclick="alert('Auto Expire Account Type not available yet!')">
-                                {{ __('Auto Expire') }}
-                            </a>
-                        </li> --}}
-                    @endcan
 
                 </ul>
             </li>
-
-            {{-- Accounts Phases -> Approval requests, logs etc... --}}
-            {{-- <li class="{{ isActive(['admin.']) }}">
-                <a href="javascript:void(0);" class="navItem">
-                    <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="lucide:album"></iconify-icon>
-                        <span>{{ __('Accounts Phases') }}</span>
-                    </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                </a>
-                <ul class="sidebar-submenu">
-                    @can('schema-edit')
-                        <li>
-                            <a href="{{ route('admin.accounts-activity.log') }}"
-                            class="{{ isActive('admin.accounts-phases*') }}">
-                                {{ __('Logs') }}
-                            </a>
-                        </li>
-                    @endcan
-
-                </ul>
-            </li> --}}
+        @endcan
+           
+        @can('account-activity-list')
             <li class="">
                 <a href="" class="navItem">
                     <span class="flex items-center">
@@ -203,123 +171,53 @@
                     </li>
                 </ul>
             </li>
+        @endcan
 
-            @can('investment-list')
-                <li class="">
-                    <a href="javascript:void(0)" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
-                            <span>{{ __('Accounts') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
-                    <ul class="sidebar-submenu">
+        @canany(['account-list', 'account-trading-history'])
+            <li class="">
+                <a href="javascript:void(0)" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="heroicons-outline:clipboard-list"></iconify-icon>
+                        <span>{{ __('Accounts') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('account-list')
                         <li>
                             <a href="{{route('admin.accounts.index', ['status' => 'all'])}}" class="{{ isActive('admin.accounts.index') }}">
                                 Manage Accounts
                             </a>
                         </li>
+                    @endcan
+                    
+                    @can('account-trading-history')
                         <li>
                             <a href="{{route('admin.account.trading_stats.history')}}" class="{{ isActive('admin.account.trading_stats.history') }}">
                                 Accounts Trading History
                             </a>
                         </li>
-                        
-                    </ul>
+                    @endcan
+                    
+                </ul>
 
-                </li>
-            @endcan
+            </li>
         @endcanany
+           
+        
+        @can('risk-hub-view')
+            <li>
+                <a href="{{ route('admin.risk-rule.quick_trades') }}" class="navItem {{ isActive('admin.risk-rule.quick_trades') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
+                        <span>{{ __('Risk Hub') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endcan
+        
 
-        <li>
-            <a href="{{ route('admin.risk-rule.quick_trades') }}" class="navItem {{ isActive('admin.risk-rule.quick_trades') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="hugeicons:setting-error-03"></iconify-icon>
-                    <span>{{ __('Risk Hub') }}</span>
-                </span>
-            </a>
-        </li>
-
-        {{-- *************************************************************  Advertisement Management *********************************************************--}}
-        @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit'])
-
-            {{--@canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
-                <li class="{{ isActive(['admin.referral*']) }}">
-                    <a href="javascript:void(0);" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:settings-2"></iconify-icon>
-                            <span>{{ __('Manage Referral') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
-                    <ul class="sidebar-submenu">
-                        @canany(['referral-create','referral-list','referral-edit','referral-delete'])
-                            <li>
-                                <a href="{{ route('admin.referral.level.index') }}" class="{{ isActive('admin.referral.level*') }}">
-                                    {{ __('Multi Level Referral') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.referral.index') }}" class="{{ isActive('admin.referral.index') }}">
-                                    {{ __('Targets Referral') }}
-                                </a>
-                            </li>
-                        @endcanany
-
-                    </ul>
-                </li>
-            @endcanany--}}
-
-            {{--@canany(['ib-list','ib-action','ib-form-manage'])
-                <li class="{{ isActive(['admin.ib*']) }}">
-                    <a href="javascript:void(0);" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:users"></iconify-icon>
-                            <span>{{ __('Manage IB') }}</span>
-                        </span>
-                        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                    </a>
-                    <ul class="sidebar-submenu">
-                        @canany(['ib-list','ib-action'])
-                            <li>
-                                <a href="{{ route('admin.ib.pending.list') }}" class="{{ isActive('admin.ib.pending.list') }}">
-                                    {{ __('Pending IB') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.ib.approved.list') }}" class="{{ isActive('admin.ib.approved.list') }}">
-                                    {{ __('Approved IB') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.ib.rejected.list') }}" class="{{ isActive('admin.ib.rejected.list') }}">
-                                    {{ __('Rejected IB') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.ib.all.list') }}" class="{{ isActive('admin.ib.all.list') }}">
-                                    {{ __('All IB Logs') }}
-                                </a>
-                            </li>
-                        @endcanany
-                        @can('ib-form-manage')
-                            <li>
-                                <a href="{{ route('admin.ib-form.index') }}" class="{{ isActive('admin.ib-form*') }}">
-                                    {{ __('IB Form') }}
-                                </a>
-                            </li>
-                        @endcan
-                        @can('advertisement-material-edit')
-                            <li>
-                                <a href="{{route('admin.advertisement_material.index')}}" class="{{ isActive('admin.advertisement_material*') }}">
-                                    {{ __('IB Resources') }}
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcanany--}}
-        @endcanany
+     
 
         {{-- *************************************************************  Transactions *********************************************************--}}
         {{-- @canany(['transaction-list','investment-list','profit-list'])
@@ -438,11 +336,11 @@
                     </a>
                 </li>
 
-                {{-- <li class="{{ isActive(['admin.withdraw*']) }}">
+                <li class="{{ isActive(['admin.withdraw*']) }}">
                     <a href="javascript:void(0);" class="navItem">
                         <span class="flex items-center">
                             <iconify-icon class="nav-icon" icon="lucide:landmark"></iconify-icon>
-                            <span>{{ __('Payout') }}</span>
+                            <span>Withdraw</span>
                         </span>
                         <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                     </a>
@@ -450,19 +348,19 @@
                         @canany(['withdraw-list','withdraw-action'])
                             <li class="">
                                 <a href="{{ route('admin.withdraw.pending') }}" class="{{ isActive('admin.withdraw.pending')  }}">
-                                    {{ __('Pending Payout') }}
+                                    Pending Withdraw
                                 </a>
                             </li>
                         @endcanany
                         @can('withdraw-list')
                             <li class="">
                                 <a href="{{ route('admin.withdraw.history') }}" class="{{ isActive('admin.withdraw.history') }}">
-                                    {{ __('Payout History') }}
+                                    Withdraw History
                                 </a>
                             </li>
                         @endcan
                     </ul>
-                </li> --}}
+                </li>
             @endcanany
         @endcanany
 
@@ -528,45 +426,6 @@
                 </a>
             </li>
         @endcanany
-
-
-        {{-- @can('custom-css')
-            <li>
-                <a href="{{ route('admin.custom-css') }}" class="navItem {{ isActive('admin.custom-css') }}">
-                    <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="lucide:braces"></iconify-icon>
-                        <span>{{ __('Custom CSS') }}</span>
-                    </span>
-                </a>
-            </li>
-        @endcan --}}
-
-        {{--<li class="">
-            <a href="javascript:void(0);" class="navItem">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="mdi:partnership"></iconify-icon>
-                    <span>{{ __('Partnership') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">
-                        {{ __('Symbols') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('admin.symbol-groups.index') }}" class="{{ isActive('admin.symbol-groups*') }}">
-                        {{ __('Symbol Groups') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('admin.rebate-rules.index') }}" class="{{ isActive('admin.rebate-rules*') }}">
-                        {{ __('Rebate Rules') }}
-                    </a>
-                </li>
-            </ul>
-        </li>--}}
 
     </ul>
 </div>

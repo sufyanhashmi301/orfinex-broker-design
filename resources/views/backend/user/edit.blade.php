@@ -46,7 +46,7 @@
                                 <div class="bg-white dark:bg-slate-800 p-4">
                                     <div class="text-center space-y-2">
                                         <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            Payout Wallets
+                                            Wallets Balance
                                             <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Funds available in payout and affiliate wallets."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
@@ -58,10 +58,10 @@
                                     <div class="text-center space-y-2">
                                         <p class="flex items-center justify-center text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
                                            Total Withdraw
-                                           <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Total amount withdrawn by user."></iconify-icon>
+                                           <iconify-icon class="toolTip onTop ml-1" icon="lucide:info" data-tippy-content="Total amount withdrawn by user (only approved)."></iconify-icon>
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            0.00 {{ $currency }}
+                                            {{ number_format($total_approved_withdraws, 2) }} {{ $currency }}
                                         </h6>
                                     </div>
                                 </div>
@@ -372,9 +372,10 @@
     @include('backend.user.include.__forex_account')
 
     <!-- Modal for Add or Subtract Balance -->
-    @can('customer-balance-add-or-subtract')
+    {{-- @can('customer-balance-add-or-subtract')
         @include('backend.user.include.__balance')
-    @endcan
+    @endcan --}}
+    @include('backend.user.include.__add_account_modal')
     <!-- Modal for Add or Subtract Balance End-->
     {{--    @can('customer-balance-add-or-subtract')--}}
     @include('backend.user.include.__tags')

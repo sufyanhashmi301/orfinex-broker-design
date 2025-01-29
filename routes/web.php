@@ -127,13 +127,20 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::resource('account', WithdrawController::class)->except('show');
         //user withdraw
         Route::get('/step-1', 'step1Index')->name('step1');
-
         Route::get('/payout-request', 'payoutRequest')->name('payout_request');
 
+
         Route::get('/step-2', 'withdraw')->name('step2');
-        Route::get('details/{accountId}/{amount?}', 'details')->name('details');
-        Route::get('method/{id}', 'withdrawMethod')->name('method');
+
         Route::post('now', 'withdrawNow')->name('now');
+        
+        // Witjdraw Ajax
+        Route::get('details/{accountId}/{amount?}', 'details')->name('details');
+
+        // success
+        Route::get('success', 'success')->name('success');
+        
+        Route::get('method/{id}', 'withdrawMethod')->name('method');
         Route::get('log', 'withdrawLog')->name('log');
     });
 

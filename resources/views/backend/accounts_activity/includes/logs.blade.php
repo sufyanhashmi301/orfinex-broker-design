@@ -53,11 +53,14 @@
 
                                         <td class="table-td" style="width: 300px">
                                             @if ($activity->status == \App\Enums\InvestmentPhaseApproval::ADMIN_APPROVE && $activity->action == 0)
-                                                <div class="btn-group">
-                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
-                                                  <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
-                                                </div>
 
+                                                @can('account-activity-approval')
+                                                    <div class="btn-group">
+                                                        <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'approve', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-success mr-1">Approve</a>
+                                                        <a href="{{ route('admin.account-phase.approval-request', ['operation' => 'reject', 'investment_id' => $activity->accountTypeInvestment->id]) }}" class="btn btn-sm btn-danger">Reject</a>
+                                                    </div>
+                                                @endcan
+                                                
                                             @else
                                                 {{-- {{ route('user.investment.trading-stats', ['investment_id' => $activity->accountTypeInvestment->id ]) }} --}}
                                                 <a href="#" class="inline-flex justify-center">

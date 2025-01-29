@@ -7,6 +7,7 @@ use App\Enums\InvestmentStatus;
 use App\Models\AccountActivity;
 use Illuminate\Validation\Rule;
 use App\Models\AccountTypeInvestment;
+use App\Enums\InvestmentPhaseApproval;
 use App\Services\AccountActivityService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\InvestmentPhaseApprovalService;
@@ -19,6 +20,10 @@ class AccountActivityController extends Controller
     private $investment_payment;
 
     public function __construct(AccountTypeInvestmentPaymentService $investment_payment, ) {
+
+        $this->middleware('permission:account-activity-list', ['only' => ['index', 'phaseApprovalRequest']]);
+        $this->middleware('permission:account-activity-approval', ['only' => ['phaseApprovalRequest']]);
+
         $this->investment_payment = $investment_payment;
     }
 
@@ -27,9 +32,34 @@ class AccountActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(Request $request) {
+
+        if(isset($request->unique_id)){
+            $uniqueId = $request->unique_id;
+            $account_activities = AccountActivity::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
+                                            $query->where('unique_id', $uniqueId);
+                                        })->orderBy('id', 'DESC')->paginate(15);
+        } elseif (isset($request->{'pending-approvals'})) {
+            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->with([
+                'accountTypeInvestment.user' 
+            ])->whereHas('accountTypeInvestment', function($query) {
+                $query->whereHas('user'); 
+            })->orderBy('id', 'DESC')->paginate(15);
+        } elseif (isset($request->{'violated-acounts'})) {
+            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::VIOLATED])->with([
+                'accountTypeInvestment.user' 
+            ])->whereHas('accountTypeInvestment', function($query) {
+                $query->whereHas('user'); 
+            })->orderBy('id', 'DESC')->paginate(15);
+        } else{
+            $account_activities = AccountActivity::with([
+                'accountTypeInvestment.user' 
+            ])->whereHas('accountTypeInvestment', function($query) {
+                $query->whereHas('user'); 
+            })->orderBy('id', 'DESC')->paginate(15);
+        }
+
+        return view('backend.accounts_activity.index', compact('account_activities'));
     }
 
     /**

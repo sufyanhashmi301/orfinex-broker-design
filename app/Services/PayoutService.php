@@ -61,9 +61,17 @@ class PayoutService
     foreach($active_funded_accounts as $acc) {
         $account_rule = $acc->getRuleSnapshotData();
         $account_stats = $acc->accountTypeInvestmentStat;
+
+        // $trading_days = ;
+        if(!isset($acc->getAccountTypeSnapshotData()['trading_days'])) {
+          $trading_days = $acc->getRuleSnapshotData()['trading_days'];
+        } else {
+          $trading_days = $acc->getAccountTypeSnapshotData()['trading_days'];
+        }
+
         if( 
             $account_stats->balance >= ( $account_rule['allotted_funds'] + $account_rule['profit_target'] ) && 
-            $account_stats->trading_days >= $acc->getAccountTypeSnapshotData()['trading_days'] &&
+            $account_stats->trading_days >= $trading_days &&
             $account_stats->balance == $account_stats->current_equity
         ){
             array_push($eligible_for_payout_accounts, $acc);

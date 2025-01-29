@@ -21,13 +21,50 @@ class PermissionSeeder extends Seeder
             ['category' => 'Customer Management', 'name' => 'customer-login'],
             ['category' => 'Customer Management', 'name' => 'customer-mail-send'],
             ['category' => 'Customer Management', 'name' => 'customer-basic-manage'],
-            ['category' => 'Customer Management', 'name' => 'customer-balance-add-or-subtract'],
+            // ['category' => 'Customer Management', 'name' => 'customer-balance-add-or-subtract'],
             ['category' => 'Customer Management', 'name' => 'customer-change-password'],
             ['category' => 'Customer Management', 'name' => 'all-type-status'],
 
             ['category' => 'Kyc Management', 'name' => 'kyc-list'],
             ['category' => 'Kyc Management', 'name' => 'kyc-action'],
             ['category' => 'Kyc Management', 'name' => 'kyc-form-manage'],
+
+            ['category' => 'Account Type Management', 'name' => 'account-type-list'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-create'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-edit'],
+            ['category' => 'Account Type Management', 'name' => 'account-type-delete'],
+
+            ['category' => 'Account Management', 'name' => 'account-list'],
+            ['category' => 'Account Management', 'name' => 'account-trading-history'],
+
+            ['category' => 'Account Activity Management', 'name' => 'account-activity-list'],
+            ['category' => 'Account Activity Management', 'name' => 'account-activity-approval'],
+
+            ['category' => 'Risk Hub Management', 'name' => 'risk-hub-view'],
+
+            ['category' => 'Certificate Management', 'name' => 'certificate-manage'],
+            ['category' => 'Certificate Management', 'name' => 'certificate-config'],
+            ['category' => 'Certificate Management', 'name' => 'certificate-edit'],
+            ['category' => 'Certificate Management', 'name' => 'certificate-awarded-list'],
+            ['category' => 'Certificate Management', 'name' => 'certificate-awarded-view'],
+
+            ['category' => 'Contract Management', 'name' => 'contract-list'],
+            ['category' => 'Contract Management', 'name' => 'contract-view'],
+            ['category' => 'Contract Management', 'name' => 'contract-edit'],
+
+            ['category' => 'Addon Management', 'name' => 'addon-list'],
+            ['category' => 'Addon Management', 'name' => 'addon-edit'],
+
+            ['category' => 'Affiliate Management', 'name' => 'affiliate-list'],
+            ['category' => 'Affiliate Management', 'name' => 'affiliate-config'],
+
+            ['category' => 'Discount Code Management', 'name' => 'discount-code-list'],
+            ['category' => 'Discount Code Management', 'name' => 'discount-code-create'],
+            ['category' => 'Discount Code Management', 'name' => 'discount-code-edit'],
+            ['category' => 'Discount Code Management', 'name' => 'discount-code-delete'],
+
+            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-view'],
+            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-edit'],
 
             ['category' => 'Role Management', 'name' => 'role-list'],
             ['category' => 'Role Management', 'name' => 'role-create'],
@@ -39,15 +76,9 @@ class PermissionSeeder extends Seeder
             ['category' => 'Staff Management', 'name' => 'staff-edit'],
             ['category' => 'Staff Management', 'name' => 'staff-delete'],
 
-            ['category' => 'Plan Management', 'name' => 'schedule-manage'],
-            ['category' => 'Plan Management', 'name' => 'schema-list'],
-            ['category' => 'Plan Management', 'name' => 'schema-create'],
-            ['category' => 'Plan Management', 'name' => 'schema-edit'],
-            ['category' => 'Plan Management', 'name' => 'schema-delete'],
-
-            ['category' => 'Transaction Management', 'name' => 'transaction-list'],
-            ['category' => 'Transaction Management', 'name' => 'investment-list'],
-            ['category' => 'Transaction Management', 'name' => 'profit-list'],
+            // ['category' => 'Transaction Management', 'name' => 'transaction-list'],
+            // ['category' => 'Transaction Management', 'name' => 'investment-list'],
+            // ['category' => 'Transaction Management', 'name' => 'profit-list'],
 
             ['category' => 'Deposit Management', 'name' => 'automatic-gateway-manage'],
             ['category' => 'Deposit Management', 'name' => 'manual-gateway-manage'],
@@ -58,12 +89,6 @@ class PermissionSeeder extends Seeder
             ['category' => 'Withdraw Management', 'name' => 'withdraw-method-manage'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-action'],
             ['category' => 'Withdraw Management', 'name' => 'withdraw-schedule'],
-
-            ['category' => 'Referral Management', 'name' => 'target-manage'],
-            ['category' => 'Referral Management', 'name' => 'referral-create'],
-            ['category' => 'Referral Management', 'name' => 'referral-list'],
-            ['category' => 'Referral Management', 'name' => 'referral-edit'],
-            ['category' => 'Referral Management', 'name' => 'referral-delete'],
 
             ['category' => 'Ranking Management', 'name' => 'ranking-list'],
             ['category' => 'Ranking Management', 'name' => 'ranking-create'],
@@ -88,8 +113,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Setting Management', 'name' => 'custom-css'],
             ['category' => 'Setting Management', 'name' => 'email-template'],
 
-        ];
+            
 
+        ];
+        
         foreach ($permissions as $permission) {
             foreach ($permissions as $permission) {
                 Permission::updateOrCreate(

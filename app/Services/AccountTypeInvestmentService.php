@@ -86,50 +86,49 @@ class AccountTypeInvestmentService
   /**
    * Create an investment
    */
-  public function createInvestment($data, $copy_snapshot_id = 0, $is_trial = false) {
-
+  public function createInvestment($data, $copy_snapshot_id = 0, $is_trial = false, $added_manually = false, $added_manually_to_user = 0) {
     
-
     // it means that creating the new investment for Phase 1
     if($copy_snapshot_id == 0){
       $currency = setting('site_currency', 'global');
       $rule = AccountTypePhaseRule::findOrFail($data->rule_id);
-
-      // dd($rule->accountTypePhase);
-
-      // Discount (Coupon Code) Management
       $total_amount = $rule->amount;
-      if($data['discount_id']){
-        // if coupon code is applied by the buyer
-        $total_amount = $this->invoice->processCouponDiscount($data['discount_id'], $rule->amount)['final_amount'];
+
+			// If account is beinbg added manually then skip discounts and addons
+      if(!$added_manually) {
+				// Discount (Coupon Code) Management
+				if($data['discount_id']){
+					// if coupon code is applied by the buyer
+					$total_amount = $this->invoice->processCouponDiscount($data['discount_id'], $rule->amount)['final_amount'];
+				}
+
+				// Addons Management
+				if($data['addons']){
+					// if one or more addons have ben applied
+					$addons = explode(',', $data['addons']);
+					for($i=0; $i < count($addons); $i++) {
+					$total_amount += $this->invoice->processAddons($addons[$i], $rule->amount);
+					}
+				}
+
+				// Invoice crucial data
+				$invoice_data = [
+					'addons' => $data['addons'],
+					'discount_id' => $data['discount_id']
+				];
       }
-
-      // Addons Management
-      if($data['addons']){
-        // if one or more addons have ben applied
-        $addons = explode(',', $data['addons']);
-        for($i=0; $i < count($addons); $i++) {
-          $total_amount += $this->invoice->processAddons($addons[$i], $rule->amount);
-        }
-      }
-
-      // Invoice crucial data
-      $invoice_data = [
-        'addons' => $data['addons'],
-        'discount_id' => $data['discount_id']
-      ];
-
+			
       // data
       $data = [
           'unique_id' => $this->generateUniqueString(),
-          'user_id' => Auth::id(),
+          'user_id' => $added_manually ? $added_manually_to_user : Auth::id(),
           'currency' => $currency,
           'account_type_phase_id' => $rule->accountTypePhase->id,
           'account_type_phase_rule_id' => $rule->id,
           'trader_type' => $rule->accountTypePhase->accountType->trader_type,
           'platform_group' => $rule->accountTypePhase->accountType->platform_group,
           'total' => $total_amount - $rule->discount,
-          'status' => InvestmentStatus::PENDING,
+          'status' => $added_manually ? InvestmentStatus::ACTIVE : InvestmentStatus::PENDING,
           'is_trial' => $is_trial ? 1 : 0
       ];
     }
@@ -139,18 +138,17 @@ class AccountTypeInvestmentService
 
     
     // Create Invoice only for phase 1
-    if($copy_snapshot_id == 0){
+    if($copy_snapshot_id == 0 && !$added_manually){
       $invoice = $this->invoice->createInvoice($invoice_data, $rule, $new_investment, $total_amount);
     }
     
     
     $investment_snapshot = $this->saveInvestmentAttributesSnapshot($new_investment, $copy_snapshot_id);
     // Investment phase log
-    if($copy_snapshot_id == 0 && !$is_trial) {
+    if($copy_snapshot_id == 0 && !$is_trial && !$added_manually) {
       AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::PAYMENT_APPROVE);
     }
-     
-
+		
     return $new_investment;
   }
 

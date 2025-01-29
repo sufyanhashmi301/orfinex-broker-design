@@ -1,6 +1,6 @@
 @extends('frontend::layouts.user')
 @section('title')
-    {{ __('My Wallet') }}
+    {{ __('My Wallets') }}
 @endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-3">
@@ -38,6 +38,8 @@
     <div class="grid md:grid-cols-2 col-span-1 gap-5 mb-6">
         <div class="card h-full p-6 mb-6">
             <div class="card-body">
+
+                
                 <div class="flex flex-wrap justify-between items-center mb-5">
                     <div class="space-x-3">
                         <span class="badge bg-secondary-500 text-secondary-500 bg-opacity-30 capitalize">
@@ -50,11 +52,13 @@
                        {{ $payout_wallet->unique_id }}
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $payout_wallet->available_balance }} {{$currency}}
+                        {{ number_format($payout_wallet->available_balance, 2) }} {{$currency}}
                     </div>
                 </div>
+
+
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.withdraw.step2')}}" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                    <a href="{{route('user.withdraw.step2', ["wallet" => \App\Enums\WalletType::PAYOUT])}}" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center {{ $payout_wallet->available_balance == 0 ? 'disabled' : '' }}">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mingcute:refund-dollar-line"></iconify-icon>
                             <span>{{ __('Withdraw') }}</span>
@@ -86,12 +90,12 @@
 
                     </div>
                     <div class="text-slate-900 dark:text-white text-xl font-medium">
-                        {{ $affiliate_wallet->available_balance }} {{$currency}}
+                        {{ number_format($affiliate_wallet->available_balance, 2) }} {{$currency}}
 
                     </div>
                 </div>
                 <div class="flex space-x-2 items-center">
-                    <a href="{{route('user.withdraw.step2')}}" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                    <a href="{{route('user.withdraw.step2', ["wallet" => \App\Enums\WalletType::AFFILIATE])}}"  class="btn btn-sm btn-outline-dark inline-flex items-center justify-center {{ $affiliate_wallet->available_balance == 0 ? 'disabled' : '' }}">
                         <span class="flex items-center">
                             <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="mingcute:refund-dollar-line"></iconify-icon>
                             <span>{{ __('Withdraw') }}</span>

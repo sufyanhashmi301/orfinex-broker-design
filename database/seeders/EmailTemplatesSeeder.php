@@ -141,31 +141,7 @@ class EmailTemplatesSeeder extends Seeder
                 'created_at' => '2024-03-07 16:27:01',
                 'updated_at' => '2024-03-07 16:27:01',
             ],
-            [
-                'name' => 'Withdraw Request',
-                'code' => 'withdraw_request',
-                'for' => 'Admin',
-                'banner' => 'global/images/xAt199HeJOZmril5OD45.png',
-                'title' => 'Withdraw Request',
-                'subject' => 'Got a Withdraw Request',
-                'salutation' => 'Hi Admin,',
-                'message_body' => 'Withdraw Request details:<br />[[txn]]<br />[[method_name]]<br />[[withdraw_amount]]',
-                'button_level' => 'Withdraw Request',
-                'button_link' => '[[token]]',
-                'footer_status' => 1,
-                'footer_body' => 'Regards,<br />[[site_title]]',
-                'bottom_status' => 0,
-                'bottom_title' => 'Withdraw Request',
-                'bottom_body' => '[[full_name]]',
-                'short_codes' => '["[[full_name]]","[[txn]]","[[method_name]]","[[withdraw_amount]]","[[site_title]]","[[site_url]]"]',
-                'note' => null,
-                'support_link' => null,
-                'warning_content' => null,
-                'company_info' => null,
-                'status' => 0,
-                'created_at' => '2024-01-17 17:49:12',
-                'updated_at' => '2024-01-17 17:49:12',
-            ],
+            
             [
                 'name' => 'Admin Forget Password',
                 'code' => 'admin_forget_password',
@@ -265,31 +241,6 @@ class EmailTemplatesSeeder extends Seeder
                 'status' => 1,
                 'created_at' => '2024-03-07 15:54:46',
                 'updated_at' => '2024-03-07 15:54:46',
-            ],
-            [
-                'name' => 'Withdraw Request Action',
-                'code' => 'withdraw_request_user',
-                'for' => 'User',
-                'banner' => 'global/images/IZeWtmv9pASv3P4QOL8P.png',
-                'title' => 'Withdrawal Request',
-                'subject' => 'Withdrawal Request',
-                'salutation' => 'Dear [[full_name]],',
-                'message_body' => 'We have received your withdrawal request. Please note that it can take up to 24 hours.',
-                'button_level' => 'Review Your Request',
-                'button_link' => url('/').'/login',
-                'footer_status' => 0,
-                'footer_body' => '',
-                'bottom_status' => 1,
-                'bottom_title' => 'Withdraw Request ID',
-                'bottom_body' => '[[txn]]',
-                'short_codes' => '["[[full_name]]","[[message]]","[[txn]]","[[method_name]]","[[withdraw_amount]]","[[site_title]]","[[site_url]]","[[status]]"]',
-                'note' => '',
-                'support_link' => '',
-                'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high-risk investments.',
-                'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
-                'status' => 1,
-                'created_at' => '2024-03-07 16:27:50',
-                'updated_at' => '2024-03-07 16:27:50',
             ],
             [
                 'name' => 'Support Ticket',
@@ -467,30 +418,7 @@ class EmailTemplatesSeeder extends Seeder
 //                 'updated_at' => '2024-03-07 15:50:32',
 //             ],
 //             [
-//                 'name' => 'Withdraw Request Reject Action',
-//                 'code' => 'withdraw_request_user_reject',
-//                 'for' => 'User',
-//                 'banner' => 'global/images/OZ5bjEgcgbJzvtODhb6y.png',
-//                 'title' => 'Withdrawal Request Rejected',
-//                 'subject' => 'Withdrawal Request Rejected',
-//                 'salutation' => 'Dear [[full_name]],',
-//                 'message_body' => 'Unfortunately, your [[withdraw_amount]] withdrawal request has been denied. Please review the reasons below.',
-//                 'button_level' => 'Review Your Request',
-//                 'button_link' => url('/').'/user/dashboard',
-//                 'footer_status' => 0,
-//                 'footer_body' => '',
-//                 'bottom_status' => 1,
-//                 'bottom_title' => 'Withdraw Request ID',
-//                 'bottom_body' => '[[txn]]',
-//                 'short_codes' => '["[[full_name]]","[[message]]","[[txn]]","[[method_name]]","[[withdraw_amount]]","[[site_title]]","[[site_url]]","[[status]]"]',
-//                 'note' => '',
-//                 'support_link' => '',
-//                 'warning_content' => 'Trading risk Disclaimer: Trading in CFDs and spread bets are high-risk investments.',
-//                 'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
-//                 'status' => 1,
-//                 'created_at' => '2024-03-12 11:02:08',
-//                 'updated_at' => '2024-03-07 16:28:21',
-//             ],
+
 //             [
 //                 'name' => 'KYC Approval Confirmation',
 //                 'code' => 'kyc_approval_confirmation',
@@ -850,6 +778,145 @@ Trade smart,
                 'support_link' => '',
                 'warning_content' => '',
                 'company_info' => '',
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Withdraw Request',
+                'code' => 'withdraw_request',
+                'for' => 'User',
+                'banner' => 'global/images/IZeWtmv9pASv3P4QOL8P.png',
+                'title' => 'Withdraw Request',
+                'subject' => 'Withdraw Request #[[transaction_id]]',
+                'salutation' => 'Dear [[full_name]],',
+                'message_body' => 'Dear [[full_name]],
+
+We have received your withdrawal request. Your request has been successfully received and is currently under review.
+
+Here are the details of your transaction:
+
+- Transaction ID: [[transaction_id]]
+- Status: [[status]]
+- Withdrawal Amount: [[amount]]
+- Withdrawal Method: [[withdrawal_method_name]]
+- Processing Time: [[processing_time]]
+
+You will receive a confirmation email when the funds are successfully transferred.
+
+Trade smart,
+[[site_title]]
+',
+                'button_level' => 'My Account',
+                'button_link' => url('/').'/login',
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 0,
+                'bottom_title' => '',
+                'bottom_body' => '',
+                'short_codes' => '["[[site_url]]", "[[site_title]]","[[full_name]]", "[[transaction_id]]", "[[status]]", "[[amount]]", "[[withdrawal_method_name]]", "[[processing_time]]" ]',
+                'note' => '',
+                'support_link' => '',
+                'warning_content' => '',
+                'company_info' => setting('site_title', 'global').' GLOBAL LIMITED Incorporated by Saint Lucia under registration number 2023-00532.',
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Withdraw Request',
+                'code' => 'withdraw_request_admin',
+                'for' => 'Admin',
+                'banner' => 'global/images/xAt199HeJOZmril5OD45.png',
+                'title' => 'Withdraw Request',
+                'subject' => 'Withdraw Request #[[transaction_id]]',
+                'salutation' => 'Hi Admin,',
+                'message_body' => 'Withdraw Request details:
+
+- User Name: [[full_name]] 
+- Transaction ID: [[transaction_id]]
+- Status: [[status]]
+- Withdrawal Amount: [[amount]]
+- Withdrawal Method: [[withdrawal_method_name]]
+- Processing Time: [[processing_time]]',
+                'button_level' => 'View Pending Withdraws',
+                'button_link' => route('admin.withdraw.pending'),
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 0,
+                'bottom_title' => '',
+                'bottom_body' => '',
+                'short_codes' => '["[[site_url]]", "[[site_title]]","[[full_name]]", "[[transaction_id]]", "[[status]]", "[[amount]]", "[[withdrawal_method_name]]", "[[processing_time]]" ]',
+                'note' => null,
+                'support_link' => null,
+                'warning_content' => null,
+                'company_info' => null,
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Withdraw Request Reject',
+                'code' => 'withdraw_request_reject',
+                'for' => 'User',
+                'banner' => 'global/images/xAt199HeJOZmril5OD45.png',
+                'title' => 'Withdraw Request Rejected',
+                'subject' => 'Withdraw Request Rejected #[[transaction_id]]',
+                'salutation' => '',
+                'message_body' => 'Dear [[full_name]],
+
+We are sorry to inform that your withdraw request of amount [[amount]] with transaction id #[[transaction_id]] has been rejected. The amount has been refunded to your [[wallet_type]] wallet.
+
+[[cause]]
+
+Trade smart,
+[[site_title]]',
+
+                'button_level' => 'My Account',
+                'button_link' => url('/').'/login',
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 0,
+                'bottom_title' => '',
+                'bottom_body' => '',
+                'short_codes' => '["[[site_url]]", "[[site_title]]","[[full_name]]", "[[amount]]", "[[transaction_id]]", "[[wallet_type]]", "[[cause]]"]',
+                'note' => null,
+                'support_link' => null,
+                'warning_content' => null,
+                'company_info' => null,
+                'status' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Withdraw Request Approve',
+                'code' => 'withdraw_request_approve',
+                'for' => 'User',
+                'banner' => 'global/images/xAt199HeJOZmril5OD45.png',
+                'title' => 'Withdraw Request Approved',
+                'subject' => 'Withdraw Request Approved #[[transaction_id]]',
+                'salutation' => '',
+                'message_body' => 'Dear [[full_name]],
+
+We are delighted to inform that your withdraw request of amount [[amount]] with transaction id #[[transaction_id]] has been approved.
+
+[[cause]]
+
+Trade smart,
+[[site_title]]',
+
+                'button_level' => 'My Account',
+                'button_link' => url('/').'/login',
+                'footer_status' => 0,
+                'footer_body' => '',
+                'bottom_status' => 0,
+                'bottom_title' => '',
+                'bottom_body' => '',
+                'short_codes' => '["[[site_url]]", "[[site_title]]","[[full_name]]", "[[amount]]", "[[transaction_id]]", "[[cause]]"]',
+                'note' => null,
+                'support_link' => null,
+                'warning_content' => null,
+                'company_info' => null,
                 'status' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

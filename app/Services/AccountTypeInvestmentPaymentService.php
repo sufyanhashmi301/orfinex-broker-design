@@ -39,7 +39,7 @@ class AccountTypeInvestmentPaymentService
       $response = $this->forexApiService->createUser($user_data);
       return $response;
     } catch (RequestException $e) {
-        abort($e->getCode());
+        abort($e->getCode(), 'API Response Error. Please try again later.');
     }
   }
 
@@ -103,12 +103,12 @@ class AccountTypeInvestmentPaymentService
       } while ($retryCount < $maxRetries);
 
     } catch (RequestException $e) {
-      abort($e->getCode());
+      abort($e->getCode(), 'API Response Error. Please try again later.');
     }
 
     // if it still fails after $maxRetries tries
     if ($response['result'] == null) {
-      abort(400);
+      abort(400, 'API Response Error. Please try again later.');
     } 
 
     if ($response['success']) {
@@ -241,8 +241,6 @@ class AccountTypeInvestmentPaymentService
 
     // If deposit is successful, update the Investment table and add the record to investment_phase_approvals_table
     if ($deposit) {
-
-      
 
       $time_now = CarbonImmutable::now();
 

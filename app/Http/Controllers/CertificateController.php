@@ -21,6 +21,13 @@ class CertificateController extends Controller
     protected $generate_certificate_service;
 
     public function __construct(GenerateCertificateService $generate_certificate_service) {
+        $this->middleware('permission:certificate-manage', ['only' => ['manage', 'updateConfig', 'update', 'viewCertificate']]);
+        $this->middleware('permission:certificate-edit', ['only' => ['update']]);
+        $this->middleware('permission:certificate-config', ['only' => ['updateConfig', 'viewCertificate']]);
+        // $this->middleware('permission:certificate-awarded-list', ['only' => ['index', 'phaseApprovalRequest']]);
+        // $this->middleware('permission:certificate-awarded-view', ['only' => ['index', 'phaseApprovalRequest']]);
+
+
         $this->generate_certificate_service = $generate_certificate_service;
     }
 

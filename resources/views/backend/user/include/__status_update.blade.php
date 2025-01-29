@@ -47,21 +47,30 @@
                     <iconify-icon icon="lucide:user-plus"></iconify-icon>
                 </a>
             @endcan
-            @can('customer-balance-add-or-subtract')
+            {{-- @can('customer-balance-add-or-subtract')
                 <span data-bs-toggle="modal" data-bs-target="#addSubBal">
                     <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
                        data-tippy-theme="dark" data-tippy-content="Add Funds">
                         <iconify-icon icon="lucide:wallet"></iconify-icon>
                     </a>
                 </span>
-            @endcan
+            @endcan --}}
+
+            {{-- Manually assign account to use --}}
+            <span data-bs-toggle="modal" data-bs-target="#add-account">
+                <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
+                   data-tippy-theme="dark" data-tippy-content="Add Account">
+                    <iconify-icon icon="lucide:list-plus"></iconify-icon>
+                </a>
+            </span>
+
             {{--@can('Delete User')--}}
-            <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+            {{-- <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn"
                    data-tippy-theme="dark" data-tippy-content="Delete User">
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
                 </a>
-            </span>
+            </span> --}}
         </div>
         <ul class="space-y-5 mb-4">
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
@@ -102,18 +111,18 @@
             class="flex items-center justify-around border-t border-b border-slate-100 dark:border-slate-700 py-4 mb-5">
             <div class="text-center">
                 <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                    {{ __('Current Balance') }}
+                    {{ __('Payout Wallet') }}
                 </div>
                 <div class="text-slate-900 dark:text-white text-xl font-medium">
-                    {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                    {{ setting('currency_symbol','global') . number_format($payout_wallet_balance, 2) }}
                 </div>
             </div>
             <div class="text-center">
                 <div class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                    {{ __('Current Equity') }}
+                    {{ __('Affiliate Wallet') }}
                 </div>
                 <div class="text-slate-900 dark:text-white text-xl font-medium">
-                    {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                    {{ setting('currency_symbol','global') . number_format($affiliate_wallet_balance, 2) }}
                 </div>
             </div>
         </div>

@@ -136,9 +136,8 @@ class DashboardController extends Controller
         $total_funded_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
             $query->where('type', AccountType::FUNDED);
         })->count();
-        $total_trial_accounts = AccountTypeInvestment::whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-            $query->where('type', AccountType::AUTO_EXPIRE);
-        })->count();
+        $total_trial_accounts = AccountTypeInvestment::where('is_trial', 1)->count();
+        $total_approved_withdraws = Transaction::where('type', 'withdraw')->where('status', TxnStatus::Success)->sum('amount');
         
         // dd($challenge_accounts);
         // --- Optimizations
@@ -153,6 +152,7 @@ class DashboardController extends Controller
             'total_challenge_accounts' => $total_challenge_accounts,
             'total_funded_accounts' => $total_funded_accounts,
             'total_trial_accounts' => $total_trial_accounts,
+            'total_approved_withdraws' => $total_approved_withdraws,
             // optimizaitons
 
             'withdraw_count' => $withdrawCount,
@@ -195,6 +195,7 @@ class DashboardController extends Controller
             'platform' => $platform,
             'country' => $country,
             'symbol' => $symbol,
+        
         ];
 
 

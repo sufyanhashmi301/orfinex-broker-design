@@ -84,7 +84,7 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                {{ __('Total Payout') }}
+                {{ __('Total Approved Payout (User Share Only)') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
                 {{ $currencySymbol }}<span class="count">{{ $data['total_payout'] }}</span>
@@ -98,7 +98,7 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                {{ __('Total Referral') }}
+                {{ __('Users Accumulative Affiliate Commission') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
                 {{ $currencySymbol }}{{ $data['total_referral'] }}
@@ -112,11 +112,11 @@
     <div class="card">
         <div class="card-body p-6">
             <div class="text-slate-600 dark:text-slate-400 text-sm mb-1 font-medium">
-                {{ __('Total Withdrawn Amount') }}
+                {{ __('Total Approved Withdraws') }}
             </div>
             <div class="flex items-center text-slate-900 dark:text-white text-xl font-medium">
                 {{-- {{ $currencySymbol }}<span class="count">{{ round($data['total_send'],2) }}</span> --}}
-                {{ $currencySymbol }}<span class="count">0.00</span>
+                {{ $currencySymbol }}<span class="count">{{ number_format($data['total_approved_withdraws'], 2) }}</span>
                 {{-- <span class="text-sm text-success-500 ml-1">+452%</span> --}}
             </div>
             <div class="">
@@ -216,7 +216,7 @@
                 </div>
                 <div class="flex-1">
                     <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                        {{ __('Total Ticket') }}
+                        {{ __('Total Tickets') }}
                     </div>
                     <div class="count text-slate-900 dark:text-white text-xl font-medium">
                         {{ $data['total_ticket'] }}

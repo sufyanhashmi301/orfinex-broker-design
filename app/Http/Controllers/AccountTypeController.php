@@ -23,6 +23,11 @@ class AccountTypeController extends Controller
 
     public function __construct(AccountTypeService $accountTypeService, AccountTypePhaseService $accountTypePhaseService)
     {
+        $this->middleware('permission:account-type-list', ['only' => ['index', 'config']]);
+        $this->middleware('permission:account-type-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:account-type-edit', ['only' => ['edit', 'update', 'config']]);
+        $this->middleware('permission:account-type-delete', ['only' => ['destroy']]);
+
         $this->accountTypeService = $accountTypeService;
         $this->accountTypePhaseService = $accountTypePhaseService;
     }
@@ -57,6 +62,23 @@ class AccountTypeController extends Controller
 
         return view('backend.account_types.index', compact('account_types'));
     }
+
+    /**
+     * Return Phases and Rules of Ackcount Types. AJAX method
+     */
+    public function accountTypeInfo(Request $request) {
+        $account_type = AccountType::where('id', $request->id)->where('status', 1)->first();
+
+        if(!$account_type) {
+            return 'false';
+        }
+
+        return [
+            'phases' => $account_type->accountTypePhases,
+            'rules' => $account_type->accountTypePhases[0]->accountTypePhaseRules
+        ];
+    }
+
 
     /**
      * Show the form for creating a new resource.

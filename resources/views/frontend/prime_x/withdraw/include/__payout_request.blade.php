@@ -42,7 +42,7 @@
                           <tr>
                             <td class="table-td">
                               <b>
-                                <a target="_blank" style="text-decoration: underline" href="{{ route('user.investment.trading-stats', ["investment_id" => $fb->accountTypeInvestment->id ]) }}">{{ $fb->accountTypeInvestment->login }}</a>
+                                <a target="_blank" style="text-decoration: underline" href="{{ route('user.investment.trading-stats', ["account_id" => $fb->accountTypeInvestment->id ]) }}">{{ $fb->accountTypeInvestment->login }}</a>
                               </b>
                             </td>
                             <td class="table-td">{{ number_format($net_profit, 2) }} {{$currency}}</td>

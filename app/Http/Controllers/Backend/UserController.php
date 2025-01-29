@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
 use App\Models\AccountType;
 use App\Enums\AccountType as AccountTypeEnums;
+use App\Enums\WalletType;
 use App\Models\AccountTypeInvestment;
 use App\Models\Country;
 use App\Models\CustomerGroup;
@@ -253,14 +254,7 @@ class UserController extends Controller
         $tags = RiskProfileTag::where('status', true)
             ->get();
         $customerGroups = CustomerGroup::where('status', 1)->get();
-        //        $users = User::where('id', '<>', $id)
-        //            ->where(function ($query) use ($id, $user) {
-        //                $query->whereNull('ref_id')
-        //                    ->orWhere('ref_id', '<>', $id);
-        //            })
-        //            ->where('id', '<>', $user->ref_id)
-        //            ->get();
-
+        
         $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
 
         $schemas = AccountType::where('status', true)
@@ -277,22 +271,17 @@ class UserController extends Controller
             ->get();
 
         // optimizations
-        // $challenge_accounts = AccountTypeInvestment::where('user_id', $id)->where('is_trial', '!=', 1)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-        //     $query->where('type', AccountTypeEnums::CHALLENGE);
-        // })->orderBy('id', 'DESC')->get();
-        // $funded_accounts = AccountTypeInvestment::where('user_id', $id)->where('is_trial', '!=', 1)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-        //     $query->where('type', AccountTypeEnums::FUNDED);
-        // })->orderBy('id', 'DESC')->get();
-        // $trial_accounts = AccountTypeInvestment::where('user_id', $id)->whereHas('accountTypePhaseRule.accountTypePhase.accountType', function ($query) {
-        //     $query->where('type', AccountTypeEnums::AUTO_EXPIRE);
-        // })->orderBy('id', 'DESC')->get();
-
+        
+        $all_account_types = AccountType::where('status', 1)->get();
         $accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->paginate(10);
         $all_accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $wallets_balance = Wallet::where('user_id', $id)->sum('available_balance');
+        $total_approved_withdraws = Transaction::where('user_id', $id)->where('type', 'withdraw')->where('status', TxnStatus::Success)->sum('amount');
+        $payout_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::PAYOUT)->first()->available_balance ?? 0.00;
+        $affiliate_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::AFFILIATE)->first()->available_balance ?? 0.00;
 
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'accounts', 'all_accounts', 'wallets_balance'));
+        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'accounts', 'all_accounts', 'wallets_balance', 'total_approved_withdraws', 'payout_wallet_balance', 'affiliate_wallet_balance', 'all_account_types'));
     }
 
     public function destroy($id)

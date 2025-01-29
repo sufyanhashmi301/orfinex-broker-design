@@ -32,7 +32,16 @@
                                     @endphp
                                     <tr>
                                       <td class="table-td">{{ $record->account_name }}</td>  
-                                      <td class="table-td">{{ $user_exists == true ? $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name . ' (' . $record->accountTypeInvestment->user->email . ')' : 'N/A' }}</td>  
+                                      <td class="table-td">
+                                        <div>
+                                            <span class="text-sm text-slate-900 dark:text-white block capitalize">
+                                                {{ $user_exists == true ? $record->accountTypeInvestment->user->first_name . ' ' . $record->accountTypeInvestment->user->last_name : 'N/A' }}
+                                            </span>
+                                            <span class="text-xs text-slate-500 dark:text-slate-300">
+                                                {{ $user_exists == true ?  $record->accountTypeInvestment->user->email : 'N/A' }}
+                                            </span>
+                                        </div>
+                                      </td>  
                                       <td class="table-td" style="text-decoration: underline;">
                                         <a href="{{ route('admin.account.trading_stats.history', ['search' => $record->accountTypeInvestment->login ]) }}">
                                           <b>{{ $record->accountTypeInvestment->login }}</b>

@@ -6,14 +6,14 @@
             @can('withdraw-list')
                 <li class="nav-item">
                     <a href="{{ route('admin.withdraw.pending') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.pending') }}">
-                        {{ __('Pending Payouts') }}
+                        {{ __('Pending Withdraw') }}
                     </a>
                 </li>
             @endcan
             @can('withdraw-list')
                 <li class="nav-item">
                     <a href="{{ route('admin.withdraw.history') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.withdraw.history') }}">
-                        {{ __('Payout History') }}
+                        {{ __('Withdraw History') }}
                     </a>
                 </li>
             @endcan

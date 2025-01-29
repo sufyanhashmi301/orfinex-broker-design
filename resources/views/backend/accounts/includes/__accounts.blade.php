@@ -87,7 +87,15 @@
                                         </td>
                                         @if ($view != 'user_edit')
                                             <td class="table-td">
-                                                {{ $user_exists == true ? $account->user->first_name . ' ' . $account->user->last_name . ' (' . $account->user->email . ')' : 'N/A' }}
+                                                <div>
+                                                    <span class="text-sm text-slate-900 dark:text-white block capitalize">
+                                                        {{ $user_exists == true ? $account->user->first_name . ' ' . $account->user->last_name : 'N/A' }}
+                                                    </span>
+                                                    <span class="text-xs text-slate-500 dark:text-slate-300">
+                                                        {{ $user_exists == true ?  $account->user->email : 'N/A' }}
+                                                    </span>
+                                                </div>
+                                                
                                             </td>
                                         @endif
                                         <td class="table-td">{{ $account->login ?? 'N/A' }}</td>

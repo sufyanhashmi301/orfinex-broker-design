@@ -12,7 +12,7 @@
                         <div class="h-full card">
                             <div class="p-0 h-full body-class">
                                 <!-- BEGIN: Messages -->
-                                <div class="h-full">
+                                <div class="relative h-full">
                                     <div class="chat-content bg-white dark:bg-dark" style="height: calc(100% - 75px);">
                                         <div class="msgs overflow-y-auto msg-height pt-6 space-y-6">
                                             <div class="block md:px-6 px-4">
@@ -91,6 +91,14 @@
                                         </div>
                                     </div>
                                     <!-- message -->
+                                    <div id="image-container" class="hidden absolute bg-white border-t border-slate-100 dark:border-slate-700 flex items-center gap-3 p-2">
+                                        <div class="relative rounded border border-slate-100 dark:border-slate-700 p-2">
+                                            <img id="image-preview" src="" alt="Image Preview" class="h-16 object-cover rounded-md">
+                                            <button type="button" id="remove-image" class="h-6 w-6 flex flex-col justify-center items-center text-lg rounded-full absolute top-1 right-1 bg-red-500 text-white">
+                                                <iconify-icon icon="mdi:window-close"></iconify-icon>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <form action="{{ route('admin.ticket.reply') }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="uuid" value="{{ $ticket->uuid }}">
@@ -265,4 +273,38 @@
     {{--    @can('delete-user')--}}
     @include('backend.user.include.__delete_user',[ 'id' => $ticket->user->id])
 
+@endsection
+@section('style')
+    <style>
+        #image-container{
+            position: absolute;
+            bottom: 4.5rem;
+            width: 100%;
+        }
+    </style>
+@endsection
+@section('script')
+    <script !src="">
+        $(document).ready(function() {
+            // Show image preview when file is selected
+            $('#attach').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#image-preview').attr('src', e.target.result);
+                        $('#image-container').removeClass('hidden'); // Show the image container
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Remove image and hide container
+            $('#remove-image').click(function() {
+                $('#image-preview').attr('src', ''); // Clear the image preview
+                $('#image-container').addClass('hidden'); // Hide the image container
+                $('#attach').val(''); // Clear file input
+            });
+        });
+    </script>
 @endsection

@@ -518,14 +518,19 @@ class Txn
 
         // withdrawal by user
         if($status == TxnStatus::Pending && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)){
-            // Deduct from Bonus and mark it as pending
-            $this->deductBonusFromForexAccount($transaction, $user, $uId, 'pending');
+            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                // Deduct from Bonus and mark it as pending
+                $this->deductBonusFromForexAccount($transaction, $user, $uId, 'pending');
+            }
         }
 
         // Withdrawl Rejected
         if($status == TxnStatus::Failed && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)){
             // Bonus Withdraw Rejected
-            $this->refundBonusToForexAccount($transaction, $user, $uId);
+            if (isset($transaction->target_id) && $transaction->target_type == TxnTargetType::ForexWithdraw->value) {
+                $this->refundBonusToForexAccount($transaction, $user, $uId);
+            }
+
         }
 
         if ($status == TxnStatus::Success && ($transaction->type == TxnType::Withdraw || $transaction->type == TxnType::WithdrawAuto)) {

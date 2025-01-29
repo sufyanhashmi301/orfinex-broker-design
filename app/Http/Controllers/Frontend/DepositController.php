@@ -157,7 +157,7 @@ class DepositController extends GatewayController
 
         foreach ($manualData as $key => $value) {
             if (is_file($value)) {
-                $manualData[$key] = self::deposvitImageUploadTrait($value);
+                $manualData[$key] = self::depositImageUploadTrait($value);
             }
         }
     }

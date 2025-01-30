@@ -9,10 +9,13 @@
             {{ $title }}
         </h4>
 
-        <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
-        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
-            Configure Parameters
-        </a>
+        @can('contract-edit')
+             <a href="" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
+                Configure Parameters
+            </a>
+        @endcan
+        
 
     </div>
 
@@ -38,14 +41,14 @@
                     Expired
                 </a>
             </li>
-            <li class="nav-item !ml-auto">
+            {{-- <li class="nav-item !ml-auto">
                 <a href="javascript:void(0);" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                     <span class="flex items-center">
                         <span>{{ __('More') }}</span>
                         <iconify-icon icon="lucide:chevron-down" class="text-xl ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
                     </span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
 
         <div class="hidden mt-5" id="filters_div">
@@ -76,10 +79,12 @@
                 
 
     {{-- Modals --}}
-    @include('backend.contracts.includes.__config_modal')
-    @include('backend.contracts.includes.__sign_contract_modal')
-    @include('backend.contracts.includes.__expire_contract_modal')
-    @include('backend.contracts.includes.__pending_contract_modal')
+    @can('contract-edit')
+        @include('backend.contracts.includes.__config_modal')
+        @include('backend.contracts.includes.__sign_contract_modal')
+        @include('backend.contracts.includes.__expire_contract_modal')
+        @include('backend.contracts.includes.__pending_contract_modal')
+    @endcan
 
 @endsection
 

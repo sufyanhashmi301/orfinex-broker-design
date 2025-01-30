@@ -64,7 +64,10 @@ class PermissionSeeder extends Seeder
             ['category' => 'Discount Code Management', 'name' => 'discount-code-delete'],
 
             ['category' => 'Leaderboard Management', 'name' => 'leaderboard-view'],
-            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-edit'],
+            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-badge-edit'],
+            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-ranking-create'],
+            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-ranking-edit'],
+            ['category' => 'Leaderboard Management', 'name' => 'leaderboard-ranking-delete'],
 
             ['category' => 'Role Management', 'name' => 'role-list'],
             ['category' => 'Role Management', 'name' => 'role-create'],

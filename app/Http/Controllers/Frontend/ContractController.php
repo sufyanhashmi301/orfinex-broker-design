@@ -17,6 +17,10 @@ class ContractController extends Controller
     protected $contract;
 
     public function __construct(ContractService $contract) {
+
+        $this->middleware('permission:contract-list', ['only' => ['adminIndex']]);
+        $this->middleware('permission:contract-edit', ['only' => ['markContractAs', 'config']]);
+
         $this->contract = $contract;
     }
 

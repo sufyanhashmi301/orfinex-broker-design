@@ -12,7 +12,7 @@
                                   <th scope="col" class="table-th">{{ __('Hook Type') }}</th>
                                   <th scope="col" class="table-th">{{ __('Used Nickname') }}</th>
                                   <th scope="col" class="table-th">{{ __('Certificate Awarded at') }}</th>
-                                  <th scope="col" class="table-th">{{ __('Certificate') }}</th>
+                                  <th scope="col" class="table-th">{{ __('View Certificate') }}</th>
                                     
                                 </tr>
                             </thead>
@@ -48,13 +48,17 @@
                                        
                                       <td class="table-td">{{ date('d F, Y', strtotime($record->hook_triggered_at)) }}</td>  
                                       <td class="table-td">
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#view-certificate-image-modal{{$record->id}}">View Certificate</button>
+                                        @can('certificate-awarded-view')
+                                          <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#view-certificate-image-modal{{$record->id}}">View Certificate</button>
+                                        @endcan
                                       </td> 
                                       
                                       
                                     </tr>
 
-                                    @include('backend.certificates.includes.__view_certificate', ['certificate' => $record])
+                                    @can('certificate-awarded-view')
+                                      @include('backend.certificates.includes.__view_certificate', ['certificate' => $record])
+                                    @endcan
                                 @endforeach
                             </tbody>
                         </table>

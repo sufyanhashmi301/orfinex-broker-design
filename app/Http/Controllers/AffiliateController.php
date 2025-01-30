@@ -8,6 +8,11 @@ use App\Models\UserAffiliate;
 
 class AffiliateController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('permission:affiliate-list', ['only' => ['index']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

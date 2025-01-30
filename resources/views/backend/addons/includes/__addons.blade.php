@@ -28,12 +28,16 @@
                                         </td>
 
                                         <td scope="col" class="table-td">
-                                          <button type="button" data-bs-toggle="modal" data-bs-target="#editAddonModal{{ $addon->id }}" data-id="{{ $addon->id }}" class="btn btn-sm btn-primary mr-1">Edit Addon</button>
+                                            @can('addon-edit')
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#editAddonModal{{ $addon->id }}" data-id="{{ $addon->id }}" class="btn btn-sm btn-primary mr-1">Edit Addon</button>
+                                            @endcan
+                                          
                                         </td>
 
                                     </tr>
-
-                                    @include('backend.addons.includes.__edit_modal', ['addon' => $addon])
+                                    @can('addon-edit')
+                                        @include('backend.addons.includes.__edit_modal', ['addon' => $addon])
+                                    @endcan
                                     
                                 @endforeach
                             </tbody>

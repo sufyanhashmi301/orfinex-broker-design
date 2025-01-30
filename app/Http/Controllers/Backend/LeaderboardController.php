@@ -11,6 +11,12 @@ use App\Models\LeaderboardRankingsCategory;
 
 class LeaderboardController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:leaderboard-view', ['only' => ['index']]);
+    }
+
     public function runSeeder() {
         Artisan::call('db:seed', [
             '--class' => 'LeaderboardBadgesSeeder' 

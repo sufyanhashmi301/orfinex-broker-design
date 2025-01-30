@@ -11,6 +11,11 @@ use App\Models\AffiliateRuleConfiguration;
 
 class AffiliateRuleController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('permission:affiliate-config', ['only' => ['create', 'store']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

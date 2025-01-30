@@ -180,63 +180,7 @@ class UserController extends Controller
 
         return view('backend.user.disabled_user');
     }
-    public function withBalance(Request $request)
-    {
-        if ($request->ajax()) {
-            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
-            $forexAccountIds = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $realForexAccounts)
-                ->where('Balance', '>', 0)
-                ->pluck('Login');
-            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-            $data = User::whereIn('id', $userIds)->latest();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
-                ->make(true);
-        }
 
-        return view('backend.user.with_balance');
-    }
-    public function withOutBalance(Request $request)
-    {
-        if ($request->ajax()) {
-            $realForexAccounts = ForexAccount::where('status', ForexAccountStatus::Ongoing)->pluck('login');
-            $forexAccountIds = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $realForexAccounts)
-                ->where('Balance', '<=', 0)
-                ->pluck('Login');
-
-            $userIds = ForexAccount::whereIn('login', $forexAccountIds)->pluck('user_id');
-            $data = User::whereIn('id', $userIds)->latest();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'status', 'balance', 'equity', 'credit', 'action'])
-                ->make(true);
-        }
-
-        return view('backend.user.without_balance');
-    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -417,81 +361,81 @@ class UserController extends Controller
     /**
      * @return RedirectResponse|void
      */
-    public function balanceUpdate($id, Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'target_id' => 'required',
-            'amount' => 'required',
-            'type' => 'required',
-            'target_type' => 'required',
-            'comment' => 'required',
-        ]);
-        $targetId = $request->input('target_id');
-        $targetType = $request->input('target_type');
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-            return redirect()->back();
-        }
+    // public function balanceUpdate($id, Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'target_id' => 'required',
+    //         'amount' => 'required',
+    //         'type' => 'required',
+    //         'target_type' => 'required',
+    //         'comment' => 'required',
+    //     ]);
+    //     $targetId = $request->input('target_id');
+    //     $targetType = $request->input('target_type');
+    //     if ($validator->fails()) {
+    //         notify()->error($validator->errors()->first(), 'Error');
+    //         return redirect()->back();
+    //     }
 
-        try {
-            //dd($request->all());
-            $amount = $request->amount;
-            $type = $request->type;
-            $comment = $request->comment;
+    //     try {
+    //         //dd($request->all());
+    //         $amount = $request->amount;
+    //         $type = $request->type;
+    //         $comment = $request->comment;
 
-            $user = User::find($id);
-            $adminUser = \Auth::user();
+    //         $user = User::find($id);
+    //         $adminUser = \Auth::user();
 
-            if ($type == 'add') {
-                if ($targetType == 'forex') {
-                    $data = [
-                        'login' => $targetId,
-                        'Amount' => $amount,
-                        'type' => 1, //deposit
-                        'TransactionComments' => $comment
-                    ];
-                    $this->forexApiService->balanceOperation($data);
-                }
-                Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
+    //         if ($type == 'add') {
+    //             if ($targetType == 'forex') {
+    //                 $data = [
+    //                     'login' => $targetId,
+    //                     'Amount' => $amount,
+    //                     'type' => 1, //deposit
+    //                     'TransactionComments' => $comment
+    //                 ];
+    //                 $this->forexApiService->balanceOperation($data);
+    //             }
+    //             Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
 
-                $status = 'success';
-                $message = __('Account Balance Update');
-            } elseif ($type == 'subtract') {
-                if ($targetType == 'forex') {
-                    $balance = $this->forexApiService->getValidatedBalance([
-                        'login' => $targetId
-                    ]);
-                    //                    $balance = $this->getForexAccountBalance($targetId);
-                    if (BigDecimal::of($amount)->compareTo($balance) > 0) {
-                        notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
-                        return redirect()->back();
-                    }
-                    $data = [
-                        'login' => $targetId,
-                        'Amount' => $amount,
-                        'type' => 2, //withdraw
-                        'TransactionComments' => $comment
-                    ];
-                    $withdrawResponse = $this->forexApiService->balanceOperation($data);
-                    //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-                    if (!$withdrawResponse['success']) {
-                        return redirect()->back();
-                    }
-                }
-                Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
-                $status = 'success';
-                $message = __('Account Balance Updated');
-            }
+    //             $status = 'success';
+    //             $message = __('Account Balance Update');
+    //         } elseif ($type == 'subtract') {
+    //             if ($targetType == 'forex') {
+    //                 $balance = $this->forexApiService->getValidatedBalance([
+    //                     'login' => $targetId
+    //                 ]);
+    //                 //                    $balance = $this->getForexAccountBalance($targetId);
+    //                 if (BigDecimal::of($amount)->compareTo($balance) > 0) {
+    //                     notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
+    //                     return redirect()->back();
+    //                 }
+    //                 $data = [
+    //                     'login' => $targetId,
+    //                     'Amount' => $amount,
+    //                     'type' => 2, //withdraw
+    //                     'TransactionComments' => $comment
+    //                 ];
+    //                 $withdrawResponse = $this->forexApiService->balanceOperation($data);
+    //                 //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
+    //                 if (!$withdrawResponse['success']) {
+    //                     return redirect()->back();
+    //                 }
+    //             }
+    //             Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
+    //             $status = 'success';
+    //             $message = __('Account Balance Updated');
+    //         }
 
-            notify()->success($message, $status);
+    //         notify()->success($message, $status);
 
-            return redirect()->back();
-        } catch (Exception $e) {
-            $status = 'warning';
-            $message = __('something is wrong');
-            $code = 503;
-        }
-    }
+    //         return redirect()->back();
+    //     } catch (Exception $e) {
+    //         $status = 'warning';
+    //         $message = __('something is wrong');
+    //         $code = 503;
+    //     }
+    // }
 
     /**
      * @return Application|Factory|View
@@ -580,20 +524,20 @@ class UserController extends Controller
                 ->make(true);
         }
     }
-    public function ibInfo($id, Request $request)
-    {
-        //dd($id);
-        if ($request->ajax()) {
-            $data = User::where('id', $id)->latest();
+    // public function ibInfo($id, Request $request)
+    // {
+    //     //dd($id);
+    //     if ($request->ajax()) {
+    //         $data = User::where('id', $id)->latest();
 
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('ib_status', 'backend.user.include.__ib_status')
-                ->addColumn('action', 'backend.user.include.__ib_action')
-                ->rawColumns(['ib_status', 'action'])
-                ->make(true);
-        }
-    }
+    //         return Datatables::of($data)
+    //             ->addIndexColumn()
+    //             ->editColumn('ib_status', 'backend.user.include.__ib_status')
+    //             ->addColumn('action', 'backend.user.include.__ib_action')
+    //             ->rawColumns(['ib_status', 'action'])
+    //             ->make(true);
+    //     }
+    // }
 
     /**
      * @return RedirectResponse

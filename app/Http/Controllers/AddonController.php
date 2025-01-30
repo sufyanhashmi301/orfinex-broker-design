@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Artisan;
 
 class AddonController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('permission:addon-list', ['only' => ['index']]);
+        $this->middleware('permission:addon-edit', ['only' => ['update']]);
+    }
+
     public function runSeeder() {
         Artisan::call('db:seed', [
             '--class' => 'AddonSeeder' 

@@ -63,37 +63,41 @@
 
                                         <td scope="col" class="table-td">
                                             <div class="btn-group">
-                                                @if ($contract->status == \App\Enums\ContractStatusEnums::SIGNED)
-                                                    <a href="{{ asset($contract->file_path) }}" target="__blank"
-                                                        class="btn btn-sm btn-primary mr-1">View Contract</a>
-                                                @endif
+                                                @can('contract-view')
+                                                    @if ($contract->status == \App\Enums\ContractStatusEnums::SIGNED)
+                                                        <a href="{{ asset($contract->file_path) }}" target="__blank" class="btn btn-sm btn-primary mr-1">View Contract</a>
+                                                    @endif
+                                                @endcan
 
-                                                @if ($contract->status == \App\Enums\ContractStatusEnums::PENDING)
+                                                @can('contract-edit')
+                                                    @if ($contract->status == \App\Enums\ContractStatusEnums::PENDING)
                                                     <a href="#" target="__blank"
                                                         class="btn btn-sm btn-primary mr-1 mark-as-signed"
                                                         data-status="pending" data-id="{{ $contract->id }}"
-                                                        data-login="{{ $contract->accountTypeInvestment->login }}">Mark
-                                                        as Signed</a>
-                                                    <a href="#" target="__blank"
-                                                        class="btn btn-sm btn-primary mr-1 mark-as-expired"
-                                                        data-status="pending" data-id="{{ $contract->id }}"
-                                                        data-expiry="{{ $contract->expiry_at }}"
-                                                        data-login="{{ $contract->accountTypeInvestment->login }}">Mark
-                                                        as Expired</a>
-                                                @endif
+                                                            data-login="{{ $contract->accountTypeInvestment->login }}">Mark
+                                                            as Signed</a>
+                                                        <a href="#" target="__blank"
+                                                            class="btn btn-sm btn-primary mr-1 mark-as-expired"
+                                                            data-status="pending" data-id="{{ $contract->id }}"
+                                                            data-expiry="{{ $contract->expiry_at }}"
+                                                            data-login="{{ $contract->accountTypeInvestment->login }}">Mark
+                                                            as Expired</a>
+                                                    @endif
 
-                                                @if ($contract->status == \App\Enums\ContractStatusEnums::EXPIRED)
-                                                    <a href="#" target="__blank"
-                                                        class="btn btn-sm btn-primary mr-1 mark-as-signed"
-                                                        data-status="expired" data-id="{{ $contract->id }}"
-                                                        data-login="{{ $contract->accountTypeInvestment->login }}">Mark
-                                                        as Signed</a>
-                                                    <a href="#" target="__blank"
-                                                        class="btn btn-sm btn-primary mr-1 mark-as-pending"
-                                                        data-id="{{ $contract->id }}"
-                                                        data-login="{{ $contract->accountTypeInvestment->login }}"
-                                                        data-status="expired">Mark as Pending</a>
-                                                @endif
+                                                    @if ($contract->status == \App\Enums\ContractStatusEnums::EXPIRED)
+                                                        <a href="#" target="__blank"
+                                                            class="btn btn-sm btn-primary mr-1 mark-as-signed"
+                                                            data-status="expired" data-id="{{ $contract->id }}"
+                                                            data-login="{{ $contract->accountTypeInvestment->login }}">Mark
+                                                            as Signed</a>
+                                                        <a href="#" target="__blank"
+                                                            class="btn btn-sm btn-primary mr-1 mark-as-pending"
+                                                            data-id="{{ $contract->id }}"
+                                                            data-login="{{ $contract->accountTypeInvestment->login }}"
+                                                            data-status="expired">Mark as Pending</a>
+                                                    @endif
+                                                @endcan
+                                                
 
                                             </div>
                                         </td>

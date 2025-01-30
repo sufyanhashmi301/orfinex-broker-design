@@ -16,11 +16,17 @@ class DiscountController extends Controller
 
     public function __construct(DiscountService $discountService)
     {
+        $this->middleware('permission:discount-code-list', ['only' => ['index']]);
+        $this->middleware('permission:discount-code-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:discount-code-edit', ['only' => ['update']]);
+        $this->middleware('permission:discount-code-delete', ['only' => ['destroy']]);
+
         $this->discountService = $discountService;
     }
 
     public function index(Request $request)
     {
+        
         if ($request->ajax()) {
             $data = Discount::latest('updated_at')->get();
 
@@ -58,6 +64,7 @@ class DiscountController extends Controller
     // Store method to save a discount
     public function store(StoreDiscountRequest $request)
     {
+        
 //        dd($request->all());
         $data = $request->validated();
         // Ensure fixed_amount is null if the type is 'percentage'
@@ -83,9 +90,9 @@ class DiscountController extends Controller
     // Update method to modify an existing discount
     public function update(UpdateDiscountRequest $request, Discount $discount)
     {
+        
         $data = $request->validated();
-//        $data = $request->all();
-//dd($data);
+
         // Handle `fixed_amount` and `percentage` based on the type
         if ($data['type'] === 'fixed') {
             $data['percentage'] = null;  // Set percentage to null if the type is fixed
@@ -98,7 +105,6 @@ class DiscountController extends Controller
                 $data['percentage'] = 0;  // Default percentage to 0 if it's empty
             }
         }
-//        dd($data);
 
         // Update the discount using the validated data
         $this->discountService->update($discount, $data);

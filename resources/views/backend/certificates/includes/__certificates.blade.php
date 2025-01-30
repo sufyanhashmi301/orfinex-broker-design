@@ -99,17 +99,23 @@
 
                                         <td scope="col" class="table-td">
                                           <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-success mr-1" data-bs-toggle="modal" data-bs-target="#certificate-modal{{$certificate->id}}">
-                                                <span class="text-nowrap">Edit Certificate</span>
-                                            </button>
+
+                                            @can('certificate-edit')
+                                                <button type="button" class="btn btn-sm btn-success mr-1" data-bs-toggle="modal" data-bs-target="#certificate-modal{{$certificate->id}}">
+                                                    <span class="text-nowrap">Edit Certificate</span>
+                                                </button>
+                                            @endcan
 
                                             {{-- <button type="button" class="btn btn-sm btn-success mr-1" {{ $certificate->image == '' ? 'disabled' : '' }} data-bs-toggle="modal" data-bs-target="#view-certificate-image-modal{{$certificate->id}}">View Certificate Template</button> --}}
 
-                                            @if ($certificate->image != '')
-                                                <a href="{{ route('admin.view_certificate', ['id' => $certificate->id]) }}"  target="__blank" class="btn btn-sm btn-success mr-1">
-                                                    <span class="text-nowrap"> Configure Certificate Template</span>
-                                                </a>
-                                            @endif
+                                            @can('certificate-config')
+                                                @if ($certificate->image != '')
+                                                    <a href="{{ route('admin.view_certificate', ['id' => $certificate->id]) }}"  target="__blank" class="btn btn-sm btn-success mr-1">
+                                                        <span class="text-nowrap"> Configure Certificate Template</span>
+                                                    </a>
+                                                @endif 
+                                            @endcan
+                                            
                                           </div>
                                         </td>
 

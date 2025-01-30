@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class LeaderboardBadgeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:leaderboard-badge-edit', ['only' => ['store']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

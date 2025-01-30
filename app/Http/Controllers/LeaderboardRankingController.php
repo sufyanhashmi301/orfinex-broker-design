@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class LeaderboardRankingController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:leaderboard-ranking-create', ['only' => ['create']]);
+        $this->middleware('permission:leaderboard-ranking-edit', ['only' => ['store']]);
+        $this->middleware('permission:leaderboard-ranking-delete', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

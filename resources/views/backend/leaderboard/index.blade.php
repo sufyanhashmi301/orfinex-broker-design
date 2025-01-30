@@ -18,7 +18,13 @@
         <div class="card badge-container" data-slug="highest_payout">
             @php
                 $badge_1 = $badges->where('title_slug', 'highest_payout')->first();
+                $content_editable = 'false';
             @endphp
+            @can('leaderboard-badge-edit')
+                @php
+                    $content_editable = 'true';
+                @endphp
+            @endcan
             <div class="card-body p-4">
                 <div class="flex justify-between">
                     <div class="flex space-x-3 rtl:space-x-reverse">
@@ -29,7 +35,7 @@
                             <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ $badge_1->title }}
                             </div>
-                            <div class="text-slate-900 dark:text-white text-lg font-medium field" data-field="user_name" contenteditable="true">
+                            <div class="text-slate-900 dark:text-white text-lg font-medium field" data-field="user_name" contenteditable="{{ $content_editable }}">
                                 {{ $badge_1->user_name }}
                             </div>
                         </div>
@@ -40,10 +46,10 @@
                 </div>
                 <ul class="space-y-3 mt-4">
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="text-base field" contenteditable="true" data-field="amount">{{ $badge_1->amount }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="amount">{{ $badge_1->amount }}</span>
                         <span>
-                            <span class="text-lg font-medium field" contenteditable="true" data-field="details_achieved_amount">{{ $badge_1->details['achieved_amount'] }}</span>
-                            <span class="text-success-500 ml-1 field" contenteditable="true" data-field="details_gain">{{ $badge_1->details['gain'] }}</span>
+                            <span class="text-lg font-medium field" contenteditable="{{ $content_editable }}" data-field="details_achieved_amount">{{ $badge_1->details['achieved_amount'] }}</span>
+                            <span class="text-success-500 ml-1 field" contenteditable="{{ $content_editable }}" data-field="details_gain">{{ $badge_1->details['gain'] }}</span>
                         </span>
                     </li>
                 </ul>
@@ -63,7 +69,7 @@
                             <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ $badge_2->title }}
                             </div>
-                            <div class="text-slate-900 dark:text-white text-lg font-medium field" contenteditable="true" data-field="user_name">
+                            <div class="text-slate-900 dark:text-white text-lg font-medium field" contenteditable="{{ $content_editable }}" data-field="user_name">
                                 {{ $badge_2->user_name }}
                             </div>
                         </div>
@@ -74,8 +80,8 @@
                 </div>
                 <ul class="space-y-3 mt-4">
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="text-base field" contenteditable="true" data-field="amount" >{{ $badge_2->amount }}</span>
-                        <span class="text-lg font-medium field" contenteditable="true" data-field="details_percentage">{{ $badge_2->details['percentage'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="amount" >{{ $badge_2->amount }}</span>
+                        <span class="text-lg font-medium field" contenteditable="{{ $content_editable }}" data-field="details_percentage">{{ $badge_2->details['percentage'] }}</span>
                     </li>
                 </ul>
             </div>
@@ -94,7 +100,7 @@
                             <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                                 {{ $badge_3->title }}
                             </div>
-                            <div class="text-slate-900 dark:text-white text-lg font-medium field" contenteditable="true" data-field="user_name">
+                            <div class="text-slate-900 dark:text-white text-lg font-medium field" contenteditable="{{ $content_editable }}" data-field="user_name">
                                 {{ $badge_3->user_name }}
                             </div>
                         </div>
@@ -105,8 +111,8 @@
                 </div>
                 <ul class="space-y-3 mt-4">
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="text-base field" contenteditable="true" data-field="amount">{{ $badge_3->amount }}</span>
-                        <span class="text-lg font-medium field" contenteditable="true" data-field="details_time">{{ $badge_3->details['time'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="amount">{{ $badge_3->amount }}</span>
+                        <span class="text-lg font-medium field" contenteditable="{{ $content_editable }}" data-field="details_time">{{ $badge_3->details['time'] }}</span>
                     </li>
                 </ul>
             </div>
@@ -119,19 +125,19 @@
             @endphp
             <div class="card-body relative p-4">
                 <div class="flex items-center">
-                    <span class="text-slate-900 dark:text-white text-lg font-medium mr-1 field" contenteditable="true" data-field="user_name">{{ $badge_4->user_name }}</span>
+                    <span class="text-slate-900 dark:text-white text-lg font-medium mr-1 field" contenteditable="{{ $content_editable }}" data-field="user_name">{{ $badge_4->user_name }}</span>
                 </div>
                 <div class="absolute top-0 right-4">
                     <img src="{{ asset('frontend/images/medal-1__badge.png') }}" alt="">
                 </div>
                 <ul class="space-y-3 mt-5">
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="badge capitalize bg-{{ $badge_4->details['buy_or_sell'] == 'buy' ? 'success' : 'danger' }}-500 text-white capitalize field" contenteditable="true" data-field="details_buy_or_sell">{{ $badge_4->details['buy_or_sell'] }}</span>
-                        <span class="text-base field" contenteditable="true" data-field="amount">{{ $badge_4->amount }}</span>
+                        <span class="badge capitalize bg-{{ $badge_4->details['buy_or_sell'] == 'buy' ? 'success' : 'danger' }}-500 text-white capitalize field" contenteditable="{{ $content_editable }}" data-field="details_buy_or_sell">{{ $badge_4->details['buy_or_sell'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="amount">{{ $badge_4->amount }}</span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="text-base field" contenteditable="true" data-field="details_currency">{{ $badge_4->details['currency'] }}</span>
-                        <span class="text-base text-success-500 field" contenteditable="true" data-field="details_gain">{{ $badge_4->details['gain'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="details_currency">{{ $badge_4->details['currency'] }}</span>
+                        <span class="text-base text-success-500 field" contenteditable="{{ $content_editable }}" data-field="details_gain">{{ $badge_4->details['gain'] }}</span>
                     </li>
                 </ul>
             </div>
@@ -142,19 +148,19 @@
             @endphp
             <div class="card-body relative p-4">
                 <div class="flex items-center">
-                    <span class="text-slate-900 dark:text-white text-lg font-medium mr-1 field" contenteditable="true" data-field="user_name">{{ $badge_5->user_name }}</span>
+                    <span class="text-slate-900 dark:text-white text-lg font-medium mr-1 field" contenteditable="{{ $content_editable }}" data-field="user_name">{{ $badge_5->user_name }}</span>
                 </div>
                 <div class="absolute top-0 right-4">
                     <img src="{{ asset('frontend/images/medal-2__badge.png') }}" alt="">
                 </div>
                 <ul class="space-y-3 mt-5">
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="badge capitalize bg-{{ strtolower($badge_5->details['buy_or_sell']) == 'buy' ? 'success' : 'danger' }}-500 text-white capitalize field" contenteditable="true" data-field="details_buy_or_sell">{{ $badge_5->details['buy_or_sell'] }}</span>
-                        <span class="text-base field" contenteditable="true" data-field="amount">{{ $badge_5->amount }}</span>
+                        <span class="badge capitalize bg-{{ strtolower($badge_5->details['buy_or_sell']) == 'buy' ? 'success' : 'danger' }}-500 text-white capitalize field" contenteditable="{{ $content_editable }}" data-field="details_buy_or_sell">{{ $badge_5->details['buy_or_sell'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="amount">{{ $badge_5->amount }}</span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="text-base field" contenteditable="true" data-field="details_currency">{{ $badge_5->details['currency'] }}</span>
-                        <span class="text-base text-success-500 field" contenteditable="true" data-field="details_gain">{{ $badge_5->details['gain'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="details_currency">{{ $badge_5->details['currency'] }}</span>
+                        <span class="text-base text-success-500 field" contenteditable="{{ $content_editable }}" data-field="details_gain">{{ $badge_5->details['gain'] }}</span>
                     </li>
                 </ul>
             </div>
@@ -165,26 +171,28 @@
             @endphp
             <div class="card-body relative p-4">
                 <div class="flex items-center">
-                    <span class="text-slate-900 dark:text-white text-lg font-medium mr-1 field" contenteditable="true" data-field="user_name">{{ $badge_6->user_name }}</span>
+                    <span class="text-slate-900 dark:text-white text-lg font-medium mr-1 field" contenteditable="{{ $content_editable }}" data-field="user_name">{{ $badge_6->user_name }}</span>
                 </div>
                 <div class="absolute top-0 right-4">
                     <img src="{{ asset('frontend/images/medal-3__badge.png') }}" alt="">
                 </div>
                 <ul class="space-y-3 mt-5">
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="badge capitalize bg-{{ strtolower($badge_6->details['buy_or_sell']) == 'buy' ? 'success' : 'danger' }}-500 text-white capitalize field" contenteditable="true" data-field="details_buy_or_sell">{{ $badge_6->details['buy_or_sell'] }}</span>
-                        <span class="text-base field" contenteditable="true" data-field="amount">{{ $badge_6->amount }}</span>
+                        <span class="badge capitalize bg-{{ strtolower($badge_6->details['buy_or_sell']) == 'buy' ? 'success' : 'danger' }}-500 text-white capitalize field" contenteditable="{{ $content_editable }}" data-field="details_buy_or_sell">{{ $badge_6->details['buy_or_sell'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="amount">{{ $badge_6->amount }}</span>
                     </li>
                     <li class="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                        <span class="text-base field" contenteditable="true" data-field="details_currency">{{ $badge_6->details['currency'] }}</span>
-                        <span class="text-base text-success-500 field" contenteditable="true" data-field="details_gain">{{ $badge_6->details['gain'] }}</span>
+                        <span class="text-base field" contenteditable="{{ $content_editable }}" data-field="details_currency">{{ $badge_6->details['currency'] }}</span>
+                        <span class="text-base text-success-500 field" contenteditable="{{ $content_editable }}" data-field="details_gain">{{ $badge_6->details['gain'] }}</span>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="md:col-span-3 text-right">
-            <button class="btn mb-3 save-badges-changes btn-primary cursor-not-allowed light" disabled>Save Badges Changes</button>
-        </div>
+        @can('leaderboard-badge-edit')
+            <div class="md:col-span-3 text-right">
+                <button class="btn mb-3 save-badges-changes btn-primary cursor-not-allowed light" disabled>Save Badges Changes</button>
+            </div>
+        @endcan
     </div>
     {{-- Button to save changes --}}
 
@@ -209,7 +217,9 @@
             <h4 class="card-title">
                 {{ __('Best account in profit') }}
             </h4>
-            <a href="{{ route('admin.leaderboard-rankings.create') }}" class="btn mb-3 save-badges-changes btn-primary">Add Row</a>
+            @can('leaderboard-ranking-create')
+                <a href="{{ route('admin.leaderboard-rankings.create') }}" class="btn mb-3 save-badges-changes btn-primary">Add Row</a>
+            @endcan
         </div>
         <div class="card-body p-6 pt-0">
             <!-- BEGIN: Company Table -->
@@ -246,16 +256,23 @@
                                             <td class="table-td category-field" data-value="{{ $ranking->leaderboardRankingsCategory->id }}">{{ $ranking->leaderboardRankingsCategory->name }}</td>
                                         @endif
                                         <td class="table-td">
-                                            <button class="rankings-action-btn" data-id="{{ $ranking->id }}" type="button" data-bs-toggle="modal" data-bs-target="#editLeaderBoardModal">
-                                                <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                            </button>
-                                            <form style="display: inline" action="{{ route('admin.leaderboard-rankings.delete', ['leaderboardRanking' => $ranking->id]) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="ml-3" data-id="{{ $ranking->id }}" type="button">
-                                                    <iconify-icon icon="lucide:trash"></iconify-icon>
-                                                </button>
-                                            </form>
+
+                                            @can('leaderboard-ranking-edit')
+                                                <button class="rankings-action-btn" data-id="{{ $ranking->id }}" type="button" data-bs-toggle="modal" data-bs-target="#editLeaderBoardModal">
+                                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                                </button> 
+                                            @endcan
+                                            
+                                            @can('leaderboard-ranking-delete')
+                                                <form style="display: inline" action="{{ route('admin.leaderboard-rankings.delete', ['leaderboardRanking' => $ranking->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="ml-3" data-id="{{ $ranking->id }}" type="button">
+                                                        <iconify-icon icon="lucide:trash"></iconify-icon>
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                            
                                         </td>
                                     </tr>
                                 @endforeach
@@ -272,8 +289,10 @@
         </div>
     </div>
 
-    {{--Modal for update leaderboard--}}
-    @include('backend.leaderboard.modal.__edit')
+    @can('leaderboard-ranking-edit')
+        {{--Modal for update leaderboard--}}
+        @include('backend.leaderboard.modal.__edit')
+    @endcan
 @endsection
 @section('script')
 

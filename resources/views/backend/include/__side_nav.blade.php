@@ -234,66 +234,78 @@
         @endcanany --}}
 
         {{-- *************************************************************  Certificates *********************************************************--}}
-        <li class="" >
-            <a href="javascript:void(0)" class="navItem">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
-                    <span>{{ __('Certificates') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{ route('admin.certificates.manage') }}" class="{{ isActive('admin.certificates.manage') }}">
-                        {{ __('Manage Certificates') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="{{ route('admin.certificates.index') }}" class="{{ isActive('admin.certificates.index') }}">
-                        {{ __('Certificates Awarded') }}
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @canany(['certificate-manage', 'certificate-awarded-list'])
+            <li class="" >
+                <a href="javascript:void(0)" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="mdi:certificate-outline"></iconify-icon>
+                        <span>{{ __('Certificates') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('certificate-manage')
+                        <li class="">
+                            <a href="{{ route('admin.certificates.manage') }}" class="{{ isActive('admin.certificates.manage') }}">
+                                {{ __('Manage Certificates') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('certificate-awarded-list')
+                        <li class="">
+                            <a href="{{ route('admin.certificates.index') }}" class="{{ isActive('admin.certificates.index') }}">
+                                {{ __('Certificates Awarded') }}
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcanany
 
         {{-- *************************************************************  Contracts *********************************************************--}}
-        <li class="" >
-            <a href="{{ route('admin.contracts.index', ['status' => 'all']) }}" class="navItem {{ isActive('admin.contracts.index') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:file-text"></iconify-icon>
-                    <span>{{ __('Contracts') }}</span>
-                </span>
-                {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
-            </a>
-            {{-- <ul class="sidebar-submenu">
-                
-                <li class="">
-                    <a href="javascript:void(0);" class="">
-                        {{ __('Signed Contracts') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="javascript:void(0);" class="">
-                        {{ __('Pending Contracts') }}
-                    </a>
-                </li>
-                <li class="">
-                    <a href="javascript:void(0);" class="">
-                        {{ __('Expired Contracts') }}
-                    </a>
-                </li>
-            </ul> --}}
-        </li>
+        @can('contract-list')
+            <li class="" >
+                <a href="{{ route('admin.contracts.index', ['status' => 'all']) }}" class="navItem {{ isActive('admin.contracts.index') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:file-text"></iconify-icon>
+                        <span>{{ __('Contracts') }}</span>
+                    </span>
+                    {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
+                </a>
+                {{-- <ul class="sidebar-submenu">
+                    
+                    <li class="">
+                        <a href="javascript:void(0);" class="">
+                            {{ __('Signed Contracts') }}
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="javascript:void(0);" class="">
+                            {{ __('Pending Contracts') }}
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="javascript:void(0);" class="">
+                            {{ __('Expired Contracts') }}
+                        </a>
+                    </li>
+                </ul> --}}
+            </li>
+        @endcan
+        
 
         {{-- *************************************************************  Addons *********************************************************--}}
-        <li class="" >
-            <a href="{{route('admin.addons.index')}}" class="navItem {{ isActive('admin.addons.index') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:package-plus"></iconify-icon>
-                    <span>{{ __('Addons') }}</span>
-                </span>
-            </a>
-        </li>
+        @can('addon-list')
+            <li class="" >
+                <a href="{{route('admin.addons.index')}}" class="navItem {{ isActive('admin.addons.index') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:package-plus"></iconify-icon>
+                        <span>{{ __('Addons') }}</span>
+                    </span>
+                </a>
+            </li> 
+        @endcan
+        
 
         {{-- *************************************************************  Essentials *********************************************************--}}
         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
@@ -364,46 +376,57 @@
             @endcanany
         @endcanany
 
-        <li class="">
-            <a href="javascript:void(0)" class="navItem ">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
-                    <span>{{ __('Affiliates') }}</span>
-                </span>
-                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-            </a>
-            <ul class="sidebar-submenu">
-                <li class="">
-                    <a href="{{ route('admin.affiliate-rules.create') }}" class="{{ isActive('admin.affiliate-rules.create') }}">
-                        {{ __('Configure Affiliate Rules') }}
-                    </a>
-                </li>
-            
-                <li class="">
-                    <a href="{{ route('admin.affiliates.index') }}" class="{{ isActive('admin.affiliates.index') }}">
-                        {{ __('Manage Affiliates') }}
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @canany(['affiliate-list', 'affiliate-config'])
+            <li class="">
+                <a href="javascript:void(0)" class="navItem ">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="heroicons-outline:share"></iconify-icon>
+                        <span>{{ __('Affiliates') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('affiliate-list')
+                        <li class="">
+                            <a href="{{ route('admin.affiliate-rules.create') }}" class="{{ isActive('admin.affiliate-rules.create') }}">
+                                {{ __('Configure Affiliate Rules') }}
+                            </a>
+                        </li> 
+                    @endcan
+                
+                    @can('affiliate-config')
+                        <li class="">
+                            <a href="{{ route('admin.affiliates.index') }}" class="{{ isActive('admin.affiliates.index') }}">
+                                {{ __('Manage Affiliates') }}
+                            </a>
+                        </li>
+                    @endcan
+                    
+                </ul>
+            </li> 
+        @endcan
+        
+        @can('discount-code-list')
+            <li class="">
+                <a href="{{ route('admin.discounts.index') }}" class="navItem {{ isActive('admin.discounts.index') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="bxs:discount"></iconify-icon>
+                        <span>{{ __('Discount Codes') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endcan
 
-        <li class="">
-            <a href="{{ route('admin.discounts.index') }}" class="navItem {{ isActive('admin.discounts.index') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="bxs:discount"></iconify-icon>
-                    <span>{{ __('Discount Codes') }}</span>
-                </span>
-            </a>
-        </li>
-
-        <li class="">
-            <a href="{{ route('admin.leaderboard.index') }}" class="navItem {{ isActive('admin.leaderboard.index') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>
-                    <span>{{ __('Leaderboard') }}</span>
-                </span>
-            </a>
-        </li>
+        @can('leaderboard-view')
+            <li class="">
+                <a href="{{ route('admin.leaderboard.index') }}" class="navItem {{ isActive('admin.leaderboard.index') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="lucide:trophy"></iconify-icon>
+                        <span>{{ __('Leaderboard') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endcan
 
         {{-- ************************************************************* Others *********************************************************--}}
         @canany(['subscriber-list','subscriber-mail-send'])

@@ -1,9 +1,6 @@
 <?php
 
 use App\Http\Controllers\AccountActivityController;
-use App\Models\Contract;
-use App\Models\Certificate;
-use App\Models\LeaderboardBadge;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\InvoiceController;
@@ -15,7 +12,6 @@ use App\Http\Controllers\Backend\KycController;
 use App\Http\Controllers\Backend\SmsController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Backend\AuthController;
-use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\LinkController;
 use App\Http\Controllers\Backend\PageController;
 use App\Http\Controllers\Backend\RoleController;
@@ -24,56 +20,37 @@ use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\ThemeController;
 use App\Http\Controllers\PayoutRequestController;
-// use App\Http\Controllers\Backend\BannerController;
 use App\Http\Controllers\Backend\ImportController;
 use App\Http\Controllers\Backend\PluginController;
-use App\Http\Controllers\Backend\ProfitController;
 use App\Http\Controllers\Backend\SocialController;
-use App\Http\Controllers\Backend\SymbolController;
 use App\Http\Controllers\Backend\TicketController;
 use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\GatewayController;
-use App\Http\Controllers\Backend\Mt5DealController;
 use App\Http\Controllers\Backend\RankingController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\DiscountController;
-use App\Http\Controllers\Backend\IBSchemaController;
 use App\Http\Controllers\Backend\LanguageController;
-use App\Http\Controllers\Backend\PositionController;
-use App\Http\Controllers\Backend\ReferralController;
 use App\Http\Controllers\Backend\ScheduleController;
 use App\Http\Controllers\Backend\SecurityController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\LeaderboardBadgeController;
-use App\Http\Controllers\Backend\CustomCssController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\KYCLevelsController;
 use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\Backend\DepartmentController;
-use App\Http\Controllers\Backend\MultiLevelController;
-use App\Http\Controllers\Backend\NavigationController;
-use App\Http\Controllers\Backend\RebateRuleController;
 use App\Http\Controllers\Backend\SocialLinkController;
 use App\Http\Controllers\LeaderboardRankingController;
 use App\Http\Controllers\Backend\DesignationController;
-// use App\Http\Controllers\Backend\ForexSchemaController;
 use App\Http\Controllers\Backend\LeaderboardController;
-use App\Http\Controllers\Backend\SymbolGroupController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\AffiliateController;
-use App\Http\Controllers\Backend\CustomerGroupController;
 use App\Http\Controllers\Backend\EmailTemplateController;
-use App\Http\Controllers\Backend\LevelReferralController;
-use App\Http\Controllers\Backend\RiskProfileTagController;
 use App\Http\Controllers\Backend\TicketPriorityController;
-use App\Http\Controllers\Backend\ProfitDeductionController;
 use App\Http\Controllers\Backend\BlackListCountryController;
-use App\Http\Controllers\Backend\IslamicMultiLevelController;
-use App\Http\Controllers\Backend\AdvertisementMaterialController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\TradingStatsController;
@@ -132,12 +109,14 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('all', 'kycAll')->name('all');
 
     });
-    Route::resource('risk-profile-tag', RiskProfileTagController::class);
-    Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
-        Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
-        Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
+    
+    // Route::resource('risk-profile-tag', RiskProfileTagController::class);
+    // Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
+    //     Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
+    //     Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
-    });
+    // });
+
     Route::resource('kyclevels', KYCLevelsController::class);
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KYCLevelsController::class], function () {
         Route::post('level/update/{id}', 'kycLevelUpdate')->name('level.update');
@@ -267,8 +246,8 @@ Route::middleware(['2fa_admin'])->group(function () {
 
 
 //===============================  Profit Deduction Management ==================================
-    Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
-    Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
+    // Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
+    // Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
 
 //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
@@ -279,7 +258,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
     // Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
 
-    Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
+    // Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
 //===============================  Essentials ==================================
 
@@ -500,8 +479,8 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::resource('priorities', TicketPriorityController::class);
 
     });
-    Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
-    Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
+    // Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
+    // Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
 
 //admin self manage
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
@@ -514,17 +493,17 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
 
-    Route::get('/ib-resources', function () {
-        return view('backend.ib.resources.index');
-    });
+    // Route::get('/ib-resources', function () {
+    //     return view('backend.ib.resources.index');
+    // });
 
-    Route::get('ib-resources/new', function () {
-        return view('backend.ib.resources.create');
-    });
+    // Route::get('ib-resources/new', function () {
+    //     return view('backend.ib.resources.create');
+    // });
 
-    Route::get('/loyalty-points', function () {
-        return view('backend.loyalty_points.create');
-    });
+    // Route::get('/loyalty-points', function () {
+    //     return view('backend.loyalty_points.create');
+    // });
     Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
     Route::post('import', [ImportController::class, 'import'])->name('import');
 
@@ -532,17 +511,17 @@ Route::middleware(['2fa_admin'])->group(function () {
         return view('backend.reports.index');
     });
 
-    Route::get('/bonus', function () {
-        return view('backend.bonus.index');
-    });
+    // Route::get('/bonus', function () {
+    //     return view('backend.bonus.index');
+    // });
 
-    Route::get('/bonus/create', function () {
-        return view('backend.bonus.create');
-    });
+    // Route::get('/bonus/create', function () {
+    //     return view('backend.bonus.create');
+    // });
 
-    Route::get('/symbol-groups', function () {
-        return view('backend.symbol_groups.metatrader5');
-    });
+    // Route::get('/symbol-groups', function () {
+    //     return view('backend.symbol_groups.metatrader5');
+    // });
 
 
     Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
@@ -563,45 +542,47 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     Route::get('settings/platform-api/x9trader', function () {
         return view('backend.setting.platform_api.x9trader');
-    })->name('platform_api.x9trader');
+    })->name('platform_api.x9trader');  
 
-    Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
+    // Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
+    
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-    Route::resource('swap-multi-level', MultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
-    Route::post('symbols/store', [SymbolController::class,'store']);
-    Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
+    
+    // Route::resource('swap-multi-level', MultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    // Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    // Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
+    // Route::post('symbols/store', [SymbolController::class,'store']);
+    // Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
+    // Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 
 
-    Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
+    // Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
     // Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
     // Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
 
-    Route::post('/positions/active', [PositionController::class, 'getGroupPosition'])->name('positions.group');
-    Route::post('/positions/days', [PositionController::class, 'positionByDays'])->name('positions.days');
-    Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
-    Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
+    // Route::post('/positions/active', [PositionController::class, 'getGroupPosition'])->name('positions.group');
+    // Route::post('/positions/days', [PositionController::class, 'positionByDays'])->name('positions.days');
+    // Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
+    // Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
 
 
-    Route::get('active-positions', function () {
-        return view('backend.control_center.active_positions');
-    })->name('activePositions');
+    // Route::get('active-positions', function () {
+    //     return view('backend.control_center.active_positions');
+    // })->name('activePositions');
 
-    Route::get('net-positions-accounts', function () {
-        return view('backend.control_center.net_positions_accounts');
-    })->name('netPositionsAccounts');
+    // Route::get('net-positions-accounts', function () {
+    //     return view('backend.control_center.net_positions_accounts');
+    // })->name('netPositionsAccounts');
 
-    Route::get('net-positions-groups', function () {
-        return view('backend.control_center.net_positions_groups');
-    })->name('netPositionsGroups');
+    // Route::get('net-positions-groups', function () {
+    //     return view('backend.control_center.net_positions_groups');
+    // })->name('netPositionsGroups');
 
-    Route::get('older-positions-days', function () {
-        return view('backend.control_center.older_positions_days');
-    })->name('olderPositionsDays');
+    // Route::get('older-positions-days', function () {
+    //     return view('backend.control_center.older_positions_days');
+    // })->name('olderPositionsDays');
 
     // Route::get('challenge-accounts', function () {
     //     return view('backend.accounts.challenge_accounts');
@@ -619,17 +600,17 @@ Route::middleware(['2fa_admin'])->group(function () {
     //     return view('backend.accounts.trial_accounts');
     // })->name('accounts.trialAccounts');
 
-    Route::get('discount-codes', function () {
-        return view('backend.discount.index');
-    })->name('discountCodes');
+    // Route::get('discount-codes', function () {
+    //     // return view('backend.discount.index');
+    // })->name('discountCodes');
 
-    Route::get('fraud-protection', function () {
-        return view('backend.fraud_protection.index');
-    })->name('fraudProtection');
+    // Route::get('fraud-protection', function () {
+    //     return view('backend.fraud_protection.index');
+    // })->name('fraudProtection');
 
-    Route::get('settings/report-issues', function () {
-        return view('backend.system.report_issues');
-    })->name('reportIssues');
+    // Route::get('settings/report-issues', function () {
+    //     return view('backend.system.report_issues');
+    // })->name('reportIssues');
 
 
 });

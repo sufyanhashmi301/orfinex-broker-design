@@ -53,14 +53,14 @@ class UserController extends Controller
      */
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
-        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status|customer-balance-add-or-subtract', ['only' => ['edit']]);
+        $this->middleware('permission:customer-list|customer-login|customer-mail-send|customer-basic-manage|customer-change-password|all-type-status', ['only' => ['index', 'activeUser', 'disabled', 'mailSendAll', 'mailSend']]);
+        $this->middleware('permission:customer-basic-manage|customer-change-password|all-type-status', ['only' => ['edit']]);
         $this->middleware('permission:customer-login', ['only' => ['userLogin']]);
         $this->middleware('permission:customer-mail-send', ['only' => ['mailSendAll', 'mailSend']]);
         $this->middleware('permission:customer-basic-manage', ['only' => ['update']]);
         $this->middleware('permission:customer-change-password', ['only' => ['passwordUpdate']]);
         $this->middleware('permission:all-type-status', ['only' => ['statusUpdate']]);
-        $this->middleware('permission:customer-balance-add-or-subtract', ['only' => ['balanceUpdate']]);
+
         $this->forexApiService = $forexApiService;
     }
 
@@ -71,114 +71,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::applyFilters($filters);
+        $users = User::paginate(15);
 
-
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-
-                ->editColumn('challenge_accounts', 'backend.user.include.__challenge_accounts_count')
-                ->editColumn('funded_accounts', 'backend.user.include.__funded_accounts_count')
-                ->editColumn('trial_accounts', 'backend.user.include.__trial_accounts_count')
-
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
-                ->make(true);
-        }
-
-        return view('backend.user.all');
-    }
-
-    public function export(Request $request, $type)
-    {
-        switch ($type) {
-            case 'active':
-                return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
-            case 'disabled':
-                return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
-            default:
-                return Excel::download(new UsersExport($request), 'users.xlsx');
-        }
-    }
-
-    /**
-     * @return Application|Factory|View|JsonResponse
-     *
-     * @throws Exception
-     */
-    public function activeUser(Request $request)
-    {
-
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('status', 1)->latest();
-            $data->applyFilters($filters);
-            return Datatables::of($data)
-                ->addIndexColumn()
-
-                ->editColumn('challenge_accounts', 'backend.user.include.__challenge_accounts_count')
-                ->editColumn('funded_accounts', 'backend.user.include.__funded_accounts_count')
-                ->editColumn('trial_accounts', 'backend.user.include.__trial_accounts_count')
-
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->editColumn('username', 'backend.user.include.__user')
-                ->editColumn('email', 'backend.user.include.__email')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
-                ->make(true);
-        }
-
-        return view('backend.user.active_user');
-    }
-
-    /**
-     * @return Application|Factory|View|JsonResponse
-     *
-     * @throws Exception
-     */
-    public function disabled(Request $request)
-    {
-        if ($request->ajax()) {
-            $filters = $request->only(['global_search', 'phone', 'country', 'status', 'created_at', 'tag']);
-            $data = User::where('status', 0)->latest();
-            $data->applyFilters($filters);
-            return Datatables::of($data)
-                ->addIndexColumn()
-
-                ->editColumn('challenge_accounts', 'backend.user.include.__challenge_accounts_count')
-                ->editColumn('funded_accounts', 'backend.user.include.__funded_accounts_count')
-                ->editColumn('trial_accounts', 'backend.user.include.__trial_accounts_count')
-
-                ->editColumn('avatar', 'backend.user.include.__avatar')
-                ->addColumn('username', 'backend.user.include.__user')
-                ->addColumn('email', 'backend.user.include.__email')
-                ->editColumn('kyc', 'backend.user.include.__kyc')
-                ->editColumn('status', 'backend.user.include.__status')
-                ->editColumn('balance', 'backend.user.include.__total_balance_mt5')
-                ->editColumn('equity', 'backend.user.include.__total_equity_mt5')
-                ->editColumn('credit', 'backend.user.include.__total_credit_mt5')
-                ->addColumn('action', 'backend.user.include.__action')
-                ->rawColumns(['avatar', 'username', 'email', 'kyc', 'balance', 'equity', 'credit', 'status', 'action'])
-                ->make(true);
-        }
-
-        return view('backend.user.disabled_user');
+        return view('backend.user.all', compact('users'));
     }
 
     /**
@@ -191,31 +86,6 @@ class UserController extends Controller
     {
 
         $user = User::find($id);
-        $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-        $realForexAccounts = ForexAccount::realActiveAccount($id)
-            ->orderBy('balance', 'desc')
-            ->get();
-        $tags = RiskProfileTag::where('status', true)
-            ->get();
-        $customerGroups = CustomerGroup::where('status', 1)->get();
-        
-        $tagNames = $user->riskProfileTags()->pluck('name')->toArray();
-
-        $schemas = AccountType::where('status', true)
-            ->where(function ($query) use ($tagNames) {
-                $query->whereJsonContains('countries', auth()->user()->country)
-                    ->orWhereJsonContains('countries', 'All')
-                    ->orWhere(function ($subQuery) use ($tagNames) {
-                        foreach ($tagNames as $tagName) {
-                            $subQuery->orWhereJsonContains('tags', $tagName);
-                        }
-                    });
-            })
-            ->orderBy('priority', 'asc')
-            ->get();
-
-        // optimizations
-        
         $all_account_types = AccountType::where('status', 1)->get();
         $accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->paginate(10);
         $all_accounts = AccountTypeInvestment::where('user_id', $id)->orderBy('id', 'DESC')->get();
@@ -223,9 +93,16 @@ class UserController extends Controller
         $total_approved_withdraws = Transaction::where('user_id', $id)->where('type', 'withdraw')->where('status', TxnStatus::Success)->sum('amount');
         $payout_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::PAYOUT)->first()->available_balance ?? 0.00;
         $affiliate_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::AFFILIATE)->first()->available_balance ?? 0.00;
+        $payments = Transaction::where(function ($query) {
+                        $query->where('type', TxnType::ManualDeposit)
+                            ->orWhere('type', TxnType::Deposit);
+                    })->latest()->paginate(10);
+        $withdraws = Transaction::where(function ($query) {
+                        $query->where('type', TxnType::Withdraw);
+                    })->paginate(10);
 
 
-        return view('backend.user.edit', compact('user', 'level', 'realForexAccounts', 'tags', 'customerGroups', 'schemas', 'accounts', 'all_accounts', 'wallets_balance', 'total_approved_withdraws', 'payout_wallet_balance', 'affiliate_wallet_balance', 'all_account_types'));
+        return view('backend.user.edit', compact('user', 'accounts', 'all_accounts', 'wallets_balance', 'total_approved_withdraws', 'payout_wallet_balance', 'affiliate_wallet_balance', 'all_account_types', 'payments', 'withdraws'));
     }
 
     public function destroy($id)
@@ -243,14 +120,11 @@ class UserController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'status' => 'required',
-            'is_multi_ib' => 'required',
             'email_verified' => 'required',
             'kyc' => 'required',
             'two_fa' => 'required',
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
-            'transfer_status' => 'required',
-            'account_limit' => 'nullable|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -263,14 +137,11 @@ class UserController extends Controller
         }
         $data = [
             'status' => $input['status'],
-            'is_multi_ib' => $input['is_multi_ib'],
             'kyc' => $input['kyc'],
             'two_fa' => $input['two_fa'],
             'deposit_status' => $input['deposit_status'],
             'withdraw_status' => $input['withdraw_status'],
-            'transfer_status' => $input['transfer_status'],
             'email_verified_at' => $input['email_verified'] == 1 ? now() : null,
-            'account_limit' => $input['account_limit'],
         ];
 
         $user = User::find($id);
@@ -358,84 +229,6 @@ class UserController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * @return RedirectResponse|void
-     */
-    // public function balanceUpdate($id, Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'target_id' => 'required',
-    //         'amount' => 'required',
-    //         'type' => 'required',
-    //         'target_type' => 'required',
-    //         'comment' => 'required',
-    //     ]);
-    //     $targetId = $request->input('target_id');
-    //     $targetType = $request->input('target_type');
-    //     if ($validator->fails()) {
-    //         notify()->error($validator->errors()->first(), 'Error');
-    //         return redirect()->back();
-    //     }
-
-    //     try {
-    //         //dd($request->all());
-    //         $amount = $request->amount;
-    //         $type = $request->type;
-    //         $comment = $request->comment;
-
-    //         $user = User::find($id);
-    //         $adminUser = \Auth::user();
-
-    //         if ($type == 'add') {
-    //             if ($targetType == 'forex') {
-    //                 $data = [
-    //                     'login' => $targetId,
-    //                     'Amount' => $amount,
-    //                     'type' => 1, //deposit
-    //                     'TransactionComments' => $comment
-    //                 ];
-    //                 $this->forexApiService->balanceOperation($data);
-    //             }
-    //             Txn::new($amount, 0, $amount, 'system', 'Money added in ' . $targetId . ' Account from System', TxnType::Deposit, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
-
-    //             $status = 'success';
-    //             $message = __('Account Balance Update');
-    //         } elseif ($type == 'subtract') {
-    //             if ($targetType == 'forex') {
-    //                 $balance = $this->forexApiService->getValidatedBalance([
-    //                     'login' => $targetId
-    //                 ]);
-    //                 //                    $balance = $this->getForexAccountBalance($targetId);
-    //                 if (BigDecimal::of($amount)->compareTo($balance) > 0) {
-    //                     notify()->error(__("Sorry, you don't have sufficient funds in your account to complete this action. Please add funds to proceed."), 'Error');
-    //                     return redirect()->back();
-    //                 }
-    //                 $data = [
-    //                     'login' => $targetId,
-    //                     'Amount' => $amount,
-    //                     'type' => 2, //withdraw
-    //                     'TransactionComments' => $comment
-    //                 ];
-    //                 $withdrawResponse = $this->forexApiService->balanceOperation($data);
-    //                 //                    $withdrawResponse = $this->forexWithdraw($targetId, $amount, $comment);
-    //                 if (!$withdrawResponse['success']) {
-    //                     return redirect()->back();
-    //                 }
-    //             }
-    //             Txn::new($amount, 0, $amount, 'system', 'Money subtract in ' . $targetId . ' Account from System', TxnType::Subtract, TxnStatus::Success, null, null, $id, $adminUser->id, 'Admin', [], $comment, $targetId, $targetType);
-    //             $status = 'success';
-    //             $message = __('Account Balance Updated');
-    //         }
-
-    //         notify()->success($message, $status);
-
-    //         return redirect()->back();
-    //     } catch (Exception $e) {
-    //         $status = 'warning';
-    //         $message = __('something is wrong');
-    //         $code = 503;
-    //     }
-    // }
 
     /**
      * @return Application|Factory|View
@@ -505,41 +298,6 @@ class UserController extends Controller
     }
 
     /**
-     * @return JsonResponse|void
-     *
-     * @throws Exception
-     */
-    public function transaction($id, Request $request)
-    {
-
-        if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)->latest();
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->editColumn('status', 'backend.user.include.__txn_status')
-                ->editColumn('type', 'backend.user.include.__txn_type')
-                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
-                ->rawColumns(['status', 'type', 'final_amount'])
-                ->make(true);
-        }
-    }
-    // public function ibInfo($id, Request $request)
-    // {
-    //     //dd($id);
-    //     if ($request->ajax()) {
-    //         $data = User::where('id', $id)->latest();
-
-    //         return Datatables::of($data)
-    //             ->addIndexColumn()
-    //             ->editColumn('ib_status', 'backend.user.include.__ib_status')
-    //             ->addColumn('action', 'backend.user.include.__ib_action')
-    //             ->rawColumns(['ib_status', 'action'])
-    //             ->make(true);
-    //     }
-    // }
-
-    /**
      * @return RedirectResponse
      */
     public function userLogin($id)
@@ -570,12 +328,4 @@ class UserController extends Controller
         return redirect()->back();
     }
 
-    public function createNote(Request $request, $id)
-    {
-        $user = User::find($id);
-        $user->update(['notes' => $request->notes]);
-        notify()->success('Note added successfully');
-
-        return redirect()->back();
-    }
 }

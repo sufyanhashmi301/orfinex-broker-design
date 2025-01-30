@@ -49,7 +49,7 @@
                     @if( file_exists('assets/'.$value))
                         <img src="{{ asset($value) }}" alt=""/>
                     @else
-                        <strong>{{ $value }}</strong>
+                        <strong>{{ asset($value) }}</strong>
                     @endif
                 @endif
             </li>

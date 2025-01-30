@@ -69,11 +69,6 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    <li>
-                        <a href="{{ route('admin.customer-groups.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('Customer') }}
-                        </a>
-                    </li>
                     @canany(['role-list','role-create','role-edit'])
                         <li>
                             <a href="{{ route('admin.roles.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -417,14 +412,14 @@
                             </span>
                         </a>
                     </li>
-                    <li class="">
+                    {{-- <li class="">
                         <a href="{{ route('admin.reportIssues') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Report Issue') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
         </div>

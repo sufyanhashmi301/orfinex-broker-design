@@ -257,10 +257,10 @@
 
     <!-- Modal for Send Email -->
     @can('customer-mail-send')
-        @include('backend.user.include.__mail_send',['name' => $ticket->user->first_name.' '.$ticket->user->last_name, 'id' => $ticket->user->id])
+        @include('backend.user.modals.__mail_send',['name' => $ticket->user->first_name.' '.$ticket->user->last_name, 'id' => $ticket->user->id])
     @endcan
 
     {{--    @can('delete-user')--}}
-    @include('backend.user.include.__delete_user',[ 'id' => $ticket->user->id])
+    @include('backend.user.modals.__delete_user',[ 'id' => $ticket->user->id])
 
 @endsection

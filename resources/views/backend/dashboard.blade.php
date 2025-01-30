@@ -149,7 +149,7 @@
             </div>
 
             <!-- Modal for Send Email -->
-            @include('backend.user.include.__mail_send')
+            @include('backend.user.modals.__mail_send')
             <!-- Modal for Send Email-->
         </div>
         <div class="tab-pane fade" id="tabs-changelog" role="tabpanel" aria-labelledby="tabs-changelog-tab">

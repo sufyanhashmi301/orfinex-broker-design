@@ -110,7 +110,6 @@
             });
 
 
-            //send mail modal form open
             $('body').on('click', '#deposit-action', function () {
                 $('.deposit-action').empty();
                 var id = $(this).data('id');

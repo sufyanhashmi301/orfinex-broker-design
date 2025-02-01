@@ -71,12 +71,13 @@
                             <label class="form-label" for="">
                                 {{ __('Choose the tags where you would like this account type to be shown') }}
                             </label>
-                            <select name="tags[]" class="select2 form-control w-full h-9" multiple>
-                                @foreach (getRiskProfileTag() as $tag)
+                            <select name="tags[]" class="form-control w-full h-9" style="pointer-events: none" readonly> <!-- .select2 multiple -->
+                                <option value="" disabled hidden selected>Available Soon</option>
+                                {{-- @foreach (getRiskProfileTag() as $tag)
                                     <option value="{{ $tag->name }}" @if (in_array($tag->name, json_decode($account_type->tags ?? '[]', true))) selected @endif>
                                         {{ $tag->name }}
                                     </option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                     </div>

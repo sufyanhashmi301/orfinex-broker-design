@@ -73,7 +73,7 @@
                         <div class="input-area">
                             <label class="form-label"
                                    for="">{{ __('Select User\'s Tags') }}</label>
-                            <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags"
+                            {{-- <select name="tags[]" class="select2 form-control w-full h-9" placeholder="Manage Tags"
                                     multiple>
                                 @foreach(getRiskProfileTag() as $tag)
                                     <option
@@ -81,6 +81,9 @@
                                         {{ $tag->name }}
                                     </option>
                                 @endforeach
+                            </select> --}}
+                            <select name="tags[]" class="form-control w-full h-9" style="pointer-events: none" readonly> <!-- .select2 multiple -->
+                                <option value="" disabled hidden selected>Available Soon</option>
                             </select>
                         </div>
                     </div>

@@ -61,7 +61,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     //kyc apply
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-//        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
+        //        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
         Route::get('/basic', [KycController::class, 'basicKyc'])->name('basic');
         Route::get('/level3', [KycController::class, 'kycLevel3'])->name('level3');
         Route::get('/{id}', [KycController::class, 'kycData'])->name('data');
@@ -244,5 +244,7 @@ Route::get('signature', function () {
     return view('frontend::contracts.signature');
 })->name('signature');
 
-Route::post('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+
+
 

@@ -45,6 +45,11 @@
                 @foreach ($contracts as $contract)
 
                     @php
+                        
+                        if(!isset($contract->accountTypeInvestment->login)) {
+                            continue;
+                        }
+
                         $meta_info = '';
                         $icon = '';
                         $color = '';

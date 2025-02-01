@@ -1,10 +1,10 @@
 @section('submenu')
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
-        <li>
+        {{-- <li>
             <a href="{{ route('admin.risk-profile-tag.index') }}" class="navItem {{ request()->routeIs('admin.risk-profile-tag*') || request()->routeIs('admin.customer-groups*') ? 'active' : '' }}">
                 {{ __('Customer') }}
             </a>
-        </li>
+        </li> --}}
         @canany(['role-list','role-create','role-edit'])
             <li class="nav-item">
                 <a href="{{route('admin.roles.index')}}" class="navItem {{ isActive('admin.roles*') }}">

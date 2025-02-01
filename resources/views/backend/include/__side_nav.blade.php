@@ -42,11 +42,11 @@
                 <ul class="sidebar-submenu">
                     @canany(['customer-list','customer-login','customer-mail-send','customer-basic-manage','customer-balance-add-or-subtract','customer-change-password','all-type-status'])
                         <li>
-                            <a href="{{route('admin.user.index')}}" class="{{ isActive('admin.user.index') }}">
-                                {{ __('All Customers') }}
+                            <a href="{{route('admin.user.index', ['status' => 'all'])}}" class="{{ isActive('admin.user.index') }}">
+                                {{ __('Manage Customers') }}
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a href="{{ route('admin.user.active') }}" class="{{ isActive('admin.user.active') }}">
                                 {{ __('Active Customers') }}
                             </a>
@@ -55,7 +55,7 @@
                             <a href="{{ route('admin.user.disabled') }}" class="{{ isActive('admin.user.disabled') }}">
                                 {{ __('Disabled Customers') }}
                             </a>
-                        </li>
+                        </li> --}}
 
                     @endcanany
                     @can('customer-mail-send')

@@ -23,6 +23,10 @@
                             <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                 @foreach ($contracts as $contract)
                                     @php
+                                        if(!isset($contract->accountTypeInvestment->login)) {
+                                            continue;
+                                        }
+
                                         $badge = '';
                                         if ($contract->status == \App\Enums\ContractStatusEnums::PENDING) {
                                             $badge = 'badge-secondary';

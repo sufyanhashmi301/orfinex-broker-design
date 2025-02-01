@@ -121,10 +121,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'two_fa' => 'boolean',
     ];
-    public function riskProfileTags()
-    {
-        return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tags_users');
-    }
+
     public function getUpdatedAtAttribute(): string
     {
         return Carbon::parse($this->attributes['updated_at'])->format('M d Y h:i');
@@ -202,14 +199,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(UserMeta::class);
     }
-    public function ibQuestionAnswers()
-    {
-        return $this->hasOne(IbQuestionAnswer::class);
-    }
-    public function referralRelationship()
-    {
-        return $this->hasOne(ReferralRelationship::class,'user_id');
-    }
 
     public function totalProfit($days = null)
     {
@@ -233,20 +222,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(Transaction::class, 'user_id');
     }
-    public function metaTransaction()
-    {
-        return $this->hasMany(MetaTransaction::class, 'user_id');
-    }
-    public function metaDeals()
-    {
-        return $this->hasMany(MetaDeal::class, 'user_id');
-    }
-    public function realTradingAccounts()
-    {
-        return $this->hasMany(ForexAccount::class)->where('account_type', 'real')
-            ->where('status', ForexAccountStatus::Ongoing);
-
-    }
 
 
     public function totalRoiProfit()
@@ -256,18 +231,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         })->sum('amount');
 
         return round($sum, 2);
-    }
-
-    public function getReferrals()
-    {
-        return ReferralProgram::all()->map(function ($program) {
-            return ReferralLink::getReferral($this, $program);
-        });
-    }
-    public function getReferral()
-    {
-        return $this->hasOne(ReferralLink::class, 'user_id');
-
     }
 
     // public function referrals()

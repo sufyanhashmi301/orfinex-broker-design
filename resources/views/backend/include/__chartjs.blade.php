@@ -114,7 +114,6 @@
 
 
         //Plan chart
-        var schema = @json($data['scheme_statistics']);
         var invest_data = Object.values(schema);
         var invest_label = Object.keys(schema);
         // Bar Chart

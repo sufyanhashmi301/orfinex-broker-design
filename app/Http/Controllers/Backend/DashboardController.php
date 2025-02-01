@@ -11,9 +11,7 @@ use App\Enums\TxnType;
 use App\Http\Controllers\Controller;
 use App\Models\AccountTypeInvestment;
 use App\Models\Admin;
-use App\Models\ForexAccount;
 use App\Models\Gateway;
-use App\Models\Invest;
 use App\Models\LoginActivities;
 use App\Models\PayoutRequest;
 use App\Models\ReferralRelationship;
@@ -49,7 +47,6 @@ class DashboardController extends Controller
 
         $latestUser = $user->latest()->take(5)->get();
 
-        $latestInvest = Invest::with('schema')->take(5)->latest()->get();
 
         $totalGateway = Gateway::where('status', true)->count();
 
@@ -65,13 +62,8 @@ class DashboardController extends Controller
                 ->where('status', 'pending');
         })->count();
 
-        $totalReferral = ReferralRelationship::count();
 
         // ============================= Start dashboard statistics =============================================
-
-        $schemeStatistics = Invest::whereNot('status', 'canceled')->get()->groupBy('schema.name')->map(function ($group) {
-            return $group->count();
-        })->toArray();
 
         $startDate = request()->start_date ? Carbon::createFromDate(request()->start_date) : Carbon::now()->subDays(14);
         $endDate = request()->end_date ? Carbon::createFromDate(request()->end_date) : Carbon::now();
@@ -162,16 +154,13 @@ class DashboardController extends Controller
             'register_user' => $user->count(),
             
             'latest_user' => $latestUser,
-            'latest_invest' => $latestInvest,
 
             'total_staff' => $totalStaff,
 
-            
-
-            'total_deposit' => $transaction->totalDeposit()->sum('amount'),
-            'total_send' => $totalSend,
-            'total_investment' => $transaction->totalInvestment()->sum('amount'),
-            'total_withdraw' => $transaction->totalWithdraw()->sum('amount'),
+            // 'total_deposit' => $transaction->totalDeposit()->sum('amount'),
+            // 'total_send' => $totalSend,
+            // 'total_investment' => $transaction->totalInvestment()->sum('amount'),
+            // 'total_withdraw' => $transaction->totalWithdraw()->sum('amount'),
             // 'total_referral' => $totalReferral,
 
             'date_label' => $dateArray,
@@ -183,13 +172,10 @@ class DashboardController extends Controller
             'start_date' => isset(request()->start_date) ? $startDate : $startDate->addDays(1)->format('m/d/Y'),
             'end_date' => isset(request()->end_date) ? $endDate : $endDate->subDays(1)->format('m/d/Y'),
 
-            'scheme_statistics' => $schemeStatistics,
             'deposit_bonus' => $transaction->totalDepositBonus(),
             'investment_bonus' => $transaction->totalInvestBonus(),
             'total_gateway' => $totalGateway,
             'total_ticket' => Ticket::count(),
-            'total_live_forex_accounts' => ForexAccount::where('account_type', 'real')->count(),
-            'total_demo_forex_accounts' => ForexAccount::where('account_type', 'demo')->count(),
 
             'browser' => $browser,
             'platform' => $platform,

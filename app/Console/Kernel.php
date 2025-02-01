@@ -2,18 +2,9 @@
 
 namespace App\Console;
 
-use App\Console\Commands\CreateForexAccountsFromMysqlToMT5;
-use App\Console\Commands\FetchInvestmentDailyScore;
-use App\Console\Commands\FetchWeeklyTradeStats;
-use App\Console\Commands\GenerateAccountTypeInvestmentSnapshots;
-use App\Console\Commands\IBProfitRecord;
-use App\Console\Commands\MigrateDBData;
-use App\Console\Commands\MultiIbBonus;
-use App\Console\Commands\PromoteOrViolateAccount;
-use App\Console\Commands\ResetData;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use JoeDixon\Translation\Console\Commands\SynchroniseMissingTranslationKeys;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,14 +15,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('investments:fetch-daily-score')->dailyAt('23:50');
-//        $schedule->command('trade:fetch-weekly-stats')->weeklyOn(1, '23:50');
 
-        // $schedule->command('daily:drawdown')->everyFiveMinutes();
-
+        // Account Stats Updation
         $schedule->command('update:investment-stats')->everyMinute();
         $schedule->command('update:investment-stats --save-record')->hourly();
+
+        // Account open positions
         $schedule->command('update:accounts-open-positions')->hourly();
+
+        // Fetch trading stats of newly active accounts
         $schedule->command('update:recent-approved-accounts-stats')->everyThreeMinutes();
 
         // Promotion and Violation
@@ -60,11 +52,5 @@ class Kernel extends ConsoleKernel
     }
 
     protected $commands = [
-
-        FetchWeeklyTradeStats::class,
-        FetchInvestmentDailyScore::class,
-        PromoteOrViolateAccount::class,
-        MigrateDBData::class,
-        GenerateAccountTypeInvestmentSnapshots::class
     ];
 }

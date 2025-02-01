@@ -1,8 +1,8 @@
 @extends('backend.setting.user_management.index')
 @section('title')
-    {{ __('KYC Levels') }}
+    {{ __('KYC & Compliance') }}
 @endsection
-@section('content')
+@section('user-management-content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-10">
         <div>
             <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
@@ -51,9 +51,9 @@
                                     </div>
                                 @endif
                                 @can('kyc-levels-edit')
-                                    <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn dark:text-slate-300">
-                                        <iconify-icon icon="lucide:edit-3"></iconify-icon>
-                                    </a>
+                                <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn dark:text-slate-300">
+                                    <iconify-icon icon="lucide:edit-3"></iconify-icon>
+                                </a>
                                 @endcan
                             </div>
                         </div>
@@ -90,7 +90,6 @@
             </ul>
         </div>
     </div>
-
     <!-- Modal for Delete deleteKycType -->
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
         id="deleteKyc"
@@ -99,10 +98,10 @@
         aria-hidden="true"
     >
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
+            <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                <div class="relative rounded-lg shadow">
                     <div class="modal-body popup-body p-6 py-8 text-center space-y-5">
-                        <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger-500 text-danger-500 bg-opacity-30">
+                        <div class="info-icon h-16 w-16 rounded-full inline-flex items-center justify-center bg-danger text-danger bg-opacity-30">
                             <iconify-icon class="text-4xl" icon="lucide:alert-triangle"></iconify-icon>
                         </div>
                         <div class="title">
@@ -110,9 +109,10 @@
                                 {{ __('Are you sure?') }}
                             </h4>
                         </div>
-                        <p>
-                            {{ __('You want to Delete') }} <strong
-                                class="name"></strong> {{ __('KYC Verification Type?') }}
+                        <p class="dark:text-slate-300">
+                            {{ __('You want to Delete') }}
+                            <strong class="name"></strong>
+                            {{ __('KYC Verification Type?') }}
                         </p>
                         <form method="post" id="kycEditForm">
                             @method('DELETE')
@@ -152,7 +152,7 @@
 
             $('.name').html(name);
             $('#deleteKyc').modal('show');
-        });
+        })
 
         var animation = lottie.loadAnimation({
             container: document.getElementById('lottie-container'), // ID of the div where the animation will render
@@ -161,5 +161,6 @@
             autoplay: true,   // Autoplay the animation
             path: '{{ asset('global/json/kyc.json') }}' // Path to your JSON file
         });
+
     </script>
 @endsection

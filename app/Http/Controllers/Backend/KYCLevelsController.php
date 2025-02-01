@@ -36,9 +36,8 @@ class KYCLevelsController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('permission:risk-profile-tag-manage', ['only' => ['create', 'store', 'show', 'edit', 'update', 'destroy']]);
-//        $this->middleware('permission:kyc-list', ['only' => ['KycPending', 'kycAll', 'KycRejected']]);
-//        $this->middleware('permission:kyc-action', ['only' => ['depositAction', 'actionNow']]);
+       $this->middleware('permission:kyc-levels-list', ['only' => ['index']]);
+       $this->middleware('permission:kyc-levels-edit', ['only' => ['edit', 'update']]);
 
     }
 
@@ -49,7 +48,8 @@ class KYCLevelsController extends Controller
      */
     public function index(Request $request)
     {
-        $kycLevels = KycLevel::paginate(10);
+        $kycLevels = KycLevel::with('kyc_sub_levels')->get();
+
         return view('backend.kyc_levels.index', compact('kycLevels'));
     }
 
@@ -116,7 +116,10 @@ class KYCLevelsController extends Controller
             ->get();
 //        if($kycLevel=='level-2' && $kycSubLevels['name'] == 'Automatic')
         $level2Show = true;
-        $manulKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+//        dd($level2Show);
+        $level2ManualKycs = Kyc::where('kyc_sub_level_id', 3)->get();
+        $level3ManualKycs = Kyc::where('kyc_sub_level_id', 5)->get();
+//        dd($level3ManualKycs);
         $sumsub = Plugin::findOrFail(8);
         return view('backend.kyc_levels.edit', get_defined_vars());
 

@@ -90,7 +90,7 @@
             </div>
 
             <div class="grid grid-cols-12 gap-5">
-                <div class="lg:col-span-8 col-span-12">
+                <div class="lg:col-span-12 col-span-12">
                     <div class="card h-full">
                         <div class="card-header">
                             <h3 class="card-title">{{ __('Site Statistics') }}</h3>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="lg:col-span-4 col-span-12">
+                {{-- <div class="lg:col-span-4 col-span-12">
                     <div class="card h-full">
                         <div class="card-header">
                             <h3 class="card-title">{{ __('Scheme Statistics') }}</h3>
@@ -142,7 +142,7 @@
                             <canvas id="osChart"></canvas>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 @include('backend.include.__latest_user_invest')
 

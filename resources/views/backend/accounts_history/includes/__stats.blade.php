@@ -29,6 +29,9 @@
                                       if(!isset($record->accountTypeInvestment->user)) {
                                         $user_exists = false;
                                       }
+                                      if(!isset($record->accountTypeInvestment->login)) {
+                                            continue;
+                                        }
                                     @endphp
                                     <tr>
                                       <td class="table-td">{{ $record->account_name }}</td>  

@@ -1,11 +1,11 @@
-@switch($kyc_level3)
-    @case(1)
-        <div class="site-badge success">{{ __('Verified') }}</div>
+@switch($kyc)
+    @case(\App\Enums\KYCStatus::Level3->value)
+        <div class="badge badge-success">{{ __('Verified') }}</div>
         @break
-    @case(2)
-        <div class="site-badge pending">{{ __('Pending') }}</div>
+    @case(\App\Enums\KYCStatus::PendingLevel3->value)
+        <div class="badge badge-warning">{{ __('Pending') }}</div>
         @break
-    @case(3)
-        <div class="site-badge danger">{{ __('Rejected') }}</div>
+    @case(\App\Enums\KYCStatus::RejectLevel3->value)
+        <div class="badge badge-danger">{{ __('Rejected') }}</div>
         @break
 @endswitch

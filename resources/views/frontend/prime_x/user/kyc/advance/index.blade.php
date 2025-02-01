@@ -1,10 +1,10 @@
 @extends('frontend::layouts.user')
 @section('title')
-{{ __('Advance KYC') }}
+    {{ __('Advance KYC') }}
 @endsection
 @section('content')
 <div class="card">
-    @if (auth()->user()->kyc >= kyc_completed_level())
+    @if (auth()->user()->kyc >= kyc_required_completed_level())
     {{-- verification completed--}}
     <div class="p-5">
         <p class="text-center font-medium dark:text-slate-300">
@@ -15,7 +15,7 @@
     {{-- sumsub deactivated --}}
     <div class="p-5">
         <p class="text-center font-medium dark:text-slate-300">
-            {{ __('Somthing went wrong.') }}
+            {{ __('Something went wrong.') }}
         </p>
     </div>
     @else
@@ -23,6 +23,13 @@
     <div id="sumsub-websdk-container"></div>
     @endif
 </div>
+@endsection
+@section('style')
+    <style>
+        #sumsub-websdk-container iframe {
+            min-height: calc(100vh - 140px);
+        }
+    </style>
 @endsection
 @section('script')
 
@@ -41,32 +48,32 @@ const launchWebSdk = (accessToken) => {
         lang: 'en',
         email: '{{auth()->user()->email}}'
     }).withOptions({ addViewportTag: false, adaptIframeHeight: true })
-        .on('idCheck.onApplicantStatusChanged', (payload) => {
-            console.log('onStepCompleted', payload);
-            if (payload.confirmed === true && '{{auth()->user()->kyc}}' === '0') {
+        .on('{{ __('idCheck.onApplicantStatusChanged') }}', (payload) => {
+            console.log('{{ __('onStepCompleted') }}', payload);
+            if (payload.confirmed === true && '{{auth()->user()->kyc}}' < '4') {
                 $.ajax({
                     url: "{{ route('user.kyc.status') }}",
                     method: 'POST',
                     success: function(response) {
                         if (response.status ===200) {
                             console.log(response.success);
-                        }else{
+                        } else {
                             console.log(response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error updating KYC status:', error);
+                        console.error('{{ __('Error updating KYC status:') }}', error);
                     }
                 });
             }
         })
-        .on('idCheck.onError', (error) => {
-            console.log('onError', error);
+        .on('{{ __('idCheck.onError') }}', (error) => {
+            console.log('{{ __('onError') }}', error);
         }).build();
     snsWebSdkInstance.launch('#sumsub-websdk-container');
 }
 
-if ('{{auth()->user()->kyc}}' === '0' && '{{$sumsubstatus}}' === '1') {
+if ('{{auth()->user()->kyc}}' < '4' && '{{$sumsubstatus}}' === '1') {
     launchWebSdk('{{auth()->user()->kyc_token}}')
     // launchWebSdk('_act-sbx-jwt-eyJhbGciOiJub25lIn0.eyJqdGkiOiJfYWN0LXNieC1jMGQzMjg5MS05OTk5LTQzOGQtYjRjZC0xYmI5MjQ0ZmY4YzktdjIiLCJ1cmwiOiJodHRwczovL2FwaS5zdW1zdWIuY29tIn0.-v2')
 }

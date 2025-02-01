@@ -33,9 +33,6 @@ class ViewServiceProvider extends ServiceProvider
         View::composer(['backend.setting.site_setting.index'], SiteCurrencyComposer::class);
         View::composer(['backend.include.__side_nav', 'backend.setting.site_setting.include.__global'], function ($view) {
             $view->with([
-                'landingSections' => cache()->remember('landingSections', 60 * 60 * 24, function () {
-                    return LandingPage::where('locale', app()->getLocale())->whereNot('code', 'footer')->get();
-                }),
                 'pages' => cache()->remember('pages', 60 * 60 * 24, function () {
                     return Page::where('locale', app()->getLocale())->get();
                 }),

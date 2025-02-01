@@ -2,45 +2,47 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Enums\ForexAccountStatus;
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Exports\ActiveUsersExport;
-use App\Exports\DisabledUsersExport;
-use App\Exports\UsersExport;
-use App\Http\Controllers\Controller;
-use App\Jobs\AgentReferralJob;
-use App\Models\AccountType;
-use App\Enums\AccountType as AccountTypeEnums;
-use App\Enums\WalletType;
-use App\Models\AccountTypeInvestment;
-use App\Models\Country;
-use App\Models\CustomerGroup;
-use App\Models\ForexAccount;
-use App\Models\ForexSchema;
-use App\Models\LevelReferral;
-use App\Models\RiskProfileTag;
-use App\Models\Transaction;
-use App\Models\User;
-use App\Models\Wallet;
-use App\Services\ForexApiService;
-use App\Traits\ForexApiTrait;
-use App\Traits\NotifyTrait;
-use Brick\Math\BigDecimal;
-use DataTables;
-use Exception;
-use Hash;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
 use Txn;
+use Hash;
+use Exception;
+use DataTables;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Enums\TxnType;
+use App\Models\Wallet;
+use App\Models\Country;
+use App\Enums\KYCStatus;
+use App\Enums\TxnStatus;
+use App\Enums\WalletType;
+use Brick\Math\BigDecimal;
+use App\Models\AccountType;
+use App\Models\ForexSchema;
+use App\Models\Transaction;
+use App\Traits\NotifyTrait;
+use App\Exports\UsersExport;
+use App\Models\ForexAccount;
+use Illuminate\Http\Request;
+use App\Models\CustomerGroup;
+use App\Models\LevelReferral;
+use App\Traits\ForexApiTrait;
+use App\Jobs\AgentReferralJob;
+use App\Models\RiskProfileTag;
+use App\Enums\ForexAccountStatus;
+use App\Services\ForexApiService;
+use Illuminate\Http\JsonResponse;
+use App\Exports\ActiveUsersExport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\View\View;
+use App\Exports\DisabledUsersExport;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\AccountTypeInvestment;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Validator;
+use App\Enums\AccountType as AccountTypeEnums;
+use Illuminate\Contracts\Foundation\Application;
 
 class UserController extends Controller
 {
@@ -71,9 +73,84 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::paginate(15);
 
-        return view('backend.user.all', compact('users'));
+        $users_filter = false;
+        if(isset($request->status)){
+            // Filter users wrt status when status exists
+
+            if ($request->status == 'active') {
+                // Handle the logic here if the status is valid
+                $users = User::where('status', 1)->paginate(15);
+                $title = 'Active Users';
+                $users_filter = true;
+            }
+
+            if ($request->status == 'disabled') {
+                // Handle the logic here if the status is valid
+                $users = User::where('status', 0)->paginate(15);
+                $title = 'Disabled Users';
+                $users_filter = true;
+            }
+
+        }
+
+        // If search
+        if(isset($request->search)) {
+
+            if($request->search != '') {
+                $users = User::where('first_name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('username', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('email', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('phone', 'LIKE', '%' . $request->search . '%')
+                            ->paginate(15);
+                $title = 'Search results for: ' . $request->search;
+                $users_filter = true;
+            } elseif($request->country != '') {
+                $users = User::where('country', $request->country)->paginate(15);
+                $title = 'Users from ' . $request->country;
+                $users_filter = true;
+            }
+            
+        } 
+        
+        // if status is unknown then show all users
+        if(!$users_filter) {
+            $users = User::paginate(15);
+            $title = 'All Users';
+            if($request->status != 'all') {
+                return redirect()->route('admin.user.index', ['status' => 'all']);
+            }
+        }
+
+
+        return view('backend.user.all', compact('users', 'title'));
+    }
+
+
+    // KYC
+    public function kyc(Request $request, $id)
+    {
+        //        dd($request->all());
+        // Fetch the user
+        $user = User::findOrFail($id);
+
+        $kyc = $request->kyc;
+
+        if (empty($kyc)) {
+            $kyc = 0;
+            $data['email_verified_at'] = null;
+        }
+        if ($kyc >= KYCStatus::Level1->value) {
+            $data['email_verified_at'] = Carbon::now();
+        }
+        $data['kyc'] = $kyc;
+        // Update basic user details
+        $user->update($data);
+
+        // Redirect with success message
+        notify()->success('User Kyc Updated Successfully', 'success');
+        return redirect()->back();
     }
 
     /**
@@ -94,12 +171,12 @@ class UserController extends Controller
         $payout_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::PAYOUT)->first()->available_balance ?? 0.00;
         $affiliate_wallet_balance = Wallet::where('user_id', $id)->where('slug', WalletType::AFFILIATE)->first()->available_balance ?? 0.00;
         $payments = Transaction::where(function ($query) {
-                        $query->where('type', TxnType::ManualDeposit)
-                            ->orWhere('type', TxnType::Deposit);
-                    })->latest()->paginate(10);
+            $query->where('type', TxnType::ManualDeposit)
+                ->orWhere('type', TxnType::Deposit);
+        })->latest()->paginate(10);
         $withdraws = Transaction::where(function ($query) {
-                        $query->where('type', TxnType::Withdraw);
-                    })->paginate(10);
+            $query->where('type', TxnType::Withdraw);
+        })->paginate(10);
 
 
         return view('backend.user.edit', compact('user', 'accounts', 'all_accounts', 'wallets_balance', 'total_approved_withdraws', 'payout_wallet_balance', 'affiliate_wallet_balance', 'all_account_types', 'payments', 'withdraws'));
@@ -315,17 +392,17 @@ class UserController extends Controller
         return view('backend.user.create', compact('countries'));
     }
 
-    public function store(Request $request) {
-        $data = $request->all(); 
-        $data['password'] = bcrypt($request->password);  
-        $data['ranking_id'] = '1';  
-        $data['rankings'] = '[1]';  
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $data['password'] = bcrypt($request->password);
+        $data['ranking_id'] = '1';
+        $data['rankings'] = '[1]';
 
-        User::create($data); 
+        User::create($data);
 
         notify()->success('User Created Successfully');
 
         return redirect()->back();
     }
-
 }

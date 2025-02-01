@@ -2,59 +2,6 @@
 @section('title')
     {{ __('All Customers') }}
 @endsection
-@php
-    $riskProfileTags = getRiskProfileTag();
-@endphp
-@section('filters')
-    <form id="filter-form" method="POST" action="{{ route('admin.user.export',['type' => 'all']) }}">
-        @csrf
-        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
-            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
-                </div>
-                <div class="flex-1 input-area relative">
-                    <input type="text" name="phone" id="phone" class="form-control h-full" placeholder="Phone">
-                </div>
-                <div class="flex-1 input-area relative">
-                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a country') }}">
-                        <option value="" selected>
-                            {{ __('country') }}
-                        </option>
-                        @foreach( getCountries() as $country)
-                            <option value="{{ $country['name'] }}">
-                                {{ $country['name']  }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="flex-1 input-area relative">
-                    <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
-                </div>
-                <div class="flex-1 input-area relative">
-                    <select name="tag" id="tag" class="select2 form-control w-full h-full" data-placeholder="{{ __('Select a tag') }}">
-                        <option value="" selected>
-                            {{ __('tags') }}
-                        </option>
-                        @foreach($riskProfileTags as $tag)
-                            <option value="{{ $tag->name }}">
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-                <div class="input-area relative">
-                    <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
-                        {{ __('Filter') }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-@endsection
 @section('customers-content')
     <div class="card">
         <div class="card-body relative px-6 pt-3">

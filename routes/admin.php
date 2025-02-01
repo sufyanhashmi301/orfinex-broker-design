@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\RiskRuleController;
-use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\AccountTypeController;
 use App\Http\Controllers\Backend\AppController;
 use App\Http\Controllers\Backend\KycController;
@@ -76,21 +75,17 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::group(['prefix' => 'user', 'as' => 'user.', 'controller' => UserController::class], function () {
         Route::get('active', 'activeUser')->name('active');
         Route::get('disabled', 'disabled')->name('disabled');
-        // Route::get('withBalance', 'withBalance')->name('with_balance');
-        // Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
         Route::get('login/{id}', 'userLogin')->name('login');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
         Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
-        // Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
         Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
         Route::post('mail-send', 'mailSend')->name('mail-send');
         Route::get('transaction/{id}', 'transaction')->name('transaction');
-        // Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
         Route::post('note/create/{id}', 'createNote')->name('note.add');
-        
         Route::get('create', 'createCustomer')->name('create');
         Route::post('store', 'store')->name('store');
+        Route::post('kyc/{id}', 'kyc')->name('kyc');
     });
 
     Route::resource('kyc-form', KycController::class);
@@ -107,7 +102,7 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('action-now', 'actionNow')->name('action.now');
         Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
         Route::get('all', 'kycAll')->name('all');
-
+        Route::post('export/{type?}', 'export')->name('export');
     });
     
     // Route::resource('risk-profile-tag', RiskProfileTagController::class);
@@ -232,6 +227,8 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
 // =============================== Optimization ===============================
+
+    
 
 
     // Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');

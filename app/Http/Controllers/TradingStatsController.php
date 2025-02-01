@@ -39,8 +39,6 @@ class TradingStatsController extends Controller
             $title = "All Trading Stats History";
         }
 
-
-
         return view('backend.accounts_history.index', compact('accounts_stats', 'title'));
     }
 

@@ -6,26 +6,15 @@
             <input type="hidden" name="target_id" value="{{the_hash($investment->id)}}">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 <div>
-                    <h4 class="text-xl text-slate-900 mb-3">
+                    {{-- <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Enter your deposit details.') }}
-                    </h4>
+                    </h4> --}}
                     <div class="card">
                         <div class="card-body p-6 space-y-5">
                             <div class="py-[18px] px-6 font-normal font-Inter text-sm rounded-md bg-secondary-500 bg-opacity-[14%] text-secondary-500">
                                 {{-- {{ dd($investment->accountTypePhaseRule->id) }} --}}
-                                <p>{{__('Pay amount :amount via scheme of :title ',['amount' => $investment->total,'title' => $investment->accountTypePhaseRule->accountTypePhase->accountType->title,])}}</p>
+                                <p>{{__('Buying :title account for amount :amount :currency',['amount' => $investment->total,'title' => $investment->accountTypePhaseRule->accountTypePhase->accountType->title, 'currency' => $currency])}}</p>
                             </div>
-{{--                            <div class="input-area relative">--}}
-{{--                                <label for="" class="form-label">{{ __('Account to Deposit:') }}</label>--}}
-{{--                                <div class="input-group select2-lg">--}}
-{{--                                    <select  id="tradingAccount" name="target_id" class="select2 form-control !text-lg w-full mt-2 py-2">--}}
-{{--                                        <option selected disabled>--{{ __('Select Account') }}--</option>--}}
-{{--                                        @foreach($forexAccounts as $forexAccount)--}}
-{{--                                            <option value="{{ $forexAccount->login }}" class="inline-block font-Inter font-normal text-sm text-slate-600">{{ $forexAccount->login }} - {{ $forexAccount->account_name }} ({{ get_mt5_account_equity($forexAccount->login) }} {{$currency}})</option>--}}
-{{--                                        @endforeach--}}
-{{--                                    </select>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
                             <div class="input-area relative">
                                 <label for="" class="form-label">{{ __('Payment Method:') }}</label>
                                 <div class="input-group select2-lg">
@@ -63,9 +52,9 @@
                     </div>
                 </div>
                 <div>
-                    <h4 class="text-xl text-slate-900 mb-3">
+                    {{-- <h4 class="text-xl text-slate-900 mb-3">
                         {{ __('Review Details:') }}
-                    </h4>
+                    </h4> --}}
                     <div class="card transaction-list">
                         <div class="card-body p-6">
                             <table class="table w-full border-collapse table-fixed dark:border-slate-700 dark:border">

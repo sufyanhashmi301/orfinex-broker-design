@@ -117,7 +117,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
         Route::get('{id?}', [DepositController::class, 'deposit'])->name('amount');
         Route::get('gateway/{code}', [GatewayController::class, 'gateway'])->name('gateway');
         Route::post('now', [DepositController::class, 'depositNow'])->name('now');
-        Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
+        // Route::post('demo/now', [DepositController::class, 'depositDemoNow'])->name('demo.now');
         Route::get('log', [DepositController::class, 'depositLog'])->name('log');
     });
 

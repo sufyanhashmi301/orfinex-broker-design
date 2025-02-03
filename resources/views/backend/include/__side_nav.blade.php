@@ -73,6 +73,28 @@
             </li>
         @endcanany
 
+        <li class="side-nav-item side-nav-dropdown {{ isActive(['admin.user*','admin.notification*']) }}">
+            <a href="javascript:void(0);" class="navItem">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="mdi:leads-outline"></iconify-icon>
+                    <span>{{ __('Leads') }}</span>
+                </span>
+                <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            </a>
+            <ul class="sidebar-submenu">
+                <li>
+                    <a href="{{route('admin.lead.index')}}" class="{{ isActive('admin.lead.index') }}">
+                        {{ __('Lead Contact') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="">
+                        {{ __('Deals') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         {{-- *************************************************************  Essentials *********************************************************--}}
         @canany(['deposit-list','deposit-action',
         'withdraw-list','withdraw-action','target-manage','referral-create',

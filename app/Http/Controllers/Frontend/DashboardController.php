@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\KycStatusEnums;
 use App\Models\Banner;
 use App\Models\Transaction;
-use App\Models\ForexAccount;
 use Illuminate\Http\Request;
 use App\Traits\ForexApiTrait;
-use App\Jobs\AgentReferralJob;
-use App\Enums\InvestmentStatus;
-use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
+use App\Models\KYC;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
-use App\Models\ForexSchemaInvestment;
 use App\Models\Slider;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     use ForexApiTrait;
     public function dashboard(Request $request)
     {
+        $user = User::find(Auth::id());
+        
+        // Create kyc field if not created
+        if(!$user->kyc) {
+            $kyc = new KYC();
+            $kyc->user_id = Auth::id();
+            $kyc->method = '';
+            $kyc->status = KycStatusEnums::UNVERIFIED;
+            $kyc->save();
+        }
+
         $transactions = Transaction::where('user_id', Auth::id())->latest()->take(5)->get();
         
         $banners = Banner::where('type', 'user_dashboard')->where('status', 'enabled')->get();

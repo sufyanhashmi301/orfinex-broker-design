@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use Database\Seeders\CertificateSeeder;
 use Illuminate\Support\Facades\Artisan;
 
-use Str;
-
 class CertificateController extends Controller
 {
     use ImageUpload;

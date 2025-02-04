@@ -95,7 +95,7 @@
                     </div>
 
                     @endif
-                    <div class="input-area relative">
+                    {{-- <div class="input-area relative">
                         <label for="kyc_status" class="form-label">{{ __('Kyc Level:') }}</label>
                         <select name="kyc" id="kyc" class="form-control">
                             <option value="">Select</option>
@@ -105,7 +105,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
 
 

@@ -7,7 +7,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\RiskRuleController;
 use App\Http\Controllers\AccountTypeController;
 use App\Http\Controllers\Backend\AppController;
-use App\Http\Controllers\Backend\KycController;
+use App\Http\Controllers\KycController;
 use App\Http\Controllers\Backend\SmsController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Backend\AuthController;
@@ -51,6 +51,7 @@ use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\KycMethodController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\TradingStatsController;
 
@@ -64,11 +65,14 @@ use App\Http\Controllers\TradingStatsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::group(['middleware' => [ '2fa', 'set.session.lifetime:admin']], function () {
-Route::middleware(['2fa_admin'])->group(function () {
-//Admin Dashboard
-    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
+
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+Route::middleware(['2fa_admin'])->group(function () {
+    
+    //Admin Dashboard
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     // Customer Management
     Route::resource('user', UserController::class)->only('index', 'edit', 'update', 'destroy');
@@ -88,54 +92,9 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('kyc/{id}', 'kyc')->name('kyc');
     });
 
-    Route::resource('kyc-form', KycController::class);
-    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-        Route::get('editlevel2/{id}', 'editKycLevel2')->name('editKycLevel2');
-        Route::post('updatelevel2kyc/{id}', 'updateLevel2Kyc')->name('updateLevel2Kyc');
-        Route::get('pending', 'KycPending')->name('pending');
-        Route::get('pending/level3', 'KycLevel3Pending')->name('level3.pending');
-        Route::post('storelevel2', 'storeLevel2')->name('storeLevel2');
-        Route::post('storelevel3', 'storeLevel3')->name('storeLevel3');
-        Route::get('rejected', 'KycRejected')->name('rejected');
-        Route::get('action/{id}', 'depositAction')->name('action');
-        Route::get('level3/action/{id}', 'depositActionLevel3')->name('level3.action');
-        Route::post('action-now', 'actionNow')->name('action.now');
-        Route::post('level3-action-now', 'actionLevel3Now')->name('action.level3.now');
-        Route::get('all', 'kycAll')->name('all');
-        Route::post('export/{type?}', 'export')->name('export');
-    });
-    
-    // Route::resource('risk-profile-tag', RiskProfileTagController::class);
-    // Route::group(['prefix' => 'risk-profile-tag', 'as' => 'risk-profile-tag.', 'controller' => RiskProfileTagController::class], function () {
-    //     Route::post('tag/update/{id}', 'tagsUpdate')->name('tag.update');
-    //     Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
 
-    // });
 
-    Route::resource('kyclevels', KYCLevelsController::class);
-    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KYCLevelsController::class], function () {
-        Route::post('level/update/{id}', 'kycLevelUpdate')->name('level.update');
-        Route::post('subLevel/update/{id}', 'kycSubLevelUpdate')->name('subLevel.update');
-        //Route::post('tag/delete/{id}', 'tagDelete')->name('tag.delete');
-
-    });
-    // Route::resource('ib-form', IBController::class);
-    // Route::group(['prefix' => 'ib', 'as' => 'ib.', 'controller' => IBController::class], function () {
-    //     Route::get('pending', 'IbPendingList')->name('pending.list');
-    //     Route::get('approved', 'IbApprovedList')->name('approved.list');
-    //     Route::get('rejected', 'IbRejectedList')->name('rejected.list');
-    //     Route::get('all', 'ibAllList')->name('all.list');
-    //     Route::get('answer/view/{user}', 'answerView')->name('answer.view');
-    //     Route::post('approve', 'approveIbMember')->name('approve');
-    //     Route::post('update', 'updateIbMember')->name('update');
-    //     Route::post('multi/approve', 'approveMIbMember')->name('multi.approve');
-    //     Route::post('multi/update', 'updateMIbMember')->name('multi.update');
-    //     Route::post('reject', 'rejectIbMember')->name('reject');
-    //     Route::post('save/form', 'saveForm')->name('save.form');
-
-    // });
-
-//===============================  Role Management ==================================
+    //===============================  Role Management ==================================
     Route::resource('roles', RoleController::class)->except('show', 'destroy');
     Route::delete('roles/{roleId}', [RoleController::class, 'destroy'])->name('role.delete');
     Route::resource('staff', StaffController::class)->except('show', 'destroy');
@@ -144,13 +103,13 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('staff/2fa', [StaffController::class, 'twoFa'])->name('staff.2fa');
     Route::post('staff/action-2fa', [StaffController::class, 'actionTwoFa'])->name('staff.action-2fa');
     Route::post('/2fa/verify', function () {
-//            dd(route('admin.dashboard'));
         return redirect(route('admin.dashboard'));
     })->name('2fa.verify');
-//===============================  Plans Management ==================================
+    
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
 
-// =============================== Optimization ===============================
+
+    // =============================== Optimization ===============================
     // Account Types
     Route::get('account-type/info', [AccountTypeController::class, 'accountTypeInfo'])->name('account_type.info');
     Route::resource('account-type', AccountTypeController::class);
@@ -226,46 +185,42 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Invoice
     Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
-// =============================== Optimization ===============================
+    // KYC Manage
+    Route::get('kycs', [KycController::class, 'index'])->name('kyc.index');
+    Route::get('kyc/data/{id}', [KycController::class, 'data'])->name('kyc.data');
+    Route::post('/kyc/action', [KycController::class, 'action'])->name('kyc.action');
 
+    // KYC Settings
+    Route::get('/settings/kyc-methods', [KycMethodController::class, 'index'])->name('settings.kyc');
+    Route::post('/settings/kyc-methods/store', [KycMethodController::class, 'store'])->name('kyc_method.store');
+    Route::post('/settings/kyc-methods/update/{id}', [KycMethodController::class, 'update'])->name('kyc_method.update');
+    Route::get('/settings/kyc-methods/{option_name}', [KycMethodController::class, 'deleteManualMethodField'])->name('kyc_method.delete_manual_method_option');
+    Route::get('/settings/kyc-methods/option-toggle/{action}', [KycMethodController::class, 'optionToggle'])->name('kyc_method.option_toggle');
+    Route::get('/settings/kyc-methods/method-toggle/{id}', [KycMethodController::class, 'methodToggle'])->name('kyc_method.method_toggle');
+
+
+    // =============================== Optimization ===============================
     
-
-
-    // Route::get('multi-level/view/{id}', [ForexSchemaController::class,'view'])->name('multi-level.view');
-    // Route::resource('ibAccountType', IBSchemaController::class)->except('show', 'destroy');
-    // Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
-
-//===============================  Discounts Management ==================================
+    //===============================  Discounts Management ==================================
     Route::resource('discounts', DiscountController::class);
-//    Route::get('/discounts/data', [DiscountController::class, 'index'])->name('discounts.data');
 
-
-//===============================  Profit Deduction Management ==================================
-    // Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
-    // Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
-
-//===============================  Transactions ==================================
+    //===============================  Transactions ==================================
     Route::get('transactions/{id?}', [TransactionController::class, 'transactions'])->name('transactions');
     Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::get('transactions/view/{id}', [TransactionController::class, 'view'])->name('transactions.view');
-    // Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
-    // Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
-    // Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
-    // Route::get('change-leverage', [AccountsController::class, 'changeLeverage'])->name('change-leverage');
 
-    // Route::get('all-profits/{id?}', [ProfitController::class, 'allProfits'])->name('all-profits');
 
-//===============================  Essentials ==================================
-
+    //===============================  Essentials ==================================
     Route::group(['prefix' => 'gateway', 'as' => 'gateway.', 'controller' => GatewayController::class], function () {
         Route::get('/automatic', 'automatic')->name('automatic');
         Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
         Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
     });
+
+    //=============================== deposit Method ================================
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
-        //=============================== deposit Method ================================
         Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
             Route::get('list/{type}', 'methodList')->name('list');
             Route::get('create/{type}', 'createMethod')->name('create');
@@ -273,7 +228,6 @@ Route::middleware(['2fa_admin'])->group(function () {
             Route::get('edit/{type}', 'methodEdit')->name('edit');
             Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
         });
-        //=============================== end deposit Method ================================
 
         Route::get('pending-payments', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');
@@ -281,8 +235,9 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('action/{id}', 'depositAction')->name('action');
         Route::post('action-now', 'actionNow')->name('action.now');
     });
+
+    //=============================== withdraw Method ================================
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-        //=============================== withdraw Method ================================
 
         Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
             Route::get('list/{type}', 'methods')->name('list');
@@ -303,30 +258,12 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('action-now', 'actionNow')->name('action.now');
 
     });
-    // Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
-    //     Route::get('index', 'index')->name('index');
-    //     Route::post('store', 'store')->name('store');
-    //     Route::post('update', 'update')->name('update');
-    //     Route::post('delete', 'delete')->name('delete');
 
-    //     Route::get('direct/list/{id}', 'directList')->name('direct.list');
-    //     Route::post('direct/add', 'addDirectReferral')->name('direct.add');
-    //     Route::delete('direct/delete', 'deleteDirectReferral')->name('direct.delete');
-    //     Route::get('target', 'target')->name('target');
-    //     Route::post('target-store', 'targetStore')->name('target-store');
-    //     Route::post('target-update', 'targetUpdate')->name('target-update');
-
-    //     //level referral
-    //     Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
-    //     Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
-    // });
-//===============================  Advertisement Material ==================================
-    // Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
-
+    // Ranking
     Route::resource('ranking', RankingController::class)->only('index', 'store', 'update');
 
-//===============================  Site Essentials ==================================
 
+    //===============================  Site Essentials ==================================
     Route::group(['prefix' => 'theme', 'as' => 'theme.', 'controller' => ThemeController::class], function () {
 
         Route::get('site', 'siteTheme')->name('site');
@@ -355,7 +292,8 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('position-update', 'positionUpdate')->name('position.update');
     });
 
-//===============================  site Settings ==================================
+
+    //===============================  site Settings ==================================
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'controller' => SettingController::class], function () {
         Route::get('/', 'index')->name('index');
         Route::get('site', 'siteSetting')->name('site');
@@ -408,7 +346,8 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
     Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
-//===============================  Security Settings ==================================
+
+    //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
         Route::get('all-sections', 'allSections')->name('all-sections');
         Route::get('blocklist-ip', 'blocklistIP')->name('blocklist-ip');
@@ -417,7 +356,8 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('login-expiry', 'loginExpiry')->name('login-expiry');
     });
 
-// show all notifications
+
+    // show all notifications
     Route::get('notification/all', [NotificationController::class, 'all'])->name('notification.all');
     Route::get('latest-notification', [NotificationController::class, 'latestNotification'])->name('latest-notification');
     Route::get('notification-read/{id}', [NotificationController::class, 'readNotification'])->name('read-notification');
@@ -448,7 +388,8 @@ Route::middleware(['2fa_admin'])->group(function () {
         });
     });
 
-//===============================  Links Settings ==================================
+
+    //===============================  Links Settings ==================================
     Route::group(['prefix' => 'links', 'as' => 'links.', 'controller' => LinkController::class], function () {
         Route::get('legal-links', 'legalLinks')->name('legal-links');
         Route::get('platform-links', 'platformLinks')->name('platform-links');
@@ -458,7 +399,8 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::put('social/update', [SocialLinkController::class, 'update'])->name('social.update');
     });
 
-//===============================  Others ==================================
+
+    //===============================  Others ==================================
     Route::group(['controller' => AppController::class], function () {
         Route::get('subscribers', 'subscribers')->name('subscriber');
         Route::get('mail-send-subscriber', 'mailSendSubscriber')->name('mail.send.subscriber');
@@ -476,10 +418,9 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::resource('priorities', TicketPriorityController::class);
 
     });
-    // Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
-    // Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
 
-//admin self manage
+
+    //admin self manage
     Route::get('profile', [AppController::class, 'profile'])->name('profile');
     Route::post('profile-update', [AppController::class, 'profileUpdate'])->name('profile-update');
 
@@ -490,36 +431,12 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('clear-cache', [AppController::class, 'clearCache'])->name('clear-cache');
 
 
-    // Route::get('/ib-resources', function () {
-    //     return view('backend.ib.resources.index');
-    // });
-
-    // Route::get('ib-resources/new', function () {
-    //     return view('backend.ib.resources.create');
-    // });
-
-    // Route::get('/loyalty-points', function () {
-    //     return view('backend.loyalty_points.create');
-    // });
     Route::get('import-form', [ImportController::class, 'index'])->name('import-form');
     Route::post('import', [ImportController::class, 'import'])->name('import');
 
     Route::get('/reports', function () {
         return view('backend.reports.index');
     });
-
-    // Route::get('/bonus', function () {
-    //     return view('backend.bonus.index');
-    // });
-
-    // Route::get('/bonus/create', function () {
-    //     return view('backend.bonus.create');
-    // });
-
-    // Route::get('/symbol-groups', function () {
-    //     return view('backend.symbol_groups.metatrader5');
-    // });
-
 
     Route::get('staff/2fa/pin', [StaffController::class, 'twoFaPin'])->name('staff.2fa.pin');
 
@@ -540,75 +457,13 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('settings/platform-api/x9trader', function () {
         return view('backend.setting.platform_api.x9trader');
     })->name('platform_api.x9trader');  
-
-    // Route::resource('customer-groups', CustomerGroupController::class)->only('index','store','create', 'edit', 'update', 'destroy');
     
     Route::resource('departments', DepartmentController::class)->only('index','create','store', 'edit', 'update', 'destroy');
     Route::resource('designations', DesignationController::class)->only('index','create','store', 'edit', 'update', 'destroy');
-    
-    // Route::resource('swap-multi-level', MultiLevelController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    // Route::resource('symbol-groups', SymbolGroupController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    // Route::resource('symbols', SymbolController::class)->only(['index','create', 'edit', 'update', 'destroy']);
-    // Route::post('symbols/store', [SymbolController::class,'store']);
-    // Route::resource('rebate-rules', RebateRuleController::class)->only(['index','create','store', 'edit', 'update', 'destroy']);
-    // Route::post('rebate-rules/update-status', [RebateRuleController::class, 'updateStatus'])->name('rebateRules.updateStatus');
 
-
-    // Route::get('get-deals/{login}', [Mt5DealController::class, 'getDeals'])->name('getDeals');
-    // Route::get('theme/banners', [BannerController::class, 'index'])->name('banners');
-    // Route::put('banner/{id}', [BannerController::class, 'update'])->name('banner.update');
-
-    // Route::post('/positions/active', [PositionController::class, 'getGroupPosition'])->name('positions.group');
-    // Route::post('/positions/days', [PositionController::class, 'positionByDays'])->name('positions.days');
-    // Route::post('/positions/account', [PositionController::class, 'getPositionByAccount'])->name('positions.account');
-    // Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
-
-
-
-    // Route::get('active-positions', function () {
-    //     return view('backend.control_center.active_positions');
-    // })->name('activePositions');
-
-    // Route::get('net-positions-accounts', function () {
-    //     return view('backend.control_center.net_positions_accounts');
-    // })->name('netPositionsAccounts');
-
-    // Route::get('net-positions-groups', function () {
-    //     return view('backend.control_center.net_positions_groups');
-    // })->name('netPositionsGroups');
-
-    // Route::get('older-positions-days', function () {
-    //     return view('backend.control_center.older_positions_days');
-    // })->name('olderPositionsDays');
-
-    // Route::get('challenge-accounts', function () {
-    //     return view('backend.accounts.challenge_accounts');
-    // })->name('accounts.challengeAccounts');
-
-    // Route::get('funded-accounts', function () {
-    //     return view('backend.accounts.funded_accounts');
-    // })->name('accounts.fundedAccounts');
-
-    // Route::get('direct-funded-accounts', function () {
-    //     return view('backend.accounts.direct_funded_accounts');
-    // })->name('accounts.directFundedAccounts');
-
-    // Route::get('trial-accounts', function () {
-    //     return view('backend.accounts.trial_accounts');
-    // })->name('accounts.trialAccounts');
-
-    // Route::get('discount-codes', function () {
-    //     // return view('backend.discount.index');
-    // })->name('discountCodes');
-
-    // Route::get('fraud-protection', function () {
-    //     return view('backend.fraud_protection.index');
-    // })->name('fraudProtection');
-
-    // Route::get('settings/report-issues', function () {
-    //     return view('backend.system.report_issues');
-    // })->name('reportIssues');
+    Route::get('settings/report-issues', function () {
+        return view('backend.system.report_issues');
+    })->name('reportIssues');
 
 
 });
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');

@@ -16,6 +16,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('user.verification.index') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.verification.index') }}">
+                    KYC
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('user.setting.communication') }}" class="btn btn-sm inline-flex justify-center btn-outline-primary {{ isActive('user.setting.communication') }}">
                     Communication
                 </a>

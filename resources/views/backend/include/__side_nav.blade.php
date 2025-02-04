@@ -71,33 +71,33 @@
         @endcanany
 
         @canany(['kyc-list','kyc-action','kyc-form-manage','risk-profile-tag'])
-            <li class="{{ isActive(['admin.kyc*']) }}">
-                <a href="javascript:void(0);" class="navItem">
+            <li class="">
+                <a href="{{ route('admin.kyc.index', ['status' => 'all']) }}" class="navItem {{ isActive('admin.kyc*') }}">
                     <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="mdi:user-check-outline"></iconify-icon>
-                        <span>{{ __('Compliance & KYC') }}</span>
+                        <iconify-icon class="nav-icon " style="font-size: 20px" icon="lucide:id-card"></iconify-icon>
+                        <span>{{ __('Manage KYC') }}</span>
                     </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
                 </a>
-                <ul class="sidebar-submenu">
+                {{-- <ul class="sidebar-submenu">
                     @canany(['kyc-list','kyc-action'])
                         <li>
-                            <a href="{{ route('admin.kyc.pending') }}" class="{{ isActive('admin.kyc.pending') }}">
+                            <a href="#" class="#">
                                 {{ __('Pending KYC') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.kyc.rejected') }}" class="{{ isActive('admin.kyc.rejected') }}">
+                            <a href="#" class="{{ isActive('admin.kyc.rejected') }}">
                                 {{ __('Rejected KYC') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.kyc.all') }}" class="{{ isActive('admin.kyc.all') }}">
+                            <a href="#" class="{{ isActive('admin.kyc.all') }}">
                                 {{ __('All KYC Logs') }}
                             </a>
                         </li>
                     @endcanany
-                </ul>
+                </ul> --}}
             </li>
         @endcanany
 

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ForexAccountStatus;
 use App\Enums\TxnStatus;
 use App\Enums\TxnType;
 use App\Traits\UserFilterable;
@@ -44,47 +43,28 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'zip_code',
         'address',
         'comment',
-        'balance',
-        'profit_balance',
         'status',
-        'ib_login',
-        'ib_balance',
-        'ib_status',
-        'is_multi_ib',
-        'kyc',
-        'kyc_credential',
-        'kyc_token',
-        'kyc_created_at',
-        'risk_profile_tags',
         'google2fa_secret',
         'two_fa',
         'deposit_status',
         'withdraw_status',
-        'transfer_status',
-        'ref_id',
         'password',
-        'is_level_1_completed',
-        'is_level_2_completed',
-        'is_level_3_completed',
+        'kyc_token',
         'notes',
     ];
 
     protected $appends = [
-        'full_name', 'kyc_time', 'kyc_type', 'total_profit','total_deposit','total_invest',
+        'full_name',
     ];
 
-    protected $dates = ['kyc_time'];
-
-    // Optimization ----
+    // ---- Optimization ----
     // User who referred this user
-    public function referrer()
-    {
+    public function referrer() {
         return $this->belongsTo(User::class, 'referred_by');
     }
 
     // Users referred by this user
-    public function referrals()
-    {
+    public function referrals() {
         return $this->hasMany(User::class, 'referred_by');
     }
 
@@ -99,7 +79,11 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function accountTrial() {
         return $this->hasOne(AccountTrial::class);
     }
-    // Optimization ----
+
+    public function kyc() {
+        return $this->hasOne(Kyc::class);
+    }
+    // ---- Optimization ----
 
     /**
      * The attributes that should be hidden for serialization.
@@ -133,110 +117,17 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         $lastName = $this->attributes['last_name'] ?? 'lname';
 
         return ucwords("{$firstName} {$lastName}");
-//        return ucwords("{$this->attributes['first_name']} {$this->attributes['last_name']}");
     }
-    public function kycs()
-    {
-        return $this->belongsToMany(Kyc::class);
-    }
-    public function getKycTypeAttribute(): string
-    {
-        if (isset($this->attributes['kyc_credential']) && !empty($this->attributes['kyc_credential'])) {
-            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
-            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
-                return $kycCredential['kyc_type_of_name'];
-            }
-        }
-        return '';
-    }
-    public function getKycTypeLevel3Attribute(): string
-    {
-        if (isset($this->attributes['kyc_credential_level3']) && !empty($this->attributes['kyc_credential_level3'])) {
-            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
-            if (is_array($kycCredential) && isset($kycCredential['kyc_type_of_name'])) {
-                return $kycCredential['kyc_type_of_name'];
-            }
-        }
-
-        return '';
-    }
-    public function getKycTimeAttribute(): string
-    {
-        if (isset($this->attributes['kyc_credential'])) {
-            $kycCredential = json_decode($this->attributes['kyc_credential'], true);
-            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
-                return $kycCredential['kyc_time_of_time'];
-            }
-        }
-
-        return '';
-    }
-    public function getKycTimeLevel3Attribute(): string
-    {
-        if (isset($this->attributes['kyc_credential_level3'])) {
-            $kycCredential = json_decode($this->attributes['kyc_credential_level3'], true);
-            if (is_array($kycCredential) && isset($kycCredential['kyc_time_of_time'])) {
-                return $kycCredential['kyc_time_of_time'];
-            }
-        }
-
-        return '';
-    }
-    public function getTotalProfitAttribute(): string
-    {
-        return $this->totalProfit();
-    }
-
-    public function getTotalDepositAttribute(): string
-    {
-        return $this->totalDeposit();
-    }
-    public function getTotalInvestAttribute(): string
-    {
-        return $this->totalInvestment();
-    }
+    
     public function user_metas()
     {
         return $this->hasMany(UserMeta::class);
-    }
-
-    public function totalProfit($days = null)
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Referral)
-                ->orWhere('type', TxnType::SignupBonus)
-                ->orWhere('type', TxnType::Interest)
-                ->orWhere('type', TxnType::Bonus);
-
-        });
-
-        if (null != $days) {
-            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
-        }
-        $sum = $sum->sum('amount');
-
-        return round($sum, 2);
     }
 
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'user_id');
     }
-
-
-    public function totalRoiProfit()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Interest);
-        })->sum('amount');
-
-        return round($sum, 2);
-    }
-
-    // public function referrals()
-    // {
-    //     return $this->hasMany(User::class, 'ref_id');
-    // }
 
     public function totalDeposit($days = null)
     {
@@ -248,59 +139,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
         }
         $sum = $sum->sum('amount');
-        return round($sum, 2);
-    }
-    public function totalRebateMeta($days = null)
-    {
-        $sum = $this->metaTransaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::MultiLevelBonus);
-        });
-        if (null != $days) {
-            $sum->where('created_at', '>=', Carbon::now()->subDays((int) $days));
-        }
-        $sum = $sum->sum('amount');
-        return round($sum, 2);
-    }
-    public function totalVolumeMeta($days = null)
-    {
-        $sum = $this->metaDeals();
-        if (null != $days) {
-            $sum->where('time', '>=', Carbon::now()->subDays((int) $days));
-        }
-        $sum = $sum->sum('volume');
-        return round($sum, 2);
-    }
-
-
-    public function totalInvestment()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Investment);
-        })->sum('amount');
-
-        return round($sum, 2);
-    }
-
-    public function totalDepositBonus()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('target_id', '!=', null)
-                ->where('target_type', 'deposit')
-                ->where('type', TxnType::Referral);
-        })->sum('amount');
-
-        return round($sum, 2);
-
-    }
-
-    public function totalInvestBonus()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('target_id', '!=', null)
-                ->where('target_type', 'investment')
-                ->where('type', TxnType::Referral);
-        })->sum('amount');
-
         return round($sum, 2);
     }
 
@@ -317,35 +155,6 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return round($sum, 2);
     }
 
-    public function totalTransfer()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::SendMoney);
-        })->sum('amount');
-
-        return round($sum, 2);
-    }
-
-    public function totalReferralProfit()
-    {
-        $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Referral);
-        })->sum('amount');
-
-        return round($sum, 2);
-    }
-    public function totalForexBalance()
-    {
-        $sum = $this->realTradingAccounts()->sum('balance');
-
-        return round($sum, 2);
-    }
-    public function totalForexEquity()
-    {
-        $sum = $this->realTradingAccounts()->sum('equity');
-
-        return round($sum, 2);
-    }
 
     public function rank()
     {
@@ -369,10 +178,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             set: fn ($value) => encrypt($value),
         );
     }
-    public function customerGroups()
-    {
-        return $this->belongsToMany(CustomerGroup::class,'customer_group_has_customers');
-    }
+    
     public function scopeApplyFilters(Builder $query, $filters)
     {
         if (!empty($filters['global_search'])) {

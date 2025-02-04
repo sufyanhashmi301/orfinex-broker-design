@@ -16,8 +16,8 @@
                 <h4 class="text-sm font-medium whitespace-nowrap header-text-color">
                     {{ auth()->user()->full_name }}
                 </h4>
-                <span class="flex items-center text-slate-400 text-xs font-normal">
-                    @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
+                <span class="flex items-center text-slate-400 text-xs font-normal">    
+                    @if(isset($user->kyc) && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED)
                         {{ __('Verified') }}
                         <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
                     @else
@@ -84,16 +84,15 @@
             </a>
         </li>
 
-        @if(setting('kyc_verification','permission'))
-            <li>
-                <a href="{{ route('user.kyc') }}" class="navItem {{ isActive('user.kyc') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="mdi:user-check-outline"></iconify-icon>
-                    <span>{{ __('Verification') }}</span>
-                </span>
-                </a>
-            </li>
-        @endif
+        <li>
+            <a href="{{ route('user.verification.index') }}" class="navItem {{ isActive('user.verification.index') }}">
+            <span class="flex items-center">
+                <iconify-icon class="nav-icon" icon="mdi:user-check-outline"></iconify-icon>
+                <span>{{ __('Verification') }}</span>
+            </span>
+            </a>
+        </li>
+ 
 
         {{--<li>
             <a href="{{ route('user.deposit.amount') }}"

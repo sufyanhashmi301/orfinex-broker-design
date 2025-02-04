@@ -23,9 +23,6 @@ class VerifyEmailController extends Controller
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
-
-            //referral code
-            event(new UserReferred($request->cookie('invite'), $request->user()));
         }
 
         return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');

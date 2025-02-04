@@ -35,7 +35,7 @@
             <div class="relative">
                 <div class="flex items-center text-left">
                     <p class="dark:text-white">{{auth()->user()->full_name}}</p>
-                    @if($user->kyc != \App\Enums\KYCStatus::Pending->value)
+                    @if(isset($user->kyc) && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED)
                         <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/verified.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">
                     @else
                         <img src="https://cdn.brokeret.com/crm-assets/admin/kyc/unverified.svg" class="inline-flex ml-2 mt-1" alt="" style="height: 14px;">

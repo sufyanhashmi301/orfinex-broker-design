@@ -1472,5 +1472,11 @@ if (!function_exists('generate_unique_ivx')) {
     }
 }
 
+if (!function_exists('social_links')) {
+    function social_links()
+    {
+        return App\Models\SocialLink::where('status', 1)->get();
+    }
+}
 
 

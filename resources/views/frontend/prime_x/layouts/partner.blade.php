@@ -16,20 +16,23 @@
             @include('frontend::include.__user_header')
             <!--/Header-->
 
+            {{-- KYC --}}
+            @if(setting('kyc_verification','permission'))
+                {{-- Kyc Info--}}
+                <div class="md:block hidden">
+                    @include('frontend::user.include.__kyc_info')
+                </div>
+                <div class="md:hidden block">
+{{--                                        @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}
+                </div>
+            @endif
+
             <div class="content-wrapper transition-all duration-150 ltr:ml-[248px] rtl:mr-[248px]" id="content_wrapper">
                 <div class="page-content">
                   <div class="transition-all duration-150 container-fluid" id="page_layout">
                         <div id="content_layout">
                             <div>
-                                @if(setting('kyc_verification','permission'))
-                                    {{-- Kyc Info--}}
-                                    <div class="md:block hidden">
-                                        @include('frontend::user.include.__kyc_info')
-                                    </div>
-                                    <div class="md:hidden block">
-{{--                                        @include('frontend::user.mobile_screen_include.kyc.__user_kyc_mobile')--}}
-                                    </div>
-                                @endif
+                                
                                 <!--Page Content-->
                                 @yield('content')
                                 <!--Page Content-->

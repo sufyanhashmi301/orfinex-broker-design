@@ -77,8 +77,8 @@
                         </li>
                     @endcanany
                     <li>
-                        <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
-                            {{ __('KYC & Compliance') }}
+                        <a href="{{ route('admin.settings.kyc') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('KYC Methods') }}
                         </a>
                     </li>
                     @canany(['ranking-list','ranking-create','ranking-edit'])

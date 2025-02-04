@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    @foreach( json_decode($fields, true) as $key => $field)
+    @foreach($fields as $key => $field)
     
         @if($field['type'] == 'file')
             <div class="input-area">
@@ -7,7 +7,7 @@
                 <div class="wrap-custom-file">
                     <input
                         type="file"
-                        name="kyc_credential[{{$field['name']}}]"
+                        name="kyc_credential[{{ strtolower(str_replace(' ', '_', $field['name'])) }}]"
                         id="{{ $key }}"
                         accept=".gif, .jpg, .png"
                         @if($field['validation'] == 'required') required @endif
@@ -31,8 +31,8 @@
                 <div class="progress-steps-form">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('' . $field['name']) }}</label>
                     <div class="input-group">
-                        <textarea class="form-control" @if($field['validation'] == 'required') required
-                                  @endif placeholder="{{ __('Send Money Note') }}" name="kyc_credential[{{$field['name']}}]"></textarea>
+                        <textarea class="form-control" style="width: 100%" @if($field['validation'] == 'required') required
+                                  @endif placeholder="{{ __('Send Money Note') }}" name="kyc_credential[{{ strtolower(str_replace(' ', '_', $field['name'])) }}]"></textarea>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
             <div class="input-area md:col-span-2">
                 <div class="progress-steps-form">
                     <label for="exampleFormControlInput1" class="form-label">{{ __('' . $field['name']) }}</label>
-                    <input type="text" class="form-control" name="kyc_credential[{{$field['name']}}]"
+                    <input type="text" class="form-control" name="kyc_credential[{{ strtolower(str_replace(' ', '_', $field['name'])) }}]"
                                @if($field['validation'] == 'required') required @endif class="form-control"
                                aria-label="{{ __('Amount') }}" id="amount" aria-describedby="basic-addon1">
                 </div>

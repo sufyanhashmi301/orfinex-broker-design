@@ -45,7 +45,7 @@
                                 @endif
                             @endcan
 
-                            @can('kyc-action')
+                            {{-- @can('kyc-action')
                                 @if($data['kyc_count'])
                                     <a href="{{ route('admin.kyc.pending') }}" class="btn btn-sm btn-success inline-flex items-center justify-center">
                                         <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
@@ -53,7 +53,7 @@
                                         ({{ $data['kyc_count'] }})
                                     </a>
                                 @endif
-                            @endcan
+                            @endcan --}}
 
                             @can('deposit-action')
                                 @if($data['deposit_count'])

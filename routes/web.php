@@ -1,31 +1,33 @@
 <?php
 
-use App\Http\Controllers\AccountBuyController;
-use App\Http\Controllers\AccountTrialController;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\KycController;
 use App\Http\Controllers\SumsubController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TelegramController;
+use App\Http\Controllers\AccountBuyController;
+use App\Http\Controllers\AccountTrialController;
 use App\Http\Controllers\Frontend\IpnController;
-use App\Http\Controllers\Frontend\KycController;
+use App\Http\Controllers\TradingStatsController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\UserAffiliateController;
 use App\Http\Controllers\Frontend\StatusController;
 use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\UserCertificateController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Frontend\DepositController;
 use App\Http\Controllers\Frontend\GatewayController;
 use App\Http\Controllers\Frontend\SettingController;
+use App\Http\Controllers\UserVerificationController;
 use App\Http\Controllers\Frontend\ContractController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Backend\LeaderboardController;
 use App\Http\Controllers\AccountTypeInvestmentController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\TradingStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,10 +42,11 @@ use App\Http\Controllers\TradingStatsController;
 
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/verify-email')->name('verification.notice');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
 
 //User Part
-Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verification', 'permission') ? 'verified' : 'web'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -55,20 +58,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
 
     //change Password
     Route::get('/change-password', [UserController::class, 'changePassword'])->name('change.password');
-    Route::post('/password-store', [UserController::class, 'newPassword'])->name('new.password');
-
-    Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
-
-    //kyc apply
-    Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
-        //        Route::get('kyc', [KycController::class, 'kyc'])->name('kyc');
-        Route::get('/basic', [KycController::class, 'basicKyc'])->name('basic');
-        Route::get('/level3', [KycController::class, 'kycLevel3'])->name('level3');
-        Route::get('/{id}', [KycController::class, 'kycData'])->name('data');
-        Route::post('submit', [KycController::class, 'submit'])->name('submit');
-        Route::post('level3-submit', [KycController::class, 'submitLevel3'])->name('level3.submit');
-    });
-    Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
+    Route::post('/password-store', [UserController::class, 'newPassword'])->name('new.password');    
 
     // ======== Optimizations ========
 
@@ -110,7 +100,17 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     // Coupon Code
     Route::post('verify-coupon', [InvoiceController::class, 'verifyCoupon'])->name('verify_coupon');
 
+    // KYC
+    Route::get('/verification', [UserVerificationController::class, 'index'])->name('verification.index');
+    Route::get('/verification/manual-kyc', [KycController::class, 'manualKyc'])->name('verification.manual_kyc');
+    Route::get('/verification/manual-kyc/data/{option_name}', [KycController::class, 'manualKycData'])->name('verification.manual_kyc_data');
+    Route::post('/verification/manual-kyc', [KycController::class, 'updateManualKyc'])->name('verification.manual_kyc.update');
+    Route::get('/verification/automatic-kyc', [KycController::class, 'automaticKyc'])->name('verification.automatic_kyc');
+    Route::post('/verification/auromatic-kyc', [KycController::class, 'updateAuromaticKyc'])->name('verification.automatic_kyc.update');
+
     // ======== Optimizations ========
+
+    // Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
@@ -122,7 +122,7 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', setting('email_verific
     });
 
     //withdraw
-    Route::group(['middleware' => 'KYC', 'prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
+    Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //withdraw methods
         Route::resource('account', WithdrawController::class)->except('show');
         //user withdraw

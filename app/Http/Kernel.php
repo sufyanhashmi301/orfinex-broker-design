@@ -79,10 +79,8 @@ class Kernel extends HttpKernel
         'isActive' => \App\Http\Middleware\CheckDeactivate::class,
         'translate' => \App\Http\Middleware\Localization::class,
         'isDemo' => \App\Http\Middleware\DemoMode::class,
-        'IB' => IBMiddleware::class,
         // 'set.session.lifetime' => \App\Http\Middleware\SetSessionLifetime::class,
         'secure_header' => SecureHeaders1Middleware::class,
-
 
     ];
 }

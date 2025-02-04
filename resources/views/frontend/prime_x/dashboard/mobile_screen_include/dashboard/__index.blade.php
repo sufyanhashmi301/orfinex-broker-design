@@ -29,7 +29,7 @@
         </div>
         <span class="text-sm">{{ __('Accounts') }}</span>
     </a>
-    <a href="{{ route('user.kyc') }}" class="card rounded-md p-4 px-2 text-center">
+    <a href="{{ route('user.verification.index') }}" class="card rounded-md p-4 px-2 text-center">
         <div class="mx-auto text-2xl">
             <iconify-icon icon="mdi:user-check-outline"></iconify-icon>
         </div>

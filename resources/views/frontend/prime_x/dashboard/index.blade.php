@@ -17,7 +17,7 @@
                         {{ $user->full_name }}
                     </h4>
                     <span class="flex items-center text-slate-400 text-xs font-normal">
-                        @if ($user->kyc != \App\Enums\KYCStatus::Pending->value)
+                        @if(isset($user->kyc) && $user->kyc->status == \App\Enums\KycStatusEnums::VERIFIED)
                             {{ __('Verified') }}
                             <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt=""
                                 style="height: 14px;">
@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </a>
-            <a href="{{ route('user.kyc') }}" class="card">
+            <a href="{{ route('user.verification.index') }}" class="card">
                 <div class="card-body flex flex-col items-center justify-center p-8">
                     <div
                         class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-slate-100 dark:bg-body text-primary mb-3">

@@ -15,7 +15,9 @@ use Illuminate\View\View;
 use App\Models\MultiLevel;
 use App\Traits\NotifyTrait;
 use App\Events\UserReferred;
+use App\Models\KYC;
 use Illuminate\Http\Request;
+use App\Enums\KycStatusEnums;
 use App\Models\UserAffiliate;
 use App\Models\LoginActivities;
 use Illuminate\Validation\Rule;
@@ -108,17 +110,13 @@ class RegisteredUserController extends Controller
         }
 
         // Assign the referral
-
-        //referral code
-        // event(new UserReferred($request->cookie('invite'), $user,$multiLevel));
-
-        // if (setting('referral_signup_bonus', 'permission') && (float) setting('signup_bonus', 'fee') > 0) {
-        //     $signupBonus = (float) setting('signup_bonus', 'fee');
-        //     $user->increment('profit_balance', $signupBonus);
-        //     Txn::new($signupBonus, 0, $signupBonus, 'system', 'Signup Bonus', TxnType::SignupBonus, TxnStatus::Success, null, null, $user->id);
-        //     Session::put('signup_bonus', $signupBonus);
-        // }
-        // \Cookie::forget('invite');
+        if(!$user->kyc) {
+            $kyc = new KYC();
+            $kyc->user_id = Auth::id();
+            $kyc->method = '';
+            $kyc->status = KycStatusEnums::UNVERIFIED;
+            $kyc->save();
+        }
 
 
 

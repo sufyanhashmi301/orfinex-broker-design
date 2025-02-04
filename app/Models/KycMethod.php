@@ -5,22 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Kyc extends Model
+class KycMethod extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'method',
-        'data',
-        'status',
-        'verified_at',
+        'status'
     ];
 
     protected $casts = [
         'data' => 'array'
     ];
-
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
 }

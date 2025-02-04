@@ -3,12 +3,13 @@
 namespace App\Providers;
 
 use App\Traits\NotifyTrait;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Config;
+use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\URL;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,7 @@ class AuthServiceProvider extends ServiceProvider
 //            dd($user);
             return $user->hasRole('Super-Admin') ? true : null;
         });
+
 
         VerifyEmail::toMailUsing(function ($notifiable) {
             $verifyUrl = URL::temporarySignedRoute(

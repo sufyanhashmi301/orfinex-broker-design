@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="md:block hidden sm:space-x-4 space-x-2">
-                <a href="{{ route('user.kyc') }}" class="btn btn-primary inline-flex items-center justify-center">
+                <a href="{{ route('user.verification.index') }}" class="btn btn-primary inline-flex items-center justify-center">
                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2 font-light" icon="mdi:user-check-outline"></iconify-icon>
                     <span class="text-sm">{{ __('Verification') }}</span>
                 </a>

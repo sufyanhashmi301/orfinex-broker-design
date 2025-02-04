@@ -198,7 +198,7 @@ class UserController extends Controller
         $validator = Validator::make($input, [
             'status' => 'required',
             'email_verified' => 'required',
-            'kyc' => 'required',
+            // 'kyc' => 'required',
             'two_fa' => 'required',
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
@@ -214,7 +214,7 @@ class UserController extends Controller
         }
         $data = [
             'status' => $input['status'],
-            'kyc' => $input['kyc'],
+            // 'kyc' => $input['kyc'],
             'two_fa' => $input['two_fa'],
             'deposit_status' => $input['deposit_status'],
             'withdraw_status' => $input['withdraw_status'],

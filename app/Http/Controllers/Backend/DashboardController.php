@@ -55,7 +55,7 @@ class DashboardController extends Controller
                 ->where('status', 'pending');
         })->count();
 
-        $kycCount = $user->where('kyc', KYCStatus::Pending)->count();
+        // $kycCount = $user->where('kyc', KYCStatus::Pending)->count();
 
         $depositCount = Transaction::where(function ($query) {
             $query->where('type', TxnType::ManualDeposit)
@@ -148,7 +148,7 @@ class DashboardController extends Controller
             // optimizaitons
 
             'withdraw_count' => $withdrawCount,
-            'kyc_count' => $kycCount,
+            // 'kyc_count' => $kycCount,
             'deposit_count' => $depositCount,
 
             'register_user' => $user->count(),

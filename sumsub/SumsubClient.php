@@ -25,7 +25,7 @@ class SumsubClient
         ];
 
         $url = '/resources/applicants?' . http_build_query(['levelName' => $levelName]);
-//dd($url);
+// dd($url);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'X-App-Token' => $this->appToken,
@@ -34,7 +34,7 @@ class SumsubClient
         ])->post(self::BASE_URL . $url, $requestBody);
 
         $body = $this->parseBody($response);
-//        dd($body);
+    //    dd($body);
         return $body['id'];
     }
 

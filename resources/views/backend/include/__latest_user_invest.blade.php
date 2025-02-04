@@ -140,7 +140,7 @@
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('Profit') }}</th>
-                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>
+                                    {{-- <th scope="col" class="table-th">{{ __('KYC') }}</th> --}}
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -169,13 +169,13 @@
                                     <td class="table-td">
                                         <strong>{{ $currencySymbol . $user->total_profit }}</strong>
                                     </td>
-                                    <td class="table-td">
+                                    {{-- <td class="table-td">
                                         @if($user->kyc == 1)
                                             <div class="badge bg-success-500 text-success-500 bg-opacity-30 capitalize">{{ __('Verified') }}</div>
                                         @else
                                             <div class="badge bg-warning-500 text-warning-500 bg-opacity-30 capitalize">{{ __('Unverified') }}</div>
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     <td class="table-td">
                                         @if($user->status == 1)
                                         <span class="block text-left">

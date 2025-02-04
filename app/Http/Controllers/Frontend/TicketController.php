@@ -53,8 +53,33 @@ class TicketController extends Controller
             'uuid' => 'SUPT'.rand(100000, 999999),
             'title' => $input['title'],
             'message' => nl2br($input['message']),
-            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
+//            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
         ];
+        if ($request->hasFile('attach')) {
+            try {
+                $imagePath = self::imageUploadTrait($input['attach']);
+            } catch (\Exception $e) {
+                // Handle exceptions during upload (e.g., size or extension issues)
+                notify()->error($e->getMessage(), __('Error'));
+                return redirect()->back()->withInput();
+            }
+
+            if (!$imagePath) {
+                // If the image path is empty or upload fails
+                notify()->error(__('Image upload failed, please try again.'), __('Error'));
+                return redirect()->back()->withInput();
+            }
+
+            $data['attach'] = $imagePath;
+        } else {
+            $data['attach'] = null;
+        }
+//        dd($data['attach']);
+        if ($request->hasFile('attach') && !$data['attach']) {
+            // If the image path is empty or upload fails
+            notify()->error(__('Image upload failed, please try again.'), __('Error'));
+            return redirect()->back()->withInput();
+        }
 
         $ticket = $user->tickets()->create($data);
 
@@ -114,14 +139,38 @@ class TicketController extends Controller
 
         /** @var User $user */
         $user = Auth::user();
-
         $input = $request->all();
-
         $data = [
             'user_id' => $user->id, // @phpstan-ignore-line
             'message' => nl2br($input['message']),
-            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
         ];
+
+        if ($request->hasFile('attach')) {
+            try {
+                $imagePath = self::imageUploadTrait($input['attach']);
+            } catch (\Exception $e) {
+                // Handle exceptions during upload (e.g., size or extension issues)
+                notify()->error($e->getMessage(), __('Error'));
+                return redirect()->back()->withInput();
+            }
+
+            if (!$imagePath) {
+                // If the image path is empty or upload fails
+                notify()->error(__('Image upload failed, please try again.'), __('Error'));
+                return redirect()->back()->withInput();
+            }
+
+            $data['attach'] = $imagePath;
+        } else {
+            $data['attach'] = null;
+        }
+//        dd($data['attach']);
+        if ($request->hasFile('attach') && !$data['attach']) {
+            // If the image path is empty or upload fails
+            notify()->error(__('Image upload failed, please try again.'), __('Error'));
+            return redirect()->back()->withInput();
+        }
+
 
         $ticket = Ticket::uuid($input['uuid']);
 

@@ -111,9 +111,33 @@ class TicketController extends Controller
             'model' => 'admin',
             'user_id' => $adminId,
             'message' => nl2br($input['message']),
-            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
+//            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
         ];
+        if ($request->hasFile('attach')) {
+            try {
+                $imagePath = self::imageUploadTrait($input['attach']);
+            } catch (\Exception $e) {
+                // Handle exceptions during upload (e.g., size or extension issues)
+                notify()->error($e->getMessage(), __('Error'));
+                return redirect()->back()->withInput();
+            }
 
+            if (!$imagePath) {
+                // If the image path is empty or upload fails
+                notify()->error(__('Image upload failed, please try again.'), __('Error'));
+                return redirect()->back()->withInput();
+            }
+
+            $data['attach'] = $imagePath;
+        } else {
+            $data['attach'] = null;
+        }
+//        dd($data['attach']);
+        if ($request->hasFile('attach') && !$data['attach']) {
+            // If the image path is empty or upload fails
+            notify()->error(__('Image upload failed, please try again.'), __('Error'));
+            return redirect()->back()->withInput();
+        }
         $ticket = Ticket::uuid($input['uuid']);
 
         $ticket->messages()->create($data);

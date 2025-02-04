@@ -57,18 +57,44 @@
                         <form action="{{ route('user.ticket.new-store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="grid grid-cols-1 gap-5">
+                                <!-- Ticket Title -->
                                 <div class="col-xl-12 col-input-area relative">
-                                    <label for="exampleFormControlInput1" class="form-label">
+                                    <label for="title" class="form-label">
                                         {{ __('Ticket Title') }}
                                     </label>
-                                    <input type="text" class="form-control" name="title">
+                                    <input
+                                        type="text"
+                                        class="form-control @error('title') is-invalid @enderror"
+                                        name="title"
+                                        id="title"
+                                        value="{{ old('title') }}"
+                                    >
+                                    @error('title')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
                                 </div>
+
+                                <!-- Ticket Descriptions -->
                                 <div class="col-xl-12 col-input-area relative">
-                                    <label for="exampleFormControlInput1" class="form-label">
+                                    <label for="message" class="form-label">
                                         {{ __('Ticket Descriptions') }}
                                     </label>
-                                    <textarea class="form-control textarea" rows="5" name="message"></textarea>
+                                    <textarea
+                                        class="form-control textarea @error('message') is-invalid @enderror"
+                                        rows="5"
+                                        name="message"
+                                        id="message"
+                                    >{{ old('message') }}</textarea>
+                                    @error('message')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
                                 </div>
+
+                                <!-- File Attachment -->
                                 <div class="input-area relative">
                                     <div class="wrap-custom-file">
                                         <input
@@ -76,6 +102,7 @@
                                             name="attach"
                                             id="ticket-attach"
                                             accept=".gif, .jpg, .png"
+                                            class="@error('attach') is-invalid @enderror"
                                         />
                                         <label for="ticket-attach">
                                             <img
@@ -85,9 +112,16 @@
                                             />
                                             <span class="dark:text-slate-300">{{ __('Attach Image') }}</span>
                                         </label>
+                                        @error('attach')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Submit Button -->
                             <div class="buttons mt-5">
                                 <button type="submit" class="btn btn-primary inline-flex items-center justify-center">
                                     {{ __('Add New Ticket') }}
@@ -96,6 +130,7 @@
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

@@ -23,7 +23,7 @@
 
 
         <div class="site-input-groups">
-            <label for="" class="box-input-label">{{ __('Details Message(Optional)') }}</label>
+            <label for="" class="box-input-label">{{ __('Detail Message') }}</label>
             <textarea name="message" class="form-textarea mb-0" placeholder="Details Message"></textarea>
         </div>
 

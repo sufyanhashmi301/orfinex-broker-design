@@ -15,6 +15,11 @@
         <input type="hidden" name="id" value="{{ $id }}">
     {{--        {{ __('Total amount') }}: <strong>{{ $data->final_amount. ' '.$currency }}</strong>--}}
 
+    <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
+        <li class="list-group-item dark:text-slate-300 block py-2 px-3">
+            {{ __('Account:') }} <strong>{{ $data->target_id}}</strong>
+        </li>
+    </ul>
         <div class="input-area">
             <label class="form-label" for="">{{ __('Deposited Amount:') }}</label>
             <div class="joint-input relative">
@@ -56,8 +61,8 @@
         </ul>
 
         <div class="input-area">
-            <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
-            <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="Details Message"></textarea>
+            <label for="" class="form-label">{{ __('Detail Message') }}</label>
+            <textarea name="message" class="form-control basicTinymce mb-0" rows="6" placeholder="{{  __('Enter Message') }}">{{$data->approval_cause }}</textarea>
         </div>
 
     @if($data->status->value=='pending')

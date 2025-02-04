@@ -128,7 +128,7 @@
             });
         });
 
-        $(document).on('submit', '#update-staff__form', function(event) {
+        $(document).on('submit', '#update-staff__form', function (event) {
             event.preventDefault();
 
             var form = $('#update-staff__form')[0];
@@ -137,8 +137,7 @@
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             var staffId = $('#staff-id').val();
 
-            var url = "{{ route('admin.staff.update', ':id') }}";
-            url = url.replace(':id', staffId);
+            var url = "{{ route('admin.staff.update', ':id') }}".replace(':id', staffId);
 
             $.ajax({
                 url: url,
@@ -150,14 +149,20 @@
                     'X-CSRF-TOKEN': csrfToken,
                     'X-HTTP-METHOD-OVERRIDE': 'PUT'
                 },
-                success: function(response) {
-                    tNotify('success', response.message);
+                success: function (response) {
+                    if (response.success) {
+                        tNotify('success', response.message);
+                    } else {
+                        tNotify('error', response.message);
+                    }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching staff:', error);
+                error: function (xhr) {
+                    var message = xhr.responseJSON?.message || 'An unexpected error occurred.';
+                    tNotify('error', message);
                 }
             });
         });
+
 
         $(document).ready(function () {
             let deleteSchemaId = null;

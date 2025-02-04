@@ -68,6 +68,9 @@ use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
 use App\Http\Controllers\Backend\PlatformApiController;
 use App\Http\Controllers\Backend\SocialLinkController;
+use App\Http\Controllers\Backend\LeadController;
+use App\Http\Controllers\Backend\LeadSourceController;
+use App\Http\Controllers\Backend\LeadStageController;
 
 
 /*
@@ -560,6 +563,24 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('platform/risk-book', [PlatformGroupController::class, 'getRiskBook'])->name('platform.riskBook');
     Route::post('risk-book/{id}/update', [PlatformGroupController::class, 'updateRiskBook'])->name('riskBook.update');
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
+
+
+    Route::group(['prefix' => 'lead', 'as' => 'lead.', 'controller' => LeadController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('show/{id}', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('update/{id}', 'update')->name('update');
+        Route::delete('delete/{id}', 'destroy')->name('destroy');
+        Route::post('stage-update/{id}', 'stageUpdate')->name('stageUpdate');
+        Route::get('create-client/{id}', 'createClient')->name('createClient');
+
+        Route::post('store/client', [UserController::class, 'leadAsClient'])->name('storeAsClient');
+
+        Route::resource('source', LeadSourceController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::resource('stage', LeadStageController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    });
 
 
     Route::get('fraud-protection', function () {

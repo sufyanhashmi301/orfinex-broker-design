@@ -28,8 +28,9 @@
                     {{ Auth::user()->email }}
                 </p>
             </div>
+            {{-- || $data['kyc_count'] --}}
             @canany(['deposit-action','withdraw-action','kyc-action',])
-                @if($data['withdraw_count'] || $data['kyc_count'] || $data['deposit_count'])
+                @if($data['withdraw_count']  || $data['deposit_count'])
                     <div class="text-right">
                         <p class="text-base dark:text-white font-medium mb-2">
                             {{ __("Explore what's important to review first") }}

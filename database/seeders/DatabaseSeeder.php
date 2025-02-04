@@ -45,6 +45,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SocialLinkSeeder::class);
         $this->call(SocialLoginSeeder::class);
         $this->call(UpdatePluginsData::class);
+        $this->call(LeadStagesSeeder::class);
+        $this->call(LeadSourcesSeeder::class);
 
 
     }

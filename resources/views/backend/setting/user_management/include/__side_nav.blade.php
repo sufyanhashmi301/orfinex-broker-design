@@ -12,6 +12,11 @@
                 </a>
             </li>
         @endcanany
+        <li class="nav-item">
+            <a href="{{ route('admin.lead.source.index') }}" class="navItem {{ isActive('admin.lead*') }}">
+                {{ __('Lead Settings') }}
+            </a>
+        </li>
         @can('kyc-levels-list')
         <li>
             <a href="{{ route('admin.kyclevels.index') }}" class="navItem {{ isActive('admin.kyclevels.index') }}">

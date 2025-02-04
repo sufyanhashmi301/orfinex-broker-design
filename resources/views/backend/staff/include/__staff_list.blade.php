@@ -11,8 +11,8 @@
                     <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
                         {{$staff->first_name}} {{$staff->last_name}}
                         <span class="badge-primary text-xs capitalize rounded-lg px-2 py-0.5 ml-1">
-                                                    {{ $staff->getRoleNames()->first() }}
-                                                </span>
+                            {{ $staff->getRoleNames()->first() }}
+                        </span>
                     </h4>
                     <div class="text-xs font-normal text-slate-500 dark:text-slate-400">
                         @if(isset($staff->designation))

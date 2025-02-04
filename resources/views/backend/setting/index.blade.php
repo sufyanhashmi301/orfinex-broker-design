@@ -88,6 +88,11 @@
                             </a>
                         </li>
                     @endcanany
+                    <li>
+                        <a href="{{ route('admin.lead.source.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Lead Settings') }}
+                        </a>
+                    </li>
                     @can('kyc-levels-list')
                     <li>
                         <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">

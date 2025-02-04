@@ -22,6 +22,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\KycLevel;
+use App\Models\Lead;
 use App\Services\ForexApiService;
 use App\Traits\ForexApiTrait;
 use App\Traits\NotifyTrait;
@@ -872,6 +873,7 @@ class UserController extends Controller
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');
 
+
         // Validate the request data
         try {
             $validatedData = $request->validate([
@@ -995,5 +997,162 @@ class UserController extends Controller
         notify()->success('Note added successfully');
 
         return redirect()->back();
+    }
+
+    public function updateLeadStatus($leadId)
+    {
+        $lead = Lead::findOrFail($leadId);
+        $lead->stage_id = 6;
+        $lead->save();
+    }
+
+    public function leadAsClient(Request $request)
+    {
+        // Get setting-based flags
+        $isUsername = (bool) getPageSetting('username_show');
+        $isCountry = (bool) getPageSetting('country_show');
+        $isPhone = (bool) getPageSetting('phone_show');
+
+
+        // Validate the request data
+        try {
+            $validatedData = $request->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'country' => [Rule::requiredIf($isCountry), 'string', 'max:255'],
+                'username' => [Rule::requiredIf($isUsername), 'string', 'max:255', 'unique:users'],
+                'phone' => [Rule::requiredIf($isPhone), 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'email_verified_at' => 'nullable|date',
+                'gender' => 'in:male,female,other|nullable',
+                'city' => 'string|max:255|nullable',
+                'zip_code' => 'string|max:10|nullable',
+                'address' => 'string|max:255|nullable',
+                'risk_profile_tags' => 'array|nullable',
+                'risk_profile_tags.*' => 'exists:risk_profile_tags,id',
+                'comment' => 'nullable|string|max:500',
+                'kyc' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        // Handle KYC Levels or KYC Status enum values
+                        if (Str::startsWith($value, 'kyc_')) {
+                            $statusValue = str_replace('kyc_', '', $value);
+                            if (!in_array((int) $statusValue, array_column(KYCStatus::cases(), 'value'))) {
+                                $fail('The selected KYC status is invalid.');
+                            }
+                        } elseif (!KycLevel::where('id', $value)->exists()) {
+                            $fail('The selected KYC level is invalid.');
+                        }
+                    },
+                ],
+                'password' => ['required', 'string', 'min:8'],
+                'date_of_birth' => 'nullable|date',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
+
+        // Collect input data
+        $input = $request->only([
+            'first_name',
+            'last_name',
+            'country',
+            'username',
+            'phone',
+            'email',
+            'gender',
+            'date_of_birth',
+            'city',
+            'zip_code',
+            'address',
+            'kyc',
+            'risk_profile_tags',
+            'comment',
+            'password',
+            'lead_id',
+        ]);
+
+        // Ensure date_of_birth is null if not provided
+        $input['date_of_birth'] = !empty($input['date_of_birth']) ? $input['date_of_birth'] : null;
+
+        // Get location details (e.g., from user's profile or a service)
+        $location = auth()->user()->location ?? (object) ['country_code' => '', 'dial_code' => ''];
+
+        // Set country and phone depending on settings and input
+        $country = $isCountry ? explode(':', $input['country'])[0] : $location->country_code;
+        $phone = $isPhone ? (($isCountry ? explode(':', $input['country'])[1] : $location->dial_code) . ' ' . $input['phone']) : $location->dial_code . ' ' . $input['phone'];
+
+        // Generate a username if it’s not provided
+        $username = $isUsername ? $input['username'] : $input['first_name'] . '.' . $input['last_name'] . '.' . rand(1000, 9999);
+
+        // Get the ranking
+        $rank = Ranking::find(1);
+
+        // Handle the status value
+        $kyc = $input['kyc'];
+        if (Str::startsWith($kyc, 'kyc_')) {
+            $kyc = (int) str_replace('kyc_', '', $kyc); // Remove the prefix and convert to integer
+        } else {
+            $kyc = (int) $kyc; // Ensure it's an integer for KYC Level ID
+        }
+
+        DB::beginTransaction();
+        // Create the user with exception handling
+        try {
+
+            $existingUser = User::where('email', $input['email'])->first();
+
+            if ($existingUser) {
+                $lead = Lead::findOrFail($input['lead_id']);
+                $lead->stage_id = 6;
+                $lead->save();
+                DB::rollback();
+
+                // Notify that the user already exists
+                notify()->info('User already exists.', 'info');
+                return redirect()->route('admin.user.index')->with('message', 'User already exists.');
+            }
+
+            $user = User::create([
+                'ranking_id' => $rank->id,
+                'rankings' => json_encode([$rank->id]),
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'country' => $country,
+                'username' => $username,
+                'phone' => $phone,
+                'email' => $input['email'],
+                'gender' => $input['gender'],
+                'city' => $input['city'],
+                'zip_code' => $input['zip_code'],
+                'address' => $input['address'],
+                'comment' => $input['comment'],
+                'password' => Hash::make($input['password']),
+                'date_of_birth' => $input['date_of_birth'],
+                'email_verified_at' => $request->has('is_email_verified') ? now() : null,
+                'kyc' => $kyc,
+            ]);
+
+            // Handle risk profile tags
+            if (isset($input['risk_profile_tags']) && is_array($input['risk_profile_tags'])) {
+                $user->riskProfileTags()->attach($input['risk_profile_tags']);
+            }
+
+            $lead = Lead::findOrFail($input['lead_id']);
+            $lead->stage_id = 6;
+            $lead->save();
+
+            // Commit the transaction
+            DB::commit();
+
+        } catch (\Exception $e) {
+            // Rollback transaction if something goes wrong
+            DB::rollback();
+
+            return redirect()->back()->withErrors(['error' => 'User creation failed: ' . $e->getMessage()])->withInput();
+        }
+        notify()->success('Customer created successfully', 'success');
+        // Redirect to the user index with success message
+        return redirect()->route('admin.user.index')->with('success', 'Customer created successfully');
     }
 }

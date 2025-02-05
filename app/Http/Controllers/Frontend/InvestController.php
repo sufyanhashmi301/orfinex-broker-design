@@ -25,122 +25,122 @@ class InvestController extends GatewayController
     public function investNow(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'schema_id' => 'required',
-            'invest_amount' => 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
-            'wallet' => 'in:main,profit,gateway',
-        ]);
-
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), __('Error'));
-
-            return redirect()->back();
-        }
-
-        $input = $request->all();
-
-        $user = Auth::user();
-        $schema = Schema::with('schedule')->find($input['schema_id']);
-
-        $investAmount = $input['invest_amount'];
-
-        //Insufficient Balance validation
-        if ($input['wallet'] == 'main' && $user->balance < $investAmount) {
-            notify()->error(__('Insufficient Balance Your Main Wallet'), __('Error'));
-            return redirect()->route('user.schema.preview', $schema->id);
-        } elseif ($input['wallet'] == 'profit' && $user->profit_balance < $investAmount) {
-            notify()->error(__('Insufficient Balance Your Profit Wallet'), __('Error'));
-
-            return redirect()->route('user.schema.preview', $schema->id);
-        }
-
-        //invalid Amount
-        if (($schema->type == 'range' && ($schema->min_amount > $investAmount || $schema->max_amount < $investAmount)) || ($schema->type == 'fixed' && $schema->fixed_amount != $investAmount)) {
-            notify()->error(__('Invest Amount Out Of Range'), __('Error'));
-
-            return redirect()->route('user.schema.preview', $schema->id);
-        }
-
-        $periodHours = $schema->schedule->time;
-        $profitClearHours = $schema->profitWithdrawSchedule->time;
-        $nextProfitTime = Carbon::now()->addHour($periodHours);
-        $nextProfitClearTime = Carbon::now()->addHour($profitClearHours);
-        $siteName = setting('site_title', 'global');
-        $data = [
-            'user_id' => $user->id,
-            'schema_id' => $schema->id,
-            'invest_amount' => $investAmount,
-            'next_profit_time' => $nextProfitTime,
-            'next_profit_clear_time' => $nextProfitClearTime,
-            'profit_clear_hours' => $profitClearHours,
-            'capital_back' => $schema->capital_back,
-            'min_interest' => $schema->min_return_interest,
-            'interest' => $schema->return_interest,
-            'interest_type' => $schema->interest_type,
-            'return_type' => $schema->return_type,
-            'number_of_period' => $schema->number_of_period,
-            'period_hours' => $periodHours,
-            'wallet' => $input['wallet'],
-            'status' => InvestStatus::Ongoing,
-        ];
-
-        if ($input['wallet'] == 'main') {
-            $user->decrement('balance', $input['invest_amount']);
-
-        } elseif ($input['wallet'] == 'profit') {
-            $user->decrement('profit_balance', $input['invest_amount']);
-        } else {
-
-            $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
-
-            $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $investAmount) : $gatewayInfo->charge;
-            $finalAmount = (float) $investAmount + (float) $charge;
-            $payAmount = $finalAmount * $gatewayInfo->rate;
-            $payCurrency = $gatewayInfo->currency;
-
-            $manualData = null;
-            if (isset($input['manual_data'])) {
-                $manualData = $input['manual_data'];
-                foreach ($manualData as $key => $value) {
-
-                    if (is_file($value)) {
-                        $manualData[$key] = self::imageUploadTrait($value);
-                    }
-                }
-
-            }
-
-            $txnInfo = Txn::new($investAmount, $charge, $finalAmount, $gatewayInfo->name, $schema->name.' Invested', TxnType::Investment, TxnStatus::Pending, $payCurrency, $payAmount, $user->id, null, 'user', $manualData ?? []);
-            $data = array_merge($data, ['status' => InvestStatus::Pending, 'transaction_id' => $txnInfo->id]);
-            Invest::create($data);
-
-            return self::depositAutoGateway($input['gateway_code'], $txnInfo);
-
-        }
-
-        $tnxInfo = Txn::new($input['invest_amount'], 0, $input['invest_amount'], 'system', $schema->name.' Plan Invested', TxnType::Investment, TxnStatus::Success, null, null, $user->id);
-        $data = array_merge($data, ['transaction_id' => $tnxInfo->id]);
-        Invest::create($data);
-
-        if (setting('site_referral', 'global') == 'level' && setting('investment_level')) {
-            $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-            creditReferralBonus($user, 'investment', $input['invest_amount'], $level);
-        }
-
-        $shortcodes = [
-            '[[full_name]]' => $tnxInfo->user->full_name,
-            '[[txn]]' => $tnxInfo->tnx,
-            '[[plan_name]]' => $tnxInfo->invest->schema->name,
-            '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-        ];
-
-        $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
-        $this->pushNotify('user_investment', $shortcodes, route('user.invest-logs'), $tnxInfo->user->id);
-        $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
-
-        notify()->success(__('Successfully Investment'), __('success'));
+//        $validator = Validator::make($request->all(), [
+//            'schema_id' => 'required',
+//            'invest_amount' => 'regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
+//            'wallet' => 'in:main,profit,gateway',
+//        ]);
+//
+//        if ($validator->fails()) {
+//            notify()->error($validator->errors()->first(), __('Error'));
+//
+//            return redirect()->back();
+//        }
+//
+//        $input = $request->all();
+//
+//        $user = Auth::user();
+//        $schema = Schema::with('schedule')->find($input['schema_id']);
+//
+//        $investAmount = $input['invest_amount'];
+//
+//        //Insufficient Balance validation
+//        if ($input['wallet'] == 'main' && $user->balance < $investAmount) {
+//            notify()->error(__('Insufficient Balance Your Main Wallet'), __('Error'));
+//            return redirect()->route('user.schema.preview', $schema->id);
+//        } elseif ($input['wallet'] == 'profit' && $user->profit_balance < $investAmount) {
+//            notify()->error(__('Insufficient Balance Your Profit Wallet'), __('Error'));
+//
+//            return redirect()->route('user.schema.preview', $schema->id);
+//        }
+//
+//        //invalid Amount
+//        if (($schema->type == 'range' && ($schema->min_amount > $investAmount || $schema->max_amount < $investAmount)) || ($schema->type == 'fixed' && $schema->fixed_amount != $investAmount)) {
+//            notify()->error(__('Invest Amount Out Of Range'), __('Error'));
+//
+//            return redirect()->route('user.schema.preview', $schema->id);
+//        }
+//
+//        $periodHours = $schema->schedule->time;
+//        $profitClearHours = $schema->profitWithdrawSchedule->time;
+//        $nextProfitTime = Carbon::now()->addHour($periodHours);
+//        $nextProfitClearTime = Carbon::now()->addHour($profitClearHours);
+//        $siteName = setting('site_title', 'global');
+//        $data = [
+//            'user_id' => $user->id,
+//            'schema_id' => $schema->id,
+//            'invest_amount' => $investAmount,
+//            'next_profit_time' => $nextProfitTime,
+//            'next_profit_clear_time' => $nextProfitClearTime,
+//            'profit_clear_hours' => $profitClearHours,
+//            'capital_back' => $schema->capital_back,
+//            'min_interest' => $schema->min_return_interest,
+//            'interest' => $schema->return_interest,
+//            'interest_type' => $schema->interest_type,
+//            'return_type' => $schema->return_type,
+//            'number_of_period' => $schema->number_of_period,
+//            'period_hours' => $periodHours,
+//            'wallet' => $input['wallet'],
+//            'status' => InvestStatus::Ongoing,
+//        ];
+//
+//        if ($input['wallet'] == 'main') {
+//            $user->decrement('balance', $input['invest_amount']);
+//
+//        } elseif ($input['wallet'] == 'profit') {
+//            $user->decrement('profit_balance', $input['invest_amount']);
+//        } else {
+//
+//            $gatewayInfo = DepositMethod::code($input['gateway_code'])->first();
+//
+//            $charge = $gatewayInfo->charge_type == 'percentage' ? (($gatewayInfo->charge / 100) * $investAmount) : $gatewayInfo->charge;
+//            $finalAmount = (float) $investAmount + (float) $charge;
+//            $payAmount = $finalAmount * $gatewayInfo->rate;
+//            $payCurrency = $gatewayInfo->currency;
+//
+//            $manualData = null;
+//            if (isset($input['manual_data'])) {
+//                $manualData = $input['manual_data'];
+//                foreach ($manualData as $key => $value) {
+//
+//                    if (is_file($value)) {
+//                        $manualData[$key] = self::imageUploadTrait($value);
+//                    }
+//                }
+//
+//            }
+//
+//            $txnInfo = Txn::new($investAmount, $charge, $finalAmount, $gatewayInfo->name, $schema->name.' Invested', TxnType::Investment, TxnStatus::Pending, $payCurrency, $payAmount, $user->id, null, 'user', $manualData ?? []);
+//            $data = array_merge($data, ['status' => InvestStatus::Pending, 'transaction_id' => $txnInfo->id]);
+//            Invest::create($data);
+//
+//            return self::depositAutoGateway($input['gateway_code'], $txnInfo);
+//
+//        }
+//
+//        $tnxInfo = Txn::new($input['invest_amount'], 0, $input['invest_amount'], 'system', $schema->name.' Plan Invested', TxnType::Investment, TxnStatus::Success, null, null, $user->id);
+//        $data = array_merge($data, ['transaction_id' => $tnxInfo->id]);
+//        Invest::create($data);
+//
+//        if (setting('site_referral', 'global') == 'level' && setting('investment_level')) {
+//            $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
+//            creditReferralBonus($user, 'investment', $input['invest_amount'], $level);
+//        }
+//
+//        $shortcodes = [
+//            '[[full_name]]' => $tnxInfo->user->full_name,
+//            '[[txn]]' => $tnxInfo->tnx,
+//            '[[plan_name]]' => $tnxInfo->invest->schema->name,
+//            '[[invest_amount]]' => $tnxInfo->amount.setting('site_currency', 'global'),
+//            '[[site_title]]' => setting('site_title', 'global'),
+//            '[[site_url]]' => route('home'),
+//        ];
+//
+//        $this->mailNotify($tnxInfo->user->email, 'user_investment', $shortcodes);
+//        $this->pushNotify('user_investment', $shortcodes, route('user.invest-logs'), $tnxInfo->user->id);
+//        $this->smsNotify('user_investment', $shortcodes, $tnxInfo->user->phone);
+//
+//        notify()->success(__('Successfully Investment'), __('success'));
 
         return redirect()->route('user.invest-logs');
     }

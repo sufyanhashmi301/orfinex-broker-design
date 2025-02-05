@@ -56,7 +56,7 @@
                 autoWidth: false,
                 ajax: "{{ route('admin.ticket.index',$user->id) }}",
                 columns: [
-                    {data: 'name', name: 'name'},
+                    {data: 'title', name: 'title'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},

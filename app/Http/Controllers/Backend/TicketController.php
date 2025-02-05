@@ -31,6 +31,11 @@ class TicketController extends Controller
     {
         $loggedInUser = auth()->user();
 
+        $totalTickets = Ticket::count();
+        $closedTickets = Ticket::where('status', 'closed')->count();
+        $openTickets = Ticket::where('status', 'open')->count();
+        $resolvedTickets = Ticket::where('is_resolved', true)->count();
+
         if ($request->ajax()) {
             // Check if the logged-in user is a Super-Admin
             if ($loggedInUser->hasRole('Super-Admin')) {
@@ -63,15 +68,16 @@ class TicketController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('name', 'backend.ticket.include.__name')
+                ->addColumn('title', 'backend.ticket.include.__title')
+                ->addColumn('user', 'backend.ticket.include.__user')
                 ->addColumn('priority', 'backend.ticket.include.__priority')
                 ->addColumn('status', 'backend.ticket.include.__status')
                 ->addColumn('action', 'backend.ticket.include.__action')
-                ->rawColumns(['name', 'priority', 'status', 'action'])
+                ->rawColumns(['title', 'user', 'priority', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.ticket.all');
+        return view('backend.ticket.all', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets'));
     }
 
 

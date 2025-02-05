@@ -850,7 +850,6 @@ if (!function_exists('txn_type')) {
                 $result = ['green-color', '+'];
                 break;
             case TxnType::SendMoney->value:
-            case TxnType::Investment->value:
             case TxnType::Withdraw->value:
             case TxnType::Subtract->value:
             case TxnType::BonusSubtract->value:

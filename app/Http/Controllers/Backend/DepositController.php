@@ -227,8 +227,7 @@ class DepositController extends Controller
             if ($loggedInUser->hasRole('Super-Admin')) {
                 $data = Transaction::where('status', 'pending')
                     ->where(function ($query) {
-                        return $query->where('type', TxnType::ManualDeposit)
-                            ->orWhere('type', TxnType::Investment);
+                        return $query->where('type', TxnType::ManualDeposit);
                     })->latest()->applyFilters($filters);
             } else {
                 // Get attached user IDs for non-Super-Admin users
@@ -239,8 +238,7 @@ class DepositController extends Controller
                     $data = Transaction::where('status', 'pending')
                         ->whereIn('user_id', $attachedUserIds)
                         ->where(function ($query) {
-                            return $query->where('type', TxnType::ManualDeposit)
-                                ->orWhere('type', TxnType::Investment);
+                            return $query->where('type', TxnType::ManualDeposit);
                         })->latest()->applyFilters($filters);
                 } else {
                     // If no users are attached, show no transactions
@@ -364,7 +362,7 @@ class DepositController extends Controller
         ];
 
         if (isset($input['approve'])) {
- 
+
                 $transaction->amount = $input['final_amount'];
                 $transaction->final_amount = $input['final_amount'];
                 $transaction->pay_amount = $input['final_amount'];

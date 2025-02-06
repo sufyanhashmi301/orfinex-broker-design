@@ -74,7 +74,7 @@
                             {{ __('This Month') }}
                         </p>
                     </div>
-                </div>````                                                                                                                                                      `````````````1Q`
+                </div>
             </div>
         </div>
         <div class="lg:col-span-4 col-span-12">

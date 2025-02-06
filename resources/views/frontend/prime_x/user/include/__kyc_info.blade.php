@@ -1,8 +1,8 @@
-{{-- <div id="kycAlert" class="kyc-alert alert alert-dismissible ltr:ml-[248px] rtl:mr-[248px] dark:shadow-slate-700 !p-3 hidden" >
+<div id="kycAlert" class="kyc-alert alert alert-dismissible ltr:ml-[248px] rtl:mr-[248px] dark:shadow-slate-700 !p-3 hidden" >
     <div class="flex items-center gap-3">
         <div class="flex item-center gap-3 mx-auto">
             <p class="text-sm text-slate-600 dark:text-slate-300">
-                {{ __('Verify your account to unlock additional features.') }}
+                Verify your account to {{ $notice }}
             </p>
             <a href="{{ route('user.verification.index') }}" class="btn-link inline-flex items-center justify-center text-sm" >
                 {{ __('Begin Verification') }}
@@ -22,9 +22,6 @@
         border-radius: 0px
     }
 </style>
-
-
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -48,4 +45,4 @@
         }
     });
 </script>
- --}}
+

@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ContractStatusEnums;
-use App\Enums\InvestmentPhaseApproval;
 use Carbon\Carbon;
 use App\Enums\TraderType;
 use Brick\Math\BigDecimal;
 use Illuminate\Http\Request;
 use App\Enums\InvestmentStatus;
-use App\Models\AccountOpenPosition;
+use App\Models\AccountActivity;
 use App\Services\ForexApiService;
+use App\Enums\ContractStatusEnums;
+use App\Enums\KycNoticeInvokeEnums;
+use App\Models\AccountOpenPosition;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
+use App\Enums\InvestmentPhaseApproval;
+use App\Services\UserAffiliateService;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountTypeInvestmentService;
-use App\Models\AccountActivity;
-use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Services\AccountTypeInvestmentPaymentService;
-use App\Services\UserAffiliateService;
+use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 
 class AccountTypeInvestmentController extends Controller
 {
@@ -168,6 +169,11 @@ class AccountTypeInvestmentController extends Controller
         // $this->affiliate->applyCommission($request->rule_id, $buyer_user_id);
         // return redirect()->back();
         // for affiliates testing ---
+
+        // KYC Check
+        if(kyc_check_exists(KycNoticeInvokeEnums::ACCOUNT_PURCHASE)) {
+            return redirect()->route('user.verification.index');
+        }
 
         $investment = $this->investment->createInvestment($request);
 

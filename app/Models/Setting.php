@@ -11,6 +11,11 @@ class Setting extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'val'
+    ];
+
     /**
      * The attributes that aren't mass assignable.
      *

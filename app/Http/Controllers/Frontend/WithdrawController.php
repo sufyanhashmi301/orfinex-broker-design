@@ -2,43 +2,32 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Txn;
-use Session;
 use Validator;
 use Carbon\Carbon;
 use App\Enums\TxnType;
 use App\Models\Wallet;
 use App\Traits\Payment;
-use App\Enums\TxnStatus;
 use App\Enums\WalletType;
-use Brick\Math\BigDecimal;
 use App\Models\Transaction;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use App\Models\ForexAccount;
 use Illuminate\Http\Request;
 use App\Models\FundedBalance;
 use App\Models\PayoutRequest;
 use App\Models\UserAffiliate;
 use App\Traits\ForexApiTrait;
 use App\Models\WithdrawMethod;
-use App\Enums\InvestmentStatus;
 use App\Models\WithdrawAccount;
 use App\Services\PayoutService;
-use Illuminate\Validation\Rule;
-use App\Enums\ForexAccountStatus;
 use App\Services\ForexApiService;
 use App\Enums\PayoutRequestStatus;
-use App\Models\WithdrawalSchedule;
-use App\Rules\WalletBelongsToUser;
-use Illuminate\Support\Facades\DB;
+use App\Enums\KycNoticeInvokeEnums;
+use App\Enums\KycStatusEnums;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\AccountTypeInvestment;
 use App\Services\UserWithdrawService;
 use Illuminate\Http\RedirectResponse;
-use App\Rules\ForexLoginBelongsToUser;
 use Illuminate\Contracts\View\Factory;
 use App\Http\Requests\UserWithdrawRequest;
 use Illuminate\Contracts\Foundation\Application;
@@ -278,6 +267,10 @@ class WithdrawController extends Controller
      * Payout request
      */
     public function payoutRequest(Request $request) {
+        $user = Auth::user();
+        if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() != 'none') {
+            return redirect()->route('user.verification.index');
+        }
 
         // $reset_balance_data = [
         //     'login' =>'996466',
@@ -376,6 +369,8 @@ class WithdrawController extends Controller
      */
     public function step1Index()
     {
+        $user = Auth::user();
+        $kyc_check_exists = $user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() != 'none' ? true : false;
 
         // Payout Wallet Create if not exists
         $payout_wallet = Wallet::where('user_id', Auth::id())->where('slug', WalletType::PAYOUT);
@@ -407,7 +402,7 @@ class WithdrawController extends Controller
         // All eligible funded balances record.
         $funded_balances = FundedBalance::where('user_id', Auth::id())->whereRaw('profit - payout_pending != 0')->get();
         
-        return view('frontend::withdraw.step1', compact('payout_wallet', 'affiliate_wallet', 'funded_balances'));
+        return view('frontend::withdraw.step1', get_defined_vars());
     }
 
     /**

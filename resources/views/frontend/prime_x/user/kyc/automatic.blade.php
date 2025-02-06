@@ -4,15 +4,15 @@
 @endsection
 @section('content')
     <div class="card">
-        {{-- @if ($sumsubstatus === 0)
+        @if ($sumsub_status === 0)
             <div class="p-5">
                 <p class="text-center font-medium dark:text-slate-300">
                     {{ __('Something went wrong.') }}
                 </p>
             </div>
-        @else --}}
+        @else
             <div id="sumsub-websdk-container"></div>
-        {{-- @endif --}}
+        @endif
     </div>
 @endsection
 
@@ -33,46 +33,50 @@ $.ajaxSetup({
     }
 });
 
-const launchWebSdk = (accessToken) => {
-    let snsWebSdkInstance = snsWebSdk.init(
-        accessToken,
-        () => this.getNewAccessToken()
-    ).withConf({
-        lang: 'en',
-        email: '{{auth()->user()->email}}'
-    }).withOptions({ addViewportTag: false, adaptIframeHeight: true })
-        .on('{{ __('idCheck.onApplicantStatusChanged') }}', (payload) => {
-            console.log('{{ __('onStepCompleted') }}', payload);
-            if (payload.confirmed === true) {
-                $.ajax({
-                    url: "{{ route('user.verification.automatic_kyc.update') }}",
-                    method: 'POST',
-                    success: function(response) {
-                        if (response.status ===200) {
-                            console.log(response.success);
-                        } else {
-                            console.log(response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('{{ __('Error updating KYC status:') }}', error);
-                    }
-                });
-            }
-        })
-        .on('{{ __('idCheck.onError') }}', (error) => {
-            console.log('{{ __('onError') }}', error);
-        }).build();
-    snsWebSdkInstance.launch('#sumsub-websdk-container');
+function launchWebSdk(accessToken) {
+  let snsWebSdkInstance = snsWebSdk.init(
+      accessToken,
+      // token update callback, must return Promise
+      () => this.getNewAccessToken()
+    )
+    .withConf({
+      //language of WebSDK texts and comments (ISO 639-1 format)
+      lang: 'en',
+    })
+    .on('onError', (error) => {
+      console.log('onError', error)
+    })
+    .onMessage((type, payload) => {
+      console.log('onMessage', type, payload)
+
+      // Check if the message type is 'idCheck.onApplicantStatusChanged'
+      if (type === 'idCheck.onApplicantStatusChanged') {
+        // Send AJAX request only for this specific event
+        $.ajax({
+          url: "{{ route('user.verification.automatic_kyc.update') }}",
+          method: 'GET',
+          data: payload.reviewResult,
+          success: function(response) {
+            console.log(response)
+          },
+          error: function(xhr, status, error) {
+            console.error('Error updating KYC status', error);
+          }
+        });
+      }
+
+    })
+    .build();
+
+  // you are ready to go:
+  // just launch the WebSDK by providing the container element for it
+  
+  snsWebSdkInstance.launch('#sumsub-websdk-container')
+}
+if ('{{ $sumsub_status }}' === '1') {
+    launchWebSdk('{{ auth()->user()->kyc_token }}')
 }
 
-launchWebSdk('{{ auth()->user()->kyc_token }}.-v2')
-
 </script>
-
-{{-- if ('{{$sumsubstatus}}' === '1') {
-    launchWebSdk('{{auth()->user()->kyc_token}}')
-    // launchWebSdk('_act-sbx-jwt-eyJhbGciOiJub25lIn0.eyJqdGkiOiJfYWN0LXNieC1jMGQzMjg5MS05OTk5LTQzOGQtYjRjZC0xYmI5MjQ0ZmY4YzktdjIiLCJ1cmwiOiJodHRwczovL2FwaS5zdW1zdWIuY29tIn0.-v2')
-} --}}
 
 @endsection

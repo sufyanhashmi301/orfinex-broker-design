@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Enums\AccountType;
-use App\Enums\InvestmentStatus;
-use App\Enums\KYCStatus;
-use App\Enums\PayoutRequestStatus;
-use App\Enums\TxnStatus;
-use App\Enums\TxnType;
-use App\Http\Controllers\Controller;
-use App\Models\AccountTypeInvestment;
-use App\Models\Admin;
-use App\Models\Gateway;
-use App\Models\LoginActivities;
-use App\Models\PayoutRequest;
-use App\Models\ReferralRelationship;
-use App\Models\Ticket;
-use App\Models\Transaction;
-use App\Models\User;
-use App\Models\UserAffiliate;
 use Carbon\Carbon;
+use App\Models\Kyc;
+use App\Models\User;
+use App\Models\Admin;
+use App\Enums\TxnType;
+use App\Models\Ticket;
+use App\Models\Gateway;
+use App\Enums\KYCStatus;
+use App\Enums\TxnStatus;
+use App\Enums\AccountType;
+use App\Models\Transaction;
+use App\Enums\KycStatusEnums;
+use App\Models\PayoutRequest;
+use App\Models\UserAffiliate;
+use App\Enums\InvestmentStatus;
+use App\Models\LoginActivities;
+use App\Enums\PayoutRequestStatus;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\ReferralRelationship;
+use App\Models\AccountTypeInvestment;
 
 class DashboardController extends Controller
 {
@@ -130,6 +132,8 @@ class DashboardController extends Controller
         })->count();
         $total_trial_accounts = AccountTypeInvestment::where('is_trial', 1)->count();
         $total_approved_withdraws = Transaction::where('type', 'withdraw')->where('status', TxnStatus::Success)->sum('amount');
+
+        $pending_kycs = Kyc::where('status', KycStatusEnums::PENDING)->count();
         
         // dd($challenge_accounts);
         // --- Optimizations
@@ -148,7 +152,7 @@ class DashboardController extends Controller
             // optimizaitons
 
             'withdraw_count' => $withdrawCount,
-            // 'kyc_count' => $kycCount,
+            'pending_kycs' => $pending_kycs,
             'deposit_count' => $depositCount,
 
             'register_user' => $user->count(),
@@ -156,12 +160,6 @@ class DashboardController extends Controller
             'latest_user' => $latestUser,
 
             'total_staff' => $totalStaff,
-
-            // 'total_deposit' => $transaction->totalDeposit()->sum('amount'),
-            // 'total_send' => $totalSend,
-            // 'total_investment' => $transaction->totalInvestment()->sum('amount'),
-            // 'total_withdraw' => $transaction->totalWithdraw()->sum('amount'),
-            // 'total_referral' => $totalReferral,
 
             'date_label' => $dateArray,
             'deposit_statistics' => $depositStatistics,
@@ -176,12 +174,6 @@ class DashboardController extends Controller
             'investment_bonus' => $transaction->totalInvestBonus(),
             'total_gateway' => $totalGateway,
             'total_ticket' => Ticket::count(),
-
-            'browser' => $browser,
-            'platform' => $platform,
-            'country' => $country,
-            'symbol' => $symbol,
-        
         ];
 
 

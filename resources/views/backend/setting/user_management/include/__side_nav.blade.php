@@ -14,7 +14,7 @@
         @endcanany
         <li>
             <a href="{{ route('admin.settings.kyc') }}" class="navItem {{ isActive('admin.settings.kyc') }}">
-                {{ __('KYC Methods') }}
+                {{ __('KYC') }}
             </a>
         </li>
         @canany(['ranking-list','ranking-create','ranking-edit'])

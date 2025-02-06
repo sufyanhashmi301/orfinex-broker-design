@@ -45,6 +45,8 @@ Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/verify-email')->name('verification.notice');
 Route::post('subscriber', [HomeController::class, 'subscribeNow'])->name('subscriber');
 
+Route::get('user/verification/automatic-kyc/update', [KycController::class, 'updateAutomaticKyc'])->name('user.verification.automatic_kyc.update');
+
 //User Part
 Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function () {
     //dashboard
@@ -106,11 +108,8 @@ Route::group(['middleware' => ['auth', '2fa', 'isActive', 'verified'], 'prefix' 
     Route::get('/verification/manual-kyc/data/{option_name}', [KycController::class, 'manualKycData'])->name('verification.manual_kyc_data');
     Route::post('/verification/manual-kyc', [KycController::class, 'updateManualKyc'])->name('verification.manual_kyc.update');
     Route::get('/verification/automatic-kyc', [KycController::class, 'automaticKyc'])->name('verification.automatic_kyc');
-    Route::post('/verification/auromatic-kyc', [KycController::class, 'updateAuromaticKyc'])->name('verification.automatic_kyc.update');
 
     // ======== Optimizations ========
-
-    // Route::get('automatic/kyc', [SumsubController::class, 'advanceKyc'])->name('kyc.automatic');
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
@@ -244,7 +243,7 @@ Route::get('signature', function () {
     return view('frontend::contracts.signature');
 })->name('signature');
 
-Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
+
 
 
 

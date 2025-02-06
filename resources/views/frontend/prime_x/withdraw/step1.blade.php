@@ -65,16 +65,28 @@
                         </span>
                     </a>
 
-                    <a href="#"  data-bs-toggle="modal" data-bs-target="#payoutRequest" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
-                        <span class="flex items-center">
-                            <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
-                            <span>{{ __('Create Payout Request') }}</span>
-                        </span>
-                    </a>    
+                    @if ($kyc_check_exists)
+                        <a href="{{ route('user.verification.index') }}" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:shield-check"></iconify-icon>
+                                <span>Complete KYC Verification</span>
+                            </span>
+                        </a>
+                    @else
+                        <a href="#"  data-bs-toggle="modal" data-bs-target="#payoutRequest" class="btn btn-sm btn-outline-dark inline-flex items-center justify-center">
+                            <span class="flex items-center">
+                                <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                                <span>{{ __('Create Payout Request') }}</span>
+                            </span>
+                        </a>        
+                    @endif
+                    
                 </div>
             </div>
         </div>
-        @include('frontend.prime_x.withdraw.include.__payout_request')
+        @if (!$kyc_check_exists)
+            @include('frontend.prime_x.withdraw.include.__payout_request')
+        @endif
         <div class="card h-full p-6 mb-6">
             <div class="card-body">
                 <div class="flex flex-wrap justify-between items-center mb-5">

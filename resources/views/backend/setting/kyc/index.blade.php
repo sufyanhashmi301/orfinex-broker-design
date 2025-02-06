@@ -8,10 +8,15 @@
             <h4 class="font-medium text-xl capitalize dark:text-white inline-block ltr:pr-4 rtl:pl-4 mb-1">
                 @yield('title')
             </h4>
+
             <p class="text-sm text-slate-500 dark:text-slate-300">
                 {{ __('Configure verification levels and requirements') }}
             </p>
         </div>
+        <button style="float:right" class="btn btn-primary inline-flex items-center justify-center" type="button" data-bs-toggle="modal" data-bs-target="#config-modal">
+            <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:bolt"></iconify-icon>
+            Configure KYC Notice
+        </button>
     </div>
 
     <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
@@ -84,6 +89,7 @@
 
     @include('backend.setting.kyc.includes.__add_fields_manual_modal')
     @include('backend.setting.kyc.includes.__edit_fields_manual')
+    @include('backend.setting.kyc.includes.__kyc_notice_modal')
 @endsection
 
 @section('user-management-script')

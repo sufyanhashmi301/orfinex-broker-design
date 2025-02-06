@@ -7,4 +7,5 @@ interface KycStatusEnums
     const UNVERIFIED = 'unverified';
     const VERIFIED = 'verified';
     const PENDING = 'pending';
+    const REJECTED = 'rejected';
 }

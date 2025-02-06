@@ -318,10 +318,13 @@
                 $trading_objectives['profit_target_status'] == 'passed' &&
                 $trading_objectives['minimum_trading_days_status'] == 'passed')
             <div class="pb-2 ">
-                @if ($investment->getPhaseSnapshotData()['type'] == 'funded_phase')
-                    {{-- <b><span class="text-sm"> <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> Close all active trades to update the balance in payout wallet!</span></b> --}}
-                @else
-                    @if($investment->status == \App\Enums\InvestmentStatus::ACTIVE) 
+                    @if (!$kyc_verified)
+                        <b><span class="text-sm"> 
+                            <iconify-icon icon="lucide:message-circle-warning" style="font-size: 18px; position: relative; top: 3px" class="mr-1"></iconify-icon> 
+                            Complete KYC Verification to get next phase account access.
+                        </span></b>
+                    @else
+                    @if($current_balance != $investment->accountTypeInvestmentStat->current_equity) 
                         <b><span class="text-sm"> 
                             <iconify-icon icon="lucide:info" style="position: relative; top:1px"></iconify-icon> 
                             Close all active trades to get promoted to next phase!

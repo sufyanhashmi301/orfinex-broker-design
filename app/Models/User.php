@@ -50,6 +50,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'withdraw_status',
         'password',
         'kyc_token',
+        'kyc_created_at',
         'notes',
     ];
 

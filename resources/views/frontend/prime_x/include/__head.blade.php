@@ -89,7 +89,5 @@
 
     <script src="{{ asset('frontend/js/settings.js') }}" sync></script>
     <script src="https://static.sumsub.com/idensic/static/sns-websdk-builder.js"></script>
-    <style>
-        {{ \App\Models\CustomCss::first()->css }}
-    </style>
+    
 </head>

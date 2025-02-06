@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use ReflectionClass;
 use App\Models\KycMethod;
 use Illuminate\Http\Request;
+use App\Enums\KycNoticeInvokeEnums;
+use App\Models\Setting;
 
 class KycMethodController extends Controller
 {
@@ -17,7 +20,12 @@ class KycMethodController extends Controller
         $kyc_methods = KycMethod::all();
         $manual_method = KycMethod::where('slug', 'manual')->first();
 
-        return view('backend.setting.kyc.index', compact('kyc_methods', 'manual_method'));
+        // KYC Notice
+        $kyc_notice_invokes = (new ReflectionClass(KycNoticeInvokeEnums::class))->getConstants();
+        $current_kyc_notice_invoke = kyc_invoke_at();
+
+
+        return view('backend.setting.kyc.index', get_defined_vars());
     }
 
     /**

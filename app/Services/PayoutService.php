@@ -69,6 +69,10 @@ class PayoutService
           $trading_days = $acc->getAccountTypeSnapshotData()['trading_days'];
         }
 
+        if(!$account_stats) {
+          continue;
+        }
+
         if( 
             $account_stats->balance >= ( $account_rule['allotted_funds'] + $account_rule['profit_target'] ) && 
             $account_stats->trading_days >= $trading_days &&

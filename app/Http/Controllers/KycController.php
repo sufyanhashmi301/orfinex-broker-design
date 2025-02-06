@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Kyc;
 use App\Models\User;
+use App\Models\Plugin;
 use sumsub\SumsubClient;
 use App\Models\KycMethod;
 use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 use App\Enums\KycStatusEnums;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 
 class KycController extends Controller
@@ -21,11 +25,28 @@ class KycController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $kycs = Kyc::paginate(15);
-        $title = 'All KYC Logs';
+        $kycs_filter = false;
+        if(isset($request->status)){
+            // Filter users wrt status when status exists
+            if (in_array($request->status, (new \ReflectionClass(KycStatusEnums::class))->getConstants())) {
+                // Handle the logic here if the status is valid
+                $kycs = KYC::where('status', $request->status)->paginate(15);
+                $title = ucfirst($request->status) . ' KYCs';
+                $kycs_filter = true;
+            }
+        }
+
+        // if status is unknown then show all users
+        if(!$kycs_filter) {
+            $kycs = Kyc::paginate(15);
+            $title = 'All KYCs';
+            if($request->status != 'all') {
+                return redirect()->route('admin.kyc.index', ['status' => 'all']);
+            }
+        }
 
         return view('backend.kyc.index', get_defined_vars());
     }
@@ -37,7 +58,9 @@ class KycController extends Controller
         
         if($request->action == 'approve') {
             Kyc::findorFail($request->id)->update([
-                'status' => KycStatusEnums::VERIFIED
+                'method' => 'Manual',
+                'status' => KycStatusEnums::VERIFIED,
+                'verified_at' => Carbon::now()
             ]);
 
             notify()->success('KYC marked as approved successfully');
@@ -45,7 +68,10 @@ class KycController extends Controller
 
         if($request->action == 'reject') {
             Kyc::findorFail($request->id)->update([
-                'status' => KycStatusEnums::UNVERIFIED
+                'method' => '',
+                'status' => KycStatusEnums::UNVERIFIED,
+                'verified_at' => null,
+                'data' => null
             ]);
 
             notify()->success('KYC marked as rejected successfully');
@@ -142,28 +168,14 @@ class KycController extends Controller
         }
         
         if($user->kyc->status == KycStatusEnums::UNVERIFIED) {
-            
-            $SUMSUB_SECRET_KEY = 'qxjq7aQDCDVDHZihPww9PBn9eCkAgiMi';
-            $SUMSUB_APP_TOKEN = 'sbx:Lv8TQG3jd87Tk67GwJNKG1vk.4kwEhe5x2qU1swGIfWw1YyipF4cmlN3U';
+            $sumsub = $this->sumsub($user);
 
-            if (empty($user->kyc_token)) {
-                
-                $levelName = 'basic-kyc-level';
-
-                $sumsub = new SumsubClient($SUMSUB_APP_TOKEN, $SUMSUB_SECRET_KEY);
-
-                $applicantId = $sumsub->createApplicant($user->id . '2', $levelName);
-
-                $sumsub->getApplicantStatus($applicantId);
-
-                $accessTokenInfo = $sumsub->getAccessToken($user->id . '2', $levelName);
-
-                $user->update([
-                    'kyc_token' => $accessTokenInfo['token'],
-                ]);
+            if(!$sumsub) {
+                notify()->error('Unknown Error Ocurred!');
+                return redirect()->back();
             }
-            return view('frontend::user.kyc.automatic');
 
+            return view('frontend::user.kyc.automatic', $sumsub);
         } else {
             return redirect()->route('user.verification.index');
         }
@@ -171,22 +183,60 @@ class KycController extends Controller
     }
 
     /**
+     * Sumsub helper fn()
+     */
+    public function sumsub($user) {
+
+        $sumsub_plugin = Plugin::find(8);
+        $sumsub_status = $sumsub_plugin->status;
+        $sumsub_credentials = json_decode($sumsub_plugin->data);
+        $current_time = Carbon::now();
+        $last_updated_time = $user->kyc_created_at;
+
+        $encypted_user_id = Crypt::encrypt($user->id);
+
+
+        if (empty($user->kyc_token) || $current_time->diffInMinutes($last_updated_time) > 25) {
+            
+            try {
+                $sumsub = new SumsubClient($sumsub_credentials->app_token, $sumsub_credentials->app_secret_id);
+                $applicantId = $sumsub->createApplicant($encypted_user_id, $sumsub_credentials->level_name);
+                $sumsub->getApplicantStatus($applicantId);
+                $accessTokenInfo = $sumsub->getAccessToken($encypted_user_id, $sumsub_credentials->level_name);
+                $user->update([
+                    'kyc_token' => $accessTokenInfo['token'],
+                    'kyc_created_at' => Carbon::now(),
+                ]);
+            } catch (\Throwable $th) {
+                return false;
+            }
+        }
+        return get_defined_vars();
+    }
+
+    /**
      * User: Automatic KYC Updater
+     * Later use webhook when the site is live
      */
     public function updateAutomaticKyc(Request $request) {
         $user = Auth::user();
+        $response = $request->all(); 
 
-        try {
+        if (isset($response['reviewAnswer']) && $response['reviewAnswer'] == 'GREEN') {
+            // Success Case
             $user->kyc->update([
+                'method' => 'Sumsub',
                 'status' => KycStatusEnums::VERIFIED,
+                'verified_at' => Carbon::now()
             ]);
-            return response()->json(['status' => 200, 'success' => 'Verification completed']);
-        } catch (\Throwable $th) {
+        } elseif (isset($response['reviewAnswer']) && $response['reviewAnswer'] == 'RED') {
+            // Rejection Case
             $user->kyc->update([
-                'status' => KycStatusEnums::UNVERIFIED,
+                'status' => KycStatusEnums::UNVERIFIED
             ]);
-            return response()->json(['status' => 200, 'error' => 'Somthing went wrong.']);
         }
+
+        return true;
     } 
 
     /**

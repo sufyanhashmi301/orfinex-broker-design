@@ -52,6 +52,7 @@ use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\KycMethodController;
+use App\Http\Controllers\KycNoticeController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\TradingStatsController;
 
@@ -166,7 +167,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     });
 
     // Certificates
-    Route::get('/certificates/manage', [CertificateController::class, 'manage'])->name('certificates.manage');
+    Route::get('/certificates/config', [CertificateController::class, 'manage'])->name('certificates.manage');
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
     Route::post('/update-certificate/{id}', [CertificateController::class, 'update'])->name('certificate.update');
     Route::get('/view-certificate/{id}', [CertificateController::class, 'viewCertificate'])->name('view_certificate');
@@ -197,6 +198,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/settings/kyc-methods/{option_name}', [KycMethodController::class, 'deleteManualMethodField'])->name('kyc_method.delete_manual_method_option');
     Route::get('/settings/kyc-methods/option-toggle/{action}', [KycMethodController::class, 'optionToggle'])->name('kyc_method.option_toggle');
     Route::get('/settings/kyc-methods/method-toggle/{id}', [KycMethodController::class, 'methodToggle'])->name('kyc_method.method_toggle');
+    Route::post('/settings/kyc-notice', [KycNoticeController::class, 'updateSettings'])->name('kyc_notice.update');
 
 
     // =============================== Optimization ===============================

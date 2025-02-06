@@ -108,7 +108,7 @@
             'invest_statistics': @json($data['invest_statistics']),
             'withdraw_statistics': @json($data['withdraw_statistics']),
             'profit_statistics': @json($data['profit_statistics']),
-            'symbol': @json($data['symbol']),
+            
         }
         chart_show(chartData);
 
@@ -164,7 +164,6 @@
 
 
         // Country Chart
-        var country = @json($data['country']);
         var country_data = Object.values(country);
         var country_label = Object.keys(country);
         var data = {
@@ -218,7 +217,6 @@
         );
 
         // Browser Chart
-        var browser = @json($data['browser']);
         var browser_data = Object.values(browser);
         var browser_label = Object.keys(browser);
         var data = {
@@ -272,7 +270,6 @@
         );
 
         // OS Chart
-        var platform = @json($data['platform']);
         var platform_data = Object.values(platform);
         var platform_label = Object.keys(platform);
         var data = {

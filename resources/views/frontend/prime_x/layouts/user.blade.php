@@ -19,9 +19,9 @@
             {{-- KYC --}}
             @if(setting('kyc_verification','permission'))
                 {{-- Kyc Info--}}
-                @if(!Route::is(['webterminal', 'user.kyc*', 'user.ticket*']))
+                @if(!Route::is(['webterminal', 'user.verification*', 'user.ticket*']) && show_kyc_notice()['show'])
                     <div class="md:block hidden">
-                        @include('frontend::user.include.__kyc_info')
+                        @include('frontend::user.include.__kyc_info', ['notice' => show_kyc_notice()['message']])
                     </div>
                 @endif
                 <div class="md:hidden block">

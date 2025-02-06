@@ -29,7 +29,7 @@
                 </p>
             </div>
             {{-- || $data['kyc_count'] --}}
-            @canany(['deposit-action','withdraw-action','kyc-action',])
+            @canany(['deposit-action','withdraw-action'])
                 @if($data['withdraw_count']  || $data['deposit_count'])
                     <div class="text-right">
                         <p class="text-base dark:text-white font-medium mb-2">
@@ -45,21 +45,21 @@
                                     </a>
                                 @endif
                             @endcan
-
-                            {{-- @can('kyc-action')
-                                @if($data['kyc_count'])
-                                    <a href="{{ route('admin.kyc.pending') }}" class="btn btn-sm btn-success inline-flex items-center justify-center">
+                            
+                            @can('kyc-action')
+                                @if($data['pending_kycs'] > 0)
+                                    <a href="{{ route('admin.kyc.index', ['status' => 'pending']) }}" class="btn btn-sm btn-success inline-flex items-center justify-center">
                                         <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
                                         {{ __('KYC Requests') }}
-                                        ({{ $data['kyc_count'] }})
+                                        ({{ $data['pending_kycs'] }})
                                     </a>
                                 @endif
-                            @endcan --}}
+                            @endcan
 
                             @can('deposit-action')
                                 @if($data['deposit_count'])
                                     <a href="{{ route('admin.deposit.manual.pending') }}" class="btn btn-sm btn-dark inline-flex items-center justify-center">
-                                        {{-- <iconify-icon class="text-lg mr-2"  icon="lucide:loader"></iconify-icon> --}}
+                                        <iconify-icon class="spining-icon text-lg mr-2"  icon="lucide:loader"></iconify-icon>
                                         {{ __('Pending Payments') }}
                                         ({{ $data['deposit_count'] }})
                                     </a>

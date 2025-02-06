@@ -1,23 +1,19 @@
 <?php
 
-use App\Enums\AccountBalanceType;
-use App\Enums\ForexAccountStatus;
-use App\Enums\TxnStatus;
+use Carbon\Carbon;
 use App\Enums\TxnType;
-use App\Helpers\NioHash;
-use App\Models\Account;
-use App\Models\ForexAccount;
 use App\Models\Gateway;
-use App\Models\IbSchema;
-use App\Models\KycLevel;
 use App\Models\Setting;
-use App\Models\User;
-use App\Models\RiskProfileTag;
-use App\Services\ForexApiService;
+use App\Helpers\NioHash;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
-use Carbon\Carbon;
-use App\Traits\ForexApiTrait;
+use App\Enums\AccountBalanceType;
+use App\Enums\AccountTypePhase;
+use App\Enums\InvestmentStatus;
+use App\Enums\KycNoticeInvokeEnums;
+use App\Enums\KycStatusEnums;
+use App\Models\AccountTypeInvestment;
+use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('is_force_https')) {
     /**
@@ -34,120 +30,7 @@ if (!function_exists('is_force_https')) {
         return false;
     }
 }
-if (!function_exists('AccType')) {
-    /**
-     * @param $name |string
-     * @param $object |boolean
-     * @return string|boolean|object
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function AccType($name = null, $object = true)
-    {
-//        dd($name);
-        $name = strtoupper($name);
-        $acType = get_enums(AccountBalanceType::class, false);
-        $acType = ($object === true) ? (object)$acType : $acType;
-//        dd($name,$acType);
 
-        if (empty($name)) return $acType;
-
-        return isset($acType->$name) ? $acType->$name : false;
-    }
-}
-if (!function_exists('get_user_account')) {
-
-    /**
-     * Retrieves or creates an account for a user based on user ID and balance type.
-     * @param int $userId The ID of the user.
-     * @param string $balance The type of balance, defaulting to main balance if not specified.
-     * @return mixed Returns the account object.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_user_account($userId, $balance = null)
-    {
-        // Default to main balance type if not specified.
-        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
-
-        // Attempt to retrieve the account.
-        $account = Account::where('user_id', $userId)
-            ->where('balance', $balance)
-            ->first();
-
-        // If no account exists, create a new one.
-        if (blank($account)) {
-            $account = Account::create([
-                'user_id' => $userId,
-                'balance' => $balance,
-                'amount' => 0.00,
-                'wallet_id' => generateUniqueWalletId()  // Generate a unique 10-character ID for the wallet
-            ]);
-        }
-
-        return $account;
-    }
-}
-
-/**
- * Generates a unique 10-character alphanumeric ID.
- * @return string
- */
-if (!function_exists('generateUniqueWalletId')) {
-    function generateUniqueWalletId()
-    {
-        do {
-            // Generate a random 10-digit integer.
-            $id = mt_rand(1000000000, 9999999999);
-        } while (Account::where('wallet_id', $id)->exists()); // Ensure uniqueness in the database.
-
-        return $id;
-    }
-}
-if (!function_exists('user_balance')) {
-    /**
-     * @param $balance
-     * @param $userId | auth->user
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function user_balance($balance = null, $userId = null)
-    {
-        $balance = (empty($balance)) ? AccountBalanceType::MAIN : $balance;
-        $userid = !empty($userId) ? $userId : auth()->user()->id;
-        $account = Account::where('user_id', $userid)->where('balance', $balance)->first();
-
-        if (!blank($account)) {
-            $amount = data_get($account, 'amount', 0.00);
-            return ($amount) ? $amount : 0.00;
-        }
-
-        return 0;
-    }
-}
-//if (!function_exists('account_balance')) {
-//    /**
-//     * @param $account
-//     * @param $userId | auth->user
-//     * @version 1.0.0
-//     * @since 1.0
-//     */
-//
-//    function account_balance($account = null, $type = 'base')
-//    {
-//        $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
-//        $userid = auth()->user()->id;
-//        $account = Account::where('user_id', $userid)->where('balance', $account)->first();
-//        $amount = (!blank($account)) ? data_get($account, 'amount', 0.00) : 0.00;
-//
-//        if ($type == 'alter' || $type == 'secondary') {
-//            return to_amount(base_to_secondary($amount), secondary_currency());
-//        }
-//
-//        return to_amount($amount, base_currency());
-//    }
-//}
-//
 if (!function_exists('base_currency')) {
     /**
      * @version 1.0.0
@@ -158,36 +41,6 @@ if (!function_exists('base_currency')) {
         return sys_settings('base_currency', 'USD');
     }
 }
-//
-//if (!function_exists('secondary_currency')) {
-//    /**
-//     * @return mixed
-//     * @version 1.0.0
-//     * @since 1.0
-//     */
-//    function secondary_currency()
-//    {
-//        return sys_settings('alter_currency', 'USD');
-//    }
-//}
-//if (!function_exists('base_to_secondary')) {
-//
-//    /**
-//     * @param $amount
-//     * @return float|int
-//     * @version 1.0.0
-//     * @since 1.0
-//     */
-//    function base_to_secondary($amount)
-//    {
-//        if ($amount == 0) {
-//            return 0.00;
-//        }
-//        $secondaryCurrency = secondary_currency();
-//        $exchangeRate = get_exchange_rates(actived_exchange(), $secondaryCurrency);
-//        return ($amount * $exchangeRate);
-//    }
-//}
 
 if (!function_exists('w2n')) {
     /**
@@ -201,8 +54,8 @@ if (!function_exists('w2n')) {
         $account = (empty($account)) ? AccountBalanceType::MAIN : $account;
         $nameMap = [
             AccountBalanceType::MAIN => __(sys_settings('account_main', 'Main Wallet')),
-              AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
-           ];
+            AccountBalanceType::IB_WALLET => __(sys_settings('ib_wallet', 'IB Wallet')),
+        ];
         return Arr::get($nameMap, $account);
     }
 }
@@ -216,11 +69,11 @@ if (!function_exists('sys_settings')) {
      */
     function sys_settings($key, $default = null)
     {
-//        dd($key,$default);
+        //        dd($key,$default);
         $settings = Cache::remember('sys_settings', 1800, function () {
             return Setting::all()->pluck('name', 'val');
         });
-//dd($settings);
+        //dd($settings);
         $value = $settings->get($key) ?? $default;
 
 
@@ -287,7 +140,6 @@ if (!function_exists('isActive')) {
         if (null == $parameter && Request::routeIs($route)) {
             return 'active';
         }
-
     }
 }
 
@@ -322,7 +174,7 @@ if (!function_exists('getSettingCreatedAt')) {
     function getSettingByColumn($key, $attribute = 'created_at')
     {
         $setting = \App\Models\Setting::where('name', $key)->first();
-//        dd($setting);
+        //        dd($setting);
 
         // Ensure the attribute exists on the model to avoid potential errors
         if ($setting) {
@@ -349,9 +201,7 @@ if (!function_exists('percentage_calc')) {
         $amount = (BigDecimal::of($amount)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of($percent))->dividedBy(100, $scale, RoundingMode::CEILING) : 0;
 
         return is_object($amount) ? (string)$amount : $amount;
-
     }
-
 }
 if (!function_exists('base_currency')) {
     /**
@@ -374,9 +224,7 @@ if (!function_exists('percentage_of_total_calc')) {
         $scale = 2;
         $percentage = (BigDecimal::of($total)->compareTo(0) == 1) ? BigDecimal::of($amount)->multipliedBy(BigDecimal::of(100))->dividedBy($total, $scale, RoundingMode::CEILING) : 0;
         return is_object($percentage) ? (string)$percentage : $percentage;
-
     }
-
 }
 
 
@@ -420,7 +268,6 @@ if (!function_exists('curl_get_file_contents')) {
         }
 
         return false;
-
     }
 }
 
@@ -527,20 +374,20 @@ if (!function_exists('getLocation')) {
     {
         $clientIp = request()->ip();
         $ip = $clientIp == in_array($clientIp, ['127.0.0.1', '::1']) ? '72.255.51.134' : $clientIp;
-//        $ip = '72.255.51.134';
+        //        $ip = '72.255.51.134';
         $location = json_decode(curl_get_file_contents('http://ip-api.com/json/' . $ip), true);
 
         $currentCountry = collect(getCountries())->first(function ($value, $key) use ($location) {
             return $value['code'] == $location['countryCode'];
         });
-//dd($location,$currentCountry);
+        //dd($location,$currentCountry);
         $location = [
             'country_code' => $currentCountry['code'] ?? '00',
             'name' => $currentCountry['name'] ?? 'Not found',
             'dial_code' => $currentCountry['dial_code'] ?? 'zzzz',
             'ip' => $location['query'] ?? [],
         ];
-//dd( new \Illuminate\Support\Fluent($location));
+        //dd( new \Illuminate\Support\Fluent($location));
         return new \Illuminate\Support\Fluent($location);
     }
 }
@@ -602,157 +449,15 @@ if (!function_exists('safe')) {
             $hiddenEmailDomain = substr($emailParts[1], 0, 2) . str_repeat('*', strlen($emailParts[1]) - 3) . $emailParts[1][strlen($emailParts[1]) - 1];
 
             return $hiddenUsername . '@' . $hiddenEmailDomain;
-
         }
 
         return preg_replace('/(\d{3})\d{3}(\d{3})/', '$1****$2', $input);
-
     }
 }
 
-function creditReferralBonus($user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
-{
-    $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
-    if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
-        $referrer = \App\Models\User::find($user->ref_id);
 
-        $bounty = $LevelReferral->bounty;
-        $amount = (float)($mainAmount * $bounty) / 100;
 
-        $fromUserReferral = $fromUser == null ? $user : $fromUser;
 
-        $description = ucwords($type) . ' Referral Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in referral account ' . $user->multi_ib_login;
-
-        $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::Referral, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
-
-        $referrer->profit_balance += $amount;
-        $referrer->save();
-
-        $forexApiService = new ForexApiService();
-        $comment = 'referral-bonus' . '/' . substr($transaction->tnx, -7);
-        $data = [
-            'login' => $user->multi_ib_login,
-            'Amount' => $amount,
-            'type' => 1,//deposit
-            'TransactionComments' => $comment
-        ];
-        $forexApiService->balanceOperation($data);
-//        $forexApiTrait->ForexDeposit($user->multi_ib_login, $amount, $comment);
-        creditReferralBonus($referrer, $type, $mainAmount, $level, $depth + 1, $user);
-    }
-}
-
-function creditMultiIbBonus($IBTransaction, $user, $type, $mainAmount, $level = null, $depth = 1, $fromUser = null)
-{
-    $LevelReferral = \App\Models\LevelReferral::where('type', $type)->where('the_order', $depth)->first('bounty');
-//   dd($user->ref_id);
-    if (null != $user->ref_id && $depth <= $level && $LevelReferral) {
-        $referrer = \App\Models\User::find($user->ref_id);
-//        dd($referrer);
-
-        if ($referrer->is_multi_ib) {
-            $bounty = $LevelReferral->bounty;
-            $amount = (float)($mainAmount * $bounty) / 100;
-//dd($amount);
-            $fromUserReferral = $fromUser == null ? $user : $fromUser;
-
-            $forexApiTrait = new class {
-                use ForexApiTrait;
-            };
-            if (!isset($referrer->multi_ib_login)) {
-                createMultiIBAccount($referrer);
-                $referrer = $referrer->fresh();
-            }
-            $description = ucwords(str_replace('_', ' ', $type)) . ' Bonus Via ' . $fromUserReferral->full_name . ' - Level ' . $depth . ' in Multi IB account ' . $referrer->multi_ib_login;
-            $transaction = Txn::new($amount, 0, $amount, 'system', $description, TxnType::MultiIB, TxnStatus::Success, null, null, $referrer->id, $fromUserReferral->id, 'User', [], 'none', $depth, $type, true);
-
-            $referrer->multi_ib_balance += $amount;
-            $referrer->save();
-            $forexApiService = new ForexApiService();
-            $comment = 'MIB' . '/' . $IBTransaction->client_no . '/' . $IBTransaction->trade_id;
-            $data = [
-                'login' => $user->multi_ib_login,
-                'Amount' => $amount,
-                'type' => 1,//deposit
-                'TransactionComments' => $comment
-            ];
-            $forexApiService->balanceOperation($data);
-//            $forexApiTrait->ForexDeposit($referrer->multi_ib_login, $amount, $comment);
-        }
-        creditMultiIbBonus($IBTransaction, $referrer, $type, $mainAmount, $level, $depth + 1, $user);
-    }
-}
-
-function createMultiIBAccount($user)
-{
-    $ibSchema = IbSchema::where('type', 'multi_ib')->where('status', true)->first();
-//        dd($ibSchema);
-    if (!$ibSchema) {
-        return false;
-    }
-    $group = $ibSchema->group;
-
-    $server = config('forextrading.server');
-    $password = 'SNNH@2024@bol';
-    $investPassword = 'SNNH@2024@bol';
-    $name = $user->full_name;
-    if (!$name) {
-        $name = 'abc';
-    }
-    $phone = $user->phone;
-    if (!$phone) {
-        $phone = 12345678;
-    }
-    $country = $user->country;
-    if (!$country) {
-        $country = 'UAE';
-    }
-    $dataArray = array(
-        'Name' => $name,
-        'Leverage' => 1,
-        'Group' => $group,
-        'MasterPassword' => $password,
-        'InvestorPassword' => $investPassword,
-//            'PhonePassword' => $password,
-        'Email' => $user->email,
-        'Phone' => $phone,
-        'Country' => $country,
-    );
-    $dataArray['Login'] = 0;
-    $dataArray['Language'] = 0;
-    $dataArray['Rights'] = 'USER_RIGHT_ALL';
-    $dataArray['Status'] = 'YES';
-    $URL = config('forextrading.createUserUrl');
-//        dd($dataArray,$URL);
-    $forexApiTrait = new class {
-        use ForexApiTrait;
-    };
-    $response = $forexApiTrait->sendApiPostRequest($URL, $dataArray);
-//        dd($response->object());
-//        if ($response->serverError() || $response->failed()) {
-//            return redirect()->back()->withErrors(['msg' => 'Some error occurred! please try again']);
-//        }
-
-    if ($response->status() == 200 && $response->successful() && $response->object()->ResponseCode == 0) {
-        $resData = $response->object();
-        $user->multi_ib_login = $resData->Login;
-        $user->save();
-        return $resData->Login;
-    }
-    return false;
-    //        return redirect()->back()->withErrors(['msg' => 'Update your phone and country in profile']);
-}
-
-if (!function_exists('first_min_deposit')) {
-    function first_min_deposit($login)
-    {
-        $forexAccount = ForexAccount::where('login', $login)->where('first_min_deposit_paid', 0)->first();
-        if (!$forexAccount) {
-            return false;
-        }
-        $forexAccount->update(['first_min_deposit_paid' => 1]);
-    }
-}
 if (!function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {
@@ -815,32 +520,7 @@ if (!function_exists('generate_date_range_array')) {
         return $dates->toArray();
     }
 }
-if (!function_exists('kyc_completed_level')) {
-    function kyc_completed_level()
-    {
-        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true);
-        $totalActiveLevels = $kycLevels->count();
-        $kycCompletedLevel = 0;
-        if($totalActiveLevels == 1){
-            if(kyclevel::where('id', 1)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level1->value;
-            }elseif(kyclevel::where('id', 2)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level2->value;
-            }elseif(kyclevel::where('id', 3)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
-            }
-        }elseif($totalActiveLevels == 2){
-            // Assume you have the highest level like this:
-            $highestLevel = kyclevel::where('status', true)->orderBy('id', 'desc')->first();
-            $enumLevelName = 'Level' . $highestLevel->id;
-            $kycCompletedLevel = constant("App\\Enums\\KYCStatus::$enumLevelName")->value;
 
-        }elseif($totalActiveLevels == 3){
-            $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
-        }
-        return $kycCompletedLevel;
-    }
-}
 if (!function_exists('calPercentage')) {
     function calPercentage($num, $percentage)
     {
@@ -852,9 +532,7 @@ if (!function_exists('getQRCode')) {
     {
 
         return "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=$data";
-    }
-
-    ;
+    };
 }
 if (!function_exists('generateDummyPassword')) {
     function generateDummyPassword($length = 12)
@@ -903,7 +581,7 @@ if (!function_exists('user_meta')) {
     function user_meta($metaKey, $default = null, $user = null)
     {
         $user = (blank($user)) ? auth()->user() : $user;
-//dd($user);
+        //dd($user);
         if (!blank($user)) {
             $userMetas = $user->user_metas->pluck('meta_value', 'meta_key');
             if (!blank($userMetas)) {
@@ -913,149 +591,7 @@ if (!function_exists('user_meta')) {
         return ($default) ? $default : false;
     }
 }
-if (!function_exists('add_child_agent')) {
-    /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function add_child_agent($pUser)
-    {
-        $users = User::where('ref_id', $pUser->id)->get();
-//        dd($users);
-        foreach ($users as $user) {
-            $forexAccounts = ForexAccount::where('user_id', $user->id)
-                ->where('account_type', 'real')
-                ->get();
-//        dd($forexAccounts,$this->user);
-//            $forexApiTrait = new class {
-//                use ForexApiTrait;
-//            };
-            $forexApiService = new ForexApiService();
-            foreach ($forexAccounts as $forexAccount) {
-//                dd($forexAccount);
-                if ($pUser->ib_login) {
-                    $data = [
-                        'login' => $forexAccount->login,
-                        'agent' => $pUser->ib_login,
-                    ];
-                    $forexApiService->updateAgentAccount($data);
-                }
-            }
-        }
-    }
-}
 
-
-
-if (!function_exists('sync_forex_accounts')) {
-    /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function sync_forex_accounts($pUser)
-    {
-        if (!isset($userID))
-            $userID = auth()->user()->id;
-
-        $realAccounts = ForexAccount::where('user_id', $userID)
-            ->where('status', ForexAccountStatus::Ongoing)
-//            ->where('login', 1003462)
-            ->get();
-
-        $balance = 0;
-        $forexApiService = app(ForexApiService::class);
-        foreach ($realAccounts as $account) {
-//            dd($account);
-            $data = [
-                'login' => $account->login
-            ];
-            $getUserResponse = $forexApiService->getBalance($data);
-//            dd($getUserResponse);
-//           dd($getUserResponse->object(),$getUserResponse->object()->Login);
-//            if (!empty($getUserResponse)) {
-//                dd($getUserResponse->object(),$getUserResponse->object()->Login);
-                if ($getUserResponse['success']) {
-
-                    update_user_account_by_api_response($getUserResponse['result']);
-//                    if ($account->account_type == 'real') {
-//                        $balance += $getUserResponse->object()->Balance;
-//                    }
-                }
-            }
-//        }
-//        dd($balance);
-//        update_total_balance($userID, $balance);
-    }
-}
-
-if (!function_exists('update_user_account_by_api_response')) {
-    function update_user_account_by_api_response($resData, $lastDeposit = false)
-    {
-//        dd($resData);
-//        $resData = $getUserResponse->object();
-//        dd($resData);
-        if (isset($resData['login'])) {
-            $forexTrading = ForexAccount::where('login', $resData['login'])->first();
-//        $forexTrading->account_name = $resData->Name;
-            if ($forexTrading) {
-//                $forexTrading->leverage = $resData['leverage'];
-//      $forexTrading->email = $resData->Email;
-                $forexTrading->balance = $resData['balance'];
-                $forexTrading->equity = $resData['equity'];
-                $forexTrading->credit = $resData['credit'];
-//                $forexTrading->agent = $resData->Agent;
-//            $forexTrading->free_margin = $resData->MarginFree;
-//            $forexTrading->margin = $resData->Margin;
-//                $forexTrading->group = $resData->Group;
-
-                $forexTrading->save();
-            }
-        }
-    }
-}
-if (!function_exists('update_total_balance')) {
-    function update_total_balance($userID, $balance)
-    {
-        $user = User::where('id', $userID)->first();
-//        $forexTrading->account_name = $resData->Name;
-        $user->balance = $balance;
-        $user->save();
-    }
-}
-
-    if (!function_exists('remove_child_agent')) {
-
-    /**
-     * @param $metaKey
-     * @param null $default
-     * @param null $user
-     * @return array|mixed
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function remove_child_agent($user)
-    {
-        $forexAccounts = ForexAccount::where('user_id', $user->id)
-            ->where('account_type', 'real')
-            ->get();
-//        dd($forexAccounts,$this->user);
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
-        foreach ($forexAccounts as $forexAccount) {
-            $forexApiTrait->updateAgent($forexAccount->login, 0);
-        }
-
-    }
-}
 if (!function_exists('get_mt5_account')) {
     /**
      * Retrieves the MT5 account details for a specific login.
@@ -1079,216 +615,7 @@ if (!function_exists('get_mt5_account')) {
         }
     }
 }
-if (!function_exists('get_mt5_account_balance')) {
-    /**
-     * Retrieves the balance of an MT5 account for a specific login.
-     *
-     * @param int $login The login ID of the MT5 account.
-     * @return float The balance of the MT5 account, or 0.0 if not found or on error.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_mt5_account_balance($login)
-    {
-        return 0;
-        try {
-            $mt5Account = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-            return $mt5Account ? $mt5Account->Balance : 0.0;
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving balance: ' . $e->getMessage());
-            return 0.0;
-        }
-    }
-}
 
-if (!function_exists('get_mt5_account_equity')) {
-    /**
-     * Retrieves the equity of an MT5 account for a specific login.
-     *
-     * @param int $login The login ID of the MT5 account.
-     * @return float The equity of the MT5 account, or 0.0 if not found or on error.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function get_mt5_account_equity($login)
-    {
-        return 0;
-        try {
-            $mt5Account = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->first();
-            return $mt5Account ? $mt5Account->Equity : 0.0;
-        } catch (\Exception $e) {
-            \Log::error('MT5 DB connection failed when retrieving equity: ' . $e->getMessage());
-            return 0.0;
-        }
-    }
-}
-
-
-
-if (!function_exists('mt5_total_balance')) {
-    /**
-     * Calculates the total balance for a user's ongoing real forex accounts.
-     *
-     * @param int $user_id The ID of the user.
-     * @return float The total balance, or 0 if the connection fails.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function mt5_total_balance($user_id)
-    {
-        return 0;
-        try {
-            // Fetch the forex account logins for the user
-            $forexAccounts = ForexAccount::where('user_id', $user_id)
-                ->where('account_type', 'real')
-                ->where('status', ForexAccountStatus::Ongoing)
-                ->pluck('login');
-
-            // If no accounts found, return 0
-            if ($forexAccounts->isEmpty()) {
-                return 0;
-            }
-
-            // Calculate the total balance using the mt5_db connection
-            $totalBalance = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $forexAccounts)
-                ->sum('Balance');
-
-            return $totalBalance;
-
-        } catch (\Exception $e) {
-            // Log the error message for debugging
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-
-            // Return 0 in case of any failure
-            return 0;
-        }
-    }
-}
-
-if (!function_exists('mt5_total_equity')) {
-    /**
-     * Calculates the total equity for a user's ongoing real forex accounts.
-     *
-     * @param int $user_id The ID of the user.
-     * @return float The total equity, or 0 if the connection fails.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function mt5_total_equity($user_id)
-    {
-        return 0;
-        try {
-            // Fetch the forex account logins for the user
-            $forexAccounts = ForexAccount::where('user_id', $user_id)
-                ->where('account_type', 'real')
-                ->where('status', ForexAccountStatus::Ongoing)
-                ->pluck('login');
-
-            // If no accounts found, return 0
-            if ($forexAccounts->isEmpty()) {
-                return 0;
-            }
-
-            // Calculate the total equity using the mt5_db connection
-            $totalEquity = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $forexAccounts)
-                ->sum('Equity');
-
-            return $totalEquity;
-
-        } catch (\Exception $e) {
-            // Log the error message for debugging
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-
-            // Return 0 in case of any failure
-            return 0;
-        }
-    }
-}
-
-if (!function_exists('mt5_total_credit')) {
-    /**
-     * Calculates the total credit for a user's ongoing real forex accounts.
-     *
-     * @param int $user_id The ID of the user.
-     * @return float The total credit, or 0 if the connection fails.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function mt5_total_credit($user_id)
-    {
-        return 0;
-        try {
-            // Fetch the forex account logins for the user
-            $forexAccounts = ForexAccount::where('user_id', $user_id)
-                ->where('account_type', 'real')
-                ->where('status', ForexAccountStatus::Ongoing)
-                ->pluck('login');
-
-            // If no accounts found, return 0
-            if ($forexAccounts->isEmpty()) {
-                return 0;
-            }
-
-            // Calculate the total credit using the mt5_db connection
-            $totalCredit = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->whereIn('Login', $forexAccounts)
-                ->sum('Credit');
-
-            return $totalCredit;
-
-        } catch (\Exception $e) {
-            // Log the error message for debugging
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
-
-            // Return 0 in case of any failure
-            return 0;
-        }
-    }
-}
-
-if (!function_exists('mt5_update_balance')) {
-    /**
-     * Updates the balance and equity for a specific forex account login.
-     *
-     * @param int $login The login ID of the forex account.
-     * @param float $balance The new balance to be set.
-     * @return bool True if update was successful, False if it failed.
-     * @version 1.0.0
-     * @since 1.0
-     */
-    function mt5_update_balance($login, $balance)
-    {
-        return true;
-        try {
-            // Update the balance and equity for the given login
-            $updated = DB::connection('mt5_db')
-                ->table('mt5_accounts')
-                ->where('Login', $login)
-                ->update(['Balance' => $balance, 'Equity' => $balance]);
-
-            // Return true if update was successful
-            return $updated > 0;
-
-        } catch (\Exception $e) {
-            // Log the error message for debugging
-            \Log::error('MT5 DB connection failed during balance update: ' . $e->getMessage());
-
-            // Return false in case of failure
-            return false;
-        }
-    }
-}
 
 if (!function_exists('the_hash')) {
     /**
@@ -1356,58 +683,6 @@ if (!function_exists('isDarkColor')) {
     }
 }
 
-if (!function_exists('kyc_required_completed_level')) {
-    function kyc_required_completed_level()
-    {
-        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true);
-        $totalActiveLevels = $kycLevels->count();
-        $kycCompletedLevel = 0;
-        if($totalActiveLevels == 1){
-            if(kyclevel::where('id', 1)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level1->value;
-            }elseif(kyclevel::where('id', 2)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level2->value;
-            }elseif(kyclevel::where('id', 3)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
-            }
-        }elseif($totalActiveLevels == 2){
-            // Assume you have the highest level like this:
-            $highestLevel = kyclevel::where('status', true)->orderBy('id', 'desc')->first();
-            $enumLevelName = 'Level' . $highestLevel->id;
-            $kycCompletedLevel = constant("App\\Enums\\KYCStatus::$enumLevelName")->value;
-
-        }elseif($totalActiveLevels == 3){
-            $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
-        }
-        return $kycCompletedLevel;
-    }
-}
-if (!function_exists('kyc_first_level_check')) {
-    function kyc_first_level_check()
-    {
-        $kycLevels = kyclevel::with('kyc_sub_levels')->where('status', true);
-        $totalActiveLevels = $kycLevels->count();
-        $kycCompletedLevel = 0;
-        if($totalActiveLevels == 1){
-            if(kyclevel::where('id', 1)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level1->value;
-            }elseif(kyclevel::where('id', 2)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level2->value;
-            }elseif(kyclevel::where('id', 3)->where('status', true)->exists()) {
-                $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
-            }
-        }elseif($totalActiveLevels == 2){
-            // Assume you have the highest level like this:
-            $highestLevel = kyclevel::where('status', true)->orderBy('id', 'desc')->first();
-            $enumLevelName = 'Level' . $highestLevel->id;
-            $kycCompletedLevel = constant("App\\Enums\\KYCStatus::$enumLevelName")->value;
-
-        }elseif($totalActiveLevels == 3){
-            $kycCompletedLevel = App\Enums\KYCStatus::Level3->value;
-        }
-        return $kycCompletedLevel;
-    }
-}
 
 if (!function_exists("generate_dummy_password")) {
     /**
@@ -1416,7 +691,8 @@ if (!function_exists("generate_dummy_password")) {
      * @version 1.0.0
      * @since 1.1.3
      */
-    function generate_dummy_password($length = 12) {
+    function generate_dummy_password($length = 12)
+    {
         $lowercase = 'abcdefghijklmnopqrstuvwxyz';
         $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $special = '!@#$%^&*()-_?';
@@ -1449,29 +725,6 @@ if (!function_exists("generate_dummy_password")) {
     }
 }
 
-if (!function_exists('generate_unique_ivx')) {
-    /**
-     * @param $$model
-     * @param $column
-     * @since 1.0
-     * @version 1.0.0
-     */
-    function generate_unique_ivx($model, $column): string
-    {
-        $lastEntry = $model::orderBy('id', 'desc')->latest()->first();
-        $nextID = (isset($lastEntry->id)) ? sprintf('%04s', ($lastEntry->id + 1)) : sprintf('%04s', 1);
-
-        $increment = (int)(mt_rand(10, 99) . substr(time(), -2) . $nextID);
-        $duplicate = $model::where($column, $increment)->first();
-
-        if (blank($duplicate)) {
-            return $increment;
-        } else {
-            return generate_unique_ivx($model, $column);
-        }
-    }
-}
-
 if (!function_exists('social_links')) {
     function social_links()
     {
@@ -1479,4 +732,89 @@ if (!function_exists('social_links')) {
     }
 }
 
+if (!function_exists('kyc_invoke_at')) {
+    function kyc_invoke_at() {
+        return Setting::where('name', 'kyc_notice')->first() ? Setting::where('name', 'kyc_notice')->first()->val : KycNoticeInvokeEnums::FUNDED_PHASE;
+    }
+}
 
+if (!function_exists('kyc_check_exists')) {
+    function kyc_check_exists($kyc_invoke) {
+        $user = Auth::user();
+        if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() == $kyc_invoke) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('show_kyc_notice')) {
+    
+    function show_kyc_notice() {
+        $user = Auth::user();
+        $kyc_invoke_at = kyc_invoke_at();
+
+        if($user->kyc->status == KycStatusEnums::UNVERIFIED) {
+
+            // Account Purchase (Always)
+            if($kyc_invoke_at == KycNoticeInvokeEnums::ACCOUNT_PURCHASE) {
+                return [
+                    'show' => true,
+                    'message' => 'buy new account(s).'
+                ];
+            }
+
+            // Verification Phase (invoke when the user gets evaluation phase)
+            if($kyc_invoke_at == KycNoticeInvokeEnums::VERIFICATION_PHASE) {
+                $accounts = AccountTypeInvestment::where('user_id', $user->id)
+                                                ->whereHas('accountTypePhase', function ($query) {
+                                                    $query->where('type', AccountTypePhase::EVALUATION);
+                                                })->get();
+                if(count($accounts) > 0) {
+                    return [
+                        'show' => true,
+                        'message' => 'get next phases account access.'
+                    ];
+                }
+            }
+
+            // Funded Phase (invoke when the user gets verification phase)
+            if($kyc_invoke_at == KycNoticeInvokeEnums::FUNDED_PHASE) {
+                $accounts = AccountTypeInvestment::where('user_id', $user->id)
+                                                ->whereHas('accountTypePhase', function ($query) {
+                                                    $query->where('type', AccountTypePhase::EVALUATION)->orWhere('type', AccountTypePhase::VERIFICATION);
+                                                })->get();
+                if(count($accounts) > 0) {
+                    return [
+                        'show' => true,
+                        'message' => 'get funded account access without hassle.'
+                    ];
+                }
+            }
+
+            // Payout (invoke when the user gets funded phase)
+            if($kyc_invoke_at == KycNoticeInvokeEnums::PAYOUT) {
+                $accounts = AccountTypeInvestment::where('user_id', $user->id)
+                                                ->whereHas('accountTypePhase', function ($query) {
+                                                    $query->where('type', AccountTypePhase::FUNDED);
+                                                })->get();
+                if(count($accounts) > 0) {
+                    return [
+                        'show' => true,
+                        'message' => 'create payout requests without hassle.'
+                    ];
+                }
+            }
+            
+
+        }
+
+        return [
+            'show' => false,
+            'message' => ''
+        ];
+        
+    }
+
+}

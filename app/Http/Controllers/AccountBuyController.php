@@ -11,7 +11,9 @@ use App\Models\AccountType;
 use App\Models\Transaction;
 use App\Models\AccountTrial;
 use Illuminate\Http\Request;
+use App\Enums\KycStatusEnums;
 use App\Enums\InvestmentStatus;
+use App\Enums\KycNoticeInvokeEnums;
 use App\Services\AccountBuyService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
@@ -40,18 +42,19 @@ class AccountBuyController extends Controller
     public function index()
     {
         $user = auth()->user();
-        
 
-        $account_types = AccountType::active()->traderType()  // Use the defined scope for active accounts
-                    ->relevantForUser($user->country, [])  // Use the integrated scope for filtering by country and tags
-                    ->orderBy('priority', 'asc')
-                        ->get();
+        $account_types = AccountType::active()->traderType()  
+                                    ->relevantForUser($user->country, [])  
+                                    ->orderBy('priority', 'asc')
+                                    ->get();
         
         $failed_transactions = Transaction::where('user_id', Auth::id())->where('status', TxnStatus::Failed)->get();
 
         $trial_used = AccountTrial::where('user_id', Auth::id())->where('trial_used', 1)->exists();
 
-        return view('frontend::account_buy.index', compact('account_types', 'failed_transactions', 'trial_used'));
+        $kyc_check_exists = kyc_check_exists(KycNoticeInvokeEnums::ACCOUNT_PURCHASE);
+
+        return view('frontend::account_buy.index', get_defined_vars());
     }
 
     /**
@@ -83,6 +86,11 @@ class AccountBuyController extends Controller
      */
     public function show(Request $request, $id)
     {
+        // KYC Check
+        if(kyc_check_exists(KycNoticeInvokeEnums::ACCOUNT_PURCHASE)) {
+            return redirect()->route('user.verification.index');
+        }
+
         $account_type = AccountType::find($id);
 
         // Creation limit error
@@ -105,7 +113,9 @@ class AccountBuyController extends Controller
         $addons = Addon::where('status', 1)->get();
         $legal_links = Setting::where('name', 'LIKE', '%legal_%')->where('name', 'LIKE', '%_purchase%')->get();
 
-        return view('frontend::account_buy.show', compact('account_type', 'addons', 'legal_links'));
+        
+
+        return view('frontend::account_buy.show', get_defined_vars());
     }
 
     

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AccountTypePhase as EnumsAccountTypePhase;
 use Carbon\Carbon;
 use App\Models\Addon;
 use App\Models\Invoice;
@@ -22,6 +23,9 @@ use App\Services\InvestmentPhaseApproval;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
+use App\Enums\KycNoticeInvokeEnums;
+use App\Enums\KycStatusEnums;
+use App\Models\User;
 
 class AccountTypeInvestmentService
 {
@@ -259,6 +263,16 @@ class AccountTypeInvestmentService
       return true;
     }
 
+    // --- KYC Check  --- 
+    $kyc_verified = true;
+    $user = User::find($investment->user_id);
+    // KYC STATUS
+    if($user->kyc->status == KycStatusEnums::UNVERIFIED && 
+      (kyc_invoke_at() == KycNoticeInvokeEnums::VERIFICATION_PHASE || kyc_invoke_at() == KycNoticeInvokeEnums::FUNDED_PHASE)
+    ) {
+      $kyc_verified = false;
+    }
+    
     // ->where('status', 'active')
 
     // Same day 1st record after 12AM
@@ -273,7 +287,6 @@ class AccountTypeInvestmentService
     }
 
     // Calculate the trading objectives
-    
     $trading_objectives = $this->tradingObjectives($investment, $first_record_after_midnight);
 
     // Evaluate the trading objectives
@@ -291,19 +304,22 @@ class AccountTypeInvestmentService
       if( $investment->accountTypeInvestmentStat->current_equity != $investment->accountTypeInvestmentStat->balance ){
         $investment->status = InvestmentStatus::ACTIVE;
       }else{
-        if($investment->getPhaseSnapshotData()['type'] != 'funded_phase') {
-          $investment->status = InvestmentStatus::PASSED;
-        }
 
         if($investment->is_trial == 1) {
           $investment->status = InvestmentStatus::ACTIVE;
         }
 
+        // if promoted then set the current investment as passed
+        if($investment->getPhaseSnapshotData()['type'] != 'funded_phase') {
+          $investment->status = InvestmentStatus::PASSED;
+        }
+  
         // create a new investment with new account for next phase if the account_type type is "challenge"
         $account_type_type = $investment->getAccountTypeSnapshotData()['type'];
         if($account_type_type == "challenge"){
-          $this->promoteToNextPhase($investment);
+          $is_promoted = $this->promoteToNextPhase($investment);
         }
+        
 
       }
     }
@@ -311,7 +327,7 @@ class AccountTypeInvestmentService
     $investment->save();
 
 
-    return ['investment' => $investment, 'first_record_after_midnight' => $first_record_after_midnight, 'trading_objectives' => $trading_objectives, 'trading_objectives_evaluation' => $trading_objectives_evaluation];
+    return get_defined_vars();
 
   }
 
@@ -320,9 +336,11 @@ class AccountTypeInvestmentService
    */
   public function promoteToNextPhase($passed_investment) {
 
+    $user = User::find($passed_investment->user_id);
+
     // skip if trial
     if($passed_investment->is_trial == 1) {
-      return true;
+      return false;
     }
 
     $snapshot = AccountTypeInvestmentSnapshot::where('account_type_investment_id', $passed_investment->id)->first();
@@ -340,7 +358,16 @@ class AccountTypeInvestmentService
                         ->where('account_type_phase_id', $next_phase['id'])
                         ->where('unique_id', $passed_phase_rules['unique_id'])
                         ->first();
-      
+
+      // Check if there is any KYC Check for Verification Phase
+      if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() == KycNoticeInvokeEnums::VERIFICATION_PHASE && $next_phase['type'] == EnumsAccountTypePhase::VERIFICATION) {
+        return false;
+      }
+
+      // Check if there is any KYC Check for Funded Phase
+      if($user->kyc->status == KycStatusEnums::UNVERIFIED && kyc_invoke_at() == KycNoticeInvokeEnums::FUNDED_PHASE && $next_phase['type'] == EnumsAccountTypePhase::FUNDED) {
+        return false;
+      }
 
       // Check if the next phase investment is already created, then return
       $check_user_and_next_phase_exists = AccountTypeInvestment::where([
@@ -348,7 +375,7 @@ class AccountTypeInvestmentService
                                             'unique_id' =>     $passed_investment->unique_id
                                           ])->exists();
       if($check_user_and_next_phase_exists) {
-        return true;
+        return false;
       }
 
       // Update the phase_ended_at of passed phase
@@ -397,6 +424,8 @@ class AccountTypeInvestmentService
 
       }
 
+      return true;
+
     }else{
       // payout phase
       
@@ -410,7 +439,7 @@ class AccountTypeInvestmentService
       $this->payout->updateFundedBalance($passed_investment);
       
     }
-
+    
   }
 
   /**

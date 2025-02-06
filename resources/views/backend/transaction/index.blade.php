@@ -28,25 +28,11 @@
                     <div class="flex-1 input-area relative">
                         <select name="type" class="form-control h-full" id="type">
                             <option value="">Transaction Type</option>
-                            <option value="deposit">Deposit</option>
-                            <option value="forex_deposit">Demo Deposit</option>
-                            <option value="subtract">Subtract</option>
-                            <option value="manual_deposit">Manual Deposit</option>
-                            <option value="send_money">Send Money </option>
-                            <option value="send_money_internal">Send Money Internal</option>
-                            <option value="exchange">Exchange</option>
-                            <option value="referral">Referral</option>
-                            <option value="bonus">Signup Bonus</option>
-
-                            <option value="withdraw">Withdraw</option>
-                            <option value="withdraw_auto">Withdraw Auto</option>
-                            <option value="receive_money">Receive Money</option>
-                            <option value="investment">Investment</option>
-                            <option value="interest">Interest</option>
-                            <option value="refund">Refund</option>
-                            <option value="multi_ib">Multi IB</option>
-                            <option value="ib">IB</option>
+                            @foreach (\App\Enums\TxnType::cases() as $txnType)
+                                <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                            @endforeach
                         </select>
+
                     </div>
 
                     <div class="flex-1 input-area relative">

@@ -425,8 +425,8 @@
                 <a href="{{ route('admin.ticket.index') }}"
                    class="navItem {{ isActive('admin.ticket.index') }} || {{ isActive('admin.ticket.show*') }}">
                     <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="lucide:wrench"></iconify-icon>
-                        <span>{{ __('Support Tickets') }}</span>
+                        <iconify-icon class="nav-icon" icon="ix:support"></iconify-icon>
+                        <span>{{ __('Tickets') }}</span>
                     </span>
                 </a>
             </li>

@@ -125,7 +125,7 @@ class Transaction extends Model
     public function totalInvestment()
     {
         return $this->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Investment);
+            $query->where('type', TxnType::Deposit);
         });
     }
     public function totalIbBonus()

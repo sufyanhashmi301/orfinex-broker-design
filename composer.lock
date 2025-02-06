@@ -282,12 +282,12 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Coderflex\\LaravelTicket\\LaravelTicketServiceProvider"
-                    ],
                     "aliases": {
                         "LaravelTicket": "Coderflex\\LaravelTicket\\Facades\\LaravelTicket"
-                    }
+                    },
+                    "providers": [
+                        "Coderflex\\LaravelTicket\\LaravelTicketServiceProvider"
+                    ]
                 }
             },
             "autoload": {

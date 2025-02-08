@@ -110,7 +110,7 @@ class InvestController extends GatewayController
 //
 //            }
 //
-//            $txnInfo = Txn::new($investAmount, $charge, $finalAmount, $gatewayInfo->name, $schema->name.' Invested', TxnType::Investment, TxnStatus::Pending, $payCurrency, $payAmount, $user->id, null, 'user', $manualData ?? []);
+//            $txnInfo = Txn::new($investAmount, $charge, $finalAmount, $gatewayInfo->name, $schema->name.' Invested', TxnStatus::Pending, $payCurrency, $payAmount, $user->id, null, 'user', $manualData ?? []);
 //            $data = array_merge($data, ['status' => InvestStatus::Pending, 'transaction_id' => $txnInfo->id]);
 //            Invest::create($data);
 //

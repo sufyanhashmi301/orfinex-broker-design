@@ -128,7 +128,7 @@
     {{--                                            {{dd(App\Enums\TxnType::Withdraw)}}--}}
     {{--                                            @endif--}}
                                             <td class="table-td">
-                                                <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto]) ?  'red-color' : 'green-color'}}">{{ (in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}</strong>
+                                                <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto]) ?  'red-color' : 'green-color'}}">{{ (in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}</strong>
                                             </td>
                                             <td class="table-td">
                                                 {{ $transaction->charge }} {{ $currency }}

@@ -115,15 +115,15 @@
                                                 {{ $raw->target_id }}
                                             </td>
                                             <td class="table-td">
-                                                <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
-                                                    {{ (in_array($raw->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ? '-': '+' ).$raw->amount.' '.$raw->currency }}
+                                                <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
+                                                    {{ (in_array($raw->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ? '-': '+' ).$raw->amount.' '.$raw->currency }}
                                                 </strong>
                                             </td>
                                             <td class="table-td">
                                                 {{transaction_method_name($raw)}}
                                             </td>
                                             <td class="table-td">
-                                                <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
+                                                <strong class="{{in_array($raw->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
                                                     {{ $raw->charge.' '.$raw->currency }}
                                                 </strong>
                                             </td>

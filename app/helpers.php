@@ -872,6 +872,35 @@ if (!function_exists('is_custom_rate')) {
         return null;
     }
 }
+if (!function_exists('match2pay_currencies')) {
+    function match2pay_currencies()
+    {
+        // Define the mapping of payment currencies to their gateway names
+        return [
+            'BTC' => 'BTC',
+            'ETH' => 'ETH',
+            'UST' => 'USDT ERC20',
+            'UCC' => 'USDC ERC20',
+            'TRX' => 'TRX',
+            'USX' => 'USDT TRC20',
+            'UCX' => 'USDC TRC20',
+            'BNB' => 'BNB',
+            'USB' => 'USDT BEP20',
+            'MAT' => 'MATIC',
+            'USP' => 'USDT POLYGON',
+            'UCP' => 'USDC POLYGON',
+            'XRP' => 'XRP',
+            'DOG' => 'DOGECOIN',
+            'LTC' => 'LTC',
+            'SOL' => 'SOL',
+            'USS' => 'USDT SOL',
+            'UCS' => 'USDC SOL',
+            'TON' => 'TON',
+            'UTT' => 'USDT TON',
+        ];
+
+    }
+}
 
 if (!function_exists('site_theme')) {
     function site_theme()

@@ -11575,7 +11575,8 @@ ul.custom-list ul li{
   }
 }
 .chat-height {
-  height: calc(var(--vh, 1vh) * 100 - 12.1rem);
+  /*height: calc(var(--vh, 1vh) * 100 - 12.1rem);*/
+    height: calc(var(--vh, 1vh) * 100 - 10rem);
 }
 
 .leading-0 {
@@ -11584,7 +11585,8 @@ ul.custom-list ul li{
 
 @media (max-width: 768px) {
   .chat-height {
-    height: calc(var(--vh, 1vh) * 100 - 10.5rem);
+    /*height: calc(var(--vh, 1vh) * 100 - 10.5rem);*/
+      height: calc(var(--vh, 1vh) * 100 - 8.5rem);
   }
 }
 .contact-height {

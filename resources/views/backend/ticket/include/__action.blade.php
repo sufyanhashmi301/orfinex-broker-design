@@ -4,7 +4,7 @@
            <iconify-icon icon="solar:chat-dots-linear"></iconify-icon>
         </a>
     @endcan
-    <button type="button" class="action-btn">
+    <button type="button" id="assignTicket" data-id="{{ $id }}" class="action-btn">
         <iconify-icon icon="lucide:user-round-plus"></iconify-icon>
     </button>
 </div>

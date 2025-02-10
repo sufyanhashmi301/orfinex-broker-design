@@ -22,6 +22,8 @@ use App\Http\Controllers\Backend\PluginController;
 use App\Http\Controllers\Backend\ProfitController;
 use App\Http\Controllers\Backend\SocialController;
 use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\LabelController;
 use App\Http\Controllers\Backend\TicketController;
 use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\DepositController;
@@ -452,15 +454,25 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mail-send-subscriber-now', 'mailSendSubscriberNow')->name('mail.send.subscriber.now');
     });
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
+        Route::get('new-ticket', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
         Route::get('index/{id?}', 'index')->name('index');
         Route::get('status', 'ticketStatus')->name('ticketStatus');
         Route::get('priority', 'ticketPriority')->name('ticketPriority');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
-        Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
+        Route::patch('{ticket}/update', 'update')->name('update');
 
-        Route::resource('statuses', TicketStatusController::class);
-        Route::resource('priorities', TicketPriorityController::class);
+        // routes/web.php
+        Route::get('assign/{ticket}', 'showAssignModal')->name('showAssignModal');
+        Route::post('{ticket}/assign', 'assignTicket')->name('assign');
+
+        Route::patch('{ticket}/close', 'close')->name('close');
+        Route::patch('{ticket}/reopen', 'reopen')->name('reopen');
+        Route::patch('{ticket}/archive', 'archive')->name('archive');
+
+        Route::resource('category', CategoryController::class);
+        Route::resource('label', LabelController::class);
     });
     Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
     Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');

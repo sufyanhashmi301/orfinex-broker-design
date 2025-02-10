@@ -617,13 +617,11 @@
                             </span>
                         </a>
                     </li>
-                    @canany(['ticket-priority-list', 'ticket-status-list'])
                     <li>
-                        <a href="{{ route('admin.ticket.statuses.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.ticket.label.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Support Center')}}
                         </a>
                     </li>
-                    @endcanany
                 </ul>
             </div>
         </div>

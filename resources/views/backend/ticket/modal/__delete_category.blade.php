@@ -1,7 +1,7 @@
 <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-        id="deleteTicketPriority"
+        id="deleteTicketCategory"
         tabindex="-1"
-        aria-labelledby="deleteTicketPriority"
+        aria-labelledby="deleteTicketCategory"
         aria-hidden="true"
     >
         <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
@@ -17,9 +17,9 @@
                     </div>
                     <p class="dark:text-slate-300">
                         {{ __('You want to Delete') }}
-                        <strong class="name"></strong> {{ __('Ticket priority?') }}
+                        <strong class="name"></strong> {{ __('Ticket category?') }}
                     </p>
-                    <form method="post" id="priorityDeleteForm">
+                    <form method="post" id="categoryDeleteForm">
                         @method('DELETE')
                         @csrf
                         <div class="action-btns">

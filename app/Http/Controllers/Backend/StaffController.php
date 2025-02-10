@@ -201,6 +201,8 @@ class StaffController extends Controller
             }
 
             $input = $request->all();
+//            dd($input);
+            $input['employee_id'] = $request->input('employee_id') ?: null;
             $input['department_id'] = $request->input('department_id') ?: null;
             $input['designation_id'] = $request->input('designation_id') ?: null;
             unset($input['department'], $input['designation']);

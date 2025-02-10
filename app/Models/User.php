@@ -356,7 +356,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     public function totalInvestment()
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Investment);
+            $query->where('type', TxnType::Deposit);
         })->sum('amount');
 
         return round($sum, 2);

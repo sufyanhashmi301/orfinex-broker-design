@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-    <div class="pageTitle grid md:grid-cols-4 grid-cols-1 gap-5 mb-5">
+    <div class="pageTitle grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 mb-5">
         <div class="card">
             <div class="card-body p-5">
                 <div class="flex space-x-3 rtl:space-x-reverse">
@@ -21,6 +21,9 @@
                             {{ $totalTickets }}
                         </div>
                     </div>
+                    <a href="javascript:;" data-status="all" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
                 </div>
             </div>
         </div>
@@ -40,6 +43,9 @@
                             {{ $closedTickets }}
                         </div>
                     </div>
+                    <a href="javascript:;" data-status="closed" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
                 </div>
             </div>
         </div>
@@ -59,6 +65,9 @@
                             {{ $openTickets }}
                         </div>
                     </div>
+                    <a href="javascript:;" data-status="open" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
                 </div>
             </div>
         </div>
@@ -78,8 +87,22 @@
                             {{ $resolvedTickets }}
                         </div>
                     </div>
+                    <a href="javascript:;" data-status="resolved" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                        <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                    </a>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="innerMenu flex justify-between flex-wrap items-center mb-5">
+        <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
+            {{ __('Tickets') }}
+        </h4>
+        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <a href="#" type="button" id="newTicketBtn" class="btn btn-sm btn-primary inline-flex items-center justify-center">
+                <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
+                {{ __('Create Ticket') }}
+            </a>
         </div>
     </div>
     <div class="card">
@@ -96,7 +119,8 @@
                                     <th scope="col" class="table-th">{{ __('Ticket Subject') }}</th>
                                     <th scope="col" class="table-th">{{ __('Requester Name') }}</th>
                                     <th scope="col" class="table-th">{{ __('Requested On') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Others') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Assignee') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Priority') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
@@ -114,6 +138,13 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal for new ticket --}}
+    @include('backend.ticket.modal.__new_ticket')
+
+    {{-- Modal for assign ticket--}}
+    @include('backend.ticket.modal.__assign_ticket')
+
 @endsection
 
 @section('style')
@@ -158,19 +189,72 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.ticket.index') }}",
+                ajax: {
+                    url: "{{ route('admin.ticket.index') }}",
+                    data: function (d) {
+                        // Get the selected status filter value
+                        var status = $('a.widget-filter-status.active').data('status');
+                        if (status) {
+                            d.status = status;
+                        }
+                    }
+                },
                 columns: [
                     {data: 'uuid', name: 'uuid'},
                     {data: 'title', name: 'title'},
                     {data: 'user', name: 'user'},
                     {data: 'created_at', name: 'created_at'},
+                    {data: 'assigned_to', name: 'assigned_to'},
                     {data: 'priority', name: 'priority'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
 
+            // Handle filter click
+            $('a.widget-filter-status').on('click', function () {
+                var status = $(this).data('status');
+
+                $('a.widget-filter-status').removeClass('active');
+                $(this).addClass('active');
+
+                table.ajax.reload();
+            });
 
         })(jQuery);
+
+        $('body').on('click', '#newTicketBtn', function (e) {
+            "use strict";
+            e.preventDefault();
+
+            var url = '{{ route("admin.ticket.create") }}';
+
+            $.get(url , function (data) {
+                $('#newTicketModal').modal('show');
+                $('#new-ticket-body').append(data);
+            });
+        })
+
+        $('body').on('click', '#assignTicket', function (event) {
+            "use strict";
+            event.preventDefault();
+            $('#assign-ticket-body').empty();
+            var id = $(this).data('id');
+
+            var url = '{{ route("admin.ticket.showAssignModal", ":id") }}';
+            url = url.replace(':id', id);
+
+            $.get(url , function (data) {
+                $('#assignTicketModal').modal('show');
+                $('#assign-ticket-body').append(data);
+            });
+
+        });
+
+        $(document).on('change', '#attach-input', function() {
+            var fileName = this.files[0] ? this.files[0].name : 'Choose a file or drop it here...';
+            $('#fileTile').text(fileName);
+        });
+
     </script>
 @endsection

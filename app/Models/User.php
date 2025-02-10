@@ -437,9 +437,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return $this->belongsTo(IbGroup::class, 'ib_group_id');
     }
 
-    public function ticket()
+    public function ticket(): HasMany
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'user_id');
     }
 
     public function rankAchieved()

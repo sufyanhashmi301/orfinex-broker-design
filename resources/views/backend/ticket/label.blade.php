@@ -1,14 +1,12 @@
 @extends('backend.ticket.index')
 @section('title')
-    {{ __('Tickets Status') }}
+    {{ __('Ticket Types') }}
 @endsection
 @section('header-btn')
-@can('ticket-status-create')
-    <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#statusModal">
+    <a href="javascript:;" class="btn btn-sm btn-primary inline-flex items-center" type="button" data-bs-toggle="modal" data-bs-target="#labelModal">
         <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="ph:plus-bold"></iconify-icon>
-        Add Status
+        {{ __('Add Type') }}
     </a>
-    @endcan
 @endsection
 @section('ticket-content')
     <div class="card">
@@ -19,40 +17,28 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Status Type') }}</th>
+                                    <th scope="col" class="table-th">{{ __('ID') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Ticket Type') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($statuses as $status)
+                                @foreach ($labels as $label)
                                     <tr>
                                         <td class="table-td">
-                                            <strong>{{ $status->name }}</strong>
+                                            {{ $label->id }}
                                         </td>
                                         <td class="table-td">
-                                            @if($status->status_type == 'open')
-                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-success bg-success">
-                                                    {{ __('Open') }}
-                                                </span>
-                                            @elseif($status->status_type == 'closed')
-                                                <span class="inline-block px-3 text-center py-1 rounded-full bg-opacity-25 text-danger bg-danger">
-                                                    {{ __('Closed') }}
-                                                </span>
-                                            @endif
+                                            <span class="font-semibold">{{ $label->name }}</span>
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                @can('ticket-status-edit')
-                                                <button class="action-btn" id="editStatus" data-id="{{ $status->id }}">
+                                                <button class="action-btn" id="editLabel" data-id="{{ $label->id }}">
                                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                                 </button>
-                                                @endcan
-                                                @can('ticket-status-delete')
-                                                <button type="button" data-id="{{ $status->id }}" data-name="{{ $status->name }}" class="action-btn deleteTicketStatus">
+                                                <button type="button" data-id="{{ $label->id }}" data-name="{{ $label->name }}" class="action-btn deleteTicketLabel">
                                                     <iconify-icon icon="lucide:trash"></iconify-icon>
                                                 </button>
-                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
@@ -62,9 +48,9 @@
                         <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto">
                             <div>
                                 @php
-                                    $from = $statuses->firstItem(); // The starting item number on the current page
-                                    $to = $statuses->lastItem(); // The ending item number on the current page
-                                    $total = $statuses->total(); // The total number of items
+                                    $from = $labels->firstItem(); // The starting item number on the current page
+                                    $to = $labels->lastItem(); // The ending item number on the current page
+                                    $total = $labels->total(); // The total number of items
                                 @endphp
 
                                 <p class="text-sm text-gray-700">
@@ -77,7 +63,7 @@
                                     results
                                 </p>
                             </div>
-                            {{ $statuses->links() }}
+                            {{ $labels->links() }}
                         </div>
                     </div>
                 </div>
@@ -86,50 +72,47 @@
     </div>
 
     <!-- Modal for Add New Status -->
-    @can('ticket-status-create')
-    @include('backend.ticket.modal.__new_status')
-    @endcan
+    @include('backend.ticket.modal.__new_label')
+
     <!-- Modal for Update Status -->
-    @can('ticket-status-edit')
-    @include('backend.ticket.modal.__edit_status')
-    @endcan
+    @include('backend.ticket.modal.__edit_label')
+
     <!-- Modal for Delete Status -->
-    @can('ticket-status-delete')
-    @include('backend.ticket.modal.__delete_status')
-    @endcan
+    @include('backend.ticket.modal.__delete_label')
+
 @endsection
 
 @section('script')
     <script !src="">
         $(document).ready(function() {
 
-            $('body').on('click', '#editStatus', function (event) {
+            $('body').on('click', '#editLabel', function (event) {
                 "use strict";
                 event.preventDefault();
-                $('#edit-status-body').empty();
+                $('#edit-label-body').empty();
                 var id = $(this).data('id');
 
-                $.get('statuses/' + id + '/edit', function (data) {
+                $.get('label/' + id + '/edit', function (data) {
 
-                    $('#editStatusModal').modal('show');
-                    $('#edit-status-body').append(data);
+                    $('#editLabelModal').modal('show');
+                    $('#edit-label-body').append(data);
 
                 })
             })
 
 
-            $('body').on('click', '.deleteTicketStatus', function (event) {
+            $('body').on('click', '.deleteTicketLabel', function (event) {
                 "use strict";
                 event.preventDefault();
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                var url = '{{ route("admin.ticket.statuses.destroy", ":id") }}';
+                var url = '{{ route("admin.ticket.label.destroy", ":id") }}';
                 url = url.replace(':id', id);
-                $('#statusDeleteForm').attr('action', url)
+                $('#labelDeleteForm').attr('action', url)
 
                 $('.name').html(name);
-                $('#deleteTicketStatus').modal('show');
+                $('#deleteTicketLabel').modal('show');
             });
         });
     </script>

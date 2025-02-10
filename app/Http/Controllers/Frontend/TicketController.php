@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Models\Label;
+use App\Models\Category;
 use App\Models\User;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
+use DataTables;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,18 +19,45 @@ class TicketController extends Controller
 {
     use ImageUpload, NotifyTrait;
 
-    public function index()
+    public function index(Request $request)
     {
 
-        $tickets = Ticket::where('user_id', Auth::id())->get();
+        $totalTickets = Ticket::where('user_id', Auth::id())->count();
+        $closedTickets = Ticket::where('user_id', Auth::id())->closed()->count();
+        $openTickets = Ticket::where('user_id', Auth::id())->opened()->count();
+        $resolvedTickets = Ticket::where('user_id', Auth::id())->resolved()->count();
+        $labels = Label::visible()->pluck('name', 'id');
 
-        return view('frontend::ticket.index', compact('tickets'));
+        if ($request->ajax()) {
+            $ticketsQuery = Ticket::where('user_id', Auth::id());
+
+            if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
+                if ($request->status == 'resolved'){
+                    $ticketsQuery->where('is_resolved', true);
+                }else{
+                    $ticketsQuery->where('status', $request->status);
+                }
+            }
+
+            return Datatables::of($ticketsQuery)
+                ->addIndexColumn()
+                ->addColumn('title', 'frontend::ticket.include.__title')
+                ->addColumn('status', 'frontend::ticket.include.__status')
+                ->addColumn('action', 'frontend::ticket.include.__action')
+                ->rawColumns(['title', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('frontend::ticket.index', compact('totalTickets', 'closedTickets', 'openTickets', 'resolvedTickets', 'labels'));
 
     }
 
     public function newTicket()
     {
-        return view('frontend::ticket.new');
+        $labels = Label::visible()->pluck('name', 'id');
+        $categories = Category::visible()->pluck('name', 'id');
+
+        return view('frontend::ticket.new', compact('labels', 'categories'));
     }
 
     public function store(Request $request)
@@ -36,6 +66,8 @@ class TicketController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'message' => 'required',
+            'label' => 'required|exists:labels,id',
+            'priority' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -52,6 +84,7 @@ class TicketController extends Controller
         $data = [
             'uuid' => 'SUPT'.rand(100000, 999999),
             'title' => $input['title'],
+            'priority' => $input['priority'],
             'message' => nl2br($input['message']),
 //            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
         ];
@@ -82,6 +115,7 @@ class TicketController extends Controller
         }
 
         $ticket = $user->tickets()->create($data);
+        $ticket->attachLabels($request->input('label'));
 
         $shortcodes = [
             '[[full_name]]' => $user->full_name,

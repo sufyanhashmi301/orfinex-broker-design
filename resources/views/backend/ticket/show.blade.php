@@ -37,7 +37,7 @@
                                             </a>
                                         </div>
                                     </header>
-                                    <div class="chat-content parent-height bg-white dark:bg-dark">
+                                    <div class="chat-content bg-white dark:bg-dark" style="height: calc(100% - 165px);">
                                         <div class="msgs overflow-y-auto msg-height pt-6 space-y-6">
                                             <div class="block md:px-6 px-4">
                                                 <div class="flex space-x-2 items-end rtl:space-x-reverse">

@@ -31,7 +31,7 @@ class Match2payTxn extends BaseTxn
         $this->callbackUrl = url('/').'/ipn/match2pay'; // Your callback URL
 
         // Set the gateway based on the currency
-        $this->gatewayName = $txnInfo->pay_currency;
+        $this->gatewayName =  $this->getPaymentGateway($txnInfo->pay_currency);
     }
 
     /**
@@ -57,7 +57,7 @@ class Match2payTxn extends BaseTxn
             'timestamp' => $timestamp,                 // Current timestamp
             'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
         ];
-// dd($payload);
+ dd($payload);
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
 //        dd(json_encode($payload));
@@ -124,34 +124,23 @@ class Match2payTxn extends BaseTxn
      */
     private function getPaymentCurrency($currency)
     {
+        return $currency;
         // Define the mapping of payment currencies to their gateway names
-        $currencyGatewayMap = [
-            'BTC' => 'BTC',
-            'ETH' => 'ETH',
-            'UST' => 'USDT ERC20',
-            'UCC' => 'USDC ERC20',
-            'TRX' => 'TRX',
-            'USX' => 'USDT TRC20',
-            'UCX' => 'USDC TRC20',
-            'BNB' => 'BNB',
-            'USB' => 'USDT BEP20',
-            'MAT' => 'MATIC',
-            'USP' => 'USDT POLYGON',
-            'UCP' => 'USDC POLYGON',
-            'XRP' => 'XRP',
-            'DOG' => 'DOGECOIN',
-            'LTC' => 'LTC',
-            'SOL' => 'SOL',
-            'USS' => 'USDT SOL',
-            'UCS' => 'USDC SOL',
-            'TON' => 'TON',
-            'UTT' => 'USDT TON',
-        ];
-        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
-//        dd($currencyGatewayMap,$reversedCurrencyGatewayMap,$currency );
+//        $currencyGatewayMap = match2pay_currencies();
+//        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
+////        dd($currencyGatewayMap,$reversedCurrencyGatewayMap,$currency );
+//dd($currencyGatewayMap[$currency]);
+//        // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
+//        return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
+    }
+    private function getPaymentGateway($currency)
+    {
+
+//         Define the mapping of payment currencies to their gateway names
+        $currencyGatewayMap = match2pay_currencies();
 
         // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
-        return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
+        return $currencyGatewayMap[$currency] ?? 'USDT TRC20';
     }
 }
 

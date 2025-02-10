@@ -11626,7 +11626,8 @@ ul.custom-list ul li{
   }
 }
 .chat-height {
-  height: calc(var(--vh, 1vh) * 100 - 12.1rem);
+  /*height: calc(var(--vh, 1vh) * 100 - 12.1rem);*/
+    height: calc(var(--vh, 1vh) * 100 - 10rem);
 }
 
 .leading-0 {
@@ -11635,7 +11636,8 @@ ul.custom-list ul li{
 
 @media (max-width: 768px) {
   .chat-height {
-    height: calc(var(--vh, 1vh) * 100 - 10.5rem);
+    /*height: calc(var(--vh, 1vh) * 100 - 10.5rem);*/
+      height: calc(var(--vh, 1vh) * 100 - 8.5rem);
   }
 }
 .contact-height {
@@ -17452,7 +17454,7 @@ ul.custom-list ul li{
     left: -2.1rem;
     box-shadow: none !important;
 }
-.staffList-close-btn {
+.staffList-close-btn, .ticketDetail-close-btn {
     display: none;
     opacity: 0;
     top: 3.5rem;
@@ -17481,7 +17483,7 @@ ul.custom-list ul li{
     .staffList-open-btn {
         display: inline-flex;
     }
-    #staff-list__container{
+    #staff-list__container, #ticket-details__container{
         height: 100vh;
         max-width: 0;
         position: fixed;
@@ -17491,10 +17493,24 @@ ul.custom-list ul li{
         z-index: 99;
         border: none;
     }
+    #ticket-details__container {
+        opacity: 0;
+    }
+    #ticket-details__container form{
+        margin-bottom: 20px;
+    }
     #staff-list__container.in {
         max-width: 20rem;
         transition: .3s;
         padding: 12px;
+    }
+    #ticket-details__container.in {
+        max-width: 20rem;
+        transition: .3s;
+        opacity: 1;
+    }
+    #ticket-details__container.in .profile-wrap{
+        overflow-y: auto;
     }
     #staff-list__container .card-header {
         padding: 0px;
@@ -17520,7 +17536,7 @@ ul.custom-list ul li{
         display: inline-flex;
         transition: width .7s;
     }
-    #staff-list__container.in .staffList-close-btn{
+    #staff-list__container.in .staffList-close-btn, #ticket-details__container.in .ticketDetail-close-btn{
         display: inline-flex;
         opacity: 1;
     }

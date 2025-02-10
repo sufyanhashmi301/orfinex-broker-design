@@ -3,26 +3,6 @@
     {{ __('Add New Support Ticket') }}
 @endsection
 @section('content')
-    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-5">
-            <div class="md:flex-1">
-                <h4 class="card-title flex items-center">
-                    {{ $ticket->title.' - '.$ticket->uuid }}
-                    <span class="badge badge-primary capitalize rounded-3xl ml-2">
-                        {{ $ticket->status}}
-                    </span>
-                </h4>
-            </div>
-            @if( $ticket->status != 'closed')
-                <div class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse">
-                    <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}"
-                       class="btn btn-dark btn-sm loaderBtn inline-flex items-center">
-                        {{ __('Mark it close') }}
-                    </a>
-                </div>
-            @endif
-        </div>
-    </div>
     <div class="grid grid-cols-12 gap-6">
         <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
             <div class="card h-full">
@@ -71,7 +51,34 @@
                             <div class="p-0 h-full body-class">
                                 <!-- BEGIN: Messages -->
                                 <div class="relative h-full">
-                                    <div class="chat-content bg-white dark:bg-dark" style="height: calc(100% - 75px);">
+                                    <header class="border-b border-slate-100 dark:border-slate-700">
+                                        <div class="flex py-6 md:px-6 px-3 items-center">
+                                            <div class="flex-1">
+                                                <div class="flex space-x-3 rtl:space-x-reverse">
+                                                    <span class="text-slate-900 dark:text-white cursor-pointer text-xl self-center ltr:mr-3 rtl:ml-3 lg:hidden block start-chat">
+                                                        <iconify-icon icon="heroicons-outline:menu-alt-1"></iconify-icon>
+                                                    </span>
+                                                    <div class="flex-1 text-start">
+                                                        <span class="text-slate-800 dark:text-slate-300 text-lg font-medium mb-[2px] truncate mr-2">
+                                                            {{ $ticket->title.' - '.$ticket->uuid }}
+                                                        </span>
+                                                        <span class="badge badge-primary">
+                                                            {{ $ticket->status}}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if( $ticket->status != 'closed')
+                                                <div class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse">
+                                                    <a href="{{ route('user.ticket.close.now',$ticket->uuid) }}"
+                                                       class="btn btn-dark btn-sm loaderBtn inline-flex items-center">
+                                                        {{ __('Mark it close') }}
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </header>
+                                    <div class="chat-content bg-white dark:bg-dark" style="height: calc(100% - 155px);">
                                         <div class="msgs overflow-y-auto msg-height pt-6 space-y-6">
                                             <div class="block md:px-6 px-4">
                                                 <div class="flex space-x-2 items-end justify-end rtl:space-x-reverse">

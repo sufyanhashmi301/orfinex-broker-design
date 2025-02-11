@@ -3,9 +3,16 @@
     <div class="space-y-5">
         <div class="input-area !mt-0">
             <label for="" class="form-label">{{ __('Assign To:') }}</label>
-            <select name="assign_to" class="select2 form-control">
+            <select name="assigned_to" id="assigned_to_select" class="form-control">
                 @foreach($staff as $staff)
-                    <option value="{{ $staff->id }}">{{ $staff->first_name.' '.$staff->last_name }}</option>
+                    <option
+                        value="{{ $staff->id }}"
+                        data-avatar="{{ asset($staff->avatar ?? 'global/materials/user.png') }}"
+                        data-role="{{ $staff->getRoleNames()->first() }}"
+                        @if($ticket->assigned_to == $staff->id) selected @endif
+                    >
+                        {{ $staff->first_name.' '.$staff->last_name }}
+                    </option>
                 @endforeach
             </select>
         </div>

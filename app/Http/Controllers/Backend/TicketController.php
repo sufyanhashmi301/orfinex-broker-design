@@ -92,7 +92,7 @@ class TicketController extends Controller
     {
         $labels = Label::visible()->pluck('name', 'id');
         $categories = Category::visible()->pluck('name', 'id');
-        $staff = Admin::orderBy('name')->pluck('name', 'id');
+        $staff = Admin::where('status', true)->orderBy('first_name')->get();
         $users = User::orderBy('first_name')->get();
 
         return view('backend.ticket.include.__ticket_form', compact('labels', 'categories', 'staff', 'users'));
@@ -167,7 +167,7 @@ class TicketController extends Controller
         if ($request->input('assigned_to')) {
             $ticket->assignTo($request->input('assigned_to'));
             $agent = Admin::find($request->input('assigned_to'));
-            $this->mailNotify($agent->email, 'agent_support_ticket', $shortcodes);
+            $this->mailNotify($agent->email, 'support_ticket_assignment', $shortcodes);
         }
 
         $this->mailNotify($ticket->user->email, 'user_support_ticket', $shortcodes);
@@ -181,7 +181,7 @@ class TicketController extends Controller
     {
         $labels = Label::visible()->pluck('name', 'id');
         $categories = Category::visible()->pluck('name', 'id');
-        $staff = Admin::orderBy('name')->pluck('name', 'id');
+        $staff = Admin::where('status', true)->orderBy('first_name')->get();
 
         $ticket = Ticket::uuid($uuid);
         return view('backend.ticket.show', compact('ticket', 'labels', 'categories', 'staff'));
@@ -189,17 +189,30 @@ class TicketController extends Controller
 
     public function showAssignModal(Ticket $ticket)
     {
-        $staff = Admin::where('status', true)->get();
+        $staff = Admin::where('status', true)->orderBy('first_name')->get();
         return view('backend.ticket.include.__assign_form', compact('ticket', 'staff'));
     }
 
     public function assignTicket(Request $request, Ticket $ticket)
     {
         $request->validate([
-            'assign_to' => 'required|exists:admins,id',
+            'assigned_to' => 'required|exists:admins,id',
         ]);
 
-        $ticket->assignTo($request->assign_to);
+        $shortcodes = [
+            '[[full_name]]' => $ticket->user->full_name,
+            '[[email]]' => $ticket->user->email,
+            '[[subject]]' => $ticket->uuid,
+            '[[title]]' => $ticket->title,
+            '[[message]]' => $ticket->message,
+            '[[status]]' => 'OPEN',
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        $ticket->assignTo($request->assigned_to);
+        $agent = Admin::find($request->assigned_to);
+        $this->mailNotify($agent->email, 'support_ticket_assignment', $shortcodes);
 
         notify()->success('Ticket assigned successfully', 'success');
         return redirect()->back();
@@ -304,10 +317,10 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket)
     {
         $request->validate([
-            'status' => 'required',
-            'priority' => 'required',
-            'label' => 'required',
-            'assigned_to' => 'required|exists:admins,id',
+            'status' => 'nullable',
+            'priority' => 'nullable',
+            'label' => 'nullable',
+            'assigned_to' => 'nullable|exists:admins,id',
         ]);
 
         $this->authorize('update', $ticket);
@@ -317,6 +330,20 @@ class TicketController extends Controller
         $ticket->syncLabels($request->label);
 
         $ticket->assignTo($request->assigned_to);
+
+        $shortcodes = [
+            '[[full_name]]' => $ticket->user->full_name,
+            '[[email]]' => $ticket->user->email,
+            '[[subject]]' => $ticket->uuid,
+            '[[title]]' => $ticket->title,
+            '[[message]]' => $ticket->message,
+            '[[status]]' => 'OPEN',
+            '[[site_title]]' => setting('site_title', 'global'),
+            '[[site_url]]' => route('home'),
+        ];
+
+        $agent = Admin::find($request->assigned_to);
+        $this->mailNotify($agent->email, 'support_ticket_assignment', $shortcodes);
 
         notify()->success('Ticket updated successfully', 'success');
         return redirect()->back();

@@ -223,6 +223,27 @@
 
         })(jQuery);
 
+        function formatUser(data) {
+            if (!data.id) {
+                return data.text;
+            }
+
+            var avatar = $(data.element).data('avatar');
+            var role = $(data.element).data('role');
+            var text = data.text;
+
+            var $container = $(
+                `<div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-[100%]">
+                        <img src="${avatar}" alt="${text}" class="w-full h-full rounded-[100%] object-cover">
+                    </div>
+                    <span>${text}</span>
+                    <span class="badge badge-primary">${role}</span>
+                </div>`
+            );
+            return $container;
+        };
+
         $('body').on('click', '#newTicketBtn', function (e) {
             "use strict";
             e.preventDefault();
@@ -232,6 +253,11 @@
             $.get(url , function (data) {
                 $('#newTicketModal').modal('show');
                 $('#new-ticket-body').append(data);
+                $('.select2').select2();
+                $('#assigned_to').select2({
+                    templateResult: formatUser,
+                    templateSelection: formatUser,
+                });
             });
         })
 
@@ -247,6 +273,11 @@
             $.get(url , function (data) {
                 $('#assignTicketModal').modal('show');
                 $('#assign-ticket-body').append(data);
+                $('.select2').select2();
+                $('#assigned_to_select').select2({
+                    templateResult: formatUser,
+                    templateSelection: formatUser,
+                });
             });
 
         });

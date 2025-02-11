@@ -5,7 +5,7 @@
             <label for="title" class="form-label">
                 {{ __('Ticket Client') }}
             </label>
-            <select name="user_id" class="form-control">
+            <select name="user_id" class="select2 form-control">
                 <option value="">{{ __('Select Client') }}</option>
                 @foreach($users as $user)
                     <option value="{{ $user->id }}">{{ $user->first_name.' '.$user->last_name }}</option>
@@ -33,7 +33,7 @@
             <label for="" class="form-label">
                 {{ __('Ticket Type') }}
             </label>
-            <select name="label" class="form-control" required>
+            <select name="label" class="select2 form-control" required>
                 <option value="">{{ __('Select Type') }}</option>
                 @foreach($labels as $id => $name)
                     <option value="{{ $id }}">{{ $name }}</option>
@@ -46,7 +46,7 @@
             <label for="" class="form-label">
                 {{ __('Ticket Priority') }}
             </label>
-            <select name="priority" class="form-control" required>
+            <select name="priority" class="select2 form-control" required>
                 <option value="">{{ __('Select Priority') }}</option>
                 @foreach(\Coderflex\LaravelTicket\Enums\Priority::cases() as $priority)
                     <option value="{{ $priority->value }}">
@@ -58,10 +58,15 @@
 
         <div class="input-area">
             <label for="" class="form-label">{{ __('Agent') }}</label>
-            <select name="assigned_to" class="form-control">
+            <select name="assigned_to" id="assigned_to" class="form-control">
                 <option value="">{{ __('Select Agent') }}</option>
-                @foreach($staff as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
+                @foreach($staff as $staff)
+                    <option
+                        data-avatar="{{ asset($staff->avatar ?? 'global/materials/user.png') }}"
+                        data-role="{{ $staff->getRoleNames()->first() }}"
+                        value="{{ $staff->id }}">
+                        {{ $staff->first_name.' '.$staff->last_name }}
+                    </option>
                 @endforeach
             </select>
         </div>

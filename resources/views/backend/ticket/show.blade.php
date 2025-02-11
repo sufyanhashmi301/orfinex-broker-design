@@ -251,10 +251,16 @@
                                     </div>
                                     <div class="input-area">
                                         <label for="" class="form-label">{{ __('Agent') }}</label>
-                                        <select name="assigned_to" class="select2 form-control" data-placeholder="Select Agent">
+                                        <select name="assigned_to" id="assigned_to" class="form-control" data-placeholder="Select Agent">
                                             <option value="">{{ __('Select Agent') }}</option>
-                                            @foreach($staff as $id => $name)
-                                                <option value="{{ $id }}" @selected(old('assigned_to', $ticket->assigned_to) == $id)>{{ $name }}</option>
+                                            @foreach($staff as $staff)
+                                                <option
+                                                    data-avatar="{{ asset($staff->avatar ?? 'global/materials/user.png') }}"
+                                                    data-role="{{ $staff->getRoleNames()->first() }}"
+                                                    value="{{ $staff->id }}"
+                                                    @selected(old('assigned_to', $ticket->assigned_to) == $staff->id)>
+                                                    {{ $staff->first_name.' '.$staff->last_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -296,6 +302,32 @@
 @endsection
 @section('script')
     <script !src="">
+        function formatUser(data) {
+            if (!data.id) {
+                return data.text;
+            }
+
+            var avatar = $(data.element).data('avatar');
+            var role = $(data.element).data('role');
+            var text = data.text;
+
+            var $container = $(
+                `<div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-[100%]">
+                        <img src="${avatar}" alt="${text}" class="w-full h-full rounded-[100%] object-cover">
+                    </div>
+                    <span>${text}</span>
+                    <span class="badge badge-primary">${role}</span>
+                </div>`
+            );
+            return $container;
+        };
+
+        $('#assigned_to').select2({
+            templateResult: formatUser,
+            templateSelection: formatUser,
+        });
+
         $('.ticketDetail-open-btn').click(function(){
             $('#ticket-details__container, .mobile-close-overlay').addClass('in');
         });

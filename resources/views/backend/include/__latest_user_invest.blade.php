@@ -3,7 +3,7 @@
         <div class="card-header noborder">
             <h3 class="card-title">{{ __('Latest Registered User') }}</h3>
         </div>
-        <div class="card-body px-6 pb-6">
+        <div class="card-body px-6 pb-3">
             <div class="flex justify-between flex-wrap items-center mb-6 mt-3">
                 <div class="inline-flex ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
                     <div class="input-area">
@@ -135,7 +135,6 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead class="border-t border-slate-100 dark:border-slate-800">
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
@@ -149,16 +148,18 @@
                                 @foreach($data['latest_user'] as $user)
                                 <tr>
                                     <td class="table-td">
-                                        <div class="w-8 h-8 rounded-[100%] bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize ltr:mr-3 rtl:ml-3">
-                                            @if(null != $user->avatar)
-                                                <img src="{{ asset($user->avatar)}}" alt="" class="w-full h-full rounded-[100%] object-cover">
-                                            @else
-                                                {{ $user->first_name[0] }}{{ $user->last_name[0] }}
-                                            @endif
+                                        <div class="flex items-center">
+                                            <div class="flex-none">
+                                                <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                                    <img src="{{ asset($user->avatar ?? 'global/materials/user.png') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 text-start">
+                                                <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                                    {{ safe($user->full_name) }}
+                                                </h4>
+                                            </div>
                                         </div>
-                                    </td>
-                                    <td class="table-td">
-                                        {{ safe($user->username) }}
                                     </td>
                                     <td class="table-td">
                                         <span class="lowercase">
@@ -213,13 +214,13 @@
                                     </td>
                                 </tr>
                                 @endforeach
-                                <tr class="centered">
-                                    <td class="table-td" colspan="7">
-                                        @if($data['latest_user']->isEmpty())
+                                @if($data['latest_user']->isEmpty())
+                                    <tr class="centered">
+                                        <td class="table-td" colspan="7">
                                             {{ __('No Data Found') }}
-                                        @endif
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>

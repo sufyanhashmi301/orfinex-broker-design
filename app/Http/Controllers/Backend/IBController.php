@@ -123,14 +123,13 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'username', 'email', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.pending');
@@ -147,14 +146,13 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'username', 'email', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.approved');
@@ -171,7 +169,6 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
                 ->editColumn('ib_status', 'backend.ib.include.__ib_status')
@@ -184,7 +181,7 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'username', 'email', 'ib_status', 'action'])
+                ->rawColumns(['username', 'email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.rejected');
@@ -202,7 +199,6 @@ class IBController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->editColumn('avatar', 'backend.user.include.__avatar')
                 ->addColumn('username', 'backend.user.include.__user')
                 ->addColumn('email', 'backend.user.include.__email')
 //                ->editColumn('kyc', 'backend.user.include.__kyc')
@@ -213,7 +209,7 @@ class IBController extends Controller
                 ->addColumn('action', function ($user) {
                     return view('backend.ib.include.__action', ['user' => $user]);
                 })
-                ->rawColumns(['avatar', 'username','email', 'ib_status', 'action'])
+                ->rawColumns(['username','email', 'ib_status', 'action'])
                 ->make(true);
         }
         return view('backend.ib.all');

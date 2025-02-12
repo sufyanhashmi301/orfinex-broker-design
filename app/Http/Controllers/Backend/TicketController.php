@@ -4,10 +4,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
-use App\Models\Admin;
-use App\Models\User;
-use App\Models\Label;
-use App\Models\Category;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use DataTables;
@@ -34,38 +30,36 @@ class TicketController extends Controller
     public function index(Request $request, $id = null)
     {
         $loggedInUser = auth()->user();
-        $ticketQuery = Ticket::with('user', 'categories', 'labels', 'assignedToUser')->latest();
 
-        if ($loggedInUser->hasRole('Super-Admin')) {
-            $totalTickets = Ticket::count();
-            $closedTickets = Ticket::closed()->count();
-            $openTickets = Ticket::opened()->count();
-            $resolvedTickets = Ticket::resolved()->count();
-        }else{
-            $totalTickets = Ticket::where('assigned_to', $loggedInUser->id)->count();
-            $closedTickets = Ticket::where('assigned_to', $loggedInUser->id)->closed()->count();
-            $openTickets = Ticket::where('assigned_to', $loggedInUser->id)->opened()->count();
-            $resolvedTickets = Ticket::where('assigned_to', $loggedInUser->id)->resolved()->count();
-        }
+        $totalTickets = Ticket::count();
+        $closedTickets = Ticket::where('status', 'closed')->count();
+        $openTickets = Ticket::where('status', 'open')->count();
+        $resolvedTickets = Ticket::where('is_resolved', true)->count();
 
         if ($request->ajax()) {
-
-            if ($request->has('status') && !empty($request->status) && $request->status !== 'all') {
-                if ($request->status == 'resolved'){
-                    $ticketQuery->where('is_resolved', true);
-                }else{
-                    $ticketQuery->where('status', $request->status);
-                }
-            }
-
+            // Check if the logged-in user is a Super-Admin
             if ($loggedInUser->hasRole('Super-Admin')) {
-                $data = $ticketQuery->get();
+                if ($id) {
+                    // Fetch tickets for a specific user (if ID is provided)
+                    $data = Ticket::where('user_id', $id)->latest();
+                } else {
+                    // Fetch all tickets
+                    $data = Ticket::query()->latest();
+                }
             } else {
                 // Get attached user IDs for non-Super-Admin users
                 $attachedUserIds = $loggedInUser->users->pluck('id');
 
                 if ($attachedUserIds->isNotEmpty()) {
-                    $data = $ticketQuery->where('assigned_to', auth()->user()->id);
+                    if ($id) {
+                        // Fetch tickets for the specified user and ensure they are attached
+                        $data = Ticket::where('user_id', $id)
+                            ->whereIn('user_id', $attachedUserIds)
+                            ->latest();
+                    } else {
+                        // Fetch tickets for attached users only
+                        $data = Ticket::whereIn('user_id', $attachedUserIds)->latest();
+                    }
                 } else {
                     // If no users are attached, return an empty collection
                     $data = collect(); // Empty collection
@@ -253,6 +247,7 @@ class TicketController extends Controller
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');
+
             return redirect()->back();
         }
 

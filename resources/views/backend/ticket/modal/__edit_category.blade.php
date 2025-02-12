@@ -1,14 +1,14 @@
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editStatusModal" tabindex="-1" aria-labelledby="editStatusModal" aria-hidden="true">
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModal" aria-hidden="true">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="modal-body popup-body">
                 <div class="flex items-start justify-between p-5">
                     <div>
                         <h3 class="text-xl font-medium dark:text-white capitalize">
-                            {{ __('Update Status Type - Open') }}
+                            {{ __('Update Ticket Category') }}
                         </h3>
                         <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
-                            {{ __('Changing the status will be reflect in all the departments and layouts where this status is being used') }}
+                            {{ __('Changing the category will be reflect in all the departments and layouts where this category is being used') }}
                         </p>
                     </div>
                     <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center
@@ -20,7 +20,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div class="p-6 pt-0" id="edit-status-body">
+                <div class="p-6 pt-0" id="edit-category-body">
 
                 </div>
             </div>

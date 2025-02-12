@@ -14,13 +14,11 @@
                 </a>
             </li>
         @endcan
-        @canany(['ticket-priority-list', 'ticket-status-list'])
         <li>
-            <a href="{{ route('admin.ticket.statuses.index') }}" class="navItem" class="navItem {{ isActive('admin.ticket*') }}">
+            <a href="{{ route('admin.ticket.label.index') }}" class="navItem" class="navItem {{ isActive('admin.ticket*') }}">
                 {{ __('Support Center')}}
             </a>
         </li>
-        @endcanany
         <li>
             <a href="" class="navItem" class="navItem">
                 {{ __('Multi-Factor Auth')}}

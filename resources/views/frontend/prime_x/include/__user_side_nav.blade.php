@@ -147,8 +147,8 @@
         <li>
             <a href="{{ route('user.ticket.index') }}" class="navItem loaderBtn {{ isActive('user.ticket*') }}">
                 <span class="flex items-center">
-                    <iconify-icon class="nav-icon" icon="heroicons-outline:support"></iconify-icon>
-                    <span>{{ __('Support Tickets') }}</span>
+                    <iconify-icon class="nav-icon" icon="ix:support"></iconify-icon>
+                        <span>{{ __('Tickets') }}</span>
                 </span>
             </a>
         </li>

@@ -265,11 +265,20 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mt-10">
+                                <div class="flex gap-3 mt-10">
+                                    @if(!$ticket->is_resolved)
+                                        <button href="button" id="resolveButton" class="btn btn-dark inline-flex items-center justify-center w-full">
+                                            {{ __('Resolved') }}
+                                        </button>
+                                    @endif
                                     <button type="submit" class="btn btn-outline-dark inline-flex items-center justify-center w-full">
                                         {{ __('Update Ticket') }}
                                     </button>
                                 </div>
+                            </form>
+                            <form id="resolveForm" action="{{ route('admin.ticket.resolve', $ticket) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('PATCH')
                             </form>
                         </div>
                     </div>
@@ -334,7 +343,14 @@
 
         $('.ticketDetail-close-btn').click(function(){
             $('#ticket-details__container, .mobile-close-overlay').removeClass('in');
-        })
+        });
+
+        $(document).ready(function() {
+            $('#resolveButton').click(function(e) {
+                e.preventDefault();
+                $('#resolveForm').submit();
+            });
+        });
 
         $(document).ready(function() {
             $('#attach').change(function(e) {

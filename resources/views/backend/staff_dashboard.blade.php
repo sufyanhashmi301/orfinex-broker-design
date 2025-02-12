@@ -90,6 +90,9 @@
             </div>
 
             <div class="grid grid-cols-12 gap-5">
+
+                @include('backend.include.__latest_tickets')
+
 {{--                <div class="lg:col-span-8 col-span-12">--}}
 {{--                    <div class="card h-full">--}}
 {{--                        <div class="card-header">--}}

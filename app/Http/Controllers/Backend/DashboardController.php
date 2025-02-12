@@ -116,6 +116,14 @@ class DashboardController extends Controller
 
         $symbol = setting('currency_symbol','global');
 
+        $tickets = Ticket::with('user', 'categories', 'labels', 'assignedToUser')
+            ->latest()
+            ->take(5)
+            ->get();
+        $closedTickets = Ticket::closed()->count();
+        $openTickets = Ticket::opened()->count();
+        $resolvedTickets = Ticket::resolved()->count();
+
         $data = [
             'withdraw_count' => $withdrawCount,
             'kyc_count' => $kycCount,
@@ -155,6 +163,11 @@ class DashboardController extends Controller
             'platform' => $platform,
             'country' => $country,
             'symbol' => $symbol,
+
+            'latest_tickets' => $tickets,
+            'closed_tickets' => $closedTickets,
+            'open_tickets' => $openTickets,
+            'resolved_tickets' => $resolvedTickets,
         ];
 
 
@@ -349,9 +362,27 @@ class DashboardController extends Controller
             })
             ->count();
 
+        $tickets = Ticket::with('user', 'categories', 'labels', 'assignedToUser')
+            ->where('assigned_to', auth()->user()->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
         $totalTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
             $query->whereIn('user_id', $attachedUserIds);
         })->count();
+
+        $closedTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
+            $query->whereIn('user_id', $attachedUserIds);
+        })->where('assigned_to', $loggedInUser->id)->closed()->count();
+
+        $openTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
+            $query->whereIn('user_id', $attachedUserIds);
+        })->where('assigned_to', $loggedInUser->id)->opened()->count();
+
+        $resolvedTickets = Ticket::when($attachedUserIds, function ($query) use ($attachedUserIds) {
+            $query->whereIn('user_id', $attachedUserIds);
+        })->where('assigned_to', $loggedInUser->id)->resolved()->count();
 
         $symbol = setting('currency_symbol', 'global');
 
@@ -373,8 +404,14 @@ class DashboardController extends Controller
             'total_gateway' => $totalGateway,
             'total_live_forex_accounts' => $totalLiveForexAccounts,
             'total_demo_forex_accounts' => $totalDemoForexAccounts,
-            'total_ticket' => $totalTickets,
             'symbol' => $symbol,
+
+            'total_ticket' => $totalTickets,
+            'latest_tickets' => $tickets,
+            'closed_tickets' => $closedTickets,
+            'open_tickets' => $openTickets,
+            'resolved_tickets' => $resolvedTickets,
+
         ];
 
         if (request()->ajax()) {

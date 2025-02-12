@@ -152,7 +152,6 @@
                     }
                 },
                 columns: [
-                    {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},

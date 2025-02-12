@@ -5,10 +5,12 @@
             <label for="title" class="form-label">
                 {{ __('Ticket Client') }}
             </label>
-            <select name="user_id" class="select2 form-control">
+            <select name="user_id" id="client_input" class="form-control">
                 <option value="">{{ __('Select Client') }}</option>
                 @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->first_name.' '.$user->last_name }}</option>
+                    <option class="py-1" value="{{ $user->id }}" data-email="{{ $user->email }}" data-avatar="{{ asset($user->avatar ?? 'global/materials/user.png') }}">
+                        {{ $user->first_name.' '.$user->last_name }}
+                    </option>
                 @endforeach
             </select>
         </div>

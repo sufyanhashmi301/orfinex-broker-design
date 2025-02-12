@@ -19,14 +19,16 @@
                                     <th scope="col" class="table-th">{{ __('Tickets #') }}</th>
                                     <th scope="col" class="table-th">{{ __('Ticket Subject') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
-                                    <th scope="col" class="table-th">{{ __('Requested On') }}</th>
+                                    <th scope="col" class="table-th" style="text-align: right;">{{ __('Requested On') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 @foreach($data['latest_tickets'] as $ticket)
                                     <tr>
                                         <td class="table-td">
-                                            {{ $ticket->uuid }}
+                                            <a href="{{ route('admin.ticket.show',$ticket->uuid) }}" class="hover:underline">
+                                                {{ $ticket->uuid }}
+                                            </a>
                                         </td>
                                         <td class="table-td">
                                             @can('support-ticket-action')
@@ -49,7 +51,7 @@
                                                 </span>
                                             </span>
                                         </td>
-                                        <td class="table-td">
+                                        <td class="table-td text-right">
                                             {{ $ticket->created_at }}
                                         </td>
                                     </tr>
@@ -73,32 +75,52 @@
                     <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
                         {{ __('Total Tickets') }}
                     </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ $data['total_ticket'] }}
+                    <div class="flex items-center justify-between">
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ $data['total_ticket'] }}
+                        </div>
+                        <a href="{{ route('admin.ticket.index') }}" data-status="all" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
                     </div>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
                     <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
                         {{ __('Closed Tickets') }}
                     </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ $data['closed_tickets'] }}
+                    <div class="flex items-center justify-between">
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ $data['closed_tickets'] }}
+                        </div>
+                        <a href="{{ route('admin.ticket.index') }}" data-status="closed" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
                     </div>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
                     <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
                         {{ __('Open Tickets') }}
                     </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ $data['open_tickets'] }}
+                    <div class="flex items-center justify-between">
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ $data['open_tickets'] }}
+                        </div>
+                        <a href="{{ route('admin.ticket.index') }}" data-status="opened" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
                     </div>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900 rounded p-4">
                     <div class="text-sm text-slate-600 dark:text-slate-300 mb-[6px]">
                         {{ __('Resolved Tickets') }}
                     </div>
-                    <div class="text-lg text-slate-900 dark:text-white font-medium">
-                        {{ $data['resolved_tickets'] }}
+                    <div class="flex items-center justify-between">
+                        <div class="text-lg text-slate-900 dark:text-white font-medium">
+                            {{ $data['resolved_tickets'] }}
+                        </div>
+                        <a href="{{ route('admin.ticket.index') }}" data-status="resolved" class="widget-filter-status inline-flex items-center justify-center ml-auto">
+                            <iconify-icon class="text-xl" icon="heroicons-outline:chevron-right"></iconify-icon>
+                        </a>
                     </div>
                 </div>
             </div>

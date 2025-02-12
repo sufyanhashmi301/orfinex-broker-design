@@ -74,6 +74,7 @@ class TicketController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
+                ->addColumn('uuid', 'backend.ticket.include.__uuid')
                 ->addColumn('title', 'backend.ticket.include.__title')
                 ->addColumn('user', 'backend.ticket.include.__user')
                 ->addColumn('assigned_to', function($ticket) {
@@ -81,7 +82,7 @@ class TicketController extends Controller
                 })
                 ->addColumn('status', 'backend.ticket.include.__status')
                 ->addColumn('action', 'backend.ticket.include.__action')
-                ->rawColumns(['title', 'user', 'assigned_to', 'status', 'action'])
+                ->rawColumns(['uuid', 'title', 'user', 'assigned_to', 'status', 'action'])
                 ->make(true);
         }
 

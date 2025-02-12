@@ -11,7 +11,6 @@ use App\Models\KycMethod;
 use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 use App\Enums\KycStatusEnums;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -37,6 +36,20 @@ class KycController extends Controller
                 $title = ucfirst($request->status) . ' KYCs';
                 $kycs_filter = true;
             }
+        }
+
+        // If search
+        if(isset($request->search)) {
+            
+            $kycs = Kyc::whereHas('user', function ($query) use ($request) {
+                        $query->where('first_name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('email', 'LIKE', '%' . $request->search . '%');
+                        })
+                        ->paginate(15);
+            
+            $kycs_filter = true;
+            $title = 'Search results for: ' . $request->search;
         }
 
         // if status is unknown then show all users

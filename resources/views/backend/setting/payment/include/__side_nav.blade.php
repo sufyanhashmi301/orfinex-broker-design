@@ -1,7 +1,7 @@
 @section('submenu')
     <ul class="sidebar-submenu menu-open divide-y divide-slate-100 dark:divide-slate-700">
         <li>
-            <a href="{{ route('admin.deposit.method.list','auto') }}" class="navItem {{ isActive('admin.deposit.method*') }}">
+            <a href="{{ route('admin.payment-method.index','auto') }}" class="navItem {{ isActive('admin.payment-method*') }}">
                 {{ __('Payment Methods') }}
             </a>
         </li>

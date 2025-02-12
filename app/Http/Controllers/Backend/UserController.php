@@ -42,6 +42,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\AccountType as AccountTypeEnums;
+use App\Enums\KycStatusEnums;
+use App\Models\Kyc;
 use Illuminate\Contracts\Foundation\Application;
 
 class UserController extends Controller
@@ -198,7 +200,7 @@ class UserController extends Controller
         $validator = Validator::make($input, [
             'status' => 'required',
             'email_verified' => 'required',
-            // 'kyc' => 'required',
+            'kyc' => 'required',
             'two_fa' => 'required',
             'deposit_status' => 'required',
             'withdraw_status' => 'required',
@@ -236,6 +238,23 @@ class UserController extends Controller
         }
 
         User::find($id)->update($data);
+
+        // KYC update
+        $kyc = Kyc::where('user_id', $id)->first();
+        if($input['kyc'] == 1 && $kyc->status != KycStatusEnums::VERIFIED) {
+            $kyc->method = 'Manual';
+            $kyc->status = KycStatusEnums::VERIFIED;
+            $kyc->verified_at = Carbon::now();
+            $kyc->save();
+        }
+        if($input['kyc'] == 0 && $kyc->status != KycStatusEnums::UNVERIFIED) {
+            $kyc->method = '';
+            $kyc->status = KycStatusEnums::UNVERIFIED;
+            $kyc->verified_at = null;
+            $kyc->data = null;
+            $kyc->save();
+        }
+
 
         notify()->success('Status Updated Successfully', 'success');
 

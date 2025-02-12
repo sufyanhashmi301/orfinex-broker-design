@@ -4,10 +4,14 @@ namespace App\Providers;
 
 use App\Models\Theme;
 use App\Models\Language;
+use App\Enums\StorageMethodEnums;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
+use App\Models\Storage as StorageModel;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

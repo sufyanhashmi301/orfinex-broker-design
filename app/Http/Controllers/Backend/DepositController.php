@@ -5,35 +5,25 @@ namespace App\Http\Controllers\Backend;
 use Txn;
 use Purifier;
 use DataTables;
-use Carbon\Carbon;
 use App\Enums\TxnType;
-use App\Models\Invest;
 use App\Models\Gateway;
 use App\Enums\TxnStatus;
 use App\Enums\GatewayType;
-use App\Enums\InvestStatus;
 use App\Models\Transaction;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
-use App\Models\ForexAccount;
 use Illuminate\Http\Request;
 use App\Models\DepositMethod;
-use App\Models\LevelReferral;
 use App\Traits\ForexApiTrait;
 use App\Exports\DepositsExport;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Models\ForexSchemaPhaseRule;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Models\ForexSchemaInvestment;
 use App\Enums\InvestmentPhaseApproval;
+use App\Models\AccountTypeInvestment;
+use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountActivityService;
 use App\Services\UserAffiliateService;
 use Illuminate\Support\Facades\Validator;
-use App\Services\ForexSchemaInvestormService;
-use App\Services\AccountTypeInvestmentService;
-use Illuminate\Validation\ValidationException;
-use App\Services\InvestmentPhaseApprovalService;
 use App\Services\AccountTypeInvestmentPaymentService;
 
 class DepositController extends Controller
@@ -57,7 +47,7 @@ class DepositController extends Controller
         $this->middleware('permission:deposit-action', ['only' => ['depositAction', 'actionNow']]);
     }
 
-    //-------------------------------------------  Deposit method start ---------------------------------------------------------------
+    //     //-------------------------------------------  Deposit method start ---------------------------------------------------------------
 
     public function methodList($type)
     {
@@ -174,7 +164,6 @@ class DepositController extends Controller
             if (!$user->can('automatic-gateway-manage')) {
                 return redirect()->route('admin.deposit.method.list', $depositMethod->type);
             }
-
         } else {
             if (!$user->can('manual-gateway-manage')) {
                 return redirect()->route('admin.deposit.method.list', $depositMethod->type);
@@ -197,7 +186,7 @@ class DepositController extends Controller
             'field_options' => isset($input['field_options']) ? json_encode($input['field_options']) : null,
             'payment_details' => isset($input['payment_details']) ? Purifier::clean(htmlspecialchars_decode($input['payment_details'])) : null,
         ];
-//dd($data);
+        //dd($data);
         if ($request->hasFile('logo')) {
             $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
             $data = array_merge($data, ['logo' => $logo]);
@@ -209,11 +198,11 @@ class DepositController extends Controller
         return redirect()->route('admin.deposit.method.list', $depositMethod->type);
     }
 
-    //-------------------------------------------  Deposit method end ---------------------------------------------------------------
+    //     //-------------------------------------------  Deposit method end ---------------------------------------------------------------
 
     public function pending(Request $request)
     {
-        
+
         if ($request->ajax()) {
             $data = Transaction::where('status', 'pending')->where(function ($query) {
                 return $query->where('type', TxnType::ManualDeposit)
@@ -258,7 +247,7 @@ class DepositController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['status', 'type', 'final_amount', 'username','action'])
+                ->rawColumns(['status', 'type', 'final_amount', 'username', 'action'])
                 ->make(true);
         }
 
@@ -275,12 +264,12 @@ class DepositController extends Controller
     public function gateway($code)
     {
         $gateway = DepositMethod::code($code)->first();
-        if($gateway){
+        if ($gateway) {
             if ($gateway->type == GatewayType::Manual->value) {
                 $fieldOptions = $gateway->field_options;
                 $paymentDetails = $gateway->payment_details;
                 $gateway = array_merge($gateway->toArray(), ['credentials' => view('frontend::gateway.include.manual', compact('fieldOptions', 'paymentDetails'))->render()]);
-            }else{
+            } else {
                 $gatewayCurrency =  is_custom_rate($gateway->gateway->gateway_code) ?? $gateway->currency;
                 $gateway['currency'] = $gatewayCurrency;
             }
@@ -291,79 +280,29 @@ class DepositController extends Controller
 
     public function actionNow(Request $request)
     {
-
         $input = $request->all();
         $id = $input['id'];
         $approvalCause = $input['message'];
         $transaction = Transaction::find($id);
 
-        $shortcodes = [
-            '[[full_name]]' => $transaction->user->full_name,
-            '[[txn]]' => $transaction->tnx,
-            '[[gateway_name]]' => $transaction->method,
-            '[[deposit_amount]]' => $transaction->amount,
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
-            '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
-        ];
-
         if (isset($input['approve'])) {
 
-            if ($transaction->type == TxnType::Investment) {
-                
-                $invest = Invest::where('transaction_id', $id)->first();
-                $periodHours = $invest->period_hours;
-                $nextProfitTime = Carbon::now()->addHour($periodHours);
-                $invest->update([
-                    'next_profit_time' => $nextProfitTime,
-                    'status' => InvestStatus::Ongoing,
-                ]);
+            $new_account = $this->investment_payment->investmentActive($transaction->target_id);
 
-                //level referral
-                if (setting('site_referral', 'global') == 'level' && setting('investment_level')) {
-                    $level = LevelReferral::where('type', 'investment')->max('the_order') + 1;
-                    creditReferralBonus($transaction->user, 'investment', $transaction->amount, $level);
-                }
+            AccountActivityService::log($new_account, InvestmentPhaseApproval::ACTIVE);
 
-            } else {
-                
-                $transaction->amount = $input['final_amount'];
-                $transaction->final_amount = $input['final_amount'];
-                $transaction->pay_amount = $input['final_amount'];
-                if (isset($input['pay_amount'])) {
-                    $transaction->pay_amount = $input['pay_amount'];
-                }
-                $transaction->save();
-                $transaction = $transaction->fresh();
-                
-                $new_investment = $this->investment_payment->investmentActive($transaction->target_id);
-                
-                AccountActivityService::log($new_investment, InvestmentPhaseApproval::ACTIVE);
-
-
-            }
-            
             Txn::update($transaction->tnx, TxnStatus::Success, $transaction->user_id, $approvalCause);
 
-
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_approve', $shortcodes);
-
-            notify()->success('Approve successfully');
-
+            notify()->success('Payment Approved Successfully!');
         } elseif (isset($input['reject'])) {
-            $invest = Invest::where('transaction_id', $id)->first();
 
-            if ($invest) {
-                $invest->delete();
-            }
+            // Delete Account
+            AccountTypeInvestment::where('id', $transaction->target_id)->delete();
+            AccountTypeInvestmentSnapshot::where('account_type_investment_id', $transaction->target_id)->delete();
+
             Txn::update($transaction->tnx, TxnStatus::Failed, $transaction->user_id, $approvalCause);
-            $this->mailNotify($transaction->user->email, 'user_manual_deposit_reject', $shortcodes);
-            notify()->success('Reject successfully');
+            notify()->success('Payment Rejected Successfully!');
         }
-
-        $this->pushNotify('user_manual_deposit_request', $shortcodes, route('user.deposit.log'), $transaction->user->id);
-        $this->smsNotify('user_manual_deposit_request', $shortcodes, $transaction->user->phone);
 
         return redirect()->back();
     }
@@ -376,8 +315,6 @@ class DepositController extends Controller
     public function view($id)
     {
         $transaction = Transaction::find($id);
-        return response()->json(['transaction'=>$transaction]);
+        return response()->json(['transaction' => $transaction]);
     }
-
 }
-

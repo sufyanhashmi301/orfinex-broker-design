@@ -42,9 +42,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        
-       
-
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');
@@ -100,7 +97,16 @@ class RegisteredUserController extends Controller
             '[[site_url]]' => route('home'),
         ];
 
-        //notify method call
+        // KYC
+        if(!$user->kyc) {
+            $kyc = new KYC();
+            $kyc->user_id = $user->id;
+            $kyc->method = '';
+            $kyc->status = KycStatusEnums::UNVERIFIED;
+            $kyc->save();
+        }
+
+        // notify method call
         $this->mailNotify($user->email, 'new_user', $shortcodes);
         $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
         $this->smsNotify('new_user', $shortcodes, $user->phone);
@@ -108,17 +114,6 @@ class RegisteredUserController extends Controller
         if(!$multiLevel){
             $multiLevel = null;
         }
-
-        // Assign the referral
-        if(!$user->kyc) {
-            $kyc = new KYC();
-            $kyc->user_id = Auth::id();
-            $kyc->method = '';
-            $kyc->status = KycStatusEnums::UNVERIFIED;
-            $kyc->save();
-        }
-
-
 
         Auth::login($user);
         LoginActivities::add();

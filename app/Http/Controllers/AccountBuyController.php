@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\User;
+
 use App\Models\Addon;
 use App\Models\Setting;
 use App\Enums\TxnStatus;
@@ -11,13 +10,9 @@ use App\Models\AccountType;
 use App\Models\Transaction;
 use App\Models\AccountTrial;
 use Illuminate\Http\Request;
-use App\Enums\KycStatusEnums;
-use App\Enums\InvestmentStatus;
 use App\Enums\KycNoticeInvokeEnums;
 use App\Services\AccountBuyService;
 use Illuminate\Support\Facades\Auth;
-use App\Models\AccountTypeInvestment;
-use App\Services\AccountActivityService;
 use App\Services\AccountTypeInvestmentService;
 use App\Services\AccountTypeInvestmentPaymentService;
 

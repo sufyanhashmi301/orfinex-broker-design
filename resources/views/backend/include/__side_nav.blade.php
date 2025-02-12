@@ -202,7 +202,7 @@
                     @can('account-trading-history')
                         <li>
                             <a href="{{route('admin.account.trading_stats.history')}}" class="{{ isActive('admin.account.trading_stats.history') }}">
-                                Accounts Trading History
+                                Trading History
                             </a>
                         </li>
                     @endcan

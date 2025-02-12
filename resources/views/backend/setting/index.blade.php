@@ -107,7 +107,7 @@
                         'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
                         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
                             <li>
-                                <a href="{{ route('admin.deposit.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                                <a href="{{ route('admin.payment-method.index','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Payment Methods') }}
                                 </a>
                             </li>
@@ -361,6 +361,14 @@
                     <li>
                         <a href="{{ route('admin.settings.endToEndEncryption') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Data Encryption') }}
+                            <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
+                                {{ __('new') }}
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.storage.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Images/Files Storage') }}
                             <span class="badge-success text-xs capitalize rounded-full bg-opacity-30 px-2 py-1">
                                 {{ __('new') }}
                             </span>

@@ -124,7 +124,7 @@
                                             'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
                                         @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
                                             <li class="pb-2">
-                                                <a href="{{ route('admin.deposit.method.list','auto') }}">
+                                                <a href="{{ route('admin.payment-method.index','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
                                                         <iconify-icon icon="lucide:circle-plus" class="leading-[1]"> </iconify-icon>
                                                         <span class="leading-[1]">

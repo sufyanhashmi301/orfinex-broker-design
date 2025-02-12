@@ -53,7 +53,9 @@ use App\Http\Controllers\Backend\BlackListCountryController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\KycMethodController;
 use App\Http\Controllers\KycNoticeController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\TradingStatsController;
 
 /*
@@ -200,6 +202,22 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('/settings/kyc-methods/method-toggle/{id}', [KycMethodController::class, 'methodToggle'])->name('kyc_method.method_toggle');
     Route::post('/settings/kyc-notice', [KycNoticeController::class, 'updateSettings'])->name('kyc_notice.update');
 
+    // Payment Methods
+    Route::get('payment-methods/{type}', [PaymentMethodController::class, 'index'])->name('payment-method.index');
+    Route::group(['prefix' => 'payment-method', 'as' => 'payment-method.', 'controller' => PaymentMethodController::class], function () {
+        Route::get('create/{type}', 'createMethod')->name('create');
+        Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
+        Route::get('edit/{type}', 'methodEdit')->name('edit');
+        Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+    });
+    
+    // Storage Controller
+    Route::group(['prefix' => 'settings/storage', 'as' => 'settings.storage.', 'controller' => StorageController::class], function () {
+        Route::get('', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::post('test-aws-s3', 'testAWS')->name('test_aws');
+    });
+
 
     // =============================== Optimization ===============================
     
@@ -223,13 +241,13 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     //=============================== deposit Method ================================
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
-        Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-            Route::get('list/{type}', 'methodList')->name('list');
-            Route::get('create/{type}', 'createMethod')->name('create');
-            Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-            Route::get('edit/{type}', 'methodEdit')->name('edit');
-            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
-        });
+        // Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
+        //     Route::get('list/{type}', 'methodList')->name('list');
+        //     Route::get('create/{type}', 'createMethod')->name('create');
+        //     Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
+        //     Route::get('edit/{type}', 'methodEdit')->name('edit');
+        //     Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+        // });
 
         Route::get('pending-payments', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');

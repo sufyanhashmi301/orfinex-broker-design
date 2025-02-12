@@ -8,7 +8,7 @@
         <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0 pb-1 sm:pb-0 gap-4 menu-open">
             @can('automatic-gateway-manage')
                 <li class="nav-item">
-                    <a href="{{ route('admin.deposit.method.list','auto') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.method.list','auto') . isActive('admin.deposit.method.create','auto'). isActive('admin.deposit.method.edit','auto')  }}">
+                    <a href="{{ route('admin.payment-method.index','auto') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.payment-method.index','auto') . isActive('admin.payment-method.create','auto'). isActive('admin.payment-method.edit','auto')  }}">
                         {{ __('Automatic') }}
                     </a>
                 </li>
@@ -16,7 +16,7 @@
 
             @can('manual-gateway-manage')
                 <li class="nav-item">
-                    <a href="{{ route('admin.deposit.method.list','manual') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.deposit.method.list','manual') . isActive('admin.deposit.method.create','manual') . isActive('admin.deposit.method.edit','manual') }}">
+                    <a href="{{ route('admin.payment-method.index','manual') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-6 py-3 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.payment-method.index','manual') . isActive('admin.payment-method.create','manual') . isActive('admin.payment-method.edit','manual') }}">
                         {{ __('Manual') }}
                     </a>
                 </li>

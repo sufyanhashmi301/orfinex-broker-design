@@ -37,22 +37,22 @@
                     Unverified
                 </a>
             </li>
-            {{-- <li class="nav-item !ml-auto">
+            <li class="nav-item !ml-auto">
                 <a href="javascript:void(0);" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 filter-toggle-btn">
                     <span class="flex items-center">
                         <span>{{ __('More') }}</span>
                         <iconify-icon icon="lucide:chevron-down" class="text-xl ltr:ml-2 rtl:mr-2 font-light"></iconify-icon>
                     </span>
                 </a>
-            </li> --}}
+            </li>
         </ul>
 
         <div class="hidden mt-5" id="filters_div">
-            <form id="filter-form" method="GET" action="{{ route('admin.contracts.index') }}">
+            <form id="filter-form" method="GET" action="{{ route('admin.kyc.index') }}">
                 <div class="flex justify-between flex-wrap items-center">
                     <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0" style="max-width: 400px">
                         <div class="flex-1 input-area relative">
-                            <input type="text" name="search" id="search" class="form-control h-full" placeholder="Search by Login, Name, or Email">
+                            <input type="text" name="search" id="search" class="form-control h-full" placeholder="Search by Name or Email">
                         </div>
                         <div class="input-area relative">
                             <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
@@ -68,6 +68,8 @@
                 </div>
             </form>
         </div>
+
+        
     </div>
     
    
@@ -96,6 +98,20 @@
           $(this).addClass('active');
           $('.list-view-btn').removeClass('active');
       });
+
+    $(document).ready(function() {
+        $('.filter-toggle-btn').click(function() {
+            const $content = $('#filters_div');
+
+            if ($content.hasClass('hidden')) {
+                $content.removeClass('hidden').slideDown();
+            } else {
+                $content.slideUp(function() {
+                    $content.addClass('hidden');
+                });
+            }
+        });
+    });
 
     </script>
 @endsection

@@ -4,16 +4,19 @@ use Carbon\Carbon;
 use App\Enums\TxnType;
 use App\Models\Gateway;
 use App\Models\Setting;
+use App\Models\Storage;
 use App\Helpers\NioHash;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
-use App\Enums\AccountBalanceType;
+use App\Enums\KycStatusEnums;
 use App\Enums\AccountTypePhase;
 use App\Enums\InvestmentStatus;
+use App\Enums\AccountBalanceType;
+use App\Enums\StorageMethodEnums;
 use App\Enums\KycNoticeInvokeEnums;
-use App\Enums\KycStatusEnums;
-use App\Models\AccountTypeInvestment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use App\Models\AccountTypeInvestment;
 
 if (!function_exists('is_force_https')) {
     /**
@@ -818,3 +821,27 @@ if (!function_exists('show_kyc_notice')) {
     }
 
 }
+
+if (!function_exists('setEnvironmentValue')) {
+    function setEnvironmentValue($values) {
+   
+        $envPath = base_path('.env');
+
+        if (File::exists($envPath)) {
+            $envContent = File::get($envPath);
+
+            foreach ($values as $key => $value) {
+                $keyValue = "{$key}=" . env($key);
+                $newKeyValue = "{$key}=\"{$value}\"";
+
+                // Replace old values with new ones
+                $envContent = preg_replace("/^{$key}=.*/m", $newKeyValue, $envContent);
+            }
+
+            // Write updated content back to .env
+            File::put($envPath, $envContent);
+        }
+    
+    }
+}
+

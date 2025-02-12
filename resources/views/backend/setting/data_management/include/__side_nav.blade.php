@@ -15,5 +15,10 @@
                 {{ __('Data Encryption') }}
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.settings.storage.index') }}" class="navItem {{ isActive('admin.settings.storage.index') }}">
+                {{ __('Images/Files Storage') }}
+            </a>
+        </li>
     </ul>
 @endsection

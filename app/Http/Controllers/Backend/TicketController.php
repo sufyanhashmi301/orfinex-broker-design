@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Category;
+use App\Models\Label;
 use App\Models\Ticket;
+use App\Models\User;
 use App\Traits\ImageUpload;
 use App\Traits\NotifyTrait;
 use DataTables;

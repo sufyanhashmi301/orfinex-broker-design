@@ -57,7 +57,7 @@ class Match2payTxn extends BaseTxn
             'timestamp' => $timestamp,                 // Current timestamp
             'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
         ];
- dd($payload);
+// dd($payload);
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
 //        dd(json_encode($payload));

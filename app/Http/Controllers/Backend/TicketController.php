@@ -243,6 +243,15 @@ class TicketController extends Controller
         return redirect()->back();
     }
 
+    public function resolve(Ticket $ticket)
+    {
+        $this->authorize('update', $ticket);
+        $ticket->markAsResolved();
+
+        notify()->success('Ticket marked as resolved successfully', 'success');
+        return redirect()->back();
+    }
+
     public function reply(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -319,30 +328,34 @@ class TicketController extends Controller
             'status' => 'nullable',
             'priority' => 'nullable',
             'label' => 'nullable',
-            'assigned_to' => 'nullable|exists:admins,id',
+            'assigned_to' => 'nullable',
         ]);
 
         $this->authorize('update', $ticket);
 
-        $ticket->update($request->only('status', 'priority', 'assigned_to'));
+        $ticket->update($request->only('status', 'priority'));
 
         $ticket->syncLabels($request->label);
 
-        $ticket->assignTo($request->assigned_to);
+        if ($request->input('assigned_to')) {
 
-        $shortcodes = [
-            '[[full_name]]' => $ticket->user->full_name,
-            '[[email]]' => $ticket->user->email,
-            '[[subject]]' => $ticket->uuid,
-            '[[title]]' => $ticket->title,
-            '[[message]]' => $ticket->message,
-            '[[status]]' => 'OPEN',
-            '[[site_title]]' => setting('site_title', 'global'),
-            '[[site_url]]' => route('home'),
-        ];
+            $ticket->assignTo($request->assigned_to);
 
-        $agent = Admin::find($request->assigned_to);
-        $this->mailNotify($agent->email, 'support_ticket_assignment', $shortcodes);
+            $shortcodes = [
+                '[[full_name]]' => $ticket->user->full_name,
+                '[[email]]' => $ticket->user->email,
+                '[[subject]]' => $ticket->uuid,
+                '[[title]]' => $ticket->title,
+                '[[message]]' => $ticket->message,
+                '[[status]]' => 'OPEN',
+                '[[site_title]]' => setting('site_title', 'global'),
+                '[[site_url]]' => route('home'),
+            ];
+
+            $agent = Admin::find($request->assigned_to);
+            $this->mailNotify($agent->email, 'support_ticket_assignment', $shortcodes);
+
+        }
 
         notify()->success('Ticket updated successfully', 'success');
         return redirect()->back();

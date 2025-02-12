@@ -470,6 +470,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::patch('{ticket}/close', 'close')->name('close');
         Route::patch('{ticket}/reopen', 'reopen')->name('reopen');
         Route::patch('{ticket}/archive', 'archive')->name('archive');
+        Route::patch('{ticket}/resolve', 'resolve')->name('resolve');
 
         Route::resource('category', CategoryController::class);
         Route::resource('label', LabelController::class);

@@ -11034,10 +11034,7 @@ ul.custom-list ul li{
   padding-bottom: 1.25rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem; */
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0.75rem;
   font-size: 0.75rem;
   line-height: 1rem;
   font-weight: 600;
@@ -17013,7 +17010,7 @@ ul.custom-list ul li{
 .management-hierarchy .person>img {
   height: 50px;
   width: 50px;
-  border: 3px solid #0f172a;
+  /*border: 3px solid #0f172a;*/
   border-radius: 50%;
   overflow: hidden;
   background-color: #fff;

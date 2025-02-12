@@ -1,11 +1,7 @@
 <div class="hv-item">
     <div class="hv-item-parent">
         <div class="person">
-            @if(null != $levelUser->avatar)
-                <img src="{{ asset($levelUser->avatar)}}" class="inline-flex" alt="">
-            @else
-                <div class="f-name-l-name">{{ $levelUser->first_name[0] }}{{ $levelUser->last_name[0] }}</div>
-            @endif
+            <img src="{{ asset($levelUser->avatar ?? 'global/materials/user.png')}}" class="inline-flex" alt="">
             <p class="name">
                 @if($me)
                     {{ __("It's Me") }}( {{ $levelUser->full_name }} )

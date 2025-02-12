@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('setting') }}
+    {{ __('Settings') }}
 @endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center gap-3 mb-6">

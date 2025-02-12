@@ -124,23 +124,25 @@ class Match2payTxn extends BaseTxn
      */
     private function getPaymentCurrency($currency)
     {
-        return $currency;
+//        return $currency;
         // Define the mapping of payment currencies to their gateway names
-//        $currencyGatewayMap = match2pay_currencies();
-//        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
-////        dd($currencyGatewayMap,$reversedCurrencyGatewayMap,$currency );
+        $currencyGatewayMap = match2pay_currencies();
+        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
+//        dd($currencyGatewayMap,$reversedCurrencyGatewayMap,$currency );
 //dd($currencyGatewayMap[$currency]);
-//        // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
-//        return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
+        // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
+        return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
     }
     private function getPaymentGateway($currency)
     {
-
+return $currency;
 //         Define the mapping of payment currencies to their gateway names
         $currencyGatewayMap = match2pay_currencies();
+        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
+
 
         // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
-        return $currencyGatewayMap[$currency] ?? 'USDT TRC20';
+        return $reversedCurrencyGatewayMap[$currency] ?? 'USDT TRC20';
     }
 }
 

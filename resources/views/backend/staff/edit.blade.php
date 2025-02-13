@@ -7,7 +7,7 @@
         <div class="card-header noborder flex-col sm:flex-row">
             <div class="flex-none">
                 <div class="w-20 h-20 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                    <img src="{{ asset($staff->avatar ?? 'frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                    <img src="{{ getFilteredPath($staff->avatar, 'frontend/images/avatar/av-4.svg') }}" alt="" class="w-full h-full rounded-[100%] object-cover">
                 </div>
             </div>
             <div class="flex-1 text-start">

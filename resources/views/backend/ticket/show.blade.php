@@ -19,7 +19,7 @@
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
                                                     <div class="flex-none">
                                                         <div class="h-10 w-10 rounded-full relative">
-                                                            <img src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}" alt="" class="w-full h-full object-cover rounded-full">
+                                                            <img src="{{ getFilteredPath($ticket->user->avatar, 'global/materials/user.png') }}" alt="" class="w-full h-full object-cover rounded-full">
                                                         </div>
                                                     </div>
                                                     <div class="flex-1 text-start">
@@ -44,7 +44,7 @@
                                                     <div class="flex-none">
                                                         @if( null != $ticket->user->avatar)
                                                             <div class="h-10 w-10 rounded-full">
-                                                                <img class="block w-full h-full object-cover rounded-full" src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png') }}" alt="">
+                                                                <img class="block w-full h-full object-cover rounded-full" src="{{ getFilteredPath($ticket->user->avatar, 'global/materials/user.png') }}" alt="">
                                                             </div>
                                                         @else
                                                             <div class="h-10 w-10 rounded-full flex flex-col items-center justify-center text-sm bg-[#EAE6FF] dark:bg-slate-900 text-[#5743BE]">
@@ -77,7 +77,7 @@
                                                         @if( $message->model != 'admin')
                                                             <div class="flex-none">
                                                                 <div class="h-10 w-10 rounded-full">
-                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png')}}" alt="">
+                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ getFilteredPath($ticket->user->avatar, 'global/materials/user.png') }}" alt="">
                                                                 </div>
                                                             </div>
                                                         @endif
@@ -107,7 +107,7 @@
 {{--                                                                {{dd($ticket->user)}}--}}
                                                             <div class="flex-none">
                                                                 <div class="h-10 w-10 rounded-full">
-                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ asset($message->user->avatar ?? 'global/materials/user.png')}}" alt="">
+                                                                    <img class="block w-full h-full object-cover rounded-full" src="{{ getFilteredPath($message->user->avatar, 'global/materials/user.png') }}" alt="">
                                                                 </div>
                                                             </div>
                                                         @endif
@@ -174,7 +174,7 @@
                     </div>
                     <div class="profile-box flex flex-col h-full">
                         <div class="h-[100px] w-[100px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 relative bg-slate-300 dark:bg-slate-900 dark:text-white text-slate-900 flex flex-col items-center justify-center">
-                            <img class="w-full h-full object-cover rounded-full" src="{{ asset($ticket->user->avatar ?? 'global/materials/user.png') }}" alt="{{$ticket->user->first_name}}">
+                            <img class="w-full h-full object-cover rounded-full" src="{{ getFilteredPath($ticket->user->avatar, 'global/materials/user.png') }}" alt="{{$ticket->user->first_name}}">
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
@@ -255,7 +255,7 @@
                                             <option value="">{{ __('Select Agent') }}</option>
                                             @foreach($staff as $staff)
                                                 <option
-                                                    data-avatar="{{ asset($staff->avatar ?? 'global/materials/user.png') }}"
+                                                    data-avatar="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}"
                                                     data-role="{{ $staff->getRoleNames()->first() }}"
                                                     value="{{ $staff->id }}"
                                                     @selected(old('assigned_to', $ticket->assigned_to) == $staff->id)>

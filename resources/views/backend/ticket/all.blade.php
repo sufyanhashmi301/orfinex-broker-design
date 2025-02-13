@@ -253,8 +253,11 @@
             $.get(url , function (data) {
                 $('#newTicketModal').modal('show');
                 $('#new-ticket-body').append(data);
-                $('.select2').select2();
+                $('.select2').select2({
+                    dropdownParent: $('#newTicketModal')
+                });
                 $('#client_input').select2({
+                    dropdownParent: $('#newTicketModal'),
                     templateResult: function(data) {
                         if (!data.id) {
                             return data.text;
@@ -287,6 +290,7 @@
                     },
                 });
                 $('#assigned_to').select2({
+                    dropdownParent: $('#newTicketModal'),
                     templateResult: formatUser,
                     templateSelection: formatUser,
                 });

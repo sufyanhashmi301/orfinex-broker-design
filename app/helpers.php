@@ -1636,3 +1636,13 @@ if (!function_exists('social_links')) {
         return App\Models\SocialLink::where('status', 1)->get();
     }
 }
+
+if (! function_exists('getFilteredPath')) {
+    function getFilteredPath($path = null, $fallback = 'global/materials/default.png')
+    {
+        // Check if the provided path is a full URL
+        return filter_var($path, FILTER_VALIDATE_URL)
+            ? $path
+            : asset($path ?? $fallback);
+    }
+}

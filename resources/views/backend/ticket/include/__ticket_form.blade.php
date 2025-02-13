@@ -8,7 +8,7 @@
             <select name="user_id" id="client_input" class="form-control">
                 <option value="">{{ __('Select Client') }}</option>
                 @foreach($users as $user)
-                    <option class="py-1" value="{{ $user->id }}" data-email="{{ $user->email }}" data-avatar="{{ asset($user->avatar ?? 'global/materials/user.png') }}">
+                    <option class="py-1" value="{{ $user->id }}" data-email="{{ $user->email }}" data-avatar="{{ getFilteredPath($user->avatar, 'global/materials/user.png') }}">
                         {{ $user->first_name.' '.$user->last_name }}
                     </option>
                 @endforeach
@@ -64,7 +64,7 @@
                 <option value="">{{ __('Select Agent') }}</option>
                 @foreach($staff as $staff)
                     <option
-                        data-avatar="{{ asset($staff->avatar ?? 'global/materials/user.png') }}"
+                        data-avatar="{{ getFilteredPath($staff->avatar, 'global/materials/user.png') }}"
                         data-role="{{ $staff->getRoleNames()->first() }}"
                         value="{{ $staff->id }}">
                         {{ $staff->first_name.' '.$staff->last_name }}

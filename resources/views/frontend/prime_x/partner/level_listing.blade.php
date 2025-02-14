@@ -127,7 +127,7 @@
                                 @endforeach
                             </div>
 
-                            <button type="submit" class="btn btn-success w-full mt-4">{{ __('Save Changes') }}</button>
+                            <button type="submit" class="btn btn-dark inline-flex items-center justify-center w-full mt-4">{{ __('Save Changes') }}</button>
                         </form>
                     </div>
                 </div>

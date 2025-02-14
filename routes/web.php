@@ -137,6 +137,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     });
     Route::group(['prefix' => 'ib/rule', 'as' => 'ib.rule.'], function () {
         Route::post('/store', [UserIbRuleController::class, 'store'])->name('store');
+        Route::get('//{id}/levels', [UserIbRuleController::class, 'showLevels'])->name('levels');
+        Route::post('/level/update', [UserIbRuleController::class, 'updateLevels'])->name('level.update');
+
     });
 
     //Send Money

@@ -253,8 +253,44 @@
             $.get(url , function (data) {
                 $('#newTicketModal').modal('show');
                 $('#new-ticket-body').append(data);
-                $('.select2').select2();
+                $('.select2').select2({
+                    dropdownParent: $('#newTicketModal')
+                });
+                $('#client_input').select2({
+                    dropdownParent: $('#newTicketModal'),
+                    templateResult: function(data) {
+                        if (!data.id) {
+                            return data.text;
+                        }
+
+                        // Create a custom option template
+                        var avatar = $(data.element).data('avatar');
+                        var email = $(data.element).data('email');
+                        var text = data.text;
+
+                        // Return custom HTML for each option
+                        var $container = $(
+                            `<div class="flex items-center">
+                                <div class="flex-none">
+                                    <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                        <img src="${avatar}" alt="" class="w-full h-full rounded-[100%] object-cover">
+                                    </div>
+                                </div>
+                                <div class="flex-1 text-start">
+                                    <h4 class="text-sm font-medium text-slate-600 whitespace-nowrap">
+                                        ${text}
+                                    </h4>
+                                    <div class="text-xs font-normal text-slate-600 dark:text-slate-400">
+                                        ${email}
+                                    </div>
+                                </div>
+                            </div>`
+                        );
+                        return $container;
+                    },
+                });
                 $('#assigned_to').select2({
+                    dropdownParent: $('#newTicketModal'),
                     templateResult: formatUser,
                     templateSelection: formatUser,
                 });

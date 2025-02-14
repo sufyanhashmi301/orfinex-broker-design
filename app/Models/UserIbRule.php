@@ -39,6 +39,10 @@ class UserIbRule extends Model
 		'sub_ib_share'
 	];
 
+    public function userIbRuleLevels()
+    {
+        return $this->hasMany(UserIbRuleLevel::class, 'user_ib_rule_id');
+    }
 
     public function rebateRule()
     {

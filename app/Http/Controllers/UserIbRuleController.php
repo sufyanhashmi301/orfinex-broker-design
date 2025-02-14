@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\MultiLevelType;
+use App\Models\Level;
 use App\Models\UserIbRule;
+use App\Models\UserIbRuleLevel;
+use App\Models\UserIbRuleLevelShare;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserIbRuleController extends Controller
 {
@@ -69,10 +73,51 @@ class UserIbRuleController extends Controller
         ]);
     }
 
+    public function updateLevels(Request $request)
+    {
+        $userIbRuleId = $request->input('user_ib_rule_id');
+        $shares = $request->input('shares', []);
+        $totalShare = UserIbRule::findOrFail($userIbRuleId)->rebateRule->rebate_amount;
+        $errors = [];
 
+        // Validate each level’s total independently
+        foreach ($shares as $levelId => $levelShares) {
+            $sumShares = collect($levelShares)->sum();
+            if ($sumShares > $totalShare) {
+                $errors[$levelId] = "Total share for Level $levelId cannot exceed $totalShare.";
+            }
+        }
 
+        if (!empty($errors)) {
+            return response()->json(['success' => false, 'errors' => $errors]);
+        }
 
+        // Store shares ensuring no empty values are saved
+        foreach ($shares as $levelOrder => $levelShares) {
+            $userIbRuleLevel = UserIbRuleLevel::firstOrCreate([
+                'user_ib_rule_id' => $userIbRuleId,
+                'level_id' => $levelOrder,
+            ]);
 
+            foreach ($levelShares as $subLevelOrder => $shareValue) {
+                if ($shareValue === null || $shareValue === '') {
+                    continue; // Skip empty values
+                }
+
+                UserIbRuleLevelShare::updateOrCreate(
+                    [
+                        'user_ib_rule_level_id' => $userIbRuleLevel->id,
+                        'level_id' => $subLevelOrder,
+                    ],
+                    [
+                        'share' => $shareValue,
+                    ]
+                );
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Shares updated successfully!']);
+    }
 
     /**
      * Display the specified resource.
@@ -91,10 +136,22 @@ class UserIbRuleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function showLevels($id)
     {
-        //
+        $userIbRule = UserIbRule::with('rebateRule')->findOrFail($id);
+//        dd($userIbRule->rebateRule->rebate_amount);
+
+        // Fetch all levels dynamically
+        $levels = Level::orderBy('level_order', 'asc')->get();
+
+        // Fetch UserIbRuleLevels related to this UserIbRule
+        $userIbRuleLevels = UserIbRuleLevel::where('user_ib_rule_id', $id)->with('userIbRuleLevelShares')->get();
+
+        // Pass the data to the view
+        return view('frontend::partner.level_listing', compact('userIbRule', 'levels', 'userIbRuleLevels'));
     }
+
+
 
     /**
      * Update the specified resource in storage.

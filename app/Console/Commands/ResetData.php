@@ -108,7 +108,6 @@ class ResetData extends Command
         DB::table('ib_groups')->truncate();
         DB::table('ib_group_multi_level')->truncate();
         DB::table('bonuses')->truncate();
-        DB::table('bonus_user')->truncate();
         DB::table('leverage_updates')->truncate();
         DB::table('bonus_forex_schema')->truncate();
         DB::table('bonus_transactions')->truncate();

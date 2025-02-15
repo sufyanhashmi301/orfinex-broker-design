@@ -978,6 +978,7 @@ if (!function_exists('kyc_first_level_check')) {
         return $kycCompletedLevel;
     }
 }
+
 if (!function_exists('calPercentage')) {
     function calPercentage($num, $percentage)
     {

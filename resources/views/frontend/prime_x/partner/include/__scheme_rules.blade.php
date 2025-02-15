@@ -16,7 +16,7 @@
                                 <th class="table-th">{{ __('Symbols') }}</th>
                                 <th class="table-th">{{ __('Total Rebate') }}</th>
                                 <th class="table-th">{{ __('Master IB Share') }}</th>
-                                <th class="table-th">{{ __('Sub IB Share') }}</th>
+{{--                                <th class="table-th">{{ __('Sub IB Share') }}</th>--}}
                                 <th class="table-th">{{ __('Action') }}</th>
                             </tr>
                             </thead>
@@ -49,22 +49,19 @@
                                     <td class="table-td">
                                         <p>${{$userIbRule->rebateRule->rebate_amount - $userIbRule->sub_ib_share }}</p>
                                     </td>
-                                    <!-- Sub IB Share -->
-                                    <td class="table-td">
-                                        <p>${{ $userIbRule->sub_ib_share }}</p>
-                                    </td>
+{{--                                    <!-- Sub IB Share -->--}}
+{{--                                    <td class="table-td">--}}
+{{--                                        <p>${{ $userIbRule->sub_ib_share }}</p>--}}
+{{--                                    </td>--}}
 
 
 
                                     <!-- Action -->
                                     <td class="table-td">
-                                        <button type="button" class="action-btn edit-share-btn"
-                                                data-id="{{ $userIbRule->id }}"
-                                                data-share="{{ $userIbRule->sub_ib_share }}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editShareModal">
+                                        <a href="{{ route('user.ib.rule.levels', ['id' => $userIbRule->id]) }}" class="action-btn">
                                             <iconify-icon icon="heroicons:pencil"></iconify-icon>
-                                        </button>
+                                        </a>
+
                                     </td>
                                 </tr>
                             @endforeach

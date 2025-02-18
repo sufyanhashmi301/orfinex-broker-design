@@ -9,6 +9,16 @@
             <h4 class="card-title">
                 {{ __('Direct referrals of :name',['name'=>$user->full_name]) }}
             </h4>
+            <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'refferal', 'user_id' => $user->id]) }}">
+                @csrf
+                <div class="input-area relative">
+                    <button type="submit" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
+                        <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </div>
+            </form>
+            
             @can('user-direct-referral-create')
                 <span data-bs-toggle="modal" data-bs-target="#addReferralModal">
                     <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">

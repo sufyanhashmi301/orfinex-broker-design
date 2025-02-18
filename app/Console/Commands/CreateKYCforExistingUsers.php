@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use App\Models\KYC;
+use App\Models\Kyc;
 use Illuminate\Console\Command;
 
 class CreateKYCforExistingUsers extends Command
@@ -29,10 +29,10 @@ class CreateKYCforExistingUsers extends Command
      */
     public function handle()
     {
-        $usersWithoutKYC = User::whereNotIn('id', KYC::pluck('user_id'))->get();
+        $usersWithoutKYC = User::whereNotIn('id', Kyc::pluck('user_id'))->get();
 
         foreach ($usersWithoutKYC as $user) {
-            KYC::create([
+            Kyc::create([
                 'user_id' => $user->id,
                 'method' => '',
                 'data' => null,

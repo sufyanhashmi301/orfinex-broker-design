@@ -61,7 +61,7 @@ class StorageController extends Controller
             'me-south-1' => 'Middle East (Bahrain) me-south-1',
             'me-central-1' => 'Middle East (UAE) me-central-1',
             'sa-east-1' => 'South America (São Paulo) sa-east-1',
-        ];
+        ]; 
 
         // if admin didn't add any AWS credentials then don't let him activate this option
         if(getStorageMethod() == StorageMethodEnums::AWS_S3 && empty($aws_storage_method->details)) {

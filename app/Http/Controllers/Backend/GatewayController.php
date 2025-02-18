@@ -27,7 +27,6 @@ class GatewayController extends Controller
 
     public function update($id, Request $request)
     {
-
         $input = $request->all();
         $validator = Validator::make($input, [
             'name' => 'required',
@@ -62,7 +61,7 @@ class GatewayController extends Controller
         ];
 
         if ($request->hasFile('logo')) {
-            $logo = self::imageUploadTrait($input['logo'], $gateway->logo);
+            $logo = self::imageUploadTrait($input['logo'], $gateway->logo, 'admin/payment_gateways');
             $data = array_merge($data, ['logo' => $logo]);
         }
 

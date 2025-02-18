@@ -17,13 +17,13 @@
                   </button>
               </div>
               <div class="p-6 pt-0 edit-plugin-section">
-                  <form action="{{ route('admin.settings.storage.test_aws') }}" enctype="multipart/form-data" method="post" class="space-y-3">
+                  <form action="{{ route('admin.settings.storage.test_aws') }}" enctype="multipart/form-data" id="test-upload-form" method="post" class="space-y-3">
                     @csrf 
                     <input type="file" class="form-control" required name="file">
                       
                       
                     <div class="input-area text-right">
-                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center">
+                        <button type="submit" class="btn btn-dark inline-flex items-center justify-center test-upload-submit">
                             {{ __('Upload File') }}
                         </button>
                     </div>

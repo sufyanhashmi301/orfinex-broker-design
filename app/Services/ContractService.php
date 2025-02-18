@@ -5,11 +5,14 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Models\Contract;
 use App\Traits\NotifyTrait;
+use Illuminate\Support\Str;
 use App\Enums\InvestmentStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Enums\StorageMethodEnums;
 use App\Enums\ContractStatusEnums;
 use Illuminate\Support\Facades\File;
 use App\Models\AccountTypeInvestment;
+use App\Http\Controllers\StorageController;
 
 class ContractService
 {
@@ -162,22 +165,36 @@ class ContractService
     ];
 
     $pdf = Pdf::loadView('frontend::contracts.include.__contract_template', $contractData);
-    $fileName = 'contract_' . $contract->user->id . '_' . time() . '.pdf';
     
-    $directory = $this->assetsPath('frontend/user_contracts');
+    $fileName = Str::random(40) . '.pdf';
 
-    if (!File::exists($directory)) {
-        File::makeDirectory($directory, 0775, true);
+    
+    if(getStorageMethod() == StorageMethodEnums::AWS_S3) {
+      $path = 'user/contracts/' . $contract->user->id . '/' . $fileName;
+      $url = StorageController::AWSUpload($pdf->output(), $path);
+      $url = substr($url, 0, -1) . $path;
+
+      return ["file_path" => $url];
     }
 
-    try {
-        $pdf_path = $pdf->save($directory . '/' . $fileName);
-    } catch (\Exception $e) {
-        notify()->error('There was an error generating the contract: ' . $e->getMessage(), 'Error');
-        return redirect()->back();
-    }
+    if(getStorageMethod() == StorageMethodEnums::FILESYSTEM) {
+      $path = 'global/storage/user/contracts/' . $contract->user->id;
+      $directory = $this->assetsPath($path);
 
-    return ["file_path" => 'frontend/user_contracts/' . $fileName];
+      if (!File::exists($directory)) {
+          File::makeDirectory($directory, 0775, true);
+      }
+
+      try {
+          $pdf_path = $pdf->save($directory . '/' . $fileName);
+      } catch (\Exception $e) {
+          notify()->error('There was an error generating the contract: ' . $e->getMessage(), 'Error');
+          return redirect()->back();
+      }
+      return ["file_path" => $path . '/' . $fileName];
+    }
+    
+
   }
 
 }

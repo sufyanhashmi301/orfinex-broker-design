@@ -7,8 +7,8 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                             <thead>
                                 <tr>
-                                  <th scope="col" class="table-th">{{ __('Account Unique ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Account Unique ID') }}</th>
                                     <th scope="col" class="table-th">{{ __('Account Title') }}</th>
                                     <th scope="col" class="table-th">{{ __('Login') }}</th>
                                     {{-- <th scope="col" class="table-th">{{ __('Allotted Funds') }}</th> --}}
@@ -34,8 +34,12 @@
 
                                     @endphp
                                     <tr>
+                                        <td class="table-td"> 
+                                            @include('backend.user.components.__user_column', ['user' => $activity->accountTypeInvestment->user])
+                                        </td>
+                                        
                                         <td class="table-td"><b> <a style="text-decoration: underline" href="?unique_id={{$activity->accountTypeInvestment->unique_id}}">{{ $activity->accountTypeInvestment->unique_id }}</a> </b></td>
-                                        <td class="table-td"> {{ $activity->accountTypeInvestment->user->first_name . ' ' . $activity->accountTypeInvestment->user->last_name  }} <span style="text-transform: lowercase">({{ $activity->accountTypeInvestment->user->email }})</span></td>
+                                        
                                         <td class="table-td">{{ $accountTypeData['title'] ?? '' }}</td>
                                         <td class="table-td">{{ $activity->accountTypeInvestment->login ?? 'N/A'}}</td>
                                         {{-- <td class="table-td">{{ $ruleData['allotted_funds'] ?? '' }}</td> --}}
@@ -52,7 +56,7 @@
                                         {{-- <td class="table-td"><span class="badge" style="color: #fff; background: #333">{{ $activity->accountTypeInvestment->status }}</span></td> --}}
 
                                         <td class="table-td" style="width: 300px">
-                                            @if ($activity->status == \App\Enums\InvestmentPhaseApproval::ADMIN_APPROVE && $activity->action == 0)
+                                            @if ($activity->status == \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE && $activity->action == 0)
 
                                                 @can('account-activity-approval')
                                                     <div class="btn-group">

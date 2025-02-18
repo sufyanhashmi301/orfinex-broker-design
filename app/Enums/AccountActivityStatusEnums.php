@@ -4,7 +4,7 @@
 namespace App\Enums;
 
 
-interface InvestmentPhaseApproval
+interface AccountActivityStatusEnums
 {
   const DAILY_DRAWDOWN_VIOLATION = 'daily_drawdown_violated';
   const MAX_DRAWDOWN_VIOLATION = 'max_drawdown_violated';

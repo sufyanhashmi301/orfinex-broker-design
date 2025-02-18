@@ -3,6 +3,8 @@
 
 namespace App\Services;
 
+use App\Enums\StorageMethodEnums;
+use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\File;
 use App\Models\Certificate;
 use App\Models\User;
@@ -85,19 +87,19 @@ class GenerateCertificateService
         break;
 
       default:
-        dd('Unsupported image format. Only PNG, JPEG, and JPG are allowed.');
+        abort(403, 'Unsupported image format. Only PNG, JPEG, and JPG are allowed. Consider changing your template file.');
     }
 
     // If image loading failed, abort with an error
     if (!$image) {
-      dd('Failed to process the template image.');
+      abort(403, 'Failed to process the template image.');
     }
     
     // Set the font file (ensure this file exists in your public/fonts directory)
     $fontPath = str_replace('public/', 'assets/', public_path('global/fonts/arial.ttf'));
     $fontPath = str_replace('public\\', 'assets/', $fontPath);
     if (!file_exists($fontPath)) {
-      dd('Font file not found.');
+      abort(404, 'Font file not found.');
     }
 
     // Name 
@@ -116,24 +118,61 @@ class GenerateCertificateService
     $date_text_color = imagecolorallocate($image, $date_font_color_hex['r'], $date_font_color_hex['g'], $date_font_color_hex['b']);
     imagettftext($image, $fontSize, 0, $date_x, $date_y, $date_text_color, $fontPath, $date);
 
-    // Save the output as a new image
-    $random_string = Str::random(20);
-    $outputPath = 'assets/global/images/' .  $random_string . '.' . $ext;
-    imagepng($image, $outputPath);
+    // Save the output as a new image in AWS
+    $filename = Str::random(40);
+    if(getStorageMethod() == StorageMethodEnums::AWS_S3) {
 
-    // if example then delete the previous example
+      ob_start();
+      imagepng($image);
+      $image = ob_get_clean();
 
-    if(isset($certificate->config['example_certificate'])) {
-      $previous_example_path = public_path($certificate->config['example_certificate']);
-      $previous_example_path = str_replace('public/', 'assets/', $previous_example_path);
-      $previous_example_path = str_replace('public\\', 'assets/', $previous_example_path);
-      if (File::exists($previous_example_path) && $example == true) {
-        File::delete($previous_example_path);
+      if($user_id == 0) {
+        $path = 'admin/certificate_examples/' . $filename . '.png';
+      } else {
+        $path = 'user/certificates/' . $user_id . '/' . $filename . '.png';
       }
+      StorageController::AWSUpload($image, $path);
+      
+      return config('filesystems.disks.s3.url') . '/' . $path;
+      
+    }
+
+    // Save the output as a new image in AWS
+    if(getStorageMethod() == StorageMethodEnums::FILESYSTEM) {
+      
+      // if example then delete the previous example
+      if(isset($certificate->config['example_certificate'])) {
+        $previous_example_path = public_path($certificate->config['example_certificate']);
+        $previous_example_path = str_replace('public/', 'assets/', $previous_example_path);
+        $previous_example_path = str_replace('public\\', 'assets/', $previous_example_path);
+        if (File::exists($previous_example_path) && $example == true) {
+          File::delete($previous_example_path);
+        }
+      } 
+
+      // Decide if the admin is generating example or the user getting rewarded a certificate
+      if($user_id == 0) {
+        $base_directory = 'assets/global/storage/admin/certificate_examples/';
+        $output_path = $base_directory .  $filename . '.' . $ext;
+      } else {
+        $base_directory = 'assets/global/storage/user/certificates/' . $user_id . '/';
+        $output_path = $base_directory . $filename . '.' . $ext;
+      }
+
+      // Ensure directory exists
+      if (!File::exists($base_directory)) {
+        File::makeDirectory($base_directory, 0777, true, true);
+      }
+
+      imagepng($image, $output_path);
+      
+      // Return the generated image URL
+      return str_replace('assets/', '', $output_path);
+     
     }
     
+    
 
-    // Return the generated image URL
-    return str_replace('assets/', '', $outputPath);
+    
   }
 }

@@ -21,7 +21,7 @@ class AccountTypeService
             // 'trading_days' => !empty($input['trading_days']) ? $input['trading_days'] : null,
             'accounts_range_start' => !empty($input['accounts_range_start']) ? $input['accounts_range_start'] : null,
             'accounts_range_end' => !empty($input['accounts_range_end']) ? $input['accounts_range_end'] : null,
-            'icon' => isset($input['icon']) ? $this->imageUploadTrait($input['icon']) : null
+            'icon' => isset($input['icon']) ? $this->imageUploadTrait($input['icon'], null, 'admin/plans') : null
         ];
 
         // Merge custom data with the rest of the input, and create the record

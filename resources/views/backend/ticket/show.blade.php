@@ -177,16 +177,7 @@
                         </span>
                     </div>
                     <ul class="space-y-5 mb-4">
-                        <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                            <span>{{ __('Customer Group:') }}</span>
-                            @if($ticket->user->customerGroups->isNotEmpty())
-                                @foreach($ticket->user->customerGroups as $group)
-                                    <span>{{ $group->name }}</span>
-                                @endforeach
-                            @else
-                                <span>{{ 'N/A' }}</span>
-                            @endif
-                        </li>
+
                         <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                             <span>Risk Profile</span>
                             <span class="flex items-center gap-2"></span>
@@ -198,7 +189,7 @@
                                 {{ __('Current Balance') }}
                             </div>
                             <div class="text-slate-900 dark:text-white text-xl font-medium">
-                                {{ setting('currency_symbol','global') . $ticket->user->totalForexBalance() }}
+                                $0.00
                             </div>
                         </div>
                         <div class="text-center">
@@ -206,7 +197,7 @@
                                 {{ __('Current Equity') }}
                             </div>
                             <div class="text-slate-900 dark:text-white text-xl font-medium">
-                                {{ setting('currency_symbol','global') . $ticket->user->totalForexEquity() }}
+                                $0.00
                             </div>
                         </div>
                     </div>

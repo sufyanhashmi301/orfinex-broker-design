@@ -7,10 +7,9 @@ use App\Enums\InvestmentStatus;
 use App\Models\AccountActivity;
 use Illuminate\Validation\Rule;
 use App\Models\AccountTypeInvestment;
-use App\Enums\InvestmentPhaseApproval;
 use App\Services\AccountActivityService;
+use App\Enums\AccountActivityStatusEnums;
 use Illuminate\Support\Facades\Validator;
-use App\Services\InvestmentPhaseApprovalService;
 use App\Services\AccountTypeInvestmentPaymentService;
 use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
 
@@ -34,32 +33,66 @@ class AccountActivityController extends Controller
      */
     public function index(Request $request) {
 
+        $account_activities_filter = false;
+
+        // Filter wrt Unique ID
         if(isset($request->unique_id)){
             $uniqueId = $request->unique_id;
             $account_activities = AccountActivity::whereHas('accountTypeInvestment', function ($query) use ($uniqueId) {
                                             $query->where('unique_id', $uniqueId);
                                         })->orderBy('id', 'DESC')->paginate(15);
-        } elseif (isset($request->{'pending-approvals'})) {
-            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::ADMIN_APPROVE, 'action' => 0])->with([
-                'accountTypeInvestment.user' 
-            ])->whereHas('accountTypeInvestment', function($query) {
-                $query->whereHas('user'); 
-            })->orderBy('id', 'DESC')->paginate(15);
-        } elseif (isset($request->{'violated-acounts'})) {
-            $account_activities = AccountActivity::where(['status' => InvestmentPhaseApproval::VIOLATED])->with([
-                'accountTypeInvestment.user' 
-            ])->whereHas('accountTypeInvestment', function($query) {
-                $query->whereHas('user'); 
-            })->orderBy('id', 'DESC')->paginate(15);
-        } else{
-            $account_activities = AccountActivity::with([
-                'accountTypeInvestment.user' 
-            ])->whereHas('accountTypeInvestment', function($query) {
-                $query->whereHas('user'); 
-            })->orderBy('id', 'DESC')->paginate(15);
+            $account_activities_filter = true;
+
+            $title = 'Account Activity Logs: ' . $request->unique_id;
+        } 
+
+        // Wrt status
+        if(isset($request->status)){
+            // Filter users wrt status when status exists
+            if (in_array($request->status, (new \ReflectionClass(AccountActivityStatusEnums::class))->getConstants())) {
+                
+                $condition = ['status' => $request->status];
+                if(AccountActivityStatusEnums::ADMIN_APPROVE) {
+                    $condition['action'] = 0;
+                }
+
+                $account_activities = AccountActivity::where($condition)->with(['accountTypeInvestment.user'])->whereHas('accountTypeInvestment', function($query) {
+                                            $query->whereHas('user'); 
+                                        })->orderBy('id', 'DESC')->paginate(15);
+                
+                $account_activities_filter = true;
+            }
+
+            $title = 'Account Acitivites | ' . ucfirst(str_replace('_', ' ', $request->status));
         }
 
-        return view('backend.accounts_activity.index', compact('account_activities'));
+        // Search
+        if(isset($request->search)) {
+            
+            $account_activities = AccountActivity::whereHas('accountTypeInvestment.user', function ($query) use ($request) {
+                        $query->where('first_name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('last_name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('email', 'LIKE', '%' . $request->search . '%');
+                        })
+                        ->paginate(15);
+            
+            $account_activities_filter = true;
+            $title = 'Search results for: ' . $request->search;
+        }
+
+        // All
+        if(!$account_activities_filter) {
+            $account_activities = AccountActivity::with(['accountTypeInvestment.user'])->whereHas('accountTypeInvestment', function($query) {
+                                                    $query->whereHas('user'); 
+                                                })->orderBy('id', 'DESC')->paginate(15);
+            
+            if($request->status != 'all') {
+                return redirect()->route('admin.accounts_activity.log', ['status' => 'all']);
+            }
+            $title = 'All Account Activity Logs';
+        }
+
+        return view('backend.accounts_activity.index', get_defined_vars());
     }
 
     /**

@@ -20,8 +20,8 @@
   </button> --}}
 </div>
 
-@if (session('aws_test_url'))
-    <div class="alert alert-success mb-4">The test AWS upload has been successful. The test file will be available for the next 10 minutes. <b><a href="{{ session('aws_test_url') }}" target="_blank" style="text-decoration: underline">View Now</a></b></div>
+@if (session('image_location'))
+    <div class="alert alert-success mb-4">The test AWS upload has been successful. The test file will be available for the next 10 minutes. <b><a href="{{ session('image_location') }}" target="_blank" style="text-decoration: underline">View Now</a></b></div>
 @endif
 
 <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
@@ -69,19 +69,19 @@
           <div>
               
               @if (!$method->status)
-              <a href="{{ route('admin.kyc_method.method_toggle', ['id' => $method->id, 'action' => 'active']) }}" type="button" class="btn btn-primary btn-sm float-right" {{ $method->status ? 'disabled' : '' }} style="margin-right: 10px; margin-bottom: 10px; min-width: initial">Activate</a>
+                <a href="{{ route('admin.settings.storage.toggle_method', ['id' => $method->id, 'action' => 'active']) }}" type="button" class="btn btn-primary btn-sm float-right {{ $method->method == \App\Enums\StorageMethodEnums::AWS_S3 && empty($method->details) ? 'disabled' : '' }}"  style="margin-right: 10px; margin-bottom: 10px; min-width: initial">Activate</a>
               @endif
 
               @if ($method->method == \App\Enums\StorageMethodEnums::AWS_S3 && !empty($method->details))
-                <button class="mr-2 btn btn-primary btn-sm float-right" data-bs-toggle="modal" data-bs-target="#testAWSUpload">Test Upload</button>
+                <button class="mr-2 btn btn-primary btn-sm float-right " data-bs-toggle="modal" data-bs-target="#testAWSUpload">Test Upload</button>
               @endif
 
           </div>
       </div>
 
       <style>
-          button:disabled {
-              pointer-events: none;
+          a.disabled, button:disabled {
+              pointer-events: none !important;
               opacity: 0.6;
           }
       </style>
@@ -97,5 +97,9 @@
 
 @endsection
 @section('data-management-script')
-  
+  <script>
+    $('#test-upload-form').on('submit', function() {
+        $('.test-upload-submit').attr('disabled', true)
+    })
+  </script>
 @endsection

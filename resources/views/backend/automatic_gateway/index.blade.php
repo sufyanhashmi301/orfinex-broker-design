@@ -12,7 +12,7 @@
         @foreach($gateways as $gateway)
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
-                    <img class="inline-block h-10" src="{{ $gateway->logo }}" alt="{{ $gateway->name }}"/>
+                    <img class="inline-block h-10" src="{{ asset($gateway->logo) }}" alt="{{ $gateway->name }}"/>
                     <button class="action-btn" type="button" data-bs-toggle="modal" data-bs-target="#manage-{{$gateway->id}}">
                         <iconify-icon icon="lucide:settings-2"></iconify-icon>
                     </button>
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <!--  Manage Modal -->
-            @include('backend.automatic_gateway.include.__manage')
+            @include('backend.automatic_gateway.include.__manage', ['id' => $gateway->id])
         <!-- Manage Modal End-->
         @endforeach
     </div>

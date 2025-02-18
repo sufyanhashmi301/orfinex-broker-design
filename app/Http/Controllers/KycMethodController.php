@@ -3,13 +3,22 @@
 namespace App\Http\Controllers;
 
 use ReflectionClass;
+use App\Models\Setting;
 use App\Models\KycMethod;
 use Illuminate\Http\Request;
 use App\Enums\KycNoticeInvokeEnums;
-use App\Models\Setting;
+use Database\Seeders\KycMethodSeeder;
+use Illuminate\Support\Facades\Artisan;
 
 class KycMethodController extends Controller
 {
+
+    public function runSeeder() {
+        Artisan::call('db:seed', [
+            '--class' => 'KycMethodSeeder' 
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,6 +33,11 @@ class KycMethodController extends Controller
         $kyc_notice_invokes = (new ReflectionClass(KycNoticeInvokeEnums::class))->getConstants();
         $current_kyc_notice_invoke = kyc_invoke_at();
 
+        // Run the seeder if DB is not initialized
+        if(count($kyc_methods) != KycMethodSeeder::$TOTAL_KYC_METHODS) {
+            $this->runSeeder();
+            return redirect()->route('admin.settings.kyc');
+        }
 
         return view('backend.setting.kyc.index', get_defined_vars());
     }
@@ -150,36 +164,6 @@ class KycMethodController extends Controller
 
         return redirect()->back();
     }
-
-    // [
-    //     {
-    //       "name": "Passport",
-    //       "status": 1,
-    //       "fields": {
-    //         "1": {
-    //           "name": "Picture",
-    //           "type": "text",
-    //           "validation": "required"
-    //         }
-    //       }
-    //     },
-    //     {
-    //       "name": "ID Card",
-    //       "status": 0,
-    //       "fields": {
-    //         "1": {
-    //           "name": "Front Side",
-    //           "type": "text",
-    //           "validation": "required"
-    //         },
-    //         "2": {
-    //           "name": "Back Side",
-    //           "type": "text",
-    //           "validation": "required"
-    //         }
-    //       }
-    //     }
-    //   ]
 
     /**
      * Remove the specified resource from storage.

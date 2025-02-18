@@ -17,28 +17,28 @@
                     </button>
                 </div>
                 <div class="p-6 pt-0 edit-plugin-section">
-                    <form action="{{ route('admin.settings.storage.store') }}" method="post" class="space-y-3">
+                    <form action="{{ route('admin.settings.storage.update') }}" method="post" class="space-y-3">
                         @csrf 
                         <input type="hidden" name="method" value="aws_amazon_s3">
                         
                         <div class="input-area">
                             <label class="form-label" for="">AWS Key</label>
-                            <input type="text" name="aws_key" value="{{ $aws_storage_method->details['aws_key'] ?? '' }}" class="form-control" placeholder="####" required />
+                            <input type="text" name="aws_key" value="{{ $aws_storage_method->details['aws_key'] ?? '' }}" class="form-control" placeholder="####"  />
                         </div>
 
                         <div class="input-area">
                           <label class="form-label" for="">AWS Secret</label>
-                          <input type="text" name="aws_secret" value="{{ $aws_storage_method->details['aws_secret'] ?? '' }}" class="form-control" placeholder="####" required />
+                          <input type="text" name="aws_secret" value="{{ $aws_storage_method->details['aws_secret'] ?? '' }}" class="form-control" placeholder="####"  />
                         </div>
 
                         <div class="input-area">
                           <label class="form-label" for="">AWS Bucket</label>
-                          <input type="text" name="aws_bucket" value="{{ $aws_storage_method->details['aws_bucket'] ?? '' }}" class="form-control" placeholder="awsbucketname" required />
+                          <input type="text" name="aws_bucket" value="{{ $aws_storage_method->details['aws_bucket'] ?? '' }}" class="form-control" placeholder="awsbucketname"  />
                         </div>
 
                         <div class="input-area">
                             <label class="form-label" for="">AWS Region</label>
-                            <select name="aws_region" id="" class="form-control" required>
+                            <select name="aws_region" id="" class="form-control" >
                                   
                               <option value="" {{ count($aws_storage_method->details) == 0 ? 'selected' : '' }} disabled hidden>-- Select AWS Region --</option>
                               @foreach ($aws_regions as $regionCode => $regionName)

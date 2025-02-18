@@ -56,7 +56,7 @@ class SliderController extends Controller
         // Process Slides
         $slides = [];
         foreach($request->slides as $slide) {
-            $uploaded_slide =  $this->imageUploadTrait($slide, null, $request->type . '_slider_');
+            $uploaded_slide =  $this->imageUploadTrait($slide, null, 'admin/sliders');
             array_push($slides, $uploaded_slide);
         }
 

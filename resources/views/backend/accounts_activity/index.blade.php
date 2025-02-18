@@ -5,31 +5,23 @@
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
-            @yield('title')
+            {{ $title }}
         </h4>
-        <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
-            <a href="{{route('user.account.buy')}}" class="btn btn-primary inline-flex items-center justify-center">
-                <span class="flex items-center">
-                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="bi:plus"></iconify-icon>
-                    <span>{{ __('Start Challenge') }}</span>
-                </span>
-            </a>
-        </div>
     </div>
     <div class="innerMenu card p-6 mb-5">
         <ul class="nav nav-pills flex items-center overflow-x-auto list-none pl-0 pb-1 sm:pb-0 gap-4 menu-open w-full">
             <li class="nav-item" role="presentation">
-                <a href="{{ route('admin.accounts_activity.log') }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ url()->current() === route('admin.accounts_activity.log') && empty(request()->query()) ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
+                <a href="{{ route('admin.accounts_activity.log', ['status' => 'all']) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == 'all' ? 'active' : '' }}" aria-controls="tabs-realAccounts" aria-selected="true">{{ __('All Logs') }}</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="?pending-approvals" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('pending-approvals') ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
+                <a href="{{ route('admin.accounts_activity.log', ['status' => \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE ]) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE ? 'active' : '' }}" aria-controls="tabs-demoAccounts" aria-selected="false">{{ __('Pending Approvals') }}</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="?violated-acounts" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('violated-acounts') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated Accounts') }}</a>
+                <a href="{{ route('admin.accounts_activity.log', ['status' => \App\Enums\AccountActivityStatusEnums::VIOLATED ]) }}" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->get('status') == \App\Enums\AccountActivityStatusEnums::VIOLATED ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __('Violated Accounts Logs') }}</a>
             </li>
             @if (request()->has('unique_id'))
               <li class="nav-item" role="presentation">
-                <a href="?violated-acounts" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('unique_id') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __( request('unique_id') . ' Logs') }}</a>
+                <a href="javascript:void(0)" class="nav-link block font-medium font-Inter text-sm leading-tight capitalize text-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ request()->has('unique_id') ? 'active' : '' }}" aria-controls="tabs-archivedAccounts" aria-selected="false">{{ __( request('unique_id') . ' Logs') }}</a>
               </li>
             @endif
             <li class="nav-item !ml-auto">
@@ -42,42 +34,23 @@
             </li>
         </ul>
         <div class="hidden mt-5" id="filters_div">
-            <form id="filter-form" method="POST" action="">
+            <form id="filter-form" method="GET" action="{{ route('admin.accounts_activity.log') }}">
                 @csrf
-                <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
-                    <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
+                <div class="flex justify-between flex-wrap items-center">
+                    <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0" style="max-width: 400px">
                         <div class="flex-1 input-area relative">
-                            <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Login or User">
+                            <input type="text" name="search" id="search" class="form-control h-full" placeholder="Search by Name or Email">
                         </div>
-                        <div class="flex-1 input-area relative">
-                            <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select Phase Type') }}">
-                                <option value="evaluation phase" selected>
-                                    {{ __('evaluation phase') }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flex-1 input-area relative">
-                            <input type="date" name="created_at" id="created_at" class="form-control h-full" placeholder="Created At">
-                        </div>
-                    </div>
-                    <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                         <div class="input-area relative">
                             <button type="submit" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                                 <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
                                 {{ __('Filter') }}
                             </button>
                         </div>
-                        <div class="input-area relative">
-                            <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
-                                <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lets-icons:export-fill"></iconify-icon>
-                                {{ __('Export') }}
-                            </button>
-                        </div>
-                        <div class="input-area relative">
-                            <button type="button" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white" data-bs-toggle="modal" data-bs-target="#configureModal">
-                                <iconify-icon class="text-base font-light" icon="lucide:wrench"></iconify-icon>
-                            </button>
-                        </div>
+                    </div>
+                    <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                        
+                        
                     </div>
                 </div>
             </form>

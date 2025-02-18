@@ -46,7 +46,7 @@
                 {{ $key }}:
 
                 @if($value != new stdClass())
-                    @if( file_exists('assets/'.$value))
+                    @if( file_exists('assets/' . $value) || str_contains($value, 'amazonaws.com'))
                         <img src="{{ asset($value) }}" alt=""/>
                     @else
                         <strong>{{ asset($value) }}</strong>

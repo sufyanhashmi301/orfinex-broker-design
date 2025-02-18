@@ -131,7 +131,7 @@ class WithdrawController extends Controller
 
 
         $data = [
-            'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon']) : '',
+            'icon' => isset($input['icon']) ? self::imageUploadTrait($input['icon'], null, 'admin/withdraw_methods') : '',
             'gateway_id' => $input['gateway_id'] ?? null,
             'type' => $input['type'],
             'name' => $input['name'],
@@ -218,7 +218,7 @@ class WithdrawController extends Controller
         ];
 
         if ($request->hasFile('icon')) {
-            $icon = self::imageUploadTrait($input['icon'], $withdrawMethod->icon);
+            $icon = self::imageUploadTrait($input['icon'], $withdrawMethod->icon, 'admin/withdraw_methods');
             $data = array_merge($data, ['icon' => $icon]);
         }
 

@@ -185,7 +185,6 @@ class CertificateController extends Controller
     {
         $certificate = Certificate::find($id);
     
-
         // if the image is not added and stored, admin cannot enable it
         if(!isset($request->image) && $certificate->image == '' && $request->is_enabled == 1) {
             notify()->error('Upload Certificate template to enable it.');
@@ -193,7 +192,7 @@ class CertificateController extends Controller
         }
 
         if(isset($request->image)) {
-            $certificate->image = $this->imageUploadTrait($request->image);
+            $certificate->image = $this->imageUploadTrait($request->image, null, 'admin/certificates', true);
         }
         $certificate->title = $request->title;
         $certificate->hook = $request->hook;

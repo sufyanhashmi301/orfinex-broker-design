@@ -4,7 +4,7 @@ use Carbon\Carbon;
 use App\Enums\TxnType;
 use App\Models\Gateway;
 use App\Models\Setting;
-use App\Models\Storage;
+use App\Models\Storage as StorageModel;
 use App\Helpers\NioHash;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -822,6 +822,9 @@ if (!function_exists('show_kyc_notice')) {
 
 }
 
+// --- Storage Helper functions ---
+
+// generic to set env values
 if (!function_exists('setEnvironmentValue')) {
     function setEnvironmentValue($values) {
    
@@ -844,4 +847,14 @@ if (!function_exists('setEnvironmentValue')) {
     
     }
 }
+
+// get current storage method
+if (!function_exists('getStorageMethod')) {
+    function getStorageMethod() {
+        return StorageModel::where('status', 1)->first()->method;
+    }
+}
+
+// --- Storage Helper functions ---
+
 

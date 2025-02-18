@@ -83,7 +83,7 @@ class WithdrawController extends Controller
         foreach ($credentials as $key => $value) {
 
             if (is_file($value['value'])) {
-                $credentials[$key]['value'] = self::imageUploadTrait($value['value']);
+                $credentials[$key]['value'] = self::imageUploadTrait($value['value'], null, 'user/withdraws/' . Auth::id());
             }
         }
 
@@ -172,7 +172,7 @@ class WithdrawController extends Controller
             }
 
             if (isset($value['value']) && is_file($value['value'])) {
-                $credentials[$key]['value'] = self::imageUploadTrait($value['value'], $oldCredentials[$key]['value']);
+                $credentials[$key]['value'] = self::imageUploadTrait($value['value'], $oldCredentials[$key]['value'], 'user/withdraws/' . Auth::id());
             }
         }
 

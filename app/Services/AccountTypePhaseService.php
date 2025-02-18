@@ -55,7 +55,7 @@ class AccountTypePhaseService
                 'phase_approval_method' => $phase['phase_approval_method'],
                 'phase_step' => $phase['phase_step'],
                 'validity_period' => $phase['validity_period'],
-                'term_type' => InterestPeriod::MONTHLY,
+                'term_type' => 'monthly',
                 'server' => $phase['server'],
             ];
 
@@ -132,7 +132,7 @@ class AccountTypePhaseService
                     'phase_approval_method' => $phase['phase_approval_method'],
                     'phase_step' => $phase['phase_step'],
                     'validity_period' => $phase['validity_period'],
-                    'term_type' => InterestPeriod::MONTHLY,
+                    'term_type' => 'monthly',
                     'server' => $phase['server'],
                 ]
             );

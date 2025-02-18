@@ -82,14 +82,15 @@ class TicketController extends Controller
 
         $adminId = \Auth::id();
 
+        $ticket = Ticket::uuid($input['uuid']);
+
         $data = [
             'model' => 'admin',
             'user_id' => $adminId,
             'message' => nl2br($input['message']),
-            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
+            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach'], null, 'user/tickets/' . $ticket->user->id) : null,
         ];
 
-        $ticket = Ticket::uuid($input['uuid']);
 
         $ticket->messages()->create($data);
 

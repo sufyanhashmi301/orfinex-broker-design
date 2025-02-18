@@ -13,4 +13,8 @@ class Storage extends Model
         'details' => 'array',
         'data' => 'array',
     ];
+
+    protected $fillable = [
+        'status'
+    ];
 }

@@ -2,15 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\NotifyTrait;
 use Illuminate\Http\Request;
 use App\Enums\StorageMethodEnums;
+use Database\Seeders\StorageSeeder;
+use App\Http\Requests\StorageRequest;
 use App\Models\Storage as StorageModel;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 
 class StorageController extends Controller
 {
+
+    use NotifyTrait;
+
+    public function runSeeder() {
+        Artisan::call('db:seed', [
+            '--class' => 'StorageSeeder' 
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,6 +30,12 @@ class StorageController extends Controller
     public function index()
     {
         $storage_methods = StorageModel::all();
+        // Run the seeder if DB is not initialized
+        if(count($storage_methods) != StorageSeeder::$TOTAL_STORAGE_METHODS) {
+            $this->runSeeder();
+            return redirect()->route('admin.settings.storage.index');
+        }
+        
         $aws_storage_method = StorageModel::where('method', StorageMethodEnums::AWS_S3)->first();
 
         $aws_regions = [
@@ -46,6 +63,11 @@ class StorageController extends Controller
             'sa-east-1' => 'South America (São Paulo) sa-east-1',
         ];
 
+        // if admin didn't add any AWS credentials then don't let him activate this option
+        if(getStorageMethod() == StorageMethodEnums::AWS_S3 && empty($aws_storage_method->details)) {
+            StorageModel::query()->update(['status' => 0]);
+            StorageModel::where('method', StorageMethodEnums::FILESYSTEM)->update(['status' => 1]);
+        }
 
         return view('backend.setting.data_management.storage.index', get_defined_vars());
     }
@@ -68,54 +90,60 @@ class StorageController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->method == 'aws_amazon_s3') {
-            $details = $request->only(['aws_key', 'aws_secret', 'aws_bucket', 'aws_region']);
-            
-            $aws_storage_method = StorageModel::where('method', StorageMethodEnums::AWS_S3)->first();
-            $aws_storage_method->details = $details;
-            $aws_storage_method->save();
-
-            // Update .env file
-            setEnvironmentValue([
-                'AWS_ACCESS_KEY_ID' => $details['aws_key'],
-                'AWS_SECRET_ACCESS_KEY' => $details['aws_secret'],
-                'AWS_BUCKET' => $details['aws_bucket'],
-                'AWS_DEFAULT_REGION' => $details['aws_region'],
-                'AWS_URL' => 'https://' . $details['aws_bucket'] . '.s3.' . $details['aws_region'] . '.amazonaws.com',
-            ]);
-
-            // Clear config cache
-            Artisan::call('config:clear');
-            Artisan::call('cache:clear');
-
-
-            notify()->success('Storage settings updated successfully!');
-
-        }
-
-        return redirect()->back();
+        
     }
     
 
     public function testAWS(Request $request) {
-
+        
         $request->validate([
-            'file' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:5120', 
+            'file' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf,webp|max:5120', 
         ]);
         
 
         if ($request->file('file')) {
             $file = $request->file('file');
-            $path = $file->store('', 's3'); 
+            $image_location = self::AWSUpload($file, 'admin/test');
 
-            // $file_url = Storage::disk('s3')->url($path);
+            if (!$image_location) {
+                return redirect()->back(); 
+            }
 
-            $signed_url = Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(10));
-    
-            return redirect()->back()->with(['aws_test_url' => $signed_url]);
+            return redirect()->back()->with(['image_location' => $image_location]);
         }
         
     }
+
+    public static function AWSUpload($file, $path) {
+        
+        try {
+            
+            $path = Storage::disk('s3')->put($path, $file); 
+            $image_location = config('filesystems.disks.s3.url') . '/' . $path;
+            return $image_location;
+            
+        } catch (\Exception $e) {
+            notify()->error('Incorrect AWS S3 Credentials');
+            return false;
+        }
+
+    }
+
+    /**
+     * Toggle Storage Method
+     */
+    public function toggleMethod(Request $request, $id) {
+        
+        if($request->action == 'active') {
+            StorageModel::query()->update(['status' => 0]);
+
+            StorageModel::find($id)->update(['status' => 1]);
+
+            notify()->success('Storage method settings saved successfully!');
+        }
+        return redirect()->back();
+    }
+
 
     /**
      * Display the specified resource.
@@ -146,9 +174,35 @@ class StorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorageRequest $request)
     {
-        //
+
+        if($request->method == 'aws_amazon_s3') {
+            $details = $request->only(['aws_key', 'aws_secret', 'aws_bucket', 'aws_region']);
+            
+            $aws_storage_method = StorageModel::where('method', StorageMethodEnums::AWS_S3)->first();
+            $aws_storage_method->details = $details;
+            $aws_storage_method->save();
+
+            // Update .env file
+            setEnvironmentValue([
+                'AWS_ACCESS_KEY_ID' => $details['aws_key'],
+                'AWS_SECRET_ACCESS_KEY' => $details['aws_secret'],
+                'AWS_BUCKET' => $details['aws_bucket'],
+                'AWS_DEFAULT_REGION' => $details['aws_region'],
+                'AWS_URL' => 'https://' . $details['aws_bucket'] . '.s3.' . $details['aws_region'] . '.amazonaws.com',
+            ]);
+
+            // Clear config cache
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+
+
+            notify()->success('Storage settings updated successfully!');
+
+        }
+
+        return redirect()->back();
     }
 
     /**

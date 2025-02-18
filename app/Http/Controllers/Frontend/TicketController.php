@@ -53,7 +53,7 @@ class TicketController extends Controller
             'uuid' => 'SUPT'.rand(100000, 999999),
             'title' => $input['title'],
             'message' => nl2br($input['message']),
-            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
+            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach'], null, 'user/tickets/' . $user->id) : null,
         ];
 
         $ticket = $user->tickets()->create($data);
@@ -120,7 +120,7 @@ class TicketController extends Controller
         $data = [
             'user_id' => $user->id, // @phpstan-ignore-line
             'message' => nl2br($input['message']),
-            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach']) : null,
+            'attach' => $request->hasFile('attach') ? self::imageUploadTrait($input['attach'], null, 'user/tickets/' . $user->id) : null,
         ];
 
         $ticket = Ticket::uuid($input['uuid']);

@@ -71,7 +71,7 @@ class EmailTemplateController extends Controller
 
     public function update(Request $request)
     {
-
+        dd('here');
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
             'message_body' => 'required',

@@ -193,7 +193,7 @@
 
                     @can('account-activity-list')
                         <li>
-                            <a href="{{route('admin.accounts_activity.log' )}}?pending-approvals" class="{{ request()->has('pending-approvals') ? 'active' : '' }}">
+                            <a href="{{route('admin.accounts_activity.log', ['status' => \App\Enums\AccountActivityStatusEnums::ADMIN_APPROVE ] )}}" class="{{ isActive('admin.accounts_activity*') }}">
                                 {{ __('Pending Approvals') }}
                             </a>
                         </li>

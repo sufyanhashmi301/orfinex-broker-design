@@ -205,19 +205,19 @@ Route::middleware(['2fa_admin'])->group(function () {
     // Payment Methods
     Route::get('payment-methods/{type}', [PaymentMethodController::class, 'index'])->name('payment-method.index');
     Route::group(['prefix' => 'payment-method', 'as' => 'payment-method.', 'controller' => PaymentMethodController::class], function () {
-        Route::get('create/{type}', 'createMethod')->name('create');
-        Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-        Route::get('edit/{type}', 'methodEdit')->name('edit');
-        Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
+        Route::get('create/{type}', 'create')->name('create');
+        Route::post('store', 'store')->name('store')->withoutMiddleware('XSS');
+        Route::get('edit/{type}', 'edit')->name('edit');
+        Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
     });
     
     // Storage Controller
     Route::group(['prefix' => 'settings/storage', 'as' => 'settings.storage.', 'controller' => StorageController::class], function () {
         Route::get('', 'index')->name('index');
-        Route::post('store', 'store')->name('store');
+        Route::post('update', 'update')->name('update');
+        Route::get('toggle-method/{id}', 'toggleMethod')->name('toggle_method');
         Route::post('test-aws-s3', 'testAWS')->name('test_aws');
     });
-
 
     // =============================== Optimization ===============================
     
@@ -241,13 +241,6 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     //=============================== deposit Method ================================
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
-        // Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-        //     Route::get('list/{type}', 'methodList')->name('list');
-        //     Route::get('create/{type}', 'createMethod')->name('create');
-        //     Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-        //     Route::get('edit/{type}', 'methodEdit')->name('edit');
-        //     Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
-        // });
 
         Route::get('pending-payments', 'pending')->name('manual.pending');
         Route::get('history', 'history')->name('history');

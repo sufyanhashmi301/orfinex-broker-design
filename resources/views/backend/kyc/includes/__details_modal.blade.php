@@ -17,7 +17,8 @@
             <ul class="grid md:grid-cold-2 grid-cols-2 gap-5">
                 @foreach( $kyc->data as $key => $value)
                   <li class="dark:text-slate-300 dark:border-slate-700 last:border-b-0 pb-3 last:pb-0">
-                    @if(file_exists('assets/'.$value))
+                    
+                    @if(file_exists('assets/' . $value) || str_contains($value, 'amazonaws.com'))
                         <span class="block mb-2 capitalize">{{ str_replace('_', ' ', $key) }}</span>
                         <div class="h-[260px] bg-no-repeat bg-contain bg-center bg-slate-100 mb-2" style="background-image: url('{{ asset($value) }}')"></div>
                         <div class="flex justify-end gap-3">
@@ -30,7 +31,7 @@
             </ul>
 
             @foreach( $kyc->data as $key => $value)
-              @if(!file_exists('assets/'.$value))
+              @if(!file_exists('assets/' . $value) && !str_contains($value, 'amazonaws.com'))
                 <div class="mt-2">
                   <b class="capitalize">{{ str_replace('_', ' ', $key) }}: </b> {{$value}}
                 </div>

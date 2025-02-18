@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
 
         // Account Stats Updation
         $schedule->command('update:investment-stats')->everyMinute();
+        
         $schedule->command('update:investment-stats --save-record')->hourly();
 
         // Account open positions

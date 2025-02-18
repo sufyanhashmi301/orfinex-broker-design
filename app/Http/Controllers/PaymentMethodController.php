@@ -82,7 +82,7 @@ class PaymentMethodController extends Controller
         }
 
         $data = [
-            'logo' => isset($input['logo']) ? self::imageUploadTrait($input['logo']) : null,
+            'logo' => isset($input['logo']) ? self::imageUploadTrait($input['logo'], null, 'admin/payment_methods') : null,
             'name' => $input['name'],
             'type' => $input['type'],
             'gateway_id' => $input['gateway_id'] ?? null,
@@ -193,7 +193,7 @@ class PaymentMethodController extends Controller
         ];
         //dd($data);
         if ($request->hasFile('logo')) {
-            $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo);
+            $logo = self::imageUploadTrait($input['logo'], $depositMethod->logo, 'admin/payment_methods');
             $data = array_merge($data, ['logo' => $logo]);
         }
 

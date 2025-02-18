@@ -9,6 +9,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class KycMethodSeeder extends Seeder
 {
+    public static $TOTAL_KYC_METHODS = 2;
+
     /**
      * Run the database seeds.
      *
@@ -25,8 +27,8 @@ class KycMethodSeeder extends Seeder
                 'icon' => '',
                 'name' => 'Manual KYC',
                 'description' => 'Allows the user to manually submit details.',
-                'data' => '[]',
-                'status' => 0,
+                'data' => '[{"name":"Passport","status":"1","fields":{"1":{"name":"Picture","type":"file","validation":"required"},"2":{"name":"Passport Address","type":"textarea","validation":"required"}}},{"name":"ID Card","status":"1","fields":{"1":{"name":"Front Side","type":"file","validation":"required"},"2":{"name":"Back Side","type":"file","validation":"required"}}}]',
+                'status' => 1,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
             ],

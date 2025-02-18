@@ -119,7 +119,7 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-
+        
         $section = $request->section;
         $rules = Setting::getValidationRules($section);
 //        dd($request->all(),$rules, $section);
@@ -142,7 +142,7 @@ class SettingController extends Controller
                     if ($request->hasFile($key)) {
                         $oldImage = Setting::get($key, $section);
 
-                        $val = self::imageUploadTrait($val, $oldImage);
+                        $val = self::imageUploadTrait($val, $oldImage, 'admin/settings');
                     }
 
                     Setting::add($key, $val, Setting::getDataType($key, $section));

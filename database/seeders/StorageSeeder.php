@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class StorageSeeder extends Seeder
 {
+    public static $TOTAL_STORAGE_METHODS = 2;
+
     /**
      * Run the database seeds.
      *

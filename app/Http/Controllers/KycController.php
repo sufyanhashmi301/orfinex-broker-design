@@ -146,7 +146,7 @@ class KycController extends Controller
         // Handle files
         foreach ($kyc_credential as $key => $value) {
             if (is_file($value)) {
-                $path = self::kycImageUploadTrait($value);
+                $path = self::imageUploadTrait($value, null, 'user/kycs/' . Auth::id());
                 if (isset($path) && !empty($path)) {
                     $kyc_credential[$key] = $path;
                 } else {

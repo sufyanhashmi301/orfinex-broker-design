@@ -24,8 +24,8 @@
                             <div class="input-area max-w-xs">
                                 <label class="form-label" for="">{{ __('Upload Logo:') }}</label>
                                 <div class="wrap-custom-file">
-                                    <input type="file" name="logo" id="schema-icon" accept=".gif, .jpg, .png"/>
-                                    <label for="schema-icon" class="file-ok" style="background-image: url('{{ $gateway->logo }}')">
+                                    <input type="file" name="logo" id="schema-icon{{$id}}" accept=".gif, .jpg, .png, .svg"/>
+                                    <label for="schema-icon{{$id}}" class="file-ok" style="background-image: url('{{ asset($gateway->logo) }}')">
                                         <img class="upload-icon" src="{{ asset('global/materials/upload.svg') }}" alt=""/>
                                         <span>{{ __('Update Logo') }}</span>
                                     </label>

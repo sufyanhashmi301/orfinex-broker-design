@@ -36,6 +36,9 @@ class Kernel extends ConsoleKernel
 
         // Trial Active and Expiry
         $schedule->command('trial-accounts:active-or-expire')->everyTwoMinutes();
+
+        // Delete test uploads from S3
+        $schedule->command('aws-s3:delete-test-uploads')->daily();
         
     }
 

@@ -1,13 +1,18 @@
 <?php
 
-use App\Http\Controllers\AccountActivityController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KycController;
 use App\Http\Controllers\AddonController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\SliderController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\RiskRuleController;
+use App\Http\Controllers\AffiliateController;
+use App\Http\Controllers\KycMethodController;
+use App\Http\Controllers\KycNoticeController;
 use App\Http\Controllers\AccountTypeController;
 use App\Http\Controllers\Backend\AppController;
-use App\Http\Controllers\KycController;
 use App\Http\Controllers\Backend\SmsController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\Backend\AuthController;
@@ -15,14 +20,19 @@ use App\Http\Controllers\Backend\LinkController;
 use App\Http\Controllers\Backend\PageController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\TradingStatsController;
 use App\Http\Controllers\AffiliateRuleController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\ThemeController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PayoutRequestController;
 use App\Http\Controllers\Backend\ImportController;
 use App\Http\Controllers\Backend\PluginController;
 use App\Http\Controllers\Backend\SocialController;
 use App\Http\Controllers\Backend\TicketController;
+use App\Http\Controllers\Backend\TwilioController;
+use App\Http\Controllers\WithdrawMethodController;
+use App\Http\Controllers\AccountActivityController;
 use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\DepositController;
 use App\Http\Controllers\Backend\GatewayController;
@@ -46,17 +56,9 @@ use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\NotificationController;
 use App\Http\Controllers\Backend\TicketStatusController;
 use App\Http\Controllers\AccountTypeInvestmentController;
-use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
-use App\Http\Controllers\BannerController;
-use App\Http\Controllers\KycMethodController;
-use App\Http\Controllers\KycNoticeController;
-use App\Http\Controllers\PaymentMethodController;
-use App\Http\Controllers\SliderController;
-use App\Http\Controllers\StorageController;
-use App\Http\Controllers\TradingStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +73,13 @@ use App\Http\Controllers\TradingStatsController;
 
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware('isDemo');
+
+Route::controller(TwilioController::class)->group(function () {
+    Route::post('/outbound.xml', 'outboundXml')->name('outbound-xml');
+    Route::get('/generate-token', 'generateToken')->name('generate.token');
+    Route::post('/outgoing-call', 'handleOutgoingCall')->name('outgoing-call');
+    Route::post('/twilio/voice', 'handleIncomingCall');
+});
 
 Route::middleware(['2fa_admin'])->group(function () {
     
@@ -95,6 +104,21 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('kyc/{id}', 'kyc')->name('kyc');
     });
 
+    //===============================  tWILIO ==================================
+    Route::controller(TwilioController::class)->group(function () {
+        Route::get('/call', 'index')->name('twilio.index');
+        // Route::get('/call', 'voice')->name('twilio.voice');
+        Route::post('/make-call', 'initiateCall')->name('initiate.call');
+        Route::post('/end-call', 'endCall')->name('end.call');
+        Route::post('/mute-microphone', 'muteMicrophone')->name('mute.microphone');
+        Route::post('/insert-call-history', 'insertCallHistory')->name('insert.call.history');
+        Route::post('/insert-new-customer', 'insertNewCustomer')->name('insert.new.customer');
+        Route::get('/admin/user-report', 'userReport')->name('user.report');
+        Route::get('/call-history', 'getWeeklyCallReport')->name('get.call.history');
+        Route::get('/play-call-recording/{callSid}', 'playCallRecording');
+        Route::get('/player-iframe/{callSid}', 'playerIframe');
+        Route::get('/recording/{recordingSid}', 'streamRecording')->name('recording.stream');
+    });
 
 
     //===============================  Role Management ==================================
@@ -210,6 +234,15 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::get('edit/{type}', 'edit')->name('edit');
         Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
     });
+
+    // Withdraw Methods
+    Route::get('withdraw-methods/{type}', [WithdrawMethodController::class, 'index'])->name('withdraw-method.index');
+    Route::group(['prefix' => 'withdraw-method', 'as' => 'withdraw-method.', 'controller' => WithdrawMethodController::class], function () {
+        Route::get('create/{type}', 'create')->name('create');
+        Route::post('store', 'store')->name('store')->withoutMiddleware('XSS');
+        Route::get('edit/{type}', 'edit')->name('edit');
+        Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
+    });
     
     // Storage Controller
     Route::group(['prefix' => 'settings/storage', 'as' => 'settings.storage.', 'controller' => StorageController::class], function () {
@@ -251,14 +284,6 @@ Route::middleware(['2fa_admin'])->group(function () {
 
     //=============================== withdraw Method ================================
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
-
-        Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
-            Route::get('list/{type}', 'methods')->name('list');
-            Route::get('create/{type}', 'methodCreate')->name('create');
-            Route::post('store', 'methodStore')->name('store')->withoutMiddleware('XSS');
-            Route::get('edit/{type}', 'methodEdit')->name('edit');
-            Route::post('update/{id}', 'methodUpdate')->name('update')->withoutMiddleware('XSS');
-        });
 
         //Schedule
         Route::get('schedule', 'schedule')->name('schedule');

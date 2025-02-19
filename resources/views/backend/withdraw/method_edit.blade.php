@@ -13,7 +13,7 @@
     <div class="max-w-5xl mx-auto">
         <div class="card">
             <div class="card-body p-6">
-                <form action="{{ route('admin.withdraw.method.update',$withdrawMethod->id) }}" class="row"
+                <form action="{{ route('admin.withdraw-method.update', $withdrawMethod->id) }}" class="row"
                       method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="{{ $type }}">

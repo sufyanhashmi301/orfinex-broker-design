@@ -112,7 +112,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.withdraw.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                                <a href="{{ route('admin.withdraw-method.index','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Payout Methods') }}
                                 </a>
                             </li>

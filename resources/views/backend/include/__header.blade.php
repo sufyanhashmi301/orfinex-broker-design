@@ -134,7 +134,7 @@
                                                 </a>
                                             </li>
                                             <li class="pb-2">
-                                                <a href="{{ route('admin.withdraw.method.list','auto') }}">
+                                                <a href="{{ route('admin.withdraw-method.index','auto') }}">
                                                     <div class="flex space-x-2 items-start text-sm rtl:space-x-reverse">
                                                         <iconify-icon icon="lucide:circle-plus" class="leading-[1]"> </iconify-icon>
                                                         <span class="leading-[1]">

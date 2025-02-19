@@ -38,7 +38,7 @@
                             </button>
                             <ul class="dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none lrt:origin-top-right ">
                                 <li>
-                                    <a href="{{ route('admin.withdraw.method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                    <a href="{{ route('admin.withdraw-method.edit',['type' => strtolower($type),'id' => $method->id]) }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
                                         <iconify-icon icon="lucide:edit" class="relative top-[2px] text-lg ltr:mr-1 rtl:ml-1"></iconify-icon>
                                         {{ __('Upadte') }}
                                     </a>

@@ -70,6 +70,16 @@
             </li>
         @endcanany
 
+        <li class="">
+            <a href="{{ route('admin.twilio.index') }}" class="navItem {{ isActive('admin.twilio*') }}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" style="font-size: 20px" icon="lucide:phone"></iconify-icon>
+                    <span>{{ __('Telephone Call') }}</span>
+                </span>
+                {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
+            </a>
+        </li>
+
         @canany(['kyc-list','kyc-action','kyc-form-manage','risk-profile-tag'])
             <li class="">
                 <a href="{{ route('admin.kyc.index', ['status' => 'all']) }}" class="navItem {{ isActive('admin.kyc*') }}">

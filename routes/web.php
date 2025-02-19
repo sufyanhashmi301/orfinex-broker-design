@@ -15,6 +15,7 @@ use App\Http\Controllers\TradingStatsController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\UserController;
 use App\Http\Controllers\UserAffiliateController;
+use App\Http\Controllers\Backend\TwilioController;
 use App\Http\Controllers\Frontend\StatusController;
 use App\Http\Controllers\Frontend\TicketController;
 use App\Http\Controllers\UserCertificateController;
@@ -40,6 +41,9 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 |
 */
 
+Route::controller(TwilioController::class)->group(function () {
+    Route::post('/outbound.xml', 'outboundXml')->name('outbound-xml');
+});
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/verify-email')->name('verification.notice');

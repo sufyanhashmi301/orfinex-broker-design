@@ -6,8 +6,8 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.withdraw.method.list','auto') }}" class="navItem {{ isActive('admin.withdraw.method*') }}">
-                {{ __('Payout Methods') }}
+            <a href="{{ route('admin.withdraw-method.index','auto') }}" class="navItem {{ isActive('admin.withdraw-method*') }}">
+                {{ __('Withdraw Methods') }}
             </a>
         </li>
         <li>

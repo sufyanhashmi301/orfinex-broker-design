@@ -136,10 +136,10 @@ class UnpaidRebateDistribution extends Command
 
                     $transaction = Txn::new(
                         $amount, 0, $amount, 'system',
-                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol}  from account {$metaDeal->login}",
+                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login}",
                         TxnType::IbBonus, TxnStatus::Success, base_currency(),
                         $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
-                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol}  from account {$metaDeal->login}", $targetId, TxnTargetType::Wallet->value
+                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login}", $targetId, TxnTargetType::Wallet->value
                     );
 
                     $this->addBalance($transaction);

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Exception;
 use Txn;
 
-class CheckUnpaidRebates extends Command
+class UnpaidRebateDistribution extends Command
 {
     protected $signature = 'rebate:check-unpaid';
     protected $description = 'Check and process unpaid MetaDeals for rebate distribution';
@@ -29,7 +29,7 @@ class CheckUnpaidRebates extends Command
         try {
             // Fetch all unpaid deals
             $unpaidDeals = MetaDeal::whereNull('is_paid')
-                ->where('id',9213)
+                ->where('id',9761)
                 ->get();
 
 

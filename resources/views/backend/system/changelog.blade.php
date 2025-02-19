@@ -2,7 +2,7 @@
     @foreach ($data['changelog'] as $item)
         <div class="card hover:shadow-lg">
             <div class="card-body p-6">
-                <div class="flex items-center justify-between mb-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
                     <!-- Version Tag with Rounded Box -->
                     <div class="flex items-center gap-2">
                         <span class="text-lg font-medium dark:text-white">V. {{ $item['version'] }}</span>

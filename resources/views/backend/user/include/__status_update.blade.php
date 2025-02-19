@@ -3,17 +3,12 @@
          style="background-image: url('https://cdn.brokeret.com/crm-assets/staff-image/h1.png')">
     </div>
     <div class="profile-box">
-        <div
-            class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
-            @if(null != $user->avatar)
-                <img
-                    class="w-full h-full object-cover rounded-full"
-                    src="{{asset($user->avatar)}}"
-                    alt="{{$user->first_name}}"
-                />
-            @else
-                <span class="text-4xl">{{$user->first_name[0] .$user->last_name[0] }}</span>
-            @endif
+        <div class="h-[140px] w-[140px] ml-auto mr-auto mb-4 rounded-full ring-4 ring-slate-100 dark:ring-slate-100 relative bg-slate-300 dark:bg-body dark:text-white text-slate-900 flex flex-col items-center justify-center">
+            <img
+                class="w-full h-full object-cover rounded-full"
+                src="{{asset($user->avatar ?? 'global/materials/user.png')}}"
+                alt="{{$user->first_name}}"
+            />
         </div>
         <div class="text-center">
             <div class="text-2xl font-medium text-slate-900 dark:text-slate-200 mb-[3px]">
@@ -59,7 +54,7 @@
                 </a>
             </span>
             {{--@can('Delete User')--}}
-            <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+            <span data-bs-toggle="modal" data-bs-target="#deleteConfirmationModall">
                 <a href="javascript:void(0);" type="button" class="toolTip onTop action-btn dark:text-slate-300"
                    data-tippy-theme="dark" data-tippy-content="Delete User">
                     <iconify-icon icon="lucide:user-minus"></iconify-icon>
@@ -68,26 +63,27 @@
         </div>
         <ul class="space-y-5 mb-4">
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('Customer Group: ') }}</span>
-                @if($user->customerGroups->isNotEmpty())
-                    @foreach($user->customerGroups as $group)
-                        <span>{{ $group->name }}</span>
-                    @endforeach
-                @else
-                    <span>{{ 'N/A' }}</span>
-                @endif
-            </li>
-            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
-                <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
+                <span>{{ __('Status:') }}</span> <!-- Added colon here -->
                 <span class="flex items-center gap-2">
-                    @if($user->riskProfileTags->isEmpty())
-                        {{ __('N/A') }}
+                    @if($user->status == 1)
+                        <span class="badge badge-success bg-opacity-30 text-success">{{ __('Active') }}</span>
+
                     @else
-                        {{ $user->riskProfileTags->pluck('name')->implode(', ') }}
+                        <span class="badge badge-danger bg-opacity-30 text-danger">{{ __('Inactive') }}</span>
                     @endif
                 </span>
             </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('KYC:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @if($user->kyc >= kyc_required_completed_level())
+                        <span class="badge badge-success bg-opacity-30 text-success">{{ __('Verified') }}</span>
 
+                    @else
+                        <span class="badge badge-danger bg-opacity-30 text-danger">{{ __('Unverified') }}</span>
+                    @endif
+                </span>
+            </li>
             <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
                 <span>{{ __('KYC Level:') }}</span>
                 <span>
@@ -136,6 +132,27 @@
                         {{ __('N/A') }}
                     @else
                         {{ ucfirst($user->ib_status)  }}
+                    @endif
+                </span>
+            </li>
+
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('Customer Group: ') }}</span>
+                @if($user->customerGroups->isNotEmpty())
+                    @foreach($user->customerGroups as $group)
+                        <span>{{ $group->name }}</span>
+                    @endforeach
+                @else
+                    <span>{{ 'N/A' }}</span>
+                @endif
+            </li>
+            <li class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
+                <span>{{ __('Risk Profile:') }}</span> <!-- Added colon here -->
+                <span class="flex items-center gap-2">
+                    @if($user->riskProfileTags->isEmpty())
+                        {{ __('N/A') }}
+                    @else
+                        {{ $user->riskProfileTags->pluck('name')->implode(', ') }}
                     @endif
                 </span>
             </li>

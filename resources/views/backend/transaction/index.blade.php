@@ -12,8 +12,8 @@
     <div class="innerMenu card p-6 mb-5">
         <form id="filter-form" method="POST" action="{{ route('admin.transactions.export') }}">
             @csrf
-            <div class="flex justify-between flex-wrap items-center">
-                <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+            <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+                <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                     <div class="flex-1 input-area relative">
                         <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
                     </div>
@@ -28,25 +28,11 @@
                     <div class="flex-1 input-area relative">
                         <select name="type" class="form-control h-full" id="type">
                             <option value="">Transaction Type</option>
-                            <option value="deposit">Deposit</option>
-                            <option value="forex_deposit">Demo Deposit</option>
-                            <option value="subtract">Subtract</option>
-                            <option value="manual_deposit">Manual Deposit</option>
-                            <option value="send_money">Send Money </option>
-                            <option value="send_money_internal">Send Money Internal</option>
-                            <option value="exchange">Exchange</option>
-                            <option value="referral">Referral</option>
-                            <option value="bonus">Signup Bonus</option>
-
-                            <option value="withdraw">Withdraw</option>
-                            <option value="withdraw_auto">Withdraw Auto</option>
-                            <option value="receive_money">Receive Money</option>
-                            <option value="investment">Investment</option>
-                            <option value="interest">Interest</option>
-                            <option value="refund">Refund</option>
-                            <option value="multi_ib">Multi IB</option>
-                            <option value="ib">IB</option>
+                            @foreach (\App\Enums\TxnType::cases() as $txnType)
+                                <option value="{{ $txnType->value }}">{{ $txnType->label() }}</option>
+                            @endforeach
                         </select>
+
                     </div>
 
                     <div class="flex-1 input-area relative">
@@ -54,7 +40,7 @@
                     </div>
 
                 </div>
-                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
                     <div class="input-area relative">
                         <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                             <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>

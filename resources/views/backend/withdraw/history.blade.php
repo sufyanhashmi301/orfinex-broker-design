@@ -12,8 +12,8 @@
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.withdraw.export') }}">
         @csrf
-        <div class="flex justify-between flex-wrap items-center">
-            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
                 </div>
@@ -90,7 +90,7 @@
             </div>
         </div>
     </div>
-    @can('transaction-action')
+
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
@@ -102,8 +102,7 @@
                 </div>
             </div>
         </div>
-    @endcan
-@endsection
+  @endsection
 
 @section('script')
     <script>

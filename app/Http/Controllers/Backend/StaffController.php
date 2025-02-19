@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\User;
+use App\Traits\ImageUpload;
 use Arr;
 use DB;
 use Hash;
@@ -23,6 +25,7 @@ use Spatie\Permission\Models\Role;
 
 class StaffController extends Controller
 {
+    use ImageUpload;
     /**
      * Display a listing of the resource.
      *
@@ -40,16 +43,34 @@ class StaffController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $loggedInUser = Auth::user();
+        $staff = Auth::user();
         $staffs = Admin::all();
-
+        $superAdmin = Admin::find(1);
         $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
 
-        return view('backend.staff.index', compact('loggedInUser', 'staffs', 'roles', 'departments', 'designations'));
+        // Count active and inactive staff
+        $activeStaffCount = Admin::where('status', true)->count();
+        $inactiveStaffCount = Admin::where('status', false)->count();
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
+        if ($request->ajax()) {
+            $status = $request->status; // active or inactive
+            if ($status == 'active') {
+                $staffs = Admin::where('status', true)->get();
+            } elseif ($status == 'inactive') {
+                $staffs = Admin::where('status', false)->get();
+            }
+
+            return response()->json([
+                'staffs' => view('backend.staff.include.__staff_list', ['staff' => $staffs])->render(),
+            ]);
+        }
+
+        return view('backend.staff.index', compact('staff', 'staffs', 'activeStaffCount', 'inactiveStaffCount', 'superAdmin', 'roles', 'departments', 'designations', 'users', 'attachedUsers'));
 
     }
 
@@ -82,6 +103,7 @@ class StaffController extends Controller
             'date_of_joining' => 'nullable|date',
             'work_phone' => 'nullable|string',
             'phone' => 'nullable|string',
+             'key' => 'nullable|string',
         ]);
 
         // If validation fails, return error
@@ -92,6 +114,8 @@ class StaffController extends Controller
 
         // Get the validated input
         $input = $request->all();
+
+//        dd($input);
 
         // Convert empty fields to null if necessary
         $input['password'] = Hash::make($input['password']);
@@ -122,12 +146,16 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $staff = Admin::find($id);
+        $roles = Role::whereNot('name', 'Super-Admin')->get();
         $departments = Department::with('children')->whereNull('parent_id')->get();
         $designations = Designation::with('children')->whereNull('parent_id')->get();
-        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations'))->render();
+        $users = User::all(); // Fetch all users
+        $attachedUsers = $staff->users; // Fetch attached users
+
+        return view('backend.staff.edit', compact('staff', 'roles', 'departments', 'designations', 'users', 'attachedUsers'))->render();
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -137,77 +165,75 @@ class StaffController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name'        => 'required',
-            'email'       => 'required|email|unique:admins,email,' . $id,
-            'password'    => 'same:confirm-password',
-            'role'        => ['required', Rule::notIn('Super-Admin')],
-            'status'      => 'boolean',
-            'department'  => 'nullable|exists:departments,id',
-            'designation' => 'nullable|exists:designations,id',
-        ]);
-
-        if ($validator->fails()) {
-            notify()->error($validator->errors()->first(), 'Error');
-            return redirect()->back();
-        }
-
-        // Get all request inputs
-        $input = $request->all();
-
-        // Map 'department' to 'department_id' and handle nullable values
-        $input['employee_id'] = $request->input('employee_id') ?: null;
-        $input['department_id'] = $request->input('department_id') ?: null;
-        $input['designation_id'] = $request->input('designation_id') ?: null;
-
-        // Remove 'department' and 'designation' from input to prevent mass assignment issues
-        unset($input['department'], $input['designation']);
-
-        // Handle password update
-        if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            $input = Arr::except($input, ['password']);
-        }
-
         $staff = Admin::find($id);
 
-        if ($staff->getRoleNames()->first() === 'Super-Admin') {
-            notify()->warning('Super admin not changeable');
-            return redirect()->back();
+        if (!$staff) {
+            return response()->json(['success' => false, 'message' => 'Staff not found.'], 404);
         }
 
-        // Invalidate the user's session
-        $this->invalidateUserSession($staff);
-
-//        dd($input);
-        // Update the admin record with correctly mapped input
-        $staff->update($input);
-
-        // Update role and relationships
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
-        $staff->assignRole($request->input('role'));
-
-        // Sync departments and designations if provided
-//        $department = $request->input('department');
-//        if (isset($department)) {
-//            $staff->departments()->sync([$department]);
-////        } else {
-////            $staff->departments()->detach();
-////        }
+        try {
+//            if (auth()->user()->hasRole('Super-Admin')) {
+//                $validator = Validator::make($request->all(), [
+//                    'key' => 'required|string',
+//                ]);
 //
-//        $designation = $request->input('designation');
-//        if (isset($designation)) {
-//            $staff->designations()->sync([$designation]);
-//        } else {
-//            $staff->designations()->detach();
-//        }
+//                if ($validator->fails()) {
+//                    return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+//                }
+//
+//                $staff->update(['key' => $request->input('key')]);
+//
+//                return response()->json(['success' => true, 'message' => 'Key updated successfully.']);
+//            }
 
-        notify()->success('Staff updated successfully');
-        return redirect()->route('admin.staff.index');
+            $validator = Validator::make($request->all(), [
+                'name'        => 'required',
+                'email'       => 'required|email|unique:admins,email,' . $id,
+                'password'    => 'nullable|same:confirm-password',
+                'role'        => ['nullable', Rule::notIn('Super-Admin')],
+                'status'      => 'boolean',
+                'department'  => 'nullable|exists:departments,id',
+                'designation' => 'nullable|exists:designations,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+            }
+
+            $input = $request->all();
+//            dd($input);
+            $input['employee_id'] = $request->input('employee_id') ?: null;
+            $input['department_id'] = $request->input('department_id') ?: null;
+            $input['designation_id'] = $request->input('designation_id') ?: null;
+            unset($input['department'], $input['designation']);
+
+            if (!empty($input['password'])) {
+                $input['password'] = Hash::make($input['password']);
+            } else {
+                $input = Arr::except($input, ['password']);
+            }
+
+            if ($request->hasFile('avatar')) {
+                $logo = self::imageUploadTrait($request->file('avatar'), $staff->avatar);
+                $input['avatar'] = $logo;
+            }
+
+            $staff->update($input);
+
+            if ($request->filled('role')) {
+                DB::table('model_has_roles')->where('model_id', $id)->delete();
+                $staff->assignRole($request->input('role'));
+            }
+
+            if (auth()->user()->hasRole('Super-Admin') && !$staff->hasRole('Super-Admin')) {
+                $staff->users()->sync($request->input('user_ids', []));
+            }
+
+            return response()->json(['success' => true, 'message' => 'Staff updated successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
-
-
 
     protected function invalidateUserSession($user)
     {

@@ -16,9 +16,6 @@
                             @case('receive_money')
                             <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
                             @break
-                            @case('send_money_internal')
-                            <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
-                            @break
                             @case('deposit')
                             <iconify-icon icon="octicon:download-16"></iconify-icon>
                             @break
@@ -57,8 +54,8 @@
             {{ $transaction->target_id }}
         </td>
         <td class="table-td">
-            <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
-                {{ (in_array($transaction->type,[TxnType::Subtract,TxnType::Investment,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal,TxnType::BonusSubtract]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}
+            <strong class="{{in_array($transaction->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal]) ?  'text-danger' : 'text-success'}}">
+                {{ (in_array($transaction->type,[TxnType::Subtract,TxnType::SendMoney,TxnType::Withdraw,TxnType::WithdrawAuto,TxnType::SendMoneyInternal,TxnType::BonusSubtract]) ? '-': '+' ).$transaction->amount.' '.$transaction->currency }}
             </strong>
         </td>
         <td class="table-td">

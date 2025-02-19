@@ -67,6 +67,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'ref_id',
         'password',
         'notes',
+        'provider_name',
+        'provider_id',
+        'user_theme',
+
     ];
 
     protected $appends = [
@@ -95,6 +99,12 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'two_fa' => 'boolean',
     ];
+
+    public function staff()
+    {
+        return $this->belongsToMany(Admin::class, 'staff_user', 'user_id', 'staff_id');
+    }
+
     public function riskProfileTags()
     {
         return $this->belongsToMany(RiskProfileTag::class, 'risk_profile_tag_user');
@@ -214,6 +224,10 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return round($sum, 2);
     }
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class, 'user_id');
+    }
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'user_id');
@@ -242,6 +256,12 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return round($sum, 2);
     }
+    public function totalWalletBalance()
+    {
+        $sum = $this->accounts()->sum('amount');
+
+        return round($sum, 2);
+    }
 
     public function getReferrals()
     {
@@ -259,6 +279,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
     {
         return $this->hasMany(User::class, 'ref_id');
     }
+
+
+// Ensure this function is part of a class where `mt5_total_balance` is defined.
 
     public function totalDeposit($days = null)
     {
@@ -283,21 +306,57 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         $sum = $sum->sum('amount');
         return round($sum, 2);
     }
+
     public function totalVolumeMeta($days = null)
     {
         $sum = $this->metaDeals();
         if (null != $days) {
             $sum->where('time', '>=', Carbon::now()->subDays((int) $days));
         }
-        $sum = $sum->sum('volume');
+        $sum = $sum->sum('volume')/10000;
         return round($sum, 2);
     }
+    public function totalReferralsDeposit($days = null)
+    {
+//        dd($this->referrals()->pluck('id'));
+        $query = Transaction::query()
+            ->where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('type', TxnType::Deposit)
+                    ->orWhere('type', TxnType::ManualDeposit);
+            })
+            ->whereIn('user_id', $this->referrals()->pluck('id'));
+
+        if ($days !== null) {
+            $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+
+        return round($query->sum('amount'), 2);
+    }
+    public function totalReferralsWithdraw($days = null)
+    {
+
+        $query = Transaction::query()
+            ->where('status', TxnStatus::Success)
+            ->where(function ($query) {
+                $query->where('type', TxnType::Withdraw)
+                    ->orWhere('type', TxnType::WithdrawAuto);
+            })
+            ->whereIn('user_id', $this->referrals()->pluck('id'));
+
+        if ($days !== null) {
+            $query->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+
+        return round($query->sum('amount'), 2);
+    }
+
 
 
     public function totalInvestment()
     {
         $sum = $this->transaction()->where('status', TxnStatus::Success)->where(function ($query) {
-            $query->where('type', TxnType::Investment);
+            $query->where('type', TxnType::Deposit);
         })->sum('amount');
 
         return round($sum, 2);
@@ -378,9 +437,9 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
         return $this->belongsTo(IbGroup::class, 'ib_group_id');
     }
 
-    public function ticket()
+    public function ticket(): HasMany
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'user_id');
     }
 
     public function rankAchieved()
@@ -410,7 +469,7 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
             $query->where(function($query) use ($search) {
                 $query->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
@@ -437,4 +496,5 @@ class User extends Authenticatable implements CanUseTickets, MustVerifyEmail
 
         return $query;
     }
+
 }

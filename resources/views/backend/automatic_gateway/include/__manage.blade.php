@@ -42,16 +42,32 @@
                                 <input type="text" class="form-control" disabled value="{{$gateway->gateway_code}}"/>
                             </div>
                         </div>
+                        @if(json_decode($gateway->credentials))
+                            @foreach(json_decode($gateway->credentials) as $key => $value)
+                                @php
+                                    $sensitive_keywords = ['secret', 'token', 'password', 'private'];
+                                    $is_sensitive = false;
 
-                        @foreach(json_decode($gateway->credentials) as $key => $value)
-                            <div class="col-span-2">
-                                <div class="input-area mb-0">
-                                    <label class="form-label" for="">{{ ucwords(str_replace( '_', ' ', $key)) }} :</label>
-                                    <input type="text" name="credentials[{{ $key }}] " class="form-control" value="{{ $value }}"/>
+                                    foreach ($sensitive_keywords as $keyword) {
+                                        if (strpos($key, $keyword) !== false) {
+                                            $is_sensitive = true;
+                                            break;
+                                        }
+                                    }
+                                @endphp
+
+                                <div class="col-span-2">
+                                    <div class="input-area mb-0">
+                                        <label class="form-label" for="">{{ ucwords(str_replace( '_', ' ', $key)) }} :</label>
+                                        @if($is_sensitive)
+                                            <input type="password" name="credentials[{{ $key }}] " class="form-control" value="{{ $value }}"/>
+                                        @else
+                                            <input type="text" name="credentials[{{ $key }}] " class="form-control" value="{{ $value }}"/>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-
+                            @endforeach
+                        @endif
                         <div class="col-span-2">
                             <div class="input-area">
                                 <label class="form-label" for=""></label>

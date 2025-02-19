@@ -50,9 +50,11 @@
                                         {{ __('Disabled') }}
                                     </div>
                                 @endif
+                                @can('kyc-levels-edit')
                                 <a href="{{ route('admin.kyclevels.edit',$kyc->id) }}" class="toolTip onTop action-btn dark:text-slate-300">
                                     <iconify-icon icon="lucide:edit-3"></iconify-icon>
                                 </a>
+                                @endcan
                             </div>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-300 my-3">

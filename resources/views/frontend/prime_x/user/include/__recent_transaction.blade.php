@@ -3,8 +3,8 @@
         <header class="card-header noborder">
             <h4 class="card-title">{{ __('Recent Transactions') }}</h4>
             <div>
-                <a href="{{ route('user.transactions') }}" class="btn-link loaderBtn inline-flex items-center">
-                    {{ __('See All Transactions') }}
+                <a href="{{ route('user.history.transactions') }}" class="btn-link loaderBtn inline-flex items-center">
+                    {{ __('See All') }}
                     <iconify-icon class="text-lg ltr:ml-1 rtl:mr-1" icon="lucide:chevron-right"></iconify-icon>
                 </a>
             </div>
@@ -94,7 +94,7 @@
                                             {{ $transaction->target_id }}
                                         </td>
                                         <td class="table-td">
-                                            <strong class="{{ $transaction->type !== 'subtract' && $transaction->type !== 'investment' && $transaction->type !==  'withdraw' && $transaction->type !==  'send_money' ? 'text-success': 'text-danger'}}">
+                                            <strong class="{{ $transaction->type->value !== 'subtract' && $transaction->type->value !== 'investment' && $transaction->type->value !==  'withdraw' && $transaction->type->value !==  'send_money' && $transaction->type->value !==  'bonus_refund' && $transaction->type->value !==  'bonus_subtract' ? 'text-success': 'text-danger'}}">
                                                 {{ txn_type($transaction->type->value,['+','-']) .$transaction->amount.' '.$currency }}
                                             </strong>
                                         </td>

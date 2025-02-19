@@ -68,20 +68,10 @@
                                 <div class="bg-white dark:bg-secondary p-4">
                                     <div class="text-center space-y-2">
                                         <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Deposit') }}
+                                            {{ __('Current Forex Balance') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
-                                        </h6>
-                                    </div>
-                                </div>
-                                <div class="bg-white dark:bg-secondary p-4">
-                                    <div class="text-center space-y-2">
-                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Total Withdraw') }}
-                                        </p>
-                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') . mt5_total_balance($user->id) }}
                                         </h6>
                                     </div>
                                 </div>
@@ -91,10 +81,21 @@
                                             {{ __('Net Deposits') }}
                                         </p>
                                         <h6 class="text-slate-900 dark:text-white text-xl font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') . $user->totalDeposit() }}
                                         </h6>
                                     </div>
                                 </div>
+                                <div class="bg-white dark:bg-secondary p-4">
+                                    <div class="text-center space-y-2">
+                                        <p class="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
+                                            {{ __('Net Withdraw') }}
+                                        </p>
+                                        <h6 class="text-slate-900 dark:text-white text-xl font-medium">
+                                            {{ setting('currency_symbol','global') . $user->totalWithdraw() }}
+                                        </h6>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -110,10 +111,10 @@
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Used Margin') }}
+                                            {{ __('Current Used Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexBalance() }}
+                                            {{ setting('currency_symbol','global') .mt5_total_used_margin($user->id) }}
                                         </div>
                                     </div>
                                 </div>
@@ -129,10 +130,10 @@
                                     </div>
                                     <div class="flex-1">
                                         <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                            {{ __('Free Margin') }}
+                                            {{ __('Current Free Margin') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            {{ setting('currency_symbol','global') . $user->totalForexEquity() }}
+                                            {{ setting('currency_symbol','global') . mt5_total_free_margin($user->id) }}
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +152,8 @@
                                             {{ __('Wallet Balance') }}
                                         </div>
                                         <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                            $0
+                                            {{ setting('currency_symbol','global') . $user->totalWalletBalance() }}
+
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +197,9 @@
                                     </a>
                                 </li>
                             @endcan
-                            <li class="nav-item" role="presentation">
+                                @can('kyc-status-update')
+
+                                <li class="nav-item" role="presentation">
                                 <a
                                     href=""
                                     class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
@@ -210,12 +214,14 @@
                                     {{ __('KYC') }}
                                 </a>
                             </li>
-                            @can('accounts-list')
+                                @endcan
+
+                            @can('ib-partner-list')
                                 <li class="nav-item" role="presentation">
                                     <a
                                         href=""
                                         class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
-                                        id="pills-transfer-tab"
+                                        id="pills-transfer-tab1"
                                         data-bs-toggle="pill"
                                         data-bs-target="#ib-info"
                                         type="button"
@@ -343,17 +349,22 @@
                      @include('backend.user.include.__accounts')
                 @endcan
 
+                @can('kyc-status-update')
                 <!-- KYC Tab -->
                 @include('backend.user.include.__kycTab')
+                @endcan
 
                 <!-- IB -->
-                @can('IB-List')
+{{--                @can('IB-List')--}}
+
+                @can('ib-partner-list')
                     @include('backend.user.include.__ib_info')
-                    @include('backend.user.include.__ib_approve')
-{{--                    @include('backend.user.include.__ib_update')--}}
-{{--                    @include('backend.user.include.__mib_add')--}}
-{{--                    @include('backend.user.include.__mib_update')--}}
                 @endcan
+                @can('approve-ib-member')
+                    @include('backend.user.include.__ib_approve')
+                @endcan
+
+                {{--                @endcan--}}
 
                 <!-- earnings -->
                 @can('profit-list')

@@ -7,12 +7,14 @@
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
             {{ __('Email Template') }}
         </h4>
+        @can('email-setting')
         <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
             <a href="{{ route('admin.settings.mail') }}" class="btn btn-sm btn-primary inline-flex items-center justify-center">
                 <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:mail"></iconify-icon>
                 {{ __('Email Config') }}
             </a>
         </div>
+        @endcan
     </div>
     @include('backend.email.include.__menu')
     <div class="card">
@@ -26,7 +28,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="table-th">{{ __('Email For') }}</th>
-                                    <th scope="col" class="table-th"{{ __('Status') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Status') }}</th>
                                     <th scope="col" class="table-th">{{ __('Action') }}</th>
                                 </tr>
                             </thead>

@@ -1,9 +1,9 @@
 @extends('backend.layouts.app')
 @section('title')
-    {{ __('setting') }}
+    {{ __('Settings') }}
 @endsection
 @section('content')
-    <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
+    <div class="pageTitle flex justify-between flex-wrap items-center gap-3 mb-6">
         <div class="input-area relative">
             <div class="relative">
                 <input type="text" class="form-control !pr-9" placeholder="Search">
@@ -38,11 +38,13 @@
                         </a>
                     </li>
                     @endcanany
+                    @canany(['all-countries-list','blacklist-countries-list'])
                     <li>
                         <a href="{{ route('admin.country.all') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Country') }}
                         </a>
                     </li>
+                    @endcanany
                     @canany(['document-link-list','platform-link-list'])
                     <li>
                         <a href="{{ route('admin.links.document.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -51,10 +53,10 @@
                     </li>
                     @endcanany
                     <li>
-                        <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.social.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Social Logins') }}
-                            <span class="badge-secondary text-xs capitalize rounded-full px-2 py-1">
-                                {{ __('Coming Soon') }}
+                            <span class="badge-success text-xs capitalize rounded-full px-2 py-1">
+                                {{ __('New') }}
                             </span>
                         </a>
                     </li>
@@ -62,6 +64,7 @@
                 </ul>
             </div>
         </div>
+
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -86,10 +89,17 @@
                         </li>
                     @endcanany
                     <li>
+                        <a href="{{ route('admin.lead.source.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                            {{ __('Lead Settings') }}
+                        </a>
+                    </li>
+                    @can('kyc-levels-list')
+                    <li>
                         <a href="{{ route('admin.kyclevels.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('KYC & Compliance') }}
                         </a>
                     </li>
+                    @endcan
                     @canany(['ranking-list','ranking-create','ranking-edit'])
                         <li>
                             <a href="{{ route('admin.ranking.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -111,32 +121,34 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action',
-                        'withdraw-list','withdraw-method-manage','withdraw-action','target-manage','referral-create',
-                        'referral-list','referral-edit','referral-delete','ranking-list','ranking-create','ranking-edit'])
-                        @canany(['automatic-gateway-manage','manual-gateway-manage','deposit-list','deposit-action'])
+                        @canany(['automatic-gateway-manage','manual-gateway-manage'])
                             <li>
                                 <a href="{{ route('admin.deposit.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Deposit Methods') }}
                                 </a>
                             </li>
+                            @endcanany
+                            @canany(['automatic-withdraw-method','manual-withdraw-method', 'withdraw-schedule'])
                             <li>
                                 <a href="{{ route('admin.withdraw.method.list','auto') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                     {{ __('Withdraw Methods') }}
                                 </a>
                             </li>
                         @endcanany
-                    @endcanany
+                        @can('currency-setting')
                     <li>
                         <a href="{{ route('admin.settings.currency') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Currency') }}
                         </a>
                     </li>
+                    @endcan
+                    @canany(['internal-transfer-display','external-transfer-display'])
                     <li>
                         <a href="{{ route('admin.settings.transfers', ['type' => 'internal']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Transfers')}}
                         </a>
                     </li>
+                    @endcanany
                     @can('bonus-list')
                     <li>
                         <a href="{{ route('admin.bonus.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
@@ -228,6 +240,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('custom-colors-settings')
                     <li>
                         <a href="{{ route('admin.theme.colors', ['type' => 'light_colors']) }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Custom Colors') }}
@@ -236,6 +249,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('custom-fonts-settings')
                     <li>
                         <a href="{{ route('admin.theme.fonts') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Custom Fonts') }}
@@ -244,6 +259,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('routes-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Routes')}}
@@ -252,6 +269,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('dynamic-content-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Dynamic Content')}}
@@ -260,6 +279,7 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
@@ -274,21 +294,28 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['c-trader-display', 'meta-trader-display', 'x9-trader-display'])
                     <li>
                         <a href="{{ route('admin.settings.platform-api') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform API') }}
                         </a>
                     </li>
+                    @endcanany
+                    @can('db-synchronization-setting')
                     <li>
                         <a href="{{ route('admin.platform_api.db-synchronization') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('DB Synchronization') }}
                         </a>
                     </li>
+                    @endcan
+                    @can('copy-trading-setting')
                     <li>
                         <a href="{{ route('admin.settings.copyTrading') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Copy Trading') }}
                         </a>
                     </li>
+                    @endcan
+                    @canany(['mt5-group-list', 'manual-group-list'])
                     <li>
                         <a href="{{ route('admin.platformGroups') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Platform Groups') }}
@@ -297,11 +324,15 @@
                             </span>
                         </a>
                     </li>
+                    @endcanany
+                    @can('risk-book-list')
                     <li>
                         <a href="{{ route('admin.platform.riskBook') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Risk Book') }}
                         </a>
                     </li>
+                    @endcan
+                    @canany(['mt5-webterminal-display', 'x9-webterminal-display'])
                     <li>
                         <a href="{{ route('admin.settings.webterminal.mt5') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Web Terminal') }}
@@ -310,9 +341,11 @@
                             </span>
                         </a>
                     </li>
+                    @endcanany
                 </ul>
             </div>
         </div>
+        @canany(['email-setting', 'collab-tools-setting','admin-email-template', 'user-email-template', 'admin-sms-template', 'user-sms-template'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -324,17 +357,21 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('email-setting')
                     <li>
                         <a href="{{ route('admin.settings.mail') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Email') }}
                         </a>
                     </li>
+                    @endcan
+                    @can('collab-tools-setting')
                     <li>
                         <a href="{{ route('admin.settings.slack') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Collab Tools') }}
                         </a>
                     </li>
-                    @can('email-template')
+                    @endcan
+                    @canany(['admin-email-template', 'user-email-template'])
                         <li>
                             <a href="{{ route('admin.email-template') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Email Templates') }}
@@ -343,15 +380,19 @@
                                 </span>
                             </a>
                         </li>
+                        @endcanany
+                        @canany(['admin-sms-template', 'user-sms-template'])
                         <li>
                             <a href="{{ route('admin.template.sms.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('SMS Templates') }}
                             </a>
                         </li>
-                    @endcan
+                        @endcanany
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['import-settings', 'export-settings', 'data-encryption-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -363,6 +404,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @can('import-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Import')}}
@@ -371,6 +413,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('export-settings')
                     <li>
                         <a href="javascript:;" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Export')}}
@@ -379,6 +423,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('data-encryption-settings')
                     <li>
                         <a href="{{ route('admin.settings.endToEndEncryption') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Data Encryption') }}
@@ -387,9 +433,12 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['clear-cache-settings', 'application-details-settings', 'dev-mode-settings', 'changelog-settings', 'report-issue-settings'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -458,6 +507,8 @@
                 </ul>
             </div>
         </div>
+        @endcanany
+        @canany(['payment-gateways-list', 'plugins-list', 'sms-list', 'notification-list', 'api-access-setting', 'web-hooks-setting'])
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -469,7 +520,7 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
-                    @can('automatic-gateway-manage')
+                    @can('payment-gateways-list')
                         <li>
                             <a href="{{ route('admin.gateway.automatic') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Payment Gateways') }}
@@ -479,6 +530,7 @@
                             </a>
                         </li>
                     @endcan
+                    @can('plugins-list')
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','system') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Plugins') }}
@@ -487,6 +539,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('sms-list')
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','sms') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{__('SMS Settings') }}
@@ -495,6 +549,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('notification-list')
                     <li class="">
                         <a href="{{ route('admin.settings.plugin','notification') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{__('Notification Settings') }}
@@ -503,6 +559,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('api-access-setting')
                     <li>
                         <a href="{{ route('admin.settings.apiAccess') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('API Access')}}
@@ -511,6 +569,8 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
+                    @can('web-hooks-setting')
                     <li>
                         <a href="{{ route('admin.settings.webHook') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Web Hooks')}}
@@ -519,9 +579,11 @@
                             </span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
         </div>
+        @endcanany
         <div class="card">
             <div class="border-b border-slate-100 dark:border-slate-700 p-3">
                 <h4 class="text-base dark:text-white">
@@ -533,12 +595,14 @@
             </div>
             <div class="card-body p-3">
                 <ul class="space-y-3">
+                    @canany(['all-sections-settings', 'blocklist-ip-settings', 'single-session-settings', 'blocklist-email-settings', 'login-expiry-settings'])
                     <li>
                         <a href="{{ route('admin.security.all-sections') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Security')}}
                         </a>
                     </li>
-                    @can('language-setting')
+                    @endcanany
+                    @can('language-list')
                         <li>
                             <a href="{{ route('admin.language.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                                 {{ __('Language') }}
@@ -554,7 +618,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.ticket.statuses.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
+                        <a href="{{ route('admin.ticket.label.index') }}" class="text-sm text-slate-900 dark:text-slate-300">
                             {{ __('Support Center')}}
                         </a>
                     </li>

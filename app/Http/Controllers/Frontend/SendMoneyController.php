@@ -73,7 +73,10 @@ class SendMoneyController extends Controller
         if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
             abort(403, __('Send Money Disabled Now'));
         }
-
+        if(auth()->user()->kyc < kyc_required_completed_level()) {
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+            return redirect()->back();
+        }
         // Validate inputs
         $validator = Validator::make($request->all(), [
             'target_id' => ['required', 'different:receiver_account'],
@@ -362,6 +365,10 @@ class SendMoneyController extends Controller
     {
         if (!setting('transfer_status', 'permission') || !\Auth::user()->transfer_status) {
             abort(403, __('Send Money Disabled Now'));
+        }
+        if(auth()->user()->kyc < kyc_required_completed_level()) {
+            notify()->error('KYC Pending: Please complete your KYC verification to proceed with your withdrawal', __('Error'));
+            return redirect()->back();
         }
         // Validation for input fields
         $validator = Validator::make($request->all(), [

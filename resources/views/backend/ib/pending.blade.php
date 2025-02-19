@@ -8,8 +8,8 @@
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.ib.export',['type' => 'pending']) }}">
         @csrf
-        <div class="flex justify-between flex-wrap items-center">
-            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
@@ -44,7 +44,7 @@
                     </select>
                 </div>
             </div>
-            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
                 <div class="input-area relative">
                     <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
@@ -67,7 +67,7 @@
             </div>
         </div>
     </form>
-    
+
 @endsection
 @section('content')
     <div class="pageTitle flex justify-between flex-wrap items-center mb-6">
@@ -88,7 +88,6 @@
                         <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('Username') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
 {{--                                    <th scope="col" class="table-th">{{ __('KYC') }}</th>--}}
@@ -166,7 +165,6 @@
                     }
                 },
                 columns: [
-                    {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     // {data: 'kyc', name: 'kyc'},

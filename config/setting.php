@@ -3,7 +3,6 @@
 return [
     'theme' => [
         'title' => 'Theme Settings',
-
         'elements' => [
             [
                 'type' => 'text', // input fields type
@@ -94,6 +93,24 @@ return [
                 'name' => 'base_color', // unique name for field
                 'label' => 'Base Color', // you know what label it is
                 'description' => 'Select the base color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_bg', // unique name for field
+                'label' => 'Header Color', // you know what label it is
+                'description' => 'Select the header background color for the light theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_color', // unique name for field
+                'label' => 'Header text', // you know what label it is
+                'description' => 'Select the header text color for the light theme',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#ffffff', // default value if you want
             ],
@@ -191,6 +208,24 @@ return [
                 'description' => 'Select the base color for the dark theme',
                 'rules' => 'required', // validation rule of laravel
                 'value' => '#181e26', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_bg_dark', // unique name for field
+                'label' => 'Header Color', // you know what label it is
+                'description' => 'Select the header background color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#ffffff', // default value if you want
+            ],
+            [
+                'type' => 'color', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'header_color_dark', // unique name for field
+                'label' => 'Header text', // you know what label it is
+                'description' => 'Select the header text color for the dark theme',
+                'rules' => 'required', // validation rule of laravel
+                'value' => '#0f172a', // default value if you want
             ],
             [
                 'type' => 'color', // input fields type
@@ -676,6 +711,43 @@ return [
                 'label' => 'Email Verification', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'value' => 1, // default value if you want
+            ],
+        ]
+    ],
+    'popup' => [
+        'title' => 'Popup Settings',
+        'elements' => [
+            [
+                'type' => 'file', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'popup_image', // unique name for field
+                'label' => 'Popup Image', // you know what label it is
+                'rules' => 'mimes:jpeg,jpg,png|max:1000', // validation rule of laravel
+                'value' => 'default/fav.png', // default value if you want
+            ],
+            [
+                'type' => 'checkbox', // input fields type
+                'data' => 'boolean', // data type, string, int, boolean
+                'name' => 'popup_status', // unique name for field
+                'label' => 'Popup Status', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => 0, // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'popup_btn_text', // unique name for field
+                'label' => 'Popup Button Text', // you know what label it is
+                'rules' => 'required', // validation rule of laravel
+                'value' => null, // default value if you want
+            ],
+            [
+                'type' => 'url', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'popup_btn_link', // unique name for field
+                'label' => 'Popup Button Link', // you know what label it is
+                'rules' => '', // validation rule of laravel
+                'value' => null, // default value if you want
             ],
         ]
     ],

@@ -54,29 +54,41 @@ class SumsubController extends Controller
 
     public function UpdateKycStatus(Request $request)
     {
-//        Log::info('Webhook received:', $request->all());
-        $response = $request->getContent(); // Get raw JSON content from the request
+        \Log::info('Incoming KYC request:', [
+            'headers' => $request->headers->all(),
+            'content' => $request->getContent(),
+        ]);
 
-        // Decode the JSON into an associative array
+        $response = $request->getContent(); // Get raw JSON content
         $responseData = json_decode($response, true);
 
-        // Check if the response contains the 'externalUserId' key
         if (isset($responseData['externalUserId'])) {
             $externalUserId = $responseData['externalUserId'];
-            $userId = Crypt::decrypt($externalUserId); // Decrypt the externalUserId to get the userId
-
-            // Log the userId correctly
-//            Log::info('User ID:', ['userId' => $userId]);
+            $userId = Crypt::decrypt($externalUserId); // Decrypt to get userId
 
             try {
-                $user = User::findOrFail($userId); // Ensure the user exists
-                $user->update([
-                    'kyc' => KYCStatus::Level2->value
-            ]);
+                $user = User::findOrFail($userId);
+
+                // Update auto_kyc_credentials column with the response
+                $user->auto_kyc_credentials = $responseData;
+
+                // Determine KYC status based on response
+                $kycStatus = KYCStatus::Level1->value; // Default
+
+            if (isset($responseData['type']) && $responseData['type'] === 'applicantReviewed') {
+                if (isset($responseData['reviewResult']['reviewAnswer']) &&
+                    $responseData['reviewResult']['reviewAnswer'] === 'GREEN') {
+                    $kycStatus = KYCStatus::Level2->value; // Verified
+                }
+            }
+
+            // Update KYC status
+            $user->kyc = $kycStatus;
+            $user->save();
 
             return response()->json([
                 'status' => 200,
-                'success' => __('KYC Verification completed'),
+                'success' => __('KYC status updated successfully'),
             ]);
         } catch (\Throwable $th) {
                 Log::error('Error in UpdateKycStatus:', ['error' => $th->getMessage()]);
@@ -93,4 +105,5 @@ class SumsubController extends Controller
             'error' => __('Invalid data received.'),
         ]);
     }
+
 }

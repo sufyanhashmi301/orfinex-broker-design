@@ -3955,6 +3955,9 @@ textarea.form-control.is-invalid{
 .-top-\[6px\]{
   top: -6px;
 }
+.\!top-\[10px\]{
+  top: 10px !important;
+}
 .\!top-\[23px\]{
   top: 23px !important;
 }
@@ -4606,8 +4609,17 @@ textarea.form-control.is-invalid{
 .h-\[60px\]{
   height: 60px;
 }
+.h-\[calc\(100\%-100px\)\]{
+  height: calc(100% - 100px);
+}
+.h-\[calc\(100\%-96px\)\]{
+  height: calc(100% - 96px);
+}
 .h-\[calc\(100\%-80px\)\]{
   height: calc(100% - 80px);
+}
+.h-\[calc\(100\%-48px\)\]{
+    height: calc(100% - 48px);
 }
 .h-\[200px\]{
   height: 200px;
@@ -4995,6 +5007,9 @@ textarea.form-control.is-invalid{
 }
 .max-w-lg {
   max-width: 32rem;
+}
+.max-w-3xl{
+  max-width: 48rem;
 }
 .max-w-4xl{
   max-width: 56rem;
@@ -5686,6 +5701,9 @@ textarea.form-control.is-invalid{
 }
 .overflow-hidden{
   overflow: hidden;
+}
+.overflow-auto{
+  overflow: auto;
 }
 .overflow-visible{
   overflow: visible;
@@ -7736,6 +7754,10 @@ textarea.form-control.is-invalid{
 .backdrop-blur-sm{
   --tw-backdrop-blur: blur(4px);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+.backdrop-blur{
+    --tw-backdrop-blur: blur(8px);
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .backdrop-blur-\[40px\]{
   --tw-backdrop-blur: blur(40px);
@@ -11180,8 +11202,8 @@ ul.custom-list ul li{
   padding-top: 1.5rem;
 }
 .dashcode-data-table .dataTables_paginate{
-  margin-top: 1.5rem;
-  margin-right: 1rem;
+  /*margin-top: 1.5rem;*/
+  /*margin-right: 1rem;*/
 }
 .dashcode-data-table .dataTables_paginate > :not([hidden]) ~ :not([hidden]){
   --tw-space-x-reverse: 0;
@@ -11189,7 +11211,7 @@ ul.custom-list ul li{
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 .dashcode-data-table .dataTables_paginate{
-  padding-bottom: 1.5rem;
+  /*padding-bottom: 1.5rem;*/
 }
 .dashcode-data-table .dataTables_paginate .paginate_button{
   margin-right: 0.5rem;
@@ -11553,7 +11575,8 @@ ul.custom-list ul li{
   }
 }
 .chat-height {
-  height: calc(var(--vh, 1vh) * 100 - 12.1rem);
+  /*height: calc(var(--vh, 1vh) * 100 - 12.1rem);*/
+    height: calc(var(--vh, 1vh) * 100 - 10rem);
 }
 
 .leading-0 {
@@ -11562,7 +11585,8 @@ ul.custom-list ul li{
 
 @media (max-width: 768px) {
   .chat-height {
-    height: calc(var(--vh, 1vh) * 100 - 10.5rem);
+    /*height: calc(var(--vh, 1vh) * 100 - 10.5rem);*/
+      height: calc(var(--vh, 1vh) * 100 - 8.5rem);
   }
 }
 .contact-height {
@@ -15512,6 +15536,10 @@ ul.custom-list ul li{
   --tw-text-opacity: 1;
   color: rgb(30 41 59 / var(--tw-text-opacity));
 }
+.dark .dark\:text-slate-900{
+    --tw-text-opacity: 1;
+    color: rgb(15 23 42 / var(--tw-text-opacity));
+}
 .dark .dark\:text-slate-500{
   --tw-text-opacity: 1;
   color: rgb(100 116 139 / var(--tw-text-opacity));
@@ -15899,6 +15927,14 @@ ul.custom-list ul li{
     margin-top: 0px;
     margin-bottom: 0px;
   }
+  .md\:my-8{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  .md\:mx-0{
+    margin-left: 0px;
+    margin-right: 0px;
+  }
   .md\:mx-8{
     margin-left: 2rem;
     margin-right: 2rem;
@@ -15972,9 +16008,14 @@ ul.custom-list ul li{
   .md\:w-1\/3 {
     width: 33.333333% !important
   }
-
   .md\:w-2\/3 {
       width: 66.666667% !important
+  }
+  .md\:w-2\/5 {
+    width: 40% !important
+  }
+  .md\:w-3\/5 {
+    width: 60% !important
   }
   .md\:w-8{
     width: 2rem;
@@ -16191,6 +16232,12 @@ ul.custom-list ul li{
   .lg\:w-1\/2{
     width: 50%;
   }
+  .lg\:w-2\/5 {
+    width: 40%;
+  }
+  .lg\:w-3\/5 {
+    width: 60%;
+  }
   .lg\:w-\[32px\]{
     width: 32px;
   }
@@ -16214,6 +16261,9 @@ ul.custom-list ul li{
   }
   .lg\:grid-cols-3{
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .lg\:grid-cols-5{
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -16239,6 +16289,10 @@ ul.custom-list ul li{
   .lg\:bg-slate-100{
     --tw-bg-opacity: 1;
     background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+  }
+  .lg\:mx-0{
+    margin-left: 0px;
+    margin-right: 0px;
   }
   .lg\:pt-0{
     padding-top: 0px;
@@ -16282,6 +16336,10 @@ ul.custom-list ul li{
   .dark .lg\:dark\:bg-slate-900{
     --tw-bg-opacity: 1;
     background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+  }
+  .dark .lg\:dark\:bg-slate-100{
+    --tw-bg-opacity: 1;
+    background-color: rgb(241 245 249 / var(--tw-bg-opacity));
   }
   .dark .lg\:dark\:shadow-md{
     --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);

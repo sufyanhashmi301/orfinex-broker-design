@@ -13,7 +13,11 @@
     @csrf
 
 {{--        {{ __('Total amount') }}: <strong>{{ $data->final_amount. ' '.$currency }}</strong>--}}
-
+    <ul class="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded mb-5">
+        <li class="list-group-item dark:text-slate-300 block py-2 px-3">
+            {{ __('Account:') }} <strong>{{ $data->target_id}}</strong>
+        </li>
+    </ul>
     <div class="input-area">
         <label class="form-label" for="">{{ __('Transaction Amount:') }}</label>
         <div class="joint-input relative">
@@ -35,6 +39,7 @@
             <div class="font-Inter text-xs text-danger pt-2 inline-block conversion-rate"></div>
         </div>
     @endif
+
     <ul class="list-group mb-4">
         @if($data->type->value=='deposit' || $data->type->value=='manual_deposit')
             @foreach( json_decode($data->manual_field_data) as $key => $value)
@@ -51,9 +56,23 @@
             @endforeach
         @endif
     </ul>
+{{--    {{dd($data->type->value,App\Enums\TxnType::Withdraw->value)}}--}}
+    <ul class="list-group mb-4">
+        @if($data->type->value == App\Enums\TxnType::Withdraw->value || $data->type->value==App\Enums\TxnType::WithdrawAuto->value)
+            @foreach( json_decode($data->manual_field_data,true) as $name => $field_data)
+                <li class="list-group-item dark:text-slate-300 block py-2 px-3">
+                    {{ $name }}: @if( $field_data['type'] == 'file' )
+                        <img src="{{ asset($field_data['value']) }}" alt=""/>
+                    @else
+                        <strong>{{ $field_data['value'] }}</strong>
+                    @endif
+                </li>
+            @endforeach
+        @endif
+    </ul>
 
     <div class="input-area">
-        <label for="" class="form-label">{{ __('Details Message(Optional)') }}</label>
-        <textarea name="message" class="form-control mb-0" rows="6" placeholder="Details Message"></textarea>
+        <label for="" class="form-label">{{ __('Detail Message') }}</label>
+        <textarea name="message" class="form-control mb-0" rows="6" placeholder="">{{ $data->approval_cause}}</textarea>
     </div>
 </form>

@@ -9,14 +9,21 @@
             <h4 class="card-title">
                 {{ __('Direct referrals of :name',['name'=>$user->full_name]) }}
             </h4>
-            @can('user-direct-referral-create')
-                <span data-bs-toggle="modal" data-bs-target="#addReferralModal">
-                    <a href="javascript:void(0)" class="btn btn-dark btn-sm inline-flex items-center justify-center">
+            <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                @can('user-direct-referral-create')
+                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addReferralModal" class="btn btn-dark btn-sm inline-flex items-center justify-center">
                         <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lucide:plus"></iconify-icon>
                         {{ __('Add Referral') }}
                     </a>
-                </span>
-            @endcan
+                @endcan
+                <form id="filter-form" method="POST" action="{{ route('admin.user.export', ['type' => 'refferal', 'user_id' => $user->id]) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-light btn-sm inline-flex items-center justify-center min-w-max">
+                        <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="lets-icons:export-fill"></iconify-icon>
+                        {{ __('Export') }}
+                    </button>
+                </form>
+            </div>
         </div>
         <div class="card-body px-6 pt-3">
             <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -30,6 +37,7 @@
                                     <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
+                                    <th scope="col" class="table-th">{{ __('Phone') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
                                     <th scope="col" class="table-th">{{ __('KYC') }}</th>
                                     <th scope="col" class="table-th">{{ __('Status') }}</th>
@@ -72,6 +80,7 @@
                     {data: 'avatar', name: 'avatar'},
                     {data: 'full_name', name: 'full_name'},
                     {data: 'email', name: 'email'},
+                    {data: 'phone', name: 'phone'},
                     {data: 'balance', name: 'balance'},
                     {data: 'kyc', name: 'kyc'},
                     {data: 'status', name: 'status'},
@@ -80,8 +89,9 @@
             });
         })(jQuery);
 
-        $('.select2').select2({
+        $('#countrySelect').select2({
             dropdownParent: $('#addReferralModal')
         });
+
     </script>
 @endpush

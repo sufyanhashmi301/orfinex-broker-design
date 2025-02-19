@@ -31,7 +31,7 @@ class Match2payTxn extends BaseTxn
         $this->callbackUrl = url('/').'/ipn/match2pay'; // Your callback URL
 
         // Set the gateway based on the currency
-        $this->gatewayName = $txnInfo->pay_currency;
+        $this->gatewayName =  $this->getPaymentGateway($txnInfo->pay_currency);
     }
 
     /**
@@ -44,10 +44,10 @@ class Match2payTxn extends BaseTxn
 //        dd();
         // Generate timestamp in seconds
         $timestamp = Carbon::now()->timestamp;
-
+// $formattedAmount = floor($this->amount * 100) / 100;
         // Prepare the payload according to Match2Pay staging deposit request
         $payload = [
-            'amount' => $this->amount,                 // Amount to deposit
+            'amount' => number_format((float)$this->amount, 2, '.', ''),                 // Amount to deposit
 //            'currency' => 'USD',                       // Final currency (USD)
             'currency' => base_currency(),                       // Final currency (USD)
             'paymentGatewayName' => $this->gatewayName, // Payment gateway used for crypto deposits
@@ -57,14 +57,16 @@ class Match2payTxn extends BaseTxn
             'timestamp' => $timestamp,                 // Current timestamp
             'tradingAccountLogin' => $this->txn,       // Trading account login (transaction/order ID)
         ];
-//dd($payload);
+// dd($payload);
         // Generate signature using payload and secret key
         $payload['signature'] = $this->generateSignature($payload);
+//        dd(json_encode($payload));
 
         // Send the deposit request to Match2Pay API
         $response = $this->client->request('POST', $this->baseUrl . '/api/v2/deposit/crypto_agent', [
             'body' => json_encode($payload),
         ]);
+//        dd($payload,$response->getBody());
 
         // Parse the response
         $data = json_decode($response->getBody()->getContents(), true);
@@ -96,6 +98,10 @@ class Match2payTxn extends BaseTxn
         // Concatenate payload values according to sorted keys, excluding 'signature'
         $payloadString = '';
         foreach ($payload as $key => $value) {
+            if ($key === 'amount') {
+                // Force amount to always have two decimal places
+                $value = number_format((float)$value, 2, '.', '');
+            }
             if ($key !== 'signature') { // Exclude the signature field from the string
                 $payloadString .= $value;
             }
@@ -108,6 +114,8 @@ class Match2payTxn extends BaseTxn
         return hash('sha384', $payloadString);
     }
 
+
+
     /**
      * Map the pay_currency to the corresponding payment gateway name
      *
@@ -116,34 +124,25 @@ class Match2payTxn extends BaseTxn
      */
     private function getPaymentCurrency($currency)
     {
+//        return $currency;
         // Define the mapping of payment currencies to their gateway names
-        $currencyGatewayMap = [
-            'BTC' => 'BTC',
-            'ETH' => 'ETH',
-            'UST' => 'USDT ERC20',
-            'UCC' => 'USDC ERC20',
-            'TRX' => 'TRX',
-            'USX' => 'USDT TRC20',
-            'UCX' => 'USDC TRC20',
-            'BNB' => 'BNB',
-            'USB' => 'USDT BEP20',
-            'MAT' => 'MATIC',
-            'USP' => 'USDT POLYGON',
-            'UCP' => 'USDC POLYGON',
-            'XRP' => 'XRP',
-            'DOG' => 'DOGECOIN',
-            'LTC' => 'LTC',
-            'SOL' => 'SOL',
-            'USS' => 'USDT SOL',
-            'UCS' => 'USDC SOL',
-            'TON' => 'TON',
-            'UTT' => 'USDT TON',
-        ];
+        $currencyGatewayMap = match2pay_currencies();
         $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
 //        dd($currencyGatewayMap,$reversedCurrencyGatewayMap,$currency );
-
+//dd($currencyGatewayMap[$currency]);
         // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
         return $reversedCurrencyGatewayMap[$currency] ?? 'USX';
+    }
+    private function getPaymentGateway($currency)
+    {
+return $currency;
+//         Define the mapping of payment currencies to their gateway names
+        $currencyGatewayMap = match2pay_currencies();
+        $reversedCurrencyGatewayMap = array_flip($currencyGatewayMap);
+
+
+        // Return the payment gateway name based on the pay_currency, or default to 'USDT TRC20'
+        return $reversedCurrencyGatewayMap[$currency] ?? 'USDT TRC20';
     }
 }
 

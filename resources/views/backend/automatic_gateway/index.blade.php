@@ -13,9 +13,17 @@
             <div class="card border hover:shadow-lg">
                 <div class="card-header items-center noborder !p-4">
                     <img class="inline-block h-10" src="{{ $gateway->logo }}" alt="{{ $gateway->name }}"/>
-                    <button class="action-btn" type="button" data-bs-toggle="modal" data-bs-target="#manage-{{$gateway->id}}">
-                        <iconify-icon icon="lucide:settings-2"></iconify-icon>
-                    </button>
+                    @can('payment-gateways-action')
+                        @if(json_decode($gateway->credentials))
+                            <button class="action-btn" type="button" data-bs-toggle="modal" data-bs-target="#manage-{{$gateway->id}}">
+                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                            </button>
+                        @else
+                            <button class="action-btn lockedFeature" data-id="{{$gateway->id}}">
+                                <iconify-icon icon="lucide:settings-2"></iconify-icon>
+                            </button>
+                        @endif
+                    @endcan
                 </div>
                 <div class="card-body p-4 pt-2">
                     <div class="flex items-center justify-between mb-3">
@@ -49,8 +57,50 @@
                 </div>
             </div>
             <!--  Manage Modal -->
-            @include('backend.automatic_gateway.include.__manage')
+            @can('payment-gateways-action')
+                @include('backend.automatic_gateway.include.__manage')
+            @endcan
             <!-- Manage Modal End-->
+
+            <!-- Modal for Locked Feature -->
+            <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="lockedFeatureModal" tabindex="-1" aria-labelledby="lockedFeatureModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
+                    <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
+                        <div class="modal-body popup-body">
+                            <div class="popup-body-text p-8">
+                                <div class="locked-feature-content"></div>
+                                <div class="action-btns text-center mt-5">
+                                    <a href="#" class="btn btn-danger inline-flex items-center justify-center" data-bs-dismiss="modal" aria-label="Close">
+                                        <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="lucide:x"></iconify-icon>
+                                        {{ __('Cancel') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal for Locked Feature-->
         @endforeach
     </div>
+@endsection
+@section('integrations-script')
+
+    <script>
+
+        $('.lockedFeature').on('click', function (e) {
+            "user strict"
+            $('.locked-feature-content').empty();
+
+            $.ajax({
+                url: '{{ route("admin.feature.locked") }}',
+                method: 'GET',
+                success: function (data) {
+                    $('.locked-feature-content').append(data)
+                    $('#lockedFeatureModal').modal('show');
+                }
+            })
+        })
+    </script>
+
 @endsection

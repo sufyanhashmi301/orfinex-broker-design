@@ -12,19 +12,17 @@
 @section('filters')
     <form id="filter-form" method="POST" action="{{ route('admin.withdraw.pending.export') }}">
         @csrf
-        <div class="flex justify-between flex-wrap items-center">
-            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="email" id="email" class="form-control h-full" placeholder="Search User By Email">
                 </div>
-
-
                 <div class="flex-1 input-area relative">
                     <input type="date" name="created_at" id="created_at" class="form-control h-full flatpickr flatpickr-input active" data-mode="range" placeholder="Created At">
                 </div>
 
             </div>
-            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+            <div class="flex sm:space-x-3 space-x-2 sm:justify-end items-center">
                 <div class="input-area relative">
                     <button type="button" id="filter" class="btn btn-sm inline-flex items-center justify-center min-w-max bg-slate-100 text-slate-700 dark:bg-slate-700 !font-normal dark:text-white">
                         <iconify-icon class="text-base ltr:mr-2 rtl:ml-2 font-light" icon="lucide:filter"></iconify-icon>
@@ -84,7 +82,7 @@
         </div>
     </div>
     <!-- Modal for Pending Deposit Approval -->
-    @can('transaction-action')
+{{--    @can('transaction-action')--}}
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="transaction-action-modal" tabindex="-1" aria-labelledby="deposit-action-modal" aria-hidden="true">
             <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
               <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
@@ -96,7 +94,7 @@
                 </div>
             </div>
         </div>
-    @endcan
+{{--    @endcan--}}
 @endsection
 
 @section('script')

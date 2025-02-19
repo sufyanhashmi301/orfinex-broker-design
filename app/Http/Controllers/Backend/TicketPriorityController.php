@@ -14,6 +14,10 @@ class TicketPriorityController extends Controller
 
     public function __construct(TicketPriorityService $ticketPriorityService)
     {
+        $this->middleware('permission:ticket-priority-list', ['only' => ['index']]);
+        $this->middleware('permission:ticket-priority-create', ['only' => ['store']]);
+        $this->middleware('permission:ticket-priority-edit', ['only' => ['update']]);
+        $this->middleware('permission:ticket-priority-delete', ['only' => ['destroy']]);
         $this->ticketPriorityService = $ticketPriorityService;
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\RiskHubController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\IBController;
 use App\Http\Controllers\Backend\AppController;
@@ -21,6 +22,8 @@ use App\Http\Controllers\Backend\PluginController;
 use App\Http\Controllers\Backend\ProfitController;
 use App\Http\Controllers\Backend\SocialController;
 use App\Http\Controllers\Backend\SymbolController;
+use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\LabelController;
 use App\Http\Controllers\Backend\TicketController;
 use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\Backend\DepositController;
@@ -65,6 +68,12 @@ use App\Http\Controllers\RateController;
 use App\Http\Controllers\Backend\IBGroupController;
 use App\Http\Controllers\Backend\DocumentLinkController;
 use App\Http\Controllers\Backend\PlatformLinkController;
+use App\Http\Controllers\Backend\PlatformApiController;
+use App\Http\Controllers\Backend\SocialLinkController;
+use App\Http\Controllers\Backend\LeadController;
+use App\Http\Controllers\Backend\LeadSourceController;
+use App\Http\Controllers\Backend\LeadStageController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +89,7 @@ use App\Http\Controllers\Backend\PlatformLinkController;
 Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
     //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])->name('staff.dashboard');
 
 
     // Customer Management
@@ -91,6 +101,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('withOutBalance', 'withOutBalance')->name('without_balance');
         Route::get('login/{id}', 'userLogin')->name('login');
         Route::post('status-update/{id}', 'statusUpdate')->name('status-update');
+        Route::post('password-reset', 'resetPassword')->name('reset-password');
         Route::post('password-update/{id}', 'passwordUpdate')->name('password-update');
         Route::post('balance-update/{id}', 'balanceUpdate')->name('balance-update');
         Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
@@ -99,7 +110,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');
-        // Route::post('note/create/{id}', 'createNote')->name('note.ssadd');
+        // Route::post('note/create/{id}', 'createNote')->name('note.ssadd');password-update
         // Route::post('note/create/{id}', 'createNote')->name('note.add');
         Route::post('store', 'store')->name('store');
         Route::post('kyc/{id}', 'kyc')->name('kyc');
@@ -190,6 +201,11 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::delete('ibAccountType/{ibAccountTypeId}', [IBSchemaController::class, 'destroy'])->name('ibAccountType.delete');
     Route::resource('blackListCountry', BlackListCountryController::class)->except('show');
 
+    Route::group(['prefix' => 'forex', 'as' => 'forex.'], function () {
+        Route::post('get/leverage', [AccountsController::class, 'getLeverage'])->name('get.leverage');
+        Route::post('update/account', [AccountsController::class, 'updateAccountInfo'])->name('update.account');
+    });
+
     //===============================  Profit Deduction Management ==================================
     Route::get('profit/deduction', [ProfitDeductionController::class, 'index'])->name('profit.deduction.index');
     Route::post('profit/deduction/store', [ProfitDeductionController::class, 'store'])->name('profit.deduction.store');
@@ -201,6 +217,8 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('investments/{id?}', [AccountsController::class, 'investments'])->name('investments');
     Route::get('forex-accounts/{type?}/{id?}', [AccountsController::class, 'forexAccounts'])->name('forex-accounts');
     Route::post('forex-accounts/export/{type?}', [AccountsController::class, 'export'])->name('forex-accounts.export');
+    Route::post('reset/credit/{id?}', [AccountsController::class, 'resetCredit'])->name('reset.credit');
+
     Route::post('forex-account-create', [AccountsController::class, 'forexAccountCreateNow'])->name('forex-account-create');
     Route::get('all-leverage', [AccountsController::class, 'allLeverage'])->name('all-leverage');
     Route::post('all-leverage/action', [AccountsController::class, 'handleAllLeverage'])->name('all-leverage.action');
@@ -299,14 +317,19 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('dynamic-landing-update', 'dynamicLandingUpdate')->name('dynamic-landing-update');
         Route::get('dynamic-landing-status-update', 'dynamicLandingStatusUpdate')->name('dynamic-landing-status-update');
         Route::post('dynamic-landing-delete/{id}', 'dynamicLandingDelete')->name('dynamic-landing-delete');
+
+        Route::get('popup', 'popup')->name('popup');
     });
 
+    Route::group(['prefix' => 'page', 'as' => 'page.', 'controller' => PageController::class], function () {
+        Route::get('settings', 'pageSetting')->name('setting');
+        Route::post('setting-update', 'pageSettingUpdate')->name('setting.update');
+    });
 
     Route::group(['prefix' => 'social', 'as' => 'social.', 'controller' => SocialController::class], function () {
-        Route::post('store', 'store')->name('store');
-        Route::post('update', 'update')->name('update');
-        Route::post('delete', 'delete')->name('delete');
-        Route::post('position-update', 'positionUpdate')->name('position.update');
+        Route::get('/', 'index')->name('index');
+        Route::get('edit/{id}', 'edit')->name('edit');
+        Route::put('update', 'update')->name('update');
     });
 
     //===============================  site Settings ==================================
@@ -360,12 +383,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     });
 
 
+    Route::get('grpd-compliance', [SettingController::class, 'grpdCompliance'])->name('grpdCompliance');
     Route::get('changelog', [SettingController::class, 'changelog'])->name('changelog');
     Route::get('/feature-locked', [SettingController::class, 'featureLocked'])->name('feature.locked');
 
-    Route::get('grpd-compliance', function () {
-        return view('backend.setting.site_setting.gdpr_compliance');
-    })->name('grpdCompliance');
 
     //===============================  Security Settings ==================================
     Route::group(['prefix' => 'security', 'as' => 'security.', 'controller' => SecurityController::class], function () {
@@ -420,6 +441,10 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('platform/{id}', [PlatformLinkController::class, 'edit'])->name('platform.edit');
         Route::put('platform/update', [PlatformLinkController::class, 'update'])->name('platform.update');
         Route::delete('platform/{id}', [PlatformLinkController::class, 'destroy'])->name('platform.destroy');
+
+        Route::get('social', [SocialLinkController::class, 'index'])->name('social.index');
+        Route::get('social/{id}', [SocialLinkController::class, 'edit'])->name('social.edit');
+        Route::put('social/update', [SocialLinkController::class, 'update'])->name('social.update');
     });
 
     //===============================  Others ==================================
@@ -429,15 +454,26 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('mail-send-subscriber-now', 'mailSendSubscriberNow')->name('mail.send.subscriber.now');
     });
     Route::group(['prefix' => 'support-ticket', 'as' => 'ticket.', 'controller' => TicketController::class], function () {
+        Route::get('new-ticket', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
         Route::get('index/{id?}', 'index')->name('index');
         Route::get('status', 'ticketStatus')->name('ticketStatus');
         Route::get('priority', 'ticketPriority')->name('ticketPriority');
         Route::post('reply', 'reply')->name('reply');
         Route::get('show/{uuid}', 'show')->name('show');
-        Route::get('close-now/{uuid}', 'closeNow')->name('close.now');
+        Route::patch('{ticket}/update', 'update')->name('update');
 
-        Route::resource('statuses', TicketStatusController::class);
-        Route::resource('priorities', TicketPriorityController::class);
+        // routes/web.php
+        Route::get('assign/{ticket}', 'showAssignModal')->name('showAssignModal');
+        Route::post('{ticket}/assign', 'assignTicket')->name('assign');
+
+        Route::patch('{ticket}/close', 'close')->name('close');
+        Route::patch('{ticket}/reopen', 'reopen')->name('reopen');
+        Route::patch('{ticket}/archive', 'archive')->name('archive');
+        Route::patch('{ticket}/resolve', 'resolve')->name('resolve');
+
+        Route::resource('category', CategoryController::class);
+        Route::resource('label', LabelController::class);
     });
     Route::get('custom-css', [CustomCssController::class, 'customCss'])->name('custom-css');
     Route::post('custom-css-update', [CustomCssController::class, 'customCssUpdate'])->name('custom-css.update');
@@ -484,21 +520,16 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
     Route::get('settings/country', [CountryController::class, 'index'])->name('country.all');
 
-    Route::get('settings/platform-api/cTrader', function () {
-        return view('backend.setting.platform_api.ctrader');
-    })->name('platform_api.ctrader');
+    Route::get('settings/platform-api/cTrader', [PlatformApiController::class, 'cTrader'])
+    ->name('platform_api.ctrader');
 
-    Route::get('settings/platform-api/db-synchronization', function () {
-        return view('backend.setting.platform_api.db-synchronization');
-    })->name('platform_api.db-synchronization');
+    Route::get('settings/platform-api/db-synchronization', [PlatformApiController::class, 'dbSynchronization'])->name('platform_api.db-synchronization');
 
     Route::get('settings/platform-api/db-x9trader', function () {
         return view('backend.setting.platform_api.db-x9trader');
     })->name('platform_api.dbX9trader');
 
-    Route::get('settings/platform-api/x9trader', function () {
-        return view('backend.setting.platform_api.x9trader');
-    })->name('platform_api.x9trader');
+    Route::get('settings/platform-api/x9trader', [PlatformApiController::class, 'x9Trader'])->name('platform_api.x9trader');
 
     Route::get('announcements', function () {
         return view('backend.announcements.index');
@@ -526,21 +557,12 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::post('/positions/group', [PositionController::class, 'getGroupNetPosition'])->name('netPositions.group');
 
 
-    Route::get('active-positions', function () {
-        return view('backend.control_center.active_positions');
-    })->name('activePositions');
-
-    Route::get('net-positions-accounts', function () {
-        return view('backend.control_center.net_positions_accounts');
-    })->name('netPositionsAccounts');
-
-    Route::get('net-positions-groups', function () {
-        return view('backend.control_center.net_positions_groups');
-    })->name('netPositionsGroups');
-
-    Route::get('older-positions-days', function () {
-        return view('backend.control_center.older_positions_days');
-    })->name('olderPositionsDays');
+    Route::controller(RiskHubController::class)->group(function () {
+        Route::get('active-positions', 'activePositions')->name('activePositions');
+        Route::get('net-positions-accounts', 'netPositionsAccounts')->name('netPositionsAccounts');
+        Route::get('net-positions-groups', 'netPositionsGroups')->name('netPositionsGroups');
+        Route::get('older-positions-days', 'olderPositionsDays')->name('olderPositionsDays');
+    });
 
     Route::get('platform/groups', [PlatformGroupController::class, 'index'])->name('platformGroups');
     Route::post('/groups/assign-risk-book', [PlatformGroupController::class, 'assignRiskBook'])->name('groups.assignRiskBook');
@@ -556,9 +578,30 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     Route::get('risk-books/{id}', [PlatformGroupController::class, 'riskBookShow'])->name('riskBook.show');
 
 
+    Route::group(['prefix' => 'lead', 'as' => 'lead.', 'controller' => LeadController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('show/{id}', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('update/{id}', 'update')->name('update');
+        Route::delete('delete/{id}', 'destroy')->name('destroy');
+        Route::post('stage-update/{id}', 'stageUpdate')->name('stageUpdate');
+        Route::get('create-client/{id}', 'createClient')->name('createClient');
+
+        Route::post('store/client', [UserController::class, 'leadAsClient'])->name('storeAsClient');
+
+        Route::resource('source', LeadSourceController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::resource('stage', LeadStageController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    });
+
+
     Route::get('fraud-protection', function () {
         return view('backend.fraud_protection.index');
     })->name('fraudProtection');
+
+
+//    Route::get('changelog', [AppController::class, 'changeLog'])->name('changelog');
 
     Route::get('deposit/misc-setting', function () {
         return view('backend.setting.payment.deposit.misc');
@@ -568,9 +611,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         return view('backend.setting.payment.withdraw.misc');
     })->name('withdraw.miscSetting');
 
-    Route::get('settings/report-issues', function () {
-        return view('backend.system.report_issues');
-    })->name('reportIssues');
+    Route::get('settings/report-issues', [AppController::class, 'reportIssue'])->name('reportIssues');
 
     Route::get('settings/route', function () {
         return view('backend.setting.customization.routes');

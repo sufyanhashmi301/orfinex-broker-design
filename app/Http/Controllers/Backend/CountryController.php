@@ -14,6 +14,13 @@ class CountryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct()
+    {
+       $this->middleware('permission:all-countries-list', ['only' => ['index']]);
+       
+    }
+
     public function index()
     {
         $countries = Country::orderBy('name','asc')->paginate(10);

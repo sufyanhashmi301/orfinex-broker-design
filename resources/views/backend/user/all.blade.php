@@ -8,8 +8,8 @@
 @section('filters')
     <form id="filter-form" method="GET" action="{{ route('admin.user.index') }}">
         @csrf
-        <div class="flex justify-between flex-wrap items-center">
-            <div class="flex-1 inline-flex sm:space-x-3 space-x-2 ltr:pr-4 rtl:pl-4 mb-2 sm:mb-0">
+        <div class="flex flex-col sm:flex-row justify-between flex-wrap sm:items-center gap-3">
+            <div class="flex-1 w-full flex flex-col sm:flex-row sm:gap-3 gap-2">
                 <div class="flex-1 input-area relative">
                     <input type="text" name="global_search" id="global_search" class="form-control h-full" placeholder="Search by Name, Username, Email">
                 </div>
@@ -79,7 +79,6 @@
                         <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700" id="dataTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="table-th">{{ __('Avatar') }}</th>
                                     <th scope="col" class="table-th">{{ __('User') }}</th>
                                     <th scope="col" class="table-th">{{ __('Email') }}</th>
                                     <th scope="col" class="table-th">{{ __('Balance') }}</th>
@@ -112,6 +111,7 @@
     <!-- Modal for Send Email-->
 
     @include('backend.user.include.__configure_modal')
+    @include('backend.user.include.__reset_password')
 @endsection
 
 @section('customers-script')
@@ -153,7 +153,6 @@
                     }
                 },
                 columns: [
-                    {data: 'avatar', name: 'avatar'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'balance', name: 'balance'},
@@ -166,6 +165,31 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
+
+            // Function to generate a random password
+            function generateRandomPassword(length = 12) {
+                const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+                let password = "";
+                for (let i = 0; i < length; i++) {
+                    password += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return password;
+            }
+
+            // When the reset password button is clicked
+            $('body').on('click', '.reset-password-btn', function () {
+                const userId = $(this).data('id');
+                const userEmail = $(this).data('email');
+                const userName = $(this).data('name');
+                const newPassword = generateRandomPassword();
+
+                $('#resetUserId').val(userId);
+                $('#resetUserEmail').val(userEmail);
+                $('#generatedPassword').val(newPassword);
+
+                $('#resetPasswordModal').modal('show');
+            });
+
 
             $('#filter-form').on('submit', function (e) {
                 e.preventDefault(); // Prevent the default form submission

@@ -47,7 +47,8 @@ class WithdrawController extends Controller
 
     public function __construct(ForexApiService $forexApiService)
     {
-        $this->middleware('permission:withdraw-method-manage', ['only' => ['methods', 'methodCreate', 'methodStore', 'methodEdit', 'methodUpdate']]);
+        $this->middleware('permission:automatic-withdraw-method|manual-withdraw-method', ['only' => ['methods', 'methodCreate', 'methodStore', 'methodEdit', 'methodUpdate']]);
+        $this->middleware('permission:withdraw-method-create', ['only' => ['methodCreate', 'methodStore']]);
         $this->middleware('permission:withdraw-list|withdraw-action', ['only' => ['pending', 'history']]);
         $this->middleware('permission:withdraw-action', ['only' => ['withdrawAction', 'actionNow']]);
         $this->middleware('permission:withdraw-schedule', ['only' => ['schedule', 'scheduleUpdate']]);
@@ -238,13 +239,36 @@ class WithdrawController extends Controller
      */
     public function pending(Request $request)
     {
-        $filters = $request->only(['email',  'created_at']);
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['email', 'created_at']);
+
         if ($request->ajax()) {
-            $data = Transaction::where(function ($query) {
-                $query->where('type', TxnType::Withdraw)
-                    ->where('status', 'pending');
-            })->latest();
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = Transaction::where(function ($query) {
+                    $query->where('type', TxnType::Withdraw)
+                        ->where('status', 'pending');
+                })->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Show transactions for attached users only
+                    $data = Transaction::whereIn('user_id', $attachedUserIds)
+                        ->where(function ($query) {
+                            $query->where('type', TxnType::Withdraw)
+                                ->where('status', 'pending');
+                        })->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.transaction.include.__txn_status')
@@ -262,6 +286,7 @@ class WithdrawController extends Controller
         return view('backend.withdraw.pending');
     }
 
+
     /**
      * @return Application|Factory|View|JsonResponse
      *
@@ -269,19 +294,36 @@ class WithdrawController extends Controller
      */
     public function history(Request $request)
     {
-        $filters = $request->only(['email', 'status',  'created_at']);
-        $data = Transaction::where(function ($query) {
-            $query->where('type', TxnType::Withdraw);
-
-        })->get();
+        $loggedInUser = auth()->user();
+        $filters = $request->only(['email', 'status', 'created_at']);
 
         if ($request->ajax()) {
-            $data = Transaction::where(function ($query) {
-                $query->where('type', TxnType::Withdraw)
-                    ->orWhere('type', TxnType::WithdrawAuto);
+            // Check if the logged-in user is a Super-Admin
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $data = Transaction::where(function ($query) {
+                    $query->where('type', TxnType::Withdraw)
+                        ->orWhere('type', TxnType::WithdrawAuto);
+                })->latest();
+            } else {
+                // Get attached user IDs for non-Super-Admin users
+                $attachedUserIds = $loggedInUser->users->pluck('id');
 
-            })->latest();
+                if ($attachedUserIds->isNotEmpty()) {
+                    // Show transactions for attached users only
+                    $data = Transaction::whereIn('user_id', $attachedUserIds)
+                        ->where(function ($query) {
+                            $query->where('type', TxnType::Withdraw)
+                                ->orWhere('type', TxnType::WithdrawAuto);
+                        })->latest();
+                } else {
+                    // If no users are attached, return an empty collection
+                    $data = collect(); // Empty collection
+                }
+            }
+
+            // Apply additional filters if any
             $data->applyFilters($filters);
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('created_at', function ($row) {
@@ -295,10 +337,11 @@ class WithdrawController extends Controller
                 })
                 ->addColumn('username', 'backend.transaction.include.__user')
                 ->addColumn('action', 'backend.transaction.include.__action')
-                ->rawColumns(['created_at', 'status', 'type', 'amount', 'username','action'])
+                ->rawColumns(['created_at', 'status', 'type', 'amount', 'username', 'action'])
                 ->make(true);
         }
 
+        // For non-AJAX requests, show the full view
         return view('backend.withdraw.history');
     }
 
@@ -325,13 +368,13 @@ class WithdrawController extends Controller
         $user = User::find($transaction->user_id);
 //dd($input);
         $shortcodes = [
-            '[[full_name]]' => $user->full_name,
+            '[[full_name]]' => $transaction->user->full_name,
             '[[txn]]' => $transaction->tnx,
             '[[method_name]]' => $transaction->method,
             '[[withdraw_amount]]' => $transaction->amount . setting('site_currency', 'global'),
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
-            '[[message]]' => $transaction->approval_cause,
+            '[[message]]' => $approvalCause,
             '[[status]]' => isset($input['approve']) ? 'approved' : 'Rejected',
         ];
 

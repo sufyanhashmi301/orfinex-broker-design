@@ -33,6 +33,11 @@ class ThemeController extends Controller
         return view('backend.theme.global');
     }
 
+    public function popup()
+    {
+        return view('backend.setting.banner.popup');
+    }
+
     public function colorsSetting(Request $request)
     {
         // Retrieve the 'type' query parameter from the request

@@ -96,8 +96,41 @@ class ResetData extends Command
         DB::table('invests')->truncate();
         DB::table('leverage_updates')->truncate();
         DB::table('withdraw_accounts')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::table('user_ib_rules')->truncate();
+        DB::table('risk_profile_tag_user')->truncate();
+        DB::table('risk_books')->truncate();
+        DB::table('groups')->truncate();
+        DB::table('notes')->truncate();
+        DB::table('system_tags')->truncate();
+        DB::table('x9_client_group_types')->truncate();
+        DB::table('x9_client_groups')->truncate();
+        DB::table('x9_operation_types')->truncate();
+        DB::table('ib_groups')->truncate();
+        DB::table('ib_group_multi_level')->truncate();
+        DB::table('bonuses')->truncate();
+        DB::table('leverage_updates')->truncate();
+        DB::table('bonus_forex_schema')->truncate();
+        DB::table('bonus_transactions')->truncate();
+        DB::table('bonus_deductions')->truncate();
+        DB::table('user_languages')->truncate();
+        DB::table('rebate_records')->truncate();
+        DB::table('document_links')->truncate();
+        DB::table('platform_links')->truncate();
+        DB::table('ib_group_rebate_rule')->truncate();
+        DB::table('social_links')->truncate();
+        DB::table('socials')->truncate();
+        DB::table('forex_schema_rebate_rule')->truncate();
+        DB::table('staff_user')->truncate();
+        DB::table('lead_sources')->truncate();
+        DB::table('lead_stages')->truncate();
+        DB::table('leads')->truncate();
+        DB::table('levels')->truncate();
+        DB::table('user_ib_rule_levels')->truncate();
+        DB::table('user_ib_rule_level_shares')->truncate();
+        DB::table('category_ticket')->truncate();
+        DB::table('label_ticket')->truncate();
 
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         Artisan::call('db:seed');
 
@@ -113,7 +146,7 @@ class ResetData extends Command
             'country' => 'United Arab Emirates',
             'phone' =>  '+971',
             'email' => 'user@'.$sitename.'.com',
-            'password' => Hash::make(12345678),
+            'password' => Hash::make('user@12345'),
             'kyc' => 0,
             'email_verified_at' => Carbon::now(),
         ];
@@ -125,7 +158,7 @@ class ResetData extends Command
             'first_name' => 'Super',
             'last_name' => 'Admin',
             'email' => 'admin@'.$sitename.'.com',
-            'password' => Hash::make(12345678),
+            'password' => Hash::make('Dubai@MyMAA@2024'),
             'role' => 1,
         ]);
         $data = [

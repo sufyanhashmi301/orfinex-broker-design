@@ -39,7 +39,12 @@ class Admin extends Authenticatable
         'google2fa_secret',
         'two_fa',
         'session_expiry',
+        'key',
     ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'staff_user', 'staff_id', 'user_id');
+    }
 
 
     public function getCreatedAtAttribute(): string
@@ -59,6 +64,20 @@ class Admin extends Authenticatable
     public function notes()
     {
         return $this->hasMany(Note::class, 'admin_id');
+    }
+    public function getRememberToken()
+    {
+        return null;
+    }
+
+    public function setRememberToken($value)
+    {
+        // No action needed
+    }
+
+    public function getRememberTokenName()
+    {
+        return null;
     }
 
 }

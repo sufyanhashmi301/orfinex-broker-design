@@ -7,6 +7,7 @@ use App\Enums\MultiLevelType;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\ForexSchema;
+use App\Models\MetaDeal;
 use App\Models\MultiLevel;
 use App\Models\RebateRule;
 use App\Models\UserIbRule;
@@ -42,29 +43,66 @@ class MultiLevelIBController extends Controller
             ->groupBy('forex_scheme_id','type')
             ->orderByDesc('count')
             ->first();
+
         $maxLevelOrderCount = $maxLevelOrder ? $maxLevelOrder->count : 0;
         $getReferral = $user->getReferrals()->first();
         $levelOrder = 0;
         $dataCount = [
-            'total_deposit' => $user->totalDeposit(30),
-            'net_deposit' => $user->totalDeposit(),
-            'total_rebate' => $user->totalRebateMeta(),
-            'total_volume' => $user->totalVolumeMeta(),
-//            'total_investment' => $user->totalInvestment(),
-//            'total_profit' => $user->totalProfit(),
-//            'profit_last_7_days' => $user->totalProfit(7),
-            'total_withdraw' => $user->totalWithdraw(30),
-//            'total_transfer' => $user->totalTransfer(),
-//            'total_referral_profit' => $user->totalReferralProfit(),
-            'total_referral' => $user->getReferral->monthlyRelationships()->count(),
-
-//            'total_forex_balance' => mt5_total_balance($user->id),
-//            'total_forex_equity' => mt5_total_equity($user->id),
+            'monthly_referrals' => $user->getReferral->monthlyRelationships()->count(),
+            'total_rebate' => $this->getReferralsNetRebate($user,30),
+            'total_referrals_balance' =>  $this->getReferralsTotalBalance($user),
+            'total_volume' => $this->getReferralsNetVolume($user,30),
+            'total_referrals' => $user->referrals()->count(),
+            'total_deposit' => $user->totalReferralsDeposit(),
+            'total_withdraw' => $user->totalReferralsWithdraw(),
+            'net_referrals_rebate' =>  $this->getReferralsNetRebate($user),
+            'net_referrals_volume' =>  $this->getReferralsNetVolume($user),
         ];
 
         return view('frontend::partner.dashboard', get_defined_vars());
 
     }
+    public function getReferralsTotalBalance($user)
+    {
+        // Get all referrals
+        $referrals = $user->referrals()->get();
+
+        // Initialize total balance
+        $totalBalance = 0;
+
+        // Iterate through each referral and calculate their balance
+        foreach ($referrals as $referral) {
+            $totalBalance += mt5_total_balance($referral->id);
+        }
+
+        return $totalBalance;
+    }
+    public function getReferralsNetRebate($user,$days=null)
+    {
+        // Get all referrals
+        $referrals = $user->referrals()->pluck('id');
+        $netRebate = MetaDeal::whereIn('user_id',$referrals);
+             if (null != $days) {
+                 $netRebate->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+             }
+            $netRebate = $netRebate->sum('lot_share');
+        return $netRebate;
+    }
+    public function getReferralsNetVolume($user,$days=null)
+    {
+        // Get all referrals
+        $referrals = $user->referrals()->pluck('id');
+        $netVolume = MetaDeal::whereIn('user_id',$referrals);
+        if (null != $days) {
+            $netVolume->where('created_at', '>=', Carbon::now()->subDays((int) $days));
+        }
+        $netVolume = $netVolume->sum('volume');
+
+        return  round($netVolume/10000, 2);
+    }
+
+// Ensure this function is part of a class where `mt5_total_balance` is defined.
+
     public function rules()
     {
         $user = auth()->user(); // Get the authenticated user

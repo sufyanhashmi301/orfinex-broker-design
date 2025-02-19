@@ -7,7 +7,7 @@
         <div class="card user-ranking-mobile flex justify-between items-center p-3 mb-3 rounded-lg">
             <div class="flex items-center">
                 <div class="flex-none">
-                    <div class="h-12 w-12 rounded-full flex-1 border-2" style="border-color: #FED000;">
+                    <div class="h-12 w-12 rounded-full flex-1 border-2 border-primary">
                         <img src="@if(auth()->user()->avatar && file_exists('assets/'.auth()->user()->avatar)) {{asset($user->avatar)}} @else {{ asset('frontend/images/all-img/user.png') }}@endif" alt="user" class="block w-full h-full object-cover rounded-full">
                     </div>
                 </div>
@@ -16,8 +16,13 @@
                         {{ $user->full_name }}
                     </h4>
                     <div class="flex items-center text-slate-400 dark:text-slate-50 text-sm font-normal">
-                        {{ $user->rank->ranking }}
-                        <iconify-icon class="text-base text-primary ml-1" icon="bxs:badge-check"></iconify-icon>
+                        @if($user->kyc >= \App\Enums\KYCStatus::Level2->value)
+                            {{ __('Verified') }}
+                            <img src="https://cdn.brokeret.com/web/icons/yes-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                        @else
+                            {{ __('Unverified') }}
+                            <img src="https://cdn.brokeret.com/web/icons/no-tick.svg" class="ml-1" alt="" style="height: 14px;">
+                        @endif
                     </div>
                 </div>
             </div>
@@ -132,7 +137,32 @@
             <div class="lg:col-span-7 col-span-12">
                 <div class="card h-full flex flex-col">
                     <header class="card-header noborder">
-                        <h4 class="card-title">{{ __('My Trading Accounts') }}</h4>
+                        <h4 class="card-title">{{ __('Trading Accounts') }}</h4>
+                        <div>
+                            <!-- BEGIN: Card Dropdown -->
+                            <div class="relative">
+                                <div class="dropdown relative">
+                                    <button class="text-xl text-center block w-full " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="text-xl inline-flex h-6 w-6 flex-col items-center justify-center rounded dark:text-slate-400">
+                                            <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu min-w-max absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
+                                        <li>
+                                            <a href="{{ route('user.schema') }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                {{ __('Create New Account') }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('user.forex-account-logs') }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                                                {{ __('View Existing Accounts') }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- END: Card Droopdown -->
+                        </div>
                     </header>
                     <div class="card-body p-6 pt-0 mt-auto">
                         <div class="grid md:grid-cols-2 grid-cols-1 gap-3">
@@ -182,8 +212,8 @@
                 <div class="card h-full">
                     <div class="card-body relative p-6 pb-0">
                         <div id="profitLossChart" style="opacity: 0.05"></div>
-                        <div class="flex flex-col items-center justify-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3">
-                            <iconify-icon class="text-xl" icon="lucide:info"></iconify-icon>
+                        <div class="flex flex-col items-center justify-center text-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3 p-5">
+                            <iconify-icon class="text-xl dark:text-white" icon="lucide:info"></iconify-icon>
                             <p class="text-sm dark:text-white">
                                 {{ __("We'll show your balance graph here once there is enough data") }}
                             </p>
@@ -200,6 +230,10 @@
         @include('frontend::user.mobile_screen_include.dashboard.__index')
     </div>
 
+    {{--offer modal--}}
+    @if(setting('popup_status', 'popup'))
+        @include('frontend::user.include.__popup')
+    @endif
 
 @endsection
 @section('script')
@@ -314,4 +348,13 @@
         chart.render();
 
     </script>
+
+    @if(setting('popup_status', 'popup'))
+        <script !src="">
+            $(document).ready(function() {
+                $('#offerModal').modal('show');
+            });
+        </script>
+    @endif
+
 @endsection

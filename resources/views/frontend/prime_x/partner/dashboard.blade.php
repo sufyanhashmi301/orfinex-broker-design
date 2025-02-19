@@ -15,11 +15,11 @@
                 <div class="card">
                     <div class="card-body p-6">
                         <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6">
-                            {{ __('Total Referral') }}
+                            {{ __('Referrals') }}
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ $dataCount['total_referral'] }}
+                                {{ $dataCount['total_referrals'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -34,7 +34,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('0.00 USD') }}
+                                {{ $dataCount['total_volume'] }}
                             </h6>
                         </div>
                         <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
@@ -49,12 +49,12 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('0.00 USD') }}
+                                {{ $dataCount['total_referrals_balance'] }} {{$currency}}
                             </h6>
                         </div>
-                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">
-                            {{ __('This Month') }}
-                        </p>
+{{--                        <p class="font-normal text-xs text-slate-600 dark:text-slate-300">--}}
+{{--                            {{ __('This Month') }}--}}
+{{--                        </p>--}}
                     </div>
                 </div>
                 <div class="card">
@@ -64,7 +64,7 @@
                         </p>
                         <div class="flex items-end space-x-3 mb-2">
                             <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                                {{ __('0.00 USD') }}
+                                {{ $dataCount['net_referrals_rebate'] }} {{$currency}}
                             </h6>
 {{--                            <span class="font-normal text-xs text-danger dark:text-slate-300 mb-1">--}}
 {{--                                {{ __('-52%') }}--}}
@@ -77,12 +77,24 @@
                 </div>
             </div>
         </div>
-        <div class="xl:col-span-4 col-span-12">
+        <div class="lg:col-span-4 col-span-12">
             <div class="card h-full">
                 <div class="card-body h-full flex flex-col gap-3 p-6">
-                    <p class="text-slate-900 dark:text-white text-sm font-medium mb-10">
-                        {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
-                    </p>
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-10">
+                        <p class="text-slate-900 dark:text-white text-sm font-medium">
+                            {{ __('Vault ID: :id',['id'=>$account->wallet_id]) }}
+                        </p>
+                        <div class="flex space-x-2 sm:justify-end items-center rtl:space-x-reverse">
+                            <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center" onclick="copyToClipboard('{{ $account->wallet_id }}')">
+                                <iconify-icon class="ltr:mr-2 rtl:ml-2" icon="lucide:copy" ></iconify-icon>
+                                {{ __('Copy ID') }}
+                            </button>
+                            <button type="button" class="btn btn-light btn-sm inline-flex items-center justify-center" onclick="copyToClipboard('{{ $account->wallet_id }}')">
+                                <iconify-icon class="ltr:mr-2 rtl:ml-2" icon="lucide:copy"></iconify-icon>
+                                {{ __('Copy Link') }}
+                            </button>
+                        </div>
+                    </div>
                     <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-2">
                         {{ __('Your Current Balance') }}
                     </p>
@@ -113,20 +125,10 @@
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Deposit') }}
+                    {{ __('Total Referrals') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_deposit'] }} {{$currency}}
-                </h6>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body p-6">
-                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Withdrawal') }}
-                </p>
-                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_withdraw'] }} {{$currency}}
+                    {{ $dataCount['total_referrals'] }}
                 </h6>
             </div>
         </div>
@@ -136,14 +138,34 @@
                     {{ __('Net Deposit') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['net_deposit'] }} {{$currency}}
+                    {{ $dataCount['total_deposit'] }} {{$currency}}
                 </h6>
             </div>
         </div>
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Rebate') }}
+                    {{ __('Net Withdrawal') }}
+                </p>
+                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
+                    {{ $dataCount['total_withdraw'] }} {{$currency}}
+                </h6>
+            </div>
+        </div>
+{{--        <div class="card">--}}
+{{--            <div class="card-body p-6">--}}
+{{--                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">--}}
+{{--                    {{ __('Net Deposit') }}--}}
+{{--                </p>--}}
+{{--                <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">--}}
+{{--                    {{ $dataCount['net_deposit'] }} {{$currency}}--}}
+{{--                </h6>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+        <div class="card">
+            <div class="card-body p-6">
+                <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
+                    {{ __('Net Rebate') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
                     {{ $dataCount['total_rebate'] }} {{$currency}}
@@ -153,10 +175,10 @@
         <div class="card">
             <div class="card-body p-6">
                 <p class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-3">
-                    {{ __('Volume') }}
+                    {{ __('Net Volume') }}
                 </p>
                 <h6 class="block mb- text-2xl text-slate-900 dark:text-white font-medium leading-none">
-                    {{ $dataCount['total_volume'] }} {{$currency}}
+                    {{ $dataCount['net_referrals_volume'] }}
                 </h6>
             </div>
         </div>
@@ -165,8 +187,8 @@
     <div class="card mb-6">
         <div class="card-body relative p-6">
             <div id="registredActiveCleints" style="opacity: 0.1;"></div>
-            <div class="flex flex-col items-center justify-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3">
-                <iconify-icon class="text-xl" icon="lucide:info"></iconify-icon>
+            <div class="flex flex-col items-center justify-center text-center absolute h-full top-0 bottom-0 left-0 right-0 gap-3 p-5">
+                <iconify-icon class="text-xl dark:text-white" icon="lucide:info"></iconify-icon>
                 <p class="text-sm dark:text-white">
                     {{ __("We'll show your partner revenue graph here once there is enough data") }}
                 </p>
@@ -191,7 +213,7 @@
                                     <iconify-icon class="text-lg ltr:mr-2 rtl:ml-2" icon="solar:share-circle-line-duotone"></iconify-icon>
                                     {{ __('Share') }}
                                 </button>
-                                <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="https://brokeret.com/">
+                                <ul class="dropdown-menu min-w-[160px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700 shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none a2a_kit a2a_default_style" data-a2a-url="{{$getReferral->link}}">
                                     <li>
                                         <a class="a2a_button_email text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
                                             <span class="flex items-center gap-2">
@@ -302,6 +324,11 @@
 @section('script')
     <script async src="https://static.addtoany.com/menu/page.js"></script>
     <script>
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+        }
+
         let l, e;
         var options = {
             chart: {

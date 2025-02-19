@@ -102,15 +102,19 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
         Route::get('ordersHistory', [PositionController::class, 'index'])->name('ordersHistory');
         Route::get('orders', [PositionController::class, 'getOrders'])->name('getOrders');
     });
+
     //invest accounts
     Route::post('invest-now', [InvestController::class, 'investNow'])->name('invest-now');
     Route::get('invest-logs', [InvestController::class, 'investLogs'])->name('invest-logs');
     Route::get('invest-cancel/{id}', [InvestController::class, 'investCancel'])->name('invest-cancel');
-    Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
-    Route::get('forex-transactions', [TransactionController::class, 'forexTransactions'])->name('forex.transactions');
-    Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
 
+    //History
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('transactions', [TransactionController::class, 'transactions'])->name('transactions');
+        Route::get('trading-accounts', [TransactionController::class, 'forexTransactions'])->name('tradingAccounts');
+        Route::post('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
 
+    });
 
     // Deposit
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.'], function () {
@@ -133,6 +137,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
     });
     Route::group(['prefix' => 'ib/rule', 'as' => 'ib.rule.'], function () {
         Route::post('/store', [UserIbRuleController::class, 'store'])->name('store');
+        Route::get('//{id}/levels', [UserIbRuleController::class, 'showLevels'])->name('levels');
+        Route::post('/level/update', [UserIbRuleController::class, 'updateLevels'])->name('level.update');
+
     });
 
     //Send Money
@@ -208,8 +215,9 @@ Route::group(['middleware' => ['auth', '2fa','isActive', 'payment_access', 'set.
             return redirect(route('user.dashboard'));
         })->name('2fa.verify');
 
-        Route::get('/communication', 'communication')->name('communication');
-        Route::post('/communication-language', 'updateLanguage')->name('communication.language');
+        Route::get('/preference', 'preference')->name('preference');
+        Route::post('/preference-language', 'updateLanguage')->name('preference.language');
+        Route::post('/preference-theme', 'updateUserTheme')->name('preference.theme');
     });
 });
 
@@ -375,3 +383,7 @@ Route::get('user/webterminal', function () {
 
 Route::get('user/advance/kyc/status', [SumsubController::class, 'UpdateKycStatus'])->name('user.kyc.status');
 
+Route::view('login-2', 'frontend::auth.login-2');
+Route::view('forgot-password-2', 'frontend::auth.forgot-password-2');
+Route::view('verify-email-2', 'frontend::auth.verify-email-2');
+Route::view('register-2', 'frontend::auth.register-2');

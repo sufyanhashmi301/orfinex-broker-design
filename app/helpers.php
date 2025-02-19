@@ -833,6 +833,7 @@ if (!function_exists('first_min_deposit')) {
         $forexAccount->update(['first_min_deposit_paid' => 1]);
     }
 }
+
 if (!function_exists('txn_type')) {
     function txn_type($type, $value = [])
     {
@@ -849,9 +850,10 @@ if (!function_exists('txn_type')) {
                 $result = ['green-color', '+'];
                 break;
             case TxnType::SendMoney->value:
-            case TxnType::Investment->value:
             case TxnType::Withdraw->value:
             case TxnType::Subtract->value:
+            case TxnType::BonusSubtract->value:
+            case TxnType::BonusRefund->value:
                 $result = ['red-color', '-'];
                 break;
         }
@@ -868,6 +870,35 @@ if (!function_exists('is_custom_rate')) {
             return 'USD';
         }
         return null;
+    }
+}
+if (!function_exists('match2pay_currencies')) {
+    function match2pay_currencies()
+    {
+        // Define the mapping of payment currencies to their gateway names
+        return [
+            'BTC' => 'BTC',
+            'ETH' => 'ETH',
+            'UST' => 'USDT ERC20',
+            'UCC' => 'USDC ERC20',
+            'TRX' => 'TRX',
+            'USX' => 'USDT TRC20',
+            'UCX' => 'USDC TRC20',
+            'BNB' => 'BNB',
+            'USB' => 'USDT BEP20',
+            'MAT' => 'MATIC',
+            'USP' => 'USDT POLYGON',
+            'UCP' => 'USDC POLYGON',
+            'XRP' => 'XRP',
+            'DOG' => 'DOGECOIN',
+            'LTC' => 'LTC',
+            'SOL' => 'SOL',
+            'USS' => 'USDT SOL',
+            'UCS' => 'USDC SOL',
+            'TON' => 'TON',
+            'UTT' => 'USDT TON',
+        ];
+
     }
 }
 
@@ -947,6 +978,7 @@ if (!function_exists('kyc_first_level_check')) {
         return $kycCompletedLevel;
     }
 }
+
 if (!function_exists('calPercentage')) {
     function calPercentage($num, $percentage)
     {
@@ -1153,13 +1185,15 @@ if (!function_exists('update_total_balance')) {
             ->where('account_type', 'real')
             ->get();
 //        dd($forexAccounts,$this->user);
-        $forexApiTrait = new class {
-            use ForexApiTrait;
-        };
+        $forexApiService = new ForexApiService();
         foreach ($forexAccounts as $forexAccount) {
-            $forexApiTrait->updateAgent($forexAccount->login, 0);
-        }
+                $data = [
+                    'login' => $forexAccount->login,
+                    'agent' => 0,
+                    ];
 
+                $forexApiService->updateAgentAccount($data);
+            }
     }
 }
 if (!function_exists('get_mt5_account')) {
@@ -1256,6 +1290,7 @@ if (!function_exists('mt5_total_balance')) {
 
     function mt5_total_balance($user_id)
     {
+
         // Define a cache key for the database connection status
         $cacheKey = 'mt5_db_connection_status';
 
@@ -1264,12 +1299,12 @@ if (!function_exists('mt5_total_balance')) {
             // Return 0 immediately without attempting to connect
             return 0;
         }
-
-        // Attempt to establish a database connection
+//        dd($user_id);
+//         Attempt to establish a database connection
         try {
             DB::connection('mt5_db')->getPdo();
         } catch (\PDOException $e) {
-            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+//            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
             Cache::put($cacheKey, 'down', now()->addMinutes(5)); // Adjust the duration as needed
             return 0;
         }
@@ -1281,17 +1316,19 @@ if (!function_exists('mt5_total_balance')) {
                 ->where('account_type', 'real')
                 ->where('status', ForexAccountStatus::Ongoing)
                 ->pluck('login');
+//            dd($forexAccounts);
 
             // If no accounts found, return 0
             if ($forexAccounts->isEmpty()) {
                 return 0;
             }
-
-            // Calculate the total balance using the mt5_db connection
+//dd($forexAccounts);
+          //   Calculate the total balance using the mt5_db connection
             $totalBalance = DB::connection('mt5_db')
                 ->table('mt5_accounts')
                 ->whereIn('Login', $forexAccounts)
                 ->sum('Balance');
+//            dd($totalBalance);
 
             return $totalBalance;
         } catch (\Exception $e) {
@@ -1400,6 +1437,88 @@ if (!function_exists('mt5_total_credit')) {
         }
     }
 }
+if (!function_exists('mt5_total_used_margin')) {
+    /**
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_used_margin($user_id)
+    {
+
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total credit using the mt5_db connection
+            $totalMargin = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('Margin');
+
+            return $totalMargin;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
+    }
+}
+if (!function_exists('mt5_total_free_margin')) {
+    /**
+     * Calculates the total credit for a user's ongoing real forex accounts.
+     *
+     * @param int $user_id The ID of the user.
+     * @return float The total credit, or 0 if the connection fails.
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function mt5_total_free_margin($user_id)
+    {
+
+        try {
+            // Fetch the forex account logins for the user
+            $forexAccounts = ForexAccount::where('user_id', $user_id)
+                ->where('account_type', 'real')
+                ->where('status', ForexAccountStatus::Ongoing)
+                ->pluck('login');
+
+            // If no accounts found, return 0
+            if ($forexAccounts->isEmpty()) {
+                return 0;
+            }
+
+            // Calculate the total credit using the mt5_db connection
+            $totalMargin = DB::connection('mt5_db')
+                ->table('mt5_accounts')
+                ->whereIn('Login', $forexAccounts)
+                ->sum('MarginFree');
+
+            return $totalMargin;
+
+        } catch (\Exception $e) {
+            // Log the error message for debugging
+            \Log::error('MT5 DB connection failed: ' . $e->getMessage());
+
+            // Return 0 in case of any failure
+            return 0;
+        }
+    }
+}
 
 if (!function_exists('mt5_update_balance')) {
     /**
@@ -1482,7 +1601,7 @@ if (!function_exists('hexToRgb')) {
         $g = hexdec(substr($hexColor, 2, 2));
         $b = hexdec(substr($hexColor, 4, 2));
 
-        return [$r, $g, $b];
+        return ['r' => $r, 'g' => $g, 'b' => $b];
     }
 }
 
@@ -1495,6 +1614,16 @@ if (!function_exists('getColorFromSettings')) {
     }
 }
 
+if (!function_exists('isDarkColor')) {
+    function isDarkColor($hex)
+    {
+        $rgb = hexToRgb($hex);
+        $luminance = 0.2126 * $rgb['r'] + 0.7152 * $rgb['g'] + 0.0722 * $rgb['b'];
+
+        return $luminance < 128;
+    }
+}
+
 if (!function_exists('document_link_by_slug')) {
     function document_link_by_slug($slug)
     {
@@ -1502,3 +1631,19 @@ if (!function_exists('document_link_by_slug')) {
     }
 }
 
+if (!function_exists('social_links')) {
+    function social_links()
+    {
+        return App\Models\SocialLink::where('status', 1)->get();
+    }
+}
+
+if (! function_exists('getFilteredPath')) {
+    function getFilteredPath($path = null, $fallback = 'global/materials/default.png')
+    {
+        // Check if the provided path is a full URL
+        return filter_var($path, FILTER_VALIDATE_URL)
+            ? $path
+            : asset($path ?? $fallback);
+    }
+}

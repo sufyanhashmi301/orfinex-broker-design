@@ -37,7 +37,7 @@ class MultiLevelRebateDistribution extends Command
         DB::beginTransaction();
         try {
             $ReferralRelationships = ReferralRelationship::with('referralLink')
-//                ->where('user_id',357)
+//                ->where('user_id',1197)
                 ->get();
 
             foreach ($ReferralRelationships as $ReferralRelationship) {
@@ -82,14 +82,14 @@ class MultiLevelRebateDistribution extends Command
             return false;
         }
         $symbols = $this->getUserAssignedSymbols($notedParent);
-//        dd($symbols);
+        // dd($realForexAccounts);
 
         foreach ($realForexAccounts as $realForexAccount) {
-//            dd($realForexAccounts);
+            // dd($realForexAccount->login);
             $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-//            dd($lastDealTime);
+            // dd($lastDealTime);
             $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $symbols);
-//            dd($deals);
+            // dd($deals);
             $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel);
         }
     }
@@ -136,9 +136,9 @@ class MultiLevelRebateDistribution extends Command
                 'lot_share' => BigDecimal::of($deal->Volume)->dividedBy(BigDecimal::of(10000), 2),
                 'time' => $deal->Time
             ];
-            $metaDeal = MetaDeal::create($data);
-//            $metaDeal = MetaDeal::find(78);
-//            dd($metaDeal);
+             $metaDeal = MetaDeal::create($data);
+//            $metaDeal = MetaDeal::find(9900);
+            // dd($metaDeal);
             $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel);
         }
     }
@@ -146,7 +146,7 @@ class MultiLevelRebateDistribution extends Command
     protected function distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel)
     {
         $shareDistribution = $this->calculateRebate($metaDeal->symbol, $notedParent, $notedLevel);
-//        dd($shareDistribution);
+        // dd($shareDistribution);
 
         if (empty($shareDistribution)) {
             return;
@@ -195,27 +195,6 @@ class MultiLevelRebateDistribution extends Command
             }
         }
 
-        // Assign remaining rebate to the noted parent
-//        if (isset($shareDistribution[$notedLevel])) {
-//            $remainingRebate = $shareDistribution[$notedLevel];
-//
-//            if ($remainingRebate > 0) {
-//                $userAccount = get_user_account($notedParent->id, AccountBalanceType::IB_WALLET);
-//                $targetId = $userAccount->wallet_id;
-//                $amount = $remainingRebate * $metaDeal->lot_share;
-//
-//                $transaction = Txn::new(
-//                    $amount, 0, $amount, 'system',
-//                    "IB Bonus via trade from account {$metaDeal->login}",
-//                    TxnType::IbBonus, TxnStatus::Success, base_currency(),
-//                    $amount, $notedParent->id, $childUserId, 'User', [],
-//                    'note', $targetId, TxnTargetType::Wallet->value
-//            );
-//
-//            $this->addBalance($transaction);
-//        }
-//        }
-
         $metaDeal->is_paid = Carbon::now();
         $metaDeal->save();
     }
@@ -231,9 +210,11 @@ class MultiLevelRebateDistribution extends Command
         }
 
         $totalRebateAmount = $rebateRule->rebate_amount;
+        // dd($totalRebateAmount);
         $ibRule = UserIbRule::where('user_id', $notedParent->id)
             ->where('rebate_rule_id', $rebateRule->id)
             ->first();
+        // dd($ibRule);
 
         if (!$ibRule) {
             return [];
@@ -243,11 +224,12 @@ class MultiLevelRebateDistribution extends Command
             ->where('level_id', $notedLevel)
             ->first();
 
-        if (!$ibRuleLevel) {
-            return [];
+        $shares = [];
+
+        if ($ibRuleLevel) {
+            $shares = UserIbRuleLevelShare::where('user_ib_rule_level_id', $ibRuleLevel->id)->get();
         }
 
-        $shares = UserIbRuleLevelShare::where('user_ib_rule_level_id', $ibRuleLevel->id)->get();
 
         $rebateDistribution = [];
         $totalShared = 0;

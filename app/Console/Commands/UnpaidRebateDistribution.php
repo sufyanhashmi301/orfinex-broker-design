@@ -29,7 +29,7 @@ class UnpaidRebateDistribution extends Command
         try {
             // Fetch all unpaid deals
             $unpaidDeals = MetaDeal::whereNull('is_paid')
-                ->where('id',9761)
+                ->where('id',9760)
                 ->get();
 
 
@@ -138,8 +138,8 @@ class UnpaidRebateDistribution extends Command
                         $amount, 0, $amount, 'system',
                         "IB Bonus via trade from account {$metaDeal->login}",
                         TxnType::IbBonus, TxnStatus::Success, base_currency(),
-                        $amount, $userId, $childUserId, 'User', [],
-                        'note', $targetId, TxnTargetType::Wallet->value
+                        $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
+                        'deals rebate', $targetId, TxnTargetType::Wallet->value
                     );
 
                     $this->addBalance($transaction);

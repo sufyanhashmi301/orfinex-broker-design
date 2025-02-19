@@ -311,34 +311,35 @@
         {{-- *************************************************************  Advertisement Management *********************************************************--}}
         {{-- @canany(['advertisement-material-list','advertisement-material-create','advertisement-material-edit']) --}}
 
-        @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])
-            <li class="{{ isActive(['admin.referral*']) }}">
-                <a href="javascript:void(0);" class="navItem">
-                        <span class="flex items-center">
-                            <iconify-icon class="nav-icon" icon="lucide:settings-2"></iconify-icon>
-                            <span>{{ __('Manage Referral') }}</span>
-                        </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                </a>
-                <ul class="sidebar-submenu">
-                    @canany(['referral-create','referral-list','referral-edit','referral-delete'])
-                        <li>
-                            <a href="{{ route('admin.referral.level.index') }}"
-                               class="{{ isActive('admin.referral.level*') }}">
-                                {{ __('Multi Level Referral') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.referral.index') }}"
-                               class="{{ isActive('admin.referral.index') }}">
-                                {{ __('Targets Referral') }}
-                            </a>
-                        </li>
-                    @endcanany
+{{--        @canany(['target-manage','referral-create','referral-list','referral-edit','referral-delete'])--}}
+{{--            <li class="{{ isActive(['admin.referral*']) }}">--}}
+{{--                <a href="javascript:void(0);" class="navItem">--}}
+{{--                        <span class="flex items-center">--}}
+{{--                            <iconify-icon class="nav-icon" icon="lucide:settings-2"></iconify-icon>--}}
+{{--                            <span>{{ __('Manage Referral') }}</span>--}}
+{{--                        </span>--}}
+{{--                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>--}}
+{{--                </a>--}}
+{{--                <ul class="sidebar-submenu">--}}
+{{--                    @canany(['referral-create','referral-list','referral-edit','referral-delete'])--}}
+{{--                        <li>--}}
+{{--                            <a href="{{ route('admin.referral.level.index') }}"--}}
+{{--                               class="{{ isActive('admin.referral.level*') }}">--}}
+{{--                                {{ __('Multi Level Referral') }}--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                        <li>--}}
+{{--                            <a href="{{ route('admin.referral.index') }}"--}}
+{{--                               class="{{ isActive('admin.referral.index') }}">--}}
+{{--                                {{ __('Targets Referral') }}--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
+{{--                    @endcanany--}}
 
-                </ul>
-            </li>
-        @endcanany
+{{--                </ul>--}}
+{{--            </li>--}}
+{{--        @endcanany--}}
+
         {{-- @endcanany --}}
         @canany(['ib-list','ib-action','ib-form-manage'])
             <li class="{{ isActive(['admin.ib*']) }}">

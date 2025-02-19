@@ -8,6 +8,7 @@ use App\Enums\TxnType;
 use App\Enums\KYCStatus;
 use App\Exports\ActiveUsersExport;
 use App\Exports\DisabledUsersExport;
+use App\Exports\RefferalUsersExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
@@ -119,11 +120,19 @@ class UserController extends Controller
 
     public function export(Request $request, $type)
     {
+        $userId = $request->user_id; // Get the selected user's ID from the request
+
+        if (!$userId) {
+            return back()->with('error', 'User not found.');
+        }
+    
         switch ($type) {
             case 'active':
                 return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
             case 'disabled':
                 return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
+            case 'refferal':
+                return Excel::download(new RefferalUsersExport($userId), 'refferal-users.xlsx');
             default:
                 return Excel::download(new UsersExport($request), 'users.xlsx');
         }

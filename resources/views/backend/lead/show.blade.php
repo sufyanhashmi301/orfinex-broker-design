@@ -31,9 +31,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" type="button" data-lead-id="{{ $lead->id }}" class="loseLeadBtn text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
-                        <iconify-icon icon="material-symbols:close-rounded"></iconify-icon>
-                        <span>{{ __('Close As Lose') }}</span>
+                    <a href="#" type="button" data-lead-id="{{ $lead->id }}" class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:text-white">
+                        {{ __('Close As Lose') }}
                     </a>
                 </li>
             </ul>
@@ -71,17 +70,6 @@
                                             {{ $leadOwner->getRoleNames()->first() }}
                                         </span>
                                     </div>
-                                </span>
-                            </div>
-                        </li>
-                        <li class="first:text-xs text-sm first:text-slate-600 text-slate-600 dark:text-slate-300 py-2 first:uppercase">
-                            <div class="flex justify-between">
-                                <span>{{ __('Lead Stage') }}</span>
-                                <span>
-                                    <span class="flex space-x-2 rtl:space-x-reverse items-center">
-                                        <span class="inline-flex h-[10px] w-[10px] rounded-full" style="background-color: {{ $stage->label_color }}"></span>
-                                        <span>{{ $stage->name }}</span>
-                                    </span>
                                 </span>
                             </div>
                         </li>

@@ -1,10 +1,10 @@
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="newDealStageModal" tabindex="-1" aria-labelledby="newDealStageModal" aria-hidden="true">
+<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModal" aria-hidden="true">
     <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
         <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white dark:bg-dark bg-clip-padding rounded-md outline-none text-current">
             <div class="relative bg-white rounded-lg shadow dark:bg-dark">
                 <div class="flex items-center justify-between rounded-t p-5">
-                    <h3 class="text-xl font-medium dark:text-white capitalize" id="account-info-account_name">
-                        {{ __('Add New Deal Stage') }}
+                    <h3 class="text-xl font-medium dark:text-white capitalize">
+                        {{ __('Update Note') }}
                     </h3>
                     <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
                         <svg aria-hidden="true" class="w-5 h-5 fill-black dark:fill-white" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -13,7 +13,7 @@
                         <span class="sr-only">{{ __('Close modal') }}</span>
                     </button>
                 </div>
-                <div class="p-6 pt-0" id="create-stage-body">
+                <div class="p-6 pt-0" id="note-modal-body">
 
                 </div>
             </div>

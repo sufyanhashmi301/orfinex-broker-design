@@ -70,15 +70,17 @@
             </li>
         @endcanany
 
-        <li class="">
-            <a href="{{ route('admin.twilio.index') }}" class="navItem {{ isActive('admin.twilio*') }}">
-                <span class="flex items-center">
-                    <iconify-icon class="nav-icon" style="font-size: 20px" icon="lucide:phone"></iconify-icon>
-                    <span>{{ __('Telephone Call') }}</span>
-                </span>
-                {{-- <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon> --}}
-            </a>
-        </li>
+        @if (\App\Models\VoiceCall::where('status', 1)->exists())
+            <li class="">
+                <a href="{{ route('admin.twilio.index') }}" class="navItem {{ isActive('admin.twilio*') }}">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" style="font-size: 20px" icon="lucide:phone"></iconify-icon>
+                        <span>{{ __('Voice Calls') }}</span>
+                    </span>
+                </a>
+            </li>
+        @endif
+        
 
         @canany(['kyc-list','kyc-action','kyc-form-manage','risk-profile-tag'])
             <li class="">

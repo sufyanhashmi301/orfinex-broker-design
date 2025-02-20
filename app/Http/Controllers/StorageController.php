@@ -30,6 +30,7 @@ class StorageController extends Controller
     public function index()
     {
         $storage_methods = StorageModel::all();
+        
         // Run the seeder if DB is not initialized
         if(count($storage_methods) != StorageSeeder::$TOTAL_STORAGE_METHODS) {
             $this->runSeeder();
@@ -190,13 +191,7 @@ class StorageController extends Controller
                 'AWS_SECRET_ACCESS_KEY' => $details['aws_secret'],
                 'AWS_BUCKET' => $details['aws_bucket'],
                 'AWS_DEFAULT_REGION' => $details['aws_region'],
-                'AWS_URL' => 'https://' . $details['aws_bucket'] . '.s3.' . $details['aws_region'] . '.amazonaws.com',
             ]);
-
-            // Clear config cache
-            Artisan::call('config:clear');
-            Artisan::call('cache:clear');
-
 
             notify()->success('Storage settings updated successfully!');
 

@@ -59,6 +59,7 @@ use App\Http\Controllers\AccountTypeInvestmentController;
 use App\Http\Controllers\Backend\EmailTemplateController;
 use App\Http\Controllers\Backend\TicketPriorityController;
 use App\Http\Controllers\Backend\BlackListCountryController;
+use App\Http\Controllers\VoiceCallController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +105,7 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('kyc/{id}', 'kyc')->name('kyc');
     });
 
-    //===============================  tWILIO ==================================
+    //===============================  Twilio ==================================
     Route::controller(TwilioController::class)->group(function () {
         Route::get('/call', 'index')->name('twilio.index');
         // Route::get('/call', 'voice')->name('twilio.voice');
@@ -250,6 +251,13 @@ Route::middleware(['2fa_admin'])->group(function () {
         Route::post('update', 'update')->name('update');
         Route::get('toggle-method/{id}', 'toggleMethod')->name('toggle_method');
         Route::post('test-aws-s3', 'testAWS')->name('test_aws');
+    });
+
+    // Voice Call
+    Route::group(['prefix' => 'settings/voice-call', 'as' => 'settings.voice_call.', 'controller' => VoiceCallController::class], function () {
+        Route::get('', 'index')->name('index');
+        Route::post('update', 'update')->name('update');
+        Route::get('toggle-method/{id}', 'toggleMethod')->name('toggle_method');
     });
 
     // =============================== Optimization ===============================

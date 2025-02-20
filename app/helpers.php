@@ -4,7 +4,6 @@ use Carbon\Carbon;
 use App\Enums\TxnType;
 use App\Models\Gateway;
 use App\Models\Setting;
-use App\Models\Storage as StorageModel;
 use App\Helpers\NioHash;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -17,6 +16,8 @@ use App\Enums\KycNoticeInvokeEnums;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Models\AccountTypeInvestment;
+use App\Models\Storage as StorageModel;
+use Illuminate\Support\Facades\Artisan;
 
 if (!function_exists('is_force_https')) {
     /**
@@ -827,24 +828,36 @@ if (!function_exists('show_kyc_notice')) {
 // generic to set env values
 if (!function_exists('setEnvironmentValue')) {
     function setEnvironmentValue($values) {
-   
         $envPath = base_path('.env');
-
+    
         if (File::exists($envPath)) {
             $envContent = File::get($envPath);
-
-            foreach ($values as $key => $value) {
-                $keyValue = "{$key}=" . env($key);
-                $newKeyValue = "{$key}=\"{$value}\"";
-
-                // Replace old values with new ones
-                $envContent = preg_replace("/^{$key}=.*/m", $newKeyValue, $envContent);
+    
+            // Ensure the .env file starts with a blank line
+            if (!str_starts_with($envContent, PHP_EOL)) {
+                $envContent = PHP_EOL . $envContent;
             }
-
+    
+            foreach ($values as $key => $value) {
+                $newKeyValue = "{$key}=\"{$value}\"";
+    
+                // Check if the key exists in the .env file
+                if (preg_match("/^{$key}=/m", $envContent)) {
+                    // If the key exists, update it
+                    $envContent = preg_replace("/^{$key}=.*/m", $newKeyValue, $envContent);
+                } else {
+                    // If the key does not exist, add it
+                    $envContent .= PHP_EOL . $newKeyValue;
+                }
+            }
+    
             // Write updated content back to .env
             File::put($envPath, $envContent);
-        }
     
+            // Clear and refresh config cache
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+        }
     }
 }
 

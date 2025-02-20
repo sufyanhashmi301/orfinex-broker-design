@@ -328,6 +328,11 @@
                             </a>
                         </li>
                     @endcan
+                    <li>
+                        <a href="{{ route('admin.settings.voice_call.index') }}" class="navItem {{ isActive('admin.settings.voice_call*') }}">
+                            {{ __('Voice Calls')}}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

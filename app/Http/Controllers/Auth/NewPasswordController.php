@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Traits\NotifyTrait;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,7 @@ use Illuminate\Validation\Rules;
 
 class NewPasswordController extends Controller
 {
+    use NotifyTrait;
     /**
      * Display the password reset view.
      *
@@ -49,9 +51,12 @@ class NewPasswordController extends Controller
             return redirect()->route('password.request');
         }
 
-        $user = User::where('email', $request->email)
-            ->update(['password' => Hash::make($request->password)]);
+        $user = User::where('email', $request->email)->first();
 
+        if ($user) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
         DB::table('password_resets')->where(['email' => $request->email])->delete();
         $shortcodes = [
             '[[full_name]]' => $user->full_name,

@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="h-full overflow-auto py-10 px-10 lg:w-1/2">
+        <div class="h-full overflow-auto py-10 px-10 lg:w-1/2 lg:flex flex-col justify-center">
             <div class="w-full max-w-lg mx-auto lg:mx-0">
                 <div class="mobile-logo text-center mb-6 lg:hidden block">
                     <a href="{{ route('home')}}">

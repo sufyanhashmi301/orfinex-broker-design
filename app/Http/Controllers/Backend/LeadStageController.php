@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\LeadStage;
+use App\Models\LeadPipeline;
+use App\Models\PipelineStage;
 use App\Services\LeadStageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class LeadStageController extends Controller
 {
@@ -35,7 +38,8 @@ class LeadStageController extends Controller
      */
     public function create()
     {
-        //
+        $pipelines = LeadPipeline::all();
+        return view('backend.setting.lead.stage.include.__create_form', compact('pipelines'));
     }
 
     /**
@@ -46,22 +50,36 @@ class LeadStageController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $rules = [
+            'pipeline' => 'required',
             'name' => 'required|string|max:255',
             'label_color' => 'required|string|max:255',
-        ]);
+        ];
 
-        // Check if the status name already exists
-        $existingStage = LeadStage::where('name', $request->name)->first();
-
-        if ($existingStage) {
-            notify()->error(__('The stage name already exists.'));
-            return redirect()->back();
+        if ($request->pipeline) {
+            $rules['name'] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('pipeline_stages', 'name')->where('lead_pipeline_id', $request->pipeline),
+            ];
         }
 
-        $this->leadStageService->create($data);
+        $data = $request->validate($rules);
+
+        $stage = new PipelineStage();
+        $stage->name = $data['name'];
+        $stage->lead_pipeline_id = $data['pipeline'];
+        $stage->label_color = $data['label_color'];
+
+        $stage->slug = Str::slug($data['name']);
+
+        $maxPriority = PipelineStage::where('lead_pipeline_id', $data['pipeline'])->max('priority') ?? 0;
+        $stage->priority = $maxPriority + 1;
+        $stage->save();
+
         notify()->success(__('Lead stage created successfully.'));
-        return redirect()->route('admin.lead.stage.index');
+        return redirect()->route('admin.lead.pipeline.index');
     }
 
     /**
@@ -83,8 +101,32 @@ class LeadStageController extends Controller
      */
     public function edit($id)
     {
-        $stage = $this->leadStageService->getById($id);
-        return view('backend.setting.lead.stage.include.__edit_form', compact('stage'))->render();
+        $this->pipelines = LeadPipeline::all();
+        $this->stage = PipelineStage::findOrFail($id);
+        $this->stages = PipelineStage::where('lead_pipeline_id', $this->stage->lead_pipeline_id)
+            ->orderBy('priority', 'asc')
+            ->get();
+
+        $this->lastStageColumn = $this->stages->filter(function ($value, $key) {
+            return $value->priority == ($this->stage->priority - 1);
+        })->first();
+
+        $this->afterStageColumn = $this->stages->filter(function ($value, $key) {
+            return $value->priority == ($this->stage->priority + 1);
+        })->first();
+
+        $this->maxPriority = PipelineStage::max('priority');
+
+        $this->data = [
+            'pipelines' => $this->pipelines,
+            'stage' => $this->stage,
+            'stages' => $this->stages,
+            'lastStageColumn' => $this->lastStageColumn,
+            'afterStageColumn' => $this->afterStageColumn,
+            'maxPriority' => $this->maxPriority,
+        ];
+
+        return view('backend.setting.lead.stage.include.__edit_form', $this->data);
     }
 
     /**
@@ -96,22 +138,68 @@ class LeadStageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $leadStage = LeadStage::findOrFail($id);
-
-        // Check if the stage is 'Win' or 'Lose'
-        if (in_array($leadStage->name, ['Win', 'Lose'])) {
-            notify()->error(__('You cannot update the "Win" or "Lose" lead stages.'));
-            return redirect()->route('admin.lead.stage.index');
-        }
-
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'label_color' => 'required|string|max:255',
+        $validate = $request->validate([
+            'name' => 'required|unique:pipeline_stages,name,' . $request->route('stage') . ',id,lead_pipeline_id,' . $request->pipeline,
+            'label_color' => 'required'
         ]);
 
-        $this->leadStageService->update($id, $data);
+        $stage = PipelineStage::findOrFail($id);
+        $oldPosition = $stage->priority;
+        $newPosition = $request->priority;
+
+        if($request->has('before'))
+        {
+            PipelineStage::where('priority', '<', $oldPosition)
+                ->where('priority', '>=', $newPosition)
+                ->orderBy('priority', 'asc')
+                ->increment('priority');
+
+            $stage->priority = $request->priority;
+        }
+        elseif($oldPosition > $newPosition)
+        {
+            PipelineStage::where('priority', '<', $oldPosition)
+                ->where('priority', '>', $newPosition)
+                ->orderBy('priority', 'asc')
+                ->increment('priority');
+
+            $stage->priority = $request->priority + 1;
+        }
+        else
+        {
+            PipelineStage::where('priority', '>', $oldPosition)
+                ->where('priority', '<=', $newPosition)
+                ->orderBy('priority', 'asc')
+                ->decrement('priority');
+
+            $stage->priority = $request->priority;
+        }
+
+        $stage->name = $request->name;
+        $stage->label_color = $request->label_color;
+        $stage->save();
+
         notify()->success(__('Lead stage updated successfully.'));
-        return redirect()->route('admin.lead.stage.index');
+        return redirect()->route('admin.lead.pipeline.index');
+    }
+
+    public function statusUpdate($id)
+    {
+        $stage = PipelineStage::find($id);
+        $allPipelineStage = PipelineStage::select('id', 'default')->where('lead_pipeline_id', $stage->lead_pipeline_id)->get();
+
+        foreach ($allPipelineStage as $leadStage) {
+            if ($leadStage->id == $id) {
+                $leadStage->default = '1';
+            } else {
+                $leadStage->default = '0';
+            }
+
+            $leadStage->save();
+        }
+
+        notify()->success(__('Lead stage status updated successfully.'));
+        return response()->json(['status' => 'success']);
     }
 
     /**
@@ -122,16 +210,21 @@ class LeadStageController extends Controller
      */
     public function destroy($id)
     {
-        $leadStage = LeadStage::findOrFail($id);
+        $board = PipelineStage::findOrFail($id);
 
-        // Check if the stage is 'Win' or 'Lose'
-        if (in_array($leadStage->name, ['Win', 'Lose'])) {
-            notify()->error(__('You cannot delete the "Win" or "Lose" lead stages.'));
-            return redirect()->route('admin.lead.stage.index');
+        $otherColumns = PipelineStage::where('priority', '>', $board->priority)
+            ->orderBy('priority', 'asc')
+            ->get();
+
+        foreach ($otherColumns as $column) {
+            $pos = PipelineStage::where('priority', $column->priority)->first();
+            $pos->priority = ($pos->priority - 1);
+            $pos->save();
         }
 
-        $this->leadStageService->delete($id);
+        PipelineStage::destroy($id);
+
         notify()->success(__('Lead stage deleted successfully.'));
-        return redirect()->route('admin.lead.stage.index');
+        return redirect()->route('admin.lead.pipeline.index');
     }
 }

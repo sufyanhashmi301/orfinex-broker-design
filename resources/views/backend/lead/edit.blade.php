@@ -99,19 +99,6 @@
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Lead Stage:') }}
-                                <span class="text-xs text-danger">*</span>
-                            </label>
-                            <select name="stage_id" class="select2 form-control" required>
-                                @foreach($stages as $stage)
-                                    <option value="{{ $stage->id }}" {{ $stage->id == old('stage_id', $lead->stage_id) ? 'selected' : '' }}>
-                                        {{ $stage->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="input-area">
-                            <label for="" class="form-label">
                                 {{ __('Lead Owner:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +17,6 @@ class Lead extends Model
         'client_email',
         'phone',
         'source_id',
-        'stage_id',
         'lead_owner',
         'company_name',
         'website',
@@ -28,8 +28,13 @@ class Lead extends Model
         'address'
     ];
 
-    public function stages()
+    public function getCreatedAtAttribute(): string
     {
-        return $this->belongsTo(LeadStage::class,  'id');
+        return Carbon::parse($this->attributes['created_at'])->format('M d, Y h:i');
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(Admin::class, 'lead_owner');
     }
 }

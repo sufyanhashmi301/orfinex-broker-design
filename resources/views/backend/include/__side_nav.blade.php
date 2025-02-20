@@ -88,7 +88,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="javascript:;" class="">
+                    <a href="{{ route('admin.deal.index') }}" class="">
                         {{ __('Deals') }}
                     </a>
                 </li>

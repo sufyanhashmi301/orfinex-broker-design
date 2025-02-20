@@ -50,7 +50,7 @@
                         <div class="h-full card">
                             <div class="p-0 h-full body-class">
                                 <!-- BEGIN: Messages -->
-                                <div class="relative h-full">
+                                <div class="absolute flex flex-col w-full h-full overflow-hidden">
                                     <header class="border-b border-slate-100 dark:border-slate-700">
                                         <div class="flex py-6 md:px-6 px-3 items-center">
                                             <div class="flex-1">
@@ -78,7 +78,7 @@
                                             @endif
                                         </div>
                                     </header>
-                                    <div class="chat-content bg-white dark:bg-dark" style="height: calc(100% - 155px);">
+                                    <div class="chat-content relative flex-grow bg-white dark:bg-dark overflow-x-hidden overflow-y-auto">
                                         <div class="msgs overflow-y-auto msg-height pt-6 space-y-6">
                                             <div class="block md:px-6 px-4">
                                                 <div class="flex space-x-2 items-end justify-end rtl:space-x-reverse">
@@ -87,7 +87,7 @@
                                                             <span class="font-normal text-xs text-slate-400 dark:text-slate-400 mb-1">
                                                                 {{ $ticket->user->first_name }} {{ $ticket->user->last_name }}
                                                             </span>
-                                                            <div class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
+                                                            <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
                                                                 {!! $ticket->message !!}
                                                                 @if($ticket->attach)
                                                                     <div class="mt-1">
@@ -126,7 +126,7 @@
                                                                         {{ $message->user->name }}
                                                                     @endif
                                                                 </span>
-                                                                <div class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
+                                                                <div class="text-content text-left p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal rounded-md">
                                                                     {!! $message->message !!}
                                                                     @if($message->attach)
                                                                         <div class="flex items-start gap-3 mt-1">
@@ -151,15 +151,15 @@
                                         </div>
                                     </div>
                                     <!-- message -->
-                                    <div id="image-container" class="hidden absolute bg-white border-t border-slate-100 dark:border-slate-700 flex items-center gap-3 p-2">
-                                        <div class="relative rounded border border-slate-100 dark:border-slate-700 p-2">
-                                            <img id="image-preview" src="" alt="Image Preview" class="h-16 object-cover rounded-md">
-                                            <button type="button" id="remove-image" class="h-6 w-6 flex flex-col justify-center items-center text-lg rounded-full absolute top-1 right-1 bg-red-500 text-white">
-                                                <iconify-icon icon="mdi:window-close"></iconify-icon>
-                                            </button>
+                                    <footer class="relative md:px-6 px-4 border-t md:pt-6 py-3 border-slate-100 dark:border-slate-700">
+                                        <div id="image-container" class="hidden bg-white flex items-center gap-3 pb-3">
+                                            <div class="relative rounded border border-slate-100 dark:border-slate-700 p-2">
+                                                <img id="image-preview" src="" alt="Image Preview" class="h-16 object-cover rounded-md">
+                                                <button type="button" id="remove-image" class="h-6 w-6 flex flex-col justify-center items-center text-lg rounded-full absolute top-1 right-1 bg-red-500 text-white">
+                                                    <iconify-icon icon="mdi:window-close"></iconify-icon>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <footer class="relative md:px-6 px-4 border-t md:pt-6 pt-4 border-slate-100 dark:border-slate-700">
                                         <form action="{{ route('user.ticket.reply') }}" method="post" enctype="multipart/form-data" class="sm:flex md:space-x-4 sm:space-x-2 rtl:space-x-reverse">
                                             @csrf
                                             <input type="hidden" name="uuid" value="{{ $ticket->uuid }}">
@@ -171,7 +171,7 @@
                                             </div>
                                             <div class="flex-1 relative flex space-x-3 rtl:space-x-reverse">
                                                 <div class="flex-1">
-                                                    <textarea placeholder="{{ __('Type your message...') }}" class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none" name="message"></textarea>
+                                                    <textarea placeholder="{{ __('Type your message...') }}" class="focus:ring-0 focus:outline-0 block w-full bg-transparent dark:text-white resize-none" id="message_input" name="message"></textarea>
                                                 </div>
                                                 <div class="flex-none md:pr-0 pr-3">
                                                     <button type="submit" class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full">
@@ -193,10 +193,8 @@
 @endsection
 @section('style')
     <style>
-        #image-container{
-            position: absolute;
-            bottom: 4.5rem;
-            width: 98%;
+        .msgs > div:last-child {
+            margin-bottom: 0.75rem !important;
         }
     </style>
 @endsection
@@ -221,6 +219,13 @@
                 $('#image-preview').attr('src', ''); // Clear the image preview
                 $('#image-container').addClass('hidden'); // Hide the image container
                 $('#attach').val(''); // Clear file input
+            });
+
+            const textarea = document.querySelector('textarea');
+
+            textarea.addEventListener('input', () => {
+                textarea.style.height = 'auto';  // Reset height
+                textarea.style.height = textarea.scrollHeight + 'px';  // Set height to scrollHeight
             });
         });
     </script>

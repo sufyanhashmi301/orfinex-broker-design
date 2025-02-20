@@ -96,17 +96,6 @@
                         </div>
                         <div class="input-area">
                             <label for="" class="form-label">
-                                {{ __('Lead Stage:') }}
-                                <span class="text-xs text-danger">*</span>
-                            </label>
-                            <select name="stage_id" class="select2 form-control" required>
-                                @foreach($stages as $stage)
-                                    <option value="{{ $stage->id }}">{{ $stage->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="input-area">
-                            <label for="" class="form-label">
                                 {{ __('Lead Owner:') }}
                                 <span class="text-xs text-danger">*</span>
                             </label>
@@ -118,15 +107,87 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="lg:col-span-3">
+                            <div class="input-area mt-3">
+                                <div class="checkbox-area">
+                                    <label class="inline-flex items-center cursor-pointer" id="toggleDealForm">
+                                        <input type="checkbox" class="hidden" name="create_deal">
+                                        <span class="h-4 w-4 border flex-none border-slate-400 dark:border-slate-800 rounded inline-flex ltr:mr-3 rtl:ml-3 relative transition-all duration-150 bg-slate-100 dark:bg-slate-900">
+                                            <img src="{{ asset('frontend/images/icon/ck-white.svg') }}" alt="" class="h-[10px] w-[10px] block m-auto opacity-0">
+                                        </span>
+                                        <span class="form-label text-slate-500 dark:text-slate-400 text-sm leading-6 !mb-0">
+                                            {{ __('Create Deal') }}
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden card-body p-6" id="deal-form">
+                <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
+                    <div class="input-area">
+                        <label class="form-label" for="">
+                            {{ __('Deal Name:') }}
+                            <span class="text-xs text-danger">*</span>
+                        </label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Acme Corporation">
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">
+                            {{ __('Pipeline:') }}
+                            <span class="text-xs text-danger">*</span>
+                        </label>
+                        <select name="lead_pipeline_id" id="pipelineData" class="select2 form-control">
+                            <option value="">{{ __('Select Pipeline') }}</option>
+                            @foreach($pipelines as $pipeline)
+                                <option value="{{ $pipeline->id }}">{{ $pipeline->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="input-area">
+                        <label class="form-label" for="">
+                            {{ __('Deal Stages:') }}
+                            <span class="text-xs text-danger">*</span>
+                        </label>
+                        <select name="pipeline_stage_id" id="stages" class="select2 form-control">
+                            <option value="">{{ __('select stage') }}</option>
+                        </select>
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">
+                            {{ __('Deal Value:') }}
+                            <span class="text-xs text-danger">*</span>
+                        </label>
+                        <div class="joint-input relative">
+                            <input type="text" class="form-control" name="value" value="0">
+                            <span class="absolute right-0 top-1/2 -translate-y-1/2 w-auto h-full text-sm h-full border-l border-l-slate-200 dark:border-l-slate-700 flex items-center justify-center px-2">
+                                {{ setting('site_currency', 'global') }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <label for="" class="form-label">
+                            {{ __('Close Date') }}
+                            <span class="text-xs text-danger">*</span>
+                        </label>
+                        <input type="text" name="close_date" class="form-control py-2 flatpickr flatpickr-input" readonly>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">{{ __('Company Details') }}</h4>
+                    <h4 class="card-title">
+                        <a href="javascript:;" id="companyDetailsToggle" class="inline-flex items-center">
+                            {{ __('Company Details') }}
+                            <iconify-icon class="text-2xl ml-2" icon="lucide:chevron-down"></iconify-icon>
+                        </a>
+                    </h4>
                 </div>
-                <div class="card-body p-6">
+                <div class="hidden card-body p-6" id="company-details-form">
                     <div class="grid lg:grid-cols-3 grid-cols-1 gap-5">
                         <div class="input-area">
                             <label class="form-label" for="">{{ __('Company Name:') }}</label>
@@ -184,6 +245,14 @@
 @section('script')
     <script !src="">
         $(document).ready(function() {
+            $('#toggleDealForm').change(function() {
+                $('#deal-form').toggleClass('hidden');
+            });
+
+            $('#companyDetailsToggle').click(function() {
+                $('#company-details-form').toggleClass('hidden');
+            });
+
             $('#leadOwner').select2({
                 templateResult: function(data) {
                     if (!data.id) {
@@ -225,6 +294,56 @@
                     );
                     return $container;
                 }
+            });
+
+            function getStages(pipelineId) {
+                var url = "{{ route('admin.deal.get-stage', ':id') }}";
+                url = url.replace(':id', pipelineId);
+
+                $.get(url, function (response){
+                    var options = [];
+
+                    $.each(response.data, function (index, value) {
+                        options.push({
+                            id: value.id,
+                            text: value.name,
+                            label_color: value.label_color
+                        });
+                    });
+
+                    $('#stages').empty();
+                    $.each(options, function (index, item) {
+                        var option = new Option(item.text, item.id, false, false);
+                        $(option).attr('data-color', item.label_color);
+                        $('#stages').append(option);
+                    });
+
+                    $('#stages').select2({
+                        templateResult: function (data) {
+                            var $result = $(`
+                                <span class="flex space-x-2 rtl:space-x-reverse items-center">
+                                    <span class="inline-flex h-[10px] w-[10px] rounded-full" style="background-color: ${$(data.element).attr('data-color')}"></span>
+                                    <span>${data.text}</span>
+                                </span>`
+                            );
+                            return $result;
+                        },
+                        templateSelection: function (data) {
+                            var $result = $(`
+                                <span class="flex space-x-2 rtl:space-x-reverse items-center">
+                                    <span class="inline-flex h-[10px] w-[10px] rounded-full" style="background-color: ${$(data.element).attr('data-color')}"></span>
+                                    <span>${data.text}</span>
+                                </span>`
+                            );
+                            return $result;
+                        }
+                    });
+                });
+            }
+
+            $('#pipelineData').on("change", function (e) {
+                let pipelineId = $(this).val();
+                getStages(pipelineId);
             });
         });
     </script>

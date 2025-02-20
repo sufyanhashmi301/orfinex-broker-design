@@ -73,6 +73,9 @@ use App\Http\Controllers\Backend\SocialLinkController;
 use App\Http\Controllers\Backend\LeadController;
 use App\Http\Controllers\Backend\LeadSourceController;
 use App\Http\Controllers\Backend\LeadStageController;
+use App\Http\Controllers\Backend\LeadPipelineController;
+use App\Http\Controllers\Backend\DealController;
+use App\Http\Controllers\Backend\DealNoteController;
 
 
 /*
@@ -587,12 +590,30 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::put('update/{id}', 'update')->name('update');
         Route::delete('delete/{id}', 'destroy')->name('destroy');
         Route::post('stage-update/{id}', 'stageUpdate')->name('stageUpdate');
+        Route::get('get-lead/{id}', 'getLead')->name('getLead');
         Route::get('create-client/{id}', 'createClient')->name('createClient');
 
         Route::post('store/client', [UserController::class, 'leadAsClient'])->name('storeAsClient');
 
         Route::resource('source', LeadSourceController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         Route::resource('stage', LeadStageController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('stage-status-update/{statusId}', [LeadStageController::class, 'statusUpdate'])->name('stage.statusUpdate');
+        Route::resource('pipeline', LeadPipelineController::class);
+        Route::get('pipeline-status-update/{statusId}', [LeadPipelineController::class, 'statusUpdate'])->name('pipeline.statusUpdate');
+    });
+
+    Route::group(['prefix' => 'deal', 'as' => 'deal.', 'controller' => DealController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('show/{id}', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::put('update/{id}', 'update')->name('update');
+        Route::delete('delete/{id}', 'destroy')->name('destroy');
+        Route::get('get-stage/{id}', 'getStages')->name('get-stage');
+        Route::post('stage-update/{id}', 'stageUpdate')->name('stageUpdate');
+
+        Route::resource('note', DealNoteController::class);
     });
 
 

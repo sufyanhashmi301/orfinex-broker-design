@@ -17,13 +17,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.lead.stage.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.lead.stage.index') }}">
-                    {{ __('Lead Stage') }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.page.setting') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.page.setting') }}">
-                    {{ __('Deal Agent') }}
+                <a href="{{ route('admin.lead.pipeline.index') }}" class="nav-link block font-medium font-Inter text-xs leading-tight capitalize text-nowrap rounded-md px-5 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300 {{ isActive('admin.lead.pipeline.index') }}">
+                    {{ __('Pipeline') }}
                 </a>
             </li>
         </ul>

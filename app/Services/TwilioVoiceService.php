@@ -45,48 +45,81 @@ class TwilioVoiceService
             ->header('Content-Type', 'text/xml');
     }
 
-    public function handleOutgoingCall(Request $request)
+    // public function handleOutgoingCall(Request $request)
+    // {
+    //     $response = new VoiceResponse();
+
+    //     $response->say('Connecting your call...');
+
+    //     return response($response)
+    //         ->header('Content-Type', 'text/xml');
+    // }
+
+    public function handleOutgoingCall()
     {
         $response = new VoiceResponse();
-
-        $response->say('Connecting your call...');
-
-        return response($response)
-            ->header('Content-Type', 'text/xml');
+        $response->say("Connecting your call...");
+        $response->dial()->number("+1234567890"); // Replace with dynamic number if needed
+        
+        return response($response)->header('Content-Type', 'text/xml');
     }
 
 
 
-
-    public function initiateCall($phoneNumber)
-    {
-        try {
-            // Create a new Twilio VoiceResponse
-            $response = new VoiceResponse();
+    // public function initiateCall($phoneNumber)
+    // {
+    //     try {
+    //         // Create a new Twilio VoiceResponse
+    //         $response = new VoiceResponse();
             
-            $phone_number = $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch();
+    //         $phone_number = $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch();
            
-            if ($phone_number) {
-                $call = $this->client->calls->create($phoneNumber, $this->from,[
-                    "twiml" => "<Response><Dial><Number>$phoneNumber</Number></Dial></Response>"
-                    ]); 
+    //         if ($phone_number) {
+    //             $call = $this->client->calls->create($phoneNumber, $this->from,[
+    //                 "twiml" => "<Response><Dial><Number>$phoneNumber</Number></Dial></Response>"
+    //                 ]); 
                 
 
-                // If call was successfully initiated
-                if ($call) {
-                    return $call->sid; // Return the call SID
-                }
+    //             // If call was successfully initiated
+    //             if ($call) {
+    //                 return $call->sid; // Return the call SID
+    //             }
     
-                return null; // Return null if call creation failed
-            }
-        } catch (Exception $e) {
-            dd($e);
-            return null;
-        } catch (RestException $rest) {
-            dd($rest);
-            return null;
-        }
+    //             return null; // Return null if call creation failed
+    //         }
+    //     } catch (Exception $e) {
+    //         dd($e);
+    //         return null;
+    //     } catch (RestException $rest) {
+    //         dd($rest);
+    //         return null;
+    //     }
+    // }
+
+    public function initiateCall($phoneNumber)
+{
+    try {
+        $response = new VoiceResponse();
+        
+        $call = $this->client->calls->create(
+            $phoneNumber, // The recipient's phone number
+            $this->from,  // Your Twilio number (Caller ID)
+            [
+                'url' => route('outgoing-call'), // Ensure this route returns valid TwiML
+                'method' => 'POST',
+            ]
+        );
+
+        return $call->sid ?? null;
+    } catch (RestException $e) {
+        dd($e->getMessage()); // Debug Twilio error
+        return null;
+    } catch (\Exception $e) {
+        dd($e->getMessage());
+        return null;
     }
+}
+
     
 
     public function getCallDetails($callSid)

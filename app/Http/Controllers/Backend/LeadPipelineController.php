@@ -141,6 +141,10 @@ class LeadPipelineController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $pipeline = LeadPipeline::findOrFail($id);
+
+        $pipeline->delete();
+        notify()->success(__('Pipeline deleted successfully.'));
+        return redirect()->route('admin.lead.pipeline.index');
     }
 }

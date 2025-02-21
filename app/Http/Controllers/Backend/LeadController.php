@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Enums\KYCStatus;
 use App\Models\Lead;
+use App\Models\Deal;
 use App\Models\Admin;
 use App\Models\LeadSource;
-use App\Models\LeadStage;
+use App\Models\LeadPipeline;
 use App\Models\Kyc;
 use App\Models\KycLevel;
 use App\Models\RiskProfileTag;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class LeadController extends Controller
 {
@@ -20,10 +25,35 @@ class LeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $stages = LeadStage::whereNotIn('name', ['Win', 'Lose'])->with('leads')->get();
-        return view('backend.lead.index', compact('stages'));
+        $loggedInUser = auth()->user();
+
+        if ($request->ajax()) {
+
+            if ($loggedInUser->hasRole('Super-Admin')) {
+                $leads = Lead::with('owner');
+            } else {
+                $attachedUserIds = $loggedInUser->users->pluck('id');
+
+                if ($attachedUserIds->isNotEmpty()) {
+                    $leads = Lead::whereIn('lead_owner', $attachedUserIds)->with('owner');;
+                } else {
+                    $leads = Lead::where('lead_owner', $loggedInUser->id)->with('owner');;
+                }
+            }
+
+            return Datatables::of($leads)
+                ->addIndexColumn()
+                ->addColumn('username', 'backend.lead.include.__user')
+                ->editColumn('owner', 'backend.lead.include.__owner')
+                ->addColumn('action', 'backend.lead.include.__action')
+                ->rawColumns(['username', 'owner', 'action'])
+                ->make(true);
+
+        }
+
+        return view('backend.lead.index');
     }
 
     /**
@@ -35,8 +65,8 @@ class LeadController extends Controller
     {
         $staff = Admin::all();
         $sources = LeadSource::all();
-        $stages = LeadStage::all();
-        return view('backend.lead.create', compact('staff', 'sources', 'stages'));
+        $pipelines = LeadPipeline::all();
+        return view('backend.lead.create', compact('staff', 'sources', 'pipelines'));
     }
 
     /**
@@ -47,14 +77,13 @@ class LeadController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'salutation' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'client_email' => 'required|email',
             'phone' => 'required|string|max:20',
             'source_id' => 'required|exists:lead_sources,id',
-            'stage_id' => 'required|exists:lead_stages,id',
             'lead_owner' => 'required|exists:admins,id',
             'company_name' => 'nullable|string|max:255',
             'website' => 'nullable|url|max:255',
@@ -66,9 +95,37 @@ class LeadController extends Controller
             'address' => 'nullable|string',
         ]);
 
-        $lead = Lead::create($data);
-        notify()->success(__('Lead created successfully.'));
-        return redirect()->route('admin.lead.index');
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), __('Error'));
+            return redirect()->back();
+        }
+
+        $data = $validator->validated();
+
+        DB::beginTransaction();
+
+        try {
+
+            $lead = Lead::create($data);
+
+            if ($request->has('create_deal') && $request->create_deal == 'on') {
+                $this->storeDeal($request, $lead);
+            }
+
+            DB::commit();
+
+            notify()->success(__('Lead created successfully.'));
+            return redirect()->route('admin.lead.index');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            \Log::error('Error creating lead or deal: ' . $e->getMessage());
+
+            notify()->error(__('An error occurred while creating the lead or deal.'));
+            return redirect()->back();
+        }
     }
 
     /**
@@ -82,10 +139,9 @@ class LeadController extends Controller
         $lead = Lead::findOrFail($id);
 
         $source = LeadSource::find($lead->source_id);
-        $stage = LeadStage::find($lead->stage_id);
         $leadOwner = Admin::find($lead->lead_owner);
 
-        return view('backend.lead.show', compact('lead', 'source', 'stage', 'leadOwner'));
+        return view('backend.lead.show', compact('lead', 'source', 'leadOwner'));
     }
 
     /**
@@ -99,9 +155,8 @@ class LeadController extends Controller
         $lead = Lead::findOrFail($id);
         $staff = Admin::all();
         $sources = LeadSource::all();
-        $stages = LeadStage::all();
 
-        return view('backend.lead.edit', compact('lead', 'staff', 'sources', 'stages'));
+        return view('backend.lead.edit', compact('lead', 'staff', 'sources'));
     }
 
     /**
@@ -120,7 +175,6 @@ class LeadController extends Controller
             'client_email' => 'required|email',
             'phone' => 'required|string|max:20',
             'source_id' => 'required|exists:lead_sources,id',
-            'stage_id' => 'required|exists:lead_stages,id',
             'lead_owner' => 'required|exists:admins,id',
             'company_name' => 'nullable|string|max:255',
             'website' => 'nullable|url|max:255',
@@ -154,6 +208,29 @@ class LeadController extends Controller
         return redirect()->route('admin.lead.index');
     }
 
+    public function storeDeal($request, $lead)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'lead_pipeline_id' => 'required|exists:lead_pipelines,id',
+            'pipeline_stage_id' => 'required|exists:pipeline_stages,id',
+            'close_date' => 'required|date',
+            'value' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            notify()->error($validator->errors()->first(), __('Error'));
+            return redirect()->back();
+        }
+
+        $data = $validator->validated();
+
+        $data['added_by'] = auth()->id();
+        $data['lead_id'] = $lead->id;
+
+        $deal = Deal::create($data);
+    }
+
     public function stageUpdate($id, Request $request)
     {
         $lead = Lead::find($id);
@@ -164,6 +241,13 @@ class LeadController extends Controller
             'status' => 'success',
             'message' => __('Lead Stage Updated Successfully'),
         ]);
+    }
+
+    public function getLead($id)
+    {
+        $lead = Lead::find($id);
+
+        return view('backend.deals.include.__contact_detail', compact('lead'));
     }
 
     public function createClient($id)

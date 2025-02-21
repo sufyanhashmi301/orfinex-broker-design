@@ -46,34 +46,32 @@ class TwilioController extends Controller
     public function outboundXml(Request $request)
     {
         $jsonData = request()->all();
-        $phoneNumber = $jsonData['To'] ?? env('TWILIO_PHONE_NUMBER'); 
-        $direction = 'Outgoing';
-
-        $CallSid = $jsonData['CallSid'];
-        $Caller = $jsonData['Caller'];
+        $phoneNumber = $jsonData['To'] ?? env('TWILIO_PHONE_NUMBER');
 
         $response = new VoiceResponse();
 
         if ($phoneNumber == env('TWILIO_PHONE_NUMBER')) {
-            // Incoming call handling
-            $direction = 'Incoming';
+            // Incoming Call
             $response->dial()->client('test_client');
         } else {
-            // Outgoing call
-            $from = env('MY_VERIFIED_PHONE_NUMBER'); // Use your verified phone number
-            $response->dial($phoneNumber, [
-                'callerId' => $from,  // Set verified number as Caller ID
+            // Outgoing Call
+            $from = env('MY_VERIFIED_PHONE_NUMBER'); // Use a verified number
+
+            $dial = $response->dial('', [
+                'callerId' => $from,
                 'record' => 'true'
             ]);
+            $dial->number($phoneNumber);
         }
 
-        Log::info('Twilio ' . $direction . ' call request received.', [
-            'request' => $jsonData,
-            'to' => $phoneNumber
+        Log::info('Twilio Outbound Call: ', [
+            'to' => $phoneNumber,
+            'from' => $from
         ]);
 
         return response($response, 200)->header('Content-Type', 'text/xml');
     }
+
 
     public function handleIncomingCall(Request $request)
     {
@@ -102,7 +100,7 @@ class TwilioController extends Controller
         $response = new VoiceResponse();
         
         $from = env('MY_VERIFIED_PHONE_NUMBER'); // Set verified caller ID dynamically
-
+        
         $response->dial($request->input('To'), [
             'callerId' => $from
         ]);

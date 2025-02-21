@@ -50,9 +50,16 @@
                                         </label>
                                         <span class="text-sm text-slate-600 font-Inter font-normal">{{ __('Default') }}</span>
                                     </div>
-                                    <button type="button" data-pipeline-id="{{ $pipeline->id }}" class="view-pipeline btn btn-sm btn-outline-dark inline-flex items-center justify-center">
-                                        {{ __('Deal Stages') }}
-                                    </button>
+                                    <div class="flex space-x-3 rtl:space-x-reverse">
+                                        @if(!$pipeline->default)
+                                            <button type="button" data-pipeline-id="{{ $pipeline->id }}" data-pipeline-name="{{ $pipeline->name }}" class="deletePipeline toolTip onTop action-btn" data-tippy-content="delete pipeline">
+                                                <iconify-icon icon="lucide:trash"></iconify-icon>
+                                            </button>
+                                        @endif
+                                        <button type="button" data-pipeline-id="{{ $pipeline->id }}" class="view-pipeline toolTip onTop action-btn" data-tippy-content="show stages">
+                                            <iconify-icon icon="lucide:sliders-vertical"></iconify-icon>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -123,6 +130,9 @@
     {{-- Modal for edit pipeline--}}
     @include('backend.setting.lead.pipeline.modal.__edit_modal')
 
+    {{-- Modal for delete pipeline--}}
+    @include('backend.setting.lead.pipeline.modal.__delete_modal')
+
     {{-- Modal for new deal stage--}}
     @include('backend.setting.lead.stage.modal.__create_modal')
 
@@ -190,6 +200,22 @@
 
             })
         });
+
+        $('body').on('click', '.deletePipeline', function (event) {
+            "use strict";
+            event.preventDefault();
+            var id = $(this).data('pipeline-id');
+            var name = $(this).data('pipeline-name');
+
+            var url = '{{ route("admin.lead.pipeline.destroy", ":id") }}';
+            url = url.replace(':id', id);
+
+            $('#pipelineDeleteForm').attr('action', url)
+
+            $('.name').html(name);
+            $('#deletePipeline').modal('show');
+        });
+
 
         $('body').on('click', '.set_default_stage', function() {
             var id = $(this).data('status-id');

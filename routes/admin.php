@@ -43,6 +43,7 @@ use App\Http\Controllers\Backend\CustomCssController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\KYCLevelsController;
 use App\Http\Controllers\Backend\SystemTagController;
+use App\Http\Controllers\Backend\MultiIbLevelController;
 
 use App\Http\Controllers\Backend\DepartmentController;
 use App\Http\Controllers\Backend\MultiLevelController;
@@ -144,6 +145,15 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
     });
 //===============================  System Tag ==================================
     Route::resource('system-tag', SystemTagController::class);
+
+    //===============================  System Tag ==================================
+    Route::resource('multi-ib-level', MultiIbLevelController::class);
+
+    Route::get('multi-ib-level/{id}/edit', [MultiIbLevelController::class, 'edit'])->name('multi-ib-level.edit');
+    Route::put('multi-ib-level/{id}', [MultiIbLevelController::class, 'update'])->name('multi-ib-level.update');
+    Route::delete('multi-ib-level/{multi_ib_level}', [MultiIbLevelController::class, 'destroy'])->name('multi-ib-level.destroy');
+    
+
 
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);

@@ -823,16 +823,42 @@ class UserController extends Controller
      */
     public function transaction($id, Request $request)
     {
-
         if ($request->ajax()) {
-            $data = Transaction::where('user_id', $id)->latest();
-
+            $data = Transaction::where('user_id', $id)
+                ->where('type', '!=', TxnType::IbBonus->value) // Exclude ib_bonus
+                ->latest();
+    
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('status', 'backend.user.include.__txn_status')
                 ->editColumn('type', 'backend.user.include.__txn_type')
                 ->editColumn('final_amount', 'backend.user.include.__txn_amount')
                 ->rawColumns(['status', 'type', 'final_amount'])
+                ->make(true);
+        }
+    }
+
+    public function ibBonus($id, Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Transaction::where('user_id', $id)
+                ->where('type', TxnType::IbBonus->value) // Include only ib_bonus
+                ->latest();
+    
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->editColumn('status', 'backend.user.include.__txn_status')
+                ->editColumn('type', 'backend.user.include.__txn_type')
+                ->editColumn('final_amount', 'backend.user.include.__txn_amount')
+                ->addColumn('action', function ($row) {
+                    // Replicate the same structure and styling
+                    return '<span type="button" data-id="' . $row->id . '" id="deposit-action">
+                                <button class="action-btn" data-bs-toggle="tooltip" title="Approval Process">
+                                    <iconify-icon icon="lucide:eye"></iconify-icon>
+                                </button>
+                            </span>';
+                })
+                ->rawColumns(['status', 'type', 'final_amount', 'action'])
                 ->make(true);
         }
     }

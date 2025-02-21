@@ -461,6 +461,11 @@
                             </a>
                         </li>
                     @endcan
+                    <li>
+                        <a href="{{ route('admin.multi-ib-level.index') }}" class="{{ isActive('admin.multi-ib-level*') }}">
+                            {{ __('Multi IB Levels') }}
+                        </a>
+                    </li>
                     @can('symbols-list')
                         <li class="">
                             <a href="{{ route('admin.symbols.index') }}" class="{{ isActive('admin.symbols*') }}">

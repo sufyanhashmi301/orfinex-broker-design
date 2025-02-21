@@ -104,7 +104,7 @@ class VoiceCallController extends Controller
     public function update(Request $request)
     {
         if($request->method == 'twilio') {
-            $details = $request->only(['phone_number', 'sid', 'auth_token', 'api_key_sid', 'api_key_secret', 'twiml_app_sid']);
+            $details = $request->only(['phone_number', 'verified_phone_number', 'sid', 'auth_token', 'api_key_sid', 'api_key_secret', 'twiml_app_sid']);
             
             $aws_storage_method = VoiceCall::where('method', VoiceCallMethodEnums::TWILIO)->first();
             $aws_storage_method->details = $details;
@@ -113,6 +113,7 @@ class VoiceCallController extends Controller
             // Update .env file
             setEnvironmentValue([
                 'TWILIO_PHONE_NUMBER' => $details['phone_number'],
+                'MY_VERIFIED_PHONE_NUMBER' => $details['verified_phone_number'],
                 'TWILIO_SID' => $details['sid'],
                 'TWILIO_AUTH_TOKEN' => $details['auth_token'],
                 'TWILIO_API_KEY_SID' => $details['api_key_sid'],

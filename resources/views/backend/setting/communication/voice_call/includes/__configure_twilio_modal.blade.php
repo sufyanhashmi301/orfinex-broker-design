@@ -50,6 +50,11 @@
                             <label class="form-label" for="">Phone Number</label>
                             <input type="text" name="phone_number" value="{{ $method->details['phone_number'] ?? '' }}" class="form-control" placeholder="####"  />
                         </div>
+
+                        <div class="input-area">
+                            <label class="form-label" for="">Your Verified Phone Number</label>
+                            <input type="text" name="verified_phone_number" value="{{ $method->details['verified_phone_number'] ?? '' }}" class="form-control" placeholder="####"  />
+                        </div>
                         
                         <div class="input-area text-right">
                             <button type="submit" class="btn btn-dark inline-flex items-center justify-center">

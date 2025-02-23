@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class UserImport
- * 
+ *
  * @property int $id
  * @property string|null $login
  * @property string|null $f_name
@@ -39,6 +39,7 @@ class UserImport extends Model
 		'group',
 		'country',
 		'email',
+		'phone',
 		'leverage',
 		'register_time'
 	];

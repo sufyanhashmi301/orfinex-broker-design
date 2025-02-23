@@ -25,7 +25,7 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xls,xlsx,csv',
         ]);
 
-        Excel::import(new BanexUsersImport, request()->file('file'));
+        Excel::import(new UserImportClass, request()->file('file'));
 
         return back()->with('success', 'Users imported successfully.');
     }

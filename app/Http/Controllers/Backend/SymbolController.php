@@ -47,25 +47,27 @@ class SymbolController extends Controller
             // Fetch all mt5_symbols
             $mt5Symbols = $mt5Query->get();
 
-            // Step 2: Query symbols from default connection
+
+            $combined = $mt5Symbols;
             $localSymbols = DB::table('symbols')
                 ->select('symbol', 'status')
                 ->get()
                 ->keyBy('symbol');
-
-            // Step 3: Combine the results
-            $combined = $mt5Symbols->map(function ($item) use ($localSymbols) {
-                // Check if the symbol exists in the local symbols table
-                if (isset($localSymbols[$item->Symbol])) {
-                    $item->status = ($localSymbols[$item->Symbol]->status == 1) ? 'Enabled' : 'Disabled';
-                } else {
-                    $item->status = 'Disabled'; // If not found, it's considered Disabled
-                }
-                return $item;
-            });
-
             // Step 4: Apply Status Filter After Combining
             if ($request->filled('status')) {
+                // Step 2: Query symbols from default connection
+
+                // Step 3: Combine the results
+                $combined = $mt5Symbols->map(function ($item) use ($localSymbols) {
+                    // Check if the symbol exists in the local symbols table
+                    if (isset($localSymbols[$item->Symbol])) {
+                        $item->status = ($localSymbols[$item->Symbol]->status == 1) ? 'Enabled' : 'Disabled';
+                    } else {
+                        $item->status = 'Disabled'; // If not found, it's considered Disabled
+                    }
+                    return $item;
+                });
+
                 if ($request->status == 1) {
                     $combined = $combined->filter(function ($item) {
                         return $item->status == 'Enabled';

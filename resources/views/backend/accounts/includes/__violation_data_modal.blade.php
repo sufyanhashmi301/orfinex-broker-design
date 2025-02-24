@@ -21,11 +21,6 @@
                 </button>
             </div>
             <div class="p-6 pt-0">
-
-              {{-- <div class="grid md:grid-cold-2 grid-cols-2 gap-5">
-                <div>a</div>
-                <div>b</div>
-              </div> --}}
                 
               @if (!empty($account->violation_data))
                   <div class="mt-2" style="font-size: 14px">
@@ -57,13 +52,15 @@
               @else
                 <center>No Violation Data Available</center>
               @endif
-                
-
-                
 
             </div>
 
+            <div class="modal-footer p-3">
+              <button class="btn btn-primary float-right" data-bs-dismiss="modal">Close</button>
+              <button class="btn btn-primary float-right mr-2" data-bs-toggle="modal" data-bs-target="#restore-violation{{$account->id}}" data-bs-dismiss="modal">Restore</button>
+            </div>
+
         </div>
-        <
+        
     </div>
 </div>

@@ -28,14 +28,15 @@ class AccountTypeInvestmentController extends Controller
     public $investment;
     public $affiliate;
     public $investment_payment;
+    protected $forexApiService;
 
-    public function __construct(AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate, AccountTypeInvestmentPaymentService $investment_payment) {
-
+    public function __construct(ForexApiService $forexApiService, AccountTypeInvestmentService $investment, UserAffiliateService $userAffiliate, AccountTypeInvestmentPaymentService $investment_payment) {
         $this->middleware('permission:account-list', ['only' => ['adminIndex']]);
 
         $this->investment = $investment;
         $this->affiliate = $userAffiliate;
         $this->investment_payment = $investment_payment;
+        $this->forexApiService = $forexApiService;
     }
 
     /**
@@ -142,6 +143,60 @@ class AccountTypeInvestmentController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    /**
+     * Restore violated account
+     */
+    public function restoreViolatedAccount(Request $request, $id) {
+        $account = AccountTypeInvestment::findOrFail($id);
+        $balance = 0;
+
+        if($request->restore_method == 'original') {
+            $balance = $account->getRuleSnapshotData()['allotted_funds'];
+        }
+        
+        if($request->restore_method == 'custom') {
+            $balance = $request->balance;
+            $allotted_funds_with_profit_target = $account->getRuleSnapshotData()['allotted_funds'] + $account->getRuleSnapshotData()['profit_target'];
+            $allotted_funds_with_dd = $account->getRuleSnapshotData()['allotted_funds'] - $account->getRuleSnapshotData()['daily_drawdown_limit'];
+
+            if($balance <= $allotted_funds_with_dd) {
+                notify()->error('The amount to be added must be greater than the allotted funds minus the daily drawdown.');
+                return redirect()->back();
+            }
+
+            if($balance >= $allotted_funds_with_profit_target) {
+                notify()->error('The amount to be added must be lesser than the allotted funds plus the profit target.');
+                return redirect()->back();
+            }
+        }
+
+        // Balance Operation
+        $balance_data = [
+            'login' => $account->login,
+            'Amount' => $balance,
+            'type' => 1, //deposit
+            'TransactionComments' => 'Account Manually Restored'
+        ];
+      
+        $response = $this->forexApiService->balanceOperation($balance_data);
+
+        if ($response['success'] && $response['result']['responseCode'] == 10009) {
+            $account->update([
+                'status' => InvestmentStatus::ACTIVE,
+                'violation_reason' => null,
+                'violation_data' => null,
+                'mail_sent' => 0,
+
+            ]);
+            notify()->success('Balance is added to account and the Account is active.');
+        } else {
+            notify()->error('Unknown error occured. Please try again.');
+        }
+        return redirect()->back();
+
+        
     }
 
 

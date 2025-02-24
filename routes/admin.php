@@ -148,6 +148,7 @@ Route::middleware(['2fa_admin'])->group(function () {
     Route::get('account/trading-stats/history', [TradingStatsController::class, 'accountTradingStatsHistory'])->name('account.trading_stats.history');
     Route::get('account/trading-stats/{account_id}', [TradingStatsController::class, 'adminTradingStats'])->name('account.trading_stats');
     Route::post('account/config', [AccountTypeController::class, 'config'])->name('account_type.config');
+    Route::post('account/restore-violated-account/{id}', [AccountTypeInvestmentController::class, 'restoreViolatedAccount'])->name('account.restore_violated_account');
 
     // Banner Settings 
     Route::get('banner/user-dashboard/', [BannerController::class, 'userDashboard'])->name('banner.user_dashboard');

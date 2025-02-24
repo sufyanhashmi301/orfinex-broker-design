@@ -149,6 +149,7 @@
                                                             </span>
                                                         </a>
                                                         @include('backend.accounts.includes.__violation_data_modal')
+                                                        @include('backend.accounts.includes.__restore_violation_modal')
                                                     @endif
                                                 @else
                                                     <span class="flex items-center">

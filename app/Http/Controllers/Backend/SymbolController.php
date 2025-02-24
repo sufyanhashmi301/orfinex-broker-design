@@ -22,55 +22,72 @@ class SymbolController extends Controller
     {
         if ($request->ajax()) {
 
-            // Start query on mt5_symbols
-            $data = DB::connection('mt5_db')
+            // Step 1: Query mt5_symbols from mt5_db connection
+            $mt5Query = DB::connection('mt5_db')
                 ->table('mt5_symbols')
-                ->select('mt5_symbols.Symbol_ID', 'mt5_symbols.Symbol', 'mt5_symbols.Path', 'mt5_symbols.Description', 'mt5_symbols.ContractSize')
-                ->leftJoin(DB::raw('symbols as s'), 's.symbol', '=', 'mt5_symbols.Symbol') // Join to check existence and status
-                ->selectRaw('IF(s.status = 1, "Enabled", "Disabled") as status'); // Check status
+                ->select('Symbol_ID', 'Symbol', 'Path', 'Description', 'ContractSize');
 
-            // Apply filters
+            // Apply Filters for mt5_symbols
             if ($request->filled('global_search')) {
-                $data->where(function ($query) use ($request) {
-                    $query->where('mt5_symbols.Symbol', 'LIKE', '%' . $request->global_search . '%')
-                        ->orWhere('mt5_symbols.Description', 'LIKE', '%' . $request->global_search . '%')
-                        ->orWhere('mt5_symbols.Path', 'LIKE', '%' . $request->global_search . '%');
+                $mt5Query->where(function ($query) use ($request) {
+                    $query->where('Symbol', 'LIKE', '%' . $request->global_search . '%')
+                        ->orWhere('Description', 'LIKE', '%' . $request->global_search . '%')
+                        ->orWhere('Path', 'LIKE', '%' . $request->global_search . '%');
                 });
             }
 
             if ($request->filled('contact_size')) {
-                $data->where('mt5_symbols.ContractSize', 'LIKE', '%' . $request->contact_size . '%');
+                $mt5Query->where('ContractSize', 'LIKE', '%' . $request->contact_size . '%');
             }
 
             if ($request->filled('path')) {
-                $data->where('mt5_symbols.Path', 'LIKE', '%' . $request->path . '%');
+                $mt5Query->where('Path', 'LIKE', '%' . $request->path . '%');
             }
 
+            // Fetch all mt5_symbols
+            $mt5Symbols = $mt5Query->get();
+
+            // Step 2: Query symbols from default connection
+            $localSymbols = DB::table('symbols')
+                ->select('symbol', 'status')
+                ->get()
+                ->keyBy('symbol');
+
+            // Step 3: Combine the results
+            $combined = $mt5Symbols->map(function ($item) use ($localSymbols) {
+                // Check if the symbol exists in the local symbols table
+                if (isset($localSymbols[$item->Symbol])) {
+                    $item->status = ($localSymbols[$item->Symbol]->status == 1) ? 'Enabled' : 'Disabled';
+                } else {
+                    $item->status = 'Disabled'; // If not found, it's considered Disabled
+                }
+                return $item;
+            });
+
+            // Step 4: Apply Status Filter After Combining
             if ($request->filled('status')) {
                 if ($request->status == 1) {
-                    // Show Enabled: Symbols existing with status = 1
-                    $data->where('s.status', '=', 1);
+                    $combined = $combined->filter(function ($item) {
+                        return $item->status == 'Enabled';
+                    });
                 } elseif ($request->status == 0) {
-                    // Show Disabled: Either not existing or status = 0
-                    $data->where(function ($query) {
-                        $query->whereNull('s.symbol')
-                            ->orWhere('s.status', '=', 0);
+                    $combined = $combined->filter(function ($item) {
+                        return $item->status == 'Disabled';
                     });
                 }
             }
 
-            $existingSymbols = Symbol::pluck('symbol')->toArray();
+            // Step 5: Get Existing Symbols and Pass Them to View
+            $existingSymbols = $localSymbols->keys()->toArray();
 
-            return Datatables::of($data)
+            // Step 6: Return DataTables Response
+            return Datatables::of(collect($combined))
                 ->addIndexColumn()
-                ->addColumn('status', function ($row) {
-                    return $row->status;
-                })
                 ->addColumn('action', function ($row) use ($existingSymbols) {
                     return view('backend.symbols.include.__action', [
                         'Symbol_ID' => $row->Symbol_ID,
                         'Symbol' => $row->Symbol,
-                        'existingSymbols' => $existingSymbols
+                        'existingSymbols' => $existingSymbols // Pass the variable here
                     ])->render();
                 })
                 ->rawColumns(['action'])
@@ -79,6 +96,7 @@ class SymbolController extends Controller
 
         return view('backend.symbols.all');
     }
+
 
 
 

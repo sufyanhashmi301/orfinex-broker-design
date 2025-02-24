@@ -58,7 +58,7 @@
                 <br>
                 <b class="capitalize">Max. Drawdown:</b> {{ $account->getRuleSnapshotData()['max_drawdown_limit'] }} {{ $currency }}
                 <br>
-                <b class="capitalize">Min. Trading Days:</b> {{ $account->getRuleSnapshotData()['trading_days'] }} Days
+                <b class="capitalize">Min. Trading Days:</b> {{ $account->getRuleSnapshotData()['trading_days'] ?? 'N/A' }} Days
               </div>
 
             </div>

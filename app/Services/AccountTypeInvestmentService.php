@@ -2,27 +2,22 @@
 
 namespace App\Services;
 
+use App\Enums\AccountActivityStatusEnums;
 use App\Enums\AccountTypePhase as EnumsAccountTypePhase;
 use Carbon\Carbon;
-use App\Models\Addon;
-use App\Models\Invoice;
-use App\Models\Discount;
 use App\Models\AccountType;
 use App\Traits\NotifyTrait;
 use Illuminate\Support\Str;
 use App\Models\FundedBalance;
 use App\Enums\InvestmentStatus;
 use App\Enums\TradingObjective;
-use App\Models\UserCertificate;
 use App\Models\AccountTypePhase;
 use App\Services\InvoiceService;
 use App\Models\AccountTypePhaseRule;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountTypeInvestment;
-use App\Services\InvestmentPhaseApproval;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Models\AccountTypeInvestmentHourlyStatsRecord;
-use App\Enums\InvestmentPhaseApproval as InvestmentPhaseApprovalEnum;
 use App\Enums\KycNoticeInvokeEnums;
 use App\Enums\KycStatusEnums;
 use App\Models\User;
@@ -150,7 +145,7 @@ class AccountTypeInvestmentService
     $investment_snapshot = $this->saveInvestmentAttributesSnapshot($new_investment, $copy_snapshot_id);
     // Investment phase log
     if($copy_snapshot_id == 0 && !$is_trial && !$added_manually) {
-      AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::PAYMENT_APPROVE);
+      AccountActivityService::log($new_investment, AccountActivityStatusEnums::PAYMENT_APPROVE);
     }
 		
     return $new_investment;
@@ -292,10 +287,22 @@ class AccountTypeInvestmentService
     // Evaluate the trading objectives
     $trading_objectives_evaluation = $this->tradingObjectivesEvaluation($trading_objectives);
     if( $trading_objectives_evaluation == TradingObjective::DD_VIOLATED || $trading_objectives_evaluation == TradingObjective::MD_VIOLATED) {
-      // $investment->status = InvestmentStatus::VIOLATED;
+      
+      // Stats when the violation is about to happen
+      $violation_data = [
+        'balance' => $investment->accountTypeInvestmentStat->balance,
+        'equity' => $investment->accountTypeInvestmentStat->current_equity,
+        'trading_days' => $investment->accountTypeInvestmentStat->trading_days,
+        'floating_pnl' => $investment->accountTypeInvestmentStat->current_equity - $investment->accountTypeInvestmentStat->balance,
+        'daily_drawdown_pnl' => $trading_objectives['daily_drawdown_pnl'],
+        'max_drawdown_pnl' => $trading_objectives['max_drawdown_pnl'],
+        'daily_drawdown_remaining_loss_limit' => $trading_objectives['daily_drawdown_remaining_loss_limit'],
+        'max_drawdown_remaining_loss_limit' => $trading_objectives['max_drawdown_remaining_loss_limit'],
+        'violated_at' => Carbon::now()
+      ];
 
       // Initiate Violation process
-      $this->violatePhase($investment, $trading_objectives_evaluation);
+      $this->violatePhase($investment, $trading_objectives_evaluation, $violation_data);
 
     }elseif($trading_objectives_evaluation ==  TradingObjective::PASSING) {
       $investment->status = InvestmentStatus::ACTIVE;
@@ -399,12 +406,12 @@ class AccountTypeInvestmentService
 
       // --- Create the Phase Approval Record ---
       // Phase Approval Passed Investment data
-      AccountActivityService::log($passed_investment, InvestmentPhaseApprovalEnum::PASSED);
+      AccountActivityService::log($passed_investment, AccountActivityStatusEnums::PASSED);
 
       // Phase Approval Next Phase Investment data
       AccountActivityService::log(
         $new_investment, 
-        $next_phase['phase_approval_method'] == 'admin_approval' ? InvestmentPhaseApprovalEnum::ADMIN_APPROVE : InvestmentPhaseApprovalEnum::AUTO_APPROVE,
+        $next_phase['phase_approval_method'] == 'admin_approval' ? AccountActivityStatusEnums::ADMIN_APPROVE : AccountActivityStatusEnums::AUTO_APPROVE,
         $next_phase['phase_approval_method'] == 'admin_approval' ? 0 : 1
       );
       
@@ -419,7 +426,7 @@ class AccountTypeInvestmentService
         $this->investment_payment->investmentActive($new_investment->id, $investment_active_data);
 
         // Investment phase approval table updation
-        AccountActivityService::log($new_investment, InvestmentPhaseApprovalEnum::ACTIVE);
+        AccountActivityService::log($new_investment, AccountActivityStatusEnums::ACTIVE);
 
 
       }
@@ -445,7 +452,7 @@ class AccountTypeInvestmentService
   /**
    * Violation Occured
    */
-  public function violatePhase($violate_investment, $reason) {
+  public function violatePhase($violate_investment, $reason, $violation_data) {
 
     // skip if trial
     if($violate_investment->is_trial == 1) {
@@ -473,6 +480,7 @@ class AccountTypeInvestmentService
       [
         'status' => InvestmentStatus::VIOLATED,
         'violation_reason' => $reason,
+        'violation_data' => $violation_data,
         'mail_sent' => 0
       ]
     );
@@ -482,7 +490,7 @@ class AccountTypeInvestmentService
 
 
     // Add the record in investment phase approvals table
-    AccountActivityService::log($violate_investment, InvestmentPhaseApprovalEnum::VIOLATED);
+    AccountActivityService::log($violate_investment, AccountActivityStatusEnums::VIOLATED);
 
 
   }

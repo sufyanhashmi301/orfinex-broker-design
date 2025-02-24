@@ -18,7 +18,7 @@ use App\Traits\ForexApiTrait;
 use App\Exports\DepositsExport;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Enums\InvestmentPhaseApproval;
+use App\Enums\AccountActivityStatusEnums;
 use App\Models\AccountTypeInvestment;
 use App\Models\AccountTypeInvestmentSnapshot;
 use App\Services\AccountActivityService;

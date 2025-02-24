@@ -123,7 +123,7 @@
                                                 {{-- check if the stats exists --}}
                                                 @if ($contract_pending == true)
                                                     <a href="{{ route('admin.contracts.index') }}"
-                                                        class="inline-flex justify-center">
+                                                        class="inline-flex justify-center btn-redirect">
                                                         <span class="flex items-center">
                                                             <span>{{ __('Pending Contracts') }}</span>
                                                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
@@ -132,13 +132,24 @@
                                                     </a>
                                                 @elseif (isset($stats) && count($hourly_stats) != 0)
                                                     <a href="{{ route('admin.account.trading_stats', ['account_id' => $account->id]) }}"
-                                                        target="__blank" class="inline-flex justify-center">
+                                                        target="__blank" class="inline-flex justify-center btn-redirect">
                                                         <span class="flex items-center">
                                                             <span>{{ __('Trading Stats') }}</span>
                                                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
                                                                 icon="lucide:chevron-right"></iconify-icon>
                                                         </span>
                                                     </a>
+
+                                                    @if ($account->status == \App\Enums\InvestmentStatus::VIOLATED)
+                                                        <br>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#violation-data{{$account->id}}" class="inline-flex justify-center btn-redirect">
+                                                            <span class="flex items-center">
+                                                                <span>Violation Details</span>
+                                                                <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2" icon="lucide:chevron-right"></iconify-icon>
+                                                            </span>
+                                                        </a>
+                                                        @include('backend.accounts.includes.__violation_data_modal')
+                                                    @endif
                                                 @else
                                                     <span class="flex items-center">
                                                         <span>{{ __('Account Stats Loading') }}</span>
@@ -149,7 +160,7 @@
                                                     Available Soon
                                                 @elseif ($account->status == \App\Enums\InvestmentStatus::PENDING)
                                                     <a href="{{ route('admin.deposit.manual.pending') }}"
-                                                        class="inline-flex justify-center">
+                                                        class="inline-flex justify-center btn-redirect">
                                                         <span class="flex items-center">
                                                             <span>{{ __('Payment Pending') }}</span>
                                                             <iconify-icon class="text-xl ltr:ml-2 rtl:mr-2"
@@ -164,10 +175,19 @@
                                             @endif
 
                                         </td>
+                                        @if ($account->status == \App\Enums\InvestmentStatus::VIOLATED)
+                                            
+                                        @endif
                                     </tr>
+                                    
                                 @endforeach
                             </tbody>
                         </table>
+                        <style>
+                            .btn-redirect:hover {
+                                color: #000
+                            }
+                        </style>
                         <div class="flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 mt-auto">
                             <div>
                                 @php

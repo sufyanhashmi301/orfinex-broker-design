@@ -9,6 +9,10 @@ class AccountTypeInvestment extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'violation_data' => 'array'
+    ];
+
     protected $fillable = [
         'unique_id',
         'user_id',
@@ -25,6 +29,7 @@ class AccountTypeInvestment extends Model
         'main_password',
         'status',
         'violation_reason',
+        'violation_data',
         'mail_sent',
         'is_trial'
     ];

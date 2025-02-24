@@ -22,24 +22,65 @@ class SymbolController extends Controller
     {
         if ($request->ajax()) {
 
+            // Start query on mt5_symbols
             $data = DB::connection('mt5_db')
-            ->table('mt5_symbols')
-            ->select('Symbol_ID','Symbol','Path','Description','ContractSize');
+                ->table('mt5_symbols')
+                ->select('mt5_symbols.Symbol_ID', 'mt5_symbols.Symbol', 'mt5_symbols.Path', 'mt5_symbols.Description', 'mt5_symbols.ContractSize')
+                ->leftJoin(DB::raw('symbols as s'), 's.symbol', '=', 'mt5_symbols.Symbol') // Join to check existence and status
+                ->selectRaw('IF(s.status = 1, "Enabled", "Disabled") as status'); // Check status
+
+            // Apply filters
+            if ($request->filled('global_search')) {
+                $data->where(function ($query) use ($request) {
+                    $query->where('mt5_symbols.Symbol', 'LIKE', '%' . $request->global_search . '%')
+                        ->orWhere('mt5_symbols.Description', 'LIKE', '%' . $request->global_search . '%')
+                        ->orWhere('mt5_symbols.Path', 'LIKE', '%' . $request->global_search . '%');
+                });
+            }
+
+            if ($request->filled('contact_size')) {
+                $data->where('mt5_symbols.ContractSize', 'LIKE', '%' . $request->contact_size . '%');
+            }
+
+            if ($request->filled('path')) {
+                $data->where('mt5_symbols.Path', 'LIKE', '%' . $request->path . '%');
+            }
+
+            if ($request->filled('status')) {
+                if ($request->status == 1) {
+                    // Show Enabled: Symbols existing with status = 1
+                    $data->where('s.status', '=', 1);
+                } elseif ($request->status == 0) {
+                    // Show Disabled: Either not existing or status = 0
+                    $data->where(function ($query) {
+                        $query->whereNull('s.symbol')
+                            ->orWhere('s.status', '=', 0);
+                    });
+                }
+            }
+
             $existingSymbols = Symbol::pluck('symbol')->toArray();
+
             return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function($row) use ($existingSymbols) {
-                return view('backend.symbols.include.__action', [
-                    'Symbol_ID' => $row->Symbol_ID,
-                    'Symbol' => $row->Symbol,
-                    'existingSymbols' => $existingSymbols
-                ])->render();
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+                ->addIndexColumn()
+                ->addColumn('status', function ($row) {
+                    return $row->status;
+                })
+                ->addColumn('action', function ($row) use ($existingSymbols) {
+                    return view('backend.symbols.include.__action', [
+                        'Symbol_ID' => $row->Symbol_ID,
+                        'Symbol' => $row->Symbol,
+                        'existingSymbols' => $existingSymbols
+                    ])->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
+
         return view('backend.symbols.all');
     }
+
+
 
     public function store(Request $request)
     {

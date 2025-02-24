@@ -26,7 +26,7 @@
                     <input type="text" name="path" id="path" class="form-control h-full" placeholder="Path">
                 </div>
                 <div class="flex-1 input-area relative">
-                    <select name="country" id="country" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a status') }}">
+                    <select name="status" id="status" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a status') }}">
                         <option value="1">{{ __('Enabled') }}</option>
                         <option value="0">{{ __('Disabled') }}</option>
                     </select>
@@ -123,8 +123,18 @@
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                ajax: "{{ route('admin.symbols.index') }}",
-                columns: [
+                    ajax: {
+                        url: "{{ route('admin.symbols.index') }}",
+                        type: 'POST', // Ensure POST method is used
+                        data: function (d) {
+                            d._token = "{{ csrf_token() }}";
+                            d.global_search = $('#global_search').val();
+                            d.contact_size = $('#contact_size').val();
+                            d.path = $('#path').val();
+                            d.status = $('#status').val();
+                        }
+                    },
+                    columns: [
                     {data: 'Symbol_ID', name: 'ID',orderable : false},
                     {data: 'Symbol', name: 'Symbol',orderable : false},
                     {data: 'Path', name: 'Path',orderable : false},
@@ -133,7 +143,14 @@
                     {data: 'action', name: 'action',orderable : false},
                 ]
             });
+
+            $('#filter-form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                table.ajax.reload(); // Reload the table with the new filter parameters
+            });
         })(jQuery);
+
+
 
         function insertRecord(dataId) {
             "use strict";
@@ -157,6 +174,8 @@
         }
 
         $(document).ready(function(){
+
+
             $('#enableAll').click(function() {
                 $.ajax({
                     url: 'all-symbols/store',

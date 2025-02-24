@@ -52,6 +52,7 @@ class   AccountsController extends Controller
      */
     public function forexAccounts(Request $request, $type = 'real', $id = null)
     {
+        dd($type);
         $loggedInUser = auth()->user(); // Get the logged-in admin or user
 
         // Get attached user IDs for non-Super-Admin users

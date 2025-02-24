@@ -125,7 +125,6 @@
                 autoWidth: false,
                     ajax: {
                         url: "{{ route('admin.symbols.index') }}",
-                        type: 'POST', // Ensure POST method is used
                         data: function (d) {
                             d._token = "{{ csrf_token() }}";
                             d.global_search = $('#global_search').val();

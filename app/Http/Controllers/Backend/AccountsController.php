@@ -121,7 +121,7 @@ class   AccountsController extends Controller
                 $withoutBalance = DB::connection('mt5_db')
                     ->table('mt5_accounts')
                     ->whereIn('Login', $realForexAccounts)
-                    ->where('Balance', 0)
+                    ->where('Balance', '<=',0)
                     ->count();
             }
         } catch (\Exception $e) {

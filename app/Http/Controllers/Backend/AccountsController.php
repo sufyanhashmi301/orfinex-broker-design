@@ -80,6 +80,7 @@ class   AccountsController extends Controller
         // Apply additional filters
         $filters = $request->only(['global_search', 'login', 'country', 'status', 'created_at', 'tag']);
         $data->applyFilters($filters);
+//        dd($type,$data->get());
 
         // If request is Ajax, return data in Datatables format
         if ($request->ajax()) {

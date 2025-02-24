@@ -27,7 +27,7 @@
                 </div>
                 <div class="flex-1 input-area relative">
                     <select name="status" id="status" class="select2 form-control h-full w-full" data-placeholder="{{ __('Select a status') }}">
-                        <option value="">{{ __('Select Status') }}</option>
+                        <option >{{ __('Select Status') }}</option>
                         <option value="1">{{ __('Enabled') }}</option>
                         <option value="0">{{ __('Disabled') }}</option>
                     </select>

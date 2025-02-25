@@ -76,29 +76,17 @@
         @if($details['is_disclaimer'])
             <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
                 <span style="font-size: small;">
-                    {!! setting('disclaimer', 'company_misc') !!}
-                </span>
-            </div>
-            <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
-                <span style="font-size: small;">
                     {!! setting('email_disclaimer', 'company_misc') !!}
                 </span>
             </div>
         @endif
         @if($details['is_risk_warning'])
             <div style="font-size: small; text-align: center;line-height: 14px !important;">
-                {{ setting('risk_warning', 'company_misc') }}
-            </div>
-            <div style="font-size: small; text-align: center;line-height: 14px !important;">
                 {{ setting('email_risk_warning', 'company_misc') }}
             </div>
         @endif
     </div>
-    <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
-        <font size="1">
-            {{ setting('footer_content', 'company_misc') }}
-        </font>
-    </div>
+
     <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
         <font size="1">
             {{ setting('email_footer', 'company_misc') }}

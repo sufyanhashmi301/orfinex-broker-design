@@ -80,6 +80,11 @@
         @if($details['is_disclaimer'])
             <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
                 <span style="font-size: small;">
+                    {{ setting('disclaimer', 'company_misc') }}
+                </span>
+            </div>
+            <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
+                <span style="font-size: small;">
                     {{ setting('email_disclaimer', 'company_misc') }}
                 </span>
             </div>

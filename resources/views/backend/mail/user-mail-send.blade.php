@@ -65,7 +65,7 @@
             <div class="newslatter-bottom" style="padding: 35px; background: #fff; margin-top: 15px;">
                 <p class="text" style="font-size: 14px; line-height: 24px;">{!! $details['bottom_body'] !!}</p>
                 <a href="{{ $details['site_link'] }}" class="link"
-                   style="font-size: 14px; font-weight: 500; color: #ff0000; display: inline-block; margin-top: 10px; text-decoration: none;">
+                   style="font-size: 14px; font-weight: 500; color: {{ setting('primary_color, 'misc_colors') }}; display: inline-block; margin-top: 10px; text-decoration: none;">
                     Learn More
                 </a>
             </div>
@@ -86,7 +86,6 @@
             </div>
         @endif
     </div>
-
     <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
         <font size="1">
             {{ setting('email_footer', 'company_misc') }}

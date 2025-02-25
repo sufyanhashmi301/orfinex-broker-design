@@ -256,7 +256,7 @@ class ForexAccountController extends GatewayController
                 //save account in DB
                 $this->saveAccount($request, $schema,$mt5Login,$accountType,$user,$data,$server);
 
-                $this->sendNotification($user,$mt5Login,$schema);
+                $this->sendNotification($user,$mt5Login,$password,$schema,$server);
 
                 notify()->success(__('Successfully Created Account'), 'success');
                 return redirect()->route('user.forex-account-logs');
@@ -304,12 +304,14 @@ class ForexAccountController extends GatewayController
 //        }
         return true;
     }
-    public function sendNotification($user,$mt5Login,$schema)
+    public function sendNotification($user,$mt5Login,$password,$schema,$server)
     {
         $shortcodes = [
             '[[full_name]]' => $user->full_name,
             '[[login]]' => $mt5Login,
+            '[[password]]' => $password,
             '[[plan_name]]' => $schema->title,
+            '[[server]]' => $server,
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
         ];

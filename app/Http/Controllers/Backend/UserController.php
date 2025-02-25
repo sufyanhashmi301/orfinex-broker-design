@@ -9,6 +9,7 @@ use App\Enums\KYCStatus;
 use App\Exports\ActiveUsersExport;
 use App\Exports\DisabledUsersExport;
 use App\Exports\RefferalUsersExport;
+use App\Exports\TransactionsUsersExport;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Jobs\AgentReferralJob;
@@ -125,14 +126,23 @@ class UserController extends Controller
         if (!$userId) {
             return back()->with('error', 'User not found.');
         }
+        $user = User::find($userId);
+
+        if (!$user) {
+            return back()->with('error', 'User not found.');
+        }
     
+        $fileName = strtolower(str_replace(' ', '-', $user->username)) . '-referrals.xlsx'; // Generate dynamic file name
+        $fileName2 = strtolower(str_replace(' ', '-', $user->username)) . '-transactions.xlsx';
         switch ($type) {
             case 'active':
                 return Excel::download(new ActiveUsersExport($request), 'active-users.xlsx');
             case 'disabled':
                 return Excel::download(new DisabledUsersExport($request), 'disabled-users.xlsx');
             case 'refferal':
-                return Excel::download(new RefferalUsersExport($userId), 'refferal-users.xlsx');
+                return Excel::download(new RefferalUsersExport($userId), $fileName);
+            case 'transaction':
+                return Excel::download(new TransactionsUsersExport($userId), $fileName2);
             default:
                 return Excel::download(new UsersExport($request), 'users.xlsx');
         }

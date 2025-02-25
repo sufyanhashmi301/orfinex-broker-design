@@ -135,7 +135,7 @@ class ResetData extends Command
         Artisan::call('db:seed');
 
         $rank = Ranking::find(1);
-        $sitename = 'mymaamarkets';
+        $sitename = 'brokeret';
 
         $dataUser = [
             'ranking_id' => $rank->id,
@@ -158,7 +158,7 @@ class ResetData extends Command
             'first_name' => 'Super',
             'last_name' => 'Admin',
             'email' => 'admin@'.$sitename.'.com',
-            'password' => Hash::make('Dubai@MyMAA@2024'),
+            'password' => Hash::make('admin@12345'),
             'role' => 1,
         ]);
         $data = [

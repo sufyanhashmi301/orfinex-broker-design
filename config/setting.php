@@ -1896,22 +1896,6 @@ return [
             [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
-                'name' => 'footer_content', // unique name for field
-                'label' => 'Footer', // you know what label it is
-                'rules' => 'nullable', // validation rule of laravel
-                'value' => '', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
-                'name' => 'email_footer', // unique name for field
-                'label' => 'Footer Email', // you know what label it is
-                'rules' => 'nullable', // validation rule of laravel
-                'value' => '', // default value if you want
-            ],
-            [
-                'type' => 'text', // input fields type
-                'data' => 'string', // data type, string, int, boolean
                 'name' => 'risk_warning', // unique name for field
                 'label' => 'Risk Warning', // you know what label it is
                 'rules' => 'nullable', // validation rule of laravel
@@ -1925,6 +1909,23 @@ return [
                 'rules' => 'nullable', // validation rule of laravel
                 'value' => '', // default value if you want
             ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'footer_content', // unique name for field
+                'label' => 'Footer', // you know what label it is
+                'rules' => 'nullable', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+            [
+                'type' => 'text', // input fields type
+                'data' => 'string', // data type, string, int, boolean
+                'name' => 'email_footer', // unique name for field
+                'label' => 'Footer Email', // you know what label it is
+                'rules' => 'nullable', // validation rule of laravel
+                'value' => '', // default value if you want
+            ],
+
         ],
     ],
     'webterminal' => [

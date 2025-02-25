@@ -227,51 +227,50 @@
         (function ($) {
             "use strict";
             var table = $('#dataTable')
-            .on('processing.dt', function (e, settings, processing) {
-                $('#processingIndicator').css('display', processing ? 'block' : 'none');
-            }).DataTable({
-                dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
-                processing: true,
-                searching: false,
-                lengthChange: false,
-                info: true,
-                language: {
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    paginate: {
-                        previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
-                        next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                .on('processing.dt', function (e, settings, processing) {
+                    $('#processingIndicator').css('display', processing ? 'block' : 'none');
+                }).DataTable({
+                    dom: "<'min-w-full't><'flex flex-wrap justify-between items-center border-t border-slate-100 dark:border-slate-700 gap-3 px-4 py-5 mt-auto'lip>",
+                    processing: true,
+                    searching: false,
+                    lengthChange: false,
+                    info: true,
+                    language: {
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "<iconify-icon icon=\"ic:round-keyboard-arrow-left\"></iconify-icon>",
+                            next: "<iconify-icon icon=\"ic:round-keyboard-arrow-right\"></iconify-icon>"
+                        },
+                        search: "Search:",
+                        processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
                     },
-                    search: "Search:",
-                    processing: '<iconify-icon icon="lucide:loader"></iconify-icon>'
-                },
-                serverSide: true,
-                autoWidth: false,
-                ajax: {
-                    url: "{{ route('admin.forex-accounts',['type'=>'real']) }}",
-                    data: function (d) {
-                        d.global_search = $('#global_search').val();
-                        d.login = $('#login').val();
-                        d.status = $('#status').val();
-                        d.created_at = $('#created_at').val();
-                        d.tag = $('#tag').val();
-                    }
-                },
-                columns: [
-                    {data: 'login', name: 'login'},
-                    {data: 'username', name: 'username'},
-                    {data: 'schema', name: 'schema'},
-                    // {data: 'login', name: 'login'},
-                    {data: 'group', name: 'group'},
-                    {data: 'currency', name: 'currency'},
-                    {data: 'leverage', name: 'leverage'},
-                    {data: 'balance', name: 'balance'},
-                    {data: 'ib_number', name: 'ib_number'},
-                    {data: 'status', name: 'status'},
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'action', name: 'action'},
-                ]
-            });
+                    serverSide: true,
+                    autoWidth: false,
+                    ajax: {
+                        url: "{{ route('admin.forex-accounts', ['type' => $type]) }}", // Dynamic type
+                        data: function (d) {
+                            d.global_search = $('#global_search').val();
+                            d.login = $('#login').val();
+                            d.status = $('#status').val();
+                            d.created_at = $('#created_at').val();
+                            d.tag = $('#tag').val();
+                        }
+                    },
+                    columns: [
+                        {data: 'login', name: 'login'},
+                        {data: 'username', name: 'username'},
+                        {data: 'schema', name: 'schema'},
+                        {data: 'group', name: 'group'},
+                        {data: 'currency', name: 'currency'},
+                        {data: 'leverage', name: 'leverage'},
+                        {data: 'balance', name: 'balance'},
+                        {data: 'ib_number', name: 'ib_number'},
+                        {data: 'status', name: 'status'},
+                        {data: 'created_at', name: 'created_at'},
+                        {data: 'action', name: 'action'},
+                    ]
+                });
 
             $('#country').select2({
                 placeholder: $('#country').data('placeholder'), // Retrieve the placeholder text from the data attribute

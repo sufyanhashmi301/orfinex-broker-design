@@ -38,7 +38,7 @@
 <body style="margin: 0; padding: 0; font-family: 'Jost', sans-serif; font-weight: 400; background: #f8f9fa;">
 <div class="container" style="width: 650px; margin: 0 auto; padding-top:15px; padding-bottom: 15px;">
     <div class="header" style="padding: 15px 15px; text-align: center">
-        <a href="{{ $details['site_link'] }}" style="text-decoration: none; transition: 0.3s;">
+        <a href="{{ $details['site_link'] }}" style="display: inline-flex; text-decoration: none; transition: 0.3s;">
             <img style="height: 50px; width: auto;" src="{{ $details['site_logo'] }}" alt="">
         </a>
 
@@ -49,14 +49,12 @@
                 {!! $details['message_body'] !!}
             </p>
             <a href="{{ $details['button_link'] }}" class="btn-link"
-               style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: #001219; background: #ffffff; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #ff0000; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
+               style="margin-top: 35px; display: inline-block; padding: 12px 30px; border-radius: 3px; color: {{ setting('primary_btn_color', 'light_colors') }}; background: {{ setting('primary_btn_bg', 'light_colors') }}; font-weight: 500; text-transform: uppercase; font-size: 13px; box-shadow: 0px 0px 2px #00304966; background: #ff0000; color: #ffffff; text-decoration: none; text-decoration: none; transition: 0.3s;">
                 {{ $details['button_level'] }}
             </a>
 
             @if($details['footer_status'])
                 <div class="content-footer" style="margin-top: 50px;">
-                    <img class="footer-logo" style="height: 25px; margin-bottom: 5px;" src="{{ $details['site_logo'] }}"
-                         alt="{{ $details['site_title'] }}">
                     <p style="font-size: 14px !important; line-height: 12px !important;">
                         {!! $details['footer_body'] !!}
                     </p>
@@ -65,11 +63,9 @@
         </div>
         @if($details['bottom_status'])
             <div class="newslatter-bottom" style="padding: 35px; background: #fff; margin-top: 15px;">
-                <h3 class="title"
-                    style="font-size: 18px; margin-bottom: 10px; font-weight: 500;">{{ $details['bottom_title'] }}</h3>
                 <p class="text" style="font-size: 14px; line-height: 24px;">{!! $details['bottom_body'] !!}</p>
                 <a href="{{ $details['site_link'] }}" class="link"
-                   style="font-size: 14px; font-weight: 500; color: #ff0000; display: inline-block; margin-top: 10px; text-decoration: none;">
+                   style="font-size: 14px; font-weight: 500; color: {{ setting('primary_color', 'misc_colors') }}; display: inline-block; margin-top: 10px; text-decoration: none;">
                     Learn More
                 </a>
             </div>
@@ -80,7 +76,7 @@
         @if($details['is_disclaimer'])
             <div style="text-align: center;margin-bottom: 15px;line-height: 14px !important;">
                 <span style="font-size: small;">
-                    {{ setting('email_disclaimer', 'company_misc') }}
+                    {!! setting('email_disclaimer', 'company_misc') !!}
                 </span>
             </div>
         @endif

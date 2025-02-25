@@ -11,7 +11,7 @@
 
 
     // Image Preview
-    $('input[type="file"]').each(function () {
+    $(document).on('change', 'input[type="file"]', function (event) {
         // Refs
         var $file = $(this),
             $label = $file.next('label'),
@@ -19,24 +19,21 @@
             labelDefault = $labelText.text();
 
         // When a new file is selected
-        $file.on('change', function (event) {
-            var fileName = $file.val().split('\\').pop(),
-                tmppath = URL.createObjectURL(event.target.files[0]);
-            //Check successfully selection
-            if (fileName) {
-                $label
-                    .addClass('file-ok')
-                    .css('background-image', 'url(' + tmppath + ')');
-                $labelText.text(fileName);
-                $('.'+ $file.attr('name')).removeAttr('hidden');
-            } else {
-                $label.removeClass('file-ok');
-                $labelText.text(labelDefault);
-            }
-        });
+        var fileName = $file.val().split('\\').pop(),
+            tmppath = URL.createObjectURL(event.target.files[0]);
 
+        // Check successfully selection
+        if (fileName) {
+            $label
+                .addClass('file-ok')
+                .css('background-image', 'url(' + tmppath + ')');
+            $labelText.text(fileName);
+            $('.' + $file.attr('name')).removeAttr('hidden');
+        } else {
+            $label.removeClass('file-ok');
+            $labelText.text(labelDefault);
+        }
     });
-
 
     // Custom Toaster
     $('.toast__close').on('click', function (e) {

@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
@@ -44,6 +45,11 @@ class RegisteredUserController extends Controller
         // Regular Registration Logic
         $this->validateRegularRegistration($request);
         $input = $request->all();
+        // Email Verification
+        if(!$this->verifyEmail($request->input('email'))) {
+            notify()->error('Email address is not valid');
+            return redirect()->back();
+        }
 
         $schemaID = $request->schema ? decrypt($request->schema) : null;
         $location = getLocation();
@@ -64,7 +70,20 @@ class RegisteredUserController extends Controller
 
         return redirect(RouteServiceProvider::HOME);
     }
-
+    private function verifyEmail($email) {
+        // Verify email using Reoon API
+        $response = Http::get("https://emailverifier.reoon.com/api/v1/verify", [
+            'email' => $email,
+            'key' => '0bJQtU3PUrl0b5UmDHile5iJXKpHb6PM',
+            'mode' => 'quick'
+        ]);
+        $result = $response->json(); // Convert response to array
+        if($result['status'] == 'valid') {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function handleSocialRegistration($socialUser, $provider, $referralCode = null)
     {
         // Default rank
@@ -174,10 +193,11 @@ class RegisteredUserController extends Controller
             '[[site_title]]' => setting('site_title', 'global'),
             '[[site_url]]' => route('home'),
         ];
-
-        $this->mailNotify($user->email, 'new_user', $shortcodes);
-        $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
-        $this->smsNotify('new_user', $shortcodes, $user->phone);
+        if (! setting('email_verification', 'permission')) {
+            $this->mailNotify($user->email, 'new_user', $shortcodes);
+            $this->pushNotify('new_user', $shortcodes, route('admin.user.edit', $user->id), $user->id);
+            $this->smsNotify('new_user', $shortcodes, $user->phone);
+        }
     }
     private function handleReferral($referralCode, User $user, $schemaID=null)
     {

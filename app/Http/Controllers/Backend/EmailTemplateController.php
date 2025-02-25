@@ -74,6 +74,10 @@ class EmailTemplateController extends Controller
     public function update(Request $request)
     {
 
+        $message_body = $request->input('html_message_body');
+        $bottom_body = $request->input('html_bottom_body');
+//dd($message_body);
+//        dd(str_replace(['{', '}'], ['<', '>'], $message_body));
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
             'message_body' => 'required',
@@ -86,20 +90,25 @@ class EmailTemplateController extends Controller
         }
 
         $input = $request->all();
+//        dd($input);
+        $input['message_body'] = str_replace(['{', '}'], ['<', '>'], $message_body);
+        $input['bottom_body'] = str_replace(['{', '}'], ['<', '>'], $bottom_body);
+//        dd($input);
         $data = [
             'subject' => $input['subject'],
-            'message_body' => nl2br($input['message_body']),
+            'message_body' => htmlspecialchars_decode($input['message_body']),
             'title' => $input['title'],
             'button_level' => $input['button_level'],
             'button_link' => $input['button_link'],
             'footer_status' => $input['footer_status'] ?? 0,
             'bottom_status' => $input['bottom_status'] ?? 0,
             'bottom_title' => $input['bottom_title'] ?? null,
-            'bottom_body' => nl2br($input['bottom_body']) ?? null,
+            'bottom_body' => htmlspecialchars_decode($input['bottom_body']) ?? null,
             'status' => $input['status'] ?? 0,
             'is_disclaimer' => $input['is_disclaimer'] ?? 0,
             'is_risk_warning' => $input['is_risk_warning'] ?? 0,
         ];
+
 
         $template = EmailTemplate::find($input['id']);
 //        dd($input,$data);

@@ -86,9 +86,17 @@
         @endif
         @if($details['is_risk_warning'])
             <div style="font-size: small; text-align: center;line-height: 14px !important;">
+                {{ setting('risk_warning', 'company_misc') }}
+            </div>
+            <div style="font-size: small; text-align: center;line-height: 14px !important;">
                 {{ setting('email_risk_warning', 'company_misc') }}
             </div>
         @endif
+    </div>
+    <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
+        <font size="1">
+            {{ setting('footer_content', 'company_misc') }}
+        </font>
     </div>
     <div style="width: 80%; margin: 10px auto; text-align: center;line-height: 14px !important;">
         <font size="1">

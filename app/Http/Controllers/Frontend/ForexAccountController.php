@@ -215,7 +215,7 @@ class ForexAccountController extends GatewayController
 
                     // Save account in DB
                     $this->saveAccount($request, $schema, $mt5Login, $accountType, $user, $data, $server);
-                    $this->sendNotification($user, $mt5Login, $schema);
+                    $this->sendNotification($user,$mt5Login,$password,$schema,$server);
 
                     notify()->success(__('Successfully Created Account'), 'success');
                     return redirect()->route('user.forex-account-logs');

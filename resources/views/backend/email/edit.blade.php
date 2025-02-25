@@ -2,15 +2,6 @@
 @section('title')
     {{ __('Edit Email Template') }}
 @endsection
-@section('style')
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
-
-{{--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">--}}
-
-{{--    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.css" rel="stylesheet">--}}
-@endsection
 @section('content')
     <div class="flex justify-between flex-wrap items-center mb-6">
         <h4 class="font-medium text-xl capitalize text-slate-500 dark:text-slate-400 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">
@@ -243,57 +234,55 @@
         </div>
     </div>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('global/summernote/summernote-lite.min.css') }}">
+@endsection
 @section('script')
+    <script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
+    <script>
+        $('.summernote').summernote({
+            height: 150, // set editor height
+            minHeight: null, // set minimum height of editor
+            maxHeight: null, // set maximum height of editor
+            focus: true // set focus to editable area after initializing summernote
+        });
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        $('.email-template-form').on('click', function() {
+            // console.log($('.message-body').html())
+            var markupStr = $('.summernote').summernote('code');
+            // console.log(markupStr);
 
-    <!-- include summernote css/js -->
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+            $('.html-message-body').val(markupStr.replace(/</g, '{').replace(/>/g, '}'))
+            var bottom = $('.summernote').eq(1).summernote('code');
 
-<script>
-    $('.summernote').summernote({
-        height: 150, // set editor height
-        minHeight: null, // set minimum height of editor
-        maxHeight: null, // set maximum height of editor
-        focus: true // set focus to editable area after initializing summernote
-    });
+            // $('.html-message-body').val($('.note-editable').html().replace(/</g, '{').replace(/>/g, '}'))
+            $('.html-bottom-body').val(bottom.replace(/</g, '{').replace(/>/g, '}'))
+            // $('.html-bottom-body').val(bottom);
+            $('#form-submit').submit()
 
-    $('.email-template-form').on('click', function() {
-        // console.log($('.message-body').html())
-        var markupStr = $('.summernote').summernote('code');
-        console.log(markupStr);
+        });
 
-        $('.html-message-body').val(markupStr.replace(/</g, '{').replace(/>/g, '}'))
-        var bottom = $('.summernote').eq(1).summernote('code');
+        $(document).ready(function() {
+            $('.copy-button').click(function() {
 
-        // $('.html-message-body').val($('.note-editable').html().replace(/</g, '{').replace(/>/g, '}'))
-        $('.html-bottom-body').val(bottom.replace(/</g, '{').replace(/>/g, '}'))
-        // $('.html-bottom-body').val(bottom);
-        $('#form-submit').submit()
+                var targetSelector = $(this).data('target');
+                var $input = $(targetSelector);
 
-    })
-    $(document).ready(function() {
-    $('.copy-button').click(function() {
+                $input.select();
+                document.execCommand('copy');
 
-    var targetSelector = $(this).data('target');
-    var $input = $(targetSelector);
+                // Change the button text and style
+                var $button = $(this);
+                var $icon = $button.find('iconify-icon');
+                $icon.addClass('text-success');
+                $button.addClass('copy-button');
 
-    $input.select();
-    document.execCommand('copy');
+                // Revert the button text and style after 2 seconds
+                setTimeout(function() {
+                    $icon.removeClass('text-success');
+                }, 2000);
 
-    // Change the button text and style
-    var $button = $(this);
-    var $icon = $button.find('iconify-icon');
-    $icon.addClass('text-success');
-    $button.addClass('copy-button');
-
-    // Revert the button text and style after 2 seconds
-    setTimeout(function() {
-    $icon.removeClass('text-success');
-    }, 2000);
-
-    });
-    });
+            });
+        });
     </script>
 @endsection

@@ -55,8 +55,8 @@
 
             @if($details['footer_status'])
                 <div class="content-footer" style="margin-top: 50px;">
-                    <img class="footer-logo" style="height: 25px; margin-bottom: 5px;" src="{{ $details['site_logo'] }}"
-                         alt="{{ $details['site_title'] }}">
+{{--                    <img class="footer-logo" style="height: 25px; margin-bottom: 5px;" src="{{ $details['site_logo'] }}"--}}
+{{--                         alt="{{ $details['site_title'] }}">--}}
                     <p style="font-size: 14px !important; line-height: 12px !important;">
                         {!! $details['footer_body'] !!}
                     </p>
@@ -65,8 +65,8 @@
         </div>
         @if($details['bottom_status'])
             <div class="newslatter-bottom" style="padding: 35px; background: #fff; margin-top: 15px;">
-                <h3 class="title"
-                    style="font-size: 18px; margin-bottom: 10px; font-weight: 500;">{{ $details['bottom_title'] }}</h3>
+{{--                <h3 class="title"--}}
+{{--                    style="font-size: 18px; margin-bottom: 10px; font-weight: 500;">{{ $details['bottom_title'] }}</h3>--}}
                 <p class="text" style="font-size: 14px; line-height: 24px;">{!! $details['bottom_body'] !!}</p>
                 <a href="{{ $details['site_link'] }}" class="link"
                    style="font-size: 14px; font-weight: 500; color: #ff0000; display: inline-block; margin-top: 10px; text-decoration: none;">

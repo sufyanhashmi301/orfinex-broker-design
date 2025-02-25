@@ -33,9 +33,10 @@
                             <label class="form-label pt-0">
                                 {{ __($field['label']) }}
                             </label>
-                            <textarea name="{{ $field['name'] }}" class="form-control basicTinymce @if($errors->has($field['name'])) has-error @endif">
-                                {{oldSetting($field['name'],$section)}}
+                            <textarea class="form-control summernote @if($errors->has($field['name'])) has-error @endif">
+                                {{ br2nl(oldSetting($field['name'],$section)) }}
                             </textarea>
+                            <input type="hidden" name="{{ $field['name'] }}" value="{{ str_replace(['<', '>'], ['{', '}'], oldSetting($field['name'], $section)) }}">
                         </div>
 
                     @else
@@ -59,23 +60,29 @@
         </div>
     </div>
 @endsection
+@section('style')
+    <link rel="stylesheet" href="{{ asset('global/summernote/summernote-lite.min.css') }}">
+@endsection
 @section('script')
-    <script src="{{ asset('global/js/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('global/summernote/summernote-lite.min.js') }}"></script>
     <script>
+        $('.summernote').summernote({
+            height: 150,
+            minHeight: null,
+            maxHeight: null,
+            focus: true,
+            callbacks: {
+                onChange: function(contents, $editable) {
 
-        tinymce.init({
-            selector: 'textarea.basicTinymce',
-            height: 300,
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount'
-            ],
-            toolbar: 'undo redo | blocks | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+                    var markupStr = contents;
+                    markupStr = markupStr.replace(/</g, '{').replace(/>/g, '}');
+
+                    var html_container = $(this).closest('.input-area').find('input[type="hidden"]');
+
+                    html_container.val(markupStr);
+                }
+            }
         });
+
     </script>
 @endsection

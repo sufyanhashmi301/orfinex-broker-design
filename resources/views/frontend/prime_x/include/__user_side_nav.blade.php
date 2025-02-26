@@ -132,7 +132,7 @@
         </li>
 
 {{--        @if(setting('sign_up_referral', 'permission'))--}}
-            @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED || !isset(auth()->user()->ref_id))
+            @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
             <li>
                 <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem loaderBtn {{ isActive('user.referral') }}">
                     <span class="flex items-center">
@@ -141,7 +141,17 @@
                     </span>
                 </a>
             </li>
+                @else
+            <li>
+                <a href="{{ route('user.ib.request') }}" class="navItem {{ isActive('user.ib.request')}}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="grommet-icons:resources"></iconify-icon>
+                    <span>{{ __('Request Master IB') }}</span>
+                </span>
+                </a>
+            </li>
                 @endif
+
 {{--        @endif--}}
 
         <li>

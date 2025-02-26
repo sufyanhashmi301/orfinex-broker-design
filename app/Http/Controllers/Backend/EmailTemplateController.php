@@ -71,11 +71,16 @@ class EmailTemplateController extends Controller
 
     public function update(Request $request)
     {
-        dd('here');
+        // $message_body = $request->input('html_message_body');
+        // dd(str_replace(['{', '}'], ['<', '>'], $message_body));
+        
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
             'message_body' => 'required',
         ]);
+
+
+        
 
         if ($validator->fails()) {
             notify()->error($validator->errors()->first(), 'Error');

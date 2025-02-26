@@ -193,7 +193,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         PragmaRX\Google2FALaravel\ServiceProvider::class,
-        Mews\Purifier\PurifierServiceProvider::class,
+        // Mews\Purifier\PurifierServiceProvider::class,
         charlesassets\LaravelPerfectMoney\LaravelPerfectMoneyServiceProvider::class,
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,

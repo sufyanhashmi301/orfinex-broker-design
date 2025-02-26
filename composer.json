@@ -30,7 +30,6 @@
         "league/flysystem-aws-s3-v3": "^3.29",
         "maatwebsite/excel": "^3.1",
         "mckenziearts/laravel-notify": "2.3",
-        "mews/purifier": "^3.3",
         "mollie/laravel-mollie": "^2.0",
         "pcinaglia/laraupdater": "1.0.3.4",
         "pragmarx/google2fa-laravel": "^2.0",

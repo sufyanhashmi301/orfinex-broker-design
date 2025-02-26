@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Txn;
 use Session;
+use App\Models\KYC;
 use App\Models\Page;
 use App\Models\User;
 use App\Enums\TxnType;
@@ -15,7 +16,6 @@ use Illuminate\View\View;
 use App\Models\MultiLevel;
 use App\Traits\NotifyTrait;
 use App\Events\UserReferred;
-use App\Models\KYC;
 use Illuminate\Http\Request;
 use App\Enums\KycStatusEnums;
 use App\Models\UserAffiliate;
@@ -25,6 +25,7 @@ use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\RedirectResponse;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Validation\ValidationException;
@@ -32,6 +33,23 @@ use Illuminate\Validation\ValidationException;
 class RegisteredUserController extends Controller
 {
     use NotifyTrait;
+
+    private function verifyEmail($email) {
+        // Verify email using Reoon API
+        $response = Http::get("https://emailverifier.reoon.com/api/v1/verify", [
+            'email' => $email,
+            'key' => '0bJQtU3PUrl0b5UmDHile5iJXKpHb6PM',
+            'mode' => 'quick'
+        ]);
+
+        $result = $response->json(); // Convert response to array
+
+        if($result['status'] == 'valid') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Handle an incoming registration request.
@@ -42,6 +60,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+
         $isUsername = (bool) getPageSetting('username_show');
         $isCountry = (bool) getPageSetting('country_show');
         $isPhone = (bool) getPageSetting('phone_show');
@@ -57,6 +76,12 @@ class RegisteredUserController extends Controller
             'i_agree' => ['required'],
             'level' => ['sometimes', 'exists:multi_levels,id']
         ]);
+
+        // Email Verification
+        if(!$this->verifyEmail($request->input('email'))) {
+            notify()->error('Email address is not valid');
+            return redirect()->back();
+        }
 
         $input = $request->all();
         $multiLevel = $request->level;

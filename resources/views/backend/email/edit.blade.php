@@ -72,7 +72,7 @@
         <div class="lg:col-span-8 col-span-12">
             <div class="card">
                 <div class="card-body p-6">
-                    <form action="{{ route('admin.email-template-update') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('admin.email-template-update') }}" class="email-template-form" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" value="{{ $template->id }}">
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
@@ -99,11 +99,12 @@
                                 <iconify-icon class="toolTip onTop text-sm ml-1" icon="lucide:info" data-tippy-theme="dark" title="" data-tippy-content="Write the main Messages here"></iconify-icon>
                             </label>
                             <div class="md:col-span-9 col-span-12">
-                        <textarea name="message_body" class="form-control" cols="30" rows="8">
-                            {{ br2nl($template->message_body) }}
-                        </textarea>
+                                <textarea name="message_body" class="form-control" cols="30" rows="8">
+                                    {{ br2nl($template->message_body) }}
+                                </textarea>
                             </div>
                         </div>
+                        {{-- <input type="hidden" name="html_message_body" class="html-message-body"/> --}}
                         <div class="input-area grid grid-cols-12 gap-5 mb-6">
                             <label for="" class="md:col-span-3 col-span-12 form-label flex items-center">
                                 {{ __('Button') }}
@@ -191,6 +192,11 @@
 @endsection
 @section('script')
     <script>
+
+        // $('.email-template-form').on('submit', function() {
+        //     $('.html-message-body').val($('.note-editable').html().replace(/</g, '{').replace(/>/g, '}'))
+        // })
+
         $(document).ready(function() {
             $('.copy-button').click(function() {
 

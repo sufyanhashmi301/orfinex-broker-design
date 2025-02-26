@@ -91,6 +91,7 @@ use App\Http\Controllers\Backend\DealNoteController;
 */
 //Route::group(['middleware' => [ '2fa']], function () {
 Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])->group(function () {
+
     //Admin Dashboard
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/staff/dashboard', [DashboardController::class, 'staffDashboard'])->name('staff.dashboard');
@@ -127,9 +128,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::delete('delete/{id}', 'destroy')->name('delete');
     });
 
-
-
-
     Route::resource('kyc-form', KycController::class);
     Route::group(['prefix' => 'kyc', 'as' => 'kyc.', 'controller' => KycController::class], function () {
         Route::get('editlevel2/{id}', 'editKycLevel2')->name('editKycLevel2');
@@ -155,8 +153,6 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 //    Route::get('multi-ib-level/{id}/edit', [MultiIbLevelController::class, 'edit'])->name('multi-ib-level.edit');
 //    Route::put('multi-ib-level/{id}', [MultiIbLevelController::class, 'update'])->name('multi-ib-level.update');
 //    Route::delete('multi-ib-level/{multi_ib_level}', [MultiIbLevelController::class, 'destroy'])->name('multi-ib-level.destroy');
-
-
 
     //===============================  IB Groups ==================================
     Route::resource('ib-group', IBGroupController::class);
@@ -204,6 +200,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         //            dd(route('admin.dashboard'));
         return redirect(route('admin.dashboard'));
     })->name('2fa.verify');
+
     //===============================  Plans Management ==================================
     Route::resource('schedule', ScheduleController::class)->except('show', 'destroy', 'create');
     Route::resource('accountType', ForexSchemaController::class)->except('show', 'destroy');
@@ -246,6 +243,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('update/{id}', 'update')->name('update')->withoutMiddleware('XSS');
         Route::get('currency/{gateway_id}', 'gatewayCurrency')->name('supported.currency');
     });
+
     Route::group(['prefix' => 'deposit', 'as' => 'deposit.', 'controller' => DepositController::class], function () {
         //=============================== deposit Method ================================
         Route::group(['prefix' => 'method', 'as' => 'method.'], function () {
@@ -269,6 +267,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::post('now', 'depositNow')->name('now');
         Route::get('get/user/accounts/{userId}', 'getUserAccounts')->name('get.user.accounts');
     });
+
     Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.', 'controller' => WithdrawController::class], function () {
         //=============================== withdraw Method ================================
 
@@ -293,6 +292,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
 
         Route::get('add', 'addWithdraw')->name('add');
     });
+
     Route::group(['prefix' => 'referral', 'as' => 'referral.', 'controller' => ReferralController::class], function () {
         Route::get('index', 'index')->name('index');
         Route::post('store', 'store')->name('store');
@@ -310,6 +310,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::resource('level', LevelReferralController::class)->except('create', 'show', 'edit');
         Route::post('level-status', [LevelReferralController::class, 'statusUpdate'])->name('level-status');
     });
+
     //===============================  Advertisement Material ==================================
     Route::resource('advertisement_material', AdvertisementMaterialController::class)->except('show', 'destroy');
 

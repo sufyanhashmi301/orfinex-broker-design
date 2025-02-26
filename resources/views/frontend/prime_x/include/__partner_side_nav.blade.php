@@ -49,6 +49,26 @@
 <div class="sidebar-menus bg-white dark:bg-body py-2 px-4 h-[calc(100%-96px)] overflow-y-auto z-50" id="sidebar_menus">
     <ul class="sidebar-menu mt-3">
         <li class="sidebar-menu-title">{{ __('MENU') }}</li>
+        @if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED)
+
+        <li>
+            <a href="{{ route('user.referral') }}" class="navItem {{ isActive('user.referral')}}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon"  icon="lucide:network"></iconify-icon>
+                    <span>{{ __('Referrals') }}</span>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('user.ib.request') }}" class="navItem {{ isActive('user.ib.request')}}">
+                <span class="flex items-center">
+                    <iconify-icon class="nav-icon" icon="grommet-icons:resources"></iconify-icon>
+                    <span>{{ __('Request Master IB') }}</span>
+                </span>
+            </a>
+        </li>
+        @endif
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
         <li>
             <a href="{{ route('user.multi-level.ib.dashboard') }}" class="navItem {{ isActive('user.multi-level.ib.dashboard') }}">
                 <span class="flex items-center">
@@ -57,6 +77,7 @@
                 </span>
             </a>
         </li>
+        @endif
         <li>
             <a href="{{ route('user.referral.network') }}" class="navItem {{ isActive('user.referral.network') }}">
                 <span class="flex items-center">
@@ -91,6 +112,8 @@
                 </span>
             </a>
         </li>
+        @if(auth()->user()->ib_status == \App\Enums\IBStatus::APPROVED)
+
         <li>
             <a href="{{ route('user.multi-level.ib.rules') }}" class="navItem {{ isActive('user.multi-level.ib.rules') }}">
                 <span class="flex items-center">
@@ -99,6 +122,7 @@
                 </span>
             </a>
         </li>
+        @endif
 
         <li class="block md:hidden">
             <form method="POST" action="{{ route('logout') }}" id="logout-form" class="mt-5 mb-3">

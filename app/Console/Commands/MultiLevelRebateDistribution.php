@@ -37,7 +37,7 @@ class MultiLevelRebateDistribution extends Command
         DB::beginTransaction();
         try {
             $ReferralRelationships = ReferralRelationship::with('referralLink')
-//                ->where('user_id',1197)
+//                ->where('user_id',7217)
                 ->get();
 
             foreach ($ReferralRelationships as $ReferralRelationship) {
@@ -72,33 +72,33 @@ class MultiLevelRebateDistribution extends Command
             ->flatMap(fn($rebateRule) => $rebateRule->forexSchemas)
             ->pluck('id')
             ->unique();
-
+//dd($forexSchemas);
         $realForexAccounts = ForexAccount::realActiveAccount($childUserId)
             ->whereIn('forex_schema_id', $forexSchemas)
             ->orderBy('balance', 'desc')
             ->get();
+//        dd($realForexAccounts);
 
         if ($realForexAccounts->isEmpty()) {
             return false;
         }
         $symbols = $this->getUserAssignedSymbols($notedParent);
-        // dd($realForexAccounts);
+//         dd($symbols);
 
         foreach ($realForexAccounts as $realForexAccount) {
             // dd($realForexAccount->login);
             $lastDealTime = $this->getLastDeal($childUserId, $realForexAccount->login);
-            // dd($lastDealTime);
+//             dd($lastDealTime);
             $deals = $this->getMT5Deals($realForexAccount->login, $lastDealTime, $symbols);
-            // dd($deals);
+//             dd($deals);
             $this->saveMT5Deals($deals, $childUserId, $ReferralRelationship, $notedParent, $notedLevel);
         }
     }
 
     protected function getValidParent($user)
     {
-        $level = 1; // Start from level 1
+        $level = 0; // Start from level 0
         $maxLevel = Level::max('level_order'); // Get max level from levels table
-
         if (!$maxLevel) {
             return null; // Ignore further processing if no levels exist
         }
@@ -137,8 +137,8 @@ class MultiLevelRebateDistribution extends Command
                 'time' => $deal->Time
             ];
              $metaDeal = MetaDeal::create($data);
-//            $metaDeal = MetaDeal::find(9900);
-            // dd($metaDeal);
+//            $metaDeal = MetaDeal::find(78);
+//             dd($metaDeal);
             $this->distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel);
         }
     }
@@ -146,16 +146,16 @@ class MultiLevelRebateDistribution extends Command
     protected function distributeRebate($metaDeal, $childUserId, $ReferralRelationship, $notedParent, $notedLevel)
     {
         $shareDistribution = $this->calculateRebate($metaDeal->symbol, $notedParent, $notedLevel);
-        // dd($shareDistribution);
+//         dd($shareDistribution);
 
         if (empty($shareDistribution)) {
             return;
         }
 
-        $currentUser = $childUserId;
-        $userHierarchy = [$childUserId];
+        $currentUser = $ReferralRelationship->referralLink->user->id;
+        $userHierarchy = [$currentUser];
         $currentLevel = $notedLevel; // Highest level for child, decrement for parents
-
+//dd($userHierarchy);
         // Get parents in hierarchy order
         while ($currentUser && $currentLevel > 0) {
             $parentUser = User::find($currentUser)->ref_id;
@@ -170,6 +170,9 @@ class MultiLevelRebateDistribution extends Command
         // Reverse the order to distribute correctly
         $userHierarchy = array_reverse($userHierarchy);
         $totalLevels = count($userHierarchy);
+        //user have the trade
+        $childUser = User::find($childUserId);
+//        dd($userHierarchy,$totalLevels);
 
         foreach ($userHierarchy as $index => $userId) {
             $levelIndex = $totalLevels - $index; // Assign correct level share
@@ -184,10 +187,10 @@ class MultiLevelRebateDistribution extends Command
 
                     $transaction = Txn::new(
                         $amount, 0, $amount, 'system',
-                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login}",
+                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from the account {$metaDeal->login} of {$childUser->full_name}",
                         TxnType::IbBonus, TxnStatus::Success, base_currency(),
                         $amount, $userId, $childUserId, 'User', $metaDeal->toArray(),
-                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from account {$metaDeal->login}", $targetId, TxnTargetType::Wallet->value
+                        "IB Bonus via deal {$metaDeal->deal} on symbol {$metaDeal->symbol} from the account {$metaDeal->login} of {$childUser->full_name}", $targetId, TxnTargetType::Wallet->value
                 );
 
                 $this->addBalance($transaction);
@@ -210,11 +213,11 @@ class MultiLevelRebateDistribution extends Command
         }
 
         $totalRebateAmount = $rebateRule->rebate_amount;
-        // dd($totalRebateAmount);
+//         dd($totalRebateAmount);
         $ibRule = UserIbRule::where('user_id', $notedParent->id)
             ->where('rebate_rule_id', $rebateRule->id)
             ->first();
-        // dd($ibRule);
+//         dd($ibRule);
 
         if (!$ibRule) {
             return [];
@@ -244,7 +247,7 @@ class MultiLevelRebateDistribution extends Command
             $totalShared += $share->share;
         }
 
-        // If no shares found, assign full rebate to the noted parent at level 1
+        // If no shares found, assign full rebate to the noted parent at level 0
         if ($totalShared == 0) {
             $rebateDistribution[++$notedLevel] = max(0, $totalRebateAmount);
         } else {

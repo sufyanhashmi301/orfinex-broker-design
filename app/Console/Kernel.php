@@ -26,8 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('exchange:update-rates')->everyThirtyMinutes();
         $schedule->command('tokens:update-rates')->everyThirtyMinutes();
-        $schedule->command('rebate:distribution')->everyFiveMinutes();
-//        $schedule->command('sync:forex-accounts-via-email-banex')->everyMinute();
+//        $schedule->command('rebate:distribution')->everyFiveMinutes();
 //        if(url('/') == 'http://brokerdemo.brokeret.com') {
 //            $schedule->command('reset:data')->daily();
 //        }

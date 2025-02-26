@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Txn;
 use Session;
+use Carbon\Carbon;
 use App\Models\KYC;
 use App\Models\Page;
 use App\Models\User;
@@ -101,6 +102,7 @@ class RegisteredUserController extends Controller
             'phone' => $phone,
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'email_verified_at' => Carbon::now(),
         ]);
 
         // Assign referring id

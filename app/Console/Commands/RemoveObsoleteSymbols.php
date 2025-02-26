@@ -9,7 +9,7 @@ use App\Models\Symbol;
 class RemoveObsoleteSymbols extends Command
 {
     protected $signature = 'symbols:remove-obsolete';
-    protected $description = 'Remove symbols that do not exist in mt5_symbols and their associations in symbol_group_symbol';
+    protected $description = 'Remove symbols that do not exist in mt5_symbols and their associations in symbol_symbol_group';
 
     public function __construct()
     {
@@ -38,7 +38,7 @@ class RemoveObsoleteSymbols extends Command
         // Step 4: Remove these symbols from symbol_groups pivot table first
         $symbolIdsToDelete = Symbol::whereIn('symbol', $symbolsToDelete)->pluck('id');
 
-        DB::table('symbol_group_symbol')
+        DB::table('symbol_symbol_group')
             ->whereIn('symbol_id', $symbolIdsToDelete)
             ->delete();
 

@@ -28,9 +28,14 @@ class MultiLevelIBController extends Controller
     public function index()
     {
         $user = auth()->user();
-        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id)){
-            return redirect()->route('user.referral');
+//        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && isset(auth()->user()->ref_id)){
+//            return redirect()->route('user.referral');
+//
+//        }else
 
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED && !isset(auth()->user()->ref_id)) {
+
+            return redirect()->route('user.ib.request');
         }
 
         $user_id = $user->id;
@@ -114,6 +119,9 @@ class MultiLevelIBController extends Controller
 
     public function rules()
     {
+        if(auth()->user()->ib_status != \App\Enums\IBStatus::APPROVED){
+            return redirect()->route('user.multi-level.ib.dashboard');
+        }
         $user = auth()->user(); // Get the authenticated user
 
         // Fetch UserIbRules with related schemas and rebate rules

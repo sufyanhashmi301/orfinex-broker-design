@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Enums\IBStatus;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IBMiddleware
 {
@@ -17,15 +18,13 @@ class IBMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-//        dd('s');
-        if (auth()->user()->ib_status == IBStatus::APPROVED || auth()->user()->ib_status == IBStatus::PENDING) {
-            return redirect()->route('user.ib-program');
+
+        $user = Auth::user();
+
+        // Redirect non-approved users without ref_id to IB request
+        if ($user->ib_status != IBStatus::APPROVED && !isset($user->ref_id)) {
+            return redirect()->route('user.ib.request');
         }
-
-
-//        if (auth()->user()->ib_status == IBStatus::APPROVED || auth()->user()->ib_status == IBStatus::PENDING) {
-//            return redirect()->route('user.ib-program');
-//        }
 
         return $next($request);
     }

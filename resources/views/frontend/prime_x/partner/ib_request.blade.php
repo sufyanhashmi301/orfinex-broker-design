@@ -27,10 +27,10 @@
                                     <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="carbon:document"></iconify-icon>
                                     <span>{{ __('Read Partner Agreement') }}</span>
                                 </a>
-                                <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">
-                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>
-                                    <span>{{ __('Read Our Reviews on Trustpilot') }}</span>
-                                </a>
+{{--                                <a href="{{setting('trust_pilot_review_link','platform_links','javascript:void(0);')}}" target="_blank" class="btn btn-dark inline-flex items-center justify-center">--}}
+{{--                                    <iconify-icon class="text-xl ltr:mr-2 rtl:ml-2" icon="simple-icons:trustpilot"></iconify-icon>--}}
+{{--                                    <span>{{ __('Read Our Reviews on Trustpilot') }}</span>--}}
+{{--                                </a>--}}
                             </div>
                             <div class="mt-5">
                                 <p class="text-sm dark:text-slate-300">

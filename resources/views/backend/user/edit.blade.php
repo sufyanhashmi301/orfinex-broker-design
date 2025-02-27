@@ -251,7 +251,21 @@
                                     </a>
                                 </li>
                             @endcan
-
+                            <li class="nav-item" role="presentation">
+                                <a
+                                    href=""
+                                    class="nav-link block font-medium font-Inter text-xs leading-tight capitalize rounded-md px-4 py-2 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-300"
+                                    id="pills-bonus-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-bonus"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-bonus"
+                                    aria-selected="true"
+                                >
+                                    {{ __('IB Bonus') }}
+                                </a>
+                            </li>
                             @if(setting('site_referral','global') == 'level')
                                 <li class="nav-item" role="presentation">
                                     <a
@@ -348,7 +362,7 @@
                 @can('accounts-list')
                      @include('backend.user.include.__accounts')
                 @endcan
-
+                @include('backend.user.include.__ib_bonus')
                 @can('kyc-status-update')
                 <!-- KYC Tab -->
                 @include('backend.user.include.__kycTab')

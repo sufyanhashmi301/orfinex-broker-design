@@ -73,8 +73,9 @@
                             <div class="input-area fw-normal">
                                 <label for="" class="form-label">{{ __('Detail:') }}</label>
                                 <div class="site-editor">
-                                    <textarea class="basicTinymce" name="desc"></textarea>
+                                    <textarea class="summernote"></textarea>
                                 </div>
+                                <input type="hidden" name="desc">
                             </div>
                         </div>
 

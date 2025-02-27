@@ -112,7 +112,8 @@
 {{--                            <div class="manual-row"></div>--}}
                             <div class="input-area col-span-12">
                                 <label for="approval_cause" class="form-label">{{ __('Comments') }}</label>
-                                <textarea name="approval_cause" class="form-control basicTinymce" rows="5"></textarea>
+                                <textarea class="form-control summernote" rows="5"></textarea>
+                                <input type="hidden" name="approval_cause">
                             </div>
                             <div class="input-area lg:col-span-6 col-span-12">
                                 <div class="flex items-center space-x-7 flex-wrap">

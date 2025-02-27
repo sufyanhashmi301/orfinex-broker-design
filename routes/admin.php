@@ -112,6 +112,7 @@ Route::middleware(['2fa_admin', 'payment_access', 'set.session.lifetime:admin'])
         Route::get('mail-send/all', 'mailSendAll')->name('mail-send.all');
         Route::post('mail-send', 'mailSend')->name('mail-send');
         Route::get('transaction/{id}', 'transaction')->name('transaction');
+        Route::get('ib-bonus/{id}', 'ibBonus')->name('ib_bonus');
         Route::get('ib-info/{id}', 'ibInfo')->name('ib-info');
         Route::post('export/{type?}', 'export')->name('export');
         Route::get('create', 'createCustomer')->name('create');

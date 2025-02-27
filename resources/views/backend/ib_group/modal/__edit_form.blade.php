@@ -8,7 +8,8 @@
     </div>
     <div class="input-area">
         <label for="" class="form-label">{{ __('Details (Optional)') }}</label>
-        <textarea name="desc" class="form-control basicTinymce mb-0" rows="6" placeholder="Details">{{ old('desc', $ibGroup->desc) }}</textarea>
+        <textarea name="desc" class="form-control summernote mb-0" rows="6" placeholder="Details">{!! old('desc', $ibGroup->desc) !!}</textarea>
+        <input type="hidden" name="desc" value="{{ str_replace(['<', '>'], ['{', '}'], old('desc', $ibGroup->desc)) }}">
     </div>
     <div class="input-area">
         <label for="rebate_rule_id_edit" class="form-label">{{ __('Attach Rebate Rule(s) (Optional)') }}</label>

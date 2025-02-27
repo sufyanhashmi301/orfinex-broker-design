@@ -75,6 +75,8 @@ class IBGroupController extends Controller
 
         $rebateRuleIds = $request->input('rebate_rule_id', []);
 
+        $request['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
+
         // Create the IB Group
         $ibGroup = IbGroup::create($request->only(['name', 'desc']) + ['status' => $request->input('status', 1)]);
 
@@ -140,6 +142,8 @@ class IBGroupController extends Controller
         }
 
         $rebateRuleIds = $request->input('rebate_rule_id', []);
+
+        $request['desc'] = str_replace(['{', '}'], ['<', '>'], $request->desc);
 
         // Update IB Group details
         $ibGroup->update($request->only(['name', 'desc', 'status']));

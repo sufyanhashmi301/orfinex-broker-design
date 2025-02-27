@@ -761,6 +761,7 @@ class UserController extends Controller
      */
     public function mailSend(Request $request)
     {
+        $message = $request->input('message');
 
         $validator = Validator::make($request->all(), [
             'subject' => 'required',
@@ -777,7 +778,7 @@ class UserController extends Controller
 
             $input = [
                 'subject' => $request->subject,
-                'message' => $request->message,
+                'message' => str_replace(['{', '}'], ['<', '>'], $message),
             ];
 
             $shortcodes = [

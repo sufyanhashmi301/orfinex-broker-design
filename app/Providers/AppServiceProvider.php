@@ -39,7 +39,11 @@ class AppServiceProvider extends ServiceProvider
             return base_path() . '/public';
         });
 
-        if(is_force_https()){
+        // if(is_force_https()){
+        //     URL::forceScheme('https');
+        // }
+
+        if (env('APP_ENV') === 'production') {
             URL::forceScheme('https');
         }
 

@@ -188,7 +188,7 @@
         </li> --}}
     </ul>
 </div>
-<div class="stickySetting_menu sticky bottom-0 px-6 py-3">
+<div class="stickySetting_menu sticky hidden md:block z-10 bottom-0 px-6 py-3">
     <a href="{{ route('user.setting.profile') }}" class="navItem loaderBtn">
         <span class="flex items-center">
             <iconify-icon class="nav-icon" icon="heroicons-outline:cog"></iconify-icon>
